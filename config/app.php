@@ -137,6 +137,12 @@ return [
 		'Illuminate\View\ViewServiceProvider',
 
 		/*
+		 * Package Service Providers...
+		 */
+		'Barryvdh\Debugbar\ServiceProvider',
+		'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+
+		/*
 		 * Application Service Providers...
 		 */
 		'App\Providers\AppServiceProvider',

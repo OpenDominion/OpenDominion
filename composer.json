@@ -1,15 +1,23 @@
 {
-	"name": "laravel/laravel",
-	"description": "The Laravel Framework.",
-	"keywords": ["framework", "laravel"],
+	"name": "wavehack/opendominion",
+	"description": "A web-based fantasy wargame based on the now defunct Dominion from Kamikaze Games.",
+	"keywords": ["opendominion", "game"],
 	"license": "MIT",
 	"type": "project",
+	"authors": [
+		{
+			"name": "WaveHack",
+			"homepage": "https://github.com/WaveHack"
+		}
+	],
 	"require": {
 		"laravel/framework": "~5.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
-		"phpspec/phpspec": "~2.1"
+		"phpspec/phpspec": "~2.1",
+		"barryvdh/laravel-ide-helper": "~1.11",
+		"barryvdh/laravel-debugbar": "~2.0"
 	},
 	"autoload": {
 		"classmap": [

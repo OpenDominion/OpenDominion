@@ -1,2 +1,5 @@
+/.idea
+/node_modules
 /vendor
 .env
+_ide_helper.php
