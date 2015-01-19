@@ -1,7 +1,5 @@
 {
 	"name": "wavehack/opendominion",
-	"description": "A web-based fantasy wargame based on the now defunct Dominion from Kamikaze Games.",
-	"keywords": ["opendominion", "game"],
 	"license": "MIT",
 	"type": "project",
 	"authors": [
