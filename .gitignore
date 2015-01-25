@@ -1,5 +1,9 @@
 /.idea
 /node_modules
+/public/assets/css/app.css
+/public/assets/css/app.min.css
+/public/assets/js/app.min.js
+/resources/assets/vendor
 /vendor
 .env
 _ide_helper.php
