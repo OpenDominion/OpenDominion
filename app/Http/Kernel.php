@@ -1,4 +1,4 @@
-<?php namespace App\Http;
+<?php namespace OpenDominion\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -24,9 +24,9 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $routeMiddleware = [
-		'auth' => 'App\Http\Middleware\Authenticate',
+		'auth' => 'OpenDominion\Http\Middleware\Authenticate',
 		'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
-		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
+		'guest' => 'OpenDominion\Http\Middleware\RedirectIfAuthenticated',
 	];
 
 }

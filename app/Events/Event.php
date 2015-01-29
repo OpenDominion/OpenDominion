@@ -1,4 +1,4 @@
-<?php namespace App\Events;
+<?php namespace OpenDominion\Events;
 
 abstract class Event {
 
