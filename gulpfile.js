@@ -64,4 +64,4 @@ gulp.task('watch', function() {
 	//gulp.watch('./tests/*.php', ['phpunit']);
 });
 
-gulp.task('default', ['css', 'js', /*'phpunit',*/ 'watch']);
+gulp.task('default', ['css', 'js']);
