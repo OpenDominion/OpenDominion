@@ -1,9 +1,9 @@
 <?php namespace OpenDominion\Http\Controllers;
 
-class HomeController extends Controller
+class StatusController extends Controller
 {
     public function getIndex()
     {
-        return view('home');
+        return view('status');
     }
 }

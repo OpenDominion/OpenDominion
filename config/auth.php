@@ -28,7 +28,7 @@ return [
 	|
 	*/
 
-	'model' => 'OpenDominion\User',
+	'model' => 'OpenDominion\Models\User',
 
 	/*
 	|--------------------------------------------------------------------------
