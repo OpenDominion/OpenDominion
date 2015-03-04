@@ -15,7 +15,11 @@
 		"phpunit/phpunit": "~4.0",
 		"phpspec/phpspec": "~2.1",
 		"barryvdh/laravel-ide-helper": "~1.11",
-		"barryvdh/laravel-debugbar": "~2.0"
+		"barryvdh/laravel-debugbar": "~2.0",
+		"behat/behat": "~3.0@dev",
+		"behat/mink": "~1.7@dev",
+		"behat/mink-extension": "~2.0@dev",
+		"laracasts/behat-laravel-extension": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
