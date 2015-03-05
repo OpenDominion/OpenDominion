@@ -2,6 +2,7 @@
 
 use Illuminate\Contracts\Auth\Guard;
 use OpenDominion\Commands\User\LoginCommand;
+use OpenDominion\Commands\User\RegisterCommand;
 use OpenDominion\Http\Requests\Auth\LoginRequest;
 use OpenDominion\Http\Requests\Auth\RegisterRequest;
 use OpenDominion\Models\User;
@@ -40,7 +41,6 @@ class AuthController extends Controller
 
     public function postRegister(RegisterRequest $request)
     {
-
         // Check email
         $email = $request->get('email');
         $password = $request->get('password');
