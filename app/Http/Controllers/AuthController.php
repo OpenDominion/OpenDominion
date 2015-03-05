@@ -1,7 +1,9 @@
 <?php namespace OpenDominion\Http\Controllers;
 
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\Request;
+use OpenDominion\Commands\User\LoginCommand;
+use OpenDominion\Http\Requests\Auth\LoginRequest;
+use OpenDominion\Http\Requests\Auth\RegisterRequest;
 use OpenDominion\Models\User;
 
 class AuthController extends Controller
@@ -20,13 +22,15 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function postLogin(Request $request)
+    public function postLogin(LoginRequest $request)
     {
-        if ($this->auth->attempt($request->only(['email', 'password']), $request->has('remember'))) {
-            return redirect('/status');
-        }
+        $this->dispatch(new LoginCommand(
+            $request->get('email'),
+            $request->get('password'),
+            $request->has('remember')
+        ));
 
-        return redirect('/auth/login');
+        return redirect('/status');
     }
 
     public function getRegister()
@@ -34,8 +38,9 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function postRegister(Request $request)
+    public function postRegister(RegisterRequest $request)
     {
+
         // Check email
         $email = $request->get('email');
         $password = $request->get('password');
@@ -52,6 +57,7 @@ class AuthController extends Controller
     public function getLogout()
     {
         $this->auth->logout();
+
         return redirect('/');
     }
 }
