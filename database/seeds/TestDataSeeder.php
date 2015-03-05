@@ -3,8 +3,12 @@
 use Illuminate\Database\Seeder;
 use OpenDominion\Models\User;
 
-class TestingEnvironmentSeeder extends Seeder
+class TestDataSeeder extends Seeder
 {
+    public function __construct()
+    {
+    }
+
     public function run()
     {
         User::create([

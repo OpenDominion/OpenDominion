@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        if (app()->environment('testing')) {
-            $this->call('TestingEnvironmentSeeder');
+        if (app()->environment('local', 'testing')) {
+            $this->call('TestDataSeeder');
         }
     }
 }
