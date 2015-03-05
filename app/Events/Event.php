@@ -1,7 +1,5 @@
 <?php namespace OpenDominion\Events;
 
-abstract class Event {
-
-	//
-
+abstract class Event
+{
 }
