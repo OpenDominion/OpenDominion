@@ -8,9 +8,6 @@ use Laracasts\Behat\Context\KernelAwareContext;
 use OpenDominion\Models\User;
 use PHPUnit_Framework_Assert as PHPUnit;
 
-//require 'PHPUnit/Autoload.php';
-//require 'PHPUnit/Framework/Assert/Functions.php';
-
 /**
  * Defines application features from the specific context.
  */

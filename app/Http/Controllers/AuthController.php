@@ -12,7 +12,6 @@ class AuthController extends Controller
     {
         $this->auth = $auth;
 
-//        $this->middleware('guest');
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
@@ -42,8 +41,6 @@ class AuthController extends Controller
         $password = $request->get('password');
 
         $user = User::where('email', $email)->first();
-
-        echo User::all()->count();
 
         if ($user !== null) {
             return 'Email already exists';
