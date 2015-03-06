@@ -2,6 +2,7 @@
 
 use Illuminate\Contracts\Auth\Guard;
 use OpenDominion\Commands\User\LoginCommand;
+use OpenDominion\Exceptions\InvalidLoginException;
 
 class LoginCommandHandler
 {
@@ -24,13 +25,15 @@ class LoginCommandHandler
      * Handle the command.
      *
      * @param  LoginCommand $command
-     * @return void
+     * @throws InvalidLoginException
      */
     public function handle(LoginCommand $command)
     {
-        $this->auth->attempt([
+        if (!$this->auth->attempt([
             'email' => $command->email,
             'password' => $command->password
-        ], $command->remember);
+        ], $command->remember)) {
+            throw new InvalidLoginException('Invalid email/password combination');
+        }
     }
 }

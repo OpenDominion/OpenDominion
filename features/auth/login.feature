@@ -20,4 +20,5 @@ Feature: Login
     And I fill in "password" with "badpassword"
     And I press "Login"
     Then I should be on "/auth/login"
+    And I should see "Invalid email/password combination"
     And I should not be logged in

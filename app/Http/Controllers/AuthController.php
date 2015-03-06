@@ -2,7 +2,7 @@
 
 use Illuminate\Contracts\Auth\Guard;
 use OpenDominion\Commands\User\LoginCommand;
-use OpenDominion\Commands\User\RegisterCommand;
+use OpenDominion\Exceptions\InvalidLoginException;
 use OpenDominion\Http\Requests\Auth\LoginRequest;
 use OpenDominion\Http\Requests\Auth\RegisterRequest;
 use OpenDominion\Models\User;
@@ -25,11 +25,18 @@ class AuthController extends Controller
 
     public function postLogin(LoginRequest $request)
     {
-        $this->dispatch(new LoginCommand(
-            $request->get('email'),
-            $request->get('password'),
-            $request->has('remember')
-        ));
+        try {
+            $this->dispatch(new LoginCommand(
+                $request->get('email'),
+                $request->get('password'),
+                $request->has('remember')
+            ));
+
+        } catch (InvalidLoginException $e) {
+            return redirect('/auth/login')
+                ->with('error', $e->getMessage())
+                ->withInput();
+        }
 
         return redirect('/status');
     }
