@@ -139,8 +139,6 @@ return [
 		/*
 		 * Package Service Providers...
 		 */
-		'Barryvdh\Debugbar\ServiceProvider',
-		'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
 		/*
 		 * Application Service Providers...
