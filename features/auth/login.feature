@@ -8,14 +8,14 @@ Feature: Login
     And I am on "/auth/login"
     Then I should see "Login"
 
-  Scenario: Valid login
+  Scenario: Pass: Valid login
     When I fill in "email" with "test@example.com"
     And I fill in "password" with "test"
     And I press "Login"
     Then I should be on "/status"
     And I should be logged in
 
-  Scenario: Invalid login
+  Scenario: Fail: Invalid login
     When I fill in "email" with "test@example.com"
     And I fill in "password" with "badpassword"
     And I press "Login"

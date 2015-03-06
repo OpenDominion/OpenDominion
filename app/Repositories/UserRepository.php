@@ -9,8 +9,8 @@ class UserRepository extends Repository
         parent::__construct($model);
     }
 
-    public function findByEmail($email)
+    public function doesUserWithEmailExist($email)
     {
-        return $this->model->where('email', $email)->first();
+        return ($this->model->where('email', $email)->count() > 0);
     }
 }

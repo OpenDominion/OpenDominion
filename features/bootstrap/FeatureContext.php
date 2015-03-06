@@ -6,6 +6,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Laracasts\Behat\Context\App;
 use Laracasts\Behat\Context\KernelAwareContext;
 use OpenDominion\Models\User;
+use OpenDominion\Repositories\UserRepository;
 use PHPUnit_Framework_Assert as PHPUnit;
 
 /**
@@ -16,14 +17,16 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
     use App, PrepareTestEnvironment;
 
     /**
+     * @var UserRepository
+     */
+    public $users;
+
+    /**
      * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
      */
     public function __construct()
     {
+        $this->users = new UserRepository(new User);
     }
 
     /**
@@ -57,5 +60,23 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
     public function iShouldNotBeLoggedIn()
     {
         PHPUnit::assertTrue($this->app['auth']->guest(), 'I am logged in');
+    }
+
+    /**
+     * @Given /^user with email "([^"]*)" should exist$/
+     * @param  string $email
+     */
+    public function userWithEmailShouldExist($email)
+    {
+        PHPUnit::assertTrue($this->users->doesUserWithEmailExist($email), 'User does not exist');
+    }
+
+    /**
+     * @Given /^user with email "([^"]*)" should not exist$/
+     * @param  string $email
+     */
+    public function userWithEmailShouldNotExist($email)
+    {
+        PHPUnit::assertFalse($this->users->doesUserWithEmailExist($email), 'User exists');
     }
 }

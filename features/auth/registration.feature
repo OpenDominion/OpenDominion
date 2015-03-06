@@ -8,23 +8,19 @@ Feature: Registration
     And I am on "/auth/register"
     Then I should see "Register"
 
-  Scenario: Successful registration
+  Scenario: Pass: Successful registration
     When I fill in "email" with "test2@example.com"
     And I fill in "password" with "test"
     And I fill in "password_confirmation" with "test"
     And I press "Register"
-    Then I should see "Success!"
+    Then I should see "You have successfully registered"
+    And user with email "test2@example.com" should exist
 
-  Scenario: Email already exists
+  Scenario: Fail: Email already exists
     When I fill in "email" with "test@example.com"
     And I fill in "password" with "test"
     And I fill in "password_confirmation" with "test"
     And I press "Register"
-    Then I should see "Email already exists"
-
-  Scenario: Password confirmation does not match password
-    When I fill in "email" with "test2@example.com"
-    And I fill in "password" with "test"
-    And I fill in "password_confirmation" with "1234"
-    And I press "Register"
-    Then I should see "Passwords do not match"
+    Then I should be on "/auth/register"
+    And I should see "The email has already been taken."
+    And user with email "test2@example.com" should not exist

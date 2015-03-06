@@ -2,10 +2,11 @@
 
 use Illuminate\Contracts\Auth\Guard;
 use OpenDominion\Commands\User\LoginCommand;
+use OpenDominion\Commands\User\RegisterCommand;
 use OpenDominion\Exceptions\InvalidLoginException;
+use OpenDominion\Exceptions\RegistrationException;
 use OpenDominion\Http\Requests\Auth\LoginRequest;
 use OpenDominion\Http\Requests\Auth\RegisterRequest;
-use OpenDominion\Models\User;
 
 class AuthController extends Controller
 {
@@ -48,17 +49,19 @@ class AuthController extends Controller
 
     public function postRegister(RegisterRequest $request)
     {
-        // Check email
-        $email = $request->get('email');
-        $password = $request->get('password');
+        try {
+            $this->dispatch(new RegisterCommand(
+                $request->get('email'),
+                $request->get('password')
+            ));
 
-        $user = User::where('email', $email)->first();
-
-        if ($user !== null) {
-            return 'Email already exists';
+        } catch (RegistrationException $e) {
+            return redirect('/auth/register')
+                ->with('error', $e->getMessage())
+                ->withInput();
         }
 
-        return 'Success!';
+        return view('auth.register-success');
     }
 
     public function getLogout()

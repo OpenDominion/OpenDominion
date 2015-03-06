@@ -5,10 +5,24 @@ use OpenDominion\Commands\Command;
 class RegisterCommand extends Command
 {
     /**
-     * Create a new command instance.
+     * @var string
      */
-    public function __construct()
+    public $password;
+
+    /**
+     * @var string
+     */
+    public $email;
+
+    /**
+     * Create a new command instance.
+     *
+     * @param  string $email
+     * @param  string $password
+     */
+    public function __construct($email, $password)
     {
-        // todo
+        $this->email = $email;
+        $this->password = $password;
     }
 }
