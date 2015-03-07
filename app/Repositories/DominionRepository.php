@@ -9,7 +9,7 @@ class DominionRepository extends Repository
         parent::__construct($model);
     }
 
-    public function doesDominionWithEmailExist($name)
+    public function doesDominionWithNameExist($name)
     {
         return ($this->model->where('name', $name)->count() > 0);
     }

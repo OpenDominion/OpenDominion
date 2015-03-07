@@ -93,7 +93,7 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
      */
     public function dominionWithNameShouldExist($name)
     {
-        PHPUnit::assertTrue($this->dominions->doesDominionWithEmailExist($name), 'Dominion does not exist');
+        PHPUnit::assertTrue($this->dominions->doesDominionWithNameExist($name), 'Dominion does not exist');
     }
 
     /**
@@ -101,6 +101,6 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
      */
     public function dominionWithNameShouldNotExist($name)
     {
-        PHPUnit::assertFalse($this->dominions->doesDominionWithEmailExist($name), 'Dominion exists');
+        PHPUnit::assertFalse($this->dominions->doesDominionWithNameExist($name), 'Dominion exists');
     }
 }
