@@ -1,7 +1,6 @@
 <?php namespace OpenDominion\Handlers\Commands\User;
 
 use OpenDominion\Commands\User\RegisterCommand;
-use OpenDominion\Exceptions\RegistrationException;
 use OpenDominion\Repositories\UserRepository;
 
 class RegisterCommandHandler
@@ -25,13 +24,17 @@ class RegisterCommandHandler
      * Handle the command.
      *
      * @param  RegisterCommand $command
-     * @throws RegistrationException
      */
     public function handle(RegisterCommand $command)
     {
-        // todo: check for active round (in registerrequest?)
-        // todo: create user and dominion
+        // todo: check for active round
 
-        throw new RegistrationException('needs implementation');
+        $user = $this->users->create([
+            'email' => $command->email,
+            'password' => bcrypt($command->password),
+            'remember_token' => str_random(),
+        ]);
+
+        // todo: create dominion
     }
 }

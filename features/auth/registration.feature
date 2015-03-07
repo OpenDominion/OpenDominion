@@ -23,4 +23,3 @@ Feature: Registration
     And I press "Register"
     Then I should be on "/auth/register"
     And I should see "The email has already been taken."
-    And user with email "test2@example.com" should not exist

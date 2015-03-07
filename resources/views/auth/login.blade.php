@@ -1,5 +1,9 @@
 <h1>Login</h1>
 
+@foreach ($errors->all() as $error)
+    <p>{{ $error }}</p>
+@endforeach
+
 @if (Session::has('error'))
     <p>{{ Session::get('error') }}</p>
 @endif

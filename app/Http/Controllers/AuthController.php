@@ -49,17 +49,10 @@ class AuthController extends Controller
 
     public function postRegister(RegisterRequest $request)
     {
-        try {
-            $this->dispatch(new RegisterCommand(
-                $request->get('email'),
-                $request->get('password')
-            ));
-
-        } catch (RegistrationException $e) {
-            return redirect('/auth/register')
-                ->with('error', $e->getMessage())
-                ->withInput();
-        }
+        $this->dispatch(new RegisterCommand(
+            $request->get('email'),
+            $request->get('password')
+        ));
 
         return view('auth.register-success');
     }
