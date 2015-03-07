@@ -51,7 +51,9 @@ class AuthController extends Controller
     {
         $this->dispatch(new RegisterCommand(
             $request->get('email'),
-            $request->get('password')
+            $request->get('password'),
+            $request->get('dominion_name'),
+            $request->get('dominion_ruler_name')
         ));
 
         return view('auth.register-success');

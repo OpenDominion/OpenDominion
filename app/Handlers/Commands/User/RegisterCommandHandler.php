@@ -1,10 +1,16 @@
 <?php namespace OpenDominion\Handlers\Commands\User;
 
 use OpenDominion\Commands\User\RegisterCommand;
+use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\UserRepository;
 
 class RegisterCommandHandler
 {
+    /**
+     * @var \OpenDominion\Repositories\DominionRepository
+     */
+    protected $dominions;
+
     /**
      * @var UserRepository
      */
@@ -13,10 +19,12 @@ class RegisterCommandHandler
     /**
      * Create the command handler.
      *
-     * @param UserRepository $users
+     * @param DominionRepository $dominions
+     * @param UserRepository     $users
      */
-    public function __construct(UserRepository $users)
+    public function __construct(DominionRepository $dominions, UserRepository $users)
     {
+        $this->dominions = $dominions;
         $this->users = $users;
     }
 
@@ -35,6 +43,10 @@ class RegisterCommandHandler
             'remember_token' => str_random(),
         ]);
 
-        // todo: create dominion
+        $dominion = $this->dominions->create([
+            'user_id' => $user->id,
+            'name' => $command->dominion_name,
+            'ruler_name' => $command->dominion_ruler_name,
+        ]);
     }
 }

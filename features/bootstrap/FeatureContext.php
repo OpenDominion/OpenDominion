@@ -5,7 +5,9 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
 use Laracasts\Behat\Context\App;
 use Laracasts\Behat\Context\KernelAwareContext;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\User;
+use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\UserRepository;
 use PHPUnit_Framework_Assert as PHPUnit;
 
@@ -17,6 +19,11 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
     use App, PrepareTestEnvironment;
 
     /**
+     * @var DominionRepository
+     */
+    public $dominions;
+
+    /**
      * @var UserRepository
      */
     public $users;
@@ -26,6 +33,7 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
      */
     public function __construct()
     {
+        $this->dominions = new DominionRepository(new Dominion);
         $this->users = new UserRepository(new User);
     }
 
@@ -78,5 +86,21 @@ class FeatureContext extends MinkContext implements Context, KernelAwareContext,
     public function userWithEmailShouldNotExist($email)
     {
         PHPUnit::assertFalse($this->users->doesUserWithEmailExist($email), 'User exists');
+    }
+
+    /**
+     * @Given /^dominion with name "([^"]*)" should exist$/
+     */
+    public function dominionWithNameShouldExist($name)
+    {
+        PHPUnit::assertTrue($this->dominions->doesDominionWithEmailExist($name), 'Dominion does not exist');
+    }
+
+    /**
+     * @Given /^dominion with name "([^"]*)" should not exist$/
+     */
+    public function dominionWithNameShouldNotExist($name)
+    {
+        PHPUnit::assertFalse($this->dominions->doesDominionWithEmailExist($name), 'Dominion exists');
     }
 }

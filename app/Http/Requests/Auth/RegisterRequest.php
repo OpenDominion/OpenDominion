@@ -9,6 +9,8 @@ class RegisterRequest extends Request
         return [
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:3',
+            'dominion_name' => 'required|unique:dominions,name',
+            'dominion_ruler_name' => 'required',
         ];
     }
 
