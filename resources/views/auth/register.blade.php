@@ -13,6 +13,7 @@
     <input type="text" name="email" value="{{ old('email') }}">
     <input type="password" name="password">
     <input type="password" name="password_confirmation">
+    <input type="text" name="display_name" value="{{ old('display_name') }}">
     <input type="text" name="dominion_name" value="{{ old('dominion_name') }}">
     <input type="submit" value="Register">
 </form>

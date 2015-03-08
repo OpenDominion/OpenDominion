@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('email');
             $table->string('password');
 //            $table->string('activation_token', 8);
-            $table->string('remember_token', 8)->nullable()->default(null);
+            $table->string('remember_token')->nullable()->default(null);
             $table->string('display_name', 20);
 
             $table->unique('email');

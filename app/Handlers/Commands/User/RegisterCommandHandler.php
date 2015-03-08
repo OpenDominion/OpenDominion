@@ -44,11 +44,12 @@ class RegisterCommandHandler
     public function handle(RegisterCommand $command)
     {
         // todo: check for active round
-
+        // todo: profanity filter on display_name? ->registerrequest?
         $user = $this->users->create([
             'email' => $command->email,
             'password' => bcrypt($command->password),
-            'remember_token' => str_random(),
+//            'activation_token' => str_random(8),
+            'display_name' => $command->display_name,
         ]);
 
         $this->dominionCreator->create($user, $command->dominion_name);

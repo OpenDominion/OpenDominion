@@ -92,9 +92,9 @@ class CreateDominionsTable extends Migration
 //            $table->dropForeign('realms_monarch_dominion_id_foreign');
 //        });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_active_dominion_id_foreign');
-        });
+//        Schema::table('users', function (Blueprint $table) {
+//            $table->dropForeign('users_active_dominion_id_foreign');
+//        });
 
         Schema::drop('dominions');
     }
