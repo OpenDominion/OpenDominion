@@ -17,7 +17,7 @@ return [
         'peasants' => 1300,
         'draftees' => 0,
         'draft_rate' => 10,
-        'resources' => [
+        'resource' => [
             'platinum' => 100000,
             'food' => 15000,
             'lumber' => 15000,
@@ -46,7 +46,7 @@ return [
             'water' => 20,
         ],
         'home_land_extra' => 10,
-        'buildings' => [
+        'building' => [
             'home' => 10,
             'alchemy' => 30,
             'farm' => 30,

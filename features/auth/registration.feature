@@ -13,7 +13,6 @@ Feature: Registration
     And I fill in "password" with "test"
     And I fill in "password_confirmation" with "test"
     And I fill in "dominion_name" with "Test2 Dominion"
-    And I fill in "dominion_ruler_name" with "Test Ruler"
     And I press "Register"
     Then I should see "You have successfully registered"
     And user with email "test2@example.com" should exist
@@ -24,7 +23,6 @@ Feature: Registration
     And I fill in "password" with "test"
     And I fill in "password_confirmation" with "test"
     And I fill in "dominion_name" with "Test2 Dominion"
-    And I fill in "dominion_ruler_name" with "Test Ruler"
     And I press "Register"
     Then I should be on "/auth/register"
     And I should see "The email has already been taken."
@@ -35,7 +33,6 @@ Feature: Registration
     And I fill in "password" with "test"
     And I fill in "password_confirmation" with "test"
     And I fill in "dominion_name" with "Test Dominion"
-    And I fill in "dominion_ruler_name" with "Test Ruler"
     And I press "Register"
     Then I should be on "/auth/register"
     And I should see "The dominion name has already been taken."

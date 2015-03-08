@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use OpenDominion\Creators\DominionCreator;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\UserRepository;
@@ -8,21 +9,28 @@ use OpenDominion\Repositories\UserRepository;
 class TestDataSeeder extends Seeder
 {
     /**
+     * @var DominionCreator
+     */
+    protected $dominionCreator;
+
+    /**
      * @var DominionRepository
      */
     protected $dominions;
 
     /**
-     * @var
+     * @var UserRepository
      */
     protected $users;
 
     /**
+     * @param DominionCreator    $dominionCreator
      * @param DominionRepository $dominions
      * @param UserRepository     $users
      */
-    public function __construct(DominionRepository $dominions, UserRepository $users)
+    public function __construct(DominionCreator $dominionCreator, DominionRepository $dominions, UserRepository $users)
     {
+        $this->dominionCreator = $dominionCreator;
         $this->dominions = $dominions;
         $this->users = $users;
     }
@@ -32,13 +40,9 @@ class TestDataSeeder extends Seeder
         $user = $this->users->create([
             'email' => 'test@example.com',
             'password' => Hash::make('test'),
-            'remember_token' => '',
+            'display_name' => 'Tester',
         ]);
 
-        $dominion = $this->dominions->create([
-            'user_id' => $user->id,
-            'name' => 'Test Dominion',
-            'ruler_name' => 'Test Ruler',
-        ]);
+        $this->dominionCreator->create($user, 'Test Dominion');
     }
 }
