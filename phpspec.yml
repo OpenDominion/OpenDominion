@@ -1,5 +1,0 @@
-suites:
-    main:
-        namespace: OpenDominion
-        psr4_prefix: OpenDominion
-        src_path: app
