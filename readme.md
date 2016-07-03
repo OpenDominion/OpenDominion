@@ -1,5 +1,7 @@
 # OpenDominion
 
+[![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg)](https://opensource.org/licenses/MIT)
+
 *Note: OpenDominion is still in early development.*
 
 ## Introduction
@@ -14,4 +16,4 @@ The goal of OpenDominion is to be an open source clone of Dominion, so that play
 
 ## License
 
-OpenDominion is released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+OpenDominion is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
