@@ -1,0 +1,10 @@
+/.idea/vcs.xml
+/.idea/workspace.xml
+/bower_components
+/node_modules
+/public/assets
+/public/storage
+/vendor
+/.env
+/.phpstorm.meta.php
+/_ide_helper.php

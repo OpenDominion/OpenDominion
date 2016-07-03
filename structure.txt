@@ -1,0 +1,136 @@
+User
+    has many (but one active) Dominion
+        belongs to one Race (has many dominions)
+            has many RacePerk
+                has one RacePerkType
+            has many (4) Unit
+                has one (0-1) UnitPerkType
+        belongs to one Realm
+            belongs to one Round
+                has one RoundLeague
+
+
+
+Dominion
+- id
+- user_id
+- round_id?
+- realm_id
+- race_id
+- name
+- prestige
+
+- peasants
+- peasant_change_last_hour
+
+- draft_rate
+- morale
+
+- resource_platinum
+- resource_food
+- resource_lumber
+- resource_mana
+- resource_ore
+- resource_gems
+- resource_tech
+- resource_boats
+
+- improvement_*
+
+- military_draftees
+- military_unit1-4
+- military_spies
+- military_wizards
+- military_archmages
+- wizard_strength
+
+- land_plain
+- land_*
+
+- building_*
+
+- daily_land
+- daily_plat
+
+- timestamps
+* unique (user_id, round_id)
+
+    Race
+    - id
+    - name
+    - alignment (enum good,evil,neutral,other)
+    - home_land_type (enum plain,mountain,swamp,cavern,forest,hill,water)
+    - timestamps
+
+    RacePerk (RaceRacePerkType?)
+    - race_id
+    - raceperktype_id
+    - value
+    - timestamps
+    * unique (race_id, raceperktype_id)
+
+    RacePerkType
+    - id
+    - key
+    - description
+    - timestamps
+    * unique (key)
+
+QueueConstruction
+- id
+- timestamps
+
+QueueExploration
+- id
+- timestamps
+
+Realm
+- id
+- monarch_dominion_id
+- enum type (good, neutral, evil)
+- number
+- name
+- timestamps
+
+    Round
+    - id
+    - roundleague_id
+    - timestamps
+
+    RoundLeague
+    - id
+    - name (Standard, Bot (/w api access), other vanilla Dom rulesets)
+    - timestamps
+
+Unit
+- id
+- race_id
+- slot (enum 1,2,3,4)
+- name
+- cost_platinum
+- cost_ore
+- power_offense
+- power_defense
+- unit_perk_id
+- unit_perk_values
+- timestamps
+* unique (race_id, slot)
+
+UnitPerkType
+- id
+- key
+- description
+- timestamps
+* unique (key)
+
+    User
+    - id
+    - email
+    - password
+    - display_name
+    - remember_token
+    - active (0,1)
+    - activation_code
+    - last_online
+    - timestamps
+    * unique (email)
