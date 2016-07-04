@@ -11,10 +11,11 @@ matrix:
     - php: nightly
 
 env:
-  - APP_ENV=testing
-  - CACHE_DRIVER=array
-  - SESSION_DRIVER=array
-  - QUEUE_DRIER=sync
+  global:
+    - APP_ENV=testing
+    - CACHE_DRIVER=array
+    - SESSION_DRIVER=array
+    - QUEUE_DRIER=sync
 
 before_script:
   - composer install --prefer-source --no-interaction
