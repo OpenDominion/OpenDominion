@@ -21,7 +21,7 @@ I'm going the classical MVC approach and throw all these entities below as Eloqu
 *This is the entity representation of the human playing the game. Contains authorization data like login credentials and a public dispay name.*
     - **Dominion** (has many / has one per round) 
     *A dominion is the user's kingdom in the game. Dominions tie together all game related data like land, building, resources, units etc
-    One Dominion can exist per user per round. Rounds happen sequentially, so while the user can technically have more than one dominions, there will always no more than one active dominion per user.*
+    One dominion can exist per user per round. Rounds happen sequentially, so while the user can technically have more than one dominions, there will always no more than one active dominion per user.*
         - **Race** (has one)
         *A dominion consists of a single race.*
             - **RacePerk** (has many)
