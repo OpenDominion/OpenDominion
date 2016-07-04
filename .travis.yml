@@ -1,17 +1,23 @@
 language: php
 
 php:
-  - '5.6'
-  - '7.0'
+  - 5.6
+  - 7.0
   - hhvm
   - nightly
 
+matrix:
+  - allow_failures:
+    - php: nightly
+
+env:
+  - APP_ENV=testing
+  - CACHE_DRIVER=array
+  - SESSION_DRIVER=array
+  - QUEUE_DRIER=sync
+
 before_script:
-  - composer self-update
   - composer install --prefer-source --no-interaction
-  - npm install
-  - bower install
-  - gulp
 
 script:
   - vendor/bin/phpunit
