@@ -2,7 +2,7 @@
 
 ## About
 
-This is a file where I write my thoughts down on how to structure the application in several ways (entity relationships, database structure, URL schemas etc).
+This is a document where I write my thoughts down on how to structure the application in several ways (entity relationships, database structure, URL schemas etc).
 
 ## Foreword
 
@@ -55,7 +55,7 @@ I think that's a bit redundant. Having one user account with login and a separat
 
 This could also open the possibility to add something like an achievement system, where a user could get an achievement for attending sevaral rounds. Also things like social integration (purely optional) and profile badges.
 
-### My thoughts on the round/league system
+### My thoughts on the round league system
 
 This is an idea I have I'm going to work out on low priority.
 
