@@ -58,7 +58,7 @@ For now, I'll just be adding a 'Standard' league, which I will try to replicate 
 Thinking out loud, eventually there could be support for things like:
 
 - User-made rulesets, with an interface to setup or generate such ruleset (based on input parameters), which could be ran based on a voting system, perhaps,
-- An AI/bot ruleset, where a REST API would be available during the round to developers so they can write bots to control their Dominion and its actions. Because let's face it, with games like there is always gonna be notorious botting and scripting to automate actions. Why not condone them into their own league to see who can make a more efficient AI?
+- An AI/bot ruleset, where a REST API would be available during the round to developers so they can write bots to control their Dominion and its actions. Because let's face it, with games like these there is always going to be notorious botting and scripting to automate actions to gain advantages. Why not condone these actions into their own league to see who can write the best bot? These leagues could also run alongside regular leaues, purely for people who would like a different approach to the game. Also building APIs is cool.
 
 ## URLs
 
