@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/travis/WaveHack/OpenDominion.svg)](https://travis-ci.org/WaveHack/OpenDominion)
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg)](https://opensource.org/licenses/MIT)
 
-*Note: OpenDominion is still in early development.*
+*Note: OpenDominion is still in early development. You can find my thoughts on how I plan to develop it in [structure.md](structure.md).*
 
 ## Introduction
 
