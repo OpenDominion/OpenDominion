@@ -10,10 +10,12 @@ I've played a bit of Dominion in the past. I was by no means an expert or a vete
 
 I'm just a developer who tries to make the digital world a better place by:
  
-1. Sharing to the open source community my game/application built upon the Laravel 5 framework for people (including me!) to learn, inspire and perhaps eventually collaborate,
+1. Sharing to the open source community my game/application built upon the [Laravel 5 framework](https://laravel.com/) for people (including me!) to learn, inspire and perhaps eventually collaborate,
 2. Trying to re-create the original and now defunct Dominion, a unique game (especially in these days), which was enjoyed by many.
 
 ## Entities / Models
+
+I'm going the classical MVC approach and throw all these entities below as Eloquent models into an app/Models directory. I haven't quite grasped yet on how to do it differently (with Domain-Driven Design, probabaly?), so I'll stick to this solution which is comfortable with me.
 
 - **User**
   *This is the entity representation of the human playing the game. Contains authorization data like login credentials and a public dispay name.*
