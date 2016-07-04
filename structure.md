@@ -18,36 +18,26 @@ I'm just a developer who tries to make the digital world a better place by:
 I'm going the classical MVC approach and throw all these entities below as Eloquent models into an app/Models directory. I haven't quite grasped yet on how to do it differently (with Domain-Driven Design, probabaly?), so I'll stick to this solution which is comfortable with me.
 
 - **User**
-  *This is the entity representation of the human playing the game. Contains authorization data like login credentials and a public dispay name.*
-
+*This is the entity representation of the human playing the game. Contains authorization data like login credentials and a public dispay name.*
     - **Dominion** (has many / has one per round) 
-      *A dominion is the user's kingdom in the game. Dominions tie together all game related data like land, building, resources, units etc
-      One Dominion can exist per user per round. Rounds happen sequentially, so while the user can technically have more than one dominions, there will always no more than one active dominion per user.*
-
+    *A dominion is the user's kingdom in the game. Dominions tie together all game related data like land, building, resources, units etc
+    One Dominion can exist per user per round. Rounds happen sequentially, so while the user can technically have more than one dominions, there will always no more than one active dominion per user.*
         - **Race** (has one)
-          *A dominion consists of a single race.*
-
+        *A dominion consists of a single race.*
             - **RacePerk** (has many)
-              *Race perks give bonuses (both positive and negative) to a race. This makes certain races more suited for certain tasks.*
-
+            *Race perks give bonuses (both positive and negative) to a race. This makes certain races more suited for certain tasks.*
                 - **RacePerkType** (has one)
-                  *Normalization table because I don't want to use an enum on RacePerk.*
-
+                *Normalization table because I don't want to use an enum on RacePerk.*
             - **Unit** (has many)
-              *Each race has four unique units, along with a few generic units. Uniqueness comes in production cost, stats (offensive and defensive powers) and unit perks (or a lack of).*
-
+            *Each race has four unique units, along with a few generic units. Uniqueness comes in production cost, stats (offensive and defensive powers) and unit perks (or a lack of).*
                 - **UnitPerkType** (has zero or one)
-                  *Unit perks come in different flavors. Each different type goes in here.*
-
+                *Unit perks come in different flavors. Each different type goes in here.*
         - **Realm** (belongs to)
-          *Each dominion is placed in single realm. Dominions have alignments (good, evil, possibly neutral and other), and realms will group dominions based on alignment. No more than 15 dominions can reside in the same realm. Realms must work together to fight and ward off other realms.*
-          
+        *Each dominion is placed in single realm. Dominions have alignments (good, evil, possibly neutral and other), and realms will group dominions based on alignment. No more than 15 dominions can reside in the same realm. Realms must work together to fight and ward off other realms.*
             - **Round** (belongs to)
             *A round consists of X amount of days (50 in vanilla Dominion) where users can participate with a newly created dominion to play the game. No more than one round can be active at given time. Sign-ups will start a few days before the the round starts so that everyone can start at the same time.*
-            
                 - **RoundLeague** (has one)
-                  *This is something I'm introducing in OpenDominion, and I'll explain why in a section below.*
-
+                *This is something I'm introducing in OpenDominion, and I'll explain why in a section below.*
 
 ### My thoughts on the user system
 
