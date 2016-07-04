@@ -10,15 +10,10 @@ matrix:
   - allow_failures:
     - php: nightly
 
-env:
-  global:
-    - APP_ENV=testing
-    - CACHE_DRIVER=array
-    - SESSION_DRIVER=array
-    - QUEUE_DRIER=sync
-
 before_script:
+  - cp .env.travis .env
   - composer install --prefer-source --no-interaction
+  - php artisan key:generate
 
 script:
   - vendor/bin/phpunit
