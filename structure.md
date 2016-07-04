@@ -62,6 +62,41 @@ Thinking out loud, eventually there could be support for things like:
 
 ## URLs
 
+General:
+
+- /
+- /about
+
+Authorizationx:
+
+- /auth/login
+- /auth/register
+- /auth/logout
+- /account *view/change account data and global site settings*
+
+Social:
+
+- /user/:user_id *user profile page*
+- /board/ **global messaging board / forum index*
+- /board/(:category_id)
+- /board/thread/(:thread_id)
+
+Gameplay:
+
+Prefixed with `/game|play|round/(:round_id)`. URL round identifier could either be round->id or a combination of a roundleauge letter followed by the round number (e.g. 'S15' for standard league, round 15). 
+
+- /status
+- /advisors/(production|military|etc)
+- /explore
+- /construction
+- /rezone-land
+- /improvements
+- /bank
+- /military
+- /invade
+- /magic
+- /espionage
+
 todo
 
 ## Database Schema
