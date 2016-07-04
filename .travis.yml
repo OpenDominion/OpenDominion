@@ -1,0 +1,17 @@
+language: php
+
+php:
+  - '5.6'
+  - '7.0'
+  - hhvm
+  - nightly
+
+before_script:
+  - composer self-update
+  - composer install --prefer-source --no-interaction
+  - npm install
+  - bower install
+  - gulp
+
+script:
+  - vendor/bin/phpunit

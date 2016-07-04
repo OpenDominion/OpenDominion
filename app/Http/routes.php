@@ -15,6 +15,8 @@
 
 $router->get('/', function () {
 
+    return 'OpenDominion';
+
 //    $perkType = \OpenDominion\Models\RacePerkType::with('races.perks')->where('key', 'food_production')->firstOrFail();
 //    return $perkType;
 
