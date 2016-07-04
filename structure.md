@@ -15,7 +15,7 @@ I'm just a developer who tries to make the digital world a better place by:
 
 ## Entities / Models
 
-I'm going the classical MVC approach and throw all these entities below as Eloquent models into an app/Models directory. I haven't quite grasped yet on how to do it differently (with Domain-Driven Design, probably?), so I'll stick to this solution which is comfortable with me.
+I'm going the classical MVC approach and throw all these entities below as Eloquent models into an app/Models directory. I haven't quite grasped yet on how to do it differently (with Domain-Driven Design, probably?), so I'll stick to this solution which is comfortable to me.
 
 - **User**
 *This is the entity representation of the human playing the game. Contains authorization data like login credentials and a public dispay name.*
