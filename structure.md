@@ -51,14 +51,28 @@ This could also open the possibility to add something like an achievement system
 
 This is an idea I have I'm going to work out on low priority.
 
-Vanilla Dominion rounds had rulesets. Either base, tech or imp. These modified some aspects of the game, drastically changing the way that rount is played.
+Vanilla Dominion rounds had rulesets. Either base, tech or imp. These modified some aspects of the game, drastically changing the way that rount is played. A league is pretty much a ruleset which can have different game variables and logic.
 
 For now, I'll just be adding a 'Standard' league, which I will try to replicate as close to the vanilla base ruleset as possible. Once everything is up and running, additional rulesets can be stored here.
 
 Thinking out loud, eventually there could be support for things like:
 
-- User-made rulesets, with an interface to setup or generate such ruleset (based on input parameters), which could be ran based on a voting system, perhaps,
-- An AI/bot ruleset, where a REST API would be available during the round to developers so they can write bots to control their Dominion and its actions. Because let's face it, with games like these there is always going to be notorious botting and scripting to automate actions to gain advantages. Why not condone these actions into their own league to see who can write the best bot? These leagues could also run alongside regular leaues, purely for people who would like a different approach to the game. Also building APIs is cool.
+- Tech and Imp leagues, based on the vanilla Dominion rulesets.
+- User-made rulesets, with an interface to setup or generate such ruleset (based on input parameters), which could be ran based on a voting system, perhaps.
+- An AI/bot ruleset, where a REST API would be available during the round to developers so they can write bots to control their Dominion and its actions. Because let's face it, with games like these there is always going to be notorious botting and scripting to automate actions to gain advantages. Why not condone these actions into their own league to see who can write the best bot? These leagues could also run alongside regular leagues, purely for people who would like a different approach to the game. Also building APIs is cool.
+
+### My thouhts on rounds
+
+Vanilla Dominion rounds last for approximately 50 days. I'm thinking of a system to have rounds last 25 days, so that I can line them up with the start of the month. A 25-day round would consist of the following:
+
+1. A round starts always on the first day of each month, lasting 25 days.
+2. After the 25th day, scores will be calculated and added to their respective dominions and users. Sign-ups for the current round will close, but the round doesn't end yet and people can continue to do actions like invasion, espionage and magic to allow for some crazy mayhem like suicide missions. Optionally all exploration, construction and re-zoning is disabled after the 25th day.
+3. Registration for the new round opens up on the last X days of the month, where X is three, probably. During this time, the round will close and the current round gameplay data will be archived.
+4. Non-critical software updates could be deployed between the 25th day and the -3th day of the current and next month, allowing for a few days of live testing and fixing issues before the next round starts on the first day of the next month.
+ 
+Obviously, vanilla Dominion is balanced for 50-day rounds. Once I implement a system like this, it will probably run alongside the standard/vanilla leagues for those looking for shorter games. Gameplay variables will also need to be adjusted due to balancing reasons.
+
+I won't be building this just yet, of course. It will be on a low priority queue, along with different round leagues. 
 
 ## URLs
 
@@ -77,7 +91,7 @@ Authorizationx:
 Social:
 
 - /user/:user_id *user profile page*
-- /board/ **global messaging board / forum index*
+- /board/ *global messaging board / forum index*
 - /board/(:category_id)
 - /board/thread/(:thread_id)
 
