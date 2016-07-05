@@ -33,6 +33,7 @@
     @include('partials.navbar')
 
     <div id="page-wrapper">
+
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
@@ -42,11 +43,10 @@
         </div>
 
         @yield('content')
+
     </div>
 
 </div>
-
-
 
 {{-- Vendor scripts --}}
 <script type="text/javascript" src="{{ asset('assets/vendor/jquery/js/jquery.min.js') }}"></script>
