@@ -15,20 +15,6 @@
 
 $router->get('/', function () {
 
-    return 'OpenDominion';
-
-//    $perkType = \OpenDominion\Models\RacePerkType::with('races.perks')->where('key', 'food_production')->firstOrFail();
-//    return $perkType;
-
-//    $race = \OpenDominion\Models\Race::with('perks.type')->firstOrFail();
-//    return $race;
-
-//    $league = \OpenDominion\Models\RoundLeague::with('rounds')->firstOrFail();
-//    return $league;
-
-    $round = \OpenDominion\Models\Round::with('league', 'realms')->firstOrFail();
-    return $round;
-
-//    return view('welcome');
+    return view('pages.home');
 
 });

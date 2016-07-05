@@ -11,6 +11,6 @@ class ExampleTest extends BaseTestCase
     public function testBasicExample()
     {
         $this->visit('/')
-             ->see('OpenDominion');
+             ->see('Home content');
     }
 }
