@@ -13,7 +13,7 @@ My goal with this project is to make the digital world a better place by:
 1. Sharing to the open source community my game/application built upon the [Laravel 5 framework](https://laravel.com/) for people (including me!) to learn, inspire and perhaps eventually collaborate,
 2. Trying to re-create the original and now defunct Dominion, a unique game (especially in these days), which was enjoyed by many.
 
-I am by no means a designer and for the time being I'll be throwing something relatively simple together in Bootstrap with SB Admin 2. If anyone wants to collaborate for designing it, feel free to contact me.
+I am by no means a designer and for the time being I'll be throwing something relatively simple together in [Bootstrap](https://getbootstrap.com/) with [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/). If anyone wants to collaborate for designing it, feel free to contact me.
 
 ## Entities / Models
 
