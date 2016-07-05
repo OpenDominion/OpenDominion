@@ -13,6 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "startbootstrap-sb-admin-2": "^1.0.8"
+    "startbootstrap-sb-admin-2": "^1.0.8",
+    "rpg-awesome": "^1.0.0"
   }
 }

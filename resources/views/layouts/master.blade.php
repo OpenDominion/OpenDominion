@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/metisMenu/css/metisMenu.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/sb-admin-2/css/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/rpg-awesome/css/rpg-awesome.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
 

@@ -17,6 +17,10 @@ var vendorFiles = {
     'bower_components/font-awesome/css/font-awesome.min.css': 'public/assets/vendor/font-awesome/css',
     'bower_components/font-awesome/fonts': 'public/assets/vendor/font-awesome/fonts',
 
+    // RPG Awesome
+    'bower_components/rpg-awesome/css/rpg-awesome.min.css': 'public/assets/vendor/rpg-awesome/css',
+    'bower_components/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts',
+
     // Metis Menu
     'bower_components/metisMenu/dist/metisMenu.min.css': 'public/assets/vendor/metisMenu/css',
     'bower_components/metisMenu/dist/metisMenu.min.js': 'public/assets/vendor/metisMenu/js',

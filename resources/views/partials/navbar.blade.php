@@ -50,6 +50,9 @@
                 <li>
                     <a href="#"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
+                <li>
+                    <a href="#"><i class="ra ra-sword ra-fw"></i> Test</a>
+                </li>
 
             </ul>
         </div>
