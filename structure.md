@@ -41,7 +41,7 @@ I'm going the classical MVC approach and throw all these entities below as Eloqu
 
 ### My thoughts on the user system
 
-Vanilla Dominion had integrated the user and dominion entities I described above. When a new round started, everyone had to re-register a whole new user account.
+Vanilla Dominion had one single entity for both the user and dominion entities I described above. When a new round started, everyone had to re-register a whole new user account.
 
 I think that's a bit redundant. Having one user account with login and a separate functionality to 'subscribe' to a new round with practically a single click of a button is much more convenient. Statistics of specific users across rounds would also be easier to gather this way.
 
@@ -81,7 +81,7 @@ General:
 - /
 - /about
 
-Authorizationx:
+Authorization:
 
 - /auth/login
 - /auth/register
