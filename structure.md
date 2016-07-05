@@ -6,12 +6,14 @@ This is a document where I write my thoughts down on how to structure the applic
 
 ## Foreword
 
-I've played a bit of Dominion in the past. I was by no means an expert or a veteran of any sorts back in the days.
+I've played a bit of Dominion in the past. I was by no means an expert or a veteran of any sorts back in the days. I just enjoyed playing it as a casual player and was sad to see it go.
 
-I'm just a developer who tries to make the digital world a better place by:
+My goal with this project is to make the digital world a better place by:
  
 1. Sharing to the open source community my game/application built upon the [Laravel 5 framework](https://laravel.com/) for people (including me!) to learn, inspire and perhaps eventually collaborate,
 2. Trying to re-create the original and now defunct Dominion, a unique game (especially in these days), which was enjoyed by many.
+
+I am by no means a designer and for the time being I'll be throwing something relatively simple together in Bootstrap with SB Admin 2. If anyone wants to collaborate for designing it, feel free to contact me.
 
 ## Entities / Models
 
