@@ -1,20 +1,33 @@
 <?php
 
-/** @var \Illuminate\Routing\Router $router */
+use Illuminate\Routing\Router;
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
+/** @var Router $router */
+
+// Static pages
 
 $router->get('/', function () {
-
     return view('pages.home');
+});
+
+// Authentication
+
+$router->group(['prefix' => 'auth'], function (Router $router) {
+
+    $router->group(['middleware' => 'guest'], function (Router $router) {
+
+        $router->get('login', ['as' => 'auth.login', 'uses' => 'AuthController@getLogin']);
+        $router->post('login', 'AuthController@postLogin');
+
+        $router->get('register', ['as' => 'auth.register', 'uses' => 'AuthController@getRegister']);
+        $router->post('register', 'AuthController@postRegister');
+
+    });
+
+    $router->group(['middleware' => 'auth'], function (Router $router) {
+
+        $router->get('logout', ['as' => 'auth.logout', 'uses' => 'AuthController@getLogout']);
+
+    });
 
 });
