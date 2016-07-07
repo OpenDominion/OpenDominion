@@ -34,10 +34,10 @@
             </li>
         @else
             <li>
-                <a href="#">Login</a>
+                <a href="{{ route('auth.login') }}">Login</a>
             </li>
             <li>
-                <a href="#">Register</a>
+                <a href="{{ route('auth.register') }}">Register</a>
             </li>
         @endif
 
@@ -59,11 +59,11 @@
                 </li>
 
                 <li>
-                    <a href="#"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                    <a href="{{ route('home') }}"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
-                <li>
+                {{--<li>
                     <a href="#"><i class="ra ra-sword ra-fw"></i> Test</a>
-                </li>
+                </li>--}}
 
             </ul>
         </div>

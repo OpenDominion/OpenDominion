@@ -6,9 +6,9 @@ use Illuminate\Routing\Router;
 
 // Static pages
 
-$router->get('/', function () {
+$router->get('/', ['as' => 'home', function () {
     return view('pages.home');
-});
+}]);
 
 // Authentication
 
