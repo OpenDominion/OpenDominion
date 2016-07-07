@@ -27,4 +27,35 @@ class AuthTest extends BaseTestCase
             ->seePageIs('/status')
             ->see('temp status page');
     }
+
+    public function testUserCanLogout()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testUserCanRegister()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGuestCantAccessProtectedPages()
+    {
+        $this->visit('/auth/logout')
+            ->seePageIs('/auth/login');
+
+        $this->visit('/status')
+            ->seePageIs('/auth/login');
+    }
+
+    public function testAuthenticatedUserCantAccessLoginAndRegisterPages()
+    {
+        $user = factory(User::class)->create();
+        $this->be($user);
+
+        $this->visit('/auth/login')
+            ->seePageIs('/');
+
+        $this->visit('/auth/register')
+            ->seePageIs('/');
+    }
 }

@@ -10,10 +10,6 @@ $router->get('/', ['as' => 'home', function () {
     return view('pages.home');
 }]);
 
-$router->get('status', ['middleware' => 'auth', function () {
-    return 'temp status page';
-}]);
-
 // Authentication
 
 $router->group(['prefix' => 'auth'], function (Router $router) {
@@ -33,5 +29,16 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
         $router->get('logout', ['as' => 'auth.logout', 'uses' => 'AuthController@getLogout']);
 
     });
+
+});
+
+// Gameplay
+
+$router->group(['middleware' => 'auth'], function (Router $router) {
+
+//    $router->get('status', ['as' => 'status', 'uses' => 'StatusController@getIndex']);
+    $router->get('status', ['as' => 'status', function () {
+        return 'temp status page';
+    }]);
 
 });
