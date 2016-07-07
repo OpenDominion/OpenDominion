@@ -11,6 +11,8 @@ class AuthController extends BaseController
 {
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
+    protected $redirectTo = '/status';
+
     protected $loginView = 'pages.auth.login';
     protected $registerView = 'pages.auth.register';
 

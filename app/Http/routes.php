@@ -10,6 +10,10 @@ $router->get('/', ['as' => 'home', function () {
     return view('pages.home');
 }]);
 
+$router->get('status', ['middleware' => 'auth', function () {
+    return 'temp status page';
+}]);
+
 // Authentication
 
 $router->group(['prefix' => 'auth'], function (Router $router) {
