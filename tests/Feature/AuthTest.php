@@ -30,7 +30,11 @@ class AuthTest extends BaseTestCase
 
     public function testUserCanLogout()
     {
-        $this->markTestIncomplete();
+        $user = factory(User::class)->create();
+        $this->be($user);
+
+        $this->visit('/auth/logout')
+            ->seePageIs('/');
     }
 
     public function testUserCanRegister()
