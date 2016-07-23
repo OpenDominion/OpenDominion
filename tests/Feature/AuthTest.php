@@ -13,11 +13,7 @@ class AuthTest extends BaseTestCase
     public function testUserCanLogin()
     {
         $password = str_random();
-
-        $user = factory(User::class)->create([
-            'password' => bcrypt($password),
-            'activated' => true,
-        ]);
+        $user = $this->createUser($password);
 
         $this->visit('/auth/login')
             ->see('Login')
@@ -30,8 +26,7 @@ class AuthTest extends BaseTestCase
 
     public function testUserCanLogout()
     {
-        $user = factory(User::class)->create();
-        $this->be($user);
+        $this->createAndImpersonateUser();
 
         $this->visit('/auth/logout')
             ->seePageIs('/');
@@ -53,8 +48,7 @@ class AuthTest extends BaseTestCase
 
     public function testAuthenticatedUserCantAccessLoginAndRegisterPages()
     {
-        $user = factory(User::class)->create();
-        $this->be($user);
+        $this->createAndImpersonateUser();
 
         $this->visit('/auth/login')
             ->seePageIs('/');
