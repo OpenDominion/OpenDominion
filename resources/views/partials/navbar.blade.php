@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a href="#" class="navbar-brand">OpenDominion</a>
+        <a href="{{ route('home') }}" class="navbar-brand">OpenDominion</a>
     </div>
 
     <ul class="nav navbar-top-links navbar-right">
@@ -43,30 +43,8 @@
 
     </ul>
 
-    <div class="navbar-default sidebar" role="navigation">
-        <div class="sidebar-nav navbar-collapse">
-            <ul class="nav" id="side-menu">
-
-                <li class="sidebar-search">
-                    <div class="input-group custom-search-form">
-                        <input type="text" class="form-control" placeholder="Search">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                </li>
-
-                <li>
-                    <a href="{{ route('home') }}"><i class="fa fa-dashboard fa-fw"></i> Home</a>
-                </li>
-                {{--<li>
-                    <a href="#"><i class="ra ra-sword ra-fw"></i> Test</a>
-                </li>--}}
-
-            </ul>
-        </div>
-    </div>
+    @if (Auth::check())
+        @include('partials.sidebar')
+    @endif
 
 </nav>
