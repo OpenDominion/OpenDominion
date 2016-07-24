@@ -50,7 +50,7 @@
                                         <th class="text-center">#</th>
                                         <th>Name</th>
                                         <th class="text-center">Start</th>
-                                        <th class="text-center">Duration</th>
+                                        <th class="text-center hidden-xs">Duration</th>
                                         <th class="text-center">Register</th>
                                     </tr>
                                 </thead>
@@ -63,15 +63,15 @@
                                                 <abbr class="text-muted" title="{{ $round->league->description }}">({{ $round->league->key }})</abbr>
                                             </td>
                                             <td class="text-center">
-                                                @if ($round->start_date > new DateTime('today'))
-                                                    <abbr title="Starting at {{ $round->start_date }}">{{ $round->start_date->diffInDays(\Carbon\Carbon::now()) }} day(s)</abbr>
-                                                @else
+                                                @if ($round->started)
                                                     <span class="text-warning">Started!</span>
                                                     {{-- todo: Show current round milestone (mid, end etc) with appropriate text color --}}
+                                                @else
+                                                    <abbr title="Starting at {{ $round->start_date }}">{{ $round->days_until_start }} day(s)</abbr>
                                                 @endif
                                             </td>
-                                            <td class="text-center">
-                                                <abbr title="Ending at {{ $round->end_date }}">{{ $round->start_date->diffInDays($round->end_date) }} days</abbr>
+                                            <td class="text-center hidden-xs">
+                                                <abbr title="Ending at {{ $round->end_date }}">{{ $round->duration_in_days }} days</abbr>
                                             </td>
                                             <td class="text-center">
                                                 <a href="#" class="btn btn-primary btn-xs">Register</a>
