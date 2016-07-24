@@ -4,18 +4,6 @@
 
 @section('content')
     <div class="row">
-
-        @if ($errors->has())
-            <div class="col-lg-12">
-                <div class="alert alert-danger">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
         <div class="col-sm-6 col-md-5 col-lg-4">
             <form action="{{ route('auth.login') }}" method="post" role="form">
                 {{ csrf_field() }}
@@ -35,6 +23,5 @@
                 </fieldset>
             </form>
         </div>
-
     </div>
 @endsection
