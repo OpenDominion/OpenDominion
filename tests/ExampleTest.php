@@ -13,6 +13,6 @@ class ExampleTest extends BaseTestCase
     public function testBasicExample()
     {
         $this->visit('/')
-            ->see('Home content');
+            ->see('OpenDominion is a free online text-based strategy game based on Dominion');
     }
 }

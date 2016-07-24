@@ -24,6 +24,17 @@ class AuthTest extends BaseTestCase
             ->see('temp status page');
     }
 
+    public function testUserCantLoginWithInvalidCredentials()
+    {
+        $this->visit('/auth/login')
+            ->see('Login')
+            ->type('nonexistant@example.com', 'email')
+            ->type('somepassword', 'password')
+            ->press('Login')
+            ->seePageIs('/auth/login')
+            ->see('These credentials do not match our records');
+    }
+
     public function testUserCanLogout()
     {
         $this->createAndImpersonateUser();
