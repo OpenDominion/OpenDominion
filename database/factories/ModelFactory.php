@@ -7,7 +7,6 @@ $factory->define(\OpenDominion\Models\User::class, function (Faker\Generator $fa
         'email' => $faker->safeEmail,
         'password' => bcrypt(str_random()),
         'display_name' => $faker->name,
-        'remember_token' => str_random(),
         'activated' => true,
         'activation_code' => str_random(),
     ];

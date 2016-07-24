@@ -28,6 +28,8 @@ class DevelopmentSeeder extends Seeder
             'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
             'number' => 1,
             'name' => 'Development Round',
+            'start_date' => new DateTime('today midnight'),
+            'end_date' => new DateTime('+50 days midnight'),
         ]);
     }
 

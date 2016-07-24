@@ -17,6 +17,8 @@ class CreateRoundsTable extends Migration
             $table->integer('round_league_id')->unsigned();
             $table->integer('number')->unsigned();
             $table->string('name');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->timestamps();
 
             $table->foreign('round_league_id')->references('id')->on('round_leagues');

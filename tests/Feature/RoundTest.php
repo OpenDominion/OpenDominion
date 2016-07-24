@@ -2,7 +2,11 @@
 
 namespace OpenDominion\Tests\Feature;
 
+use CoreDataSeeder;
+use DateTime;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Models\Round;
+use OpenDominion\Models\RoundLeague;
 use OpenDominion\Tests\BaseTestCase;
 
 class RoundTest extends BaseTestCase
@@ -14,15 +18,41 @@ class RoundTest extends BaseTestCase
         $this->markTestIncomplete();
     }
 
+    public function testUserSeesNoActiveDominionsWhenUserDoesntHaveAnyActiveDominions()
+    {
+        $this->createAndImpersonateUser();
+
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->see('You currently have no active dominions.');
+    }
+
+    public function testUserSeesNoActiveRoundsWhenNoRoundsAreActive()
+    {
+        $this->createAndImpersonateUser();
+
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->see('There are currently no active rounds.');
+    }
+
     public function testUserCanSeeListOfActiveRounds()
     {
-        $this->markTestIncomplete();
+        $this->seed(CoreDataSeeder::class);
+        $this->createAndImpersonateUser();
 
-        // create & be user
-        // create round league
-        // create one or more round
-        // visit /rounds?
-        // see list of rounds
+        Round::create([
+            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
+            'number' => 1,
+            'name' => 'Testing Round',
+            'start_date' => new DateTime('today midnight'),
+            'end_date' => new DateTime('+50 days midnight'),
+        ]);
+
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->see('Active rounds: 1')
+            ->see('Testing Round');
     }
 
     public function testUserCanRegisterToASingleRoundInALeague()

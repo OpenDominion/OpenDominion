@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Routing\Router;
 
 /** @var Router $router */
@@ -36,8 +37,14 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
 
 $router->group(['middleware' => 'auth'], function (Router $router) {
 
-    $router->get('dashboard', ['as' => 'dashboard', function () {
-        return view('pages.dashboard');
+    $router->get('dashboard', ['as' => 'dashboard', function (Guard $auth) {
+        return view('pages.dashboard', [
+            'dominions' => new \Illuminate\Support\Collection(), // todo: $auth->user()->dominions
+            'rounds' => \OpenDominion\Models\Round
+                ::where('start_date', '<=', new DateTime('today'))
+                ->where('end_date', '>', new DateTime('today'))
+                ->get(),
+        ]);
     }]);
 
 //    $router->get('status', ['as' => 'status', 'uses' => 'StatusController@getIndex']);
