@@ -10,7 +10,7 @@
     </div>
 @endif
 
-@if ($errors->has())
+@if (!$errors->isEmpty())
     <div class="row">
         <div class="col-lg-12">
             <div class="alert alert-danger">
