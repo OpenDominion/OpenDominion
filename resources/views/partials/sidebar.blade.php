@@ -14,7 +14,7 @@
             </li>
 
             <li>
-                <a href="{{ route('home') }}"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                <a href="{{ route('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
             </li>
             {{--<li>
                 <a href="#"><i class="ra ra-sword ra-fw"></i> Test</a>

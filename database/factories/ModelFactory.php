@@ -5,10 +5,10 @@
 $factory->define(\OpenDominion\Models\User::class, function (Faker\Generator $faker) {
     return [
         'email' => $faker->safeEmail,
-        'password' => bcrypt(str_random(10)),
+        'password' => bcrypt(str_random()),
         'display_name' => $faker->name,
-        'remember_token' => str_random(10),
+        'remember_token' => str_random(),
         'activated' => true,
-        'activation_code' => str_random(10),
+        'activation_code' => str_random(),
     ];
 });

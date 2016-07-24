@@ -33,12 +33,11 @@ abstract class BaseTestCase extends TestCase
      * Creates a user for testing purposes.
      *
      * @param string|null $password
+     * @param array $attributes
      * @return User
      */
-    protected function createUser($password = null)
+    protected function createUser($password = null, array $attributes = [])
     {
-        $attributes = [];
-
         if ($password !== null) {
             $attributes['password'] = bcrypt($password);
         }
@@ -53,9 +52,9 @@ abstract class BaseTestCase extends TestCase
      * @param string|null $password
      * @return User
      */
-    protected function createAndImpersonateUser($password = null)
+    protected function createAndImpersonateUser($password = null, array $attributes = [])
     {
-        $user = $this->createUser($password);
+        $user = $this->createUser($password, $attributes);
         $this->be($user);
         return $user;
     }

@@ -17,12 +17,21 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->guest()) {
+        $auth = Auth::guard($guard);
+
+        if ($auth->guest()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
                 return redirect()->guest(route('auth.login'));
             }
+        }
+
+        if (!$auth->user()->activated) {
+            $auth->logout();
+            // todo: add "click here to have a new activation email being sent to you"
+            $request->session()->flash('alert-danger', 'Your account has not been activated yet. Check your spam folder for the activation email.');
+            return redirect()->guest(route('auth.login'));
         }
 
         return $next($request);

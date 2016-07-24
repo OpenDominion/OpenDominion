@@ -36,6 +36,10 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
 
 $router->group(['middleware' => 'auth'], function (Router $router) {
 
+    $router->get('dashboard', ['as' => 'dashboard', function () {
+        return view('pages.dashboard');
+    }]);
+
 //    $router->get('status', ['as' => 'status', 'uses' => 'StatusController@getIndex']);
     $router->get('status', ['as' => 'status', function () {
         return 'temp status page';

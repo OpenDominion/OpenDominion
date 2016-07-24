@@ -15,15 +15,26 @@
         <div class="col-lg-12">
             <div class="alert alert-danger">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                @if ($errors->count() > 1)
-                    <p>The following <strong>errors</strong> occurred:</p>
+                <p>One or more errors occurred:</p>
+                <ul>
                     @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
+                        <li>{{ $error }}</li>
                     @endforeach
-                @else
-                    <p><strong>Error:</strong> {{ $errors->first() }}</p>
-                @endif
+                </ul>
             </div>
         </div>
     </div>
 @endif
+
+@foreach (['danger', 'warning', 'success', 'info'] as $alert_type)
+    @if (Session::has('alert-' . $alert_type))
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-{{ $alert_type }}">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <p>{{ Session::get('alert-' . $alert_type) }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+@endforeach
