@@ -2,8 +2,7 @@
   "type": "project",
   "require": {
     "php": ">=5.5.9",
-    "laravel/framework": "5.2.*",
-    "graham-campbell/exceptions": "^8.6"
+    "laravel/framework": "5.2.*"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
@@ -12,8 +11,7 @@
     "symfony/css-selector": "2.8.*|3.0.*",
     "symfony/dom-crawler": "2.8.*|3.0.*",
     "barryvdh/laravel-debugbar": "^2.2",
-    "barryvdh/laravel-ide-helper": "^2.2",
-    "filp/whoops": "^2.1"
+    "barryvdh/laravel-ide-helper": "^2.2"
   },
   "autoload": {
     "classmap": [
