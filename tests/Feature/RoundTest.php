@@ -24,7 +24,7 @@ class RoundTest extends BaseTestCase
 
         $this->visit('/dashboard')
             ->see('Dashboard')
-            ->see('You currently have no active dominions.');
+            ->see('You have no active dominions');
     }
 
     public function testUserSeesNoActiveRoundsWhenNoRoundsAreActive()
@@ -51,8 +51,10 @@ class RoundTest extends BaseTestCase
 
         $this->visit('/dashboard')
             ->see('Dashboard')
-            ->see('Active rounds: 1')
-            ->see('Testing Round');
+            ->see('Testing Round')
+            ->see('(standard)')
+            ->see('Started!')
+            ->see('50 days');
     }
 
     public function testUserCanRegisterToASingleRoundInALeague()

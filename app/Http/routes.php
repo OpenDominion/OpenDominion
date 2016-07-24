@@ -41,7 +41,8 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
         return view('pages.dashboard', [
             'dominions' => new \Illuminate\Support\Collection(), // todo: $auth->user()->dominions
             'rounds' => \OpenDominion\Models\Round
-                ::where('start_date', '<=', new DateTime('today'))
+                ::with('league')
+//                ->where('start_date', '<=', new DateTime('today'))
                 ->where('end_date', '>', new DateTime('today'))
                 ->get(),
         ]);
