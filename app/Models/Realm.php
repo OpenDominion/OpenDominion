@@ -8,6 +8,8 @@ class Realm extends Model
 {
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    protected $dates = ['created_at', 'updated_at'];
+
     public function monarch()
     {
 //        return $this->hasOne(Dominion::class, 'id', 'monarch_dominion_id');

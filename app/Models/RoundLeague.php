@@ -8,6 +8,8 @@ class RoundLeague extends Model
 {
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    protected $dates = ['created_at', 'updated_at'];
+
     public function rounds()
     {
         return $this->hasMany(Round::class);
