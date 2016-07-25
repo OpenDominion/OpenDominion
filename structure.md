@@ -13,35 +13,86 @@ My goal with this project is to make the digital world a better place by:
 1. Sharing to the open source community my game/application built upon the [Laravel 5 framework](https://laravel.com/) for people (including me!) to learn, inspire and perhaps eventually collaborate,
 2. Trying to re-create the original and now defunct Dominion, a unique game (especially in these days), which was enjoyed by many.
 
-I am by no means a designer and for the time being I'll be throwing something relatively simple together in [Bootstrap](https://getbootstrap.com/) with [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/). If anyone wants to collaborate for designing it, feel free to contact me.
+I am not a designer and for the time being I'll be throwing something relatively simple together in [Bootstrap](https://getbootstrap.com/) with [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/). If anyone wants to collaborate for designing it, feel free to contact me.
 
 ## Entities / Models
 
 I'm going the classical MVC approach and throw all these entities below as Eloquent models into an app/Models directory. I haven't quite grasped yet on how to do it differently (with Domain-Driven Design, probably?), so I'll stick to this solution which is comfortable to me.
 
-- **User**
-*This is the entity representation of the human playing the game. Contains authorization data like login credentials and a public dispay name.*
-    - **Dominion** (has many / has one per round) 
-    *A dominion is the user's kingdom in the game. Dominions tie together all game related data like land, building, resources, units etc
-    One dominion can exist per user per round. Rounds happen sequentially, so while the user can technically have more than one dominions, there will always no more than one active dominion per user.*
-        - **Race** (has one)
-        *A dominion consists of a single race.*
-            - **RacePerk** (has many)
-            *Race perks give bonuses (both positive and negative) to a race. This makes certain races more suited for certain tasks.*
-                - **RacePerkType** (has one)
-                *Normalization table because I don't want to use an enum on RacePerk.*
-            - **Unit** (has many)
-            *Each race has four unique units, along with a few generic units. Uniqueness comes in production cost, stats (offensive and defensive powers) and unit perks (or a lack of).*
-                - **UnitPerkType** (has zero or one)
-                *Unit perks come in different flavors. Each different type goes in here.*
-        - **Realm** (belongs to)
-        *Each dominion is placed in single realm. Dominions have alignments (good, evil, possibly neutral and other), and realms will group dominions based on alignment. No more than 15 dominions can reside in the same realm. Realms must work together to fight and ward off other realms.*
-            - **Round** (belongs to)
-            *A round consists of X amount of days (50 in vanilla Dominion) where users can participate with a newly created dominion to play the game. No more than one round can be active at given time. Sign-ups will start a few days before the the round starts so that everyone can start at the same time.*
-                - **RoundLeague** (has one)
-                *This is something I'm introducing in OpenDominion, and I'll explain why in a section below.*
+### Dominion
 
-### My thoughts on the user system
+A dominion is the user's kingdom in the game. Dominions tie together all game related data like land, buildings, resources, units etc. Only one dominion can exist per round per player.
+
+Has one **Race**
+Has one **Realm**
+Has many (4) **Units** through **Race**
+
+### Race
+
+Dominions consist of a certain race. Races can be good, evil, neutral or other.
+
+Has many **Dominions**
+Has many **RacePerks**
+Has many (4) **Units**
+
+### RacePerk
+
+Race perks give bonuses (both positive and negative) to a race. This makes certain races more suited to certain tasks than other races.
+
+Has many **Races**
+Has one **RacePerkType**
+
+### RacePerkType
+
+Normalization table for race perk types.
+
+Has many **Races**
+
+### Realm
+
+Each dominion is placed in a single realm based on alignment. Realms can either be good or evil, consisting of dominions of that race alignment, along with neutral race dominions. Realms must work together to fight other realms.
+
+Has many **Dominions**
+Has one **Round**
+
+### Round
+
+A round consists of X amount of days (50 in vanilla Dominion) where users can participate with a newly created dominion to play the game.
+
+No more than one round can be active at any given time per league.
+
+Has many **Dominions** through **Realms**, all the dominions currently playing in this round
+Has many **Realms**, all the realms where the playing dominions reside in
+Has one **RoundLeague**
+
+### RoundLeague
+
+League type used to differentiate rounds. See below for explanation.
+
+Has many **Rounds**
+
+### Unit
+
+Each race has four unique units, along with a few generic units. Generic units are hardcoded, while race-specific units are stored here.
+
+Has one **Race**
+Has one **UnitPerkType**
+
+### UnitPerkType
+
+Table to store different kinds of unit perk types.
+
+Has many **UnitPerks**
+
+### User
+
+The entity representation of the human playing the game. Contains authorization data like login credentials and a public display name.
+
+Has many **Dominions**, but only one per round
+
+## My thoughts on ...
+
+### User system
 
 Vanilla Dominion had one single entity for both the user and dominion entities I described above. When a new round started, everyone had to re-register a whole new user account.
 
@@ -49,7 +100,7 @@ I think that's a bit redundant. Having one user account with login and a separat
 
 This could also open the possibility to add something like an achievement system, where a user could get an achievement for attending sevaral rounds. Also things like social integration (purely optional) and profile badges.
 
-### My thoughts on the round league system
+### Round League system
 
 This is an idea I have I'm going to work out on low priority.
 
@@ -63,7 +114,7 @@ Thinking out loud, eventually there could be support for things like:
 - User-made rulesets, with an interface to setup or generate such ruleset (based on input parameters), which could be ran based on a voting system, perhaps.
 - An AI/bot ruleset, where a REST API would be available during the round to developers so they can write bots to control their Dominion and its actions. Because let's face it, with games like these there is always going to be notorious botting and scripting to automate actions to gain advantages. Why not condone these actions into their own league to see who can write the best bot? These leagues could also run alongside regular leagues, purely for people who would like a different approach to the game. Also building APIs is cool.
 
-### My thouhts on rounds
+### Round duration
 
 Vanilla Dominion rounds last for approximately 50 days. I'm thinking of a system to have rounds last 25 days, so that I can line them up with the start of the month. A 25-day round would consist of the following:
 
