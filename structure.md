@@ -23,37 +23,37 @@ I'm going the classical MVC approach and throw all these entities below as Eloqu
 
 A dominion is the user's kingdom in the game. Dominions tie together all game related data like land, buildings, resources, units etc. Only one dominion can exist per round per player.
 
-Has one **Race**
-Has one **Realm**
-Has many (4) **Units** through **Race**
+Has one **Race**  
+Has one **Realm**  
+Has many (4) **Units** through **Race**  
 
 ### Race
 
 Dominions consist of a certain race. Races can be good, evil, neutral or other.
 
-Has many **Dominions**
-Has many **RacePerks**
-Has many (4) **Units**
+Has many **Dominions**  
+Has many **RacePerks**  
+Has many (4) **Units**  
 
 ### RacePerk
 
 Race perks give bonuses (both positive and negative) to a race. This makes certain races more suited to certain tasks than other races.
 
-Has many **Races**
-Has one **RacePerkType**
+Has many **Races**  
+Has one **RacePerkType**  
 
 ### RacePerkType
 
 Normalization table for race perk types.
 
-Has many **Races**
+Has many **Races**  
 
 ### Realm
 
 Each dominion is placed in a single realm based on alignment. Realms can either be good or evil, consisting of dominions of that race alignment, along with neutral race dominions. Realms must work together to fight other realms.
 
-Has many **Dominions**
-Has one **Round**
+Has many **Dominions**  
+Has one **Round**  
 
 ### Round
 
@@ -61,34 +61,34 @@ A round consists of X amount of days (50 in vanilla Dominion) where users can pa
 
 No more than one round can be active at any given time per league.
 
-Has many **Dominions** through **Realms**, all the dominions currently playing in this round
-Has many **Realms**, all the realms where the playing dominions reside in
-Has one **RoundLeague**
+Has many **Dominions** through **Realms**, all the dominions currently playing in this round  
+Has many **Realms**, all the realms where the playing dominions reside in  
+Has one **RoundLeague**  
 
 ### RoundLeague
 
 League type used to differentiate rounds. See below for explanation.
 
-Has many **Rounds**
+Has many **Rounds**  
 
 ### Unit
 
 Each race has four unique units, along with a few generic units. Generic units are hardcoded, while race-specific units are stored here.
 
-Has one **Race**
-Has one **UnitPerkType**
+Has one **Race**  
+Has one **UnitPerkType**  
 
 ### UnitPerkType
 
 Table to store different kinds of unit perk types.
 
-Has many **UnitPerks**
+Has many **UnitPerks**  
 
 ### User
 
 The entity representation of the human playing the game. Contains authorization data like login credentials and a public display name.
 
-Has many **Dominions**, but only one per round
+Has many **Dominions**, but only one per round  
 
 ## My thoughts on ...
 
