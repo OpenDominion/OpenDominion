@@ -4,24 +4,29 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Realm extends Model
+class Dominion extends Model
 {
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected $dates = ['created_at', 'updated_at'];
 
-    public function dominions()
+    public function race()
     {
-        // todo: hasMany
+        // todo: hasOne? belongsTo?
     }
 
-    public function monarch()
+    public function realm()
     {
-//        return $this->hasOne(Dominion::class, 'id', 'monarch_dominion_id');
+        // todo: belonsTo?
     }
 
     public function round()
     {
-        return $this->belongsTo(Round::class);
+        // todo: belongsTo?
+    }
+
+    public function user()
+    {
+        // todo: belongsTo?
     }
 }
