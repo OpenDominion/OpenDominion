@@ -1,19 +1,8 @@
 {
-  "name": "OpenDominion",
-  "description": "",
-  "main": "",
-  "license": "MIT",
-  "homepage": "",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "name": "opendominion",
   "dependencies": {
     "startbootstrap-sb-admin-2": "^1.0.8",
     "rpg-awesome": "^1.0.0"
-  }
+  },
+  "private": true
 }
