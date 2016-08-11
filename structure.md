@@ -138,6 +138,7 @@ Authorization:
 
 - /auth/login
 - /auth/register
+- /auth/activate/{userId}/{userActivationToken}
 - /auth/logout
 - /account *view/change account data and global site settings*
 
