@@ -14,9 +14,7 @@ matrix:
   fast_finish: true
 
 before_script:
-  - cp .env.travis .env
-  - composer install --prefer-source --no-interaction
-  - php artisan key:generate
+  - bash bin/init.sh testing
 
 script:
   - vendor/bin/phpunit
