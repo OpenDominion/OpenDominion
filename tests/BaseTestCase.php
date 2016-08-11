@@ -50,6 +50,7 @@ abstract class BaseTestCase extends TestCase
      * Creates and impersonates a user for testing purposes.
      *
      * @param string|null $password
+     * @param array $attributes
      * @return User
      */
     protected function createAndImpersonateUser($password = null, array $attributes = [])
