@@ -1,3 +1,5 @@
+/.idea/*.ids
+/.idea/*.local.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
 /bower_components
