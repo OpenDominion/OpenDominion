@@ -48,6 +48,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
         ]);
     }]);
 
+    $router->get('round/{round}/register', function (\OpenDominion\Models\Round $round) {
+        return $round;
+    });
+
 //    $router->get('status', ['as' => 'status', 'uses' => 'StatusController@getIndex']);
     $router->get('status', ['as' => 'status', function () {
         return 'temp status page';
