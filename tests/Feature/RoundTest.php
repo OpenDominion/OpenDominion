@@ -52,7 +52,7 @@ class RoundTest extends BaseTestCase
         $this->visit('/dashboard')
             ->see('Dashboard')
             ->see('Testing Round')
-            ->see('(standard)')
+            ->see('(Standard League)')
             ->see('Started!')
             ->see('50 days');
     }
