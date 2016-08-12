@@ -17,7 +17,7 @@
                 </div>
                 <div class="panel-body">
                     @if ($dominions->isEmpty())
-                        <p>You have no active dominions</p>
+                        <p>You have no active dominions. Register in a round below to create a dominion.</p>
                     @else
                         todo
                     @endif
@@ -60,7 +60,7 @@
                                             <td class="text-center">{{ $round->number }}</td>
                                             <td>
                                                 {{ $round->name }}
-                                                <abbr class="text-muted" title="{{ $round->league->description }}">({{ $round->league->key }})</abbr>
+                                                <span class="text-muted">({{ $round->league->description }} League)</span>
                                             </td>
                                             <td class="text-center">
                                                 @if ($round->started)
