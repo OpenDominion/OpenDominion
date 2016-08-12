@@ -17,6 +17,13 @@ class AuthController extends BaseController
     protected $loginView = 'pages.auth.login';
     protected $registerView = 'pages.auth.register';
 
+    public function getLogout()
+    {
+        request()->session()->flash('alert-success', 'You have been logged out.');
+
+        return $this->logout();
+    }
+
     /**
      * {@inheritDoc}
      */

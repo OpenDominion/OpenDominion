@@ -28,7 +28,8 @@ class LoginTest extends BaseTestCase
         $this->createAndImpersonateUser();
 
         $this->visit('/auth/logout')
-            ->seePageIs('/');
+            ->seePageIs('/')
+            ->see('You have been logged out.');
     }
 
     public function testUserCantLoginWithInvalidCredentials()
