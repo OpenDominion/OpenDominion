@@ -1,7 +1,7 @@
 {
   "name": "opendominion",
   "dependencies": {
-    "startbootstrap-sb-admin-2": "^1.0.8",
+    "startbootstrap-sb-admin-2": "https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git#master",
     "rpg-awesome": "^1.0.0"
   },
   "private": true
