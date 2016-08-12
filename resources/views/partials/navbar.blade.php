@@ -43,8 +43,6 @@
 
     </ul>
 
-    @if (Auth::check())
-        @include('partials.sidebar')
-    @endif
+    @include('partials.sidebar')
 
 </nav>
