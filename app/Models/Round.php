@@ -6,21 +6,6 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property-read int $id
- * @property int $round_league_id
- * @property int $number
- * @property string $name
- * @property Carbon $start_date
- * @property Carbon $end_date
- * @property-read Carbon $created_at
- * @property-read Carbon $updated_at
- * @property-read RoundLeague $league
- * @property-read Realm[] $realms
- * @property-read boolean $started
- * @property-read int $days_until_start
- * @property-read int $duration_in_days
- */
 class Round extends Model
 {
     protected $guarded = ['id', 'created_at', 'updated_at'];
