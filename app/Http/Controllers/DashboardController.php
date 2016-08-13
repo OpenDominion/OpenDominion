@@ -2,22 +2,35 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use Auth;
-use Carbon\Carbon;
-use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Round;
-
-//use OpenDominion\Repositories\RoundRepository;
+use OpenDominion\Repositories\Criteria\Dominion\FromCurrentLoggedInUser;
+use OpenDominion\Repositories\Criteria\Round\HasntEnded;
+use OpenDominion\Repositories\DominionRepositoriy;
+use OpenDominion\Repositories\RoundRepository;
 
 class DashboardController extends AbstractController
 {
+    /** @var DominionRepositoriy */
+    protected $dominions;
+
+    /** @var RoundRepository */
+    protected $rounds;
+
+    public function __construct(DominionRepositoriy $dominions, RoundRepository $rounds)
+    {
+        $this->dominions = $dominions;
+        $this->rounds = $rounds;
+    }
+
     public function getIndex()
     {
-        $usersDominions = Dominion::where('user_id', Auth::user()->id)->get();
-        $rounds = Round::with('league')->where('end_date', '>', new Carbon('today'))->get();
+        $this->dominions->pushCriteria(FromCurrentLoggedInUser::class);
+        $dominions = $this->dominions->all();
+
+        $this->rounds->pushCriteria(HasntEnded::class);
+        $rounds = $this->rounds->all();
 
         return view('pages.dashboard', [
-            'dominions' => $usersDominions,
+            'dominions' => $dominions,
             'rounds' => $rounds,
         ]);
     }

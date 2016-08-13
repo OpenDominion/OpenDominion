@@ -2,7 +2,8 @@
   "type": "project",
   "require": {
     "php": ">=5.5.9",
-    "laravel/framework": "5.2.*"
+    "laravel/framework": "5.2.*",
+    "prettus/l5-repository": "^2.6"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
