@@ -37,13 +37,13 @@
                         <p>There are currently no active rounds.</p>
                     @else
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
+                            <table class="table table-hover table-striped">
                                 <colgroup>
                                     <col width="40">
                                     <col>
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="100">
+                                    <col width="120">
+                                    <col width="120">
+                                    <col width="120">
                                 </colgroup>
                                 <thead>
                                     <tr>
@@ -56,25 +56,29 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($rounds->all() as $round)
-                                        <tr>
+                                        <tr class="{{ $round->hasStarted() ? 'warning' : ($round->canRegister() ? 'success' : 'danger') }}">
                                             <td class="text-center">{{ $round->number }}</td>
                                             <td>
                                                 {{ $round->name }}
                                                 <span class="text-muted">({{ $round->league->description }} League)</span>
                                             </td>
                                             <td class="text-center">
-                                                @if ($round->started)
-                                                    <span class="text-warning">Started!</span>
+                                                @if ($round->hasStarted())
+                                                    <abbr class="text-warning" title="Started at {{ $round->start_date }}">Started!</abbr>
                                                     {{-- todo: Show current round milestone (mid, end etc) with appropriate text color --}}
                                                 @else
-                                                    <abbr title="Starting at {{ $round->start_date }}">{{ $round->days_until_start }} day(s)</abbr>
+                                                    <abbr title="Starting at {{ $round->start_date }}">In {{ $round->daysUntilStart() }} day(s)</abbr>
                                                 @endif
                                             </td>
                                             <td class="text-center hidden-xs">
-                                                <abbr title="Ending at {{ $round->end_date }}">{{ $round->duration_in_days }} days</abbr>
+                                                <abbr title="Ending at {{ $round->end_date }}">{{ $round->durationInDays() }} days</abbr>
                                             </td>
                                             <td class="text-center">
-                                                <a href="#" class="btn btn-primary btn-xs">Register</a>
+                                                @if ($round->canRegister())
+                                                    <a href="#" class="btn btn-primary btn-xs">Register</a>
+                                                @else
+                                                    In {{ $round->daysUntilRegistration() }} day(s)
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

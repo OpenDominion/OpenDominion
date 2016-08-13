@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Tests\Feature;
 
+use Carbon\Carbon;
 use CoreDataSeeder;
-use DateTime;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
@@ -36,7 +36,7 @@ class RoundTest extends BaseTestCase
             ->see('There are currently no active rounds.');
     }
 
-    public function testUserCanSeeListOfActiveRounds()
+    public function testUserCanSeeActiveRounds()
     {
         $this->seed(CoreDataSeeder::class);
         $this->createAndImpersonateUser();
@@ -45,27 +45,76 @@ class RoundTest extends BaseTestCase
             'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
             'number' => 1,
             'name' => 'Testing Round',
-            'start_date' => new DateTime('today midnight'),
-            'end_date' => new DateTime('+50 days midnight'),
+            'start_date' => new Carbon('today'),
+            'end_date' => new Carbon('+50 days'),
         ]);
 
         $this->visit('/dashboard')
             ->see('Dashboard')
+            ->seeElement('tr', ['class' => 'warning'])
             ->see('Testing Round')
             ->see('(Standard League)')
             ->see('Started!')
-            ->see('50 days');
+            ->see('50 days')
+            ->see('Register')
+            ->seeInElement('a', 'Register');
     }
 
-    public function testUserCanRegisterToASingleRoundInALeague()
+    public function testUserCanSeeRoundWhichStartSoon()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $this->createAndImpersonateUser();
+
+        Round::create([
+            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
+            'number' => 1,
+            'name' => 'Testing Round',
+            'start_date' => new Carbon('+3 days'),
+            'end_date' => new Carbon('+53 days'),
+        ]);
+
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->seeElement('tr', ['class' => 'success'])
+            ->see('Testing Round')
+            ->see('(Standard League)')
+            ->see('In 3 day(s)')
+            ->see('50 days')
+            ->seeInElement('a', 'Register');
+    }
+
+    public function testUserCanSeeRoundsWhichDontStartSoon()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $this->createAndImpersonateUser();
+
+        Round::create([
+            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
+            'number' => 1,
+            'name' => 'Testing Round',
+            'start_date' => new Carbon('+5 days'),
+            'end_date' => new Carbon('+55 days'),
+        ]);
+
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->seeElement('tr', ['class' => 'danger'])
+            ->see('Testing Round')
+            ->see('(Standard League)')
+            ->see('In 5 day(s)')
+            ->see('50 days')
+            ->see('In 2 day(s)')
+            ->dontSeeInElement('a', 'Register');
+    }
+
+    public function testUserCanRegisterToARound()
     {
         $this->markTestIncomplete();
+    }
 
-        // create and be user
-        // create round league
-        // create round
-        // register to round
-        // assert dominion entity gets created, placed in a realm (or on round start?) etc
+    public function testUserCanOnlyRegisterToOneRoundPerALeague()
+    {
+        $this->markTestIncomplete();
     }
 
     public function testMultipleUsersCanRegisterToARoundAsAPack()

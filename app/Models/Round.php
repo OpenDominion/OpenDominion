@@ -3,7 +3,6 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
 class Round extends Model
@@ -23,13 +22,33 @@ class Round extends Model
     }
 
     /**
+     * Returns whether a user can register to this round.
+     *
+     * @return bool
+     */
+    public function canRegister()
+    {
+        return ($this->start_date <= new Carbon('+3 days'));
+    }
+
+    /**
+     * Returns the amount in days until registration opens.
+     *
+     * @return int
+     */
+    public function daysUntilRegistration()
+    {
+        return $this->start_date->diffInDays(new Carbon('+3 days'));
+    }
+
+    /**
      * Return whether a round has started or not.
      *
      * @return bool
      */
-    public function getStartedAttribute()
+    public function hasStarted()
     {
-        return ($this->start_date <= new DateTime('today'));
+        return ($this->start_date <= Carbon::today());
     }
 
     /**
@@ -37,7 +56,7 @@ class Round extends Model
      *
      * @return int
      */
-    public function getDaysUntilStartAttribute()
+    public function daysUntilStart()
     {
         return $this->start_date->diffInDays(Carbon::now());
     }
@@ -47,7 +66,7 @@ class Round extends Model
      *
      * @return int
      */
-    public function getDurationInDaysAttribute()
+    public function durationInDays()
     {
         return $this->start_date->diffInDays($this->end_date);
     }

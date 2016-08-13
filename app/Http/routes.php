@@ -49,7 +49,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     }]);
 
     $router->get('round/{round}/register', function (\OpenDominion\Models\Round $round) {
-        return $round;
+        return [
+            'round' => $round,
+            'can_register' => $round->canRegister(),
+        ];
     });
 
 //    $router->get('status', ['as' => 'status', 'uses' => 'StatusController@getIndex']);
