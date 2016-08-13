@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Round;
 
-class DashboardController extends BaseController
+class DashboardController extends AbstractController
 {
     public function getIndex()
     {

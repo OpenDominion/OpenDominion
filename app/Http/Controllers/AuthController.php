@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use OpenDominion\Models\User;
 use Validator;
 
-class AuthController extends BaseController
+class AuthController extends AbstractController
 {
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
