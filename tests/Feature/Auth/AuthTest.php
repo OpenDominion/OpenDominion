@@ -14,7 +14,7 @@ class AuthTest extends BaseTestCase
         $this->visit('/auth/logout')
             ->seePageIs('/auth/login');
 
-        $this->visit('/status')
+        $this->visit('/dashboard')
             ->seePageIs('/auth/login');
     }
 
