@@ -2,14 +2,8 @@
 
 namespace OpenDominion\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Race extends Model
+class Race extends AbstractModel
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    protected $dates = ['created_at', 'updated_at'];
-
     public function perks()
     {
         return $this->hasMany(RacePerk::class);

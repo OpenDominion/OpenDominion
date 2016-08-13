@@ -2,14 +2,8 @@
 
 namespace OpenDominion\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class RoundLeague extends Model
+class RoundLeague extends AbstractModel
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    protected $dates = ['created_at', 'updated_at'];
-
     public function rounds()
     {
         return $this->hasMany(Round::class);

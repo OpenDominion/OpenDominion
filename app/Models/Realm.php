@@ -2,14 +2,8 @@
 
 namespace OpenDominion\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Realm extends Model
+class Realm extends AbstractModel
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    protected $dates = ['created_at', 'updated_at'];
-
     public function dominions()
     {
         // todo: hasMany

@@ -2,14 +2,8 @@
 
 namespace OpenDominion\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Dominion extends Model
+class Dominion extends AbstractModel
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    protected $dates = ['created_at', 'updated_at'];
-
     public function race()
     {
         // todo: hasOne? belongsTo?

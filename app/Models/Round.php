@@ -3,12 +3,9 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 
-class Round extends Model
+class Round extends AbstractModel
 {
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public function league()
