@@ -2,15 +2,18 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
+
+//use OpenDominion\Repositories\RoundRepository;
 
 class DashboardController extends AbstractController
 {
     public function getIndex()
     {
-        $usersDominions = new Collection(); // todo
+        $usersDominions = Dominion::where('user_id', Auth::user()->id)->get();
         $rounds = Round::with('league')->where('end_date', '>', new Carbon('today'))->get();
 
         return view('pages.dashboard', [
