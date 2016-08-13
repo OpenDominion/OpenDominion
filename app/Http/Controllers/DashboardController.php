@@ -27,7 +27,7 @@ class DashboardController extends AbstractController
         $dominions = $this->dominions->all();
 
         $this->rounds->pushCriteria(HasntEnded::class);
-        $rounds = $this->rounds->all();
+        $rounds = $this->rounds->with('league')->all();
 
         return view('pages.dashboard', [
             'dominions' => $dominions,
