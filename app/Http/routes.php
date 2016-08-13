@@ -37,16 +37,7 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
 
 $router->group(['middleware' => 'auth'], function (Router $router) {
 
-    $router->get('dashboard', ['as' => 'dashboard', function (Guard $auth) {
-        return view('pages.dashboard', [
-            'dominions' => new \Illuminate\Support\Collection(), // todo: $auth->user()->dominions
-            'rounds' => \OpenDominion\Models\Round
-                ::with('league')
-//                ->where('start_date', '<=', new DateTime('today'))
-                ->where('end_date', '>', new DateTime('today'))
-                ->get(),
-        ]);
-    }]);
+    $router->get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@getIndex']);
 
     $router->get('round/{round}/register', function (\OpenDominion\Models\Round $round) {
         return [
