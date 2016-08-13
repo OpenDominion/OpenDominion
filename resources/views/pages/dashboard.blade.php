@@ -75,7 +75,7 @@
                                             </td>
                                             <td class="text-center">
                                                 @if ($round->canRegister())
-                                                    <a href="#" class="btn btn-primary btn-xs">Register</a>
+                                                    <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-xs">Register</a>
                                                 @else
                                                     In {{ $round->daysUntilRegistration() }} day(s)
                                                 @endif

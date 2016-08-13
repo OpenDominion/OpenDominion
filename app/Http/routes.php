@@ -39,16 +39,6 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
     $router->get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@getIndex']);
 
-    $router->get('round/{round}/register', function (\OpenDominion\Models\Round $round) {
-        return [
-            'round' => $round,
-            'can_register' => $round->canRegister(),
-        ];
-    });
-
-//    $router->get('status', ['as' => 'status', 'uses' => 'StatusController@getIndex']);
-    $router->get('status', ['as' => 'status', function () {
-        return 'temp status page';
-    }]);
+    $router->get('round/{round}/register', ['as' => 'round.register', 'uses' => 'RoundController@getRegister']);
 
 });
