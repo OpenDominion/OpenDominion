@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Repositories;
 
-use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Race;
 use Prettus\Repository\Eloquent\BaseRepository;
 
-class DominionRepositoriy extends BaseRepository
+class RaceRepository extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -14,6 +14,6 @@ class DominionRepositoriy extends BaseRepository
      */
     public function model()
     {
-        return Dominion::class;
+        return Race::class;
     }
 }

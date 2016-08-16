@@ -4,18 +4,18 @@ namespace OpenDominion\Http\Controllers;
 
 use OpenDominion\Repositories\Criteria\Dominion\FromCurrentLoggedInUser;
 use OpenDominion\Repositories\Criteria\Round\HasntEnded;
-use OpenDominion\Repositories\DominionRepositoriy;
+use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RoundRepository;
 
 class DashboardController extends AbstractController
 {
-    /** @var DominionRepositoriy */
+    /** @var DominionRepository */
     protected $dominions;
 
     /** @var RoundRepository */
     protected $rounds;
 
-    public function __construct(DominionRepositoriy $dominions, RoundRepository $rounds)
+    public function __construct(DominionRepository $dominions, RoundRepository $rounds)
     {
         $this->dominions = $dominions;
         $this->rounds = $rounds;

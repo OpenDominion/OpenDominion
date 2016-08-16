@@ -16,6 +16,7 @@ class CreateDominionsTable extends Migration
             $table->increments('id');
 
             $table->integer('user_id')->unsigned();
+            $table->integer('round_id')->unsigned();
             $table->integer('realm_id')->unsigned();
             $table->integer('race_id')->unsigned();
 
@@ -53,8 +54,11 @@ class CreateDominionsTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('round_id')->references('id')->on('rounds');
             $table->foreign('realm_id')->references('id')->on('realms');
             $table->foreign('race_id')->references('id')->on('races');
+
+            $table->unique(['user_id', 'round_id']);
         });
 
         Schema::table('realms', function (Blueprint $table) {

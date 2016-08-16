@@ -40,5 +40,6 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@getIndex']);
 
     $router->get('round/{round}/register', ['as' => 'round.register', 'uses' => 'RoundController@getRegister']);
+    $router->post('round/{round}/register', 'RoundController@postRegister');
 
 });
