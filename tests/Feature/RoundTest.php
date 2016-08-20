@@ -120,7 +120,7 @@ class RoundTest extends BaseTestCase
             ->click('Register')
             ->seePageIs('round/1/register')
             ->see('Register to round 1 (Standard League)')
-            ->type('Foo', 'dominion_name')
+            ->type('dominionname', 'dominion_name')
             ->select(1, 'race')
             ->select('random', 'realm')
             ->press('Register')
@@ -129,16 +129,15 @@ class RoundTest extends BaseTestCase
             ->seeInDatabase('dominions', [
                 'user_id' => $user->id,
                 'round_id' => $round->id,
-                'race_id' => 1, // todo
-                'name' => 'Foo',
+                'race_id' => 1,
+                'name' => 'dominionname',
             ])
-            // see you have 1 active dominion with name
-        ;
-    }
-
-    public function testUserCanOnlyRegisterToOneRoundPerLeague()
-    {
-        $this->markTestIncomplete();
+            ->see('dominionname')
+            ->seeElement('tr', ['class' => 'info'])
+            ->see('Already registered!')
+            ->get('round/1/register')
+            ->seeStatusCode(500)
+            ->see("User already has a dominion in round {$round->id}");
     }
 
     public function testMultipleUsersCanRegisterToARoundAsAPack()

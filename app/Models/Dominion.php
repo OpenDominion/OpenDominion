@@ -6,21 +6,26 @@ class Dominion extends AbstractModel
 {
     public function race()
     {
-        // todo: hasOne? belongsTo?
+        return $this->belongsTo(Race::class);
     }
 
     public function realm()
     {
-        // todo: belonsTo?
+        return $this->belongsTo(Realm::class);
     }
 
     public function round()
     {
-        // todo: belongsTo?
+        return $this->belongsTo(Round::class);
     }
 
     public function user()
     {
-        // todo: belongsTo?
+        return $this->belongsTo(User::class);
+    }
+
+    public function updatePrestige()
+    {
+        // todo: implement me
     }
 }

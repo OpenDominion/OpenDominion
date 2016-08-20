@@ -23,7 +23,7 @@ class Round extends AbstractModel
      *
      * @return bool
      */
-    public function canRegister()
+    public function openForRegistration()
     {
         return ($this->start_date <= new Carbon('+3 days'));
     }
@@ -36,6 +36,17 @@ class Round extends AbstractModel
     public function daysUntilRegistration()
     {
         return $this->start_date->diffInDays(new Carbon('+3 days'));
+    }
+
+    public function userCanRegister(User $user)
+    {
+        $results = \DB::table('dominions')
+            ->where('user_id', $user->id)
+            ->where('round_id', $this->id)
+            ->limit(1)
+            ->get();
+
+        return (count($results) === 0);
     }
 
     /**

@@ -41,7 +41,7 @@ class CreateDominionsTable extends Migration
             $table->integer('land_forest');
             $table->integer('land_mountain');
             $table->integer('land_hill');
-            $table->integer('land_swarmp');
+            $table->integer('land_swamp');
             $table->integer('land_water');
             $table->integer('land_cavern');
 

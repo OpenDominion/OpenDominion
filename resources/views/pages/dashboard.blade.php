@@ -19,7 +19,40 @@
                     @if ($dominions->isEmpty())
                         <p>You have no active dominions. Register in a round below to create a dominion.</p>
                     @else
-                        todo
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <colgroup>
+
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th class="text-center">Realm</th>
+                                        <th class="text-center">Race</th>
+                                        <th class="text-center">Round</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($dominions->all() as $dominion)
+                                        <tr>
+                                            <td>
+                                                <a href="#todo">{{ $dominion->name }}</a>
+                                            </td>
+                                            <td class="text-center">
+                                                #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $dominion->race->name }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $dominion->round->number }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Click on a dominion's name to go to its status page.</p>
                     @endif
                 </div>
             </div>
@@ -56,7 +89,19 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($rounds->all() as $round)
-                                        <tr class="{{ $round->hasStarted() ? 'warning' : ($round->canRegister() ? 'success' : 'danger') }}">
+                                        @php
+                                            $trClass = 'danger';
+                                            $userCanRegister = $round->userCanRegister(Auth::user());
+
+                                            if (!$userCanRegister) {
+                                                $trClass = 'info';
+                                            } elseif ($round->hasStarted()) {
+                                                $trClass = 'warning';
+                                            } elseif ($round->openForRegistration()) {
+                                                $trClass = 'success';
+                                            }
+                                        @endphp
+                                        <tr class="{{ $trClass }}">
                                             <td class="text-center">{{ $round->number }}</td>
                                             <td>
                                                 {{ $round->name }}
@@ -74,7 +119,9 @@
                                                 <abbr title="Ending at {{ $round->end_date }}">{{ $round->durationInDays() }} days</abbr>
                                             </td>
                                             <td class="text-center">
-                                                @if ($round->canRegister())
+                                                @if (!$userCanRegister)
+                                                    Already registered!
+                                                @elseif ($round->openForRegistration())
                                                     <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-xs">Register</a>
                                                 @else
                                                     In {{ $round->daysUntilRegistration() }} day(s)
