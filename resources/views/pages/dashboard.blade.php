@@ -91,9 +91,9 @@
                                     @foreach ($rounds->all() as $round)
                                         @php
                                             $trClass = 'danger';
-                                            $userCanRegister = $round->userCanRegister(Auth::user());
+                                            $userAlreadyRegistered = $round->userAlreadyRegistered(Auth::user());
 
-                                            if (!$userCanRegister) {
+                                            if ($userAlreadyRegistered) {
                                                 $trClass = 'info';
                                             } elseif ($round->hasStarted()) {
                                                 $trClass = 'warning';
@@ -119,7 +119,7 @@
                                                 <abbr title="Ending at {{ $round->end_date }}">{{ $round->durationInDays() }} days</abbr>
                                             </td>
                                             <td class="text-center">
-                                                @if (!$userCanRegister)
+                                                @if ($userAlreadyRegistered)
                                                     Already registered!
                                                 @elseif ($round->openForRegistration())
                                                     <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-xs">Register</a>

@@ -38,7 +38,7 @@ class Round extends AbstractModel
         return $this->start_date->diffInDays(new Carbon('+3 days'));
     }
 
-    public function userCanRegister(User $user)
+    public function userAlreadyRegistered(User $user)
     {
         $results = \DB::table('dominions')
             ->where('user_id', $user->id)
@@ -46,7 +46,7 @@ class Round extends AbstractModel
             ->limit(1)
             ->get();
 
-        return (count($results) === 0);
+        return (count($results) === 1);
     }
 
     /**
