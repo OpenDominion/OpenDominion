@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services;
 
+use Atrox\Haikunator;
 use DB;
 use Exception;
 use OpenDominion\Models\Dominion;
@@ -131,11 +132,16 @@ class DominionService
             $number = ((int)$results[0]->max_realm_number + 1);
         }
 
+        $realmName = ucwords(Haikunator::haikunate([
+            'tokenLength' => 0,
+            'delimiter' => ' '
+        ]));
+
         $realm = $this->realms->create([
             'round_id' => $round->id,
             'alignment' => $alignment,
             'number' => $number,
-            'name' => str_random(), // todo: generate random adjective + noun
+            'name' => $realmName,
         ]);
 
         return $realm;
