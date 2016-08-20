@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
-class HasntEnded implements CriteriaInterface
+class RoundHasntEndedCriteria implements CriteriaInterface
 {
     public function apply($model, RepositoryInterface $repository)
     {

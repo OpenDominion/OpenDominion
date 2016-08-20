@@ -6,7 +6,7 @@ use Auth;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
-class FromCurrentLoggedInUser implements CriteriaInterface
+class DominionFromCurrentLoggedInUserCriteria implements CriteriaInterface
 {
     public function apply($model, RepositoryInterface $repository)
     {
