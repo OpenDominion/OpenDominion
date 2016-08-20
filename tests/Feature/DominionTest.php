@@ -9,6 +9,25 @@ class DominionTest extends BaseTestCase
 {
     use DatabaseMigrations;
 
+    public function testUserSeesNoActiveDominionsWhenUserDoesntHaveAnyActiveDominions()
+    {
+        $this->createAndImpersonateUser();
+
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->see('You have no active dominions');
+    }
+
+    public function testUserCantPlayYetDuringPreRound()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testUserCanBeginPlayingOnceRoundStarts()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function testUserCanSeeStatusPage()
     {
         $this->seed(\CoreDataSeeder::class);

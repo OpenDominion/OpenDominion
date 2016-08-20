@@ -13,15 +13,6 @@ class RoundTest extends BaseTestCase
 {
     use DatabaseMigrations;
 
-    public function testUserSeesNoActiveDominionsWhenUserDoesntHaveAnyActiveDominions()
-    {
-        $this->createAndImpersonateUser();
-
-        $this->visit('/dashboard')
-            ->see('Dashboard')
-            ->see('You have no active dominions');
-    }
-
     public function testUserSeesNoActiveRoundsWhenNoRoundsAreActive()
     {
         $this->createAndImpersonateUser();
@@ -117,16 +108,6 @@ class RoundTest extends BaseTestCase
     }
 
     public function testPacksMustContainUniqueRacesOfSameOrNeutralAlignment()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testUserCantPlayYetDuringPreRound()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testUserCanBeginPlayingOnceRoundStarts()
     {
         $this->markTestIncomplete();
     }
