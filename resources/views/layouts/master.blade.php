@@ -45,6 +45,10 @@
 
         @include('partials.alerts')
 
+        @if (($dominion = Request::route()->getParameter('dominion')) && Request::is('dominion/*') && !Request::is('dominion/*/status'))
+            @include('partials.resources-overview')
+        @endif
+
         @yield('content')
 
     </div>
