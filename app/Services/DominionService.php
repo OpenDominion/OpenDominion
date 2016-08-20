@@ -31,27 +31,28 @@ class DominionService
      * @param User $user
      * @param Round $round
      * @param Race $race
-     * @param string $realm Currently only 'random'. Future will support packs
+     * @param string $realmType Currently only 'random'. Future will support packs
      * @param string $name
      * @return Dominion
      * @throws Exception
      */
-    public function create(User $user, Round $round, Race $race, $realm, $name)
+    public function create(User $user, Round $round, Race $race, $realmType, $name)
     {
         // todo: check if user already has a dominion in this round
+        // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
         // Get realm
-        if ($realm === 'random') {
-            $realm = $this->findRandomRealm($round, $race);
+        if ($realmType === 'random') {
+            $realmType = $this->findRandomRealm($round, $race);
         } else {
-            throw new Exception("Realm '{$realm}' not supported");
+            throw new Exception("Realm '{$realmType}' not supported");
         }
 
         // Create dominion
         $dominion = $this->dominions->create([
             'user_id' => $user->id,
             'round_id' => $round->id,
-            'realm_id' => $realm->id,
+            'realm_id' => $realmType->id,
             'race_id' => $race->id,
             'name' => $name,
             'prestige' => 0,

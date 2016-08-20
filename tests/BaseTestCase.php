@@ -2,9 +2,15 @@
 
 namespace OpenDominion\Tests;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase;
+use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Services\DominionService;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -58,5 +64,52 @@ abstract class BaseTestCase extends TestCase
         $user = $this->createUser($password, $attributes);
         $this->be($user);
         return $user;
+    }
+
+    /**
+     * Creates a round for testing purposes.
+     *
+     * @param string $startDate Carbon-parsable string
+     * @param string $endDate Carbon-parsable string
+     * @return Round
+     */
+    protected function createRound($startDate = 'today', $endDate = '+50 days')
+    {
+        $round = Round::create([
+            'round_league_id' => 1,
+            'number' => 1,
+            'name' => 'Testing Round',
+            'start_date' => new Carbon($startDate),
+            'end_date' => new Carbon($endDate),
+        ]);
+
+        return $round;
+    }
+
+    protected function createRealm(Round $round, $alignment = 'good')
+    {
+        $realm = Realm::create([
+            'round_id' => $round->id,
+            'alignment' => $alignment,
+            'number' => 1,
+            'name' => 'Testing Realm',
+        ]);
+
+        return $realm;
+    }
+
+    protected function createDominion(User $user, Round $round, Realm $realm)
+    {
+        $dominionService = $this->app->make(DominionService::class);
+
+        $dominion = $dominionService->create(
+            $user,
+            $round,
+            Race::firstOrFail(),
+            'random',
+            'Testing Dominion'
+        );
+
+        return $dominion;
     }
 }

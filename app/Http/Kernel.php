@@ -48,6 +48,7 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
         'guest' => \OpenDominion\Http\Middleware\RedirectIfAuthenticated::class,
+        'owndominion' => \OpenDominion\Http\Middleware\OwnDominion::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

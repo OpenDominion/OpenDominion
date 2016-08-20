@@ -35,14 +35,7 @@ class RoundTest extends BaseTestCase
     {
         $this->seed(CoreDataSeeder::class);
         $this->createAndImpersonateUser();
-
-        Round::create([
-            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
-            'number' => 1,
-            'name' => 'Testing Round',
-            'start_date' => new Carbon('today'),
-            'end_date' => new Carbon('+50 days'),
-        ]);
+        $this->createRound();
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -59,14 +52,7 @@ class RoundTest extends BaseTestCase
     {
         $this->seed(CoreDataSeeder::class);
         $this->createAndImpersonateUser();
-
-        Round::create([
-            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
-            'number' => 1,
-            'name' => 'Testing Round',
-            'start_date' => new Carbon('+3 days'),
-            'end_date' => new Carbon('+53 days'),
-        ]);
+        $this->createRound('+3 days', '+53 days');
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -82,14 +68,7 @@ class RoundTest extends BaseTestCase
     {
         $this->seed(CoreDataSeeder::class);
         $this->createAndImpersonateUser();
-
-        Round::create([
-            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
-            'number' => 1,
-            'name' => 'Testing Round',
-            'start_date' => new Carbon('+5 days'),
-            'end_date' => new Carbon('+55 days'),
-        ]);
+        $this->createRound('+5 days', '+55 days');
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -106,14 +85,7 @@ class RoundTest extends BaseTestCase
     {
         $this->seed(CoreDataSeeder::class);
         $user = $this->createAndImpersonateUser();
-
-        $round = Round::create([
-            'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
-            'number' => 1,
-            'name' => 'Testing Round',
-            'start_date' => new Carbon('today'),
-            'end_date' => new Carbon('+50 days'),
-        ]);
+        $round = $this->createRound();
 
         $this->visit('/dashboard')
             ->see('Dashboard')
