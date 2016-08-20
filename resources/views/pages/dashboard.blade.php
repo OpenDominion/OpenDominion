@@ -22,7 +22,10 @@
                         <div class="table-responsive">
                             <table class="table table-hover table-striped">
                                 <colgroup>
-
+                                    <col>
+                                    <col width="120">
+                                    <col width="120">
+                                    <col width="120">
                                 </colgroup>
                                 <thead>
                                     <tr>
