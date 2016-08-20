@@ -13,17 +13,20 @@
                 </div>
             </li>--}}
 
-            <li class="{{ Request::is('/') ? 'active' : '' }}>">
+            <li>
                 <a href="{{ route('home') }}"><i class="fa fa-home fa-fw"></i> Home</a>
             </li>
 
             @if (Auth::check())
-                <li class="{{ Request::is('dashboard') ? 'active' : '' }}>">
+                <li>
                     <a href="{{ route('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
-                {{--<li>
-                    <a href="#"><i class="ra ra-sword ra-fw"></i> Test</a>
-                </li>--}}
+
+                @if ($dominion = Request::route()->getParameter('dominion'))
+                    <li>
+                        <a href="{{ route('dominion.status', $dominion) }}"><i class="ra ra-capitol ra-fw"></i> Status</a>
+                    </li>
+                @endif
             @endif
 
         </ul>
