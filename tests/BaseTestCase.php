@@ -86,6 +86,11 @@ abstract class BaseTestCase extends TestCase
         return $round;
     }
 
+    /**
+     * @param Round $round
+     * @param string $alignment 'good' or 'evil'
+     * @return Realm
+     */
     protected function createRealm(Round $round, $alignment = 'good')
     {
         $realm = Realm::create([
@@ -98,6 +103,12 @@ abstract class BaseTestCase extends TestCase
         return $realm;
     }
 
+    /**
+     * @param User $user
+     * @param Round $round
+     * @param Realm $realm
+     * @return Dominion
+     */
     protected function createDominion(User $user, Round $round, Realm $realm)
     {
         $dominionService = $this->app->make(DominionService::class);
