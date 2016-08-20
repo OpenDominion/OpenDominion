@@ -39,7 +39,7 @@
                                     @foreach ($dominions->all() as $dominion)
                                         <tr>
                                             <td>
-                                                <a href="#todo">{{ $dominion->name }}</a>
+                                                <a href="{{ route('dominion.status', $dominion) }}">{{ $dominion->name }}</a>
                                             </td>
                                             <td class="text-center">
                                                 #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
