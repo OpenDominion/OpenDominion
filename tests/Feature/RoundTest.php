@@ -136,8 +136,7 @@ class RoundTest extends BaseTestCase
             ->seeElement('tr', ['class' => 'info'])
             ->see('Already registered!')
             ->get('round/1/register')
-            ->seeStatusCode(500)
-            ->see("User already has a dominion in round {$round->id}");
+            ->seeStatusCode(500);
     }
 
     public function testMultipleUsersCanRegisterToARoundAsAPack()
