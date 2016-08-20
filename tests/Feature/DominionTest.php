@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Tests\Feature;
 
+use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Tests\BaseTestCase;
 
@@ -30,7 +31,7 @@ class DominionTest extends BaseTestCase
 
     public function testUserCanSeeStatusPage()
     {
-        $this->seed(\CoreDataSeeder::class);
+        $this->seed(CoreDataSeeder::class);
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $realm = $this->createRealm($round);
