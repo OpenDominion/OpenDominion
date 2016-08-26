@@ -27,7 +27,9 @@ class LoginTest extends BaseTestCase
     {
         $this->createAndImpersonateUser();
 
-        $this->visit('/auth/logout')
+        $this->visit('/dashboard')
+            ->see('Dashboard')
+            ->press('Logout')
             ->seePageIs('/')
             ->see('You have been logged out.');
     }

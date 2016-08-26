@@ -108,11 +108,11 @@ class DominionService
             ->limit(1)
             ->get();
 
-        if (empty($results)) {
+        if ($results->isEmpty()) {
             $realm = $this->createRealm($round, $race->alignment);
 
         } else {
-            $realm = Realm::findOrFail($results[0]->id);
+            $realm = Realm::findOrFail($results->first()->id);
         }
 
         return $realm;

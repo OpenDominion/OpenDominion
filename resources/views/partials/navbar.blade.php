@@ -28,7 +28,12 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="{{ route('auth.logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <form action="{{ route('auth.logout') }}" method="post">
+                            {!! csrf_field() !!}
+                            <button type="submit" class="btn btn-link" id="logout_button">
+                                <i class="fa fa-sign-out fa-fw"></i> Logout
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </li>

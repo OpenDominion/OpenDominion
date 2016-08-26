@@ -11,6 +11,8 @@ class OwnDominion
     {
         $dominion = $request->route()->getParameter('dominion');
 
+//        dd($dominion);
+
         if ($dominion->user_id != Auth::user()->id) {
             return response('Unauthorized', 401);
         }

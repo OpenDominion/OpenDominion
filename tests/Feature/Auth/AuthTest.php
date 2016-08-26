@@ -11,11 +11,10 @@ class AuthTest extends BaseTestCase
 
     public function testGuestCantAccessProtectedPages()
     {
-        $this->visit('/auth/logout')
-            ->seePageIs('/auth/login');
-
         $this->visit('/dashboard')
             ->seePageIs('/auth/login');
+
+        // todo: expand?
     }
 
     public function testAuthenticatedUserCantAccessLoginAndRegisterPages()
