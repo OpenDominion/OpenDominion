@@ -122,7 +122,7 @@ return [
     |
     */
 
-    'cookie' => 'laravel_session',
+    'cookie' => 'opendominion_session',
 
     /*
     |--------------------------------------------------------------------------
