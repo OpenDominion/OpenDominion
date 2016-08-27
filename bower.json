@@ -4,5 +4,8 @@
     "startbootstrap-sb-admin-2": "https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git#master",
     "rpg-awesome": "^1.0.0"
   },
+  "resolutions": {
+    "font-awesome": "~4.6.3"
+  },
   "private": true
 }
