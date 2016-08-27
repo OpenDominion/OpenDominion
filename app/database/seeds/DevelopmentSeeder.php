@@ -11,8 +11,8 @@ class DevelopmentSeeder extends Seeder
     public function run()
     {
         $round = $this->createRound();
-        $this->createRealms($round);
-        $this->createUsersAndDominions($round);
+//        $this->createRealms($round);
+//        $this->createUsersAndDominions($round);
     }
 
     /**
