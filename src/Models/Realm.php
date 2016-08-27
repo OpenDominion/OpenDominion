@@ -6,7 +6,7 @@ class Realm extends AbstractModel
 {
     public function dominions()
     {
-        // todo: hasMany
+        return $this->hasMany(Dominion::class);
     }
 
     public function monarch()
