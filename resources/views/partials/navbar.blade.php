@@ -30,7 +30,7 @@
                     <li>
                         <form action="{{ route('auth.logout') }}" method="post">
                             {!! csrf_field() !!}
-                            <button type="submit" class="btn btn-link" id="logout_button">
+                            <button type="submit" class="btn btn-link">
                                 <i class="fa fa-sign-out fa-fw"></i> Logout
                             </button>
                         </form>
