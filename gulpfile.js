@@ -1,5 +1,8 @@
 var elixir = require('laravel-elixir');
 
+elixir.config.appPath = 'src';
+elixir.config.assetsPath = 'app/resources/assets';
+elixir.config.viewPath = 'app/resources/views';
 elixir.config.css.outputFolder = 'assets/css';
 elixir.config.js.outputFolder = 'assets/js';
 
