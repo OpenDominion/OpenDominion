@@ -10,9 +10,7 @@ class DevelopmentSeeder extends Seeder
 {
     public function run()
     {
-        // todo: with commands instead of with factories?
-
-        $round = $this->createAndReturnRound();
+        $round = $this->createRound();
         $this->createRealms($round);
         $this->createUsersAndDominions($round);
     }
@@ -20,7 +18,7 @@ class DevelopmentSeeder extends Seeder
     /**
      * @return Round
      */
-    private function createAndReturnRound()
+    private function createRound()
     {
         $this->command->info('Creating round');
 
