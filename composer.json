@@ -32,14 +32,14 @@
   "scripts": {
     "post-install-cmd": [
       "Illuminate\\Foundation\\ComposerScripts::postInstall",
-      "php artisan optimize"
+      "php bin/artisan optimize"
     ],
     "post-update-cmd": [
       "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-      "php artisan ide-helper:generate",
-      "php artisan ide-helper:models -N",
-      "php artisan ide-helper:meta",
-      "php artisan optimize"
+      "php bin/artisan ide-helper:generate",
+      "php bin/artisan ide-helper:models -N",
+      "php bin/artisan ide-helper:meta",
+      "php bin/artisan optimize"
     ]
   },
   "config": {
