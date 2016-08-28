@@ -1,6 +1,6 @@
 env:
   global:
-    secure: RaWN5naUxAviILksYeFbqZxbrvp59CBmRviuxZNCvnPAKrWs0vC8yLKRAUPSIgabfbJKQUlEGsBGLb3Cq3113ObzwjcspfbzmrE90wUHEBEbxidyIMVtexj9n+vmfneIWANPIDjlHTK+VZ0g5t4pBpqMRlchZYV6p+WRTYSPEfk=
+    secure: JnTZZoRGptTavKbFkz/1XAvztL9HCZcQI0ImQ0V6Dp9ELoQK4LHOg8gwlhXFrbbDDisqVQCuBLY2iQUutkeO4ReOE1Ve46lTb7h1rHZTWptpSqKI1hhveSdRMZCOmGmKUZ7U57YRKObdH/4HNwrPWeYAQC2CQZHWvLQ0Wrn9sDI=
 
 language: php
 
@@ -21,4 +21,3 @@ script:
 
 after_success:
   - eval $TEST_SCRIPT
-  - echo $TEST_SCRIPT
