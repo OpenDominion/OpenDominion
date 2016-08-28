@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Assumes the files .env.template.(local|production|testing) to be present in the root directory
 
