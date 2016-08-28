@@ -20,4 +20,5 @@ script:
 - vendor/bin/phpunit
 
 after_success:
-  eval $TEST_SCRIPT
+  - eval $TEST_SCRIPT
+  - echo $TEST_SCRIPT
