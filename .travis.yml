@@ -20,4 +20,4 @@ script:
 - vendor/bin/phpunit
 
 after_success:
-  $TEST_SCRIPT
+  eval $TEST_SCRIPT
