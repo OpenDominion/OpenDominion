@@ -16,6 +16,11 @@ class Application extends LaravelApplication
         $this->bindPathsInContainer();
     }
 
+    public function path()
+    {
+        return ($this->basePath . DIRECTORY_SEPARATOR . 'src');
+    }
+
     public function bootstrapPath()
     {
         return ($this->appPath . DIRECTORY_SEPARATOR . 'bootstrap');
