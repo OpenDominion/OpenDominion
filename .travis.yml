@@ -1,7 +1,3 @@
-env:
-  global:
-    secure: JnTZZoRGptTavKbFkz/1XAvztL9HCZcQI0ImQ0V6Dp9ELoQK4LHOg8gwlhXFrbbDDisqVQCuBLY2iQUutkeO4ReOE1Ve46lTb7h1rHZTWptpSqKI1hhveSdRMZCOmGmKUZ7U57YRKObdH/4HNwrPWeYAQC2CQZHWvLQ0Wrn9sDI=
-
 language: php
 
 php:
@@ -18,6 +14,3 @@ before_script:
 
 script:
 - vendor/bin/phpunit
-
-after_success:
-  - eval $TEST_SCRIPT
