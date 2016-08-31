@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
 
-if [[ ! $# -eq 1 ]]; then
-    echo "Usage: $0 [branch]"
+if [[ ! $# -eq 2 || ! $2 =~ ^(local|production)$ ]]; then
+    echo "Usage: $0 [branch] (local|production)"
     exit 1;
 fi
 
+branch=$1
+env=$2
+
 cd $(dirname $0)/../
 
-git fetch origin $1
-git checkout --force $1
+git fetch origin ${branch}
+git checkout --force ${branch}
 
-if [ $(git rev-list --max-count=1 $1) != $(git rev-list --max-count=1 origin/$1) ]; then
+if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 origin/${branch}) ]; then
     php bin/artisan down
 
-    git reset --hard origin/$1
+    git reset --hard origin/${branch}
 
     # Composer
-    sudo composer self-update
+    composer self-update
 
-    if [[ $1 == "master" ]]; then
+    if [[ ${env} == production ]]; then
         composer install --no-interaction --prefer-dist --no-dev
     else
         composer install --no-interaction --prefer-source
@@ -41,11 +44,11 @@ if [ $(git rev-list --max-count=1 $1) != $(git rev-list --max-count=1 origin/$1)
     [[ -f bower.json ]] && bower install
 
     # Gulp
-    if [[ $1 == "master" ]]; then
+    if [[ ${env} == production ]]; then
         gulp --production
     else
         gulp
     fi
 
-    php aritisan up
+    php bin/artisan up
 fi
