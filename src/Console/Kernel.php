@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \OpenDominion\Console\Commands\GameTickCommand::class,
     ];
 
     /**
@@ -23,6 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('game:tick')
+            ->hourly();
     }
 
     /**
