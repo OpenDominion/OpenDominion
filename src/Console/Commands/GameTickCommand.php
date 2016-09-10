@@ -41,5 +41,14 @@ class GameTickCommand extends Command
         Log::info('Tick');
 
         // todo: implement me
+
+        // Resources
+        // Population (peasants & draftees)
+        // Morale
+        // Construction queue
+        // Exploration queue
+        // Military training queue
+        // Military returning queue
+        // Magic queue
     }
 }
