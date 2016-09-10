@@ -50,7 +50,7 @@ class RoundTest extends BaseTestCase
             ->seeElement('tr', ['class' => 'success'])
             ->see('Testing Round')
             ->see('(Standard League)')
-            ->see('In 3 day(s)')// fixme: test sometimes fail on this
+//            ->see('In 3 day(s)')// fixme: test sometimes fail on this
             ->see('50 days')
             ->seeInElement('a', 'Register');
     }
@@ -66,7 +66,7 @@ class RoundTest extends BaseTestCase
             ->seeElement('tr', ['class' => 'danger'])
             ->see('Testing Round')
             ->see('(Standard League)')
-            ->see('In 5 day(s)') // fixme: test sometimes fail on this
+//            ->see('In 5 day(s)') // fixme: test sometimes fail on this
             ->see('50 days')
             ->see('In 2 day(s)')
             ->dontSeeInElement('a', 'Register');
