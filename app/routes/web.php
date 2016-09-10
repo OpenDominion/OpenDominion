@@ -20,6 +20,8 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
         $router->get('register', ['as' => 'auth.register', 'uses' => 'Auth\RegisterController@getRegister']);
         $router->post('register', 'Auth\RegisterController@postRegister');
 
+        $router->get('activate/{activation_code}', ['as' => 'auth.activate', 'uses' => 'Auth\RegisterController@getActivate']);
+
     });
 
     $router->group(['middleware' => 'auth'], function (Router $router) {

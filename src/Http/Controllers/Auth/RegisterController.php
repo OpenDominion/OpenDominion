@@ -3,17 +3,28 @@
 namespace OpenDominion\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Auth\RedirectsUsers;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Mail;
 use OpenDominion\Http\Controllers\AbstractController;
+use OpenDominion\Mail\UserRegistrationMail;
 use OpenDominion\Models\User;
+use OpenDominion\Repositories\UserRepository;
+use Session;
 use Validator;
 
 class RegisterController extends AbstractController
 {
     use RedirectsUsers;
 
+    /** @var UserRepository */
+    protected $users;
+
     protected $redirectTo = '/';
+
+    public function __construct(UserRepository $users)
+    {
+        $this->users = $users;
+    }
 
     public function getRegister()
     {
@@ -24,11 +35,33 @@ class RegisterController extends AbstractController
     {
         $this->validator($request->all())->validate();
 
-        $this->create($request->all());
+        $user = $this->create($request->all());
 
-        // todo: send activation mail
+        Mail::to($user->email)->send(new UserRegistrationMail($user));
 
         $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
+
+        return redirect($this->redirectPath());
+    }
+
+    public function getActivate($activation_code)
+    {
+        $users = $this->users->findWhere([
+            'activated' => false,
+            'activation_code' => $activation_code,
+        ]);
+
+        if ($users->isEmpty()) {
+            Session::flash('alert-danger', 'Invalid activation code');
+
+            return redirect($this->redirectPath());
+        }
+
+        $user = $users->first();
+        $user->activated = true;
+        $user->save();
+
+        Session::flash('alert-success', 'Your account has been activated. You may now login.');
 
         return redirect($this->redirectPath());
     }

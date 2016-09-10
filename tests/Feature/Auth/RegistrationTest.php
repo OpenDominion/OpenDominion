@@ -3,6 +3,9 @@
 namespace OpenDominion\Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Mail;
+use Mockery as m;
+use OpenDominion\Mail\UserRegistrationMail;
 use OpenDominion\Tests\BaseTestCase;
 
 class RegistrationTest extends BaseTestCase
@@ -11,6 +14,8 @@ class RegistrationTest extends BaseTestCase
 
     public function testUserCanRegister()
     {
+        Mail::fake(); // todo: move to BaseTestCase?
+
         $this->visit('/auth/register')
             ->see('Register')
             ->type('johndoe@example.com', 'email')
@@ -25,6 +30,41 @@ class RegistrationTest extends BaseTestCase
                 'display_name' => 'John Doe',
                 'activated' => false,
                 'last_online' => null,
+            ]);
+
+        Mail::assertSentTo('johndoe@example.com', UserRegistrationMail::class);
+    }
+
+    public function testNewlyRegisteredUserCanActivateAccount()
+    {
+        $activation_code = str_random();
+        $user = $this->createUser(null, [
+            'activated' => false,
+            'activation_code' => $activation_code,
+        ]);
+
+        $this->visit("/auth/activate/{$activation_code}")
+            ->seePageIs('/')
+            ->see('Your account has been activated. You may now login.')
+            ->seeInDatabase('users', [
+                'id' => $user->id,
+                'activated' => true,
+            ]);
+    }
+
+    public function testUserCantActivateWithInvalidActivationCode()
+    {
+        $user = $this->createUser(null, [
+            'activated' => false,
+            'activation_code' => 'foo',
+        ]);
+
+        $this->visit("/auth/activate/bar")
+            ->seePageIs('/')
+            ->see('Invalid activation code')
+            ->dontSeeInDatabase('users', [
+                'id' => $user->id,
+                'activated' => true,
             ]);
     }
 
