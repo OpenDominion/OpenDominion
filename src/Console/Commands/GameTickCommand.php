@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Console\Commands;
 
+use Config;
+use DB;
 use Illuminate\Console\Command;
 use Log;
 
@@ -21,10 +23,11 @@ class GameTickCommand extends Command
      */
     protected $description = 'Ticks the game';
 
+    /** @var string */
+    protected $databaseDriver;
+
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -38,17 +41,61 @@ class GameTickCommand extends Command
      */
     public function handle()
     {
-        Log::info('Tick');
+        $this->setDatabaseDriver();
 
-        // todo: implement me
+        Log::debug('Tick started');
 
-        // Resources
-        // Population (peasants & draftees)
-        // Morale
-        // Construction queue
-        // Exploration queue
-        // Military training queue
-        // Military returning queue
-        // Magic queue
+        DB::beginTransaction();
+
+        // todo: Resources
+        // todo: Population (peasants & draftees)
+        $this->tickMorale();
+        // todo: Construction queue
+        // todo: Exploration queue
+        // todo: Military training queue
+        // todo: Military returning queue
+        // todo: Magic queue
+
+        DB::commit();
+
+        Log::info('Ticked');
+    }
+
+    public function setDatabaseDriver()
+    {
+        $connector = Config::get('database.default');
+        $driver = Config::get("database.connections.{$connector}.driver");
+
+        if (!in_array($driver, ['mysql', 'sqlite'])) {
+            throw new \Exception("Database driver {$driver} not supported for game:tick command :(");
+        }
+
+        $this->databaseDriver = $driver;
+    }
+
+    public function tickMorale()
+    {
+        Log::debug('Tick morale started');
+
+        $sql = null;
+        $bindings = [
+            'moraleThreshold' => 70,
+            'moraleAddedBelowThreshold' => 6,
+            'moraleAddedAboveThreshold' => 3,
+        ];
+
+        switch ($this->databaseDriver) {
+            case 'sqlite':
+                $sql = 'UPDATE `dominions` SET `morale` = MIN(100, (`morale` + (CASE WHEN (`morale` < :moraleThreshold) THEN :moraleAddedBelowThreshold ELSE :moraleAddedAboveThreshold END))) WHERE `morale` < 100;';
+                break;
+
+            case 'mysql':
+                $sql = 'UPDATE `dominions` SET `morale` = LEAST(100, (`morale` + IF(`morale` < :moraleThreshold, :moraleAddedBelowThreshold, :moraleAddedAboveThreshold))) WHERE `morale` < 100;';
+                break;
+        }
+
+        $affected = DB::update($sql, $bindings);
+
+        Log::debug("Ticked morale, {$affected} dominion(s) affected");
     }
 }
