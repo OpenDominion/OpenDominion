@@ -4,6 +4,7 @@ namespace OpenDominion\Console\Commands;
 
 use Config;
 use DB;
+use Exception;
 use Illuminate\Console\Command;
 use Log;
 
@@ -67,7 +68,7 @@ class GameTickCommand extends Command
         $driver = Config::get("database.connections.{$connector}.driver");
 
         if (!in_array($driver, ['mysql', 'sqlite'])) {
-            throw new \Exception("Database driver {$driver} not supported for game:tick command :(");
+            throw new Exception("Database driver {$driver} not supported for game:tick command :(");
         }
 
         $this->databaseDriver = $driver;
