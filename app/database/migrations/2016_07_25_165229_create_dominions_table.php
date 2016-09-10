@@ -59,6 +59,7 @@ class CreateDominionsTable extends Migration
             $table->foreign('race_id')->references('id')->on('races');
 
             $table->unique(['user_id', 'round_id']);
+            $table->unique(['round_id', 'name']);
         });
 
         Schema::table('realms', function (Blueprint $table) {
