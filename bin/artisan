@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+define('ARTISAN_BINARY', 'bin/artisan');
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader
