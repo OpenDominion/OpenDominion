@@ -53,7 +53,7 @@ class GameTickCommand extends Command
         // todo: Population (peasants & draftees)
         $this->tickMorale();
         $this->tickExplorationQueue();
-        // todo: Construction queue
+        $this->tickConstructionQueue();
         // todo: Military training queue
         // todo: Military returning queue
         // todo: Magic queue
@@ -121,5 +121,27 @@ class GameTickCommand extends Command
         ]);
 
         Log::debug("Ticked exploration queue, {$affectedUpdated} updated, {$affectedFinished} finished");
+    }
+
+    public function tickConstructionQueue()
+    {
+        Log::debug('Tick construction queue');
+
+        $rows = DB::table('queue_construction')->where('hours', 0)->get();
+
+        foreach ($rows as $row) {
+            DB::table('dominions')->where('id', $row->dominion_id)->update([
+                "building_{$row->building}" => DB::raw("`building_{$row->building}` + {$row->amount}"),
+            ]);
+        }
+
+        $affectedFinished = DB::table('queue_construction')->where('hours', 0)->delete();
+
+        $affectedUpdated = DB::table('queue_construction')->update([
+            'hours' => DB::raw('`hours` - 1'),
+            'updated_at' => new Carbon(),
+        ]);
+
+        Log::debug("Ticked construction queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 }
