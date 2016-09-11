@@ -131,7 +131,7 @@ abstract class BaseTestCase extends TestCase
             $round,
             ($race ?: Race::firstOrFail()),
             'random',
-            'Testing Dominion'
+            str_random()
         );
 
         return $dominion;
