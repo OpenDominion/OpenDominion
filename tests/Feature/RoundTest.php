@@ -32,7 +32,7 @@ class RoundTest extends BaseTestCase
             ->see('Dashboard')
             ->seeElement('tr', ['class' => 'warning'])
             ->see('Testing Round')
-            ->see('(Standard League)')
+            ->see('(Standard league)')
             ->see('Started!')
             ->see('50 days')
             ->see('Register')
@@ -49,7 +49,7 @@ class RoundTest extends BaseTestCase
             ->see('Dashboard')
             ->seeElement('tr', ['class' => 'success'])
             ->see('Testing Round')
-            ->see('(Standard League)')
+            ->see('(Standard league)')
 //            ->see('In 3 day(s)')// fixme: test sometimes fail on this
             ->see('50 days')
             ->seeInElement('a', 'Register');
@@ -65,7 +65,7 @@ class RoundTest extends BaseTestCase
             ->see('Dashboard')
             ->seeElement('tr', ['class' => 'danger'])
             ->see('Testing Round')
-            ->see('(Standard League)')
+            ->see('(Standard league)')
 //            ->see('In 5 day(s)') // fixme: test sometimes fail on this
             ->see('50 days')
             ->see('In 2 day(s)')
@@ -82,13 +82,13 @@ class RoundTest extends BaseTestCase
             ->see('Dashboard')
             ->click('Register')
             ->seePageIs('round/1/register')
-            ->see('Register to round 1 (Standard League)')
+            ->see('Register to round 1 (Standard league)')
             ->type('dominionname', 'dominion_name')
             ->select(1, 'race')
             ->select('random', 'realm')
             ->press('Register')
             ->seePageIs('dashboard')
-            ->see('You have successfully registered to round 1 (Standard League)')
+            ->see('You have successfully registered to round 1 (Standard league)')
             ->seeInDatabase('dominions', [
                 'user_id' => $user->id,
                 'round_id' => $round->id,

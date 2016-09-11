@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', "Register to round {$round->number} ({$round->league->description} League)")
+@section('page-header', "Register to round {$round->number} ({$round->league->description})")
 
 @section('content')
     <div class="row">

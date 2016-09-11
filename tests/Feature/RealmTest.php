@@ -3,7 +3,6 @@
 namespace OpenDominion\Tests\Feature;
 
 use CoreDataSeeder;
-use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Tests\BaseTestCase;

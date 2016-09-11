@@ -108,7 +108,7 @@
                                             <td class="text-center">{{ $round->number }}</td>
                                             <td>
                                                 {{ $round->name }}
-                                                <span class="text-muted">({{ $round->league->description }} League)</span>
+                                                <span class="text-muted">({{ $round->league->description }})</span>
                                             </td>
                                             <td class="text-center">
                                                 @if ($round->hasStarted())

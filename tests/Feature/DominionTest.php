@@ -34,9 +34,9 @@ class DominionTest extends BaseTestCase
         $this->seed(CoreDataSeeder::class);
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
-        $this->createDominion($user, $round);
+        $dominion = $this->createDominion($user, $round);
 
         $this->visit('dominion/1/status')
-            ->see('Testing Dominion (#1 Testing Round)');
+            ->see("{$dominion->name} (#1 Testing Round)");
     }
 }

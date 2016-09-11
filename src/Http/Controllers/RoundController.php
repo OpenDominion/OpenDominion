@@ -57,7 +57,7 @@ class RoundController extends AbstractController
         );
 
         $request->session()->flash('alert-success',
-            "You have successfully registered to round {$round->number} ({$round->league->description} League)");
+            "You have successfully registered to round {$round->number} ({$round->league->description})");
 
         return redirect('dashboard');
     }
