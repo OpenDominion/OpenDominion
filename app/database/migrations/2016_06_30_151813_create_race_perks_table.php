@@ -16,7 +16,7 @@ class CreateRacePerksTable extends Migration
             $table->increments('id');
             $table->integer('race_id')->unsigned();
             $table->integer('race_perk_type_id')->unsigned();
-            $table->decimal('value');
+            $table->float('value');
             $table->timestamps();
 
             $table->foreign('race_id')->references('id')->on('races');
