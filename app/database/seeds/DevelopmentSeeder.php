@@ -10,52 +10,19 @@ class DevelopmentSeeder extends Seeder
 {
     public function run()
     {
-        $round = $this->createRound();
-//        $this->createRealms($round);
-//        $this->createUsersAndDominions($round);
+        $this->createRound();
     }
 
-    /**
-     * @return Round
-     */
     private function createRound()
     {
-        $this->command->info('Creating round');
+        $this->command->info('Creating development round');
 
-        return Round::create([
+        Round::create([
             'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
             'number' => 1,
             'name' => 'Development Round',
             'start_date' => new DateTime('today midnight'),
             'end_date' => new DateTime('+50 days midnight'),
         ]);
-    }
-
-    private function createRealms(Round $round)
-    {
-        $this->command->info('Creating realms');
-
-        $goodRealm = Realm::create([
-            'round_id' => $round->id,
-            'alignment' => 'good',
-            'number' => 1,
-            'name' => 'Good Realm',
-        ]);
-
-        $evilRealm = Realm::create([
-            'round_id' => $round->id,
-            'alignment' => 'evil',
-            'number' => 2,
-            'name' => 'Evil Realm',
-        ]);
-    }
-
-    private function createUsersAndDominions(Round $round)
-    {
-        $this->command->info('Creating users and dominions');
-
-        factory(User::class, 10)->create()->each(function (User $user) {
-            //
-        });
     }
 }

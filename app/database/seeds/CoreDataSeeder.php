@@ -5,76 +5,121 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
 use OpenDominion\Models\RoundLeague;
+use OpenDominion\Models\Unit;
+use OpenDominion\Models\UnitPerkType;
 
 class CoreDataSeeder extends Seeder
 {
+    private $roundLeagueIds = [];
+    private $racePerkTypeIds = [];
+    private $unitPerkTypeIds = [];
+    private $raceIds = [];
+
     public function run()
     {
-        $this->createRacePerkTypes();
-        $this->createRaces();
+        DB::beginTransaction();
+
         $this->createRoundLeagues();
+        $this->createPerks();
+        $this->createRaces();
+        $this->createUnits();
+
+        DB::commit();
     }
 
-    private function createRacePerkTypes()
+    protected function createRoundLeagues()
     {
-        $this->command->info('Creating race perk types');
+        $this->command->info('Creating round leagues');
 
-        $racePerkTypeDefinitions = [
-            'max_population',
-            'population_growth',
-            'platinum_production',
-            'food_production',
-            'lumber_production',
-            'mana_production',
-            'ore_production',
-            'gem_production',
-            'food_consumption',
-            'defense',
-            'offense',
-            'spy_strength',
-            'wizard_strength',
-            'invest_bonus',
-            'rezone_cost',
-            'construction_cost',
-        ];
+        $json = json_decode(file_get_contents(base_path('app/data/round_leagues.json')));
 
-        foreach ($racePerkTypeDefinitions as $racePerkTypeDefinition) {
-            RacePerkType::create(['key' => $racePerkTypeDefinition]);
+        foreach ($json->round_leagues as $row) {
+            $roundLeague = RoundLeague::create([
+                'key' => $row->key,
+                'description' => $row->description,
+            ]);
+
+            $this->roundLeagueIds[$roundLeague->key] = $roundLeague->id;
         }
     }
 
-    private function createRaces()
+    protected function createPerks()
+    {
+        $this->command->info('Creating perks');
+
+        $json = json_decode(file_get_contents(base_path('app/data/perks.json')));
+
+        foreach ($json->race_perk_types as $row) {
+            $racePerkType = RacePerkType::create([
+                'key' => $row->key,
+            ]);
+
+            $this->racePerkTypeIds[$racePerkType->key] = $racePerkType->id;
+        }
+
+        foreach ($json->unit_perk_types as $row) {
+            $unitPerkType = UnitPerkType::create([
+                'key' => $row->key,
+            ]);
+
+            $this->unitPerkTypeIds[$unitPerkType->key] = $unitPerkType->id;
+        }
+    }
+
+    protected function createRaces()
     {
         $this->command->info('Creating races');
 
-        $raceDefinitions = [
-            [
-                'data' => ['name' => 'Human', 'alignment' => 'good', 'home_land_type' => 'plain'],
-                'perks' => ['food_production' => 5],
-            ],
-            [
-                'data' => ['name' => 'Nomad', 'alignment' => 'evil', 'home_land_type' => 'plain'],
-                'perks' => ['food_production' => 5],
-            ]
-        ];
+        $json = json_decode(file_get_contents(base_path('app/data/races.json')));
 
-        foreach ($raceDefinitions as $raceDefinition) {
-            $race = Race::create($raceDefinition['data']);
+        foreach ($json->races as $row) {
+            $race = Race::create([
+                'name' => $row->name,
+                'alignment' => $row->alignment,
+                'home_land_type' => $row->home_land_type,
+            ]);
 
-            foreach ($raceDefinition['perks'] as $perk_type_key => $perk_value) {
-                RacePerk::create([
-                    'race_id' => $race->id,
-                    'race_perk_type_id' => RacePerkType::where('key', $perk_type_key)->firstOrFail()->id,
-                    'value' => (float)$perk_value,
-                ]);
+            $this->raceIds[$race->name] = $race->id;
+
+            if (isset($race->perks)) {
+                foreach ($race->perks as $perk) {
+                    RacePerk::create([
+                        'race_id' => $race->id,
+                        'race_perk_type_id' => $this->racePerkTypeIds[$perk->key],
+                        'value' => $perk->value,
+                    ]);
+                }
             }
         }
     }
 
-    private function createRoundLeagues()
+    protected function createUnits()
     {
-        $this->command->info('Creating round leagues');
+        $this->command->info('Creating units');
 
-        RoundLeague::create(['key' => 'standard', 'description' => 'Standard']);
+        $json = json_decode(file_get_contents(base_path('app/data/units.json')));
+
+        foreach ($json->units as $raceName => $unitRows) {
+            foreach ($unitRows as $row) {
+                $data = [
+                    'race_id' => $this->raceIds[$raceName],
+                    'slot' => $row->slot,
+                    'name' => $row->name,
+                    'cost_platinum' => $row->cost->platinum,
+                    'cost_ore' => $row->cost->ore,
+                    'power_offense' => $row->power->offense,
+                    'power_defense' => $row->power->defense,
+                ];
+
+                if (isset($row->perk)) {
+                    $data += [
+                        'unit_perk_type_id' => $this->unitPerkTypeIds[$row->perk->key],
+                        'unit_perk_type_values' => implode(',', $row->perk->values),
+                    ];
+                }
+
+                $unit = Unit::create($data);
+            }
+        }
     }
 }
