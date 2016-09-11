@@ -17,12 +17,12 @@ class RealmTest extends BaseTestCase
 
         $round = $this->createRound();
 
+        $goodRace = Race::where('alignment', 'good')->firstOrFail();
+        $evilRace = Race::where('alignment', 'evil')->firstOrFail();
+
         $this
             ->dontSeeInDatabase('realms', ['alignment' => 'good'])
             ->dontSeeInDatabase('realms', ['alignment' => 'evil']);
-
-        $goodRace = Race::where('alignment', 'good')->firstOrFail();
-        $evilRace = Race::where('alignment', 'evil')->firstOrFail();
 
         $userWithGoodDominion = $this->createUser();
         $goodDominion = $this->createDominion($userWithGoodDominion, $round, $goodRace);
@@ -51,9 +51,9 @@ class RealmTest extends BaseTestCase
 
         $round = $this->createRound();
 
-        $this->dontSeeInDatabase('realms', ['alignment' => 'good']);
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
+
+        $this->dontSeeInDatabase('realms', ['alignment' => 'good']);
 
         // Create 13 Dominions, where the first 12 should be in realm 1 and the 13th in realm 2
         for ($i = 0; $i < 13; $i++) {
@@ -64,14 +64,8 @@ class RealmTest extends BaseTestCase
         $this
             ->seeInDatabase('realms', ['id' => 1, 'alignment' => 'good'])
             ->seeInDatabase('realms', ['id' => 2, 'alignment' => 'good'])
-            ->seeInDatabase('dominions', [
-                'id' => 12,
-                'realm_id' => 1,
-            ])
-            ->seeInDatabase('dominions', [
-                'id' => 13,
-                'realm_id' => 2,
-            ]);
+            ->seeInDatabase('dominions', [ 'id' => 12, 'realm_id' => 1 ])
+            ->seeInDatabase('dominions', [ 'id' => 13, 'realm_id' => 2 ]);
     }
 
     public function testDominionsInAPackGetPlacedInTheSameRealm()
