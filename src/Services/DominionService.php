@@ -95,15 +95,14 @@ class DominionService
         // todo: figure out how to do this with repositories
         $results = DB::table('realms')
             ->select('realms.*', DB::raw('COUNT(dominions.id) AS dominion_count'))
-            ->leftJoin('dominions', function ($join) {
+            ->leftJoin('dominions', function ($join) use ($round) {
                 $join->on('dominions.realm_id', '=', 'realms.id')
-                    ->where('dominions.round_id', '=', 'realms.round_id');
+                    ->where('dominions.round_id', '=', $round->id);
             })
             ->where('realms.round_id', $round->id)
             ->where('realms.alignment', $race->alignment)
             ->groupBy('realms.id')
-            ->groupBy('dominions.id')
-            ->having('dominion_count', '<', 15)
+            ->having('dominion_count', '<', 12)
             ->orderBy('dominion_count')
             ->limit(1)
             ->get();

@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use CoreDataSeeder;
+use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Tests\BaseTestCase;
@@ -45,9 +46,33 @@ class RealmTest extends BaseTestCase
             ->seeInDatabase('dominions', ['id' => $anotherEvilDominion->id, 'realm_id' => 2]);
     }
 
-    public function testRealmsCantContainMoreThan15Dominions()
+    public function testRealmsCantContainMoreThan12Dominions()
     {
-        $this->markTestIncomplete();
+        $this->seed(CoreDataSeeder::class);
+
+        $round = $this->createRound();
+
+        $this->dontSeeInDatabase('realms', ['alignment' => 'good']);
+
+        $goodRace = Race::where('alignment', 'good')->firstOrFail();
+
+        // Create 13 Dominions, where the first 12 should be in realm 1 and the 13th in realm 2
+        for ($i = 0; $i < 13; $i++) {
+            $user = $this->createUser();
+            $this->createDominion($user, $round, $goodRace);
+        }
+
+        $this
+            ->seeInDatabase('realms', ['id' => 1, 'alignment' => 'good'])
+            ->seeInDatabase('realms', ['id' => 2, 'alignment' => 'good'])
+            ->seeInDatabase('dominions', [
+                'id' => 12,
+                'realm_id' => 1,
+            ])
+            ->seeInDatabase('dominions', [
+                'id' => 13,
+                'realm_id' => 2,
+            ]);
     }
 
     public function testDominionsInAPackGetPlacedInTheSameRealm()
