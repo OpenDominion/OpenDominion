@@ -62,7 +62,7 @@
                                 </tr>
                                 <tr>
                                     <td>Networth:</td>
-                                    <td>NYI</td>
+                                    <td>{{ number_format($dominion->networth) }}</td>
                                     <td>Gems:</td>
                                     <td>NYI</td>
                                     <td>Unit 4:</td>

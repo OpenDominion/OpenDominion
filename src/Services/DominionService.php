@@ -55,6 +55,7 @@ class DominionService
             'realm_id' => $realmType->id,
             'race_id' => $race->id,
             'name' => $name,
+            'networth' => 0,
             'prestige' => 0,
             'peasants' => 1300,
             'peasants_last_hour' => 0,
@@ -64,6 +65,13 @@ class DominionService
             'resource_food' => 15000,
             'resource_lumber' => 15000,
             'military_draftees' => 100,
+            'military_unit1' => 0,
+            'military_unit2' => 150,
+            'military_unit3' => 0,
+            'military_unit4' => 0,
+            'military_spies' => 25,
+            'military_wizards' => 25,
+            'military_archmages' => 0,
             'land_plain' => 40,
             'land_forest' => 20,
             'land_mountain' => 20,
@@ -78,7 +86,7 @@ class DominionService
             // todo: expand with more resources and buildings later
         ]);
 
-        $dominion->updatePrestige();
+        $dominion->updateNetworth();
 
         // todo: create units
 

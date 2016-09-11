@@ -21,6 +21,7 @@ class CreateDominionsTable extends Migration
             $table->integer('race_id')->unsigned();
 
             $table->string('name');
+            $table->integer('networth');
             $table->integer('prestige');
 
             $table->integer('peasants');
@@ -35,7 +36,13 @@ class CreateDominionsTable extends Migration
             // todo: mana, ore, gems, tech, boats
 
             $table->integer('military_draftees');
-            // todo: other units
+            $table->integer('military_unit1');
+            $table->integer('military_unit2');
+            $table->integer('military_unit3');
+            $table->integer('military_unit4');
+            $table->integer('military_spies');
+            $table->integer('military_wizards');
+            $table->integer('military_archmages');
 
             $table->integer('land_plain');
             $table->integer('land_forest');
