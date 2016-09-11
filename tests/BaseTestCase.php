@@ -118,17 +118,18 @@ abstract class BaseTestCase extends TestCase
     /**
      * @param User $user
      * @param Round $round
-     * @param Realm $realm
+     * @param Race $race
      * @return Dominion
+     * @internal param Realm $realm
      */
-    protected function createDominion(User $user, Round $round)
+    protected function createDominion(User $user, Round $round, Race $race = null)
     {
         $dominionService = $this->app->make(DominionService::class);
 
         $dominion = $dominionService->create(
             $user,
             $round,
-            Race::firstOrFail(),
+            ($race ?: Race::firstOrFail()),
             'random',
             'Testing Dominion'
         );
