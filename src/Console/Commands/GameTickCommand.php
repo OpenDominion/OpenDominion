@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Console\Commands;
 
+use Carbon\Carbon;
 use Config;
 use DB;
 use Exception;
@@ -51,8 +52,8 @@ class GameTickCommand extends Command
         // todo: Resources
         // todo: Population (peasants & draftees)
         $this->tickMorale();
+        $this->tickExplorationQueue();
         // todo: Construction queue
-        // todo: Exploration queue
         // todo: Military training queue
         // todo: Military returning queue
         // todo: Magic queue
@@ -98,5 +99,27 @@ class GameTickCommand extends Command
         $affected = DB::update($sql, $bindings);
 
         Log::debug("Ticked morale, {$affected} dominion(s) affected");
+    }
+
+    public function tickExplorationQueue()
+    {
+        Log::debug('Tick exploration queue');
+
+        $rows = DB::table('queue_exploration')->where('hours', 0)->get();
+
+        foreach ($rows as $row) {
+            DB::table('dominions')->where('id', $row->dominion_id)->update([
+                "land_{$row->land_type}" => DB::raw("`land_{$row->land_type}` + {$row->amount}"),
+            ]);
+        }
+
+        $affectedFinished = DB::table('queue_exploration')->where('hours', 0)->delete();
+
+        $affectedUpdated = DB::table('queue_exploration')->update([
+            'hours' => DB::raw('`hours` - 1'),
+            'updated_at' => new Carbon(),
+        ]);
+
+        Log::debug("Ticked exploration queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 }
