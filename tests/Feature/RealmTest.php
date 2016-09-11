@@ -37,8 +37,8 @@ class RealmTest extends BaseTestCase
         $anotherEvilDominion = $this->createDominion($anotherUserWithEvilDominion, $round, $evilRace);
 
         $this
-            ->seeInDatabase('realms', ['alignment' => 'good'])
-            ->seeInDatabase('realms', ['alignment' => 'evil'])
+            ->seeInDatabase('realms', ['id' => 1, 'alignment' => 'good'])
+            ->seeInDatabase('realms', ['id' => 2, 'alignment' => 'evil'])
             ->seeInDatabase('dominions', ['id' => $goodDominion->id, 'realm_id' => 1])
             ->seeInDatabase('dominions', ['id' => $anotherGoodDominion->id, 'realm_id' => 1])
             ->seeInDatabase('dominions', ['id' => $evilDominion->id, 'realm_id' => 2])
