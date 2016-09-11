@@ -1,0 +1,6 @@
+{
+  "races": [
+    { "name": "Human", "alignment": "good", "home_land_type": "plain", "perks": [ { "type": "food_production", "value":  5 } ] },
+    { "name": "Nomad", "alignment": "evil", "home_land_type": "plain", "perks": [ { "type": "mana_production", "value": 10 } ] }
+  ]
+}
