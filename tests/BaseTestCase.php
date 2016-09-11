@@ -5,6 +5,7 @@ namespace OpenDominion\Tests;
 use Carbon\Carbon;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase;
+use Mail;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -33,6 +34,17 @@ abstract class BaseTestCase extends TestCase
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+//        Bus::fake();
+//        Event::fake();
+        Mail::fake();
+//        Notification::fake();
+//        Queue::fake();
     }
 
     /**

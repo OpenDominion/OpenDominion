@@ -14,8 +14,6 @@ class RegistrationTest extends BaseTestCase
 
     public function testUserCanRegister()
     {
-        Mail::fake(); // todo: move to BaseTestCase?
-
         $this->visit('/auth/register')
             ->see('Register')
             ->type('johndoe@example.com', 'email')
