@@ -16,6 +16,6 @@ class Race extends AbstractModel
 
     public function units()
     {
-        // todo
+        return $this->hasMany(Unit::class);
     }
 }
