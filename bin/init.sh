@@ -42,7 +42,7 @@ fi
 if [[ ${IDE_HELPERS} ]]; then
     php bin/artisan clear-compiled
     php bin/artisan ide-helper:generate
-    php bin/artisan ide-helper:models -N
+    php bin/artisan ide-helper:models -N --dir="src/Models"
     php bin/artisan ide-helper:meta
     php bin/artisan optimize
 fi
