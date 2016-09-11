@@ -29,14 +29,6 @@ class GameTickCommand extends Command
     protected $databaseDriver;
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
