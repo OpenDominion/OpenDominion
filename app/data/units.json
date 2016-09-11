@@ -3,14 +3,14 @@
     "Human": [
       { "slot": 1, "name": "Spearman", "cost": { "platinum":  275, "ore":   25 }, "power": { "offense": 3, "defense": 0 } },
       { "slot": 2, "name": "Archer",   "cost": { "platinum":  275, "ore":   15 }, "power": { "offense": 0, "defense": 3 } },
-      { "slot": 3, "name": "Knight",   "cost": { "platinum": 1000, "ore":   75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "type": "fewer_casualties", "values": [ 25 ] } },
-      { "slot": 4, "name": "Cavalry",  "cost": { "platinum": 1250, "ore":  100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "type": "faster_return",    "values": [  3 ] } }
+      { "slot": 3, "name": "Knight",   "cost": { "platinum": 1000, "ore":   75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 4, "name": "Cavalry",  "cost": { "platinum": 1250, "ore":  100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "faster_return",    "values": [  3 ] } }
     ],
     "Nomad": [
       { "slot": 1, "name": "Fighter",     "cost": { "platinum":  275, "ore":   25 }, "power": { "offense": 3, "defense": 0 } },
       { "slot": 2, "name": "Crossbowman", "cost": { "platinum":  275, "ore":   15 }, "power": { "offense": 0, "defense": 3 } },
-      { "slot": 3, "name": "Blademaster", "cost": { "platinum": 1000, "ore":   75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "type": "fewer_casualties", "values": [ 25 ] } },
-      { "slot": 4, "name": "Valkyrie",    "cost": { "platinum": 1250, "ore":  100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "type": "faster_return",    "values": [  3 ] } }
+      { "slot": 3, "name": "Blademaster", "cost": { "platinum": 1000, "ore":   75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 4, "name": "Valkyrie",    "cost": { "platinum": 1250, "ore":  100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "faster_return",    "values": [  3 ] } }
     ]
   }
 }
