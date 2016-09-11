@@ -121,7 +121,7 @@ abstract class BaseTestCase extends TestCase
      * @param Realm $realm
      * @return Dominion
      */
-    protected function createDominion(User $user, Round $round, Realm $realm)
+    protected function createDominion(User $user, Round $round)
     {
         $dominionService = $this->app->make(DominionService::class);
 
