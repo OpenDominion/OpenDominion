@@ -69,9 +69,22 @@ class PopulationCalculator
         return 1; // todo
     }
 
+    /**
+     * Returns the Dominion's population peasant growth.
+     *
+     * @param Dominion $dominion
+     *
+     * @return int
+     */
     public function getPopulationPeasantGrowth(Dominion $dominion)
     {
-        return 0; // todo
+        return (int)max(
+            ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
+            min(
+                ($this->getMaxPopulation($dominion) - $dominion->peasants - $dominion->getPopulationMilitary($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
+                ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion))
+            )
+        );
     }
 
     public function getPopulationDrafteeGrowth(Dominion $dominion)
