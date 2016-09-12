@@ -15,10 +15,7 @@ class DominionNetworthCalculatorTest extends BaseTestCase
     public function testCalculateMethod()
     {
         $unitNetworthCalculator = m::mock(UnitNetworthCalculator::class);
-        $race = m::mock(Race::class);
         $dominion = m::mock(Dominion::class);
-
-        $dominionNetworthCalculator = new DominionNetworthCalculator($unitNetworthCalculator);
 
         $units = [];
         for ($slot = 1; $slot <= 4; $slot++) {
@@ -31,6 +28,7 @@ class DominionNetworthCalculatorTest extends BaseTestCase
             $units[] = $unit;
         }
 
+        $race = m::mock(Race::class);
         $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
 
         $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
@@ -40,6 +38,8 @@ class DominionNetworthCalculatorTest extends BaseTestCase
 
         // todo: land
         // todo: buildings
+
+        $dominionNetworthCalculator = new DominionNetworthCalculator($unitNetworthCalculator);
 
         $this->assertEquals(2250, $dominionNetworthCalculator->calculate($dominion));
     }
