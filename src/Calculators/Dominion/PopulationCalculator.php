@@ -108,11 +108,25 @@ class PopulationCalculator
         return (int)$draftees;
     }
 
+    /**
+     * Returns the Dominion's population peasant percentage.
+     *
+     * @param Dominion $dominion
+     *
+     * @return float
+     */
     public function getPopulationPeasantPercentage(Dominion $dominion)
     {
         return (($dominion->peasants / $dominion->getPopulation()) * 100);
     }
 
+    /**
+     * Returns the Dominion's population military percentage.
+     *
+     * @param Dominion $dominion
+     *
+     * @return float
+     */
     public function getPopulationMilitaryPercentage(Dominion $dominion)
     {
         return (($dominion->getPopulationMilitary() / $dominion->getPopulation()) * 100);
