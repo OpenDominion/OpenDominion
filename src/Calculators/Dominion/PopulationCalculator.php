@@ -63,7 +63,10 @@ class PopulationCalculator
         return $population;
     }
 
-    public function getRawMaxPopulation(Dominion $dominion){}
+    public function getRawMaxPopulation(Dominion $dominion)
+    {
+        return 0; // todo
+    }
 
     /**
      * Returns the Dominion's population max multiplier.
