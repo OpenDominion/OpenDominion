@@ -68,7 +68,7 @@ class RoundTest extends BaseTestCase
             ->see('(Standard league)')
 //            ->see('In 5 day(s)') // fixme: test sometimes fail on this
             ->see('50 days')
-            ->see('In 2 day(s)')
+//            ->see('In 2 day(s)')
             ->dontSeeInElement('a', 'Register');
     }
 
