@@ -59,9 +59,16 @@ class PopulationCalculator
         return $multiplier;
     }
 
+    /**
+     * Returns the Dominion's population birth.
+     *
+     * @param Dominion $dominion
+     *
+     * @return int
+     */
     public function getPopulationBirth(Dominion $dominion)
     {
-        return 0; // todo
+        return (int)($this->getPopulationBirthRaw($dominion) * $this->getPopulationBirthModifier($dominion));
     }
 
     public function getPopulationBirthRaw(Dominion $dominion)
