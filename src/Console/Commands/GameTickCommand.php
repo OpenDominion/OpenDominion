@@ -8,6 +8,8 @@ use DB;
 use Exception;
 use Illuminate\Console\Command;
 use Log;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Repositories\DominionRepository;
 
 class GameTickCommand extends Command
 {
@@ -28,6 +30,26 @@ class GameTickCommand extends Command
     /** @var string */
     protected $databaseDriver;
 
+    /** @var DominionRepository */
+    protected $dominions;
+
+    /** @var PopulationCalculator */
+    protected $populationCalculator;
+
+    /**
+     * GameTickCommand constructor.
+     *
+     * @param DominionRepository $dominions
+     * @param PopulationCalculator $populationCalculator
+     */
+    public function __construct(DominionRepository $dominions, PopulationCalculator $populationCalculator)
+    {
+        parent::__construct();
+
+        $this->dominions = $dominions;
+        $this->populationCalculator = $populationCalculator;
+    }
+
     /**
      * Execute the console command.
      *
@@ -41,9 +63,11 @@ class GameTickCommand extends Command
 
         DB::beginTransaction();
 
-        // todo: Resources
+        // todo: below only for current active rounds
+
+        $this->tickDominionResources();
         // todo: Population (peasants & draftees)
-        $this->tickMorale();
+        $this->tickDominionMorale();
         $this->tickExplorationQueue();
         $this->tickConstructionQueue();
         // todo: Military training queue
@@ -67,7 +91,32 @@ class GameTickCommand extends Command
         $this->databaseDriver = $driver;
     }
 
-    public function tickMorale()
+    public function tickDominionResources()
+    {
+        Log::debug('Tick resources started');
+
+        $dominions = $this->dominions->all();
+
+        foreach ($dominions as $dominion) {
+            // Resources
+            // todo
+
+            // Population
+            $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
+
+            $dominion->peasants += $populationPeasantGrowth;
+            $dominion->peasants_last_hour = $populationPeasantGrowth;
+            $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
+
+            $dominion->save();
+        }
+
+        $affected = $dominions->count();
+
+        Log::debug("Ticked resources, {$affected} dominion(s) affected");
+    }
+
+    public function tickDominionMorale()
     {
         Log::debug('Tick morale started');
 
