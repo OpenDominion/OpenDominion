@@ -38,6 +38,9 @@ class DominionNetworthCalculatorTest extends BaseTestCase
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
 
+        // todo: land
+        // todo: buildings
+
         $this->assertEquals(2250, $dominionNetworthCalculator->calculate($dominion));
     }
 }
