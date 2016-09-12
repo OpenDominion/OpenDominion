@@ -64,6 +64,11 @@ class PopulationCalculator
         return 0; // todo
     }
 
+    public function getPopulationBirthRaw(Dominion $dominion)
+    {
+        return 0; // todo
+    }
+
     public function getPopulationBirthModifier(Dominion $dominion)
     {
         return 1; // todo
