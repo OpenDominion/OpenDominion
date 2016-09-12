@@ -115,7 +115,7 @@ class PopulationCalculator
 
     public function getPopulationMilitaryPercentage(Dominion $dominion)
     {
-        return 0; // todo
+        return (($dominion->getPopulationMilitary() / $dominion->getPopulation()) * 100);
     }
 
     public function getPopulationMilitaryMaxTrainable(Dominion $dominion)
