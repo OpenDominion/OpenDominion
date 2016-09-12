@@ -13,18 +13,10 @@ use OpenDominion\Repositories\DominionRepository;
 
 class GameTickCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+    /** @var string The name and signature of the console command */
     protected $signature = 'game:tick';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    /** @var string The console command description */
     protected $description = 'Ticks the game';
 
     /** @var string */
