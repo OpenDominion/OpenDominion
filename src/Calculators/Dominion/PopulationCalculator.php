@@ -110,7 +110,7 @@ class PopulationCalculator
 
     public function getPopulationPeasantPercentage(Dominion $dominion)
     {
-        return 0; // todo
+        return (($dominion->peasants / $dominion->getPopulation()) * 100);
     }
 
     public function getPopulationMilitaryPercentage(Dominion $dominion)
