@@ -87,9 +87,25 @@ class PopulationCalculator
         );
     }
 
+    /**
+     * Returns the Dominion's population draftee growth.
+     *
+     * @param Dominion $dominion
+     *
+     * @return int
+     */
     public function getPopulationDrafteeGrowth(Dominion $dominion)
     {
-        return 0; // todo
+        $draftees = 0;
+
+        // Values (percentages)
+        $growth_factor = 1;
+
+        if ($this->getPopulationMilitaryPercentage($dominion) < $dominion->draft_rate) {
+            $draftees += ($dominion->peasants * ($growth_factor / 100));
+        }
+
+        return (int)$draftees;
     }
 
     public function getPopulationPeasantPercentage(Dominion $dominion)
