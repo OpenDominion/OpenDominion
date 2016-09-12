@@ -7,39 +7,6 @@ use OpenDominion\Models\Dominion;
 class PopulationCalculator
 {
     /**
-     * Returns the Dominion's population, military and non-military.
-     *
-     * @param Dominion $dominion
-     *
-     * @return int
-     */
-    public function getPopulation(Dominion $dominion)
-    {
-        return ($dominion->peasants + $this->getPopulationMilitary($dominion));
-    }
-
-    /**
-     * Returns the Dominion's military population.
-     *
-     * @param Dominion $dominion
-     *
-     * @return int
-     */
-    public function getPopulationMilitary(Dominion $dominion)
-    {
-        return (
-            $dominion->draftees
-            + $dominion->military_unit1
-            + $dominion->military_unit2
-            + $dominion->military_unit3
-            + $dominion->military_unit4
-            + $dominion->military_spies
-            + $dominion->military_wizards
-            + $dominion->military_archmages
-        );
-    }
-
-    /**
      * Returns the Dominion's max population.
      *
      * @param Dominion $dominion
