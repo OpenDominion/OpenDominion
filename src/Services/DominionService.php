@@ -5,7 +5,7 @@ namespace OpenDominion\Services;
 use Atrox\Haikunator;
 use DB;
 use Exception;
-use OpenDominion\Calculators\Networth\DominionNetworthCalculator;
+use OpenDominion\Calculators\Dominion\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -19,7 +19,7 @@ class DominionService
     /** @var DominionRepository */
     protected $dominions;
 
-    /** @var DominionNetworthCalculator */
+    /** @var NetworthCalculator */
     protected $networthCalculator;
 
     /** @var RealmService */
@@ -29,10 +29,10 @@ class DominionService
      * DominionService constructor.
      *
      * @param DominionRepository $dominions
-     * @param DominionNetworthCalculator $networthCalculator
+     * @param NetworthCalculator $networthCalculator
      * @param RealmService $realmService
      */
-    public function __construct(DominionRepository $dominions, DominionNetworthCalculator $networthCalculator, RealmService $realmService)
+    public function __construct(DominionRepository $dominions, NetworthCalculator $networthCalculator, RealmService $realmService)
     {
         $this->dominions = $dominions;
         $this->networthCalculator = $networthCalculator;
@@ -115,7 +115,8 @@ class DominionService
      */
     public function updateNetworth(Dominion $dominion)
     {
-        $dominion->networth = $this->networthCalculator->calculate($dominion);
+        $this->networthCalculator->setDominion($dominion);
+        $dominion->networth = $this->networthCalculator->getNetworth();
         $dominion->save();
     }
 }
