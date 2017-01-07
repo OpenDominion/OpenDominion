@@ -2,34 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <title>@yield('title', 'OpenDominion')</title>
 
-    {{-- Vendor styles --}}
-    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/metisMenu/css/metisMenu.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/sb-admin-2/css/sb-admin-2.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/rpg-awesome/css/rpg-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
-
-    {{-- Page specific styles --}}
-    @stack('page-styles')
-
-    {{-- Page specific inline styles --}}
-    @stack('inline-styles')
+    @include('partials.styles')
 
     <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body>
+<body class="hold-transition skin-blue sidebar-mini">
 
-<div id="wrapper">
+<div class="wrapper">
+
+    @include('partials.main-header')
+
+    @include('partials.main-sidebar')
+
+    <div class="content-wrapper">
+
+        <section class="content-header">
+            <h1>
+                @yield('page-header')
+                <small>Optional description</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Foo</li>
+            </ol>
+        </section>
+
+        <section class="content">
+
+            @include('partials.alerts')
+
+            @yield('content')
+
+        </section>
+
+    </div>
+
+    @include('partials.main-footer')
+
+    @include('partials.control-sidebar')
+
+</div>
+
+{{--<div id="wrapper">
 
     @include('partials.navbar')
 
@@ -53,21 +75,9 @@
 
     </div>
 
-</div>
+</div>--}}
 
-{{-- Vendor scripts --}}
-<script type="text/javascript" src="{{ asset('assets/vendor/jquery/js/jquery.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/vendor/metisMenu/js/metisMenu.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/vendor/sb-admin-2/js/sb-admin-2.js') }}"></script>
-
-{{-- app.js --}}
-
-{{-- Page specific scripts --}}
-@stack('page-scripts')
-
-{{-- Page specific inline scripts --}}
-@stack('inline-scripts')
+@include('partials.scripts')
 
 </body>
 </html>
