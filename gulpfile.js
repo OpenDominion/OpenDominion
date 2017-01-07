@@ -3,38 +3,28 @@ var elixir = require('laravel-elixir');
 elixir.config.appPath = 'src';
 elixir.config.assetsPath = 'app/resources/assets';
 elixir.config.viewPath = 'app/resources/views';
-elixir.config.css.outputFolder = 'assets/css';
-elixir.config.js.outputFolder = 'assets/js';
+elixir.config.css.outputFolder = 'assets/app/css';
+elixir.config.js.outputFolder = 'assets/app/js';
 
 var vendorFiles = {
 
-    // jQuery
-    'bower_components/jquery/dist/jquery.min.js': 'public/assets/vendor/jquery/js',
-
-    // Bootstrap
-    'bower_components/bootstrap/dist/css/*.min.css': 'public/assets/vendor/bootstrap/css',
-    'bower_components/bootstrap/dist/fonts': 'public/assets/vendor/bootstrap/fonts',
-    'bower_components/bootstrap/dist/js/bootstrap.min.js': 'public/assets/vendor/bootstrap/js',
+    // AdminLTE
+    'node_modules/admin-lte/dist': 'public/assets/vendor/admin-lte',
+    'node_modules/admin-lte/bootstrap': 'public/assets/vendor/admin-lte/bootstrap',
+    'node_modules/admin-lte/plugins': 'public/assets/vendor/admin-lte/plugins',
 
     // Font Awesome
-    'bower_components/font-awesome/css/font-awesome.min.css': 'public/assets/vendor/font-awesome/css',
-    'bower_components/font-awesome/fonts': 'public/assets/vendor/font-awesome/fonts',
+    'node_modules/font-awesome/css': 'public/assets/vendor/font-awesome/css',
+    'node_modules/font-awesome/fonts': 'public/assets/vendor/font-awesome/fonts',
 
     // RPG Awesome
-    'bower_components/rpg-awesome/css/rpg-awesome.min.css': 'public/assets/vendor/rpg-awesome/css',
-    'bower_components/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts',
-
-    // Metis Menu
-    // 'bower_components/metisMenu/dist/metisMenu.min.css': 'public/assets/vendor/metisMenu/css',
-    // 'bower_components/metisMenu/dist/metisMenu.min.js': 'public/assets/vendor/metisMenu/js',
-
-    // SB Admin 2
-    // 'bower_components/startbootstrap-sb-admin-2/dist/css': 'public/assets/vendor/sb-admin-2/css',
-    // 'bower_components/startbootstrap-sb-admin-2/dist/js': 'public/assets/vendor/sb-admin-2/js',
+    'node_modules/rpg-awesome/css': 'public/assets/vendor/rpg-awesome/css',
+    'node_modules/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts'
 
 };
 
 elixir(function (mix) {
+
     // Copy vendor assets
     for (var file in vendorFiles) {
         mix.copy(file, vendorFiles[file]);
@@ -42,4 +32,5 @@ elixir(function (mix) {
 
     // Compile app assets
     mix.sass('app.scss');
+
 });
