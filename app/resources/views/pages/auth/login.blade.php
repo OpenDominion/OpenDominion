@@ -40,8 +40,6 @@
                             </div>
                         </div>
 
-                        <!-- Button -->
-
                     </div>
 
                     <div class="box-footer">
