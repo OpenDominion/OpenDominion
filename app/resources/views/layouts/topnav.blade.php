@@ -34,7 +34,7 @@
                 <!-- Navbar Left Menu -->
                 <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a></li>
+                        <li class="{{ Route::is('home') ? 'active' : null }}"><a href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a></li>
                         <li><a href="#">About</a></li>
                     </ul>
                 </div>
@@ -42,8 +42,8 @@
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <li><a href="{{ route('auth.register') }}">Register</a></li>
-                        <li><a href="{{ route('auth.login') }}">Login</a></li>
+                        <li class="{{ Route::is('auth.register') ? 'active' : null }}"><a href="{{ route('auth.register') }}">Register</a></li>
+                        <li class="{{ Route::is('auth.login') ? 'active' : null }}"><a href="{{ route('auth.login') }}">Login</a></li>
                     </ul>
                 </div>
 
