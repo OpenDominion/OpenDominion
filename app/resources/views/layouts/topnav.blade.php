@@ -35,7 +35,7 @@
                 <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li class="{{ Route::is('home') ? 'active' : null }}"><a href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a></li>
-                        <li><a href="#">About</a></li>
+                        {{--<li><a href="#">About</a></li>--}}
                     </ul>
                 </div>
 
