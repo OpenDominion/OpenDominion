@@ -7,6 +7,8 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "laravel-elixir": "^5.0.0",
-    "bootstrap-sass": "^3.3.0"
+    "admin-lte": "^2.3.8",
+    "font-awesome": "^4.7.0",
+    "rpg-awesome": "nagoshiashumari/Rpg-Awesome"
   }
 }

@@ -25,12 +25,12 @@ var vendorFiles = {
     'bower_components/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts',
 
     // Metis Menu
-    'bower_components/metisMenu/dist/metisMenu.min.css': 'public/assets/vendor/metisMenu/css',
-    'bower_components/metisMenu/dist/metisMenu.min.js': 'public/assets/vendor/metisMenu/js',
+    // 'bower_components/metisMenu/dist/metisMenu.min.css': 'public/assets/vendor/metisMenu/css',
+    // 'bower_components/metisMenu/dist/metisMenu.min.js': 'public/assets/vendor/metisMenu/js',
 
     // SB Admin 2
-    'bower_components/startbootstrap-sb-admin-2/dist/css': 'public/assets/vendor/sb-admin-2/css',
-    'bower_components/startbootstrap-sb-admin-2/dist/js': 'public/assets/vendor/sb-admin-2/js',
+    // 'bower_components/startbootstrap-sb-admin-2/dist/css': 'public/assets/vendor/sb-admin-2/css',
+    // 'bower_components/startbootstrap-sb-admin-2/dist/js': 'public/assets/vendor/sb-admin-2/js',
 
 };
 
