@@ -1,7 +1,7 @@
 <footer class="main-footer">
 
     <div class="pull-right">
-        <span class="hidden-xs">Version </span><span class="visible-xs">v</span><strong>2.3.5</strong>
+        <span class="hidden-xs">Version </span><span class="visible-xs">v</span><strong>todo</strong>
     </div>
 
     <span class="hidden-xs">
