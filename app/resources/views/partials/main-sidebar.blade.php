@@ -8,7 +8,7 @@
 
             @endif
 
-            <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="#"><i class="fa fw-dashboard"></i> Dashboard</a></li>
+            <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="fa fw-dashboard"></i> Dashboard</a></li>
         </ul>
 
 {{--        <!-- Sidebar user panel -->
