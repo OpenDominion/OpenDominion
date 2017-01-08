@@ -51,7 +51,26 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
 
+            // Dominion
+
             $router->get('status', ['as' => 'dominion.status', 'uses' => 'DominionController@getStatus']);
+//            $router->get('advisors', ['as' => 'dominion.advisors', 'uses' => 'DominionController@getAdvisors']);
+
+            // Actions
+
+            $router->get('explore', ['as' => 'dominion.explore', 'uses' => 'DominionController@getExplore']);
+            $router->get('construction', ['as' => 'dominion.construction', 'uses' => 'DominionController@getConstruction']);
+//            $router->get('rezone-land', ['as' => 'dominion.rezone-land', 'uses' => 'DominionController@getRezoneLand']);
+//            $router->get('improvements', ['as' => 'dominion.improvements', 'uses' => 'DominionController@getImprovements']);
+//            $router->get('national-bank', ['as' => 'dominion.national-bank', 'uses' => 'DominionController@getNationalBank']);
+
+            // Black Ops
+
+            // Comms?
+
+            // Realm
+
+            // Misc?
 
         });
 

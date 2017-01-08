@@ -25,4 +25,14 @@ class DominionController extends AbstractController
     {
         return view('pages.dominion.status');
     }
+
+    public function getExplore()
+    {
+        //
+    }
+
+    public function getConstruction()
+    {
+        //
+    }
 }
