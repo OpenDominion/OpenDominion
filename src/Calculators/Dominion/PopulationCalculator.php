@@ -2,8 +2,12 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-class PopulationCalculator extends AbstractDominionCalculator
+use OpenDominion\Traits\DominionAwareTrait;
+
+class PopulationCalculator
 {
+    use DominionAwareTrait;
+
     /**
      * Returns the Dominion's max population.
      *

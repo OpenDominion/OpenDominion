@@ -2,8 +2,12 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-class ProductionCalculator extends AbstractDominionCalculator
+use OpenDominion\Traits\DominionAwareTrait;
+
+class ProductionCalculator
 {
+    use DominionAwareTrait;
+
     // Platinum
 
     public function getPlatinumProduction()

@@ -1,20 +1,21 @@
 <?php
 
-namespace OpenDominion\Calculators\Dominion;
+namespace OpenDominion\Traits;
 
 use OpenDominion\Models\Dominion;
 
-// todo: refactor into DominionAwareTrait?
-abstract class AbstractDominionCalculator
+trait DominionAwareTrait
 {
     /** @var Dominion */
     protected $dominion;
 
     /**
      * @param Dominion $dominion
+     * @return $this
      */
     public function setDominion(Dominion $dominion)
     {
         $this->dominion = $dominion;
+        return $this;
     }
 }

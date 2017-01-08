@@ -36,13 +36,8 @@ class DominionController extends AbstractController
 
     public function getAdvisorsProduction()
     {
-        $dominionSelectorService = app()->make(DominionSelectorService::class);
-        $dominion = $dominionSelectorService->getUserSelectedDominion();
-
-        $productionCalculator = app()->make(ProductionCalculator::class);
-        $productionCalculator->setDominion($dominion);
-
-        // todo: refactor this
+        $productionCalculator = app()->make(ProductionCalculator::class)
+            ->setDominion($this->getSelectedDominion());
 
         return view('pages.dominion.advisors.production', compact('productionCalculator'));
     }
@@ -81,4 +76,13 @@ class DominionController extends AbstractController
     // Realm
 
     // Misc?
+
+    /**
+     * @return Dominion
+     */
+    protected function getSelectedDominion()
+    {
+        $dominionSelectorService = app()->make(DominionSelectorService::class);
+        return $dominionSelectorService->getUserSelectedDominion();
+    }
 }
