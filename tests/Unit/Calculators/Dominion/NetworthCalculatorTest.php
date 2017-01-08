@@ -1,18 +1,18 @@
 <?php
 
-namespace OpenDominion\Tests\Unit\Calculators\Networth;
+namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
-use OpenDominion\Calculators\Networth\DominionNetworthCalculator;
+use OpenDominion\Calculators\Dominion\NetworthCalculator;
 use OpenDominion\Calculators\Networth\UnitNetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Unit;
 use OpenDominion\Tests\BaseTestCase;
 
-class DominionNetworthCalculatorTest extends BaseTestCase
+class NetworthCalculatorTest extends BaseTestCase
 {
-    public function testCalculateMethod()
+    public function testGetNetworth()
     {
         $unitNetworthCalculator = m::mock(UnitNetworthCalculator::class);
         $dominion = m::mock(Dominion::class);
@@ -39,8 +39,8 @@ class DominionNetworthCalculatorTest extends BaseTestCase
         // todo: land
         // todo: buildings
 
-        $dominionNetworthCalculator = new DominionNetworthCalculator($unitNetworthCalculator);
+        $dominionNetworthCalculator = new NetworthCalculator($dominion, $unitNetworthCalculator);
 
-        $this->assertEquals(2250, $dominionNetworthCalculator->calculate($dominion));
+        $this->assertEquals(2250, $dominionNetworthCalculator->getNetworth());
     }
 }
