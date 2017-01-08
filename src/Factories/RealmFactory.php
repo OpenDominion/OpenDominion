@@ -33,6 +33,7 @@ class RealmFactory
      */
     public function create(Round $round, $alignment)
     {
+        // todo: whitelist $alignment?
         // todo: repositories?
         $results = DB::table('realms')
             ->select(DB::raw('MAX(realms.number) AS max_realm_number'))
