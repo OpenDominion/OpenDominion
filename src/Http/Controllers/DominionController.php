@@ -21,10 +21,19 @@ class DominionController extends AbstractController
         return redirect(route('dominion.status'));
     }
 
+    // Dominion
+
     public function getStatus()
     {
         return view('pages.dominion.status');
     }
+
+    public function getAdvisors()
+    {
+        return view('pages.dominion.advisors');
+    }
+
+    // Actions
 
     public function getExplore()
     {
@@ -35,4 +44,12 @@ class DominionController extends AbstractController
     {
         return view('pages.dominion.construction');
     }
+
+    // Black Ops
+
+    // Comms?
+
+    // Realm
+
+    // Misc?
 }

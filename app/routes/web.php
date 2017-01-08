@@ -54,7 +54,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Dominion
 
             $router->get('status', ['as' => 'dominion.status', 'uses' => 'DominionController@getStatus']);
-//            $router->get('advisors', ['as' => 'dominion.advisors', 'uses' => 'DominionController@getAdvisors']);
+            $router->get('advisors', ['as' => 'dominion.advisors', 'uses' => 'DominionController@getAdvisors']);
 
             // Actions
 
