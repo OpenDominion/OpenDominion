@@ -4,31 +4,64 @@
 
 @section('content')
     <div class="row">
-        <div class="col-lg-6">
 
+        <div class="col-lg-6">
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-capitol ra-fw"></i> Dominions</h3>
                 </div>
-                <div class="box-body">
 
-                    @if ($dominions->isEmpty())
+                @if ($dominions->isEmpty())
+
+                    <div class="box-body">
                         <p>You have no active dominions. Register in a round to create a dominion.</p>
-                    @else
-                        @foreach($dominions->chunk(3) as $dominion)
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    dom todo
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
+                    </div>
+
+                @else
+
+                    <div class="box-body no-padding">
+                        <table class="table">
+                            <colgroup>
+                                <col>
+                                <col width="120">
+                                <col width="80">
+                                <col width="80">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="text-center">Realm</th>
+                                    <th class="text-center">Race</th>
+                                    <th class="text-center">Round</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($dominions->all() as $dominion)
+                                    <tr>
+                                        <td>
+                                            <a href="#">{{ $dominion->name }}</a>
+                                        </td>
+                                        <td class="text-center">
+                                            #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $dominion->race->name }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $dominion->round->number }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                @endif
+
             </div>
-
         </div>
-        <div class="col-lg-6">
 
+        <div class="col-lg-6">
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-clock-o fa-fw"></i> Rounds</h3>
@@ -110,70 +143,7 @@
                 @endif
 
             </div>
-
         </div>
-    </div>
 
-
-    <p>space</p>
-    <p>space</p>
-    <p>space</p>
-
-
-
-
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <i class="ra ra-capitol ra-fw"></i> Dominions
-                </div>
-                <div class="panel-body">
-                    @if ($dominions->isEmpty())
-                        <p>You have no active dominions. Register in a round below to create a dominion.</p>
-                    @else
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <colgroup>
-                                    <col>
-                                    <col width="120">
-                                    <col width="120">
-                                    <col width="120">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th class="text-center">Realm</th>
-                                        <th class="text-center">Race</th>
-                                        <th class="text-center">Round</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($dominions->all() as $dominion)
-                                        <tr>
-                                            <td>
-{{--                                                <a href="{{ route('dominion.status', $dominion) }}">{{ $dominion->name }}</a>--}}
-                                                <a href="#">{{ $dominion->name }}</a>
-                                            </td>
-                                            <td class="text-center">
-                                                #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ $dominion->race->name }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ $dominion->round->number }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <p>Click on a dominion's name to go to its status page.</p>
-                    @endif
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
