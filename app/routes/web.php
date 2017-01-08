@@ -41,12 +41,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('round/{round}/register', ['as' => 'round.register', 'uses' => 'RoundController@getRegister']);
     $router->post('round/{round}/register', 'RoundController@postRegister');
 
-//    $router->post('dominion/{dominion}/play', ['as' => 'dominion.play', 'middleware' => 'owndominion', 'uses' => 'DominionController@postPlay']);
-
     $router->group(['prefix' => 'dominion'], function (Router $router) {
 
-        // todo: test this
-        $router->post('{dominion}/play', ['as' => 'dominion.play', 'middleware' => 'owndominion', 'uses' => 'DominionController@postPlay']);
+        $router->post('{dominion}/play', ['as' => 'dominion.play', 'uses' => 'DominionController@postPlay']);
 
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
 

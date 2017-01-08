@@ -2,14 +2,20 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Auth;
 use OpenDominion\Models\Dominion;
 
 class DominionController extends AbstractController
 {
     public function postPlay(Dominion $dominion)
     {
-        // assert that dominion->round is active
-        // assert dominion hasnt been banned?
+        // Check if dominion belongs to logged in user
+        if ($dominion->user_id != Auth::user()->id) {
+            return response('Unauthorized', 401);
+        }
+
+        // Check that round is active
+        // todo
 
         session(['dominion_id' => $dominion->id]);
         return redirect(route('dominion.status'));

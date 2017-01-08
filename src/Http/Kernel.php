@@ -54,6 +54,5 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         'dominionselected' => \OpenDominion\Http\Middleware\DominionSelected::class,
-        'owndominion' => \OpenDominion\Http\Middleware\OwnDominion::class,
     ];
 }
