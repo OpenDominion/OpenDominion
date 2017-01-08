@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', "{$selectedDominion->name} Status")
+@section('page-header', 'Status')
 
 @section('content')
     {{ $selectedDominion }}
