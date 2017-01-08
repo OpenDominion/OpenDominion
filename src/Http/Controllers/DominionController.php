@@ -33,6 +33,26 @@ class DominionController extends AbstractController
         return view('pages.dominion.advisors');
     }
 
+    public function getAdvisorsProduction()
+    {
+        // todo
+    }
+
+    public function getAdvisorsMilitary()
+    {
+        // todo
+    }
+
+    public function getAdvisorsLand()
+    {
+        // todo
+    }
+
+    public function getAdvisorsConstruction()
+    {
+        // todo
+    }
+
     // Actions
 
     public function getExplore()
