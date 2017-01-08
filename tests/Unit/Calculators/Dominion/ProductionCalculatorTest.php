@@ -6,7 +6,17 @@ use OpenDominion\Tests\BaseTestCase;
 
 class ProductionCalculatorTest extends BaseTestCase
 {
-    public function getPlatinumProduction()
+    public function testGetPlatinumProduction()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetPlatinumProductionRaw()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetPlatinumProductionMultiplier()
     {
         $this->markTestIncomplete();
     }
