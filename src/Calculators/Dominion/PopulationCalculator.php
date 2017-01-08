@@ -2,23 +2,19 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use OpenDominion\Models\Dominion;
-
-class PopulationCalculator
+class PopulationCalculator extends AbstractDominionCalculator
 {
     /**
      * Returns the Dominion's max population.
      *
-     * @param Dominion $dominion
-     *
      * @return int
      */
-    public function getMaxPopulation(Dominion $dominion)
+    public function getMaxPopulation()
     {
         $population = 0;
 
         // Raw pop * multiplier
-        $population += ($this->getRawMaxPopulation($dominion) * $this->getPopulationMaxMultiplier($dominion));
+        $population += ($this->getRawMaxPopulation() * $this->getPopulationMaxMultiplier());
 
         // todo
         // Military
@@ -30,7 +26,7 @@ class PopulationCalculator
         return $population;
     }
 
-    public function getRawMaxPopulation(Dominion $dominion)
+    public function getRawMaxPopulation()
     {
         return 0; // todo
     }
@@ -42,11 +38,9 @@ class PopulationCalculator
      * - Racial bonuses
      * - Prestige bonus
      *
-     * @param Dominion $dominion
-     *
      * @return float
      */
-    public function getPopulationMaxMultiplier(Dominion $dominion)
+    public function getPopulationMaxMultiplier()
     {
         $multiplier = 1.0;
 
@@ -54,7 +48,7 @@ class PopulationCalculator
         // todo
 
         // Racial bonus
-        $multiplier *= (1 + ($dominion->prestige / 10000));
+        $multiplier *= (1 + ($this->dominion->prestige / 10000));
 
         return $multiplier;
     }
@@ -62,21 +56,19 @@ class PopulationCalculator
     /**
      * Returns the Dominion's population birth.
      *
-     * @param Dominion $dominion
-     *
      * @return int
      */
-    public function getPopulationBirth(Dominion $dominion)
+    public function getPopulationBirth()
     {
-        return (int)($this->getPopulationBirthRaw($dominion) * $this->getPopulationBirthModifier($dominion));
+        return (int)($this->getPopulationBirthRaw() * $this->getPopulationBirthModifier());
     }
 
-    public function getPopulationBirthRaw(Dominion $dominion)
+    public function getPopulationBirthRaw()
     {
         return 0; // todo
     }
 
-    public function getPopulationBirthModifier(Dominion $dominion)
+    public function getPopulationBirthModifier()
     {
         return 1; // todo
     }
@@ -84,17 +76,15 @@ class PopulationCalculator
     /**
      * Returns the Dominion's population peasant growth.
      *
-     * @param Dominion $dominion
-     *
      * @return int
      */
-    public function getPopulationPeasantGrowth(Dominion $dominion)
+    public function getPopulationPeasantGrowth()
     {
         return (int)max(
-            ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
+            ((-0.05 * $this->dominion->peasants) - $this->getPopulationDrafteeGrowth()),
             min(
-                ($this->getMaxPopulation($dominion) - $dominion->peasants - $dominion->getPopulationMilitary($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
-                ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion))
+                ($this->getMaxPopulation() - $this->dominion->peasants - $this->dominion->getPopulationMilitary() - $this->getPopulationDrafteeGrowth()),
+                ($this->getPopulationBirth() - $this->getPopulationDrafteeGrowth())
             )
         );
     }
@@ -102,19 +92,17 @@ class PopulationCalculator
     /**
      * Returns the Dominion's population draftee growth.
      *
-     * @param Dominion $dominion
-     *
      * @return int
      */
-    public function getPopulationDrafteeGrowth(Dominion $dominion)
+    public function getPopulationDrafteeGrowth()
     {
         $draftees = 0;
 
         // Values (percentages)
         $growth_factor = 1;
 
-        if ($this->getPopulationMilitaryPercentage($dominion) < $dominion->draft_rate) {
-            $draftees += ($dominion->peasants * ($growth_factor / 100));
+        if ($this->getPopulationMilitaryPercentage() < $this->dominion->draft_rate) {
+            $draftees += ($this->dominion->peasants * ($growth_factor / 100));
         }
 
         return (int)$draftees;
@@ -123,28 +111,24 @@ class PopulationCalculator
     /**
      * Returns the Dominion's population peasant percentage.
      *
-     * @param Dominion $dominion
-     *
      * @return float
      */
-    public function getPopulationPeasantPercentage(Dominion $dominion)
+    public function getPopulationPeasantPercentage()
     {
-        return (($dominion->peasants / $dominion->getPopulation()) * 100);
+        return (($this->dominion->peasants / $this->dominion->getPopulation()) * 100);
     }
 
     /**
      * Returns the Dominion's population military percentage.
      *
-     * @param Dominion $dominion
-     *
      * @return float
      */
-    public function getPopulationMilitaryPercentage(Dominion $dominion)
+    public function getPopulationMilitaryPercentage()
     {
-        return (($dominion->getPopulationMilitary() / $dominion->getPopulation()) * 100);
+        return (($this->dominion->getPopulationMilitary() / $this->dominion->getPopulation()) * 100);
     }
 
-    public function getPopulationMilitaryMaxTrainable(Dominion $dominion)
+    public function getPopulationMilitaryMaxTrainable()
     {
         return 0; // todo
     }

@@ -90,15 +90,17 @@ class GameTickCommand extends Command
         $dominions = $this->dominions->all();
 
         foreach ($dominions as $dominion) {
+            $this->populationCalculator->setDominion($dominion);
+
             // Resources
             // todo
 
             // Population
-            $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
+            $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth();
 
             $dominion->peasants += $populationPeasantGrowth;
             $dominion->peasants_last_hour = $populationPeasantGrowth;
-            $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
+            $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth();
 
             $dominion->save();
         }

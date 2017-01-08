@@ -39,6 +39,8 @@ class Dominion extends AbstractModel
         return ($this->id === $selectedDominion->id);
     }
 
+    // todo: move below to populationcalculator
+
     /**
      * Returns the Dominion's population, military and non-military.
      *
