@@ -24,16 +24,23 @@
 
     <div class="content-wrapper">
 
-        <section class="content-header">
-            <h1>
-                @yield('page-header')
-                <small>Optional description</small>
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Foo</li>
-            </ol>
-        </section>
+        @hasSection('page-header')
+            <div class="content-header">
+                <h1>
+                    @yield('page-header')
+
+                    @hasSection('page-subheader')
+                        <small>
+                            @yield('page-subheader')
+                        </small>
+                    @endif
+                </h1>
+                {{--<ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li class="active">Foo</li>
+                </ol>--}}
+            </div>
+        @endif
 
         <section class="content">
 
