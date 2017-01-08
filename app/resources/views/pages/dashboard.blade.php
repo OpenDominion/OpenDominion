@@ -39,13 +39,15 @@
                                 @foreach ($dominions->all() as $dominion)
                                     <tr>
                                         <td>
-                                            <form action="{{ route('dominion.select', $dominion) }}" method="post">
-                                                {!! csrf_field() !!}
-                                                <button type="submit" class="btn btn-link {{ $dominion->selectedByAuthUser() ? 'disabled' : null }}">{{ $dominion->name }}</button>
-                                                @if ($dominion->selectedByAuthUser())
-                                                    <span class="label label-success">Active</span>
-                                                @endif
-                                            </form>
+                                            @if ($dominion->selectedByAuthUser())
+                                                <button class="btn btn-link disabled">{{ $dominion->name }}</button>
+                                                <span class="label label-success">Active</span>
+                                            @else
+                                                <form action="{{ route('dominion.select', $dominion) }}" method="post">
+                                                    {!! csrf_field() !!}
+                                                    <button type="submit" class="btn btn-link">{{ $dominion->name }}</button>
+                                                </form>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
