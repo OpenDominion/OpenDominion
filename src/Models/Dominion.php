@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use OpenDominion\Services\DominionSelectorService;
+
 class Dominion extends AbstractModel
 {
     public function race()
@@ -22,6 +24,19 @@ class Dominion extends AbstractModel
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function selectedByAuthUser()
+    {
+        $dominionSelectorService = app()->make(DominionSelectorService::class);
+
+        $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
+
+        if ($selectedDominion === null) {
+            return false;
+        }
+
+        return ($this->id === $selectedDominion->id);
     }
 
     /**

@@ -41,7 +41,10 @@
                                         <td>
                                             <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                 {!! csrf_field() !!}
-                                                <button type="submit" class="btn btn-link">{{ $dominion->name }}</button>
+                                                <button type="submit" class="btn btn-link {{ $dominion->selectedByAuthUser() ? 'disabled' : null }}">{{ $dominion->name }}</button>
+                                                @if ($dominion->selectedByAuthUser())
+                                                    <span class="label label-success">Active</span>
+                                                @endif
                                             </form>
                                         </td>
                                         <td class="text-center">
