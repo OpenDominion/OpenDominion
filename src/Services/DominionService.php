@@ -2,17 +2,13 @@
 
 namespace OpenDominion\Services;
 
-use Atrox\Haikunator;
-use DB;
 use Exception;
-use OpenDominion\Calculators\Dominion\NetworthCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
-use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\DominionRepository;
-use OpenDominion\Repositories\RealmRepository;
 
 class DominionService
 {
@@ -115,8 +111,7 @@ class DominionService
      */
     public function updateNetworth(Dominion $dominion)
     {
-        $this->networthCalculator->setDominion($dominion);
-        $dominion->networth = $this->networthCalculator->getNetworth();
+        $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
         $dominion->save();
     }
 }
