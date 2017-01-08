@@ -30,7 +30,9 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \OpenDominion\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
             \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
+            \OpenDominion\Http\Middleware\ShareSelectedDominion::class,
         ],
 
         'api' => [

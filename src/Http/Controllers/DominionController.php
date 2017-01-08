@@ -17,7 +17,7 @@ class DominionController extends AbstractController
         // Check that round is active
         // todo
 
-        session(['dominion_id' => $dominion->id]);
+        session(['selected_dominion_id' => $dominion->id]);
         return redirect(route('dominion.status'));
     }
 

@@ -174,7 +174,6 @@ return [
         OpenDominion\Providers\AppServiceProvider::class,
         // OpenDominion\Providers\BroadcastServiceProvider::class,
         OpenDominion\Providers\AuthServiceProvider::class,
-        OpenDominion\Providers\ComposerServiceProvider::class,
         OpenDominion\Providers\EventServiceProvider::class,
         OpenDominion\Providers\RouteServiceProvider::class,
 
