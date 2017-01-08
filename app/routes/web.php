@@ -41,7 +41,22 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('round/{round}/register', ['as' => 'round.register', 'uses' => 'RoundController@getRegister']);
     $router->post('round/{round}/register', 'RoundController@postRegister');
 
-    $router->post('dominion/{dominion}/play', ['as' => 'dominion.play', 'middleware' => 'owndominion', 'uses' => 'DominionController@postPlay']);
+//    $router->post('dominion/{dominion}/play', ['as' => 'dominion.play', 'middleware' => 'owndominion', 'uses' => 'DominionController@postPlay']);
+
+    $router->group(['prefix' => 'dominion'], function (Router $router) {
+
+        // todo: test this
+        $router->post('{dominion}/play', ['as' => 'dominion.play', 'middleware' => 'owndominion', 'uses' => 'DominionController@postPlay']);
+
+        $router->group(['middleware' => 'dominionselected'], function (Router $router) {
+
+            $router->get('status', ['as' => 'dominion.status', 'uses' => 'DominionController@getStatus']);
+
+        });
+
+    });
+
+
 
 //    $router->group(['prefix' => 'dominion/{dominion}', 'middleware' => 'owndominion'], function (Router $router) {
 

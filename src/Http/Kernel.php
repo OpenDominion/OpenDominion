@@ -51,7 +51,9 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
         'guest' => \OpenDominion\Http\Middleware\RedirectIfAuthenticated::class,
-        'owndominion' => \OpenDominion\Http\Middleware\OwnDominion::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+        'dominionselected' => \OpenDominion\Http\Middleware\DominionSelected::class,
+        'owndominion' => \OpenDominion\Http\Middleware\OwnDominion::class,
     ];
 }
