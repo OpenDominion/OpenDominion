@@ -28,11 +28,11 @@ class DominionController extends AbstractController
 
     public function getExplore()
     {
-        //
+        return view('pages.dominion.explore');
     }
 
     public function getConstruction()
     {
-        //
+        return view('pages.dominion.construction');
     }
 }
