@@ -26,6 +26,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li class="user-footer">
+                            <div class="pull-left">
+                                <a href="{{ route('dashboard') }}" class="btn btn-default btn-flat"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            </div>
                             <div class="pull-right">
                                 <form action="{{ route('auth.logout') }}" method="post">
                                     {!! csrf_field() !!}
