@@ -9,7 +9,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\DominionRepository;
-use OpenDominion\Services\RealmService;
+use OpenDominion\Services\RealmFinderService;
 
 class DominionFactory
 {
@@ -19,27 +19,27 @@ class DominionFactory
     /** @var NetworthCalculator */
     protected $networthCalculator;
 
-    /** @var RealmService */
-    protected $realmService;
+    /** @var RealmFinderService */
+    protected $realmFinderService;
 
     /**
      * DominionFactory constructor.
      *
      * @param DominionRepository $dominions
      * @param NetworthCalculator $networthCalculator
-     * @param RealmService $realmService
+     * @param RealmFinderService $realmFinderService
      */
-    public function __construct(DominionRepository $dominions, NetworthCalculator $networthCalculator, RealmService $realmService)
+    public function __construct(DominionRepository $dominions, NetworthCalculator $networthCalculator, RealmFinderService $realmFinderService)
     {
         $this->dominions = $dominions;
         $this->networthCalculator = $networthCalculator;
-        $this->realmService = $realmService;
+        $this->realmFinderService = $realmFinderService;
     }
 
     /**
      * Creates and returns a new Dominion in a valid Realm for the current Round.
      *
-     * @see RealmService::findRandomRealm()
+     * @see RealmFinderService::findRandom()
      *
      * @param User $user
      * @param Round $round
@@ -57,7 +57,7 @@ class DominionFactory
 
         // Get realm
         if ($realmType === 'random') {
-            $realmType = $this->realmService->findRandomRealm($round, $race);
+            $realmType = $this->realmFinderService->findRandom($round, $race);
         } else {
             throw new Exception("Realm '{$realmType}' not supported");
         }

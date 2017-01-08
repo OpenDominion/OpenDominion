@@ -11,7 +11,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\RealmRepository;
 
-class RealmService
+class RealmFinderService
 {
     /** @var RealmRepository */
     protected $realms;
@@ -43,7 +43,7 @@ class RealmService
      *
      * @return Realm
      */
-    public function findRandomRealm(Round $round, Race $race)
+    public function findRandom(Round $round, Race $race)
     {
         // todo: figure out how to do this with repositories
         $results = DB::table('realms')
