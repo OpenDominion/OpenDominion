@@ -5,15 +5,15 @@ namespace OpenDominion\Http\Controllers;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
+use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RaceRepository;
-use OpenDominion\Services\DominionService;
 
 class RoundController extends AbstractController
 {
-    /** @var DominionService */
-    protected $dominionService;
+    /** @var DominionFactory */
+    protected $dominionFactory;
 
     /** @var DominionRepository */
     protected $dominions;
@@ -21,9 +21,9 @@ class RoundController extends AbstractController
     /** @var RaceRepository */
     protected $races;
 
-    public function __construct(DominionService $dominionService, DominionRepository $dominions, RaceRepository $races)
+    public function __construct(DominionFactory $dominionFactory, DominionRepository $dominions, RaceRepository $races)
     {
-        $this->dominionService = $dominionService;
+        $this->dominionFactory = $dominionFactory;
         $this->dominions = $dominions;
         $this->races = $races;
     }
@@ -48,7 +48,7 @@ class RoundController extends AbstractController
             'realm' => 'in:random',
         ]);
 
-        $this->dominionService->create(
+        $this->dominionFactory->create(
             Auth::user(),
             $round,
             $this->races->find($request->get('race')),

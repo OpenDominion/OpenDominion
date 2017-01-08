@@ -6,12 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase;
 use Mail;
+use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Services\DominionService;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -124,9 +124,9 @@ abstract class BaseTestCase extends TestCase
      */
     protected function createDominion(User $user, Round $round, Race $race = null)
     {
-        $dominionService = $this->app->make(DominionService::class);
+        $dominionFactory = $this->app->make(DominionFactory::class);
 
-        $dominion = $dominionService->create(
+        $dominion = $dominionFactory->create(
             $user,
             $round,
             ($race ?: Race::firstOrFail()),

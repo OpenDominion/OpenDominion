@@ -1,17 +1,17 @@
 <?php
 
-namespace OpenDominion\Tests\Unit\Services;
+namespace OpenDominion\Tests\Unit\Factories;
 
 use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
+use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
-use OpenDominion\Services\DominionService;
 use OpenDominion\Tests\BaseTestCase;
 
-class DominionServiceTest extends BaseTestCase
+class DominionFactoryTest extends BaseTestCase
 {
     use DatabaseMigrations;
 
@@ -32,12 +32,12 @@ class DominionServiceTest extends BaseTestCase
     public function testCreate()
     {
         $race = Race::firstOrFail();
-        $dominionService = $this->app->make(DominionService::class);
+        $dominionFactory = $this->app->make(DominionFactory::class);
 
         $this->assertEquals(0, Realm::count());
         $this->assertEquals(0, Dominion::count());
 
-        $dominion = $dominionService->create($this->user, $this->round, $race, 'random', 'Dummy');
+        $dominion = $dominionFactory->create($this->user, $this->round, $race, 'random', 'Dummy');
 
         $this->assertEquals(1, Realm::count());
         $this->assertEquals(1, Dominion::count());
@@ -47,9 +47,9 @@ class DominionServiceTest extends BaseTestCase
     public function testCreateUpdatesDominionNetworth()
     {
         $race = Race::firstOrFail();
-        $dominionService = $this->app->make(DominionService::class);
+        $dominionFactory = $this->app->make(DominionFactory::class);
 
-        $dominion = $dominionService->create($this->user, $this->round, $race, 'random', 'Dummy');
+        $dominion = $dominionFactory->create($this->user, $this->round, $race, 'random', 'Dummy');
 
         $this->assertEquals(1000, $dominion->networth);
     }

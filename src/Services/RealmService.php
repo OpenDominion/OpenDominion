@@ -4,6 +4,7 @@ namespace OpenDominion\Services;
 
 use Atrox\Haikunator;
 use DB;
+use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -30,7 +31,7 @@ class RealmService
      * The new Dominion currently gets placed in a random Realm of the same alignment of its Race, up to a max of 12
      * Dominions in that realm.
      *
-     * @see DominionService::create()
+     * @see DominionFactory::create()
      *
      * @param Round $round
      * @param Race $race

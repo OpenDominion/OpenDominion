@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Services;
+namespace OpenDominion\Factories;
 
 use Exception;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -9,8 +9,9 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\DominionRepository;
+use OpenDominion\Services\RealmService;
 
-class DominionService
+class DominionFactory
 {
     /** @var DominionRepository */
     protected $dominions;
