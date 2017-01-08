@@ -3,29 +3,51 @@
 @section('page-header', "Register to round {$round->number} ({$round->league->description})")
 
 @section('content')
-    <div class="row">
-        <div class="col-sm-6 col-md-5 col-lg-4">
-            <form action="{{ route('round.register', $round) }}" method="post" role="form">
-                {{ csrf_field() }}
-                <fieldset>
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="dominion_name" placeholder="Dominion Name" autofocus>
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Register to round {{ $round->name }} (#{{ $round->number }})</h3>
+        </div>
+        <form action="{{ route('round.register', $round) }}" method="post" class="form-horizontal" role="form">
+            {!! csrf_field() !!}
+
+            <div class="box-body">
+
+                <!-- Dominion Name -->
+                <div class="form-group">
+                    <label for="dominion_name" class="col-sm-3 control-label">Dominion Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="dominion_name" id="dominion_name" class="form-control" placeholder="Dominion Name" required>
                     </div>
-                    <div class="form-group">
-                        <select class="form-control" name="race" required>
+                </div>
+
+                <!-- Race -->
+                <div class="form-group">
+                    <label for="race" class="col-sm-3 control-label">Race</label>
+                    <div class="col-sm-9">
+                        <select name="race" class="form-control" required>
                             @foreach ($races as $race)
                                 <option value="{{ $race->id }}">{{ $race->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <select class="form-control" name="realm" required>
+                </div>
+
+                <!-- Realm -->
+                <div class="form-group">
+                    <label for="realm" class="col-sm-3 control-label">Realm</label>
+                    <div class="col-sm-9">
+                        <select name="realm" class="form-control" required>
                             <option value="random">Put me in a random realm</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-lg btn-success btn-block">Register</button>
-                </fieldset>
-            </form>
-        </div>
+                </div>
+
+            </div>
+
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+
+        </form>
     </div>
 @endsection
