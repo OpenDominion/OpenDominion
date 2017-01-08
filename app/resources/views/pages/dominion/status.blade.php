@@ -1,8 +1,10 @@
 @extends('layouts.master')
 
-@section('page-header', "{$dominion->name} Status")
+@section('page-header', "{$selectedDominion->name} Status")
 
 @section('content')
+    {{ $selectedDominion }}
+
     {{--<div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">

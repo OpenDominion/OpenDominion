@@ -15,10 +15,8 @@ class DominionController extends AbstractController
         return redirect(route('dominion.status'));
     }
 
-    public function getStatus(Dominion $dominion)
+    public function getStatus()
     {
-        return view('pages.dominion.status', [
-            'dominion' => $dominion,
-        ]);
+        return view('pages.dominion.status');
     }
 }
