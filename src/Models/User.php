@@ -15,10 +15,10 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     protected $hidden = ['password', 'remember_token', 'activation_code'];
 
-    public function dominion(Round $round)
-    {
+//    public function dominion(Round $round)
+//    {
 //        return $this->dominions()->where('round_id', $round->id)->get();
-    }
+//    }
 
     public function dominions()
     {
