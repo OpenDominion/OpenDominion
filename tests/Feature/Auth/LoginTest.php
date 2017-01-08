@@ -19,8 +19,7 @@ class LoginTest extends BaseTestCase
             ->type($user->email, 'email')
             ->type($password, 'password')
             ->press('Login')
-            ->seePageIs('/dashboard')
-            ->see("Welcome back, <b>{$user->display_name}</b>.");
+            ->seePageIs('/dashboard');
     }
 
     public function testUserCanLogout()
