@@ -23,7 +23,7 @@
                         <table class="table">
                             <colgroup>
                                 <col>
-                                <col width="120">
+                                <col width="320">
                                 <col width="80">
                                 <col width="80">
                             </colgroup>
@@ -39,7 +39,10 @@
                                 @foreach ($dominions->all() as $dominion)
                                     <tr>
                                         <td>
-                                            <a href="#">{{ $dominion->name }}</a>
+                                            <form action="{{ route('dominion.play', $dominion) }}" method="post">
+                                                {!! csrf_field() !!}
+                                                <button type="submit" class="btn btn-link">{{ $dominion->name }}</button>
+                                            </form>
                                         </td>
                                         <td class="text-center">
                                             #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
