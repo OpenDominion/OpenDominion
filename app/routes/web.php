@@ -47,7 +47,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
     $router->group(['prefix' => 'dominion'], function (Router $router) {
 
-        $router->post('{dominion}/play', ['as' => 'dominion.play', 'uses' => 'DominionController@postPlay']);
+        $router->post('{dominion}/select', ['as' => 'dominion.select', 'uses' => 'DominionController@postSelect']);
 
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
 

@@ -7,7 +7,7 @@ use OpenDominion\Services\DominionSelectorService;
 
 class DominionController extends AbstractController
 {
-    public function postPlay(Dominion $dominion)
+    public function postSelect(Dominion $dominion)
     {
         $dominionSelectorService = app()->make(DominionSelectorService::class);
 
@@ -17,8 +17,6 @@ class DominionController extends AbstractController
         } catch (\Exception $e) {
             return response('Unauthorized', 401);
         }
-        // Check that round is active
-        // todo
 
         return redirect(route('dominion.status'));
     }

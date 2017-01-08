@@ -39,7 +39,7 @@
                                 @foreach ($dominions->all() as $dominion)
                                     <tr>
                                         <td>
-                                            <form action="{{ route('dominion.play', $dominion) }}" method="post">
+                                            <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                 {!! csrf_field() !!}
                                                 <button type="submit" class="btn btn-link">{{ $dominion->name }}</button>
                                             </form>
