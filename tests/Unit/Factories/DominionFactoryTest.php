@@ -9,14 +9,18 @@ use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Round;
+use OpenDominion\Models\User;
 use OpenDominion\Tests\BaseTestCase;
 
 class DominionFactoryTest extends BaseTestCase
 {
     use DatabaseMigrations;
 
+    /** @var User */
     protected $user;
 
+    /** @var Round */
     protected $round;
 
     protected function setUp()
