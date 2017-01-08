@@ -2,22 +2,24 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use Auth;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\DominionSelectorService;
 
 class DominionController extends AbstractController
 {
     public function postPlay(Dominion $dominion)
     {
-        // Check if dominion belongs to logged in user
-        if ($dominion->user_id != Auth::user()->id) {
+        $dominionSelectorService = app()->make(DominionSelectorService::class);
+
+        try {
+            $dominionSelectorService->selectUserDominion($dominion);
+
+        } catch (\Exception $e) {
             return response('Unauthorized', 401);
         }
-
         // Check that round is active
         // todo
 
-        session(['selected_dominion_id' => $dominion->id]);
         return redirect(route('dominion.status'));
     }
 

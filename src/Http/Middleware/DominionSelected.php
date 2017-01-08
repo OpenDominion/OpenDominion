@@ -3,14 +3,22 @@
 namespace OpenDominion\Http\Middleware;
 
 use Closure;
+use OpenDominion\Services\DominionSelectorService;
 
 class DominionSelected
 {
+    /** @var DominionSelectorService */
+    protected $dominionSelectorService;
+
+    function __construct(DominionSelectorService $dominionSelectorService)
+    {
+        $this->dominionSelectorService = $dominionSelectorService;
+    }
+
     public function handle($request, Closure $next)
     {
-        if (!session('selected_dominion_id')) {
+        if (!$this->dominionSelectorService->hasUserSelectedDominion()) {
             return redirect(route('dashboard'));
-            // todo: throw 401?
         }
 
         return $next($request);
