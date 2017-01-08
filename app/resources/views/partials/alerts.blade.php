@@ -1,4 +1,4 @@
-@if (App::environment() !== 'production')
+@if (0 && App::environment() !== 'production')
     <div class="alert alert-warning alert-dismissible">
         <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <h4><i class="icon fa fa-warning"></i> Heads up!</h4>

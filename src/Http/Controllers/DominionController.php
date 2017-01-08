@@ -30,27 +30,27 @@ class DominionController extends AbstractController
 
     public function getAdvisors()
     {
-        return view('pages.dominion.advisors');
+        return redirect(route('dominion.advisors.production'));
     }
 
     public function getAdvisorsProduction()
     {
-        // todo
+        return view('pages.dominion.advisors.production');
     }
 
     public function getAdvisorsMilitary()
     {
-        // todo
+        return view('pages.dominion.advisors.military');
     }
 
     public function getAdvisorsLand()
     {
-        // todo
+        return view('pages.dominion.advisors.land');
     }
 
     public function getAdvisorsConstruction()
     {
-        // todo
+        return view('pages.dominion.advisors.construction');
     }
 
     // Actions
