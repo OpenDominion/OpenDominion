@@ -23,7 +23,7 @@ class DominionFactory
     protected $realmService;
 
     /**
-     * DominionService constructor.
+     * DominionFactory constructor.
      *
      * @param DominionRepository $dominions
      * @param NetworthCalculator $networthCalculator
