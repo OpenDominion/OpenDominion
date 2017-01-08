@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\DominionSelectorService;
 
@@ -35,7 +36,15 @@ class DominionController extends AbstractController
 
     public function getAdvisorsProduction()
     {
-        return view('pages.dominion.advisors.production');
+        $dominionSelectorService = app()->make(DominionSelectorService::class);
+        $dominion = $dominionSelectorService->getUserSelectedDominion();
+
+        $productionCalculator = app()->make(ProductionCalculator::class);
+        $productionCalculator->setDominion($dominion);
+
+        // todo: refactor this
+
+        return view('pages.dominion.advisors.production', compact('productionCalculator'));
     }
 
     public function getAdvisorsMilitary()

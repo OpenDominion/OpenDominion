@@ -5,5 +5,5 @@
 @section('content')
     @include('partials.dominion.advisor-selector')
 
-    todo
+    {{ $productionCalculator->getPlatinumProduction() }}
 @endsection
