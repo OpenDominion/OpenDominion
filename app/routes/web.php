@@ -53,12 +53,4 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
     });
 
-
-
-//    $router->group(['prefix' => 'dominion/{dominion}', 'middleware' => 'owndominion'], function (Router $router) {
-
-//        $router->get('status', ['as' => 'dominion.status', 'uses' => 'DominionController@getStatus']);
-
-//    });
-
 });
