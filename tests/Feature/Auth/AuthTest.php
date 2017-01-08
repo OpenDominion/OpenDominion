@@ -22,9 +22,9 @@ class AuthTest extends BaseTestCase
         $this->createAndImpersonateUser();
 
         $this->visit('/auth/login')
-            ->seePageIs('/');
+            ->seePageIs('/dashboard');
 
         $this->visit('/auth/register')
-            ->seePageIs('/');
+            ->seePageIs('/dashboard');
     }
 }
