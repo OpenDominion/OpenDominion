@@ -27,7 +27,12 @@
                     <ul class="dropdown-menu">
                         <li class="user-footer">
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">Logout</a>
+                                <form action="{{ route('auth.logout') }}" method="post">
+                                    {!! csrf_field() !!}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa fa-sign-out fa-fw"></i> Logout
+                                    </button>
+                                </form>
                             </div>
                         </li>
                     </ul>
