@@ -116,7 +116,7 @@ class PopulationCalculator
         return (int)max(
             ((-0.05 * $this->dominion->peasants) - $this->getPopulationDrafteeGrowth()),
             min(
-                ($this->getMaxPopulation() - $this->dominion->peasants - $this->dominion->getPopulationMilitary() - $this->getPopulationDrafteeGrowth()),
+                ($this->getMaxPopulation() - $this->dominion->peasants - $this->getPopulationMilitary() - $this->getPopulationDrafteeGrowth()),
                 ($this->getPopulationBirth() - $this->getPopulationDrafteeGrowth())
             )
         );
