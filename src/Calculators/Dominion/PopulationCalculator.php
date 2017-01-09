@@ -9,6 +9,35 @@ class PopulationCalculator
     use DominionAwareTrait;
 
     /**
+     * Returns the Dominion's population, military and non-military.
+     *
+     * @return int
+     */
+    public function getPopulation()
+    {
+        return ($this->dominion->peasants + $this->getPopulationMilitary());
+    }
+
+    /**
+     * Returns the Dominion's military population.
+     *
+     * @return int
+     */
+    public function getPopulationMilitary()
+    {
+        return (
+            $this->dominion->draftees
+            + $this->dominion->military_unit1
+            + $this->dominion->military_unit2
+            + $this->dominion->military_unit3
+            + $this->dominion->military_unit4
+            + $this->dominion->military_spies
+            + $this->dominion->military_wizards
+            + $this->dominion->military_archmages
+        );
+    }
+
+    /**
      * Returns the Dominion's max population.
      *
      * @return int
@@ -119,7 +148,7 @@ class PopulationCalculator
      */
     public function getPopulationPeasantPercentage()
     {
-        return (($this->dominion->peasants / $this->dominion->getPopulation()) * 100);
+        return (($this->dominion->peasants / $this->getPopulation()) * 100);
     }
 
     /**
@@ -129,7 +158,7 @@ class PopulationCalculator
      */
     public function getPopulationMilitaryPercentage()
     {
-        return (($this->dominion->getPopulationMilitary() / $this->dominion->getPopulation()) * 100);
+        return (($this->getPopulationMilitary() / $this->getPopulation()) * 100);
     }
 
     public function getPopulationMilitaryMaxTrainable()
