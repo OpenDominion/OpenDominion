@@ -47,7 +47,7 @@ class PopulationCalculator
         $population = 0;
 
         // Raw pop * multiplier
-        $population += ($this->getRawMaxPopulation() * $this->getPopulationMaxMultiplier());
+        $population += ($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
 
         // todo
         // Military
@@ -59,7 +59,7 @@ class PopulationCalculator
         return $population;
     }
 
-    public function getRawMaxPopulation()
+    public function getMaxPopulationRaw()
     {
         return 0; // todo
     }
@@ -73,7 +73,7 @@ class PopulationCalculator
      *
      * @return float
      */
-    public function getPopulationMaxMultiplier()
+    public function getMaxPopulationMultiplier()
     {
         $multiplier = 1.0;
 
@@ -93,7 +93,7 @@ class PopulationCalculator
      */
     public function getPopulationBirth()
     {
-        return (int)($this->getPopulationBirthRaw() * $this->getPopulationBirthModifier());
+        return (int)($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
     }
 
     public function getPopulationBirthRaw()
@@ -101,7 +101,7 @@ class PopulationCalculator
         return 0; // todo
     }
 
-    public function getPopulationBirthModifier()
+    public function getPopulationBirthMultiplier()
     {
         return 1; // todo
     }

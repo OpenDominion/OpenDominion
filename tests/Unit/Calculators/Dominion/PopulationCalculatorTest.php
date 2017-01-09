@@ -41,6 +41,11 @@ class PopulationCalculatorTest extends BaseTestCase
         $this->markTestIncomplete();
     }
 
+    public function testGetPopulationBirthMultiplier()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function testGetPopulationPeasantGrowth()
     {
         $this->markTestIncomplete();
