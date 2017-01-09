@@ -6,6 +6,16 @@ use OpenDominion\Tests\BaseTestCase;
 
 class PopulationCalculatorTest extends BaseTestCase
 {
+    public function testGetPopulation()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetPopulationMilitary()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function testGetMaxPopulation()
     {
         $this->markTestIncomplete();
