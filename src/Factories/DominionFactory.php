@@ -22,6 +22,9 @@ class DominionFactory
     /** @var RealmFinderService */
     protected $realmFinderService;
 
+    /** @var RealmFactory */
+    protected $realmFactory;
+
     /**
      * DominionFactory constructor.
      *
@@ -29,11 +32,12 @@ class DominionFactory
      * @param NetworthCalculator $networthCalculator
      * @param RealmFinderService $realmFinderService
      */
-    public function __construct(DominionRepository $dominions, NetworthCalculator $networthCalculator, RealmFinderService $realmFinderService)
+    public function __construct(DominionRepository $dominions, NetworthCalculator $networthCalculator, RealmFinderService $realmFinderService, RealmFactory $realmFactory)
     {
         $this->dominions = $dominions;
         $this->networthCalculator = $networthCalculator;
         $this->realmFinderService = $realmFinderService;
+        $this->realmFactory = $realmFactory;
     }
 
     /**
@@ -55,18 +59,26 @@ class DominionFactory
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
-        // Get realm
-        if ($realmType === 'random') {
-            $realmType = $this->realmFinderService->findRandom($round, $race);
-        } else {
-            throw new Exception("Realm '{$realmType}' not supported");
+        // Try to find a vacant realm
+        switch ($realmType) {
+            case 'random':
+                $realm = $this->realmFinderService->findRandom($round, $race);
+                break;
+
+            default:
+                throw new Exception("Realm type '{$realmType}' not supported");
+        }
+
+        // No vacant realm. Create a new one instead
+        if ($realm === null) {
+            $realm = $this->realmFactory->create($round, $race->alignment);
         }
 
         // Create dominion
         $dominion = $this->dominions->create([
             'user_id' => $user->id,
             'round_id' => $round->id,
-            'realm_id' => $realmType->id,
+            'realm_id' => $realm->id,
             'race_id' => $race->id,
             'name' => $name,
             'networth' => 0,

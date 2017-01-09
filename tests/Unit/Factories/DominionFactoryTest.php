@@ -48,6 +48,8 @@ class DominionFactoryTest extends BaseTestCase
         $this->assertEquals($dominion->id, Dominion::first()->id);
     }
 
+    // todo: test realmType / multiple dominions in realm?
+
     public function testCreateUpdatesDominionNetworth()
     {
         $race = Race::firstOrFail();

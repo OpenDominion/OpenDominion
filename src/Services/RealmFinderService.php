@@ -16,32 +16,27 @@ class RealmFinderService
     /** @var RealmRepository */
     protected $realms;
 
-    /** @var RealmFactory */
-    protected $realmFactory;
-
     /**
      * RealmService constructor.
      *
      * @param RealmRepository $realms
      */
-    public function __construct(RealmRepository $realms, RealmFactory $realmFactory)
+    public function __construct(RealmRepository $realms)
     {
         $this->realms = $realms;
-        $this->realmFactory = $realmFactory;
     }
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
      *
-     * The new Dominion currently gets placed in a random Realm of the same alignment of its Race, up to a max of 12
-     * Dominions in that realm.
+     * Up to 12 Dominions can exist in a realm.
      *
      * @see DominionFactory::create()
      *
      * @param Round $round
      * @param Race $race
      *
-     * @return Realm
+     * @return Realm|null
      */
     public function findRandom(Round $round, Race $race)
     {
@@ -61,12 +56,15 @@ class RealmFinderService
             ->get();
 
         if ($results->isEmpty()) {
-            $realm = $this->realmFactory->create($round, $race->alignment);
+            return null;
 
-        } else {
-            $realm = Realm::findOrFail($results->first()->id);
         }
 
+        // todo: repositories!!
+        $realmId = $results->first()->id;
+
+        /** @var Realm $realm */
+        $realm = Realm::findOrFail($realmId);
         return $realm;
     }
 }
