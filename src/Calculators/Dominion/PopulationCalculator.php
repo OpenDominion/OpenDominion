@@ -46,17 +46,19 @@ class PopulationCalculator
     {
         $population = 0;
 
+        // Values
+        $troopsPerBarracks = 36;
+
         // Raw pop * multiplier
         $population += ($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
 
-        // todo
         // Military
-//        $population += min(
-//            ($this->getPopulationMilitary($dominion) - $dominion->draftees),
-//            ($dominion->building_barracks * 36),
-//        );
+        $population += min(
+            ($this->getPopulationMilitary() - $this->dominion->draftees),
+            ($this->dominion->building_barracks * $troopsPerBarracks)
+        );
 
-        return $population;
+        return round($population);
     }
 
     public function getMaxPopulationRaw()
