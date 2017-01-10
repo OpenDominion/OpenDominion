@@ -6,6 +6,7 @@ use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Round;
 use OpenDominion\Services\RealmFinderService;
 use OpenDominion\Tests\BaseTestCase;
 
@@ -13,32 +14,37 @@ class RealmFinderServiceTest extends BaseTestCase
 {
     use DatabaseMigrations;
 
+    /** @var Round */
     protected $round;
+
+    /** @var RealmFinderService */
+    protected $realmFinderService;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->seed(CoreDataSeeder::class);
+
         $this->round = $this->createRound();
+
+        $this->realmFinderService = $this->app->make(RealmFinderService::class);
     }
 
     public function testFindRandomReturnsVacantRealmBasedOnRaceAlignment()
     {
-        $realmFinderService = $this->app->make(RealmFinderService::class);
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
         $goodRealm = $this->createRealm($this->round, $goodRace->alignment);
 
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
         $evilRealm = $this->createRealm($this->round, $evilRace->alignment);
 
-        $testRealm = $realmFinderService->findRandom($this->round, $goodRace);
+        $testRealm = $this->realmFinderService->findRandom($this->round, $goodRace);
 
         $this->assertNotNull($testRealm);
         $this->assertEquals($goodRealm->id, $testRealm->id);
 
-        $testRealm = $realmFinderService->findRandom($this->round, $evilRace);
+        $testRealm = $this->realmFinderService->findRandom($this->round, $evilRace);
 
         $this->assertNotNull($testRealm);
         $this->assertEquals($evilRealm->id, $testRealm->id);
@@ -46,22 +52,18 @@ class RealmFinderServiceTest extends BaseTestCase
 
     public function testFindRandomReturnsNullWhenNoValidRealmExists()
     {
-        $realmFinderService = $this->app->make(RealmFinderService::class);
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
 
-        $this->assertNull($realmFinderService->findRandom($this->round, $goodRace));
+        $this->assertNull($this->realmFinderService->findRandom($this->round, $goodRace));
 
         $this->createRealm($this->round, $evilRace->alignment);
 
-        $this->assertNull($realmFinderService->findRandom($this->round, $goodRace));
+        $this->assertNull($this->realmFinderService->findRandom($this->round, $goodRace));
     }
 
     public function testFindRandomReturnsNullIfAllValidRealmsAreFull()
     {
-        $realmFinderService = $this->app->make(RealmFinderService::class);
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
 
         // Create 3 realms full of dominions
@@ -73,6 +75,6 @@ class RealmFinderServiceTest extends BaseTestCase
 
         $this->assertEquals(3, Realm::count());
 
-        $this->assertNull($realmFinderService->findRandom($this->round, $goodRace));
+        $this->assertNull($this->realmFinderService->findRandom($this->round, $goodRace));
     }
 }

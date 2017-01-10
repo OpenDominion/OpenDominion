@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use CoreDataSeeder;
+use Exception;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
@@ -23,6 +24,9 @@ class DominionSelectorServiceTest extends BaseTestCase
     /** @var Dominion */
     protected $dominion;
 
+    /** @var DominionSelectorService */
+    protected $dominionSelectorService;
+
     protected function setUp()
     {
         parent::setUp();
@@ -32,31 +36,28 @@ class DominionSelectorServiceTest extends BaseTestCase
         $this->user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($this->user, $this->round);
+        $this->dominionSelectorService = $this->app->make(DominionSelectorService::class);
     }
 
     public function testUserCanSelectADominion()
     {
-        $dominionSelectorService = $this->app->make(DominionSelectorService::class);
+        $this->assertFalse($this->dominionSelectorService->hasUserSelectedDominion());
+        $this->assertNull($this->dominionSelectorService->getUserSelectedDominion());
 
-        $this->assertFalse($dominionSelectorService->hasUserSelectedDominion());
-        $this->assertNull($dominionSelectorService->getUserSelectedDominion());
+        $this->dominionSelectorService->selectUserDominion($this->dominion);
 
-        $dominionSelectorService->selectUserDominion($this->dominion);
-
-        $this->assertTrue($dominionSelectorService->hasUserSelectedDominion());
-        $this->assertEquals($this->dominion->id, $dominionSelectorService->getUserSelectedDominion()->id);
+        $this->assertTrue($this->dominionSelectorService->hasUserSelectedDominion());
+        $this->assertEquals($this->dominion->id, $this->dominionSelectorService->getUserSelectedDominion()->id);
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException Exception
      */
     public function testUserCannotSelectSomeoneElsesDominion()
     {
         $user2 = $this->createUser();
         $dominion2 = $this->createDominion($user2, $this->round);
 
-        $dominionSelectorService = $this->app->make(DominionSelectorService::class);
-
-        $dominionSelectorService->selectUserDominion($dominion2);
+        $this->dominionSelectorService->selectUserDominion($dominion2);
     }
 }
