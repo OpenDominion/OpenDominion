@@ -6,7 +6,7 @@ use OpenDominion\Models\Race;
 
 class LandHelper
 {
-    public static function getLandTypes()
+    public function getLandTypes()
     {
         return [
             'plain' => 'Plains',
