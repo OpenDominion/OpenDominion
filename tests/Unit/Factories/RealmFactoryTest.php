@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
-use OpenDominion\Models\User;
 use OpenDominion\Tests\BaseTestCase;
 
 class RealmFactoryTest extends BaseTestCase
@@ -17,6 +16,9 @@ class RealmFactoryTest extends BaseTestCase
     /** @var Round */
     protected $round;
 
+    /** @var RealmFactory */
+    protected $realmFactory;
+
     protected function setUp()
     {
         parent::setUp();
@@ -24,15 +26,15 @@ class RealmFactoryTest extends BaseTestCase
         $this->seed(CoreDataSeeder::class);
 
         $this->round = $this->createRound();
+
+        $this->realmFactory = $this->app->make(RealmFactory::class);
     }
 
     public function testCreate()
     {
-        $realmFactory = $this->app->make(RealmFactory::class);
-
         $this->assertEquals(0, Realm::count());
 
-        $realm = $realmFactory->create($this->round, 'good');
+        $realm = $this->realmFactory->create($this->round, 'good');
 
         $this->assertEquals(1, Realm::count());
         $this->assertEquals($realm->id, Realm::first()->id);

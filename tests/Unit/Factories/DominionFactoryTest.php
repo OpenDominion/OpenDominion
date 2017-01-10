@@ -23,6 +23,12 @@ class DominionFactoryTest extends BaseTestCase
     /** @var Round */
     protected $round;
 
+    /** @var Race */
+    protected $race;
+
+    /** @var DominionFactory */
+    protected $dominionFactory;
+
     protected function setUp()
     {
         parent::setUp();
@@ -31,17 +37,17 @@ class DominionFactoryTest extends BaseTestCase
 
         $this->user = $this->createUser();
         $this->round = $this->createRound();
+        $this->race = Race::firstOrFail();
+
+        $this->dominionFactory = $this->app->make(DominionFactory::class);
     }
 
     public function testCreate()
     {
-        $race = Race::firstOrFail();
-        $dominionFactory = $this->app->make(DominionFactory::class);
-
         $this->assertEquals(0, Realm::count());
         $this->assertEquals(0, Dominion::count());
 
-        $dominion = $dominionFactory->create($this->user, $this->round, $race, 'random', 'Dummy');
+        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy');
 
         $this->assertEquals(1, Realm::count());
         $this->assertEquals(1, Dominion::count());
@@ -52,10 +58,7 @@ class DominionFactoryTest extends BaseTestCase
 
     public function testCreateUpdatesDominionNetworth()
     {
-        $race = Race::firstOrFail();
-        $dominionFactory = $this->app->make(DominionFactory::class);
-
-        $dominion = $dominionFactory->create($this->user, $this->round, $race, 'random', 'Dummy');
+        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy');
 
         $this->assertEquals(1000, $dominion->networth);
     }
