@@ -22,41 +22,67 @@ class CreateDominionsTable extends Migration
 
             $table->string('name');
             $table->integer('networth');
-            $table->integer('prestige');
+            $table->integer('prestige')->unsigned();
 
-            $table->integer('peasants');
-            $table->integer('peasants_last_hour')->default(0);
+            $table->integer('peasants')->unsigned();
+            $table->integer('peasants_last_hour')->unsigned()->default(0);
 
-            $table->integer('draft_rate');
-            $table->integer('morale');
+            $table->integer('draft_rate')->unsigned();
+            $table->integer('morale')->unsigned();
+//            $table->integer('wizard_strength')->unsigned();
 
-            $table->integer('resource_platinum');
-            $table->integer('resource_food');
-            $table->integer('resource_lumber');
-            // todo: mana, ore, gems, tech, boats
+            $table->integer('resource_platinum')->unsigned();
+            $table->integer('resource_food')->unsigned();
+            $table->integer('resource_lumber')->unsigned();
+//            $table->integer('resource_mana')->unsigned();
+//            $table->integer('resource_ore')->unsigned();
+//            $table->integer('resource_gems')->unsigned();
+//            $table->integer('resource_tech')->unsigned();
+//            $table->integer('resource_boats')->unsigned();
 
-            $table->integer('military_draftees');
-            $table->integer('military_unit1');
-            $table->integer('military_unit2');
-            $table->integer('military_unit3');
-            $table->integer('military_unit4');
-            $table->integer('military_spies');
-            $table->integer('military_wizards');
-            $table->integer('military_archmages');
+//            $table->integer('improvement_science')->unsigned();
+//            $table->integer('improvement_keep')->unsigned();
+//            $table->integer('improvement_towers')->unsigned();
+//            $table->integer('improvement_forges')->unsigned();
+//            $table->integer('improvement_walls')->unsigned();
+//            $table->integer('improvement_irrigation')->unsigned();
 
-            $table->integer('land_plain');
-            $table->integer('land_forest');
-            $table->integer('land_mountain');
-            $table->integer('land_hill');
-            $table->integer('land_swamp');
-            $table->integer('land_water');
-            $table->integer('land_cavern');
+            $table->integer('military_draftees')->unsigned();
+            $table->integer('military_unit1')->unsigned();
+            $table->integer('military_unit2')->unsigned();
+            $table->integer('military_unit3')->unsigned();
+            $table->integer('military_unit4')->unsigned();
+            $table->integer('military_spies')->unsigned();
+            $table->integer('military_wizards')->unsigned();
+            $table->integer('military_archmages')->unsigned();
 
-            $table->integer('building_home');
-            $table->integer('building_alchemy');
-            $table->integer('building_farm');
-            $table->integer('building_lumber_yard');
-            // todo: other buildings
+            $table->integer('land_plain')->unsigned();
+            $table->integer('land_forest')->unsigned();
+            $table->integer('land_mountain')->unsigned();
+            $table->integer('land_hill')->unsigned();
+            $table->integer('land_swamp')->unsigned();
+            $table->integer('land_water')->unsigned();
+            $table->integer('land_cavern')->unsigned();
+
+            $table->integer('building_home')->unsigned();
+            $table->integer('building_alchemy')->unsigned();
+            $table->integer('building_farm')->unsigned();
+//            $table->integer('building_smithy')->unsigned();
+//            $table->integer('building_masonry')->unsigned();
+//            $table->integer('building_ore_mine')->unsigned();
+//            $table->integer('building_gryphon_nest')->unsigned();
+//            $table->integer('building_tower')->unsigned();
+//            $table->integer('building_wizard_guild')->unsigned();
+//            $table->integer('building_temple')->unsigned();
+//            $table->integer('building_diamond_mine')->unsigned();
+//            $table->integer('building_school')->unsigned();
+            $table->integer('building_lumber_yard')->unsigned();
+//            $table->integer('building_forest_haven')->unsigned();
+//            $table->integer('building_factory')->unsigned();
+//            $table->integer('building_guard_tower')->unsigned();
+//            $table->integer('building_shrine')->unsigned();
+//            $table->integer('building_barracks')->unsigned();
+//            $table->integer('building_dock')->unsigned();
 
             $table->timestamps();
 
