@@ -2,27 +2,44 @@
 
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
-use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Mockery as m;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Models\Race;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\BaseTestCase;
 
 class BuildingCalculatorTest extends BaseTestCase
 {
-    use DatabaseMigrations;
+    /** @var Dominion */
+    protected $dominion;
+
+    /** @var BuildingCalculator */
+    protected $buildingCalculator;
+
+    public function __construct()
+    {
+        $this->dominion = m::mock(Dominion::class);
+
+        $this->buildingCalculator = $this->app->make(BuildingCalculator::class)
+            ->setDominion($this->dominion);
+    }
 
     public function testGetTotalBuildings()
     {
-        $this->seed(CoreDataSeeder::class);
-        $user = $this->createUser();
-        $round = $this->createRound();
-        $race = Race::where('alignment', 'good')->firstOrFail();
-        $dominion = $this->createDominion($user, $round, $race);
+        $buildingTypes = [
+            'home',
+            'alchemy',
+            'farm',
+            'lumberyard',
+            'barracks',
+        ];
 
-        $buildingCalculator = $this->app->make(BuildingCalculator::class)
-            ->setDominion($dominion);
+        $expected = 0;
 
-        $this->assertEquals(90, $buildingCalculator->getTotalBuildings());
+        for ($i = 0, $countBuildingTypes = count($buildingTypes); $i < $countBuildingTypes; ++$i) {
+            $this->dominion->shouldReceive('getAttribute')->with("building_{$buildingTypes[$i]}")->andReturn(1 << $i);
+            $expected += (1 << $i);
+        }
+
+        $this->assertEquals($expected, $this->buildingCalculator->getTotalBuildings());
     }
 }
