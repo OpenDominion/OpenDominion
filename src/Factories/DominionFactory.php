@@ -108,7 +108,7 @@ class DominionFactory
             'building_home' => 10,
             'building_alchemy' => 30,
             'building_farm' => 30,
-            'building_lumber_yard' => 20,
+            'building_lumberyard' => 20,
             // todo: expand with more resources and buildings later
         ]);
 

@@ -28,7 +28,7 @@ $factory->define(Dominion::class, function (Faker\Generator $faker) {
         'building_home' => 0,
         'building_alchemy' => 0,
         'building_farm' => 0,
-        'building_lumber_yard' => 0,
+        'building_lumberyard' => 0,
     ];
 });
 

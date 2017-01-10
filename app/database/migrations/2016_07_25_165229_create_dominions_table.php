@@ -76,7 +76,7 @@ class CreateDominionsTable extends Migration
 //            $table->integer('building_temple')->unsigned();
 //            $table->integer('building_diamond_mine')->unsigned();
 //            $table->integer('building_school')->unsigned();
-            $table->integer('building_lumber_yard')->unsigned();
+            $table->integer('building_lumberyard')->unsigned();
 //            $table->integer('building_forest_haven')->unsigned();
 //            $table->integer('building_factory')->unsigned();
 //            $table->integer('building_guard_tower')->unsigned();
