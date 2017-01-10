@@ -19,16 +19,17 @@ $factory->define(Dominion::class, function (Faker\Generator $faker) {
         'resource_lumber' => 0,
         'military_draftees' => 0,
         'land_plain' => 0,
-        'land_forest' => 0,
         'land_mountain' => 0,
-        'land_hill' => 0,
         'land_swamp' => 0,
-        'land_water' => 0,
         'land_cavern' => 0,
+        'land_forest' => 0,
+        'land_hill' => 0,
+        'land_water' => 0,
         'building_home' => 0,
         'building_alchemy' => 0,
         'building_farm' => 0,
         'building_lumberyard' => 0,
+        'building_baracks' => 0,
     ];
 });
 

@@ -82,11 +82,12 @@ class DominionFactory
             'race_id' => $race->id,
             'name' => $name,
             'networth' => 0,
-            'prestige' => 0,
+            'prestige' => 250,
             'peasants' => 1300,
             'peasants_last_hour' => 0,
             'draft_rate' => 10,
             'morale' => 100,
+//            'wizard_strength' => 100,
             'resource_platinum' => 100000, // todo: get starting values from configs/data
             'resource_food' => 15000,
             'resource_lumber' => 15000,
@@ -98,17 +99,19 @@ class DominionFactory
             'military_spies' => 25,
             'military_wizards' => 25,
             'military_archmages' => 0,
-            'land_plain' => 40,
-            'land_forest' => 20,
+            'land_plain' => 100,
             'land_mountain' => 20,
-            'land_hill' => 20,
             'land_swamp' => 20,
-            'land_water' => 20,
             'land_cavern' => 20,
+            'land_forest' => 40,
+            'land_hill' => 20,
+            'land_water' => 20,
             'building_home' => 10,
             'building_alchemy' => 30,
             'building_farm' => 30,
             'building_lumberyard' => 20,
+            // todo
+            'building_barracks' => 0,
             // todo: expand with more resources and buildings later
         ]);
 

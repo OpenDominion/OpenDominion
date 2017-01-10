@@ -57,12 +57,12 @@ class CreateDominionsTable extends Migration
             $table->integer('military_archmages')->unsigned();
 
             $table->integer('land_plain')->unsigned();
-            $table->integer('land_forest')->unsigned();
             $table->integer('land_mountain')->unsigned();
-            $table->integer('land_hill')->unsigned();
             $table->integer('land_swamp')->unsigned();
-            $table->integer('land_water')->unsigned();
             $table->integer('land_cavern')->unsigned();
+            $table->integer('land_forest')->unsigned();
+            $table->integer('land_hill')->unsigned();
+            $table->integer('land_water')->unsigned();
 
             $table->integer('building_home')->unsigned();
             $table->integer('building_alchemy')->unsigned();
