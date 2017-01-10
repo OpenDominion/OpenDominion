@@ -19,7 +19,7 @@ class LandHelper
         ];
     }
 
-    public static function getLandTypeByBuilding($building, Race $race)
+    public function getLandTypeForBuildingByRace($building, Race $race)
     {
         return []; // todo
     }
