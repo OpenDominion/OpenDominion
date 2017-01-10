@@ -61,16 +61,60 @@ class PopulationCalculator
         return round($population);
     }
 
+    /**
+     * Returns the Dominion's raw max population.
+     *
+     * Raw max population is calculated by buildings (except barracks) and barren land.
+     *
+     * @return int
+     */
     public function getMaxPopulationRaw()
     {
-        return 0; // todo
+        $population = 0;
+
+        // Values
+        $housingPerHome = 30;
+        $housingPerNonHome = 15; // except barracks
+        $housingPerBarracks = 0;
+        //$housingPerBarrenLand = 5;
+
+        // todo: race bonus for barren land
+
+        $buildingTypes = []; // todo: BuildingHelper::getBuildingTypeS()
+
+        foreach (array_keys($buildingTypes) as $buildingType) {
+            $housing = 0;
+
+            switch ($buildingType) {
+                case 'home':
+                    $housing = $housingPerHome;
+                    break;
+
+                case 'barracks':
+                    $housing = $housingPerBarracks;
+                    break;
+
+                default:
+                    $housing = $housingPerNonHome;
+                    break;
+            }
+
+            $population += ($this->dominion->{'building_' . $buildingType} * $housing);
+        }
+
+        // Housing per barren land
+        //$population += ($this->landCalculator->getTotalBarrenLand() * $housingPerBarrenLand);
+
+        return $population;
     }
 
     /**
-     * Returns the Dominion's population max multiplier.
+     * Returns the Dominion's max population multiplier.
      *
-     * Population max multiplier is affected by:
-     * - Racial bonuses
+     * Max population multiplier is affected by:
+     * - Racial bonuses (todo)
+     * - Improvement: Keep (todo)
+     * - Tech: Urban Mastery and Construction (todo)
      * - Prestige bonus
      *
      * @return float
@@ -79,10 +123,23 @@ class PopulationCalculator
     {
         $multiplier = 1.0;
 
+        // Values
+//        $techUrbanMasteryMultiplier = 1.075;
+//        $techConstructionMultiplier = 1.02;
+
         // Racial bonus
         // todo
 
-        // Racial bonus
+        // Improvement: Keep
+        // todo
+
+        // Tech: Urban Mastery
+        // todo
+
+        // Tech: Construction
+        // todo
+
+        // Prestige bonus
         $multiplier *= (1 + ($this->dominion->prestige / 10000));
 
         return $multiplier;
