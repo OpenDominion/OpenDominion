@@ -15,8 +15,10 @@ class BuildingCalculatorTest extends BaseTestCase
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
-    public function __construct()
+    protected function setUp()
     {
+        parent::setUp();
+
         $this->dominion = m::mock(Dominion::class);
 
         $this->buildingCalculator = $this->app->make(BuildingCalculator::class)

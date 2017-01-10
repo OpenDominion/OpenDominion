@@ -23,7 +23,7 @@ class RealmFinderServiceTest extends BaseTestCase
     /** @var RealmFinderService */
     protected $realmFinderService;
 
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
 
