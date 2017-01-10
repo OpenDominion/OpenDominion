@@ -81,7 +81,7 @@ class CreateDominionsTable extends Migration
 //            $table->integer('building_factory')->unsigned();
 //            $table->integer('building_guard_tower')->unsigned();
 //            $table->integer('building_shrine')->unsigned();
-//            $table->integer('building_barracks')->unsigned();
+            $table->integer('building_barracks')->unsigned();
 //            $table->integer('building_dock')->unsigned();
 
             $table->timestamps();
