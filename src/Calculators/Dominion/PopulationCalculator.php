@@ -167,7 +167,7 @@ class PopulationCalculator extends AbstractDominionCalculator
     }
 
     /**
-     * Return's the Dominions raw population birth.
+     * Returns the Dominions raw population birth.
      *
      * @return float
      */
@@ -184,9 +184,29 @@ class PopulationCalculator extends AbstractDominionCalculator
         return $birth;
     }
 
+    /**
+     * Returns the Dominion's population birth multiplier.
+     *
+     * @return float
+     */
     public function getPopulationBirthMultiplier()
     {
-        return 1; // todo
+        $multiplier = 1;
+
+        // Values
+        //$spellHarmony = 1.5;
+        //$templeBonus = 6;
+
+        // Racial bonus
+        // todo
+
+        // Spell: Harmony
+        // todo
+
+        // Temples
+        //$multiplier += (($this->dominion->building_temple * $templeBonus) / $this->landCalculator->getTotalLand());
+
+        return $multiplier;
     }
 
     /**
