@@ -6,6 +6,7 @@ use Mockery as m;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Race;
 use OpenDominion\Tests\BaseTestCase;
 
 class LandCalculatorTest extends BaseTestCase
@@ -73,6 +74,54 @@ class LandCalculatorTest extends BaseTestCase
 
     public function testGetBarrenLandByLandType()
     {
-        $this->markTestIncomplete();
+        $raceMock = m::mock(Race::class);
+        $raceMock->shouldReceive('getAttribute')->with('home_land_type')->andReturn('plain');
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('race')->andReturn($raceMock);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_plain')->andReturn(10);
+        $this->dominionMock->shouldReceive('getAttribute')->with('building_home')->andReturn(1);
+        $this->dominionMock->shouldReceive('getAttribute')->with('building_alchemy')->andReturn(1);
+        $this->dominionMock->shouldReceive('getAttribute')->with('building_farm')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_smithy')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_masonry')->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_mountain')->andReturn(10);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_ore_mine')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_gryphon_nest')->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_swamp')->andReturn(10);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_tower')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_wizard_guild')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_template')->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_cavern')->andReturn(10);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_diamond_mine')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_school')->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_forest')->andReturn(10);
+        $this->dominionMock->shouldReceive('getAttribute')->with('building_lumberyard')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_forest_haven')->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_hill')->andReturn(10);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_factory')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_guard_tower')->andReturn(1);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_shrine')->andReturn(1);
+        $this->dominionMock->shouldReceive('getAttribute')->with('building_barracks')->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('land_water')->andReturn(10);
+//        $this->dominionMock->shouldReceive('getAttribute')->with('building_dock')->andReturn(1);
+
+        // todo: construction queue
+
+        $this->assertEquals([
+            'plain' => 7,
+            'mountain' => 10,
+            'swamp' => 10,
+            'cavern' => 10,
+            'forest' => 9,
+            'hill' => 9,
+            'water' => 10,
+        ], $this->landCalculator->getBarrenLandByLandType());
     }
 }

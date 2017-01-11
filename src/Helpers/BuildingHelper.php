@@ -44,7 +44,7 @@ class BuildingHelper
 //                'ore_mine',
 //                'gryphon_nest',
             ],
-            'swarmp' => [
+            'swamp' => [
 //                'tower',
 //                'wizard_guild',
 //                'template',

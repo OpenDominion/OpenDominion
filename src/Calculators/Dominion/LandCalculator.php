@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionAwareTrait;
@@ -9,6 +10,9 @@ use OpenDominion\Traits\DominionAwareTrait;
 class LandCalculator extends AbstractDominionCalculator
 {
     use DominionAwareTrait;
+
+    /** @var BuildingHelper */
+    protected $buildingHelper;
 
     /** @var LandHelper */
     protected $landHelper;
@@ -20,6 +24,7 @@ class LandCalculator extends AbstractDominionCalculator
     {
         parent::__construct($dominion);
 
+        $this->buildingHelper = app()->make(BuildingHelper::class);
         $this->landHelper = app()->make(LandHelper::class);
         $this->buildingCalculator = app()->make(BuildingCalculator::class, [$dominion]);
     }
@@ -47,11 +52,29 @@ class LandCalculator extends AbstractDominionCalculator
      */
     public function getTotalBarrenLand()
     {
+        // todo: construction queue
+
         return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings());
     }
 
     public function getBarrenLandByLandType()
     {
-        return [];
+        $buildingTypesbyLandType = $this->buildingHelper->getBuildingTypesByLandType($this->dominion->race);
+
+        $return = [];
+
+        foreach ($buildingTypesbyLandType as $landType => $buildingTypes) {
+            $barrenLand = $this->dominion->{'land_' . $landType};
+
+            foreach ($buildingTypes as $buildingType) {
+                $barrenLand -= $this->dominion->{'building_' . $buildingType};
+            }
+
+            // todo: construction queue
+
+            $return[$landType] = $barrenLand;
+        }
+
+        return $return;
     }
 }
