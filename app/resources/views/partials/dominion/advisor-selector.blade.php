@@ -1,4 +1,4 @@
-<div class="box box-info">
+<div class="box">
     <div class="box-header with-border">
         <h3 class="box-title"><i class="fa fa-group fa-fw"></i> Consult advisor</h3>
     </div>

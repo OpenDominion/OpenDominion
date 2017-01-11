@@ -25,7 +25,7 @@ class CreateDominionsTable extends Migration
             $table->integer('prestige')->unsigned();
 
             $table->integer('peasants')->unsigned();
-            $table->integer('peasants_last_hour')->unsigned()->default(0);
+            $table->integer('peasants_last_hour')->default(0);
 
             $table->integer('draft_rate')->unsigned();
             $table->integer('morale')->unsigned();

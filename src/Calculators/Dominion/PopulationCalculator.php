@@ -7,8 +7,6 @@ use OpenDominion\Traits\DominionAwareTrait;
 
 class PopulationCalculator extends AbstractDominionCalculator
 {
-    use DominionAwareTrait;
-
     /** @var LandCalculator */
     protected $landCalculator;
 

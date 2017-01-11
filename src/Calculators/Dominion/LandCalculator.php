@@ -9,8 +9,6 @@ use OpenDominion\Traits\DominionAwareTrait;
 
 class LandCalculator extends AbstractDominionCalculator
 {
-    use DominionAwareTrait;
-
     /** @var BuildingHelper */
     protected $buildingHelper;
 

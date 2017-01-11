@@ -122,4 +122,16 @@
             </div>
         </div>
     </div>
+
+    <div class="box">
+        <div class="box-body">
+            Peasant change last hour: {{ number_format($selectedDominion->peasants_last_hour) }}<br>
+            Maximum population: {{ number_format($populationCalculator->getMaxPopulation()) }}<br>
+            Maximum peasant population: {{ number_format($populationCalculator->getMaxPopulation() - $populationCalculator->getPopulationMilitary()) }}<br>
+            Jobs total: NYI<br>
+            Jobs available: NYI<br>
+            Opportunity cost of job overrun: NYI
+        </div>
+    </div>
+
 @endsection

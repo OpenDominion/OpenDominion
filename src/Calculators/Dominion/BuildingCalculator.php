@@ -8,8 +8,6 @@ use OpenDominion\Traits\DominionAwareTrait;
 
 class BuildingCalculator extends AbstractDominionCalculator
 {
-    use DominionAwareTrait;
-
     /** @var BuildingHelper */
     protected $buildingHelper;
 

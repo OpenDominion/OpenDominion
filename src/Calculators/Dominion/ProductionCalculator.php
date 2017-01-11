@@ -2,11 +2,14 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use OpenDominion\Traits\DominionAwareTrait;
+use OpenDominion\Models\Dominion;
 
-class ProductionCalculator
+class ProductionCalculator extends AbstractDominionCalculator
 {
-    use DominionAwareTrait;
+    public function __construct(Dominion $dominion)
+    {
+        parent::__construct($dominion);
+    }
 
     // Platinum
 
