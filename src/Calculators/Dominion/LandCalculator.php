@@ -3,18 +3,25 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionAwareTrait;
 
-class LandCalculator
+class LandCalculator extends AbstractDominionCalculator
 {
     use DominionAwareTrait;
 
     /** @var LandHelper */
     protected $landHelper;
 
-    public function __construct(LandHelper $landHelper)
+    /** @var BuildingCalculator */
+    protected $buildingCalculator;
+
+    public function __construct(Dominion $dominion)
     {
-        $this->landHelper = $landHelper;
+        parent::__construct($dominion);
+
+        $this->landHelper = app()->make(LandHelper::class);
+        $this->buildingCalculator = app()->make(BuildingCalculator::class, [$dominion]);
     }
 
     /**
@@ -35,7 +42,7 @@ class LandCalculator
 
     public function getTotalBarrenLand()
     {
-        return 0;
+        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings());
     }
 
     public function getBarrenLandByLandType()

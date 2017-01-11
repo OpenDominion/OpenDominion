@@ -3,18 +3,21 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionAwareTrait;
 
-class BuildingCalculator
+class BuildingCalculator extends AbstractDominionCalculator
 {
     use DominionAwareTrait;
 
     /** @var BuildingHelper */
     protected $buildingHelper;
 
-    public function __construct(BuildingHelper $buildingHelper)
+    public function __construct(Dominion $dominion)
     {
-        $this->buildingHelper = $buildingHelper;
+        parent::__construct($dominion);
+
+        $this->buildingHelper = app()->make(BuildingHelper::class);
     }
 
     /**
