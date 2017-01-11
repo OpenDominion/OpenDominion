@@ -166,9 +166,22 @@ class PopulationCalculator extends AbstractDominionCalculator
         return round($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
     }
 
+    /**
+     * Return's the Dominions raw population birth.
+     *
+     * @return float
+     */
     public function getPopulationBirthRaw()
     {
-        return 0; // todo
+        $birth = 0;
+
+        // Values
+        $growthFactor = 1.03;
+
+        // Growth
+        $birth += (($this->dominion->peasants - $this->getPopulationDrafteeGrowth()) * $growthFactor);
+
+        return $birth;
     }
 
     public function getPopulationBirthMultiplier()
