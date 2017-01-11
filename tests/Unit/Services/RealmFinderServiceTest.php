@@ -69,7 +69,8 @@ class RealmFinderServiceTest extends BaseTestCase
         // Create 3 realms full of dominions
         for ($i = 0; $i < 3; $i++) {
             for ($dominionCounter = 0; $dominionCounter < 12; $dominionCounter++) {
-                $this->createDominion($this->createUser(), $this->round, $this->goodRace);
+                $user = $this->createUser(null, ['email' => "test-{$i}-{$dominionCounter}@example.com"]);
+                $this->createDominion($user, $this->round, $this->goodRace) ;
             }
         }
 
