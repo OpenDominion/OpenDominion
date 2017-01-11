@@ -69,6 +69,8 @@ class LandCalculatorTest extends BaseTestCase
 
         $this->buildingCalculatorMock->shouldReceive('getTotalBuildings')->andReturn(1);
 
+        // todo: construction queue
+
         $this->assertEquals(69, $this->landCalculator->getTotalBarrenLand());
     }
 
