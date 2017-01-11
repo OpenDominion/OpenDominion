@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\BaseTestCase;
@@ -11,6 +12,9 @@ class LandCalculatorTest extends BaseTestCase
 {
     /** @var Dominion */
     protected $dominion;
+
+    /** @var BuildingCalculator */
+    protected $buildingCalculatorMock;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -21,8 +25,13 @@ class LandCalculatorTest extends BaseTestCase
 
         $this->dominion = m::mock(Dominion::class);
 
-        $this->landCalculator = $this->app->make(LandCalculator::class)
-            ->setDominion($this->dominion);
+        $this->buildingCalculatorMock = m::mock(BuildingCalculator::class);
+
+        $this->app->bind(BuildingCalculator::class, function ($app) {
+            return $this->buildingCalculatorMock;
+        });
+
+        $this->landCalculator = $this->app->make(LandCalculator::class, [$this->dominion]);
     }
 
     public function testGetTotalLand()
@@ -49,7 +58,17 @@ class LandCalculatorTest extends BaseTestCase
 
     public function testGetTotalBarrenLand()
     {
-        $this->markTestIncomplete();
+        $this->dominion->shouldReceive('getAttribute')->with('land_plain')->andReturn(10);
+        $this->dominion->shouldReceive('getAttribute')->with('land_mountain')->andReturn(10);
+        $this->dominion->shouldReceive('getAttribute')->with('land_swamp')->andReturn(10);
+        $this->dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(10);
+        $this->dominion->shouldReceive('getAttribute')->with('land_forest')->andReturn(10);
+        $this->dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(10);
+        $this->dominion->shouldReceive('getAttribute')->with('land_water')->andReturn(10);
+
+        $this->buildingCalculatorMock->shouldReceive('getTotalBuildings')->andReturn(1);
+
+        $this->assertEquals(69, $this->landCalculator->getTotalBarrenLand());
     }
 
     public function testGetBarrenLandByLandType()
