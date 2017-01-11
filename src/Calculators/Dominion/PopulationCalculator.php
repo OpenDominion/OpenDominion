@@ -163,7 +163,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getPopulationBirth()
     {
-        return (int)($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
+        return round($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
     }
 
     public function getPopulationBirthRaw()
