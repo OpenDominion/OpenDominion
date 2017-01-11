@@ -1,6 +1,6 @@
 <div class="box box-info">
     <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-group fa-fw"></i> Choose advisor to consult</h3>
+        <h3 class="box-title"><i class="fa fa-group fa-fw"></i> Consult advisor</h3>
     </div>
     <div class="box-body">
         <div class="row">
