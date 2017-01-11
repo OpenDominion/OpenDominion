@@ -2,11 +2,22 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionAwareTrait;
 
-class PopulationCalculator
+class PopulationCalculator extends AbstractDominionCalculator
 {
     use DominionAwareTrait;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    public function __construct(Dominion $dominion)
+    {
+        parent::__construct($dominion);
+
+        $this->landCalculator = app()->make(LandCalculator::class, [$dominion]);
+    }
 
     /**
      * Returns the Dominion's population, military and non-military.
@@ -76,7 +87,7 @@ class PopulationCalculator
         $housingPerHome = 30;
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
-        //$housingPerBarrenLand = 5;
+        $housingPerBarrenLand = 5;
 
         // todo: race bonus for barren land
 
@@ -103,7 +114,7 @@ class PopulationCalculator
         }
 
         // Housing per barren land
-        //$population += ($this->landCalculator->getTotalBarrenLand() * $housingPerBarrenLand);
+        $population += ($this->landCalculator->getTotalBarrenLand() * $housingPerBarrenLand);
 
         return $population;
     }
