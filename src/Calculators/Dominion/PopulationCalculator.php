@@ -264,8 +264,36 @@ class PopulationCalculator extends AbstractDominionCalculator
         return (($this->getPopulationMilitary() / $this->getPopulation()) * 100);
     }
 
+    /**
+     * Returns the Dominion's max military trainable population.
+     *
+     * @return array
+     */
     public function getPopulationMilitaryMaxTrainable()
     {
-        return 0; // todo
+        $trainable = [];
+
+        // Values
+        $spyPlatinumCost = 500;
+        $wizardPlatinumCost = 500;
+        $archmagePlatinumCost = 1000;
+
+        $units = $this->dominion->race->units();
+
+        for ($i = 0; $i < 4; $i++) {
+            $slot = ($i + 1);
+
+            $trainable['unit' . $slot] = min(
+                $this->dominion->military_draftees,
+                floor($this->dominion->resource_platinum / $units[$i]->cost_platinum),
+                floor($this->dominion->resource_ore / $units[$i]->cost_ore)
+            );
+        }
+
+        $trainable['spies'] = min($this->dominion->military_draftees, floor($this->dominion->resource_platinum / $spyPlatinumCost));
+        $trainable['wizards'] = min($this->dominion->military_draftees, floor($this->dominion->resource_platinum / $wizardPlatinumCost));
+        $trainable['archmages'] = min($this->dominion->military_wizards, floor($this->dominion->resource_platinum / $archmagePlatinumCost));
+
+        return $trainable;
     }
 }
