@@ -46,7 +46,7 @@ class LandCalculator extends AbstractDominionCalculator
     }
 
     /**
-     * Return's the Dominion's total acres of barren land.
+     * Returns the Dominion's total acres of barren land.
      *
      * @return int
      */
@@ -57,6 +57,11 @@ class LandCalculator extends AbstractDominionCalculator
         return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings());
     }
 
+    /**
+     * Returns the Dominion's barren land by land type.
+     *
+     * @return int[]
+     */
     public function getBarrenLandByLandType()
     {
         $buildingTypesbyLandType = $this->buildingHelper->getBuildingTypesByLandType($this->dominion->race);
