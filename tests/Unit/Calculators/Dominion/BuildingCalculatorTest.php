@@ -10,7 +10,7 @@ use OpenDominion\Tests\BaseTestCase;
 class BuildingCalculatorTest extends BaseTestCase
 {
     /** @var Dominion */
-    protected $dominion;
+    protected $dominionMock;
 
     /** @var BuildingCalculator */
     protected $buildingCalculator;
@@ -19,10 +19,10 @@ class BuildingCalculatorTest extends BaseTestCase
     {
         parent::setUp();
 
-        $this->dominion = m::mock(Dominion::class);
+        $this->dominionMock = m::mock(Dominion::class);
 
         $this->buildingCalculator = $this->app->make(BuildingCalculator::class)
-            ->setDominion($this->dominion);
+            ->setDominion($this->dominionMock);
     }
 
     public function testGetTotalBuildings()
@@ -38,7 +38,7 @@ class BuildingCalculatorTest extends BaseTestCase
         $expected = 0;
 
         for ($i = 0, $countBuildingTypes = count($buildingTypes); $i < $countBuildingTypes; ++$i) {
-            $this->dominion->shouldReceive('getAttribute')->with("building_{$buildingTypes[$i]}")->andReturn(1 << $i);
+            $this->dominionMock->shouldReceive('getAttribute')->with("building_{$buildingTypes[$i]}")->andReturn(1 << $i);
             $expected += (1 << $i);
         }
 
