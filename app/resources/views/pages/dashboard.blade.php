@@ -39,7 +39,7 @@
                                 @foreach ($dominions->all() as $dominion)
                                     <tr>
                                         <td>
-                                            @if ($dominion->selectedByAuthUser())
+                                            @if ($dominion->isSelectedByAuthUser())
                                                 <button class="btn btn-link disabled">{{ $dominion->name }}</button>
                                                 <span class="label label-success">Active</span>
                                             @else

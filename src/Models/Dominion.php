@@ -26,7 +26,12 @@ class Dominion extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
-    public function selectedByAuthUser()
+    /**
+     * Returns whether this Dominion instance is selected by the logged in user.
+     *
+     * @return bool
+     */
+    public function isSelectedByAuthUser()
     {
         // todo: repository criteria?
         $dominionSelectorService = app()->make(DominionSelectorService::class);
