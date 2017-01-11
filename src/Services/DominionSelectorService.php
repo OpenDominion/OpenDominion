@@ -26,7 +26,7 @@ class DominionSelectorService
      */
     public function hasUserSelectedDominion()
     {
-        return (session('selected_dominion_id') !== null);
+        return (session(self::SESSION_NAME) !== null);
     }
 
     /**
