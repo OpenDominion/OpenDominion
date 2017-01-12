@@ -25,7 +25,7 @@ class ProductionCalculator extends AbstractDominionCalculator
      */
     public function getPlatinumProduction()
     {
-        return floor($this->getPlatinumProductionRaw() * $this->getPlatinumProductionMultiplier());
+        return (int)floor($this->getPlatinumProductionRaw() * $this->getPlatinumProductionMultiplier());
     }
 
     /**
