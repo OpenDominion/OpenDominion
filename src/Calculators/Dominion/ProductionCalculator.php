@@ -63,7 +63,7 @@ class ProductionCalculator extends AbstractDominionCalculator
     {
         $multiplier = 1.0;
 
-        // Values
+        // Values (percentages)
         $spellMidasTouch = 10;
         $guardTax = -2;
         $techProduction = 5;
@@ -82,7 +82,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Guard Tax
         // todo
 
-        // Tech: Productio or Treasure Hunt
+        // Tech: Production or Treasure Hunt
         // todo
 
         return (float)min(1.5, $multiplier);
@@ -90,29 +90,111 @@ class ProductionCalculator extends AbstractDominionCalculator
 
     // Food
 
+    /**
+     * Returns the Dominion's food production.
+     *
+     * @return int
+     */
     public function getFoodProduction()
     {
-        return 0;
+        return (int)floor($this->getFoodProductionRaw() * $this->getFoodProductionMultiplier());
     }
 
+    /**
+     * Returns the Dominion's raw food production.
+     *
+     * @return float
+     */
     public function getFoodProductionRaw()
     {
-        return 0;
+        $food = 0;
+
+        // Values
+        $foodPerFarm = 80;
+        $foodPerDock = 35;
+
+        // Farms
+        $food += ($this->dominion->building_farm * $foodPerFarm);
+
+        // Farms
+        $food += ($this->dominion->building_dock * $foodPerDock);
+
+        return (float)$food;
     }
 
+    /**
+     * Returns the Dominion's food production multiplier.
+     *
+     * @return float
+     */
     public function getFoodProductionMultiplier()
     {
-        return 0;
+        $multiplier = 1.0;
+
+        // Values (percentages)
+        $spellGaiasBlessing = 20;
+        $spellGaiasWatch = 10;
+        $techProduction = 10;
+
+        // Racial bonus
+        //$multiplier += $this->dominion->race->getPerkMultiplier('food_production');
+        // todo
+
+        // Spell: Gaia's Blessing
+        // todo
+
+        // Spell: Gaia's Watch
+        // todo
+
+        // Improvement: Irrigation
+        // todo
+
+        // Tech: Production
+        // todo
+
+        // Prestige bonus
+        $multiplier *= (1 + ($this->dominion->prestige / 10000));
+
+        return (float)$multiplier;
     }
 
+    /**
+     * Returns the Dominion's food consumption.
+     *
+     * @return float
+     */
     public function getFoodConsumption()
     {
-        return 0;
+        $consumption = 0;
+
+        // Values
+        $populationConsumption = 0.25;
+
+        // Population consumption
+        $consumption += ($this->populationCalculator->getPopulation() * $populationConsumption);
+
+        // Racial bonus
+        //$consumption *= (1 + $this->dominion->race->getPerkMultiplier('food_consumption'));
+        // todo
+
+        return (float)$consumption;
     }
 
+    /**
+     * Returns the Dominion's food decay.
+     *
+     * @return float
+     */
     public function getFoodDecay()
     {
-        return 0;
+        $decay = 0;
+
+        // Values (percentages)
+        $foodDecay = 1;
+
+        $decay += ($this->dominion->resource_food + ($foodDecay / 100));
+
+        return (float)$decay;
     }
 
     // todo: needed?
