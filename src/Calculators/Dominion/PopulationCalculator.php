@@ -28,7 +28,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getPopulation()
     {
-        return ($this->dominion->peasants + $this->getPopulationMilitary());
+        return (int)($this->dominion->peasants + $this->getPopulationMilitary());
     }
 
     /**
@@ -38,7 +38,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getPopulationMilitary()
     {
-        return (
+        return (int)(
             $this->dominion->military_draftees
             + $this->dominion->military_unit1
             + $this->dominion->military_unit2
@@ -71,7 +71,7 @@ class PopulationCalculator extends AbstractDominionCalculator
             ($this->dominion->building_barracks * $troopsPerBarracks)
         );
 
-        return round($population);
+        return (int)round($population);
     }
 
     /**
@@ -116,7 +116,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // Housing per barren land
         $population += ($this->landCalculator->getTotalBarrenLand() * $housingPerBarrenLand);
 
-        return $population;
+        return (int)$population;
     }
 
     /**
@@ -153,7 +153,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // Prestige bonus
         $multiplier *= (1 + ($this->dominion->prestige / 10000));
 
-        return $multiplier;
+        return (float)$multiplier;
     }
 
     /**
@@ -163,7 +163,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getPopulationBirth()
     {
-        return round($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
+        return (int)round($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
     }
 
     /**
@@ -181,7 +181,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // Growth
         $birth += (($this->dominion->peasants - $this->getPopulationDrafteeGrowth()) * $growthFactor);
 
-        return $birth;
+        return (float)$birth;
     }
 
     /**
@@ -206,7 +206,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // Temples
         //$multiplier += (($this->dominion->building_temple * $templeBonus) / $this->landCalculator->getTotalLand());
 
-        return $multiplier;
+        return (float)$multiplier;
     }
 
     /**
@@ -251,7 +251,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getPopulationPeasantPercentage()
     {
-        return (($this->dominion->peasants / $this->getPopulation()) * 100);
+        return (float)(($this->dominion->peasants / $this->getPopulation()) * 100);
     }
 
     /**
@@ -261,7 +261,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getPopulationMilitaryPercentage()
     {
-        return (($this->getPopulationMilitary() / $this->getPopulation()) * 100);
+        return (float)(($this->getPopulationMilitary() / $this->getPopulation()) * 100);
     }
 
     /**
