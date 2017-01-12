@@ -67,7 +67,7 @@ class PopulationCalculator extends AbstractDominionCalculator
 
         // Military
         $population += min(
-            ($this->getPopulationMilitary() - $this->dominion->draftees),
+            ($this->getPopulationMilitary() - $this->dominion->military_draftees),
             ($this->dominion->building_barracks * $troopsPerBarracks)
         );
 
