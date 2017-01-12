@@ -249,10 +249,10 @@ class PopulationCalculator extends AbstractDominionCalculator
         $draftees = 0;
 
         // Values (percentages)
-        $growth_factor = 1;
+        $growthFactor = 1;
 
         if ($this->getPopulationMilitaryPercentage() < $this->dominion->draft_rate) {
-            $draftees += ($this->dominion->peasants * ($growth_factor / 100));
+            $draftees += ($this->dominion->peasants * ($growthFactor / 100));
         }
 
         return (int)$draftees;
