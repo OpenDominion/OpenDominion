@@ -52,4 +52,13 @@
             </p>
         </div>
     </div>
+
+    <div class="box box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Dominion</h3>
+        </div>
+        <div class="box-body">
+            <pre>{{ print_r(json_decode($selectedDominion), true) }}</pre>
+        </div>
+    </div>
 @endsection
