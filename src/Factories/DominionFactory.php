@@ -99,7 +99,7 @@ class DominionFactory
             'military_spies' => 25,
             'military_wizards' => 25,
             'military_archmages' => 0,
-            'land_plain' => 100,
+            'land_plain' => 110,
             'land_mountain' => 20,
             'land_swamp' => 20,
             'land_cavern' => 20,
