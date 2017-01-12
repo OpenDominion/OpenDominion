@@ -129,7 +129,7 @@ class ProductionCalculator extends AbstractDominionCalculator
      */
     public function getFoodProductionMultiplier()
     {
-        $multiplier = 1.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $spellGaiasBlessing = 20;
@@ -153,7 +153,37 @@ class ProductionCalculator extends AbstractDominionCalculator
         // todo
 
         // Prestige bonus
-        $multiplier *= (1 + ($this->dominion->prestige / 10000));
+        $multiplier *= (1 + (($this->dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += 1;
+
+//        $multiplier =
+//            (
+//                0.05
+//                + 0 // magic
+//                + 0 // improvements
+//            )
+//            * (1 + (($this->dominion->prestige / 250) * 2.5) / 100)
+//            + ((($this->dominion->prestige / 250) * 2.5) / 100);
+
+        /*
+
+        = ($Overview.$I$18 // +5% racial food bonus
+            + IF(
+                $Magic.AF3>0;
+                $Constants.$F$80;
+                IF(
+                    $Magic.X3>0;
+                    $Constants.$F$72
+                )
+             )
+            + $Imps.AD3
+            + $Constants.$M$30 * $Techs.W3
+        )
+        * ( 1 + ROUNDDOWN(O3 /250 * $Constants.$B$90; 2) / 100)
+        + ROUNDDOWN( O3 / 250 * $Constants.$B$90; 2) / 100
+
+        */
 
         return (float)$multiplier;
     }
@@ -192,15 +222,19 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Values (percentages)
         $foodDecay = 1;
 
-        $decay += ($this->dominion->resource_food + ($foodDecay / 100));
+        $decay += ($this->dominion->resource_food * ($foodDecay / 100));
 
         return (float)$decay;
     }
 
-    // todo: needed?
+    /**
+     * Returns the Dominion's net food change.
+     *
+     * @return float
+     */
     public function getFoodNetChange()
     {
-        return 0;
+        return (float)($this->getFoodProduction() - $this->getFoodConsumption() - $this->getFoodDecay());
     }
 
     // Lumber
