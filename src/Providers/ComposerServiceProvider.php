@@ -20,9 +20,12 @@ class ComposerServiceProvider extends ServiceProvider
             $branch = shell_exec('git branch | grep \' * \'');
             $branch = str_replace('* ', '', trim($branch));
 
-            $hash = shell_exec('git log --pretty="%h" -n1 HEAD');
+            $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
+            $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
 
-            $view->with('version', "#{$hash} ({$branch})");
+            $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
+
+            $view->with('version', "revision <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> on branch <strong>{$branch}</strong>");
         });
 
         view()->composer('partials.resources-overview', function (View $view) {
