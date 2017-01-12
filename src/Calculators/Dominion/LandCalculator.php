@@ -5,7 +5,6 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Traits\DominionAwareTrait;
 
 class LandCalculator extends AbstractDominionCalculator
 {

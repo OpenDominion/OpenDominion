@@ -4,7 +4,6 @@ namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Traits\DominionAwareTrait;
 
 class BuildingCalculator extends AbstractDominionCalculator
 {
