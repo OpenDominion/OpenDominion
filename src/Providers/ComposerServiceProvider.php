@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Providers;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Services\DominionSelectorService;
@@ -15,7 +16,7 @@ class ComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer('partials.main-footer', function ($view) {
+        view()->composer('partials.main-footer', function (View $view) {
             $branch = shell_exec('git branch | grep \' * \'');
             $branch = str_replace('* ', '', trim($branch));
 
@@ -24,7 +25,7 @@ class ComposerServiceProvider extends ServiceProvider
             $view->with('version', "#{$hash} ({$branch})");
         });
 
-        view()->composer('partials.resources-overview', function ($view) {
+        view()->composer('partials.resources-overview', function (View $view) {
             $dominionSelectorService = app()->make(DominionSelectorService::class);
             $dominion = $dominionSelectorService->getUserSelectedDominion();
 
