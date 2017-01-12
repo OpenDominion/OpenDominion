@@ -115,6 +115,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         return 0;
     }
 
+    // todo: needed?
     public function getFoodNetChange()
     {
         return 0;
@@ -141,6 +142,8 @@ class ProductionCalculator extends AbstractDominionCalculator
     {
         return 0;
     }
+
+    // todo: getLumberNetChange?
 
     // Mana
 

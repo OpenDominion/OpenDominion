@@ -76,6 +76,54 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             // Misc?
 
+            // Debug
+
+            $router->get('debug', function () {
+                if (app()->environment() === 'production') {
+                    return redirect(route('dominion.status'));
+                }
+
+                $dominionSelectorService = app()->make(\OpenDominion\Services\DominionSelectorService::class);
+                $dominion = $dominionSelectorService->getUserSelectedDominion();
+
+                $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class, [$dominion]);
+                $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class, [$dominion]);
+
+                function printCalculatorMethodValues($calculator, array $methods) {
+                    $return = '';
+
+                    foreach ($methods as $method) {
+                        $label = implode(' ', preg_split('/(?=[A-Z])/', ltrim($method, 'get')));
+                        $value = $calculator->$method();
+                        $type = gettype($value);
+
+                        $return .= ($label . ' :');
+
+                        if (is_scalar($value)) {
+                            if (is_integer($value)) {
+                                $value = number_format($value);
+                            } elseif (is_float($value) || is_double($value)) {
+                                $value = number_format($value, 3);
+                            }
+
+                            $return .= (' <b>' . $value . '</b> (' . $type . ')');
+
+                        } elseif (is_array($value)) {
+                            $return .= ('<pre>' . print_r($value, true) . '</pre>');
+                        }
+
+                        $return .= '<br>';
+                    }
+
+                    return $return;
+                }
+
+                return view('pages.dominion.debug', compact(
+                    'populationCalculator',
+                    'productionCalculator'
+                ));
+            });
+
         });
 
     });

@@ -278,15 +278,15 @@ class PopulationCalculator extends AbstractDominionCalculator
         $wizardPlatinumCost = 500;
         $archmagePlatinumCost = 1000;
 
-        $units = $this->dominion->race->units();
+        $units = $this->dominion->race->units;
 
         for ($i = 0; $i < 4; $i++) {
             $slot = ($i + 1);
 
             $trainable['unit' . $slot] = min(
                 $this->dominion->military_draftees,
-                floor($this->dominion->resource_platinum / $units[$i]->cost_platinum),
-                floor($this->dominion->resource_ore / $units[$i]->cost_ore)
+                floor($this->dominion->resource_platinum / $units->get($i)->cost_platinum),
+                floor($this->dominion->resource_ore / $units->get($i)->cost_ore)
             );
         }
 
