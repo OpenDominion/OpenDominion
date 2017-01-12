@@ -17,17 +17,19 @@ class ComposerServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('partials.main-footer', function (View $view) {
-            $env = getenv('APP_ENV');
+//            $env = getenv('APP_ENV');
+//
+//            $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
+//            $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
+//
+//            $branch = shell_exec('git branch | grep \' * \'');
+//            $branch = str_replace('* ', '', trim($branch));
+//
+//            $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
+//
+//            $view->with('version', "<strong>{$env}</strong> @ <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> ({$branch})");
 
-            $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
-            $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
-
-            $branch = shell_exec('git branch | grep \' * \'');
-            $branch = str_replace('* ', '', trim($branch));
-
-            $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
-
-            $view->with('version', "<strong>{$env}</strong> @ <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> ({$branch})");
+            $view->with('version', 'NYI');
         });
 
         view()->composer('partials.resources-overview', function (View $view) {
