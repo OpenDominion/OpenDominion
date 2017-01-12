@@ -9,6 +9,6 @@
     "laravel-elixir": "^5.0.0",
     "admin-lte": "^2.3.8",
     "font-awesome": "^4.7.0",
-    "rpg-awesome": "nagoshiashumari/Rpg-Awesome#master"
+    "rpg-awesome": "Vulcanior/Rpg-Awesome#master"
   }
 }
