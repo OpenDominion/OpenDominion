@@ -128,8 +128,8 @@
             Peasant change last hour: {{ number_format($selectedDominion->peasants_last_hour) }}<br>
             Maximum population: {{ number_format($populationCalculator->getMaxPopulation()) }}<br>
             Maximum peasant population: {{ number_format($populationCalculator->getMaxPopulation() - $populationCalculator->getPopulationMilitary()) }}<br>
-            Jobs total: {{ number_format($employmentCalculator->getEmploymentJobs()) }}<br>
-            Jobs available: {{ number_format($employmentCalculator->getEmploymentJobs() - $populationCalculator->getPopulationMilitary()) }}<br>
+            Jobs total: {{ number_format($populationCalculator->getEmploymentJobs()) }}<br>
+            Jobs available: {{ number_format($populationCalculator->getEmploymentJobs() - $populationCalculator->getPopulationMilitary()) }}<br>
             Opportunity cost of job overrun: NYI
         </div>
     </div>

@@ -65,4 +65,19 @@ class PopulationCalculatorTest extends BaseTestCase
     {
         $this->markTestIncomplete();
     }
+
+    public function testGetEploymentJobs()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetPopulationEmployed()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetEmploymentPercentage()
+    {
+        $this->markTestIncomplete();
+    }
 }

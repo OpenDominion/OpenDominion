@@ -6,14 +6,14 @@ use OpenDominion\Models\Dominion;
 
 class ProductionCalculator extends AbstractDominionCalculator
 {
-    /** @var EmploymentCalculator */
-    protected $employmentCalculator;
+    /** @var PopulationCalculator */
+    protected $populationCalculator;
 
     public function __construct(Dominion $dominion)
     {
         parent::__construct($dominion);
 
-        $this->employmentCalculator = app()->make(EmploymentCalculator::class, [$dominion]);
+        $this->populationCalculator = app()->make(PopulationCalculator::class, [$dominion]);
     }
 
     // Platinum
@@ -43,7 +43,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         $platinumPerAlchemy = 45;
 
         // Peasant Tax
-        $platinum += (($this->dominion->peasants * $peasantTax) * ($this->employmentCalculator->getEmploymentPercentage() / 100));
+        $platinum += (($this->dominion->peasants * $peasantTax) * ($this->populationCalculator->getEmploymentPercentage() / 100));
 
         // Spell: Alchemist Flame
         // todo

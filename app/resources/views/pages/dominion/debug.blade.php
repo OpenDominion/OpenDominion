@@ -23,6 +23,9 @@
                     'getPopulationPeasantPercentage',
                     'getPopulationMilitaryPercentage',
                     'getPopulationMilitaryMaxTrainable',
+                    'getEmploymentJobs',
+                    'getPopulationEmployed',
+                    'getEmploymentPercentage',
                 ]) !!}
             </p>
         </div>

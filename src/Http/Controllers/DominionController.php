@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use OpenDominion\Calculators\Dominion\EmploymentCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Models\Dominion;
@@ -40,12 +39,10 @@ class DominionController extends AbstractController
     {
         $dominion = $this->getSelectedDominion();
 
-        $employmentCalculator = app()->make(EmploymentCalculator::class, [$dominion]);
         $populationCalculator = app()->make(PopulationCalculator::class, [$dominion]);
         $productionCalculator = app()->make(ProductionCalculator::class, [$dominion]);
 
         return view('pages.dominion.advisors.production', compact(
-            'employmentCalculator',
             'populationCalculator',
             'productionCalculator'
         ));

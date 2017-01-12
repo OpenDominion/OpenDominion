@@ -79,7 +79,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      *
      * Raw max population is calculated by buildings (except barracks) and barren land.
      *
-     * @return int
+     * @return float
      */
     public function getMaxPopulationRaw()
     {
@@ -116,7 +116,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // Housing per barren land
         $population += ($this->landCalculator->getTotalBarrenLand() * $housingPerBarrenLand);
 
-        return (int)$population;
+        return (float)$population;
     }
 
     /**
@@ -295,5 +295,53 @@ class PopulationCalculator extends AbstractDominionCalculator
         $trainable['archmages'] = min($this->dominion->military_wizards, floor($this->dominion->resource_platinum / $archmagePlatinumCost));
 
         return $trainable;
+    }
+
+    /**
+     * Returns the Dominion's employment jobs.
+     *
+     * @return int
+     */
+    public function getEmploymentJobs()
+    {
+        return (20 * (
+                $this->dominion->building_alchemy
+                + $this->dominion->building_farm
+//            + $this->dominion->building_smithy
+//            + $this->dominion->building_masonry
+//            + $this->dominion->building_ore_mine
+//            + $this->dominion->building_gryphon_nest
+//            + $this->dominion->building_tower
+//            + $this->dominion->building_wizard_guild
+//            + $this->dominion->building_temple
+//            + $this->dominion->building_diamond_mine
+//            + $this->dominion->building_school
+                + $this->dominion->building_lumberyard
+//            + $this->dominion->building_forest_haven
+//            + $this->dominion->building_factory
+//            + $this->dominion->building_guard_tower
+//            + $this->dominion->building_shrine
+//            + $this->dominion->building_dock
+            ));
+    }
+
+    /**
+     * Returns the Dominion's employed population.
+     *
+     * @return int
+     */
+    public function getPopulationEmployed()
+    {
+        return (int)min($this->getEmploymentJobs(), $this->dominion->peasants);
+    }
+
+    /**
+     * Returns the Dominion's employment percentage.
+     *
+     * @return float
+     */
+    public function getEmploymentPercentage()
+    {
+        return (float)(min(1, ($this->getPopulationEmployed() / $this->dominion->peasants)) * 100);
     }
 }
