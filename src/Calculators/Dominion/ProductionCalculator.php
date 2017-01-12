@@ -138,7 +138,6 @@ class ProductionCalculator extends AbstractDominionCalculator
 
         // Racial bonus
         $multiplier += $this->dominion->race->getPerkMultiplier('food_production');
-        // todo
 
         // Spell: Gaia's Blessing
         // todo
@@ -238,33 +237,95 @@ class ProductionCalculator extends AbstractDominionCalculator
 
     // Lumber
 
+    /**
+     * Returns the Dominion's lumber production.
+     *
+     * @return int
+     */
     public function getLumberProduction()
     {
-        return 0;
+        return (int)floor($this->getLumberProductionRaw() * $this->getLumberProductionMultiplier());
     }
 
+    /**
+     * Returns the Dominion's raw lumber production.
+     *
+     * @return float
+     */
     public function getLumberProductionRaw()
     {
-        return 0;
+        $lumber = 0;
+
+        // Values
+        $lumberPerLumberyard = 50;
+
+        // Lumberyards
+        $lumber += ($this->dominion->building_lumberyard * $lumberPerLumberyard);
+
+        return (float)$lumber;
     }
 
+    /**
+     * Returns the Dominion's lumber production multiplier.
+     *
+     * @return float
+     */
     public function getLumberProductionMultiplier()
     {
-        return 0;
+        $multiplier = 1.0;
+
+        // Values (percentages)
+        $spellGaiasBlessing = 10;
+        $techProduction = 10;
+
+        // Racial bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('lumber_production');
+
+        // Spell: Gaia's Blessing
+        // todo
+
+        // Tech: Production
+        // todo
+
+        return $multiplier;
     }
 
+    /**
+     * Returns the Dominion's lumber decay.
+     *
+     * @return float
+     */
     public function getLumberDecay()
     {
-        return 0;
+        $decay = 0;
+
+        // Values (percentages)
+        $lumberDecay = 1;
+
+        $decay += ($this->dominion->resource_lumber * ($lumberDecay / 100));
+
+        return (float)$decay;
     }
 
-    // todo: getLumberNetChange?
+    /**
+     * Returns the Dominion's net lumber change.
+     *
+     * @return float
+     */
+    public function getLumberNetChange()
+    {
+        return (float)($this->getLumberProduction() - $this->getLumberDecay());
+    }
 
     // Mana
+    // todo
 
     // Ore
+    // todo
 
     // Gems
+    // todo
 
     // Boats
+    // todo
 }

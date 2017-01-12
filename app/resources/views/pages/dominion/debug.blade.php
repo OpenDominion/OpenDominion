@@ -51,6 +51,7 @@
                     'getLumberProductionRaw',
                     'getLumberProductionMultiplier',
                     'getLumberDecay',
+                    'getLumberNetChange',
                 ]) !!}
             </p>
         </div>

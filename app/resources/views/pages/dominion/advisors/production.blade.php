@@ -34,7 +34,7 @@
                             </tr>
                             <tr>
                                 <td>Lumber:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getLumberProduction()) }}</td>
                             </tr>
                             <tr>
                                 <td>Mana:</td>
@@ -78,7 +78,7 @@
                             </tr>
                             <tr>
                                 <td>Lumber Rotted:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getLumberDecay()) }}</td>
                             </tr>
                             <tr>
                                 <td>Mana Drain:</td>
@@ -109,7 +109,7 @@
                             </tr>
                             <tr>
                                 <td>Lumber:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getLumberNetChange()) }}</td>
                             </tr>
                             <tr>
                                 <td>Mana:</td>
