@@ -132,7 +132,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getMaxPopulationMultiplier()
     {
-        $multiplier = 1.0;
+        $multiplier = 0;
 
         // Values (percentages)
 //        $techUrbanMasteryMultiplier = 7.5;
@@ -151,7 +151,21 @@ class PopulationCalculator extends AbstractDominionCalculator
         // todo
 
         // Prestige bonus
-        $multiplier *= (1 + ($this->dominion->prestige / 10000));
+        $multiplier *= (1 + (($this->dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += 1;
+
+        /*
+        = ($Overview.$I$15
+            + $Imps.Z3
+            + MAX(
+                $Constants.$M$38 * $Techs.AE3;
+                $Constants.$M$50 * $Techs.AQ3
+            )
+        )
+        * (1 + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100)
+        + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
+        */
 
         return (float)$multiplier;
     }
