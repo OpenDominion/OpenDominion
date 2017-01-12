@@ -204,8 +204,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         $consumption += ($this->populationCalculator->getPopulation() * $populationConsumption);
 
         // Racial bonus
-        //$consumption *= (1 + $this->dominion->race->getPerkMultiplier('food_consumption'));
-        // todo
+        $consumption *= (1 + $this->dominion->race->getPerkMultiplier('food_consumption'));
 
         return (float)$consumption;
     }
