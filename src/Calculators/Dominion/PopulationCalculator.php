@@ -2,11 +2,14 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Traits\DominionAwareTrait;
 
 class PopulationCalculator extends AbstractDominionCalculator
 {
+    /** @var BuildingHelper */
+    protected $buildingHelper;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -14,6 +17,7 @@ class PopulationCalculator extends AbstractDominionCalculator
     {
         parent::__construct($dominion);
 
+        $this->buildingHelper = app()->make(BuildingHelper::class);
         $this->landCalculator = app()->make(LandCalculator::class, [$dominion]);
     }
 
@@ -89,11 +93,9 @@ class PopulationCalculator extends AbstractDominionCalculator
 
         // todo: race bonus for barren land
 
-        $buildingTypes = []; // todo: BuildingHelper::getBuildingTypeS()
+        $buildingTypes = array_keys($this->buildingHelper->getBuildingTypes());
 
-        foreach (array_keys($buildingTypes) as $buildingType) {
-            $housing = 0;
-
+        foreach ($buildingTypes as $buildingType) {
             switch ($buildingType) {
                 case 'home':
                     $housing = $housingPerHome;
