@@ -30,7 +30,7 @@
                             </tr>
                             <tr>
                                 <td>Food:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getFoodProduction()) }}</td>
                             </tr>
                             <tr>
                                 <td>Lumber:</td>
@@ -70,11 +70,11 @@
                         <tbody>
                             <tr>
                                 <td>Food Eaten:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getFoodConsumption()) }}</td>
                             </tr>
                             <tr>
                                 <td>Food Decayed:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getFoodDecay()) }}</td>
                             </tr>
                             <tr>
                                 <td>Lumber Rotted:</td>
@@ -105,7 +105,7 @@
                             </tr>
                             <tr>
                                 <td>Food:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($productionCalculator->getFoodNetChange()) }}</td>
                             </tr>
                             <tr>
                                 <td>Lumber:</td>
