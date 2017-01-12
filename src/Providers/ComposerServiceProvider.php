@@ -17,15 +17,17 @@ class ComposerServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('partials.main-footer', function (View $view) {
-            $branch = shell_exec('git branch | grep \' * \'');
-            $branch = str_replace('* ', '', trim($branch));
+            $env = getenv('APP_ENV');
 
             $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
             $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
 
+            $branch = shell_exec('git branch | grep \' * \'');
+            $branch = str_replace('* ', '', trim($branch));
+
             $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
 
-            $view->with('version', "revision <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> on branch <strong>{$branch}</strong>");
+            $view->with('version', "<strong>{$env}</strong> @ <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> ({$branch})");
         });
 
         view()->composer('partials.resources-overview', function (View $view) {
