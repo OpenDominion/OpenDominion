@@ -137,7 +137,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         $techProduction = 10;
 
         // Racial bonus
-        //$multiplier += $this->dominion->race->getPerkMultiplier('food_production');
+        $multiplier += $this->dominion->race->getPerkMultiplier('food_production');
         // todo
 
         // Spell: Gaia's Blessing

@@ -18,4 +18,23 @@ class Race extends AbstractModel
     {
         return $this->hasMany(Unit::class)->orderBy('slot');
     }
+
+    /**
+     * Gets a Race's perk multiplier.
+     *
+     * @param string $key
+     * @return float
+     */
+    public function getPerkMultiplier($key)
+    {
+        $perk = $this->perks()->with('type')->whereHas('type', function ($q) use ($key) {
+            $q->where('key', $key);
+        })->first();
+
+        if ($perk === null) {
+            return (float)0;
+        }
+
+        return (float)($perk->value / 100);
+    }
 }
