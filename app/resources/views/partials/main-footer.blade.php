@@ -1,7 +1,7 @@
 <footer class="main-footer">
 
     <div class="pull-right">
-        <span class="hidden-xs">Version </span><span class="visible-xs">v</span><strong>todo</strong>
+        <span class="hidden-xs">Version </span><span class="visible-xs">v</span><strong>{{ $version }}</strong>
     </div>
 
     <span class="hidden-xs">
