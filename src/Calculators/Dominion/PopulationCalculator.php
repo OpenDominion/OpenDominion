@@ -39,7 +39,7 @@ class PopulationCalculator extends AbstractDominionCalculator
     public function getPopulationMilitary()
     {
         return (
-            $this->dominion->draftees
+            $this->dominion->military_draftees
             + $this->dominion->military_unit1
             + $this->dominion->military_unit2
             + $this->dominion->military_unit3
