@@ -134,9 +134,9 @@ class PopulationCalculator extends AbstractDominionCalculator
     {
         $multiplier = 1.0;
 
-        // Values
-//        $techUrbanMasteryMultiplier = 1.075;
-//        $techConstructionMultiplier = 1.02;
+        // Values (percentages)
+//        $techUrbanMasteryMultiplier = 7.5;
+//        $techConstructionMultiplier = 2;
 
         // Racial bonus
         // todo
@@ -175,11 +175,11 @@ class PopulationCalculator extends AbstractDominionCalculator
     {
         $birth = 0;
 
-        // Values
-        $growthFactor = 1.03;
+        // Values (percentages)
+        $growthFactor = 3;
 
         // Growth
-        $birth += (($this->dominion->peasants - $this->getPopulationDrafteeGrowth()) * $growthFactor);
+        $birth += (($this->dominion->peasants - $this->getPopulationDrafteeGrowth()) * ($growthFactor / 100));
 
         return (float)$birth;
     }
