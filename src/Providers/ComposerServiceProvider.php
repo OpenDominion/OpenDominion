@@ -3,6 +3,8 @@
 namespace OpenDominion\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Services\DominionSelectorService;
 
 class ComposerServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,15 @@ class ComposerServiceProvider extends ServiceProvider
             $hash = shell_exec('git log --pretty="%h" -n1 HEAD');
 
             $view->with('version', "#{$hash} ({$branch})");
+        });
+
+        view()->composer('partials.resources-overview', function ($view) {
+            $dominionSelectorService = app()->make(DominionSelectorService::class);
+            $dominion = $dominionSelectorService->getUserSelectedDominion();
+
+            $networthCalculator = app()->make(NetworthCalculator::class, [$dominion]);
+
+            $view->with('networthCalculator', $networthCalculator);
         });
     }
 
