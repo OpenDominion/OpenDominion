@@ -103,7 +103,17 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                             if (is_integer($value)) {
                                 $value = number_format($value);
                             } elseif (is_float($value) || is_double($value)) {
-                                $value = number_format($value, 3);
+
+                                if (substr($label, -10) === 'Multiplier') {
+                                    $value = number_format($value * 100 - 100, 2);
+                                    $value = ((($value < 0) ? '-' : '+') . $value . '%');
+                                } else {
+                                    $value = number_format($value, 2);
+                                }
+
+                                if (substr($label, -10) === 'Percentage') {
+                                    $value .= '%';
+                                }
                             }
 
                             $return .= (' <b>' . $value . '</b> (' . $type . ')');
