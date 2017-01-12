@@ -18,11 +18,21 @@ class ProductionCalculator extends AbstractDominionCalculator
 
     // Platinum
 
+    /**
+     * Returns the Dominion's platinum production.
+     *
+     * @return int
+     */
     public function getPlatinumProduction()
     {
-        return ($this->getPlatinumProductionRaw() * $this->getPlatinumProductionMultiplier());
+        return floor($this->getPlatinumProductionRaw() * $this->getPlatinumProductionMultiplier());
     }
 
+    /**
+     * Returns the Dominion's raw platinum production.
+     *
+     * @return float
+     */
     public function getPlatinumProductionRaw()
     {
         $platinum = 0;
@@ -41,9 +51,14 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Alchemies
         $platinum += ($this->dominion->building_alchemy * $platinumPerAlchemy);
 
-        return $platinum;
+        return (float)$platinum;
     }
 
+    /**
+     * Returns the Dominion's platinum production multiplier.
+     *
+     * @return float
+     */
     public function getPlatinumProductionMultiplier()
     {
         $multiplier = 1.0;
@@ -70,7 +85,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Tech: Productio or Treasure Hunt
         // todo
 
-        return min(1.5, $multiplier);
+        return (float)min(1.5, $multiplier);
     }
 
     // Food
