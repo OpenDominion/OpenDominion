@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Providers;
 
+use Cache;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -17,19 +18,9 @@ class ComposerServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('partials.main-footer', function (View $view) {
-//            $env = getenv('APP_ENV');
-//
-//            $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
-//            $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
-//
-//            $branch = shell_exec('git branch | grep \' * \'');
-//            $branch = str_replace('* ', '', trim($branch));
-//
-//            $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
-//
-//            $view->with('version', "<strong>{$env}</strong> @ <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> ({$branch})");
+            $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
 
-            $view->with('version', 'NYI');
+            $view->with('version', $version);
         });
 
         view()->composer('partials.resources-overview', function (View $view) {

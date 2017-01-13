@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \OpenDominion\Console\Commands\GameTickCommand::class,
+        \OpenDominion\Console\Commands\UpdateVersionCommand::class,
     ];
 
     /**
