@@ -26,7 +26,7 @@ class BuildingCalculator extends AbstractDominionCalculator
     {
         $totalBuildings = 0;
 
-        foreach (array_keys($this->buildingHelper->getBuildingTypes()) as $buildingType) {
+        foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
             $totalBuildings += $this->dominion->{'building_' . $buildingType};
         }
 

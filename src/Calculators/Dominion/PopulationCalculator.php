@@ -93,9 +93,7 @@ class PopulationCalculator extends AbstractDominionCalculator
 
         // todo: race bonus for barren land
 
-        $buildingTypes = array_keys($this->buildingHelper->getBuildingTypes());
-
-        foreach ($buildingTypes as $buildingType) {
+        foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
             switch ($buildingType) {
                 case 'home':
                     $housing = $housingPerHome;
