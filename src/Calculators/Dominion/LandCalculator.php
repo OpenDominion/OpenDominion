@@ -35,7 +35,7 @@ class LandCalculator extends AbstractDominionCalculator
     {
         $totalLand = 0;
 
-        foreach (array_keys($this->landHelper->getLandTypes()) as $landType) {
+        foreach ($this->landHelper->getLandTypes() as $landType) {
             $totalLand += $this->dominion->{'land_' . $landType};
         }
 

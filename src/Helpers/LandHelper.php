@@ -9,13 +9,13 @@ class LandHelper
     public function getLandTypes()
     {
         return [
-            'plain' => 'Plains',
-            'mountain' => 'Mountains',
-            'swamp' => 'Swamp',
-            'cavern' => 'Caverns',
-            'forest' => 'Forests',
-            'hill' => 'Hills',
-            'water' => 'Water',
+            'plain',
+            'mountain',
+            'swamp',
+            'cavern',
+            'forest',
+            'hill',
+            'water',
         ];
     }
 
