@@ -3,10 +3,22 @@
 @section('page-header', 'Dashboard')
 
 @section('content')
+    <div class="box">
+        <div class="box-body">
+            @if ($dominions->isEmpty())
+                <p>Welcome to OpenDominion.</p>
+                <p>To start playing, please register in a round below.</p>
+            @else
+                <p>Welcome back, {{ Auth::user()->display_name }}.</p>
+                <p>Select one of your dominions below to go to its status screen.</p>
+            @endif
+        </div>
+    </div>
+
     <div class="row">
 
         <div class="col-lg-6">
-            <div class="box box-default">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-capitol ra-fw"></i> Dominions</h3>
                 </div>
@@ -70,7 +82,7 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="box box-default">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-clock-o fa-fw"></i> Rounds</h3>
                 </div>
