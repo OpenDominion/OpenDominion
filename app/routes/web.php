@@ -47,6 +47,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
     $router->group(['prefix' => 'dominion'], function (Router $router) {
 
+        $router->get('{dominion}/select', function () { return redirect(route('dashboard')); });
         $router->post('{dominion}/select', ['as' => 'dominion.select', 'uses' => 'DominionController@postSelect']);
 
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
