@@ -90,12 +90,15 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                 $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class, [$dominion]);
                 $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class, [$dominion]);
 
-                function printCalculatorMethodValues($calculator, array $methods) {
+                $constructionActionService = app()->make(\OpenDominion\Services\Actions\ConstructionActionService::class, [$dominion]);
+                $explorationActionService = app()->make(\OpenDominion\Services\Actions\ExplorationActionService::class, [$dominion]);
+
+                function printMethodValues($class, array $methods) {
                     $return = '';
 
                     foreach ($methods as $method) {
                         $label = implode(' ', preg_split('/(?=[A-Z])/', ltrim($method, 'get')));
-                        $value = $calculator->$method();
+                        $value = $class->$method();
                         $type = gettype($value);
 
                         $return .= ($label . ' :');
@@ -131,7 +134,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
                 return view('pages.dominion.debug', compact(
                     'populationCalculator',
-                    'productionCalculator'
+                    'productionCalculator',
+                    'constructionActionService',
+                    'explorationActionService'
                 ));
             });
 
