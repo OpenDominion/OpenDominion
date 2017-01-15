@@ -123,32 +123,32 @@
                                 <td>{{ number_format($selectedDominion->military_draftees) }}</td>
                             </tr>
                             <tr>
-                                <td>Unit 1:</td>
-                                <td>NYI</td>
+                                <td>{{ $selectedDominion->race->units->get(0)->name }}:</td>
+                                <td>{{ number_format($selectedDominion->military_unit1) }}</td>
                             </tr>
                             <tr>
-                                <td>Unit 2:</td>
-                                <td>NYI</td>
+                                <td>{{ $selectedDominion->race->units->get(1)->name }}:</td>
+                                <td>{{ number_format($selectedDominion->military_unit2) }}</td>
                             </tr>
                             <tr>
-                                <td>Unit 3:</td>
-                                <td>NYI</td>
+                                <td>{{ $selectedDominion->race->units->get(2)->name }}:</td>
+                                <td>{{ number_format($selectedDominion->military_unit3) }}</td>
                             </tr>
                             <tr>
-                                <td>Unit 4:</td>
-                                <td>NYI</td>
+                                <td>{{ $selectedDominion->race->units->get(3)->name }}:</td>
+                                <td>{{ number_format($selectedDominion->military_unit4) }}</td>
                             </tr>
                             <tr>
                                 <td>Spies:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($selectedDominion->military_spies) }}</td>
                             </tr>
                             <tr>
                                 <td>Wizards:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($selectedDominion->military_wizards) }}</td>
                             </tr>
                             <tr>
                                 <td>Archmages:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($selectedDominion->military_archmages) }}</td>
                             </tr>
                         </tbody>
                     </table>
