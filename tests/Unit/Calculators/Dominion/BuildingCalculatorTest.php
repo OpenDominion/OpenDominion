@@ -21,8 +21,8 @@ class BuildingCalculatorTest extends BaseTestCase
 
         $this->dominionMock = m::mock(Dominion::class);
 
-        $this->buildingCalculator = $this->app->make(BuildingCalculator::class)
-            ->setDominion($this->dominionMock);
+        $this->buildingCalculator = $this->app->make(BuildingCalculator::class);
+        $this->buildingCalculator->init($this->dominionMock);
     }
 
     public function testGetTotalBuildings()

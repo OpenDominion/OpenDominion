@@ -5,8 +5,44 @@
 @section('content')
     <div class="row">
 
-        <div class="col-xs-12 col-sm-4">
+        <div class="col-sm-12 col-md-4">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Building Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! printMethodValues($buildingCalculator, [
+                            'getTotalBuildings',
+                            'getConstructionPlatinumCost',
+                            'getConstructionLumberCost',
+                            'getConstructionMaxAfford',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+
             <div class="box box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Land Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! printMethodValues($landCalculator, [
+                            'getTotalLand',
+                            'getTotalBarrenLand',
+                            'getBarrenLandByLandType',
+                            'getExplorationPlatinumCost',
+                            'getExplorationDrafteeCost',
+                            'getExplorationMaxAfford',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-4">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Population Calculator</h3>
                 </div>
@@ -35,8 +71,8 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-4">
-            <div class="box box">
+        <div class="col-sm-12 col-md-4">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Production Calculator</h3>
                 </div>
@@ -63,42 +99,9 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-4">
-            <div class="box box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Construction Action Service</h3>
-                </div>
-                <div class="box-body">
-                    <p>
-                        {!! printMethodValues($constructionActionService, [
-                            'getPlatinumCost',
-                            'getLumberCost',
-                            'getMaxAfford',
-                        ]) !!}
-                    </p>
-                </div>
-            </div>
-            <div class="box box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Exploration Action Service</h3>
-                </div>
-                <div class="box-body">
-                    <p>
-                        {!! printMethodValues($explorationActionService, [
-                            'getPlatinumCost',
-                            'getDrafteeCost',
-                            'getMaxAfford',
-                        ]) !!}
-                    </p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-
-
-    <div class="box box">
+    <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">Dominion</h3>
         </div>

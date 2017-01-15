@@ -3,24 +3,26 @@
 namespace OpenDominion\Http\Middleware;
 
 use Closure;
-use OpenDominion\Repositories\DominionRepository;
+use OpenDominion\Services\DominionSelectorService;
 
 class ShareSelectedDominion
 {
-    /** @var DominionRepository */
-    protected $dominions;
+    /** @var DominionSelectorService */
+    protected $dominionSelectorService;
 
-    function __construct(DominionRepository $dominions)
+    public function __construct(DominionSelectorService $dominionSelectorService)
     {
-        $this->dominions = $dominions;
+        $this->dominionSelectorService = $dominionSelectorService;
     }
 
     public function handle($request, Closure $next)
     {
-        $selectedDominionId = session('selected_dominion_id');
+        if ($this->dominionSelectorService->hasUserSelectedDominion()) {
+            $dominion = $this->dominionSelectorService->getUserSelectedDominion();
 
-        if ($selectedDominionId) {
-            $dominion = $this->dominions->with(['realm', 'race', 'race.units'])->find($selectedDominionId);
+            foreach (app()->tagged('calculators') as $calculator) {
+                $calculator->init($dominion);
+            }
 
             view()->share('selectedDominion', $dominion);
         }

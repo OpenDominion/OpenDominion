@@ -27,14 +27,14 @@ class Race extends AbstractModel
      */
     public function getPerkMultiplier($key)
     {
-        $perk = $this->perks()->with('type')->whereHas('type', function ($q) use ($key) {
-            $q->where('key', $key);
-        })->first();
+        $perks = $this->perks->filter(function (RacePerk $racePerk) use ($key) {
+            return ($racePerk->type->key === $key);
+        });
 
-        if ($perk === null) {
+        if ($perks->isEmpty()) {
             return (float)0;
         }
 
-        return (float)($perk->value / 100);
+        return (float)((float)$perks->first()->value / 100);
     }
 }

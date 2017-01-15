@@ -17,13 +17,16 @@ class LandCalculator extends AbstractDominionCalculator
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
-    public function __construct(Dominion $dominion)
+    /**
+     * {@inheritDoc}
+     */
+    public function init(Dominion $dominion)
     {
-        parent::__construct($dominion);
+        parent::init($dominion);
 
         $this->buildingHelper = app()->make(BuildingHelper::class);
         $this->landHelper = app()->make(LandHelper::class);
-        $this->buildingCalculator = app()->make(BuildingCalculator::class, [$dominion]);
+        $this->buildingCalculator = app()->make(BuildingCalculator::class)->setDominion($dominion);
     }
 
     /**
@@ -78,5 +81,73 @@ class LandCalculator extends AbstractDominionCalculator
         }
 
         return $return;
+    }
+
+    /**
+     * Returns the Dominion's exploration platinum cost per acre.
+     *
+     * @return int
+     */
+    public function getExplorationPlatinumCost()
+    {
+        $platinum = 0;
+        $totalLand = $this->getTotalLand();
+
+        if ($totalLand < 300) {
+            $platinum += -(3 * (300 - $totalLand));
+        } else {
+            $platinum += (3 * pow(($totalLand - 300), 1.09));
+        }
+
+        $platinum += 1000;
+        $platinum *= 1.1;
+
+        return (int)round($platinum);
+    }
+
+    /**
+     * Returns the Dominion's exploration draftee cost per acre.
+     *
+     * @return int
+     */
+    public function getExplorationDrafteeCost()
+    {
+        $draftees = 0;
+        $totalLand = $this->getTotalLand();
+
+        if ($totalLand < 300) {
+            $draftees = -(300 / $totalLand);
+        } else {
+            $draftees += (0.003 * pow(($totalLand - 300), 1.07));
+        }
+
+        $draftees += 5;
+        $draftees *= 1.1;
+
+        return (int)round($draftees);
+    }
+
+    /**
+     * Returns the maximum number of acres a Dominion can afford.
+     *
+     * @return int
+     */
+    public function getExplorationMaxAfford()
+    {
+        return (int)round(min(
+            floor($this->dominion->resource_platinum / $this->getExplorationPlatinumCost()),
+            floor($this->dominion->military_draftees / $this->getExplorationDrafteeCost())
+        ));
+    }
+
+    /**
+     * Returns the Dominion's morale drop after exploring for $amount of acres.
+     *
+     * @param $amount
+     * @return int
+     */
+    public function getExplorationMoraleDrop($amount)
+    {
+        return (int)round(($amount + 2) / 3);
     }
 }

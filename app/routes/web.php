@@ -87,11 +87,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                 $dominionSelectorService = app()->make(\OpenDominion\Services\DominionSelectorService::class);
                 $dominion = $dominionSelectorService->getUserSelectedDominion();
 
+                $buildingCalculator = app()->make(\OpenDominion\Calculators\Dominion\BuildingCalculator::class, [$dominion]);
+                $landCalculator = app()->make(\OpenDominion\Calculators\Dominion\LandCalculator::class, [$dominion]);
                 $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class, [$dominion]);
                 $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class, [$dominion]);
-
-                $constructionActionService = app()->make(\OpenDominion\Services\Actions\ConstructionActionService::class, [$dominion]);
-                $explorationActionService = app()->make(\OpenDominion\Services\Actions\ExplorationActionService::class, [$dominion]);
 
                 function printMethodValues($class, array $methods) {
                     $return = '';
@@ -133,10 +132,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                 }
 
                 return view('pages.dominion.debug', compact(
+                    'buildingCalculator',
+                    'landCalculator',
                     'populationCalculator',
-                    'productionCalculator',
-                    'constructionActionService',
-                    'explorationActionService'
+                    'productionCalculator'
                 ));
             });
 

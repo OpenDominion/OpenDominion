@@ -10,7 +10,7 @@ class DominionSelected
     /** @var DominionSelectorService */
     protected $dominionSelectorService;
 
-    function __construct(DominionSelectorService $dominionSelectorService)
+    public function __construct(DominionSelectorService $dominionSelectorService)
     {
         $this->dominionSelectorService = $dominionSelectorService;
     }

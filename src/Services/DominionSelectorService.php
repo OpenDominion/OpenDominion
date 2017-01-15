@@ -58,7 +58,7 @@ class DominionSelectorService
         }
 
         if ($this->selectedDominion === null || ($dominionId !== $this->selectedDominion->id)) {
-            $this->selectedDominion = $this->dominions->find($dominionId);
+            $this->selectedDominion = $this->dominions->with(['realm', 'race.perks', 'race.perks.type', 'race', 'race.units'])->find($dominionId);
         }
 
         return $this->selectedDominion;

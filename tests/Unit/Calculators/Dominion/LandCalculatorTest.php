@@ -27,12 +27,12 @@ class LandCalculatorTest extends BaseTestCase
         $this->dominionMock = m::mock(Dominion::class);
 
         $this->buildingCalculatorMock = m::mock(BuildingCalculator::class);
+        $this->buildingCalculatorMock->shouldReceive('setDominion')->andReturn($this->buildingCalculatorMock);
 
-        $this->app->bind(BuildingCalculator::class, function ($app) {
-            return $this->buildingCalculatorMock;
-        });
+        $this->app->instance(BuildingCalculator::class, $this->buildingCalculatorMock);
 
-        $this->landCalculator = $this->app->make(LandCalculator::class, [$this->dominionMock]);
+        $this->landCalculator = $this->app->make(LandCalculator::class);
+        $this->landCalculator->init($this->dominionMock);
     }
 
     public function testGetTotalLand()

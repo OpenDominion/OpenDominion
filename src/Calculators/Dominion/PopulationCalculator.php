@@ -13,12 +13,15 @@ class PopulationCalculator extends AbstractDominionCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
-    public function __construct(Dominion $dominion)
+    /**
+     * {@inheritDoc}
+     */
+    public function init(Dominion $dominion)
     {
-        parent::__construct($dominion);
+        parent::init($dominion);
 
         $this->buildingHelper = app()->make(BuildingHelper::class);
-        $this->landCalculator = app()->make(LandCalculator::class, [$dominion]);
+        $this->landCalculator = app()->make(LandCalculator::class)->setDominion($dominion);
     }
 
     /**

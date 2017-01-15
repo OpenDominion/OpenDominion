@@ -32,14 +32,13 @@ class GameTickCommand extends Command
      * GameTickCommand constructor.
      *
      * @param DominionRepository $dominions
-     * @param PopulationCalculator $populationCalculator
      */
-    public function __construct(DominionRepository $dominions, PopulationCalculator $populationCalculator)
+    public function __construct(DominionRepository $dominions)
     {
         parent::__construct();
 
         $this->dominions = $dominions;
-        $this->populationCalculator = $populationCalculator;
+        $this->populationCalculator = app()->make(PopulationCalculator::class);
     }
 
     /**
@@ -90,7 +89,9 @@ class GameTickCommand extends Command
         $dominions = $this->dominions->all();
 
         foreach ($dominions as $dominion) {
-            $this->populationCalculator->setDominion($dominion);
+            foreach (app()->tagged('calculators') as $calculator) {
+                $calculator->init($dominion);
+            }
 
             // Resources
             // todo
