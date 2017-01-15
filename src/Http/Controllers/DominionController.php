@@ -4,7 +4,9 @@ namespace OpenDominion\Http\Controllers;
 
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\DominionSelectorService;
 
 class DominionController extends AbstractController
@@ -73,7 +75,15 @@ class DominionController extends AbstractController
 
     public function getExplore()
     {
-        return view('pages.dominion.explore');
+        $dominion = $this->getSelectedDominion();
+
+        $landHelper = app()->make(LandHelper::class);
+        $explorationActionService = app()->make(ExplorationActionService::class, [$dominion]);
+
+        return view('pages.dominion.explore', compact(
+            'landHelper',
+            'explorationActionService'
+        ));
     }
 
     public function getConstruction()
