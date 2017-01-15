@@ -20,7 +20,7 @@ class ShareSelectedDominion
         $selectedDominionId = session('selected_dominion_id');
 
         if ($selectedDominionId) {
-            $dominion = $this->dominions->find($selectedDominionId);
+            $dominion = $this->dominions->with(['realm', 'race', 'race.units'])->find($selectedDominionId);
 
             view()->share('selectedDominion', $dominion);
         }
