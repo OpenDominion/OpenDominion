@@ -16,7 +16,7 @@ class Race extends AbstractModel
 
     public function units()
     {
-        return $this->hasMany(Unit::class)->orderBy('slot');
+        return $this->hasMany(Unit::class)->orderBy('slot')->limit(4);
     }
 
     /**
