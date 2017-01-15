@@ -32,7 +32,7 @@
                             </tr>
                             <tr>
                                 <td>Land:</td>
-                                <td>NYI</td>
+                                <td>{{ number_format($landCalculator->getTotalLand()) }}</td>
                             </tr>
                             <tr>
                                 <td>Peasants:</td>
@@ -40,7 +40,7 @@
                             </tr>
                             <tr>
                                 <td>Employment:</td>
-                                <td>{{ $populationCalculator->getEmploymentPercentage() }}%</td>
+                                <td>{{ number_format($populationCalculator->getEmploymentPercentage()) }}%</td>
                             </tr>
                             <tr>
                                 <td>Networth:</td>
@@ -116,7 +116,7 @@
                         <tbody>
                             <tr>
                                 <td>Morale:</td>
-                                <td>{{ $selectedDominion->morale }}%</td>
+                                <td>{{ number_format($selectedDominion->morale) }}%</td>
                             </tr>
                             <tr>
                                 <td>Draftees:</td>

@@ -32,9 +32,11 @@ class DominionController extends AbstractController
 
     public function getStatus()
     {
+        $landCalculator = app()->make(LandCalculator::class);
         $populationCalculator = app()->make(PopulationCalculator::class);
 
         return view('pages.dominion.status', compact(
+            'landCalculator',
             'populationCalculator'
         ));
     }
