@@ -84,13 +84,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                     return redirect(route('dominion.status'));
                 }
 
-                $dominionSelectorService = app()->make(\OpenDominion\Services\DominionSelectorService::class);
-                $dominion = $dominionSelectorService->getUserSelectedDominion();
-
-                $buildingCalculator = app()->make(\OpenDominion\Calculators\Dominion\BuildingCalculator::class, [$dominion]);
-                $landCalculator = app()->make(\OpenDominion\Calculators\Dominion\LandCalculator::class, [$dominion]);
-                $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class, [$dominion]);
-                $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class, [$dominion]);
+                $buildingCalculator = app()->make(\OpenDominion\Calculators\Dominion\BuildingCalculator::class);
+                $landCalculator = app()->make(\OpenDominion\Calculators\Dominion\LandCalculator::class);
+                $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class);
+                $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
                 function printMethodValues($class, array $methods) {
                     $return = '';
@@ -103,7 +100,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                         $return .= ($label . ' :');
 
                         if (is_scalar($value)) {
-                            if (is_integer($value)) {
+                            if (is_int($value)) {
                                 $value = number_format($value);
                             } elseif (is_float($value) || is_double($value)) {
 

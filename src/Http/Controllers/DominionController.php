@@ -30,9 +30,7 @@ class DominionController extends AbstractController
 
     public function getStatus()
     {
-        $dominion = $this->getSelectedDominion();
-
-        $populationCalculator = app()->make(PopulationCalculator::class, [$dominion]);
+        $populationCalculator = app()->make(PopulationCalculator::class);
 
         return view('pages.dominion.status', compact(
             'populationCalculator'
@@ -46,10 +44,8 @@ class DominionController extends AbstractController
 
     public function getAdvisorsProduction()
     {
-        $dominion = $this->getSelectedDominion();
-
-        $populationCalculator = app()->make(PopulationCalculator::class, [$dominion]);
-        $productionCalculator = app()->make(ProductionCalculator::class, [$dominion]);
+        $populationCalculator = app()->make(PopulationCalculator::class);
+        $productionCalculator = app()->make(ProductionCalculator::class);
 
         return view('pages.dominion.advisors.production', compact(
             'populationCalculator',
@@ -76,11 +72,9 @@ class DominionController extends AbstractController
 
     public function getExplore()
     {
-        $dominion = $this->getSelectedDominion();
-
         $landHelper = app()->make(LandHelper::class);
-        $explorationActionService = app()->make(ExplorationActionService::class, [$dominion]);
-        $dominionQueueService = app()->make(DominionQueueService::class, [$dominion]);
+        $explorationActionService = app()->make(ExplorationActionService::class);
+        $dominionQueueService = app()->make(DominionQueueService::class);
 
         return view('pages.dominion.explore', compact(
             'landHelper',

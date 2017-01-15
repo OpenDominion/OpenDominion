@@ -19,16 +19,11 @@ class ComposerServiceProvider extends ServiceProvider
     {
         view()->composer('partials.main-footer', function (View $view) {
             $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
-
             $view->with('version', $version);
         });
 
         view()->composer('partials.resources-overview', function (View $view) {
-            $dominionSelectorService = app()->make(DominionSelectorService::class);
-            $dominion = $dominionSelectorService->getUserSelectedDominion();
-
-            $networthCalculator = app()->make(NetworthCalculator::class, [$dominion]);
-
+            $networthCalculator = app()->make(NetworthCalculator::class);
             $view->with('networthCalculator', $networthCalculator);
         });
     }
