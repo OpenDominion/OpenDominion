@@ -64,7 +64,11 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Actions
 
             $router->get('explore', ['as' => 'dominion.explore', 'uses' => 'DominionController@getExplore']);
+            $router->post('explore', 'DominionController@postExplore');
+
             $router->get('construction', ['as' => 'dominion.construction', 'uses' => 'DominionController@getConstruction']);
+//            $router->post('construction', 'DominionController@postConstruction');
+
 //            $router->get('rezone-land', ['as' => 'dominion.rezone-land', 'uses' => 'DominionController@getRezoneLand']);
 //            $router->get('improvements', ['as' => 'dominion.improvements', 'uses' => 'DominionController@getImprovements']);
 //            $router->get('national-bank', ['as' => 'dominion.national-bank', 'uses' => 'DominionController@getNationalBank']);

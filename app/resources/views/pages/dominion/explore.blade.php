@@ -14,11 +14,11 @@
                 <div class="box-body">
                     <p>Cost per acre:</p>
                     <p>
-                        Platinum: {{ number_format($explorationActionService->getPlatinumCost()) }}<br>
-                        Draftees: {{ number_format($explorationActionService->getDrafteeCost()) }}
+                        Platinum: {{ number_format($landCalculator->getExplorationPlatinumCost()) }}<br>
+                        Draftees: {{ number_format($landCalculator->getExplorationDrafteeCost()) }}
                     </p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
-                    <p>You can afford to explore for {{ number_format($explorationActionService->getMaxAfford()) }} acres of land at that rate.</p>
+                    <p>You can afford to explore for {{ number_format($landCalculator->getExplorationMaxAfford()) }} acres of land at that rate.</p>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                                         <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
                                         <td class="text-center">{{ number_format(array_sum($dominionQueueService->getExplorationQueue()[$landType])) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $explorationActionService->getMaxAfford() }}">
+                                            <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}">
                                         </td>
                                     </tr>
                                 @endforeach

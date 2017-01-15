@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Illuminate\Http\Request;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\LandHelper;
@@ -73,14 +75,23 @@ class DominionController extends AbstractController
     public function getExplore()
     {
         $landHelper = app()->make(LandHelper::class);
-        $explorationActionService = app()->make(ExplorationActionService::class);
-        $dominionQueueService = app()->make(DominionQueueService::class);
+        $landCalculator = app()->make(LandCalculator::class);
+        $dominionQueueService = app()->make(DominionQueueService::class, [$this->getSelectedDominion()]);
 
         return view('pages.dominion.explore', compact(
             'landHelper',
-            'explorationActionService',
+            'landCalculator',
             'dominionQueueService'
         ));
+    }
+
+    public function postExplore(Request $request)
+    {
+//        $landHelper = app()->make(LandHelper::class);
+//        $landCalculator = app()->make(LandCalculator::class);
+//        $explorationActionService = app()->make(ExplorationActionService::class);
+
+        dd($request);
     }
 
     public function getConstruction()
