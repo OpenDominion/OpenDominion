@@ -27,7 +27,13 @@ class DominionController extends AbstractController
 
     public function getStatus()
     {
-        return view('pages.dominion.status');
+        $dominion = $this->getSelectedDominion();
+
+        $populationCalculator = app()->make(PopulationCalculator::class, [$dominion]);
+
+        return view('pages.dominion.status', compact(
+            'populationCalculator'
+        ));
     }
 
     public function getAdvisors()

@@ -40,7 +40,7 @@
                             </tr>
                             <tr>
                                 <td>Employment:</td>
-                                <td>NYI</td>
+                                <td>{{ $populationCalculator->getEmploymentPercentage() }}%</td>
                             </tr>
                             <tr>
                                 <td>Networth:</td>
