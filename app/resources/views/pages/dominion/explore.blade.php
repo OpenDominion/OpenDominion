@@ -47,7 +47,7 @@
                                     <tr>
                                         <td>{{ ucfirst($landType) }}</td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
-                                        <td class="text-center">NYI</td>
+                                        <td class="text-center">{{ number_format(array_sum($dominionQueueService->getExplorationQueue()[$landType])) }}</td>
                                         <td class="text-center">
                                             <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $explorationActionService->getMaxAfford() }}">
                                         </td>
