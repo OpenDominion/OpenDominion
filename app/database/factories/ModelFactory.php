@@ -1,7 +1,6 @@
 <?php
 
 /** @var Illuminate\Database\Eloquent\Factory $factory */
-
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\User;
 

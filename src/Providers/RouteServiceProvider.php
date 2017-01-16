@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Providers;
 
-use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Routing\Router;
 use Route;
 
 class RouteServiceProvider extends ServiceProvider
