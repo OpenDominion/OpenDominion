@@ -2,13 +2,12 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
 
@@ -87,13 +86,58 @@ class DominionController extends AbstractController
         ));
     }
 
-    public function postExplore(Request $request)
+    public function postExplore(ExploreActionRequest $request)
     {
+        $dominion = $this->getSelectedDominion();
+
 //        $landHelper = app()->make(LandHelper::class);
-//        $landCalculator = app()->make(LandCalculator::class);
+        $landCalculator = app()->make(LandCalculator::class);
 //        $explorationActionService = app()->make(ExplorationActionService::class);
 
-        dd($request);
+        $totalLandToExplore = array_sum($request->get('explore'));
+
+        if ($totalLandToExplore === 0) {
+            // redirect to get explore
+
+            // 'Exploration was not begun due to bad input.'
+        }
+
+        $availableLand = $landCalculator->getExplorationMaxAfford();
+
+        if ($totalLandToExplore > $landCalculator->getExplorationMaxAfford()) {
+            // error
+
+            // 'You do not have enough platinum/draftees to explore for $total acres.'
+        }
+
+        $platinumCost = ($landCalculator->getExplorationPlatinumCost() * $totalLandToExplore);
+        $drafteeCost = ($landCalculator->getExplorationDrafteeCost() * $totalLandToExplore);
+        $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $landCalculator->getExplorationMoraleDrop($totalLandToExplore)));
+        $moraleDrop = ($dominion->morale - $newMorale);
+
+        // trans start
+
+        // reduce platinum/draftees/morale
+
+        // insert/update queue_exploration
+
+        // trans commit
+
+//        // todo: optimize?
+//        $tmp = array();
+//        foreach ($explore as $land_type => $amount) {
+//            if ($amount == 0) {
+//                continue;
+//            }
+//
+//            $tmp[] = ($amount . ' ' . $land_types[$land_type]);
+//        }
+//        $explore_string = strtolower(strrev(preg_replace(strrev('/, /'), strrev(' and '), strrev(implode(', ', $tmp)), 1)));
+//        "Exploration for {$explore_string} begun at a cost of " . number_format($platinum_cost) . " platinum and " . number_format($draftee_cost) . " draftees. Your orders for exploration disheartens the military, and morale drops {$morale_drop}%."
+
+        // redirect to get explore w/ message
+
+        dd($request->get('explore'));
     }
 
     public function getConstruction()
