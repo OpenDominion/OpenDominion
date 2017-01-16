@@ -49,7 +49,7 @@
                                         <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
                                         <td class="text-center">{{ number_format(array_sum($dominionQueueService->getExplorationQueue()[$landType])) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}">
+                                            <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}" value="{{ old('explore.' . $landType) }}">
                                         </td>
                                     </tr>
                                 @endforeach

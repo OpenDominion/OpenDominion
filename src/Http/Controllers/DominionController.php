@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Carbon\Carbon;
+use DB;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
@@ -88,6 +90,8 @@ class DominionController extends AbstractController
 
     public function postExplore(ExploreActionRequest $request)
     {
+        // todo: refactor this into ExplorationActionService
+
         $dominion = $this->getSelectedDominion();
 
 //        $landHelper = app()->make(LandHelper::class);
@@ -97,47 +101,90 @@ class DominionController extends AbstractController
         $totalLandToExplore = array_sum($request->get('explore'));
 
         if ($totalLandToExplore === 0) {
-            // redirect to get explore
+            $request->session()->flash('alert-danger', 'Exploration was not begun due to bad input.');
 
-            // 'Exploration was not begun due to bad input.'
+            return redirect(route('dominion.explore'))
+                ->withInput($request->all());
         }
 
         $availableLand = $landCalculator->getExplorationMaxAfford();
 
         if ($totalLandToExplore > $landCalculator->getExplorationMaxAfford()) {
-            // error
+            $request->session()->flash('alert-danger', "You do not have enough platinum/draftees to explore for {$totalLandToExplore} acres.");
 
-            // 'You do not have enough platinum/draftees to explore for $total acres.'
+            return redirect(route('dominion.explore'))
+                ->withInput($request->all());
         }
 
-        $platinumCost = ($landCalculator->getExplorationPlatinumCost() * $totalLandToExplore);
-        $drafteeCost = ($landCalculator->getExplorationDrafteeCost() * $totalLandToExplore);
         $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $landCalculator->getExplorationMoraleDrop($totalLandToExplore)));
         $moraleDrop = ($dominion->morale - $newMorale);
 
-        // trans start
+        $platinumCost = ($landCalculator->getExplorationPlatinumCost() * $totalLandToExplore);
+        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
 
-        // reduce platinum/draftees/morale
+        $drafteeCost = ($landCalculator->getExplorationDrafteeCost() * $totalLandToExplore);
+        $newDraftee = ($dominion->military_draftees - $drafteeCost);
 
-        // insert/update queue_exploration
+        $explore = array_map('intval', $request->get('explore'));
 
-        // trans commit
+        $dateTime = new Carbon;
 
-//        // todo: optimize?
-//        $tmp = array();
-//        foreach ($explore as $land_type => $amount) {
-//            if ($amount == 0) {
-//                continue;
-//            }
-//
-//            $tmp[] = ($amount . ' ' . $land_types[$land_type]);
-//        }
-//        $explore_string = strtolower(strrev(preg_replace(strrev('/, /'), strrev(' and '), strrev(implode(', ', $tmp)), 1)));
-//        "Exploration for {$explore_string} begun at a cost of " . number_format($platinum_cost) . " platinum and " . number_format($draftee_cost) . " draftees. Your orders for exploration disheartens the military, and morale drops {$morale_drop}%."
+        DB::beginTransaction();
 
-        // redirect to get explore w/ message
+        DB::table('dominions')
+            ->where('id', $dominion->id)
+            ->update([
+                'morale' => $newMorale,
+                'resource_platinum' => $newPlatinum,
+                'military_draftees' => $newDraftee,
+            ]);
 
-        dd($request->get('explore'));
+        // Check for existing queue
+        $existingQueueRows = DB::table('queue_exploration')
+            ->where([
+                'dominion_id' => $dominion->id,
+                'hours' => 12,
+            ])->get(['*']);
+
+        foreach ($existingQueueRows as $row) {
+            $explore[$row->land_type] += $row->amount;
+        }
+
+        foreach ($explore as $landType => $amount) {
+            if ($amount === 0) {
+                continue;
+            }
+
+            $where = [
+                'dominion_id' => $dominion->id,
+                'land_type' => $landType,
+                'hours' => 12,
+            ];
+
+            $data = [
+                'amount' => $amount,
+                'updated_at' => $dateTime,
+            ];
+
+            if ($existingQueueRows->isEmpty()) {
+                $data['created_at'] = $dateTime;
+            }
+
+            DB::table('queue_exploration')
+                ->updateOrInsert($where, $data);
+        }
+
+        DB::commit();
+
+        $message = sprintf(
+            'Exploration begun at a cost of %s platinum and %s draftees. Your orders for exploration disheartens the military, and morale drops %s%%.',
+            number_format($platinumCost),
+            number_format($drafteeCost),
+            number_format($moraleDrop)
+        );
+
+        $request->session()->flash('alert-success', $message);
+        return redirect(route('dominion.explore'));
     }
 
     public function getConstruction()
