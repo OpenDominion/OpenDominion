@@ -4,12 +4,16 @@ namespace OpenDominion\Http\Controllers;
 
 use Carbon\Carbon;
 use DB;
+use Exception;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
 
@@ -22,7 +26,7 @@ class DominionController extends AbstractController
         try {
             $dominionSelectorService->selectUserDominion($dominion);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response('Unauthorized', 401);
         }
 
@@ -90,97 +94,37 @@ class DominionController extends AbstractController
 
     public function postExplore(ExploreActionRequest $request)
     {
-        // todo: refactor this into ExplorationActionService
-
         $dominion = $this->getSelectedDominion();
+        $explorationActionService = app()->make(ExplorationActionService::class);
 
-//        $landHelper = app()->make(LandHelper::class);
-        $landCalculator = app()->make(LandCalculator::class);
-//        $explorationActionService = app()->make(ExplorationActionService::class);
+        try {
+            $result = $explorationActionService->explore($dominion, $request->get('explore'));
 
-        $totalLandToExplore = array_sum($request->get('explore'));
-
-        if ($totalLandToExplore === 0) {
+        } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'Exploration was not begun due to bad input.');
 
             return redirect(route('dominion.explore'))
                 ->withInput($request->all());
-        }
 
-        $availableLand = $landCalculator->getExplorationMaxAfford();
-
-        if ($totalLandToExplore > $landCalculator->getExplorationMaxAfford()) {
+        } catch (NotEnoughResourcesException $e) {
+            $totalLandToExplore = array_sum($request->get('explore'));
             $request->session()->flash('alert-danger', "You do not have enough platinum/draftees to explore for {$totalLandToExplore} acres.");
+
+            return redirect(route('dominion.explore'))
+                ->withInput($request->all());
+
+        } catch (Exception $e) {
+            $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
 
             return redirect(route('dominion.explore'))
                 ->withInput($request->all());
         }
 
-        $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $landCalculator->getExplorationMoraleDrop($totalLandToExplore)));
-        $moraleDrop = ($dominion->morale - $newMorale);
-
-        $platinumCost = ($landCalculator->getExplorationPlatinumCost() * $totalLandToExplore);
-        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
-
-        $drafteeCost = ($landCalculator->getExplorationDrafteeCost() * $totalLandToExplore);
-        $newDraftee = ($dominion->military_draftees - $drafteeCost);
-
-        $explore = array_map('intval', $request->get('explore'));
-
-        $dateTime = new Carbon;
-
-        DB::beginTransaction();
-
-        DB::table('dominions')
-            ->where('id', $dominion->id)
-            ->update([
-                'morale' => $newMorale,
-                'resource_platinum' => $newPlatinum,
-                'military_draftees' => $newDraftee,
-            ]);
-
-        // Check for existing queue
-        $existingQueueRows = DB::table('queue_exploration')
-            ->where([
-                'dominion_id' => $dominion->id,
-                'hours' => 12,
-            ])->get(['*']);
-
-        foreach ($existingQueueRows as $row) {
-            $explore[$row->land_type] += $row->amount;
-        }
-
-        foreach ($explore as $landType => $amount) {
-            if ($amount === 0) {
-                continue;
-            }
-
-            $where = [
-                'dominion_id' => $dominion->id,
-                'land_type' => $landType,
-                'hours' => 12,
-            ];
-
-            $data = [
-                'amount' => $amount,
-                'updated_at' => $dateTime,
-            ];
-
-            if ($existingQueueRows->isEmpty()) {
-                $data['created_at'] = $dateTime;
-            }
-
-            DB::table('queue_exploration')
-                ->updateOrInsert($where, $data);
-        }
-
-        DB::commit();
-
         $message = sprintf(
             'Exploration begun at a cost of %s platinum and %s draftees. Your orders for exploration disheartens the military, and morale drops %s%%.',
-            number_format($platinumCost),
-            number_format($drafteeCost),
-            number_format($moraleDrop)
+            number_format($result['platinumCost']),
+            number_format($result['drafteeCost']),
+            number_format($result['moraleDrop'])
         );
 
         $request->session()->flash('alert-success', $message);
