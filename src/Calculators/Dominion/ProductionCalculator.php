@@ -231,11 +231,11 @@ class ProductionCalculator extends AbstractDominionCalculator
     /**
      * Returns the Dominion's net food change.
      *
-     * @return float
+     * @return int
      */
     public function getFoodNetChange()
     {
-        return (float)($this->getFoodProduction() - $this->getFoodConsumption() - $this->getFoodDecay());
+        return (int)round($this->getFoodProduction() - $this->getFoodConsumption() - $this->getFoodDecay());
     }
 
     // Lumber
@@ -313,11 +313,11 @@ class ProductionCalculator extends AbstractDominionCalculator
     /**
      * Returns the Dominion's net lumber change.
      *
-     * @return float
+     * @return int
      */
     public function getLumberNetChange()
     {
-        return (float)($this->getLumberProduction() - $this->getLumberDecay());
+        return (int)round($this->getLumberProduction() - $this->getLumberDecay());
     }
 
     // Mana
