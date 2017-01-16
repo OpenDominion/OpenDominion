@@ -1,10 +1,10 @@
 # OpenDominion
 
-[![Travis](https://img.shields.io/travis/WaveHack/OpenDominion.svg?style=flat-square)](https://travis-ci.org/WaveHack/OpenDominion)
+[![Travis](https://img.shields.io/travis/WaveHack/OpenDominion.svg?style=flat-square&maxAge=3600)](https://travis-ci.org/WaveHack/OpenDominion)
 [![StyleCI](https://styleci.io/repos/29497480/shield?branch=master)](https://styleci.io/repos/29497480)
-[![Dependency Status](https://img.shields.io/gemnasium/WaveHack/OpenDominion.svg?style=flat-square)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
-[![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Gitter](https://img.shields.io/gitter/room/opendominion/lobby.svg?style=flat-square)](https://gitter.im/opendominion/Lobby)
+[![Dependency Status](https://img.shields.io/gemnasium/WaveHack/OpenDominion.svg?style=flat-square&maxAge=3600)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
+[![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?style=flat-square&maxAge=3600)](https://opensource.org/licenses/MIT)
+[![Gitter](https://img.shields.io/gitter/room/opendominion/lobby.svg?style=flat-square&maxAge=3600)](https://gitter.im/opendominion/Lobby)
 
 *Note: OpenDominion is still in early development. You can find my thoughts on how I plan to develop it in [structure.md](structure.md).*
 
