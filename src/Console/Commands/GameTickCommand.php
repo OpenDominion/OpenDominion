@@ -9,6 +9,8 @@ use Exception;
 use Illuminate\Console\Command;
 use Log;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
 class GameTickCommand extends Command
@@ -28,6 +30,9 @@ class GameTickCommand extends Command
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
+    /** @var ProductionCalculator */
+    protected $productionCalculator;
+
     /**
      * GameTickCommand constructor.
      *
@@ -39,6 +44,7 @@ class GameTickCommand extends Command
 
         $this->dominions = $dominions;
         $this->populationCalculator = app()->make(PopulationCalculator::class);
+        $this->productionCalculator = app()->make(ProductionCalculator::class);
     }
 
     /**
@@ -89,12 +95,22 @@ class GameTickCommand extends Command
         $dominions = $this->dominions->all();
 
         foreach ($dominions as $dominion) {
+            /** @var $dominion Dominion */
             foreach (app()->tagged('calculators') as $calculator) {
                 $calculator->init($dominion);
             }
 
             // Resources
-            // todo
+            $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction();
+            $dominion->resource_food += $this->productionCalculator->getFoodNetChange();
+            // todo: if food < 0 then food = 0?
+            $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange();
+            // todo: if lumber < 0 then lumber = 0?
+            // todo: mana
+            // todo: if mana < 0 then mana = 0?
+            // todo: ore
+            // todo: gems
+            // todo: boats
 
             // Population
             $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth();
