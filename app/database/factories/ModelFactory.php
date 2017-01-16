@@ -1,9 +1,9 @@
 <?php
 
-/** @var Illuminate\Database\Eloquent\Factory $factory */
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\User;
 
+/** @var Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(Dominion::class, function (Faker\Generator $faker) {
     // todo
     return [
