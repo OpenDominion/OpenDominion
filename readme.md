@@ -1,9 +1,9 @@
 # OpenDominion
 
-
 [![Travis](https://img.shields.io/travis/WaveHack/OpenDominion.svg?maxAge=2592000)](https://travis-ci.org/WaveHack/OpenDominion)
-[![Gitter](https://img.shields.io/gitter/room/opendominion/lobby.svg?maxAge=2592000)](https://gitter.im/opendominion/Lobby)
+[![Dependency Status](https://img.shields.io/gemnasium/WaveHack/OpenDominion.svg)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
+[![Gitter](https://img.shields.io/gitter/room/opendominion/lobby.svg?maxAge=2592000)](https://gitter.im/opendominion/Lobby)
 
 *Note: OpenDominion is still in early development. You can find my thoughts on how I plan to develop it in [structure.md](structure.md).*
 
