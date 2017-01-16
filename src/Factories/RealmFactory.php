@@ -18,7 +18,7 @@ class RealmFactory
      *
      * @param RealmRepository $realms
      */
-    function __construct(RealmRepository $realms)
+    public function __construct(RealmRepository $realms)
     {
         $this->realms = $realms;
     }

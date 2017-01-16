@@ -12,7 +12,7 @@
 */
 
 $app = new OpenDominion\Application(
-    realpath(__DIR__.'/../../')
+    realpath(__DIR__ . '/../../')
 );
 
 /*

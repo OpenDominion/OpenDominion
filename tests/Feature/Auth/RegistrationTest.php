@@ -57,7 +57,7 @@ class RegistrationTest extends BaseTestCase
             'activation_code' => 'foo',
         ]);
 
-        $this->visit("/auth/activate/bar")
+        $this->visit('/auth/activate/bar')
             ->seePageIs('/')
             ->see('Invalid activation code')
             ->dontSeeInDatabase('users', [

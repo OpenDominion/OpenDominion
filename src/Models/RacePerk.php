@@ -13,5 +13,4 @@ class RacePerk extends AbstractModel
     {
         return $this->belongsTo(RacePerkType::class, 'race_perk_type_id');
     }
-
 }

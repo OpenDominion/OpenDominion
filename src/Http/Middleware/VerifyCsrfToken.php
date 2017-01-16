@@ -26,7 +26,7 @@ class VerifyCsrfToken extends BaseVerifier
     public function handle($request, Closure $next)
     {
         // Don't verify CSRF token during Windows development due to random TokenMismatchExceptions being thrown
-        if ((app()->environment() === 'local') && (PHP_OS === "WINNT")) {
+        if ((app()->environment() === 'local') && (PHP_OS === 'WINNT')) {
             return $next($request);
         }
 

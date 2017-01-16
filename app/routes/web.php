@@ -3,7 +3,6 @@
 use Illuminate\Routing\Router;
 
 /** @var Router $router */
-
 $router->get('/', ['as' => 'home', function () {
     if (Auth::check()) {
         return redirect(route('dashboard'));
