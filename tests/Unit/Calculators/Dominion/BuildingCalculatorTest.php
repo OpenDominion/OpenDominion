@@ -70,7 +70,17 @@ class BuildingCalculatorTest extends BaseTestCase
 
     public function testGetConstructionLumberCost()
     {
-        $this->markTestIncomplete();
+        // Test with 90 buildings, 250 land
+        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
+        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
+
+        $this->assertEquals(88, $this->buildingCalculatorTestMock->getConstructionLumberCost());
+
+        // Test with 1250 buildings, 1250 land
+        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(1250)->byDefault();
+        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(1250)->byDefault();
+
+        $this->assertEquals(688, $this->buildingCalculatorTestMock->getConstructionLumberCost());
     }
 
     public function testGetConstructionMaxAfford()
