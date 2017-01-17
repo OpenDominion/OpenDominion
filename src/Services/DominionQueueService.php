@@ -58,9 +58,16 @@ class DominionQueueService
         return $total;
     }
 
+    public function getExplorationQueueTotalByLand($land)
+    {
+        return array_sum($this->getExplorationQueue()[$land]);
+    }
+
     public function getConstructionQueue()
     {
-        //
+        return [
+            'farm' => 10,
+        ];
     }
 
     public function getMilitaryTrainingQueue()
