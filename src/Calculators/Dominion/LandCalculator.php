@@ -61,6 +61,17 @@ class LandCalculator extends AbstractDominionCalculator
     }
 
     /**
+     * Returns the Dominion's total barren land by land type.
+     *
+     * @param string $landType
+     * @return int
+     */
+    public function getTotalBarrenLandByLandType($landType)
+    {
+        return $this->getBarrenLandByLandType()[$landType];
+    }
+
+    /**
      * Returns the Dominion's barren land by land type.
      *
      * @return int[]

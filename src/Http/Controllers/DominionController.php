@@ -5,11 +5,14 @@ namespace OpenDominion\Http\Controllers;
 use Carbon\Carbon;
 use DB;
 use Exception;
+use Illuminate\Http\Request;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
@@ -133,7 +136,22 @@ class DominionController extends AbstractController
 
     public function getConstruction()
     {
-        return view('pages.dominion.construction');
+        $buildingHelper = app()->make(BuildingHelper::class);
+        $buildingCalculator = app()->make(BuildingCalculator::class);
+        $landCalculator = app()->make(LandCalculator::class);
+        $dominionQueueService = app()->make(DominionQueueService::class, [$this->getSelectedDominion()]);
+
+        return view('pages.dominion.construction', compact(
+            'buildingHelper',
+            'buildingCalculator',
+            'landCalculator',
+            'dominionQueueService'
+        ));
+    }
+
+    public function postConstruction(/*ConstructionActionRequest*/ Request $request)
+    {
+        dd($request);
     }
 
     // Black Ops
