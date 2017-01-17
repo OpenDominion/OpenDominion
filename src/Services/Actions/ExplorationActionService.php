@@ -24,6 +24,9 @@ class ExplorationActionService
      */
     public function explore(Dominion $dominion, array $data)
     {
+        $data = array_map('intval', $data);
+
+        /** @var LandCalculator $landCalculator */
         $landCalculator = app()->make(LandCalculator::class);
         $landCalculator->init($dominion);
 
@@ -33,9 +36,9 @@ class ExplorationActionService
             throw new BadInputException;
         }
 
-        $availableLand = $landCalculator->getExplorationMaxAfford();
+        $maxAfford = $landCalculator->getExplorationMaxAfford();
 
-        if ($totalLandToExplore > $availableLand) {
+        if ($totalLandToExplore > $maxAfford) {
             throw new NotEnoughResourcesException;
         }
 
@@ -47,8 +50,6 @@ class ExplorationActionService
 
         $drafteeCost = ($landCalculator->getExplorationDrafteeCost() * $totalLandToExplore);
         $newDraftee = ($dominion->military_draftees - $drafteeCost);
-
-        $data = array_map('intval', $data);
 
         $dateTime = new Carbon;
 

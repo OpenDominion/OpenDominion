@@ -14,6 +14,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Actions\ConstructionActionService;
 use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
@@ -149,7 +150,40 @@ class DominionController extends AbstractController
 
     public function postConstruction(/*ConstructionActionRequest*/ Request $request)
     {
-        dd($request);
+        $dominion = $this->getSelectedDominion();
+        $constructionActionService = app()->make(ConstructionActionService::class);
+
+        try {
+            $result = $constructionActionService->construct($dominion, $request->get('construct'));
+
+        } catch (BadInputException $e) {
+            $request->session()->flash('alert-danger', 'Construction was not started due to bad input.');
+
+            return redirect(route('dominion.construction'))
+                ->withInput($request->all());
+
+        } catch (NotEnoughResourcesException $e) {
+            $totalBuildingsToConstruct = array_sum($request->get('construct'));
+            $request->session()->flash('alert-danger', "You do not have enough platinum/lumber/barren land to construct {$totalBuildingsToConstruct} buildings.");
+
+            return redirect(route('dominion.construction'))
+                ->withInput($request->all());
+
+        } catch (Exception $e) {
+            $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
+
+            return redirect(route('dominion.construction'))
+                ->withInput($request->all());
+        }
+
+        $message = sprintf(
+            'Construction started at a cost of %s platinum and %s lumber.',
+            number_format($result['platinumCost']),
+            number_format($result['lumberCost'])
+        );
+
+        $request->session()->flash('alert-success', $message);
+        return redirect(route('dominion.construction'));
     }
 
     // Black Ops

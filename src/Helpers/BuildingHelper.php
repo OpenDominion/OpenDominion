@@ -47,7 +47,7 @@ class BuildingHelper
             'swamp' => [
 //                'tower',
 //                'wizard_guild',
-//                'template',
+//                'temple',
             ],
             'cavern' => [
 //                'diamond_mine',

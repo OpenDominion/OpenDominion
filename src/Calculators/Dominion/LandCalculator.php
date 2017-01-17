@@ -57,7 +57,7 @@ class LandCalculator extends AbstractDominionCalculator
      */
     public function getTotalBarrenLand()
     {
-        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings() - $this->dominionQueueService->getExplorationQueueTotal());
+        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings() - $this->dominionQueueService->getConstructionQueueTotal());
     }
 
     /**
@@ -87,9 +87,8 @@ class LandCalculator extends AbstractDominionCalculator
 
             foreach ($buildingTypes as $buildingType) {
                 $barrenLand -= $this->dominion->{'building_' . $buildingType};
+                $barrenLand -= $this->dominionQueueService->getConstructionQueueTotalByBuilding($buildingType);
             }
-
-            // todo: construction queue
 
             $return[$landType] = $barrenLand;
         }
