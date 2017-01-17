@@ -4,6 +4,7 @@ namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\BaseTestCase;
 
@@ -43,5 +44,37 @@ class BuildingCalculatorTest extends BaseTestCase
         }
 
         $this->assertEquals($expected, $this->buildingCalculator->getTotalBuildings());
+    }
+
+    public function testGetConstructionPlatinumCost()
+    {
+        $landCalculator = m::mock(LandCalculator::class);
+        $landCalculator->shouldReceive('setDominion')->andReturn($landCalculator);
+        app()->instance(LandCalculator::class, $landCalculator);
+
+        $this->buildingCalculator = m::mock(BuildingCalculator::class)->makePartial();
+        $this->buildingCalculator->init($this->dominionMock);
+
+        // Test with 90 buildings, 250 land
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
+        $landCalculator->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
+
+        $this->assertEquals(850, $this->buildingCalculator->getConstructionPlatinumCost());
+
+        // Test with 1250 buildings, 1250 land
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn(1250)->byDefault();
+        $landCalculator->shouldReceive('getTotalLand')->andReturn(1250)->byDefault();
+
+        $this->assertEquals(2380, $this->buildingCalculator->getConstructionPlatinumCost());
+    }
+
+    public function testGetConstructionLumberCost()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetConstructionMaxAfford()
+    {
+        $this->markTestIncomplete();
     }
 }
