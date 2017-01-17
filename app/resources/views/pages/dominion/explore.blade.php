@@ -46,7 +46,12 @@
                                 @foreach ($landHelper->getLandTypes() as $landType)
                                     <tr>
                                         <td>{{ ucfirst($landType) }}</td>
-                                        <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
+                                        <td class="text-center">
+                                            {{ number_format($selectedDominion->{'land_' . $landType}) }}
+                                            <small>
+                                                ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand()) * 100), 1) }}%)
+                                            </small>
+                                        </td>
                                         <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($landType)) }}</td>
                                         <td class="text-center">
                                             <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}" value="{{ old('explore.' . $landType) }}">
