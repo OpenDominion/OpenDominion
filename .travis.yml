@@ -13,4 +13,7 @@ before_script:
 - bash bin/init.sh testing
 
 script:
-- vendor/bin/phpunit
+- vendor/bin/phpunit --coverage-clover app/storage/logs/clover.xml
+
+after_success:
+- travis_retry vendor/bin/coveralls -v
