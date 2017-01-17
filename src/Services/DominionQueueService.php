@@ -44,6 +44,11 @@ class DominionQueueService
         return $return;
     }
 
+    public function getExplorationQueueTotal()
+    {
+        return 1;
+    }
+
     public function getConstructionQueue()
     {
         //

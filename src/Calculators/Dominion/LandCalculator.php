@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\DominionQueueService;
 
 class LandCalculator extends AbstractDominionCalculator
 {
@@ -17,6 +18,9 @@ class LandCalculator extends AbstractDominionCalculator
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
+    /** @var DominionQueueService */
+    protected $dominionQueueService;
+
     /**
      * {@inheritDoc}
      */
@@ -27,6 +31,7 @@ class LandCalculator extends AbstractDominionCalculator
         $this->buildingHelper = app()->make(BuildingHelper::class);
         $this->landHelper = app()->make(LandHelper::class);
         $this->buildingCalculator = app()->make(BuildingCalculator::class)->setDominion($dominion);
+        $this->dominionQueueService = app()->make(DominionQueueService::class, [$dominion]);
     }
 
     /**
@@ -52,9 +57,7 @@ class LandCalculator extends AbstractDominionCalculator
      */
     public function getTotalBarrenLand()
     {
-        // todo: construction queue
-
-        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings());
+        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings() - $this->dominionQueueService->getExplorationQueueTotal());
     }
 
     /**

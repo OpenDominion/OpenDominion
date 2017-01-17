@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
+use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Tests\BaseTestCase;
 
 class LandCalculatorTest extends BaseTestCase
@@ -16,6 +17,9 @@ class LandCalculatorTest extends BaseTestCase
 
     /** @var BuildingCalculator */
     protected $buildingCalculatorMock;
+
+    /** @var DominionQueueService */
+    protected $dominionQueueServiceMock;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -28,8 +32,10 @@ class LandCalculatorTest extends BaseTestCase
 
         $this->buildingCalculatorMock = m::mock(BuildingCalculator::class);
         $this->buildingCalculatorMock->shouldReceive('setDominion')->andReturn($this->buildingCalculatorMock);
-
         $this->app->instance(BuildingCalculator::class, $this->buildingCalculatorMock);
+
+        $this->dominionQueueServiceMock = m::mock(DominionQueueService::class);
+        $this->app->instance(DominionQueueService::class, $this->dominionQueueServiceMock);
 
         $this->landCalculator = $this->app->make(LandCalculator::class);
         $this->landCalculator->init($this->dominionMock);
@@ -69,9 +75,9 @@ class LandCalculatorTest extends BaseTestCase
 
         $this->buildingCalculatorMock->shouldReceive('getTotalBuildings')->andReturn(1);
 
-        // todo: construction queue
+        $this->dominionQueueServiceMock->shouldReceive('getExplorationQueueTotal')->andReturn(2);
 
-        $this->assertEquals(69, $this->landCalculator->getTotalBarrenLand());
+        $this->assertEquals(67, $this->landCalculator->getTotalBarrenLand());
     }
 
     public function testGetBarrenLandByLandType()
