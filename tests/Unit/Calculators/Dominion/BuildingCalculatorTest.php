@@ -55,7 +55,7 @@ class BuildingCalculatorTest extends BaseTestCase
 
     public function testGetConstructionPlatinumCost()
     {
-        // Test with 90 buildings, 250 land
+        // Starting values
         $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
         $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
 
@@ -70,7 +70,7 @@ class BuildingCalculatorTest extends BaseTestCase
 
     public function testGetConstructionLumberCost()
     {
-        // Test with 90 buildings, 250 land
+        // Starting values
         $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
         $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
 
@@ -85,6 +85,12 @@ class BuildingCalculatorTest extends BaseTestCase
 
     public function testGetConstructionMaxAfford()
     {
-        $this->markTestIncomplete();
+        // Starting values
+        $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(100000);
+        $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn(15000);
+        $this->buildingCalculatorTestMock->shouldReceive('getConstructionPlatinumCost')->andReturn(850);
+        $this->buildingCalculatorTestMock->shouldReceive('getConstructionLumberCost')->andReturn(88);
+
+        $this->assertEquals(117, $this->buildingCalculatorTestMock->getConstructionMaxAfford());
     }
 }
