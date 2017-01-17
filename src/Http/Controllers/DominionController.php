@@ -2,8 +2,6 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use Carbon\Carbon;
-use DB;
 use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
