@@ -39,15 +39,29 @@ class BuildingCalculatorTest extends BaseTestCase
             'home',
             'alchemy',
             'farm',
+//            'smithy',
+//            'masonry',
+//            'ore_mine',
+//            'gryphon_nest',
+//            'tower',
+//            'wizard_guild',
+//            'temple',
+//            'diamond_mine',
+//            'school',
             'lumberyard',
+//            'forest_haven',
+//            'factory',
+//            'guard_tower',
+//            'shrine',
             'barracks',
+//            'dock',
         ];
 
         $expected = 0;
 
-        for ($i = 0, $countBuildingTypes = count($buildingTypes); $i < $countBuildingTypes; ++$i) {
-            $this->dominionMock->shouldReceive('getAttribute')->with("building_{$buildingTypes[$i]}")->andReturn(1 << $i);
-            $expected += (1 << $i);
+        foreach ($buildingTypes as $buildingType) {
+            $this->dominionMock->shouldReceive('getAttribute')->with('building_' . $buildingType)->andReturn(1);
+            $expected++;
         }
 
         $this->assertEquals($expected, $this->buildingCalculatorTestMock->getTotalBuildings());
