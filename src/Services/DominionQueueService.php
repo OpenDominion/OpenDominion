@@ -46,7 +46,16 @@ class DominionQueueService
 
     public function getExplorationQueueTotal()
     {
-        return 1;
+        $total = 0;
+        $explorationQueue = $this->getExplorationQueue();
+
+        foreach ($explorationQueue as $landType => $data) {
+            foreach ($data as $hours => $amount) {
+                $total += $amount;
+            }
+        }
+
+        return $total;
     }
 
     public function getConstructionQueue()
