@@ -13,8 +13,11 @@ class BuildingCalculatorTest extends BaseTestCase
     /** @var Dominion */
     protected $dominionMock;
 
+    /** @var LandCalculator */
+    protected $landCalculatorDependencyMock;
+
     /** @var BuildingCalculator */
-    protected $buildingCalculator;
+    protected $buildingCalculatorTestMock;
 
     protected function setUp()
     {
@@ -22,8 +25,12 @@ class BuildingCalculatorTest extends BaseTestCase
 
         $this->dominionMock = m::mock(Dominion::class);
 
-        $this->buildingCalculator = $this->app->make(BuildingCalculator::class);
-        $this->buildingCalculator->init($this->dominionMock);
+        $this->landCalculatorDependencyMock = m::mock(LandCalculator::class);
+        $this->landCalculatorDependencyMock->shouldReceive('setDominion')->andReturn($this->landCalculatorDependencyMock);
+        app()->instance(LandCalculator::class, $this->landCalculatorDependencyMock);
+
+        $this->buildingCalculatorTestMock = m::mock(BuildingCalculator::class)->makePartial();
+        $this->buildingCalculatorTestMock->init($this->dominionMock);
     }
 
     public function testGetTotalBuildings()
@@ -43,29 +50,22 @@ class BuildingCalculatorTest extends BaseTestCase
             $expected += (1 << $i);
         }
 
-        $this->assertEquals($expected, $this->buildingCalculator->getTotalBuildings());
+        $this->assertEquals($expected, $this->buildingCalculatorTestMock->getTotalBuildings());
     }
 
     public function testGetConstructionPlatinumCost()
     {
-        $landCalculator = m::mock(LandCalculator::class);
-        $landCalculator->shouldReceive('setDominion')->andReturn($landCalculator);
-        app()->instance(LandCalculator::class, $landCalculator);
-
-        $this->buildingCalculator = m::mock(BuildingCalculator::class)->makePartial();
-        $this->buildingCalculator->init($this->dominionMock);
-
         // Test with 90 buildings, 250 land
-        $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
-        $landCalculator->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
+        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
+        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
 
-        $this->assertEquals(850, $this->buildingCalculator->getConstructionPlatinumCost());
+        $this->assertEquals(850, $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
 
         // Test with 1250 buildings, 1250 land
-        $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn(1250)->byDefault();
-        $landCalculator->shouldReceive('getTotalLand')->andReturn(1250)->byDefault();
+        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(1250)->byDefault();
+        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(1250)->byDefault();
 
-        $this->assertEquals(2380, $this->buildingCalculator->getConstructionPlatinumCost());
+        $this->assertEquals(2380, $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
     }
 
     public function testGetConstructionLumberCost()
