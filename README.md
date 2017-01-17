@@ -3,6 +3,7 @@
 [![Travis](https://img.shields.io/travis/WaveHack/OpenDominion.svg?style=flat-square&maxAge=3600)](https://travis-ci.org/WaveHack/OpenDominion)
 [![StyleCI](https://styleci.io/repos/29497480/shield?branch=master)](https://styleci.io/repos/29497480)
 [![Dependency Status](https://img.shields.io/gemnasium/WaveHack/OpenDominion.svg?style=flat-square&maxAge=3600)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
+[![Coverage Status](https://img.shields.io/coveralls/WaveHack/OpenDominion/master.svg?style=flat-square&maxAge=3600)](https://coveralls.io/github/WaveHack/OpenDominion?branch=master)
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?style=flat-square&maxAge=3600)](https://opensource.org/licenses/MIT)
 [![Gitter](https://img.shields.io/gitter/room/opendominion/lobby.svg?style=flat-square&maxAge=3600)](https://gitter.im/opendominion/Lobby)
 
