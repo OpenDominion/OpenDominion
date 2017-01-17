@@ -54,50 +54,57 @@ class ExplorationActionService
 
         DB::beginTransaction();
 
-        DB::table('dominions')
-            ->where('id', $dominion->id)
-            ->update([
-                'morale' => $newMorale,
-                'resource_platinum' => $newPlatinum,
-                'military_draftees' => $newDraftee,
-            ]);
+        try {
+            DB::table('dominions')
+                ->where('id', $dominion->id)
+                ->update([
+                    'morale' => $newMorale,
+                    'resource_platinum' => $newPlatinum,
+                    'military_draftees' => $newDraftee,
+                ]);
 
-        // Check for existing queue
-        $existingQueueRows = DB::table('queue_exploration')
-            ->where([
-                'dominion_id' => $dominion->id,
-                'hours' => 12,
-            ])->get(['land_type', 'amount']);
+            // Check for existing queue
+            $existingQueueRows = DB::table('queue_exploration')
+                ->where([
+                    'dominion_id' => $dominion->id,
+                    'hours' => 12,
+                ])->get(['land_type', 'amount']);
 
-        foreach ($existingQueueRows as $row) {
-            $data[$row->land_type] += $row->amount;
-        }
-
-        foreach ($data as $landType => $amount) {
-            if ($amount === 0) {
-                continue;
+            foreach ($existingQueueRows as $row) {
+                $data[$row->land_type] += $row->amount;
             }
 
-            $where = [
-                'dominion_id' => $dominion->id,
-                'land_type' => $landType,
-                'hours' => 12,
-            ];
+            foreach ($data as $landType => $amount) {
+                if ($amount === 0) {
+                    continue;
+                }
 
-            $values = [
-                'amount' => $amount,
-                'updated_at' => $dateTime,
-            ];
+                $where = [
+                    'dominion_id' => $dominion->id,
+                    'land_type' => $landType,
+                    'hours' => 12,
+                ];
 
-            if ($existingQueueRows->isEmpty()) {
-                $values['created_at'] = $dateTime;
+                $values = [
+                    'amount' => $amount,
+                    'updated_at' => $dateTime,
+                ];
+
+                if ($existingQueueRows->isEmpty()) {
+                    $values['created_at'] = $dateTime;
+                }
+
+                DB::table('queue_exploration')
+                    ->updateOrInsert($where, $values);
             }
 
-            DB::table('queue_exploration')
-                ->updateOrInsert($where, $values);
-        }
+            DB::commit();
 
-        DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
 
         return compact('platinumCost', 'drafteeCost', 'moraleDrop');
     }
