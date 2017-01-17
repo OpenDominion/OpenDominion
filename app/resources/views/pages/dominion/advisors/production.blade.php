@@ -7,7 +7,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-industry fa-fw"></i> Production Advisor</h3>
+            <h3 class="box-title"><i class="fa fa-industry"></i> Production Advisor</h3>
         </div>
         <div class="box-body no-padding">
             <div class="row">

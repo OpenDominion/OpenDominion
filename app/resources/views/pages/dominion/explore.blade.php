@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa-fa-search fa-fw"></i> Explore</h3>
+                    <h3 class="box-title"><i class="fa fa-search"></i> Explore</h3>
                     <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
