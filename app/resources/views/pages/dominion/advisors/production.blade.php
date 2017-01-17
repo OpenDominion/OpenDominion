@@ -37,20 +37,20 @@
                                 <td>{{ number_format($productionCalculator->getLumberProduction()) }}</td>
                             </tr>
                             <tr>
-                                <td>Mana:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Mana:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Ore:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Ore:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Gems:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Gems:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Research points:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Research points:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                         </tbody>
                     </table>
@@ -81,8 +81,8 @@
                                 <td>{{ number_format($productionCalculator->getLumberDecay()) }}</td>
                             </tr>
                             <tr>
-                                <td>Mana Drain:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Mana Drain:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,8 +112,8 @@
                                 <td>{{ number_format($productionCalculator->getLumberNetChange()) }}</td>
                             </tr>
                             <tr>
-                                <td>Mana:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Mana:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                         </tbody>
                     </table>
@@ -130,7 +130,7 @@
             Maximum peasant population: {{ number_format($populationCalculator->getMaxPopulation() - $populationCalculator->getPopulationMilitary()) }}<br>
             Jobs total: {{ number_format($populationCalculator->getEmploymentJobs()) }}<br>
             Jobs available: {{ number_format($populationCalculator->getEmploymentJobs() - $populationCalculator->getPopulationMilitary()) }}<br>
-            Opportunity cost of job overrun: NYI
+            <span class="nyi">Opportunity cost of job overrun: NYI</span>
         </div>
     </div>
 

@@ -79,24 +79,24 @@
                                 <td>{{ number_format($selectedDominion->resource_lumber) }}</td>
                             </tr>
                             <tr>
-                                <td>Mana:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Mana:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Ore:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Ore:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Gems:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Gems:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Research Points:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Research Points:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                             <tr>
-                                <td>Boats:</td>
-                                <td>NYI</td>
+                                <td class="nyi">Boats:</td>
+                                <td class="nyi">NYI</td>
                             </tr>
                         </tbody>
                     </table>
