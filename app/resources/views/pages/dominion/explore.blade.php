@@ -26,6 +26,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="box">
                 <form action="{{ route('dominion.explore') }}" method="post" role="form">
+                    {!! csrf_field() !!}
                     <div class="box-body">
                         <table class="table">
                             <colgroup>
