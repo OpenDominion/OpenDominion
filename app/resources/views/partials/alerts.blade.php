@@ -1,4 +1,4 @@
-@if (0 && App::environment() !== 'production')
+@if (App::environment() !== 'production')
     <div class="alert alert-warning alert-dismissible">
         <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <h4><i class="icon fa fa-warning"></i> Heads up!</h4>
@@ -7,30 +7,22 @@
 @endif
 
 @if (!$errors->isEmpty())
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="alert alert-danger">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <p>One or more errors occurred:</p>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
+    <div class="alert alert-danger alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <h4>One or more errors occurred:</h4>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
 @endif
 
 @foreach (['danger', 'warning', 'success', 'info'] as $alert_type)
     @if (Session::has('alert-' . $alert_type))
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="alert alert-{{ $alert_type }}">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <p>{{ Session::get('alert-' . $alert_type) }}</p>
-                </div>
-            </div>
+        <div class="alert alert-{{ $alert_type }} alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <p>{{ Session::get('alert-' . $alert_type) }}</p>
         </div>
     @endif
 @endforeach
