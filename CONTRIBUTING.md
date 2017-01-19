@@ -139,7 +139,7 @@ todo
 - Artisan is in `bin`: `$ php bin/artisan [command]`
 - Source code is in `src` instead of `app`
 - Bootstrap, config, database, resources, routes and storage are in `app`
-- As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to fix all the paths that Laravel uses by default. 
+- As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
 ### How to run OpenDominion
 
