@@ -27,7 +27,7 @@ Do note that nothing is set in stone. Feel free to even contribute to this docum
 
 ### Prerequisites
 
-- Make sure you have a [GitHub account](https://github.com/signup/free) account
+- Make sure you have a [GitHub account](https://github.com/signup/free)
 
 Collaboration and contributing will be primarily done through GitHub.
 
