@@ -196,6 +196,8 @@ $ php bin/artisan serve
 
 OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to.
 
+Make sure the directories `app/bootstrap/cache` and `app/storage` are writable.
+
 ### How to run tests
 
 You can run tests with:
