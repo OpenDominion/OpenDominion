@@ -59,7 +59,7 @@ Please search the issue tracker first if the particular bug already has an open 
 
 ### Making changes
 
-First, make sure the changes you're going to do adhere to the [vision of OpenDominion]((#vision)).
+First, make sure the changes you're going to do adhere to the [vision of OpenDominion](#vision).
 
 Fork the repository on GitHub. Then, based on the size of the change, either make your changes in the ~~develop~~ master branch (small changes) or create a new branch (big changes). If in doubt, just create a new branch. Branch names should preferably adhere to the Git Flow workflow. 
 
