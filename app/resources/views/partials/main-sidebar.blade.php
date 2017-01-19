@@ -4,7 +4,7 @@
         @if (isset($selectedDominion))
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="http://placehold.it/160x160" class="img-circle" alt="User Image">
+                    <img src="//placehold.it/160x160" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
                     <p>{{ $selectedDominion->name }}</p>

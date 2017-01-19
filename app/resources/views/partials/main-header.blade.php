@@ -21,7 +21,7 @@
                 <!-- User Account Menu -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="http://placehold.it/160x160" class="user-image" alt="User Image">
+                        <img src="//placehold.it/160x160" class="user-image" alt="User Image">
                         <span class="hidden-xs">{{ Auth::user()->display_name }}</span>
                     </a>
                     <ul class="dropdown-menu">
