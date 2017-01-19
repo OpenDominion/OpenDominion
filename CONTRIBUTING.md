@@ -208,7 +208,7 @@ Consult PHPUnit's manual for running specific tests or test files.
 
 ### How to update
 
-For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `yarn isntall` and/or `gulp`, depending on which files have changed.
+For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `yarn install` and/or `gulp`, depending on which files have changed.
 
 
 ### How to reset
