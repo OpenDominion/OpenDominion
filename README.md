@@ -4,8 +4,8 @@
 [![StyleCI](https://styleci.io/repos/29497480/shield?branch=master&style=flat)](https://styleci.io/repos/29497480)
 [![Dependency Status](https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
 [![Coverage Status](https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=master)](https://coveralls.io/github/WaveHack/OpenDominion?branch=master)
-[![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=3600)](https://opensource.org/licenses/MIT)
-[![Gitter](https://img.shields.io/gitter/room/opendominion/lobby.svg?maxAge=3600)](https://gitter.im/opendominion/Lobby)
+[![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
+[![Gitter](https://badges.gitter.im/opendominion/Lobby.svg)](https://gitter.im/opendominion/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 *Note: OpenDominion is still in early development. You can find my thoughts on how I plan to develop it in [structure.md](structure.md).*
 
