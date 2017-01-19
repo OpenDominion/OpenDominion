@@ -221,9 +221,9 @@ If you want to reset the database, run the following:
 $ php bin/artisan migrate:refresh --seed
 ```
 
-Note that any user accounts and dominions registered will have to be re-registered (and activated in the case of a user account).
-
 If that doesn't work, remove the `app/storage/databases/local.sqlite` file, create a new one and then run:
+
+Note that any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
 
 ```bash
 $ php bin/artisan migrate --seed
