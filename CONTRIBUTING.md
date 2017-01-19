@@ -130,6 +130,8 @@ $ yarn install
 $ gulp
 ```
 
+Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own SMTP server (or just set it to `log`). 
+
 ### Directory structure
 
 ```bash
@@ -228,6 +230,8 @@ $ php bin/artisan migrate --seed
 ```
 
 Note that any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
+
+Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`app/storage/logs/laravel.log`).
 
 ### Style guide and standards
 
