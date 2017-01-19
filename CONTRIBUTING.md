@@ -132,7 +132,50 @@ $ gulp
 
 ### Directory structure
 
-todo
+```bash
+.
++-- app
+|   +-- bootstrap # Laravel bootstrap
+|   +-- config # Laravel config
+|   +-- data # Custom folder with static data JSON files. Units, races, perks etc
+|   +-- database # Laravel database
+|   +-- resources # Laravel resources
+|   |   +-- assets # Application Sass, JavaScript, images etc
+|   |   +-- lang # Language files. Currently unused
+|   |   +-- views # Blade template views
+|   |       +-- emails # Email templates
+|   |       +-- errors # Laravel errors
+|   |       +-- layouts # Layouts
+|   |       +-- pages # Page contents. Subdirectories by route segments (e.g. route('foo.bar.baz') => foo/bar/baz.blade.php)
+|   |       +-- partials # Partial views to split up layouts or to reuse template blocks
+|   |       +-- vendor # Vendor views. Currently unused
+|   +-- routes # Laravel route config
+|   +-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
++-- bin # Artisan, init.sh and deploy.sh scripts
++-- public # Web root
+|   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update the gulpfile to copy them
+|       +-- app # Application assets, compiled and/or copied from app/resources/
+|       +-- vendor # Vendor assets, usually copied from node_modules/$library/dist
++-- src # Source files. These are pretty Laravel generic, with the addition of:
+|   +-- Calculators # Calculator classes which just do calculations. No touching database or session or anything. Just input-output
+|   |   +-- Dominion # Calculator classes which operate on a Dominion instance
+|   +-- Factories # DominionFactory and RealmFactory
+|   +-- Helpers # Helper classes which contains like building types and land types
+|   +-- Models # Eloquent models
+|   +-- Repositories # L5-Repositories repositories
+|   +-- Services # Misc business logic classes which can touch sessions, database etc
+|   +-- Traits # DominionAwareTrait
+|   +-- Application.php # Custom application class to overwrite Laravel's default paths
++-- tests # Test files. Note that tests are namespaced!
+    +-- Feature # Feature tests. Mostly user stories
+    +-- Unit # Tests which test a single class
+        +-- Calculators # Unit tests which test a single method per test method. Don't do database testing in here, just mock everything except the test method
+        |   +-- Dominion # Same as above, but with a Dominion
+        +-- Factories # Factory tests, must touch database
+        +-- Services # Service tests, may touch database
+```
+
+The rest should be pretty self-explanatory, assuming you're at least somewhat comfortable with Laravel.
 
 ### Deviation from Laravel
 
