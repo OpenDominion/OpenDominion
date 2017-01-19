@@ -148,7 +148,7 @@ To run OpenDominion you need a webserver pointing a document root towards the 'p
 What I like to do during development is to use PHP's internal webserver via Artisan serve:
 
 ```bash
-php bin/artisan serve
+$ php bin/artisan serve
 ```
 
 OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to.
@@ -173,7 +173,7 @@ For updating your local development environment, do a `git pull`, optionally fol
 If you want to reset the database, run the following:
 
 ```bash
-php bin/artisan migrate:refresh --seed
+$ php bin/artisan migrate:refresh --seed
 ```
 
 Note that any user accounts and dominions registered will have to be re-registered (and activated in the case of a user account).
@@ -181,7 +181,7 @@ Note that any user accounts and dominions registered will have to be re-register
 If that doesn't work, remove the `app/storage/databases/local.sqlite` file, create a new one and then run:
 
 ```bash
-php bin/artisan migrate --seed
+$ php bin/artisan migrate --seed
 ```
 
 ### Style guide and standards
