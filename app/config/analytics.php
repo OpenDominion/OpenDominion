@@ -5,7 +5,7 @@ return [
     /**
      * current selected provider
      */
-    'provider' => env('ANALYTICS_PROVIDER', 'GoogleAnalytics'),
+    'provider' => env('ANALYTICS_PROVIDER', 'NoAnalytics'),
 
     /**
      * configurations for all possible providers
