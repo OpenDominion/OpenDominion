@@ -38,7 +38,7 @@ class Authenticate
         }
 
         // Analytics
-        Analytics::setUserId(md5(env('APP_KEY') . $user->id));
+        Analytics::setUserId(md5($user->email));
 
         return $next($request);
     }
