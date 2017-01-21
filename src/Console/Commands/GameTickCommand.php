@@ -65,6 +65,8 @@ class GameTickCommand extends Command
         $this->tickDominionResources();
         // todo: Population (peasants & draftees)
         $this->tickDominionMorale();
+        $this->tickDominionSpyStrength();
+        $this->tickDominionWizardStrength();
         $this->tickExplorationQueue();
         $this->tickConstructionQueue();
         // todo: Military training queue
@@ -151,6 +153,54 @@ class GameTickCommand extends Command
         $affected = DB::update($sql, $bindings);
 
         Log::debug("Ticked morale, {$affected} dominion(s) affected");
+    }
+
+    public function tickDominionSpyStrength()
+    {
+        Log::debug('Tick spy strength started');
+
+        $sql = null;
+        $bindings = [
+            'spyStrengthAdded' => 4, // todo: get values from EspionageCalculator for Spy Master and Dark Artistry techs
+        ];
+
+        switch ($this->databaseDriver) {
+            case 'sqlite':
+                $sql = 'UPDATE `dominions` SET `spy_strength` = MIN(100, `spy_strength` + :spyStrengthAdded) WHERE `spy_strength` < 100;';
+                break;
+
+            case 'mysql':
+                $sql = 'UPDATE `dominions` SET `spy_strength` = LEAST(100, `spy_strength` + :spyStrengthAdded) WHERE `spy_strength` < 100;';
+                break;
+        }
+
+        $affected = DB::update($sql, $bindings);
+
+        Log::debug("Ticked spy strength, {$affected} dominion(s) affected");
+    }
+
+    public function tickDominionWizardStrength()
+    {
+        Log::debug('Tick wizard strength started');
+
+        $sql = null;
+        $bindings = [
+            'wizardStrengthAdded' => 5, // todo: get values from SpellCalculator for Master of Magi and Dark Artistry techs
+        ];
+
+        switch ($this->databaseDriver) {
+            case 'sqlite':
+                $sql = 'UPDATE `dominions` SET `wizard_strength` = MIN(100, `wizard_strength` + :wizardStrengthAdded) WHERE `wizard_strength` < 100;';
+                break;
+
+            case 'mysql':
+                $sql = 'UPDATE `dominions` SET `wizard_strength` = LEAST(100, `wizard_strength` + :wizardStrengthAdded) WHERE `wizard_strength` < 100;';
+                break;
+        }
+
+        $affected = DB::update($sql, $bindings);
+
+        Log::debug("Ticked wizard strength, {$affected} dominion(s) affected");
     }
 
     public function tickExplorationQueue()
