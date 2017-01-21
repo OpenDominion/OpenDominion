@@ -363,7 +363,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      * Returns the Dominion's employment percentage.
      *
      * If employment is at or above 100%, then one should strive to build more homes to get more peasants to the working
-     * force.  If employment is below 100%, then one should construct more buildings to employ idle peasants.
+     * force. If employment is below 100%, then one should construct more buildings to employ idle peasants.
      *
      * @return float
      */
