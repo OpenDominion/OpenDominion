@@ -87,10 +87,12 @@ class DominionFactory
             'peasants_last_hour' => 0,
             'draft_rate' => 10,
             'morale' => 100,
-//            'wizard_strength' => 100,
+            'spy_strength' => 100,
+            'wizard_strength' => 100,
             'resource_platinum' => 100000, // todo: get starting values from configs/data
             'resource_food' => 15000,
             'resource_lumber' => 15000,
+            // todo: other resources
             'military_draftees' => 100,
             'military_unit1' => 0,
             'military_unit2' => 150,
@@ -109,10 +111,22 @@ class DominionFactory
             'building_home' => 10,
             'building_alchemy' => 30,
             'building_farm' => 30,
+            'building_smithy' => 0,
+            'building_masonry' => 0,
+            'building_ore_mine' => 0,
+            'building_gryphon_nest' => 0,
+            'building_tower' => 0,
+            'building_wizard_guild' => 0,
+            'building_temple' => 0,
+            'building_diamond_mine' => 0,
+            'building_school' => 0,
             'building_lumberyard' => 20,
-            // todo
+            'building_forest_haven' => 0,
+            'building_factory' => 0,
+            'building_guard_tower' => 0,
+            'building_shrine' => 0,
             'building_barracks' => 0,
-            // todo: expand with more resources and buildings later
+            'building_dock' => 0,
         ]);
 
         $this->updateNetworth($dominion);

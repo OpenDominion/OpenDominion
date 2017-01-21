@@ -31,8 +31,8 @@ class CreateDominionsTable extends Migration
 
             $table->integer('draft_rate')->unsigned();
             $table->integer('morale')->unsigned();
-            $table->integer('wizard_strength')->unsigned();
             $table->integer('spy_strength')->unsigned();
+            $table->integer('wizard_strength')->unsigned();
 
             $table->integer('resource_platinum')->unsigned();
             $table->integer('resource_food')->unsigned();
