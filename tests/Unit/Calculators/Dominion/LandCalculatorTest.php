@@ -94,34 +94,34 @@ class LandCalculatorTest extends BaseTestCase
                 'home',
                 'alchemy',
                 'farm',
-//                'smithy',
-//                'masonry',
+                'smithy',
+                'masonry',
             ],
             'mountain' => [
-//                'ore_mine',
-//                'gryphon_nest',
+                'ore_mine',
+                'gryphon_nest',
             ],
             'swamp' => [
-//                'tower',
-//                'wizard_guild',
-//                'temple',
+                'tower',
+                'wizard_guild',
+                'temple',
             ],
             'cavern' => [
-//                'diamond_mine',
-//                'school',
+                'diamond_mine',
+                'school',
             ],
             'forest' => [
                 'lumberyard',
-//                'forest_haven',
+                'forest_haven',
             ],
             'hill' => [
-//                'factory',
-//                'guard_tower',
-//                'shrine',
+                'factory',
+                'guard_tower',
+                'shrine',
                 'barracks',
             ],
             'water' => [
-//                'dock',
+                'dock',
             ],
         ];
 

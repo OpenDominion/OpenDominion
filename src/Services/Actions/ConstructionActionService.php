@@ -56,7 +56,7 @@ class ConstructionActionService
                 continue;
             }
 
-            $landType = $landHelper->getLandTypesByBuildingType($dominion->race)[$buildingType];
+            $landType = $landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
 
             if ($amount > $landCalculator->getTotalBarrenLandByLandType($landType)) {
                 throw new NotEnoughResourcesException;

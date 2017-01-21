@@ -67,22 +67,22 @@ class CreateDominionsTable extends Migration
             $table->integer('building_home')->unsigned();
             $table->integer('building_alchemy')->unsigned();
             $table->integer('building_farm')->unsigned();
-//            $table->integer('building_smithy')->unsigned();
-//            $table->integer('building_masonry')->unsigned();
-//            $table->integer('building_ore_mine')->unsigned();
-//            $table->integer('building_gryphon_nest')->unsigned();
-//            $table->integer('building_tower')->unsigned();
-//            $table->integer('building_wizard_guild')->unsigned();
-//            $table->integer('building_temple')->unsigned();
-//            $table->integer('building_diamond_mine')->unsigned();
-//            $table->integer('building_school')->unsigned();
+            $table->integer('building_smithy')->unsigned();
+            $table->integer('building_masonry')->unsigned();
+            $table->integer('building_ore_mine')->unsigned();
+            $table->integer('building_gryphon_nest')->unsigned();
+            $table->integer('building_tower')->unsigned();
+            $table->integer('building_wizard_guild')->unsigned();
+            $table->integer('building_temple')->unsigned();
+            $table->integer('building_diamond_mine')->unsigned();
+            $table->integer('building_school')->unsigned();
             $table->integer('building_lumberyard')->unsigned();
-//            $table->integer('building_forest_haven')->unsigned();
-//            $table->integer('building_factory')->unsigned();
-//            $table->integer('building_guard_tower')->unsigned();
-//            $table->integer('building_shrine')->unsigned();
+            $table->integer('building_forest_haven')->unsigned();
+            $table->integer('building_factory')->unsigned();
+            $table->integer('building_guard_tower')->unsigned();
+            $table->integer('building_shrine')->unsigned();
             $table->integer('building_barracks')->unsigned();
-//            $table->integer('building_dock')->unsigned();
+            $table->integer('building_dock')->unsigned();
 
             $table->timestamps();
 

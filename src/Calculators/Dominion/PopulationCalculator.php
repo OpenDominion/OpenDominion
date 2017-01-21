@@ -331,9 +331,12 @@ class PopulationCalculator extends AbstractDominionCalculator
             );
         }
 
-        $trainable['spies'] = min($this->dominion->military_draftees, floor($this->dominion->resource_platinum / $spyPlatinumCost));
-        $trainable['wizards'] = min($this->dominion->military_draftees, floor($this->dominion->resource_platinum / $wizardPlatinumCost));
-        $trainable['archmages'] = min($this->dominion->military_wizards, floor($this->dominion->resource_platinum / $archmagePlatinumCost));
+        $trainable['spies'] = min($this->dominion->military_draftees,
+            floor($this->dominion->resource_platinum / $spyPlatinumCost));
+        $trainable['wizards'] = min($this->dominion->military_draftees,
+            floor($this->dominion->resource_platinum / $wizardPlatinumCost));
+        $trainable['archmages'] = min($this->dominion->military_wizards,
+            floor($this->dominion->resource_platinum / $archmagePlatinumCost));
 
         return $trainable;
     }
@@ -350,21 +353,21 @@ class PopulationCalculator extends AbstractDominionCalculator
         return (20 * (
                 $this->dominion->building_alchemy
                 + $this->dominion->building_farm
-//            + $this->dominion->building_smithy
-//            + $this->dominion->building_masonry
-//            + $this->dominion->building_ore_mine
-//            + $this->dominion->building_gryphon_nest
-//            + $this->dominion->building_tower
-//            + $this->dominion->building_wizard_guild
-//            + $this->dominion->building_temple
-//            + $this->dominion->building_diamond_mine
-//            + $this->dominion->building_school
+                + $this->dominion->building_smithy
+                + $this->dominion->building_masonry
+                + $this->dominion->building_ore_mine
+                + $this->dominion->building_gryphon_nest
+                + $this->dominion->building_tower
+                + $this->dominion->building_wizard_guild
+                + $this->dominion->building_temple
+                + $this->dominion->building_diamond_mine
+                + $this->dominion->building_school
                 + $this->dominion->building_lumberyard
-//            + $this->dominion->building_forest_haven
-//            + $this->dominion->building_factory
-//            + $this->dominion->building_guard_tower
-//            + $this->dominion->building_shrine
-//            + $this->dominion->building_dock
+                + $this->dominion->building_forest_haven
+                + $this->dominion->building_factory
+                + $this->dominion->building_guard_tower
+                + $this->dominion->building_shrine
+                + $this->dominion->building_dock
             ));
     }
 

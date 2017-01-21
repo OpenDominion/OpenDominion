@@ -21,7 +21,7 @@ class LandHelper
 
     public function getLandTypeForBuildingByRace($building, Race $race)
     {
-        return []; // todo
+        return $this->getLandTypesByBuildingType($race)[$building];
     }
 
     public function getLandTypesByBuildingType(Race $race)
@@ -29,22 +29,22 @@ class LandHelper
         $return = [
             'alchemy' => 'plain',
             'farm' => 'plain',
-//            'smithy' => 'plain',
-//            'masonry' => 'plain',
-//            'ore_mine' => 'mountain',
-//            'gryphon_nest' => 'mountain',
-//            'tower' => 'swamp',
-//            'wizard_guild' => 'swamp',
-//            'temple' => 'swamp',
-//            'diamond_mine' => 'cavern',
-//            'school' => 'cavern',
+            'smithy' => 'plain',
+            'masonry' => 'plain',
+            'ore_mine' => 'mountain',
+            'gryphon_nest' => 'mountain',
+            'tower' => 'swamp',
+            'wizard_guild' => 'swamp',
+            'temple' => 'swamp',
+            'diamond_mine' => 'cavern',
+            'school' => 'cavern',
             'lumberyard' => 'forest',
-//            'forest_haven' => 'forest',
-//            'factory' => 'hill',
-//            'guard_tower' => 'hill',
-//            'shrine' => 'hill',
+            'forest_haven' => 'forest',
+            'factory' => 'hill',
+            'guard_tower' => 'hill',
+            'shrine' => 'hill',
             'barracks' => 'hill',
-//            'dock' => 'water',
+            'dock' => 'water',
         ];
 
         $return = (['home' => $race->home_land_type] + $return);
