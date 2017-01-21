@@ -167,14 +167,14 @@ class MilitaryCalculator extends AbstractDominionCalculator
         return (float)($this->dominion->military_spies / $this->landCalculator->getTotalLand());
     }
 
-    public function getSpyStrengthRegen()
-    {
-        $regen = 4;
-
-        // todo: Spy Master / Dark Artistry tech
-
-        return $regen;
-    }
+//    public function getSpyStrengthRegen()
+//    {
+//        $regen = 4;
+//
+//        // todo: Spy Master / Dark Artistry tech
+//
+//        return $regen;
+//    }
 
     public function getWizardRatio()
     {
@@ -187,12 +187,12 @@ class MilitaryCalculator extends AbstractDominionCalculator
         return (float)(($this->dominion->military_wizards + ($this->dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand());
     }
 
-    public function getWizardStrengthRegen()
-    {
-        $regen = 5;
-
-        // todo: Master of Magi / Dark Artistry tech
-
-        return $regen;
-    }
+//    public function getWizardStrengthRegen()
+//    {
+//        $regen = 5;
+//
+//        // todo: Master of Magi / Dark Artistry tech
+//
+//        return $regen;
+//    }
 }
