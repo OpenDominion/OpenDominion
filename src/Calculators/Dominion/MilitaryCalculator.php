@@ -47,8 +47,33 @@ class MilitaryCalculator extends AbstractDominionCalculator
 
     public function getOffensivePowerMultiplier()
     {
-        return 1; // todo
-        // =Overview!$I$25+Imps!AB3+ROUND(MIN(Constants!$B$12*Construction!BA3/Construction!$E3,Constants!$D$12),4)+MAX(IF(Magic!$AE3>0,Constants!$F$79),IF(Magic!AG3>0,Constants!$F$81),IF(Magic!AJ3>0,Constants!$F$84)) + ROUNDDOWN(Production!O3/250*Constants!$B$90,2)/100 + MAX(Constants!$M$41*Techs!AH3,Constants!$M$55*Techs!AV3)
+        $multiplier = 0;
+
+        // Values (percentage)
+        $opPerGryphonNest = 1.75;
+        $gryphonNestMaxOp = 35;
+
+        // todo: Racial Bonus
+
+        // Gryphon Nests
+        $multiplier += min(
+            (($opPerGryphonNest * $this->dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand()),
+            ($gryphonNestMaxOp / 100)
+        );
+
+        // Spell: Warsong (Sylvan) (+10%)
+        // Spell: Howling (+10%)
+        // Spell: Nightfall (+5%)
+        // todo
+
+        // Prestige
+        $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
+
+        // Tech: Military (+5%)
+        // Tech: Magical Weaponry (+10%)
+        // todo
+
+        return (float)(1 + $multiplier);
     }
 
     public function getOffensivePowerRatio()
