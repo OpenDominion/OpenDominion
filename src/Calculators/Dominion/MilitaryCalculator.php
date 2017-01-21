@@ -119,8 +119,31 @@ class MilitaryCalculator extends AbstractDominionCalculator
 
     public function getDefensivePowerMultiplier()
     {
-        return 1; // todo
-        // =Overview!$I$24 + Imps!AC3 + ROUND( MIN(Constants!$B$11*Construction!BC3/Construction!$E3,Constants!$D$11), 4) + IF(Magic!AD3>0,Constants!$F$78,IF(Magic!AH3>0,Constants!$F$82,IF(Magic!AG3>0,Constants!$H$81,IF(Magic!Z3>0,Constants!$F$74))))
+        $multiplier = 0;
+
+        // Values (percentages)
+        $dpPerGuardTower = 1.75;
+        $guardTowerMaxDp = 35;
+
+        // Racial Bonus
+        // todo
+
+        // Improvement: Walls
+        // todo
+
+        // Guard Towers
+        $multiplier += min(
+            (($dpPerGuardTower * $this->dominion->building_guard_tower) / $this->landCalculator->getTotalLand()),
+            ($guardTowerMaxDp / 100)
+        );
+
+        // Spell: Frenzy (Halfling) (+20%)
+        // Spell: Blizzard (+15%)
+        // Spell: Howling (+10%)
+        // Spell: Ares' Call (+10%)
+        // todo
+
+        return (float)(1 + $multiplier);
     }
 
     public function getDefensivePowerRatio()
