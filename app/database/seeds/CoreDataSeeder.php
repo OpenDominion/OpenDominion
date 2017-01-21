@@ -72,21 +72,21 @@ class CoreDataSeeder extends Seeder
 
         $json = json_decode(file_get_contents(base_path('app/data/races.json')));
 
-        foreach ($json->races as $row) {
+        foreach ($json->races as $raceData) {
             $race = Race::create([
-                'name' => $row->name,
-                'alignment' => $row->alignment,
-                'home_land_type' => $row->home_land_type,
+                'name' => $raceData->name,
+                'alignment' => $raceData->alignment,
+                'home_land_type' => $raceData->home_land_type,
             ]);
 
             $this->raceIds[$race->name] = $race->id;
 
-            if (isset($race->perks)) {
-                foreach ($race->perks as $perk) {
+            if (isset($raceData->perks)) {
+                foreach ($raceData->perks as $perkData) {
                     RacePerk::create([
                         'race_id' => $race->id,
-                        'race_perk_type_id' => $this->racePerkTypeIds[$perk->key],
-                        'value' => $perk->value,
+                        'race_perk_type_id' => $this->racePerkTypeIds[$perkData->key],
+                        'value' => $perkData->value,
                     ]);
                 }
             }
@@ -100,21 +100,21 @@ class CoreDataSeeder extends Seeder
         $json = json_decode(file_get_contents(base_path('app/data/units.json')));
 
         foreach ($json->units as $raceName => $unitRows) {
-            foreach ($unitRows as $row) {
+            foreach ($unitRows as $unitData) {
                 $data = [
                     'race_id' => $this->raceIds[$raceName],
-                    'slot' => $row->slot,
-                    'name' => $row->name,
-                    'cost_platinum' => $row->cost->platinum,
-                    'cost_ore' => $row->cost->ore,
-                    'power_offense' => $row->power->offense,
-                    'power_defense' => $row->power->defense,
+                    'slot' => $unitData->slot,
+                    'name' => $unitData->name,
+                    'cost_platinum' => $unitData->cost->platinum,
+                    'cost_ore' => $unitData->cost->ore,
+                    'power_offense' => $unitData->power->offense,
+                    'power_defense' => $unitData->power->defense,
                 ];
 
-                if (isset($row->perk)) {
+                if (isset($unitData->perk)) {
                     $data += [
-                        'unit_perk_type_id' => $this->unitPerkTypeIds[$row->perk->key],
-                        'unit_perk_type_values' => implode(',', $row->perk->values),
+                        'unit_perk_type_id' => $this->unitPerkTypeIds[$unitData->perk->key],
+                        'unit_perk_type_values' => implode(',', $unitData->perk->values),
                     ];
                 }
 
