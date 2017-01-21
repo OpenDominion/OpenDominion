@@ -24,12 +24,15 @@ class CreateDominionsTable extends Migration
             $table->integer('networth');
             $table->integer('prestige')->unsigned();
 
+            // todo: wizard_prestige, spy_prestige
+
             $table->integer('peasants')->unsigned();
             $table->integer('peasants_last_hour')->default(0);
 
             $table->integer('draft_rate')->unsigned();
             $table->integer('morale')->unsigned();
-//            $table->integer('wizard_strength')->unsigned();
+            $table->integer('wizard_strength')->unsigned();
+            $table->integer('spy_strength')->unsigned();
 
             $table->integer('resource_platinum')->unsigned();
             $table->integer('resource_food')->unsigned();
