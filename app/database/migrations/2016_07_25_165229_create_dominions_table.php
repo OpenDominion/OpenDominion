@@ -22,7 +22,7 @@ class CreateDominionsTable extends Migration
 
             $table->string('name');
             $table->integer('networth');
-            $table->integer('prestige')->unsigned();
+            $table->integer('prestige');
 
             // todo: wizard_prestige, spy_prestige
 
