@@ -22,6 +22,7 @@ class CreateUnitsTable extends Migration
             $table->integer('cost_ore');
             $table->float('power_offense');
             $table->float('power_defense');
+            $table->boolean('need_boat')->default(true);
             $table->integer('unit_perk_type_id')->unsigned()->nullable();
             $table->string('unit_perk_type_values')->nullable();
             $table->timestamps();

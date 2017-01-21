@@ -111,6 +111,10 @@ class CoreDataSeeder extends Seeder
                     'power_defense' => $unitData->power->defense,
                 ];
 
+                if (isset($unitData->need_boat)) {
+                    $data += ['need_boat' => $unitData->need_boat];
+                }
+
                 if (isset($unitData->perk)) {
                     $data += [
                         'unit_perk_type_id' => $this->unitPerkTypeIds[$unitData->perk->key],
