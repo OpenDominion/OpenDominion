@@ -85,7 +85,8 @@ class DominionController extends AbstractController
     {
         $landHelper = app()->make(LandHelper::class);
         $landCalculator = app()->make(LandCalculator::class);
-        $dominionQueueService = app()->make(DominionQueueService::class, [$this->getSelectedDominion()]);
+        $dominionQueueService = app()->make(DominionQueueService::class)
+            ->init($this->getSelectedDominion());
 
         return view('pages.dominion.explore', compact(
             'landHelper',
@@ -138,7 +139,8 @@ class DominionController extends AbstractController
         $buildingHelper = app()->make(BuildingHelper::class);
         $buildingCalculator = app()->make(BuildingCalculator::class);
         $landCalculator = app()->make(LandCalculator::class);
-        $dominionQueueService = app()->make(DominionQueueService::class, [$this->getSelectedDominion()]);
+        $dominionQueueService = app()->make(DominionQueueService::class)
+            ->init($this->getSelectedDominion());
 
         return view('pages.dominion.construction', compact(
             'buildingHelper',

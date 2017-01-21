@@ -24,14 +24,25 @@ class LandCalculator extends AbstractDominionCalculator
     /**
      * {@inheritDoc}
      */
+    public function initDependencies()
+    {
+        $this->buildingHelper = app()->make(BuildingHelper::class);
+        $this->landHelper = app()->make(LandHelper::class);
+        $this->buildingCalculator = app()->make(BuildingCalculator::class);
+        $this->dominionQueueService = app()->make(DominionQueueService::class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function init(Dominion $dominion)
     {
         parent::init($dominion);
 
-        $this->buildingHelper = app()->make(BuildingHelper::class);
-        $this->landHelper = app()->make(LandHelper::class);
-        $this->buildingCalculator = app()->make(BuildingCalculator::class)->setDominion($dominion);
-        $this->dominionQueueService = app()->make(DominionQueueService::class, [$dominion]);
+        $this->buildingCalculator->setDominion($dominion);
+        $this->dominionQueueService->setDominion($dominion);
+
+        return $this;
     }
 
     /**

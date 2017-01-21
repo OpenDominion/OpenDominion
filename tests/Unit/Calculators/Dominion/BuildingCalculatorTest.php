@@ -26,10 +26,11 @@ class BuildingCalculatorTest extends BaseTestCase
         $this->dominionMock = m::mock(Dominion::class);
 
         $this->landCalculatorDependencyMock = m::mock(LandCalculator::class);
-        $this->landCalculatorDependencyMock->shouldReceive('setDominion')->andReturn($this->landCalculatorDependencyMock);
+        $this->landCalculatorDependencyMock->shouldReceive('setDominion')->with($this->dominionMock);
         app()->instance(LandCalculator::class, $this->landCalculatorDependencyMock);
 
         $this->buildingCalculatorTestMock = m::mock(BuildingCalculator::class)->makePartial();
+        $this->buildingCalculatorTestMock->initDependencies();
         $this->buildingCalculatorTestMock->init($this->dominionMock);
     }
 

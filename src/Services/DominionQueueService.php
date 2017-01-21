@@ -5,10 +5,11 @@ namespace OpenDominion\Services;
 use DB;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Interfaces\DominionInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionAwareTrait;
 
-class DominionQueueService
+class DominionQueueService implements DominionInitializableInterface
 {
     use DominionAwareTrait;
 
@@ -24,12 +25,21 @@ class DominionQueueService
     /** @var array */
     protected $constructionQueue;
 
-    public function __construct(Dominion $dominion)
+    /**
+     * DominionQueueService constructor.
+     */
+    public function __construct()
     {
-        $this->setDominion($dominion);
-
         $this->buildingHelper = app()->make(BuildingHelper::class);
         $this->landHelper = app()->make(LandHelper::class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function init(Dominion $dominion)
+    {
+        $this->setDominion($dominion);
     }
 
     public function getExplorationQueue()

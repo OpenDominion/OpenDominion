@@ -12,11 +12,21 @@ class ProductionCalculator extends AbstractDominionCalculator
     /**
      * {@inheritDoc}
      */
+    public function initDependencies()
+    {
+        $this->populationCalculator = app()->make(PopulationCalculator::class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function init(Dominion $dominion)
     {
         parent::init($dominion);
 
-        $this->populationCalculator = app()->make(PopulationCalculator::class)->setDominion($dominion);
+        $this->populationCalculator->setDominion($dominion);
+
+        return $this;
     }
 
     // Platinum

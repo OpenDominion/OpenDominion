@@ -2,20 +2,21 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Interfaces\DependencyInitializableInterface;
+use OpenDominion\Interfaces\DominionInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionAwareTrait;
 
-abstract class AbstractDominionCalculator
+abstract class AbstractDominionCalculator implements DependencyInitializableInterface, DominionInitializableInterface
 {
     use DominionAwareTrait;
 
     /**
-     * Initializes the calculator class and resolves its dependencies.
-     *
-     * @param Dominion $dominion
+     * {@inheritDoc}
      */
     public function init(Dominion $dominion)
     {
         $this->setDominion($dominion);
+        return $this;
     }
 }

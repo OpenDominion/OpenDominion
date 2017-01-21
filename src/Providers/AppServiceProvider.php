@@ -3,6 +3,7 @@
 namespace OpenDominion\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use OpenDominion\Calculators\Dominion\AbstractDominionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
@@ -48,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
             $this->app->instance($helperClass, new $helperClass);
         }
 
+        $this->app->tag($helperClasses, 'helpers');
+
         // Calculators
         $calculatorClasses = [
             BuildingCalculator::class,
@@ -62,5 +65,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->tag($calculatorClasses, 'calculators');
 
+        // Initialize calculators
+        foreach ($this->app->tagged('calculators') as $calculator) {
+            /** @var AbstractDominionCalculator $calculator */
+            $calculator->initDependencies();
+        }
     }
 }
