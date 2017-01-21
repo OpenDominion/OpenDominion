@@ -43,6 +43,8 @@ class DominionQueueService implements DominionInitializableInterface
         return $this;
     }
 
+    // Exploration
+
     public function getExplorationQueue()
     {
         if ($this->explorationQueue) {
@@ -82,6 +84,8 @@ class DominionQueueService implements DominionInitializableInterface
         return array_sum($this->getExplorationQueue()[$land]);
     }
 
+    // Construction
+
     public function getConstructionQueue()
     {
         if ($this->constructionQueue) {
@@ -120,6 +124,8 @@ class DominionQueueService implements DominionInitializableInterface
     {
         return array_sum($this->getConstructionQueue()[$building]);
     }
+
+    // Military
 
     public function getMilitaryTrainingQueue()
     {
