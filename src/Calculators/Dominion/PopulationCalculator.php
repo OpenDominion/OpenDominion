@@ -25,7 +25,7 @@ class PopulationCalculator extends AbstractDominionCalculator
     }
 
     /**
-     * Returns the Dominion's population, military and non-military.
+     * Returns the Dominion's total population, both peasants and military.
      *
      * @return int
      */
@@ -36,6 +36,8 @@ class PopulationCalculator extends AbstractDominionCalculator
 
     /**
      * Returns the Dominion's military population.
+     *
+     * The military consists of draftees, combat units, spies, wizards and archmages.
      *
      * @return int
      */
@@ -65,7 +67,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // Values
         $troopsPerBarracks = 36;
 
-        // Raw pop * multiplier
+        // Peasants
         $population += ($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
 
         // Military
@@ -80,7 +82,7 @@ class PopulationCalculator extends AbstractDominionCalculator
     /**
      * Returns the Dominion's raw max population.
      *
-     * Raw max population is calculated by buildings (except barracks) and barren land.
+     * Maximum population is determined by housing in homes, other buildings (sans barracks) and barren land.
      *
      * @return float
      */
@@ -152,6 +154,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         // todo
 
         // Prestige bonus
+        // todo: $prestige / 10000?
         $multiplier *= (1 + (($this->dominion->prestige / 250) * 2.5) / 100);
         $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
         $multiplier += 1;
@@ -234,7 +237,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         return (int)max(
             ((-0.05 * $this->dominion->peasants) - $this->getPopulationDrafteeGrowth()),
             min(
-                ($this->getMaxPopulation() - $this->dominion->peasants - $this->getPopulationMilitary() - $this->getPopulationDrafteeGrowth()),
+                ($this->getMaxPopulation() - $this->getPopulation() - $this->getPopulationDrafteeGrowth()),
                 ($this->getPopulationBirth() - $this->getPopulationDrafteeGrowth())
             )
         );
@@ -242,6 +245,8 @@ class PopulationCalculator extends AbstractDominionCalculator
 
     /**
      * Returns the Dominion's population draftee growth.
+     *
+     * Draftee growth is influenced by draft rate.
      *
      * @return int
      */
@@ -315,6 +320,8 @@ class PopulationCalculator extends AbstractDominionCalculator
     /**
      * Returns the Dominion's employment jobs.
      *
+     * Each building (sans home and barracks) employs 20 peasants.
+     *
      * @return int
      */
     public function getEmploymentJobs()
@@ -343,6 +350,8 @@ class PopulationCalculator extends AbstractDominionCalculator
     /**
      * Returns the Dominion's employed population.
      *
+     * The employed population consists of the Dominion's peasant count, up to the number of max available jobs.
+     *
      * @return int
      */
     public function getPopulationEmployed()
@@ -352,6 +361,9 @@ class PopulationCalculator extends AbstractDominionCalculator
 
     /**
      * Returns the Dominion's employment percentage.
+     *
+     * If employment is at or above 100%, then one should strive to build more homes to get more peasants to the working
+     * force.  If employment is below 100%, then one should construct more buildings to employ idle peasants.
      *
      * @return float
      */
