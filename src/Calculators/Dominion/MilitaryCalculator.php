@@ -32,15 +32,31 @@ class MilitaryCalculator extends AbstractDominionCalculator
     public function getOffensivePower(){}
     public function getOffensivePowerRaw(){}
     public function getOffensivePowerMultiplier(){}
-    public function getOffensivePowerRatio(){}
-    public function getOffensivePowerRatioRaw(){}
+
+    public function getOffensivePowerRatio()
+    {
+        return (float)($this->getOffensivePower() / $this->landCalculator->getTotalLand());
+    }
+
+    public function getOffensivePowerRatioRaw()
+    {
+        return (float)($this->getOffensivePowerRaw() / $this->landCalculator->getTotalLand());
+    }
 
     public function getDefensivePower(){}
     public function getDefensivePowerRaw(){}
     public function getDefensivePowerMultiplier(){}
     // todo: split net and raw DP into draftees and non-draftees?
-    public function getDefensivePowerRatio(){}
-    public function getDefensivePowerRatioRaw(){}
+
+    public function getDefensivePowerRatio()
+    {
+        return (float)($this->getDefensivePower() / $this->landCalculator->getTotalLand());
+    }
+
+    public function getDefensivePowerRatioRaw()
+    {
+        return (float)($this->getDefensivePowerRaw() / $this->landCalculator->getTotalLand());
+    }
 
     public function getSpyRatio()
     {
