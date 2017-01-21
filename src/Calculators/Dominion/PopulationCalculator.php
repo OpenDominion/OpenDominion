@@ -68,7 +68,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         $troopsPerBarracks = 36;
 
         // Peasants & Military
-        $population += (int)($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
+        $population += (int)round($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
 
         // Military only
         $population += min(
