@@ -38,7 +38,15 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
-        // Services
+        $this->registerServices();
+        $this->registerHelpers();
+        $this->registerCalculators();
+
+        $this->initCalculators();
+    }
+
+    protected function registerServices()
+    {
         $this->app->instance(DominionSelectorService::class, new DominionSelectorService(new DominionRepository($this->app)));
 
         $serviceClasses = [
@@ -51,8 +59,10 @@ class AppServiceProvider extends ServiceProvider
                 return new $serviceClass;
             });
         }
+    }
 
-        // Helpers
+    protected function registerHelpers()
+    {
         $helperClasses = [
             BuildingHelper::class,
             LandHelper::class,
@@ -63,10 +73,10 @@ class AppServiceProvider extends ServiceProvider
                 return new $helperClass;
             });
         }
+    }
 
-        $this->app->tag($helperClasses, 'helpers');
-
-        // Calculators
+    protected function registerCalculators()
+    {
         $calculatorClasses = [
             BuildingCalculator::class,
             LandCalculator::class,
@@ -79,8 +89,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->tag($calculatorClasses, 'calculators');
+    }
 
-        // Initialize calculators
+    protected function initCalculators()
+    {
         foreach ($this->app->tagged('calculators') as $calculator) {
             /** @var AbstractDominionCalculator $calculator */
             $calculator->initDependencies();
