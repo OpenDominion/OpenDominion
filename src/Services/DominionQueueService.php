@@ -40,6 +40,7 @@ class DominionQueueService implements DominionInitializableInterface
     public function init(Dominion $dominion)
     {
         $this->setDominion($dominion);
+        return $this;
     }
 
     public function getExplorationQueue()
