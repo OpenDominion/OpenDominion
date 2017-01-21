@@ -2,7 +2,7 @@
 
 Thank you for considering contributing to OpenDominion. This document contains some guidelines to explain the contributing process and hopefully answer some common questions.
 
-Do note that nothing is set in stone. Feel free to even contribute to this document!
+Do note that almost nothing is set in stone. Feel free to even contribute to this document!
 
 #### Table of Contents
 
