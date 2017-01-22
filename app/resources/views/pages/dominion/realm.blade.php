@@ -55,10 +55,16 @@
                             <tr>
                                 <td>
                                     @if ($dominion->id !== $selectedDominion->id)
+                                        <b>{{ $dominion->name }}</b> (you)
+                                    @else
+                                        {{ $dominion->name }}
+                                    @endif
+
+                                    {{--@if ($dominion->id !== $selectedDominion->id)
                                         <a href="{{ route('dominion.other.status', $dominion->id) }}">{{ $dominion->name }}</a>
                                     @else
                                         <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
-                                    @endif
+                                    @endif--}}
                                 </td>
                                 <td class="text-center">{{ $dominion->race->name }}</td>
                                 <td class="text-center">{{ $landCalculator->getTotalLand() }}</td>
