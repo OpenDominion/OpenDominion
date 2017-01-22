@@ -53,6 +53,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             // Other Dominion actions
 
+            $router->get('realm/{realm}', ['as' => 'dominion.other.realm', 'uses' => 'DominionController@getRealm']);
             $router->get('{dominion}/status', ['as' => 'dominion.other.status', 'uses' => 'DominionController@getOtherStatus']);
 
             // Dominion

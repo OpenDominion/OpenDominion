@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use DB;
 use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
@@ -15,6 +16,8 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
+use OpenDominion\Repositories\RealmRepository;
 use OpenDominion\Services\Actions\ConstructionActionService;
 use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\DominionQueueService;
@@ -197,19 +200,37 @@ class DominionController extends AbstractController
 
     // Realm
 
-    public function getRealm()
+    public function getRealm(Realm $realm = null)
     {
         $landCalculator = app()->make(LandCalculator::class);
         $networthCalculator = app()->make(NetworthCalculator::class);
 
-        $realm = $this->getSelectedDominion()->realm;
-        $dominions = $realm->dominions()->orderBy('networth', 'desc')->get();
+        if (!$realm->exists) {
+            $realm = $this->getSelectedDominion()->realm;
+        }
+
+        $dominions = $realm->dominions()/*->with('race')*/->orderBy('networth', 'desc')->get();
+
+        // Todo: optimize this hacky hacky stuff
+        $prevRealm = DB::table('realms')
+            ->where('number', '<', $realm->number)
+            ->orderBy('number', 'desc')
+            ->limit(1)
+            ->get();
+
+        $nextRealm = DB::table('realms')
+            ->where('number', '>', $realm->number)
+            ->orderBy('number', 'asc')
+            ->limit(1)
+            ->get();
 
         return view('pages.dominion.realm', compact(
             'landCalculator',
             'networthCalculator',
             'realm',
-            'dominions'
+            'dominions',
+            'prevRealm',
+            'nextRealm'
         ));
     }
 
