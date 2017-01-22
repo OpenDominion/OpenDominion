@@ -3,6 +3,8 @@
 namespace OpenDominion\Tests\Unit\Calculators;
 
 use Mockery as m;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -11,14 +13,27 @@ use OpenDominion\Tests\BaseTestCase;
 
 class NetworthCalculatorTest extends BaseTestCase
 {
+    /** @var BuildingCalculator */
+    protected $buildingCalculatorDependencyMock;
+
+    /** @var LandCalculator */
+    protected $landCalculatorDependencyMock;
+
     /** @var NetworthCalculator */
-    protected $networthCalculator;
+    protected $networthCalculatorTestMock;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->networthCalculator = $this->app->make(NetworthCalculator::class);
+        $this->buildingCalculatorDependencyMock = m::mock(BuildingCalculator::class);
+        app()->instance(BuildingCalculator::class, $this->buildingCalculatorDependencyMock);
+
+        $this->landCalculatorDependencyMock = m::mock(LandCalculator::class);
+        app()->instance(LandCalculator::class, $this->landCalculatorDependencyMock);
+
+        $this->networthCalculatorTestMock = m::mock(NetworthCalculator::class)->makePartial();
+        $this->networthCalculatorTestMock->initDependencies();
     }
 
     public function setGetRealmNetworth()
@@ -28,12 +43,15 @@ class NetworthCalculatorTest extends BaseTestCase
 
     public function testGetDominionNetworth()
     {
-        /** @var Dominion $dominion */
-        $dominion = m::mock(Dominion::class);
+        /** @var Dominion $dominionMock */
+        $dominionMock = m::mock(Dominion::class);
+
+        $this->buildingCalculatorDependencyMock ->shouldReceive('setDominion')->with($dominionMock);
+        $this->landCalculatorDependencyMock->shouldReceive('setDominion')->with($dominionMock);
 
         $units = [];
         for ($slot = 1; $slot <= 4; $slot++) {
-            $dominion->shouldReceive('getAttribute')->with("military_unit{$slot}")->andReturn(100);
+            $dominionMock->shouldReceive('getAttribute')->with("military_unit{$slot}")->andReturn(100);
 
             /** @var Unit $unit */
             $unit = m::mock(Unit::class);
@@ -48,15 +66,15 @@ class NetworthCalculatorTest extends BaseTestCase
         $race = m::mock(Race::class);
         $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
 
-        $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
-        $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
-        $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
-        $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
+        $dominionMock->shouldReceive('getAttribute')->with('race')->andReturn($race);
+        $dominionMock->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
+        $dominionMock->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
+        $dominionMock->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
 
-        // todo: land
-        // todo: buildings
+        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250);
+        $this->buildingCalculatorDependencyMock->shouldReceive('getTotalBuildings')->andReturn(90);
 
-        $this->assertEquals(3500, $this->networthCalculator->getDominionNetworth($dominion));
+        $this->assertEquals(8950, $this->networthCalculatorTestMock->getDominionNetworth($dominionMock));
     }
 
     public function testGetUnitNetworth()
@@ -81,9 +99,9 @@ class NetworthCalculatorTest extends BaseTestCase
         $unit4->shouldReceive('getAttribute')->with('power_offense')->andReturn(6);
         $unit4->shouldReceive('getAttribute')->with('power_defense')->andReturn(3);
 
-        $this->assertEquals(5, $this->networthCalculator->getUnitNetworth($unit1));
-        $this->assertEquals(5, $this->networthCalculator->getUnitNetworth($unit2));
-        $this->assertEquals(11.7, $this->networthCalculator->getUnitNetworth($unit3));
-        $this->assertEquals(12.15, $this->networthCalculator->getUnitNetworth($unit4));
+        $this->assertEquals(5, $this->networthCalculatorTestMock->getUnitNetworth($unit1));
+        $this->assertEquals(5, $this->networthCalculatorTestMock->getUnitNetworth($unit2));
+        $this->assertEquals(11.7, $this->networthCalculatorTestMock->getUnitNetworth($unit3));
+        $this->assertEquals(12.15, $this->networthCalculatorTestMock->getUnitNetworth($unit4));
     }
 }
