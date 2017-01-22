@@ -164,40 +164,11 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Tech: Production
         // todo
 
-        // Prestige bonus
+        // Prestige bonus multiplier
         $multiplier *= (1 + (($this->dominion->prestige / 250) * 2.5) / 100);
         $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += 1;
 
-//        $multiplier =
-//            (
-//                0.05
-//                + 0 // magic
-//                + 0 // improvements
-//            )
-//            * (1 + (($this->dominion->prestige / 250) * 2.5) / 100)
-//            + ((($this->dominion->prestige / 250) * 2.5) / 100);
-
-        /*
-
-        = ($Overview.$I$18 // +5% racial food bonus
-            + IF(
-                $Magic.AF3>0;
-                $Constants.$F$80;
-                IF(
-                    $Magic.X3>0;
-                    $Constants.$F$72
-                )
-             )
-            + $Imps.AD3
-            + $Constants.$M$30 * $Techs.W3
-        )
-        * ( 1 + ROUNDDOWN(O3 /250 * $Constants.$B$90; 2) / 100)
-        + ROUNDDOWN( O3 / 250 * $Constants.$B$90; 2) / 100
-
-        */
-
-        return (float)$multiplier;
+        return (float)(1 + $multiplier);
     }
 
     /**
