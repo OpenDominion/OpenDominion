@@ -114,7 +114,7 @@ class GameTickCommand extends Command
             // todo: if food < 0 then food = 0?
             $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange();
             // todo: if lumber < 0 then lumber = 0?
-            $dominion->resource_mana += $this->productionCalculator->getManaProduction();
+            $dominion->resource_mana += $this->productionCalculator->getManaNetChange();
             // todo: if mana < 0 then mana = 0?
             // todo: ore
             // todo: gems

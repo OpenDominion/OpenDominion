@@ -96,6 +96,8 @@
                             'getManaProduction',
                             'getManaProductionRaw',
                             'getManaProductionMultiplier',
+                            'getManaDecay',
+                            'getManaNetChange',
                             'getBoatProduction',
                         ]) !!}
                     </p>

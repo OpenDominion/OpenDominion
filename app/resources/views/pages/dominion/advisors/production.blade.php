@@ -85,8 +85,8 @@
                                 <td>{{ number_format($productionCalculator->getLumberDecay()) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Mana Drain:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Mana Drain:</td>
+                                <td>{{ number_format($productionCalculator->getManaDecay()) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -116,8 +116,8 @@
                                 <td>{{ number_format($productionCalculator->getLumberNetChange()) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Mana:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Mana:</td>
+                                <td>{{ number_format($productionCalculator->getManaNetChange()) }}</td>
                             </tr>
                         </tbody>
                     </table>

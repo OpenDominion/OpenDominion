@@ -351,6 +351,33 @@ class ProductionCalculator extends AbstractDominionCalculator
         return (float)(1 + $multiplier);
     }
 
+    /**
+     * Returns the Dominion's mana decay.
+     *
+     * @return float
+     */
+    public function getManaDecay()
+    {
+        $decay = 0;
+
+        // Values (percentages)
+        $manaDecay = 2;
+
+        $decay += ($this->dominion->resource_mana * ($manaDecay / 100));
+
+        return (float)$decay;
+    }
+
+    /**
+     * Returns the Dominion's net mana change.
+     *
+     * @return int
+     */
+    public function getManaNetChange()
+    {
+        return (int)round($this->getManaProduction() - $this->getManaDecay());
+    }
+
     // Ore
     // todo
 
