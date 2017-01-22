@@ -31,11 +31,17 @@ class NetworthCalculator implements DependencyInitializableInterface
      *
      * @param Realm $realm
      *
-     * @return float
+     * @return int
      */
     public function getRealmNetworth(Realm $realm)
     {
-        // todo
+        $networth = 0;
+
+        foreach ($realm->dominions as $dominion) {
+            $networth += $this->getDominionNetworth($dominion);
+        }
+
+        return $networth;
     }
 
     /**
@@ -43,7 +49,7 @@ class NetworthCalculator implements DependencyInitializableInterface
      *
      * @param Dominion $dominion
      *
-     * @return float
+     * @return int
      */
     public function getDominionNetworth(Dominion $dominion)
     {
@@ -72,7 +78,7 @@ class NetworthCalculator implements DependencyInitializableInterface
 
         // Todo: racial network bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
 
-        return (float)$networth;
+        return (int)round($networth);
     }
 
     /**
