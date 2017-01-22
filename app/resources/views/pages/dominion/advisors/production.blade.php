@@ -52,6 +52,10 @@
                                 <td class="nyi">Research points:</td>
                                 <td class="nyi">NYI</td>
                             </tr>
+                            <tr>
+                                <td>Boats:</td>
+                                <td>{{ number_format($productionCalculator->getBoatProduction()) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
