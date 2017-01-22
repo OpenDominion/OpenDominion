@@ -328,7 +328,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         $docksPerBoat = 20;
 
         // todo: store boats as float? i.e +1 boat every 20 hours with 1 dock
-        $boats = floor($this->dominion->building_dock / $docksPerBoat);
+        $boats += floor($this->dominion->building_dock / $docksPerBoat);
 
         return (int)$boats;
     }
