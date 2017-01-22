@@ -42,9 +42,9 @@
                             <tr>
                                 <td>
                                     @if ($dominion->id !== $selectedDominion->id)
-                                        <a href="{{ route('dominions.other.status', $dominion->id) }}">{{ $dominion->name }}</a>
+                                        <a href="{{ route('dominion.other.status', $dominion->id) }}">{{ $dominion->name }}</a>
                                     @else
-                                        <b>{{ $dominion->name }}</b> (you)
+                                        <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
                                     @endif
                                 </td>
                                 <td class="text-center">{{ $dominion->race->name }}</td>

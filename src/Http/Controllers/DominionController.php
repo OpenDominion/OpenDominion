@@ -213,6 +213,23 @@ class DominionController extends AbstractController
 
     // Misc?
 
+    // Other Dominions
+
+    public function getOtherStatus(Dominion $dominion)
+    {
+        $landCalculator = app()->make(LandCalculator::class);
+        $populationCalculator = app()->make(PopulationCalculator::class);
+
+        $landCalculator->setDominion($dominion);
+        $populationCalculator->setDominion($dominion);
+
+        return view('pages.dominion.other.status', compact(
+            'dominion',
+            'landCalculator',
+            'populationCalculator'
+        ));
+    }
+
     /**
      * @return Dominion
      */
