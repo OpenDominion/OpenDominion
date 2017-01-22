@@ -76,6 +76,8 @@ class DominionFactory
             $realm = $this->realmFactory->create($round, $race->alignment);
         }
 
+        // todo: get starting values from config
+
         // Create dominion
         $dominion = $this->dominions->create([
             'user_id' => $user->id,
