@@ -37,18 +37,18 @@ class CreateDominionsTable extends Migration
             $table->integer('resource_platinum')->unsigned();
             $table->integer('resource_food')->unsigned();
             $table->integer('resource_lumber')->unsigned();
-//            $table->integer('resource_mana')->unsigned();
-//            $table->integer('resource_ore')->unsigned();
-//            $table->integer('resource_gems')->unsigned();
-//            $table->integer('resource_tech')->unsigned();
-//            $table->integer('resource_boats')->unsigned();
+            $table->integer('resource_mana')->unsigned();
+            $table->integer('resource_ore')->unsigned();
+            $table->integer('resource_gems')->unsigned();
+            $table->integer('resource_tech')->unsigned();
+            $table->integer('resource_boats')->unsigned();
 
-//            $table->integer('improvement_science')->unsigned();
-//            $table->integer('improvement_keep')->unsigned();
-//            $table->integer('improvement_towers')->unsigned();
-//            $table->integer('improvement_forges')->unsigned();
-//            $table->integer('improvement_walls')->unsigned();
-//            $table->integer('improvement_irrigation')->unsigned();
+            $table->integer('improvement_science')->unsigned();
+            $table->integer('improvement_keep')->unsigned();
+            $table->integer('improvement_towers')->unsigned();
+            $table->integer('improvement_forges')->unsigned();
+            $table->integer('improvement_walls')->unsigned();
+            $table->integer('improvement_irrigation')->unsigned();
 
             $table->integer('military_draftees')->unsigned();
             $table->integer('military_unit1')->unsigned();
