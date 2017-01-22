@@ -78,6 +78,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             // Realm
 
+            $router->get('realm', ['as' => 'dominion.realm', 'uses' => 'DominionController@getRealm']);
+            // todo: post/change realm
+
             // Misc?
 
             // Debug

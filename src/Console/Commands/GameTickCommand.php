@@ -270,14 +270,14 @@ class GameTickCommand extends Command
 
     protected function initCalculatorDependencies()
     {
-        foreach (app()->tagged('calculators') as $calculator) {
+        foreach (app()->tagged('initializableCalculators') as $calculator) {
             $calculator->initDependencies();
         }
     }
 
     protected function initCalculatorsForDominion(Dominion $dominion)
     {
-        foreach (app()->tagged('initializableCalculators') as $calculator) {
+        foreach (app()->tagged('dominionCalculators') as $calculator) {
             $calculator->init($dominion);
         }
     }

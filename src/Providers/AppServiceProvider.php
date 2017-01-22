@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Interfaces\DependencyInitializableInterface;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RealmRepository;
 use OpenDominion\Services\DominionQueueService;
@@ -45,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
         $this->registerHelpers();
         $this->registerCalculators();
 
-        $this->initCalculators();
+        $this->initCalculatorDependencies();
     }
 
     protected function registerServices()
@@ -99,20 +100,20 @@ class AppServiceProvider extends ServiceProvider
             ProductionCalculator::class,
         ];
 
-        foreach ($dominionCalculatorClasses as $calculatorClass) {
-            $this->app->instance($calculatorClass, new $calculatorClass);
+        foreach ($dominionCalculatorClasses as $class) {
+            $this->app->instance($class, new $class);
         }
 
-        $allCalculatorClasses = ($genericCalculatorClasses + $dominionCalculatorClasses);
+        $this->app->tag($dominionCalculatorClasses, 'dominionCalculators');
 
-        $this->app->tag($allCalculatorClasses, 'calculators');
-        $this->app->tag($dominionCalculatorClasses, 'initializableCalculators');
+        $allCalculatorClasses = array_merge($dominionCalculatorClasses, $genericCalculatorClasses);
+        $this->app->tag($allCalculatorClasses, 'initializableCalculators');
     }
 
-    protected function initCalculators()
+    protected function initCalculatorDependencies()
     {
         foreach ($this->app->tagged('initializableCalculators') as $calculator) {
-            /** @var AbstractDominionCalculator $calculator */
+            /** @var DependencyInitializableInterface $calculator */
             $calculator->initDependencies();
         }
     }

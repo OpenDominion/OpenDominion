@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
@@ -193,6 +194,22 @@ class DominionController extends AbstractController
     // Comms?
 
     // Realm
+
+    public function getRealm()
+    {
+        $landCalculator = app()->make(LandCalculator::class);
+        $networthCalculator = app()->make(NetworthCalculator::class);
+
+        $realm = $this->getSelectedDominion()->realm;
+        $dominions = $realm->dominions()->orderBy('networth', 'desc')->get();
+
+        return view('pages.dominion.realm', compact(
+            'landCalculator',
+            'networthCalculator',
+            'realm',
+            'dominions'
+        ));
+    }
 
     // Misc?
 

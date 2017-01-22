@@ -32,7 +32,8 @@
 
                 {{--<li class="header">COMMS?</li>--}}
 
-                {{--<li class="header">REALM</li>--}}
+                <li class="header">REALM</li>
+                <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>
 
                 {{--<li class="header">MISC</li>--}}
 
