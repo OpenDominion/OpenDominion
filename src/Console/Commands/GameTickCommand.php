@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use Log;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
@@ -33,6 +34,9 @@ class GameTickCommand extends Command
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
+    /** @var NetworthCalculator */
+    protected $networthCalculator;
+
     /**
      * GameTickCommand constructor.
      *
@@ -45,6 +49,7 @@ class GameTickCommand extends Command
         $this->dominions = $dominions;
         $this->populationCalculator = app()->make(PopulationCalculator::class);
         $this->productionCalculator = app()->make(ProductionCalculator::class);
+        $this->networthCalculator = app()->make(NetworthCalculator::class);
     }
 
     /**
@@ -55,6 +60,8 @@ class GameTickCommand extends Command
     public function handle()
     {
         $this->setDatabaseDriver();
+
+        $this->initCalculatorDependencies();
 
         Log::debug('Tick started');
 
@@ -72,6 +79,7 @@ class GameTickCommand extends Command
         // todo: Military training queue
         // todo: Military returning queue
         // todo: Magic queue
+        $this->tickDominionNetworth();
 
         DB::commit();
 
@@ -98,9 +106,7 @@ class GameTickCommand extends Command
 
         foreach ($dominions as $dominion) {
             /** @var $dominion Dominion */
-            foreach (app()->tagged('calculators') as $calculator) {
-                $calculator->init($dominion);
-            }
+            $this->initCalculatorsForDominion($dominion);
 
             // Resources
             $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction();
@@ -245,5 +251,34 @@ class GameTickCommand extends Command
         ]);
 
         Log::debug("Ticked construction queue, {$affectedUpdated} updated, {$affectedFinished} finished");
+    }
+
+    public function tickDominionNetworth()
+    {
+        Log::debug('Tick dominion networth');
+
+        $dominions = $this->dominions->all();
+
+        foreach ($dominions as $dominion) {
+            /** @var $dominion Dominion */
+            $this->initCalculatorsForDominion($dominion);
+
+            $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
+            $dominion->save();
+        }
+    }
+
+    protected function initCalculatorDependencies()
+    {
+        foreach (app()->tagged('calculators') as $calculator) {
+            $calculator->initDependencies();
+        }
+    }
+
+    protected function initCalculatorsForDominion(Dominion $dominion)
+    {
+        foreach (app()->tagged('initializableCalculators') as $calculator) {
+            $calculator->init($dominion);
+        }
     }
 }

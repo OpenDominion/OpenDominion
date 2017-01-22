@@ -2,12 +2,30 @@
 
 namespace OpenDominion\Calculators;
 
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Interfaces\DependencyInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 
-class NetworthCalculator
+class NetworthCalculator implements DependencyInitializableInterface
 {
+    /** @var BuildingCalculator */
+    protected $buildingCalculator;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initDependencies()
+    {
+        $this->buildingCalculator = app()->make(BuildingCalculator::class);
+        $this->landCalculator = app()->make(LandCalculator::class);
+    }
+
     /**
      * Calculates and returns a Realm's networth.
      *
@@ -29,18 +47,30 @@ class NetworthCalculator
      */
     public function getDominionNetworth(Dominion $dominion)
     {
+        $this->buildingCalculator->setDominion($dominion);
+        $this->landCalculator->setDominion($dominion);
+
         $networth = 0;
 
+        // Values
+        $networthPerSpy = 5;
+        $networthPerWizard = 5;
+        $networthPerArchMage = 5;
+        $networthPerLand = 20;
+        $networthPerBuilding = 5;
+
         foreach ($dominion->race->units as $unit) {
-            $networth += ($this->getUnitNetworth($unit) * $dominion->{'military_unit' . $unit->slot});
+            $networth += ($dominion->{'military_unit' . $unit->slot} * $this->getUnitNetworth($unit));
         }
 
-        $networth += (5 * $dominion->military_spies);
-        $networth += (5 * $dominion->military_wizards);
-        $networth += (5 * $dominion->military_archmages);
+        $networth += ($dominion->military_spies * $networthPerSpy);
+        $networth += ($dominion->military_wizards * $networthPerWizard);
+        $networth += ($dominion->military_archmages * $networthPerArchMage);
 
-        // todo: land
-        // todo: buildings
+        $networth += ($this->landCalculator->getTotalLand() * $networthPerLand);
+        $networth += ($this->buildingCalculator->getTotalBuildings() * $networthPerBuilding);
+
+        // Todo: racial network bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
 
         return (float)$networth;
     }

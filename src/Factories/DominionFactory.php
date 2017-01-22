@@ -38,6 +38,8 @@ class DominionFactory
         $this->networthCalculator = $networthCalculator;
         $this->realmFinderService = $realmFinderService;
         $this->realmFactory = $realmFactory;
+
+        $this->networthCalculator->initDependencies();
     }
 
     /**

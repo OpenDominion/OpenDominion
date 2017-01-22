@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Repositories\DominionRepository;
@@ -78,7 +79,19 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerCalculators()
     {
-        $calculatorClasses = [
+        // Generic calculators
+        $genericCalculatorClasses = [
+            NetworthCalculator::class,
+        ];
+
+        foreach ($genericCalculatorClasses as $class) {
+            $this->app->singleton($class, function ($app) use ($class) {
+                return new $class;
+            });
+        }
+
+        // Dominion calculators
+        $dominionCalculatorClasses = [
             BuildingCalculator::class,
             LandCalculator::class,
             MilitaryCalculator::class,
@@ -86,16 +99,19 @@ class AppServiceProvider extends ServiceProvider
             ProductionCalculator::class,
         ];
 
-        foreach ($calculatorClasses as $calculatorClass) {
+        foreach ($dominionCalculatorClasses as $calculatorClass) {
             $this->app->instance($calculatorClass, new $calculatorClass);
         }
 
-        $this->app->tag($calculatorClasses, 'calculators');
+        $allCalculatorClasses = ($genericCalculatorClasses + $dominionCalculatorClasses);
+
+        $this->app->tag($allCalculatorClasses, 'calculators');
+        $this->app->tag($dominionCalculatorClasses, 'initializableCalculators');
     }
 
     protected function initCalculators()
     {
-        foreach ($this->app->tagged('calculators') as $calculator) {
+        foreach ($this->app->tagged('initializableCalculators') as $calculator) {
             /** @var AbstractDominionCalculator $calculator */
             $calculator->initDependencies();
         }

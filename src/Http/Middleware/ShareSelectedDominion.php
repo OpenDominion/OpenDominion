@@ -20,7 +20,7 @@ class ShareSelectedDominion
         if ($this->dominionSelectorService->hasUserSelectedDominion()) {
             $dominion = $this->dominionSelectorService->getUserSelectedDominion();
 
-            foreach (app()->tagged('calculators') as $calculator) {
+            foreach (app()->tagged('initializableCalculators') as $calculator) {
                 $calculator->init($dominion);
             }
 
