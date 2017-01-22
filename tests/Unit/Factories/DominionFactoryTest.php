@@ -60,6 +60,6 @@ class DominionFactoryTest extends BaseTestCase
     {
         $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy');
 
-        $this->assertEquals(1000, $dominion->networth);
+        $this->assertEquals(6450, $dominion->networth);
     }
 }
