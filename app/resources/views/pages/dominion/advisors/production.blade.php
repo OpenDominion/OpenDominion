@@ -37,8 +37,8 @@
                                 <td>{{ number_format($productionCalculator->getLumberProduction()) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Mana:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Mana:</td>
+                                <td>{{ number_format($productionCalculator->getManaProduction()) }}</td>
                             </tr>
                             <tr>
                                 <td class="nyi">Ore:</td>
