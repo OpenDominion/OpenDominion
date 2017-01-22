@@ -127,6 +127,20 @@
             </div>
         </div>
 
+        <div class="col-sm-12 col-md-4">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Networth Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        Realm Networth: <b>{{ $networthCalculator->getRealmNetworth($selectedDominion->realm) }}</b><br>
+                        Dominion Networth: <b>{{ $networthCalculator->getDominionNetworth($selectedDominion) }}</b><br>
+                    </p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="box">

@@ -92,6 +92,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                 $militaryCalculator = app()->make(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
                 $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class);
                 $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
+                $networthCalculator = app()->make(\OpenDominion\Calculators\NetworthCalculator::class);
+
+                $networthCalculator->initDependencies();
 
                 function printMethodValues($class, array $methods) {
                     $return = '';
@@ -137,7 +140,8 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                     'landCalculator',
                     'militaryCalculator',
                     'populationCalculator',
-                    'productionCalculator'
+                    'productionCalculator',
+                    'networthCalculator'
                 ));
             });
 
