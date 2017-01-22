@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Repositories\DominionRepository;
+use OpenDominion\Repositories\RealmRepository;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
 use OpenDominion\Services\RealmFinderService;
@@ -48,18 +49,17 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerServices()
     {
-        $this->app->instance(DominionSelectorService::class, new DominionSelectorService(new DominionRepository($this->app)));
+        $this->app->singleton(DominionQueueService::class, function ($app) {
+            return new DominionQueueService;
+        });
 
-        $serviceClasses = [
-            DominionQueueService::class,
-            RealmFinderService::class,
-        ];
+        $this->app->singleton(DominionSelectorService::class, function ($app) {
+            return new DominionSelectorService(new DominionRepository($app));
+        });
 
-        foreach ($serviceClasses as $serviceClass) {
-            $this->app->singleton($serviceClass, function ($app) use ($serviceClass) {
-                return new $serviceClass;
-            });
-        }
+        $this->app->singleton(RealmFinderService::class, function ($app) {
+            return new RealmFinderService(new RealmRepository($app));
+        });
     }
 
     protected function registerHelpers()
