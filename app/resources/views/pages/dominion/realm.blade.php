@@ -6,6 +6,19 @@
     <div class="box box-info">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="ra ra-circle-of-circles"></i> Realm '{{ $realm->name }}' (#{{ $realm->number }}). Alignment: {{ $realm->alignment }}. Networth: {{ $networthCalculator->getRealmNetworth($realm) }}</h3>
+            <div class="pull-right">
+                @if ($prevRealm !== null)
+                    <a href="{{ route('dominion.other.realm', $prevRealm->id) }}">&lt; {{ $prevRealm->name }} (# {{  $prevRealm->number }})</a>
+                @endif
+
+                @if (($prevRealm !== null) && ($nextRealm !== null))
+                    |
+                @endif
+
+                @if ($nextRealm !== null)
+                        <a href="{{ route('dominion.other.realm', $nextRealm->id) }}">{{ $nextRealm->name }} (# {{  $nextRealm->number }}) &gt;</a>
+                @endif
+            </div>
         </div>
         <div class="box-body no-padding">
 

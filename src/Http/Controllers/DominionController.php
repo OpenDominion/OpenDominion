@@ -216,13 +216,13 @@ class DominionController extends AbstractController
             ->where('number', '<', $realm->number)
             ->orderBy('number', 'desc')
             ->limit(1)
-            ->get();
+            ->first();
 
         $nextRealm = DB::table('realms')
             ->where('number', '>', $realm->number)
             ->orderBy('number', 'asc')
             ->limit(1)
-            ->get();
+            ->first();
 
         return view('pages.dominion.realm', compact(
             'landCalculator',
