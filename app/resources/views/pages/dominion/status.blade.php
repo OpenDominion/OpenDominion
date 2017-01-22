@@ -79,24 +79,24 @@
                                 <td>{{ number_format($selectedDominion->resource_lumber) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Mana:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Mana:</td>
+                                <td>{{ number_format($selectedDominion->resource_mana) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Ore:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Ore:</td>
+                                <td>{{ number_format($selectedDominion->resource_ore) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Gems:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Gems:</td>
+                                <td>{{ number_format($selectedDominion->resource_gems) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Research Points:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Research Points:</td>
+                                <td>{{ number_format($selectedDominion->resource_tech) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Boats:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Boats:</td>
+                                <td>{{ number_format($selectedDominion->resource_boats) }}</td>
                             </tr>
                         </tbody>
                     </table>
