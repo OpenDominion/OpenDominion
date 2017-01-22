@@ -310,6 +310,26 @@ class ProductionCalculator extends AbstractDominionCalculator
     // Gems
     // todo
 
-    // Boats
+    // Tech
     // todo
+
+    // Boats
+
+    /**
+     * Returns the Dominion's boat production.
+     *
+     * @return int
+     */
+    public function getBoatProduction()
+    {
+        $boats = 0;
+
+        // Values
+        $docksPerBoat = 20;
+
+        // todo: store boats as float? i.e +1 boat every 20 hours with 1 dock
+        $boats = floor($this->dominion->building_dock / $docksPerBoat);
+
+        return (int)$boats;
+    }
 }
