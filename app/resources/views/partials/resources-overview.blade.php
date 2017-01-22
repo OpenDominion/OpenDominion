@@ -26,8 +26,8 @@
                 </div>
                 <div class="col-xs-3">
                     <div class="row">
-                        <div class="col-lg-6 nyi"><b>Ore:</b></div>
-                        <div class="col-lg-6 nyi">NYI</div>
+                        <div class="col-lg-6"><b>Ore:</b></div>
+                        <div class="col-lg-6">{{ number_format($selectedDominion->resource_ore) }}</div>
                     </div>
                 </div>
             </div>
@@ -47,14 +47,14 @@
                 </div>
                 <div class="col-xs-3">
                     <div class="row">
-                        <div class="col-lg-6 nyi"><b>Mana:</b></div>
-                        <div class="col-lg-6 nyi">NYI</div>
+                        <div class="col-lg-6"><b>Mana:</b></div>
+                        <div class="col-lg-6">{{ number_format($selectedDominion->resource_mana) }}</div>
                     </div>
                 </div>
                 <div class="col-xs-3">
                     <div class="row">
-                        <div class="col-lg-6 nyi"><b>Gems:</b></div>
-                        <div class="col-lg-6 nyi">NYI</div>
+                        <div class="col-lg-6"><b>Gems:</b></div>
+                        <div class="col-lg-6">{{ number_format($selectedDominion->resource_gems) }}</div>
                     </div>
                 </div>
             </div>
