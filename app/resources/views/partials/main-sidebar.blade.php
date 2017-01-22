@@ -8,7 +8,7 @@
                 </div>
                 <div class="pull-left info">
                     <p>{{ $selectedDominion->name }}</p>
-                    <small>{{ $selectedDominion->realm->name }} (#{{ $selectedDominion->realm->number }})</small>
+                    <a href="{{ route('dominion.realm') }}">{{ $selectedDominion->realm->name }} (#{{ $selectedDominion->realm->number }})</a>
                 </div>
             </div>
         @endif

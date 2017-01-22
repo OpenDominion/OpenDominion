@@ -5,7 +5,7 @@
 @section('content')
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="ra ra-circle-of-circles"></i> Realm '{{ $realm->name }}' (#{{ $realm->number }}). Networth: {{ $networthCalculator->getRealmNetworth($realm) }}</h3>
+            <h3 class="box-title"><i class="ra ra-circle-of-circles"></i> Realm '{{ $realm->name }}' (#{{ $realm->number }}). Alignment: {{ $realm->alignment }}. Networth: {{ $networthCalculator->getRealmNetworth($realm) }}</h3>
         </div>
         <div class="box-body no-padding">
 
@@ -40,7 +40,13 @@
                             </tr>
                         @else
                             <tr>
-                                <td>{{ $dominion->name }}</td>
+                                <td>
+                                    @if ($dominion->id !== $selectedDominion->id)
+                                        <a href="{{ route('dominions.other.status', $dominion->id) }}">{{ $dominion->name }}</a>
+                                    @else
+                                        <b>{{ $dominion->name }}</b> (you)
+                                    @endif
+                                </td>
                                 <td class="text-center">{{ $dominion->race->name }}</td>
                                 <td class="text-center">{{ $landCalculator->getTotalLand() }}</td>
                                 <td class="text-center">{{ $dominion->networth }}</td>
