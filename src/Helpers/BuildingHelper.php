@@ -101,7 +101,7 @@ class BuildingHelper
             'guard_tower' => 2,
             'shrine' => 0,
             'barracks' => 2,
-            'dock' => 0,
+            'dock' => 1,
         ];
 
         switch ($buildingTypes[$buildingType]) {

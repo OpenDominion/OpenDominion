@@ -129,7 +129,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Farms
         $food += ($this->dominion->building_farm * $foodPerFarm);
 
-        // Farms
+        // Docks
         $food += ($this->dominion->building_dock * $foodPerDock);
 
         return (float)$food;
