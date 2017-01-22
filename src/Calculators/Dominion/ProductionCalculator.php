@@ -302,7 +302,54 @@ class ProductionCalculator extends AbstractDominionCalculator
     }
 
     // Mana
-    // todo
+
+    /**
+     * Returns the Dominion's mana production.
+     *
+     * @return int
+     */
+    public function getManaProduction()
+    {
+        return (int)floor($this->getManaProductionRaw() * $this->getManaProductionMultiplier());
+    }
+
+    /**
+     * Returns the Dominion's raw mana production.
+     *
+     * @return float
+     */
+    public function getManaProductionRaw()
+    {
+        $mana = 0;
+
+        // Values
+        $manaPerTower = 25;
+
+        // Towers
+        $mana += ($this->dominion->building_tower * $manaPerTower);
+
+        return (float)$mana;
+    }
+
+    /**
+     * Returns the Dominion's mana production multiplier.
+     *
+     * @return float
+     */
+    public function getManaProductionMultiplier()
+    {
+        $multiplier = 0.0;
+
+        // Values (percentages)
+
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('mana_production');
+
+        // Tech: Enchanted Lands (+15%)
+        // todo
+
+        return (float)(1 + $multiplier);
+    }
 
     // Ore
     // todo

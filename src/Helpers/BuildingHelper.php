@@ -90,7 +90,7 @@ class BuildingHelper
             'masonry' => 0, // increase castle bonuses
             'ore_mine' => 0, // produces ore
             'gryphon_nest' => 2,
-            'tower' => 0, // produces mana
+            'tower' => 2,
             'wizard_guild' => 0, // increase wizard strength
             'temple' => 0, // increase population growth, reduce defensive bonuses of target dominion during invasion
             'diamond_mine' => 0, // produces diamonds
