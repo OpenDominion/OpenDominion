@@ -93,6 +93,10 @@
                             'getLumberProductionMultiplier',
                             'getLumberDecay',
                             'getLumberNetChange',
+                            'getManaProduction',
+                            'getManaProductionRaw',
+                            'getManaProductionMultiplier',
+                            'getBoatProduction',
                         ]) !!}
                     </p>
                 </div>
