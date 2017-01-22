@@ -55,7 +55,10 @@
                                 <tbody>
                                     @foreach ($buildingTypes as $buildingType)
                                         <tr>
-                                            <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                                            <td>
+                                                {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                            </td>
                                             <td class="text-center">
                                                 {{ $selectedDominion->{'building_' . $buildingType} }}
                                                 <small>

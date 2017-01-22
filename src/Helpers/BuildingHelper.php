@@ -74,4 +74,47 @@ class BuildingHelper
 
         return $return;
     }
+
+    // temp
+    public function getBuildingImplementedString($buildingType)
+    {
+        // 0 = nyi
+        // 1 = partial implemented
+        // 2 = implemented
+
+        $buildingTypes = [
+            'home' => 2,
+            'alchemy' => 2,
+            'farm' => 2,
+            'smithy' => 0,
+            'masonry' => 0,
+            'ore_mine' => 0,
+            'gryphon_nest' => 2,
+            'tower' => 0,
+            'wizard_guild' => 0,
+            'temple' => 0,
+            'diamond_mine' => 0,
+            'school' => 0,
+            'lumberyard' => 2,
+            'forest_haven' => 1,
+            'factory' => 0,
+            'guard_tower' => 2,
+            'shrine' => 0,
+            'barracks' => 2,
+            'dock' => 0,
+        ];
+
+        switch ($buildingTypes[$buildingType]) {
+            case 0:
+                return '<abbr title="Not yet implemented" class="label label-danger">NYI</abbr>';
+                break;
+
+            case 1:
+                return '<abbr title="Partially implemented" class="label label-warning">PI</abbr>';
+                break;
+
+//            case 2:
+//                break;
+        }
+    }
 }
