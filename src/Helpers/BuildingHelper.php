@@ -86,22 +86,22 @@ class BuildingHelper
             'home' => 2,
             'alchemy' => 2,
             'farm' => 2,
-            'smithy' => 0,
-            'masonry' => 0,
-            'ore_mine' => 0,
+            'smithy' => 0, // reduce military unit cost
+            'masonry' => 0, // increase castle bonuses
+            'ore_mine' => 0, // produces ore
             'gryphon_nest' => 2,
-            'tower' => 0,
-            'wizard_guild' => 0,
-            'temple' => 0,
-            'diamond_mine' => 0,
-            'school' => 0,
+            'tower' => 0, // produces mana
+            'wizard_guild' => 0, // increase wizard strength
+            'temple' => 0, // increase population growth, reduce defensive bonuses of target dominion during invasion
+            'diamond_mine' => 0, // produces diamonds
+            'school' => 0, // produces research points
             'lumberyard' => 2,
-            'forest_haven' => 1,
-            'factory' => 0,
+            'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage, reduce plat stolemn
+            'factory' => 0, // reduce construction costs and rezoning costs
             'guard_tower' => 2,
-            'shrine' => 0,
+            'shrine' => 0, // reduce casualties on offense, increases chance of hero level gain?, increase hero bonuses?
             'barracks' => 2,
-            'dock' => 1,
+            'dock' => 1, // produces boats, prevents boats being sunk
         ];
 
         switch ($buildingTypes[$buildingType]) {
