@@ -54,7 +54,7 @@
                         @else
                             <tr>
                                 <td>
-                                    @if ($dominion->id !== $selectedDominion->id)
+                                    @if ($dominion->id === $selectedDominion->id)
                                         <b>{{ $dominion->name }}</b> (you)
                                     @else
                                         {{ $dominion->name }}
