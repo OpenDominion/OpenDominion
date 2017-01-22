@@ -43,6 +43,8 @@ class DominionController extends AbstractController
         $landCalculator = app()->make(LandCalculator::class);
         $populationCalculator = app()->make(PopulationCalculator::class);
 
+        // todo: make status view a partial for here + other dominion status and include stuff like OOP here
+
         return view('pages.dominion.status', compact(
             'landCalculator',
             'populationCalculator'
