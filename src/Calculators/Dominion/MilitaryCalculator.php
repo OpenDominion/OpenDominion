@@ -39,7 +39,7 @@ class MilitaryCalculator extends AbstractDominionCalculator
         $op = 0;
 
         foreach ($this->dominion->race->units as $unit) {
-            $op += $unit->power_offense;
+            $op += ($this->dominion->{'military_unit' . $unit->slot} * $unit->power_offense);
         }
 
         return (float)$op;
@@ -102,7 +102,7 @@ class MilitaryCalculator extends AbstractDominionCalculator
 
         // Military
         foreach ($this->dominion->race->units as $unit) {
-            $dp += $unit->power_defense;
+            $dp += ($this->dominion->{'military_unit' . $unit->slot} * $unit->power_defense);
         }
 
         // Draftees
