@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\Dominion\AbstractDominionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\BuildingHelper;
@@ -80,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         $calculatorClasses = [
             BuildingCalculator::class,
             LandCalculator::class,
+            MilitaryCalculator::class,
             PopulationCalculator::class,
             ProductionCalculator::class,
         ];

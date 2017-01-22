@@ -89,6 +89,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
                 $buildingCalculator = app()->make(\OpenDominion\Calculators\Dominion\BuildingCalculator::class);
                 $landCalculator = app()->make(\OpenDominion\Calculators\Dominion\LandCalculator::class);
+                $militaryCalculator = app()->make(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
                 $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class);
                 $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
@@ -134,6 +135,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
                 return view('pages.dominion.debug', compact(
                     'buildingCalculator',
                     'landCalculator',
+                    'militaryCalculator',
                     'populationCalculator',
                     'productionCalculator'
                 ));
