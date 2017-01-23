@@ -90,7 +90,17 @@ class DominionController extends AbstractController
 
     public function getAdvisorsConstruction()
     {
-        return view('pages.dominion.advisors.construction');
+        $buildingHelper = app()->make(BuildingHelper::class);
+        $buildingCalculator = app()->make(BuildingCalculator::class);
+        $landCalculator = app()->make(LandCalculator::class);
+        $dominionQueueService = app()->make(DominionQueueService::class);
+
+        return view('pages.dominion.advisors.construction', compact(
+            'buildingHelper',
+            'buildingCalculator',
+            'landCalculator',
+            'dominionQueueService'
+        ));
     }
 
     // Actions
