@@ -168,6 +168,7 @@ return [
          */
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
+        Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -227,6 +228,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
+        'Gravatar' => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
 
     ],
 

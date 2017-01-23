@@ -6,7 +6,8 @@
     "prettus/l5-repository": "^2.6",
     "atrox/haikunator": "^1.2",
     "guzzlehttp/guzzle": "^6.2",
-    "ipunkt/laravel-analytics": "^1.3"
+    "ipunkt/laravel-analytics": "^1.3",
+    "thomaswelton/laravel-gravatar": "~1.0"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
