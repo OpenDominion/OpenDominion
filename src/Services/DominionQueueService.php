@@ -44,10 +44,10 @@ class DominionQueueService
             ->where('dominion_id', $this->dominion->id)
             ->get(['land_type', 'amount', 'hours']);
 
-        $explorationQueue = array_fill_keys($this->landHelper->getLandTypes(), array_fill(0, 12, 0));
+        $explorationQueue = array_fill_keys($this->landHelper->getLandTypes(), array_fill(0, 13, 0));
 
         foreach ($rows as $row) {
-            $explorationQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
+            $explorationQueue[$row->land_type][$row->hours] = (int)$row->amount;
         }
 
         $this->explorationQueue = $explorationQueue;

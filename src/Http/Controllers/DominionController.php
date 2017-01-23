@@ -77,7 +77,15 @@ class DominionController extends AbstractController
 
     public function getAdvisorsLand()
     {
-        return view('pages.dominion.advisors.land');
+        $landHelper = app()->make(LandHelper::class);
+        $landCalculator = app()->make(LandCalculator::class);
+        $dominionQueueService = app()->make(DominionQueueService::class);
+
+        return view('pages.dominion.advisors.land', compact(
+            'landHelper',
+            'landCalculator',
+            'dominionQueueService'
+        ));
     }
 
     public function getAdvisorsConstruction()
