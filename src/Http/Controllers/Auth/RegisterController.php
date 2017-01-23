@@ -9,6 +9,7 @@ use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Mail\UserRegistrationMail;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\UserRepository;
+use OpenDominion\Services\AnalyticsService;
 use Session;
 use Validator;
 
@@ -39,6 +40,13 @@ class RegisterController extends AbstractController
 
         Mail::to($user->email)->send(new UserRegistrationMail($user));
 
+        // todo: fire laravel event
+        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'user',
+            'register'
+        ));
+
         $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
 
         return redirect($this->redirectPath());
@@ -60,6 +68,12 @@ class RegisterController extends AbstractController
         $user = $users->first();
         $user->activated = true;
         $user->save();
+
+        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'user',
+            'activate'
+        ));
 
         Session::flash('alert-success', 'Your account has been activated. You may now login.');
 

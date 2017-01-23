@@ -9,6 +9,7 @@ use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RaceRepository;
+use OpenDominion\Services\AnalyticsService;
 
 class RoundController extends AbstractController
 {
@@ -55,6 +56,14 @@ class RoundController extends AbstractController
             $request->get('realm'),
             $request->get('dominion_name')
         );
+
+        // todo: fire laravel event
+        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'round',
+            'register',
+            (string)$round->number
+        ));
 
         $request->session()->flash('alert-success',
             "You have successfully registered to round {$round->number} ({$round->league->description})");

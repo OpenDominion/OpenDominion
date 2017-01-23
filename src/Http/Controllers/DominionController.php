@@ -36,6 +36,13 @@ class DominionController extends AbstractController
             return response('Unauthorized', 401);
         }
 
+        // todo: fire laravel event
+        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'dominion',
+            'select'
+        ));
+
         return redirect(route('dominion.status'));
     }
 
@@ -123,7 +130,6 @@ class DominionController extends AbstractController
     {
         $dominion = $this->getSelectedDominion();
         $explorationActionService = app()->make(ExplorationActionService::class);
-        $analyticsService = app()->make(AnalyticsService::class);
 
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
@@ -155,6 +161,8 @@ class DominionController extends AbstractController
             number_format($result['moraleDrop'])
         );
 
+        // todo: fire laravel event
+        $analyticsService = app()->make(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'explore',
@@ -186,7 +194,6 @@ class DominionController extends AbstractController
     {
         $dominion = $this->getSelectedDominion();
         $constructionActionService = app()->make(ConstructionActionService::class);
-        $analyticsService = app()->make(AnalyticsService::class);
 
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
@@ -217,6 +224,8 @@ class DominionController extends AbstractController
             number_format($result['lumberCost'])
         );
 
+        // todo: fire laravel event
+        $analyticsService = app()->make(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'construct',
