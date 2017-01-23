@@ -41,8 +41,8 @@
                                 <td>{{ number_format($productionCalculator->getManaProduction()) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Ore:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Ore:</td>
+                                <td>{{ number_format($productionCalculator->getOreProduction()) }}</td>
                             </tr>
                             <tr>
                                 <td class="nyi">Gems:</td>

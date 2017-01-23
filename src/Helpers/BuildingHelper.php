@@ -88,7 +88,7 @@ class BuildingHelper
             'farm' => 2,
             'smithy' => 0, // reduce military unit cost
             'masonry' => 0, // increase castle bonuses
-            'ore_mine' => 0, // produces ore
+            'ore_mine' => 2,
             'gryphon_nest' => 2,
             'tower' => 2,
             'wizard_guild' => 0, // increase wizard strength

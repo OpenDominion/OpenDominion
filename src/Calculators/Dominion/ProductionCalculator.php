@@ -379,7 +379,59 @@ class ProductionCalculator extends AbstractDominionCalculator
     }
 
     // Ore
-    // todo
+
+    /**
+     * Returns the Dominion's ore production.
+     *
+     * @return int
+     */
+    public function getOreProduction()
+    {
+        return (int)floor($this->getOreProductionRaw() * $this->getOreProductionMultiplier());
+    }
+
+    /**
+     * Returns the Dominion's raw ore production.
+     *
+     * @return float
+     */
+    public function getOreProductionRaw()
+    {
+        $ore = 0;
+
+        // Values
+        $orePerOreMine = 60;
+
+        // Ore Mines
+        $ore += ($this->dominion->building_ore_mine * $orePerOreMine);
+
+        // Dwarf Unit: Miner
+        // todo
+
+        return (float)$ore;
+    }
+
+    /**
+     * Returns the Dominion's ore production multiplier.
+     *
+     * @return float
+     */
+    public function getOreProductionMultiplier()
+    {
+        $multiplier = 0.0;
+
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('ore_production');
+
+        // Magic: Miner's Sight (Dwarf) (+20%)
+        // Magic: Mining Strength (+10%)
+        // todo
+
+        // Tech: Fruits of Labor (+20%)
+        // todo
+
+        return (float)(1 + $multiplier);
+    }
 
     // Gems
     // todo
