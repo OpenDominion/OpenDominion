@@ -186,6 +186,7 @@ class DominionController extends AbstractController
     {
         $dominion = $this->getSelectedDominion();
         $constructionActionService = app()->make(ConstructionActionService::class);
+        $analyticsService = app()->make(AnalyticsService::class);
 
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
@@ -215,6 +216,13 @@ class DominionController extends AbstractController
             number_format($result['platinumCost']),
             number_format($result['lumberCost'])
         );
+
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'dominion',
+            'construct',
+            null,
+            array_sum($request->get('construct'))
+        ));
 
         $request->session()->flash('alert-success', $message);
         return redirect(route('dominion.construction'));
