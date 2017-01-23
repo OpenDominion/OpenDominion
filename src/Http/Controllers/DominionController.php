@@ -158,7 +158,7 @@ class DominionController extends AbstractController
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'explore',
-            null,
+            '',
             array_sum($request->get('explore'))
         ));
 
@@ -220,7 +220,7 @@ class DominionController extends AbstractController
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'construct',
-            null,
+            '',
             array_sum($request->get('construct'))
         ));
 
