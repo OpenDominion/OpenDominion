@@ -1,7 +1,7 @@
 <header class="main-header">
 
     <!-- Logo -->
-    <a href="#" class="logo">
+    <a href="{{ url('') }}" class="logo">
         <span class="logo-mini">O<b>D</b></span>
         <span class="logo-lg">Open<b>Dominion</b></span>
     </a>
