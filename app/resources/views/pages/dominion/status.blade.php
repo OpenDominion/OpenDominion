@@ -91,8 +91,8 @@
                                 <td>{{ number_format($selectedDominion->resource_gems) }}</td>
                             </tr>
                             <tr>
-                                <td>Research Points:</td>
-                                <td>{{ number_format($selectedDominion->resource_tech) }}</td>
+                                <td class="nyi">Research Points:</td>
+                                <td class="nyi">{{ number_format($selectedDominion->resource_tech) }}</td>
                             </tr>
                             <tr>
                                 <td>Boats:</td>
