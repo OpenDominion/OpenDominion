@@ -93,7 +93,7 @@ class BuildingHelper
             'tower' => 2,
             'wizard_guild' => 0, // increase wizard strength
             'temple' => 0, // increase population growth, reduce defensive bonuses of target dominion during invasion
-            'diamond_mine' => 0, // produces diamonds
+            'diamond_mine' => 2,
             'school' => 0, // produces research points
             'lumberyard' => 2,
             'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage, reduce plat stolemn

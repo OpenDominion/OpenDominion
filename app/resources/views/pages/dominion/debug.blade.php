@@ -101,6 +101,9 @@
                             'getOreProduction',
                             'getOreProductionRaw',
                             'getOreProductionMultiplier',
+                            'getGemProduction',
+                            'getGemProductionRaw',
+                            'getGemProductionMultiplier',
                             'getBoatProduction',
                         ]) !!}
                     </p>

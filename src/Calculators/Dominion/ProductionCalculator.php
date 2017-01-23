@@ -434,7 +434,53 @@ class ProductionCalculator extends AbstractDominionCalculator
     }
 
     // Gems
-    // todo
+
+    /**
+     * Returns the Dominion's gem production.
+     *
+     * @return int
+     */
+    public function getGemProduction()
+    {
+        return (int)floor($this->getGemProductionRaw() * $this->getGemProductionMultiplier());
+    }
+
+    /**
+     * Returns the Dominion's raw gem production.
+     *
+     * @return float
+     */
+    public function getGemProductionRaw()
+    {
+        $gems = 0;
+
+        // Values
+        $gemsPerDiamondMine = 15;
+
+        // Diamond Mines
+        $gems += ($this->dominion->building_diamond_mine * $gemsPerDiamondMine);
+
+        return (float)$gems;
+    }
+
+    /**
+     * Returns the Dominion's gem production multiplier.
+     *
+     * @return float
+     */
+    public function getGemProductionMultiplier()
+    {
+        $multiplier = 0.0;
+
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('gem_production');
+
+        // Tech: Production (+5%)
+        // Tech: Fruits of Labor (+15%)
+        // todo
+
+        return (float)(1 + $multiplier);
+    }
 
     // Tech
     // todo

@@ -117,7 +117,7 @@ class GameTickCommand extends Command
             $dominion->resource_mana += $this->productionCalculator->getManaNetChange();
             // todo: if mana < 0 then mana = 0?
             $dominion->resource_ore += $this->productionCalculator->getOreProduction();
-            // todo: gems
+            $dominion->resource_gems += $this->productionCalculator->getGemProduction();
             $dominion->resource_boats += $this->productionCalculator->getBoatProduction();
 
             // Population

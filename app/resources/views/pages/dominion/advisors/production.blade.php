@@ -45,8 +45,8 @@
                                 <td>{{ number_format($productionCalculator->getOreProduction()) }}</td>
                             </tr>
                             <tr>
-                                <td class="nyi">Gems:</td>
-                                <td class="nyi">NYI</td>
+                                <td>Gems:</td>
+                                <td>{{ number_format($productionCalculator->getGemProduction()) }}</td>
                             </tr>
                             <tr>
                                 <td class="nyi">Research points:</td>
