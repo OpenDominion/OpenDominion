@@ -4,7 +4,7 @@
         @if (isset($selectedDominion))
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="//placehold.it/160x160" class="img-circle" alt="User Image">
+                    <img src="{{ Gravatar::src(Auth::user()->email, 160) }}" class="img-circle" alt="{{ Auth::user()->display_name }}">
                 </div>
                 <div class="pull-left info">
                     <p>{{ $selectedDominion->name }}</p>
