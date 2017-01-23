@@ -46,15 +46,22 @@ class TickTest extends BaseTestCase
             'dominion_id' => $dominion->id,
             'land_type' => 'plain',
             'amount' => 10,
-            'hours' => 2,
+            'hours' => 3,
         ]);
 
         DB::table('queue_construction')->insert([
             'dominion_id' => $dominion->id,
             'building' => 'home',
             'amount' => 10,
-            'hours' => 2,
+            'hours' => 3,
         ]);
+
+        // Test queue hours 3 -> 2
+        Artisan::call('game:tick');
+        $this
+            ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
+            ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 2])
+            ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 2]);
 
         // Test queue hours 2 -> 1
         Artisan::call('game:tick');
@@ -62,13 +69,6 @@ class TickTest extends BaseTestCase
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
             ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 1])
             ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 1]);
-
-        // Test queue hours 1 -> 0
-        Artisan::call('game:tick');
-        $this
-            ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
-            ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 0])
-            ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 0]);
 
         // Test queues get processed on hour 0
         Artisan::call('game:tick');
