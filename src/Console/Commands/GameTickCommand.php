@@ -213,6 +213,16 @@ class GameTickCommand extends Command
     {
         Log::debug('Tick exploration queue');
 
+        // Two-step process to avoid getting UNIQUE constraint integrity errors since we can't reliably use deferred
+        // transactions, deferred update queries or update+orderby cross-database
+        DB::table('queue_exploration')->where('hours', '>', 0)->update([
+            'hours' => DB::raw('-(`hours` - 1)'),
+        ]);
+        $affectedUpdated = DB::table('queue_exploration')->where('hours', '<', 0)->update([
+            'hours' => DB::raw('-`hours`'),
+            'updated_at' => new Carbon(),
+        ]);
+
         $rows = DB::table('queue_exploration')->where('hours', 0)->get();
 
         foreach ($rows as $row) {
@@ -223,10 +233,7 @@ class GameTickCommand extends Command
 
         $affectedFinished = DB::table('queue_exploration')->where('hours', 0)->delete();
 
-        $affectedUpdated = DB::table('queue_exploration')->update([
-            'hours' => DB::raw('`hours` - 1'),
-            'updated_at' => new Carbon(),
-        ]);
+        $affectedUpdated -= $affectedFinished;
 
         Log::debug("Ticked exploration queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
@@ -234,6 +241,16 @@ class GameTickCommand extends Command
     public function tickConstructionQueue()
     {
         Log::debug('Tick construction queue');
+
+        // Two-step process to avoid getting UNIQUE constraint integrity errors since we can't reliably use deferred
+        // transactions, deferred update queries or update+orderby cross-database
+        DB::table('queue_construction')->where('hours', '>', 0)->update([
+            'hours' => DB::raw('-(`hours` - 1)'),
+        ]);
+        $affectedUpdated = DB::table('queue_construction')->where('hours', '<', 0)->update([
+            'hours' => DB::raw('-`hours`'),
+            'updated_at' => new Carbon(),
+        ]);
 
         $rows = DB::table('queue_construction')->where('hours', 0)->get();
 
@@ -245,10 +262,7 @@ class GameTickCommand extends Command
 
         $affectedFinished = DB::table('queue_construction')->where('hours', 0)->delete();
 
-        $affectedUpdated = DB::table('queue_construction')->update([
-            'hours' => DB::raw('`hours` - 1'),
-            'updated_at' => new Carbon(),
-        ]);
+        $affectedUpdated -= $affectedFinished;
 
         Log::debug("Ticked construction queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }

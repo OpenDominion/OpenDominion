@@ -16,7 +16,7 @@ class CreateQueueExplorationTable extends Migration
         Schema::create('queue_exploration', function (Blueprint $table) {
             $table->integer('dominion_id')->unsigned();
             $table->string('land_type');
-            $table->integer('amount')->unsigned();
+            $table->integer('amount');
             $table->integer('hours')->unsigned();
             $table->timestamps();
 

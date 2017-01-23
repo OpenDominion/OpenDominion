@@ -16,7 +16,7 @@ class CreateQueueConstructionTable extends Migration
         Schema::create('queue_construction', function (Blueprint $table) {
             $table->integer('dominion_id')->unsigned();
             $table->string('building');
-            $table->integer('amount')->unsigned();
+            $table->integer('amount');
             $table->integer('hours')->unsigned();
             $table->timestamps();
 

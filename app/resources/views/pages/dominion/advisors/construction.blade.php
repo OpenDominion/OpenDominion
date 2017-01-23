@@ -50,7 +50,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 13; $i++)
+                            @for ($i = 0; $i < 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -58,8 +58,8 @@
                         <thead>
                         <tr>
                             <th>Land Type</th>
-                            @for ($i = 0; $i < 13; $i++)
-                                <th class="text-center">{{ $i }}</th>
+                            @for ($i = 0; $i < 12; $i++)
+                                <th class="text-center">{{ ($i + 1) }}</th>
                             @endfor
                             <th class="text-center">Total</th>
                         </tr>
@@ -68,7 +68,7 @@
                         @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
                             <tr>
                                 <td>{{ ucfirst($buildingType) }}</td>
-                                @for ($i = 0; $i < 13; $i++)
+                                @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
                                         @if ($dominionQueueService->getConstructionQueue()[$buildingType][$i] === 0)
                                             -
