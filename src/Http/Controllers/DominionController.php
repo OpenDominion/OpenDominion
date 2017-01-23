@@ -17,9 +17,9 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
-use OpenDominion\Repositories\RealmRepository;
 use OpenDominion\Services\Actions\ConstructionActionService;
 use OpenDominion\Services\Actions\ExplorationActionService;
+use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
 
@@ -123,6 +123,7 @@ class DominionController extends AbstractController
     {
         $dominion = $this->getSelectedDominion();
         $explorationActionService = app()->make(ExplorationActionService::class);
+        $analyticsService = app()->make(AnalyticsService::class);
 
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
@@ -153,6 +154,13 @@ class DominionController extends AbstractController
             number_format($result['drafteeCost']),
             number_format($result['moraleDrop'])
         );
+
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'dominion',
+            'explore',
+            null,
+            array_sum($request->get('explore'))
+        ));
 
         $request->session()->flash('alert-success', $message);
         return redirect(route('dominion.explore'));

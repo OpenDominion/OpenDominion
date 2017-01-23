@@ -33,6 +33,7 @@ class Kernel extends HttpKernel
 
             \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
             \OpenDominion\Http\Middleware\ShareSelectedDominion::class,
+            \OpenDominion\Http\Middleware\FireAnalyticsFlashEvents::class,
         ],
 
         'api' => [
