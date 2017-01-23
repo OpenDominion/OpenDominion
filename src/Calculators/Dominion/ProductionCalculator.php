@@ -74,7 +74,7 @@ class ProductionCalculator extends AbstractDominionCalculator
      */
     public function getPlatinumProductionMultiplier()
     {
-        $multiplier = 1.0;
+        $multiplier = 0.0;
 
         // Values (percentages)
         $spellMidasTouch = 10;
@@ -82,8 +82,8 @@ class ProductionCalculator extends AbstractDominionCalculator
         $techProduction = 5;
         $techTreasureHunt = 12.5;
 
-        // Racial bonus
-        //$multiplier += $this->dominion->race->getPerkMultiplier('platinum_production');
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('platinum_production');
         // todo
 
         // Spell: Midas Touch
@@ -98,7 +98,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Tech: Production or Treasure Hunt
         // todo
 
-        return (float)min(1.5, $multiplier);
+        return (float)min(1.5, (1 + $multiplier));
     }
 
     // Food
@@ -142,14 +142,14 @@ class ProductionCalculator extends AbstractDominionCalculator
      */
     public function getFoodProductionMultiplier()
     {
-        $multiplier = 0;
+        $multiplier = 0.0;
 
         // Values (percentages)
         $spellGaiasBlessing = 20;
         $spellGaiasWatch = 10;
         $techProduction = 10;
 
-        // Racial bonus
+        // Racial Bonus
         $multiplier += $this->dominion->race->getPerkMultiplier('food_production');
 
         // Spell: Gaia's Blessing
@@ -256,13 +256,13 @@ class ProductionCalculator extends AbstractDominionCalculator
      */
     public function getLumberProductionMultiplier()
     {
-        $multiplier = 1.0;
+        $multiplier = 0.0;
 
         // Values (percentages)
         $spellGaiasBlessing = 10;
         $techProduction = 10;
 
-        // Racial bonus
+        // Racial Bonus
         $multiplier += $this->dominion->race->getPerkMultiplier('lumber_production');
 
         // Spell: Gaia's Blessing
@@ -271,7 +271,7 @@ class ProductionCalculator extends AbstractDominionCalculator
         // Tech: Production
         // todo
 
-        return $multiplier;
+        return (float)(1 + $multiplier);
     }
 
     /**
