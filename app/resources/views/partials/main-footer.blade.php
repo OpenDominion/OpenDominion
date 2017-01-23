@@ -4,11 +4,6 @@
         <span class="hidden-xs">Version: </span>{!! $version !!}
     </div>
 
-    <span class="hidden-xs">
-        <i class="fa fa-github"></i> View this project on <a href="https://github.com/WaveHack/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>.
-    </span>
-    <span class="visible-xs">
-        <i class="fa fa-github"></i> <a href="https://github.com/WaveHack/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>
-    </span>
+    <i class="fa fa-github"></i> <span class="hidden-xs">View this project on </span><a href="https://github.com/WaveHack/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>
 
 </footer>
