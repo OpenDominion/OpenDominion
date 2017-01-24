@@ -25,6 +25,8 @@ class UpdateVersionCommand extends Command
 
         $env = getenv('APP_ENV');
 
+        $commits = shell_exec('git rev-list --count HEAD');
+
         $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
         $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
 
@@ -33,7 +35,7 @@ class UpdateVersionCommand extends Command
 
         $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
 
-        $version = "<strong>{$env}</strong> @ <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a> ({$branch})";
+        $version = "<strong>r{$commits}</strong> @ {$env} ({$branch}<a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
 
         Cache::forever('version', $version);
 
