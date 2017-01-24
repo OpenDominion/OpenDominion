@@ -35,7 +35,7 @@ class UpdateVersionCommand extends Command
 
         $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
 
-        $version = "<strong>r{$commits}</strong> @ {$env} ({$branch}<a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
+        $version = "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
 
         Cache::forever('version', $version);
 
