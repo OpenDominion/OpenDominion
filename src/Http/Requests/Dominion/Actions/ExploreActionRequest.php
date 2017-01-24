@@ -37,7 +37,7 @@ class ExploreActionRequest extends FormRequest
         $rules = [];
 
         foreach ($this->landHelper->getLandTypes() as $landType) {
-            $rules['explore.' . $landType] = 'integer';
+            $rules['explore.' . $landType] = 'integer|nullable';
         }
 
         return $rules;
