@@ -3,13 +3,13 @@
 namespace OpenDominion\Tests\Unit\Factories;
 
 use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RealmFactoryTest extends BaseTestCase
+class RealmFactoryTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

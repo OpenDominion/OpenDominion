@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class ProductionCalculatorTest extends BaseTestCase
+class ProductionCalculatorTest extends AbstractBrowserKitTestCase
 {
     public function testGetPlatinumProduction()
     {

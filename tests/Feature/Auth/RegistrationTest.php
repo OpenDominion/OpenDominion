@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
 use Mail;
 use Mockery as m;
 use OpenDominion\Mail\UserRegistrationMail;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RegistrationTest extends BaseTestCase
+class RegistrationTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
@@ -30,7 +30,9 @@ class RegistrationTest extends BaseTestCase
                 'last_online' => null,
             ]);
 
-        Mail::assertSentTo('johndoe@example.com', UserRegistrationMail::class);
+        Mail::assertSent(UserRegistrationMail::class, function ($mailable) {
+            return $mailable->hasTo('johndoe@example.com');
+        });
     }
 
     public function testNewlyRegisteredUserCanActivateAccount()

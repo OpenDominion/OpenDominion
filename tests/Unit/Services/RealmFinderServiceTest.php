@@ -3,14 +3,14 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\RealmFinderService;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RealmFinderServiceTest extends BaseTestCase
+class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

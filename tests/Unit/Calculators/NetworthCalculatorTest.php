@@ -9,9 +9,9 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Unit;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class NetworthCalculatorTest extends BaseTestCase
+class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var BuildingCalculator */
     protected $buildingCalculatorDependencyMock;

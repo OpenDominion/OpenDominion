@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class PopulationCalculatorTest extends BaseTestCase
+class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 {
     public function testGetPopulation()
     {

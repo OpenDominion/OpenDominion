@@ -4,14 +4,14 @@ namespace OpenDominion\Tests\Unit\Services;
 
 use CoreDataSeeder;
 use Exception;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\DominionSelectorService;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class DominionSelectorServiceTest extends BaseTestCase
+class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

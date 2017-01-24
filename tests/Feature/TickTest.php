@@ -5,10 +5,10 @@ namespace OpenDominion\Tests\Feature;
 use Artisan;
 use CoreDataSeeder;
 use DB;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Tests\BaseTestCase;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class TickTest extends BaseTestCase
+class TickTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

@@ -8,9 +8,9 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\DominionQueueService;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class LandCalculatorTest extends BaseTestCase
+class LandCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Dominion */
     protected $dominionMock;

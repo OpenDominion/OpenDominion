@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Unit\Factories;
 
 use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
 use Mockery as m;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
@@ -11,9 +11,9 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class DominionFactoryTest extends BaseTestCase
+class DominionFactoryTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

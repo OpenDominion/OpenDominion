@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Tests\BaseTestCase;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class LoginTest extends BaseTestCase
+class LoginTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

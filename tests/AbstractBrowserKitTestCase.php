@@ -4,7 +4,7 @@ namespace OpenDominion\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Foundation\Testing\TestCase;
+use Laravel\BrowserKitTesting\TestCase;
 use Mail;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
@@ -13,10 +13,10 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 
-abstract class BaseTestCase extends TestCase
+abstract class AbstractBrowserKitTestCase extends TestCase
 {
     /**
-     * The base URL to use while testing the application.
+     * The base URL of the application.
      *
      * @var string
      */

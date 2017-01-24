@@ -2,14 +2,11 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use Carbon\Carbon;
 use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Models\Round;
-use OpenDominion\Models\RoundLeague;
-use OpenDominion\Tests\BaseTestCase;
+use Laravel\BrowserKitTesting\DatabaseMigrations;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RoundTest extends BaseTestCase
+class RoundTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 

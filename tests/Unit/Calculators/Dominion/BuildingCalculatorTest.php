@@ -6,9 +6,9 @@ use Mockery as m;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Tests\BaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class BuildingCalculatorTest extends BaseTestCase
+class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Dominion */
     protected $dominionMock;
