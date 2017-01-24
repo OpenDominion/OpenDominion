@@ -57,12 +57,19 @@ class ProductionCalculator extends AbstractDominionCalculator
 
         // Peasant Tax
         $platinum += (($this->dominion->peasants * $peasantTax) * ($this->populationCalculator->getEmploymentPercentage() / 100));
+        // todo? change to: $platinum += ($this->populationCalculator->getPopulationEmployed() * $peasantTax);
+        // Now with 4k peasants and 2k jobs with 100% employment you'd get 4k * peasantTax plat
+        // With the todo only for employed peasants, as advertised here: http://web.archive.org/web/20110512060054/http://dominion.lykanthropos.com/wiki/index.php/Population#Peasants
 
         // Spell: Alchemist Flame
         // todo
 
         // Alchemies
         $platinum += ($this->dominion->building_alchemy * $platinumPerAlchemy);
+
+        /*
+        = Population!C3 * Constants!$B$58 * Population!I3 + (Construction!AT4+Construction!BR4)*(Constants!$B$4+(Magic!AI3>0)*Constants!$F$83)
+        */
 
         return (float)$platinum;
     }
