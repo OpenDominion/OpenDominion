@@ -22,6 +22,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [How to update](#how-to-update)
   - [How to reset](#how-to-reset)
   - [Style guide and standards](#style-guide-and-standards)
+- [Resources](#resources)
 
 ## Before getting started
 
@@ -238,3 +239,7 @@ Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=lo
 PHP code should be in PSR2-style with a few additional rules (todo: add and link to .styleci.yml - just look at existing files for now :^) ).
 
 Please add relevant unit tests or feature tests if possible.
+
+## Resources
+
+You can find resources that I use to help me develop OpenDominion in the [resources branch](https://github.com/WaveHack/OpenDominion/tree/resources). See its readme for more info.
