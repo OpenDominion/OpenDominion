@@ -97,6 +97,6 @@ function slugify($string) {
 ```
 
 On Windows I had to edit the Wayback Machine Downloader source code to change ':' to 'x3a' so URLs with a ':' in the
-filename could be saved on a Windows filesystem at `gems\2.3.0\gems\wayback_machine_downloader-1.1.4\lib`.
+filename could be saved on a Windows filesystem at `$pathToRuby\gems\2.3.0\gems\wayback_machine_downloader-1.1.4\lib\wayback_machine_downloader.rb`.
 
 Sadly, I lost these changes and specific implementation.
