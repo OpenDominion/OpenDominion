@@ -69,15 +69,17 @@ class RegisterController extends AbstractController
         $user->activated = true;
         $user->save();
 
+        auth()->login($user);
+
         $analyticsService = app()->make(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'user',
             'activate'
         ));
 
-        Session::flash('alert-success', 'Your account has been activated. You may now login.');
+        Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
 
-        return redirect($this->redirectPath());
+        return redirect(route('dashboard'));
     }
 
     protected function validator(array $data)
