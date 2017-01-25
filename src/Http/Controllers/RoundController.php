@@ -10,6 +10,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RaceRepository;
 use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\DominionSelectorService;
 
 class RoundController extends AbstractController
 {
@@ -49,13 +50,16 @@ class RoundController extends AbstractController
             'realm' => 'in:random',
         ]);
 
-        $this->dominionFactory->create(
+        $dominion = $this->dominionFactory->create(
             Auth::user(),
             $round,
             $this->races->find($request->get('race')),
             $request->get('realm'),
             $request->get('dominion_name')
         );
+
+        $dominionSelectorService = app()->make(DominionSelectorService::class);
+        $dominionSelectorService->selectUserDominion($dominion);
 
         // todo: fire laravel event
         $analyticsService = app()->make(AnalyticsService::class);
@@ -66,9 +70,9 @@ class RoundController extends AbstractController
         ));
 
         $request->session()->flash('alert-success',
-            "You have successfully registered to round {$round->number} ({$round->league->description})");
+            "You have successfully registered to round {$round->number} ({$round->league->description}).");
 
-        return redirect('dashboard');
+        return redirect(route('dominion.status'));
     }
 
     protected function checkIfUserAlreadyHasDominionInThisRound(Round $round)
