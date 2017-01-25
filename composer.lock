@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f4d5902854dbdd6caa1c02cabf63909",
+    "content-hash": "d21381ac814fb2e5c0c134ce71eb60d5",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -366,12 +366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WaveHack/laravel-analytics.git",
-                "reference": "d4201aafb0bb1d7afa43fc570242baa753540671"
+                "reference": "789b8b4e3fbcc2d1bda09f6bfc84752cb42d330f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/d4201aafb0bb1d7afa43fc570242baa753540671",
-                "reference": "d4201aafb0bb1d7afa43fc570242baa753540671",
+                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/789b8b4e3fbcc2d1bda09f6bfc84752cb42d330f",
+                "reference": "789b8b4e3fbcc2d1bda09f6bfc84752cb42d330f",
                 "shasum": ""
             },
             "require": {
@@ -414,7 +414,7 @@
                 "issues": "https://github.com/ipunkt/laravel-analytics/issues",
                 "source": "https://github.com/ipunkt/laravel-analytics/archive/master.zip"
             },
-            "time": "2017-01-25 00:03:31"
+            "time": "2017-01-25 00:44:59"
         },
         {
             "name": "laravel/framework",
@@ -1968,16 +1968,16 @@
         },
         {
             "name": "thomaswelton/laravel-gravatar",
-            "version": "dev-master",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/WaveHack/laravel-gravatar.git",
-                "reference": "2b109a424fe5d9fc53e13eba142f81394bb8c733"
+                "url": "https://github.com/thomaswelton/laravel-gravatar.git",
+                "reference": "487ccea485d6ab16ed24085ecc01a6c2314b769f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WaveHack/laravel-gravatar/zipball/2b109a424fe5d9fc53e13eba142f81394bb8c733",
-                "reference": "2b109a424fe5d9fc53e13eba142f81394bb8c733",
+                "url": "https://api.github.com/repos/thomaswelton/laravel-gravatar/zipball/487ccea485d6ab16ed24085ecc01a6c2314b769f",
+                "reference": "487ccea485d6ab16ed24085ecc01a6c2314b769f",
                 "shasum": ""
             },
             "require": {
@@ -1996,6 +1996,7 @@
                     "Thomaswelton\\Tests\\LaravelGravatar\\": "tests/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2018,10 +2019,7 @@
                 "laravel",
                 "laravel5"
             ],
-            "support": {
-                "source": "https://github.com/WaveHack/laravel-gravatar/tree/master"
-            },
-            "time": "2017-01-24 20:59:12"
+            "time": "2017-01-24T23:13:10+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -4882,7 +4880,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "ipunkt/laravel-analytics": 20,
-        "thomaswelton/laravel-gravatar": 20,
         "satooshi/php-coveralls": 20
     },
     "prefer-stable": false,

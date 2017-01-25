@@ -7,7 +7,7 @@
     "atrox/haikunator": "^1.2",
     "guzzlehttp/guzzle": "^6.2",
     "ipunkt/laravel-analytics": "dev-master",
-    "thomaswelton/laravel-gravatar": "dev-master"
+    "thomaswelton/laravel-gravatar": "~1.0"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
@@ -22,10 +22,6 @@
     "laravel/browser-kit-testing": "^1.0"
   },
   "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/WaveHack/laravel-gravatar"
-    },
     {
       "type": "vcs",
       "url": "https://github.com/WaveHack/laravel-analytics"
