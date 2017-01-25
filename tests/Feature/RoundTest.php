@@ -84,7 +84,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->select(1, 'race')
             ->select('random', 'realm')
             ->press('Register')
-            ->seePageIs('dashboard')
+            ->seePageIs('dominion/status')
             ->see('You have successfully registered to round 1 (Standard league)')
             ->seeInDatabase('dominions', [
                 'user_id' => $user->id,
@@ -92,9 +92,6 @@ class RoundTest extends AbstractBrowserKitTestCase
                 'race_id' => 1,
                 'name' => 'dominionname',
             ])
-            ->see('dominionname')
-            ->seeElement('tr', ['class' => 'info'])
-            ->see('Already registered!')
             ->get('round/1/register')
             ->seeStatusCode(500);
     }

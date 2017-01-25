@@ -44,12 +44,13 @@ class RegistrationTest extends AbstractBrowserKitTestCase
         ]);
 
         $this->visit("/auth/activate/{$activation_code}")
-            ->seePageIs('/')
-            ->see('Your account has been activated. You may now login.')
+            ->seePageIs('/dashboard')
+            ->see('Your account has been activated and you are now logged in.')
             ->seeInDatabase('users', [
                 'id' => $user->id,
                 'activated' => true,
-            ]);
+            ])
+            ->seeIsAuthenticated();
     }
 
     public function testUserCantActivateWithInvalidActivationCode()
