@@ -1,0 +1,2 @@
+wayback_machine_downloader http://dominion.lykanthropos.com/wiki/index.php/ --from 20110508222237 --to 20141017235815
+./fix-site.php
