@@ -30,6 +30,7 @@ class LoginController extends AbstractController
         if ($user->dominions->count() === 1) {
             $dominionSelectorService = app()->make(DominionSelectorService::class);
             $dominionSelectorService->selectUserDominion($user->dominions->first());
+            $this->redirectTo = '/dominion/status';
         }
 
         // todo: fire laravel event
