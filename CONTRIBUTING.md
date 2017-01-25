@@ -80,7 +80,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Languages, frameworks, libraries and tools
 
-OpenDominion is built on the Laravel 5.3 PHP framework, using PHP 5.6 as language and Laravel's Blade as view/templating language.
+OpenDominion is built on the Laravel 5.4 PHP framework, using PHP 5.6 as language and Laravel's Blade as view/templating language.
 
 Composer production packages include L5-Repository (for model repositories), Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
 
