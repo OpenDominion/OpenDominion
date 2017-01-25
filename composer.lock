@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0c4c490928b4727286c987ff4616548",
+    "content-hash": "8f4d5902854dbdd6caa1c02cabf63909",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -362,16 +362,16 @@
         },
         {
             "name": "ipunkt/laravel-analytics",
-            "version": "1.3.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ipunkt/laravel-analytics.git",
-                "reference": "35193df6f4371a694ccc0f022bcb679a37847eac"
+                "url": "https://github.com/WaveHack/laravel-analytics.git",
+                "reference": "d4201aafb0bb1d7afa43fc570242baa753540671"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ipunkt/laravel-analytics/zipball/35193df6f4371a694ccc0f022bcb679a37847eac",
-                "reference": "35193df6f4371a694ccc0f022bcb679a37847eac",
+                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/d4201aafb0bb1d7afa43fc570242baa753540671",
+                "reference": "d4201aafb0bb1d7afa43fc570242baa753540671",
                 "shasum": ""
             },
             "require": {
@@ -392,7 +392,6 @@
                     "Ipunkt\\LaravelAnalytics\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -411,7 +410,11 @@
                 "php",
                 "statistics"
             ],
-            "time": "2016-11-03T07:42:58+00:00"
+            "support": {
+                "issues": "https://github.com/ipunkt/laravel-analytics/issues",
+                "source": "https://github.com/ipunkt/laravel-analytics/archive/master.zip"
+            },
+            "time": "2017-01-25 00:03:31"
         },
         {
             "name": "laravel/framework",
@@ -2018,7 +2021,7 @@
             "support": {
                 "source": "https://github.com/WaveHack/laravel-gravatar/tree/master"
             },
-            "time": "2017-01-24T20:59:12+00:00"
+            "time": "2017-01-24 20:59:12"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -4878,6 +4881,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "ipunkt/laravel-analytics": 20,
         "thomaswelton/laravel-gravatar": 20,
         "satooshi/php-coveralls": 20
     },
