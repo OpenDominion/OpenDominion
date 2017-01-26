@@ -59,7 +59,7 @@ return [
             /**
              * Enable the debugging version of Google Analytics
              */
-            'debug' => env('ANALYTIS_DEBUG', env('APP_ENV') === 'local'),
+            'debug' => env('ANALYTICS_DEBUG', env('APP_ENV') === 'local'),
         ]
 
     ],
