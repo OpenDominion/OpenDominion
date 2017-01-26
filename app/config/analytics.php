@@ -27,7 +27,7 @@ return [
             /**
              * Tracking ID
              */
-            'tracking_id' => env('ANALYTICS_TRACKING_ID'),
+            'tracking_id' => env('ANALYTICS_TRACKING_ID', 'UA-XXXXXXXX-1'),
 
             /**
              * Tracking Domain
