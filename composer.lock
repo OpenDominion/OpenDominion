@@ -366,12 +366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WaveHack/laravel-analytics.git",
-                "reference": "de7b218b1061b9500ecb56de425a6d2a4888bc56"
+                "reference": "283891455ee0982f45d10b710b6dfb535f9ff1b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/de7b218b1061b9500ecb56de425a6d2a4888bc56",
-                "reference": "de7b218b1061b9500ecb56de425a6d2a4888bc56",
+                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/283891455ee0982f45d10b710b6dfb535f9ff1b7",
+                "reference": "283891455ee0982f45d10b710b6dfb535f9ff1b7",
                 "shasum": ""
             },
             "require": {
@@ -414,20 +414,20 @@
                 "issues": "https://github.com/ipunkt/laravel-analytics/issues",
                 "source": "https://github.com/ipunkt/laravel-analytics/archive/master.zip"
             },
-            "time": "2017-01-26 20:13:26"
+            "time": "2017-01-26 20:26:17"
         },
         {
             "name": "laravel/framework",
-            "version": "v5.4.4",
+            "version": "v5.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4274ed5646f8a9ec0a4b201aab7440e2890610a1"
+                "reference": "6f2395d3a97728c1150da083898d1f5a2904b3a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4274ed5646f8a9ec0a4b201aab7440e2890610a1",
-                "reference": "4274ed5646f8a9ec0a4b201aab7440e2890610a1",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/6f2395d3a97728c1150da083898d1f5a2904b3a0",
+                "reference": "6f2395d3a97728c1150da083898d1f5a2904b3a0",
                 "shasum": ""
             },
             "require": {
@@ -543,7 +543,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-01-26T14:29:30+00:00"
+            "time": "2017-01-26T20:30:57+00:00"
         },
         {
             "name": "league/flysystem",
