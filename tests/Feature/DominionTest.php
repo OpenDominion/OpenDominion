@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use CoreDataSeeder;
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Services\DominionSelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 

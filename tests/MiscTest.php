@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests;
 
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class MiscTest extends AbstractBrowserKitTestCase
 {

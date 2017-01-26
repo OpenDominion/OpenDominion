@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mail;
 use Mockery as m;
 use OpenDominion\Mail\UserRegistrationMail;

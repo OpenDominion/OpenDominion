@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Unit\Factories;
 
 use CoreDataSeeder;
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;

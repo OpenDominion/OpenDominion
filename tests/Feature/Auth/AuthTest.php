@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class AuthTest extends AbstractBrowserKitTestCase

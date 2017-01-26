@@ -4,7 +4,7 @@ namespace OpenDominion\Tests\Unit\Services;
 
 use CoreDataSeeder;
 use Exception;
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;

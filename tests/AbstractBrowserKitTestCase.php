@@ -15,26 +15,14 @@ use OpenDominion\Models\User;
 
 abstract class AbstractBrowserKitTestCase extends TestCase
 {
+    use CreatesApplication;
+
     /**
      * The base URL of the application.
      *
      * @var string
      */
     protected $baseUrl = 'http://localhost';
-
-    /**
-     * Creates the application.
-     *
-     * @return \Illuminate\Foundation\Application
-     */
-    public function createApplication()
-    {
-        $app = require __DIR__ . '/../app/bootstrap/app.php';
-
-        $app->make(Kernel::class)->bootstrap();
-
-        return $app;
-    }
 
     protected function setUp()
     {

@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use CoreDataSeeder;
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RoundTest extends AbstractBrowserKitTestCase

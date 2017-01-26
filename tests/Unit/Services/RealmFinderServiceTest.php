@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use CoreDataSeeder;
-use Laravel\BrowserKitTesting\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
