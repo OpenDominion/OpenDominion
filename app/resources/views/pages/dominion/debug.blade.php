@@ -54,6 +54,7 @@
                             'getMaxPopulation',
                             'getMaxPopulationRaw',
                             'getMaxPopulationMultiplier',
+                            'getMaxPopulationMilitary',
                             'getPopulationBirth',
                             'getPopulationBirthRaw',
                             'getPopulationBirthMultiplier',

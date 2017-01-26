@@ -81,21 +81,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         $population += (int)round($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
 
         // Military only
-        $population += min(
-            ($this->getPopulationMilitary() - $this->dominion->military_draftees), // todo: -training queue
-            ($this->dominion->building_barracks * $troopsPerBarracks)
-        );
-
-        /*
-        = ROUND(
-            $V3 * (1 + $AC3),
-            0
-        )
-        + MIN(
-            D3 - E3 - SUM($Military.AF3:AL3),
-            $Constants.$B$61 * $Construction.BD3
-        )
-        */
+        $population += $this->getMaxPopulationMilitary();
 
         return $population;
     }
@@ -193,6 +179,22 @@ class PopulationCalculator extends AbstractDominionCalculator
         */
 
         return (float)$multiplier;
+    }
+
+    /**
+     * Returns the Dominion's max military population.
+     *
+     * @return float
+     */
+    public function getMaxPopulationMilitary()
+    {
+        // Values
+        $troopsPerBarracks = 36;
+
+        return (float)min(
+            ($this->getPopulationMilitary() - $this->dominion->military_draftees), // todo: -training queue
+            ($this->dominion->building_barracks * $troopsPerBarracks)
+        );
     }
 
     /**
