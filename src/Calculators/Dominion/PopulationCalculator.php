@@ -72,18 +72,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getMaxPopulation()
     {
-        $population = 0;
-
-        // Values
-        $troopsPerBarracks = 36;
-
-        // Peasants & Military
-        $population += (int)round($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier());
-
-        // Military only
-        $population += $this->getMaxPopulationMilitary();
-
-        return $population;
+        return (int)round(($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier()) + $this->getMaxPopulationMilitary());
     }
 
     /**
