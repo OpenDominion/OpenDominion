@@ -72,7 +72,10 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function getMaxPopulation()
     {
-        return (int)round(($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier()) + $this->getMaxPopulationMilitary());
+        return (int)round(
+            ($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier())
+            + $this->getMaxPopulationMilitaryBonus()
+        );
     }
 
     /**
@@ -171,11 +174,11 @@ class PopulationCalculator extends AbstractDominionCalculator
     }
 
     /**
-     * Returns the Dominion's max military population.
+     * Returns the Dominion's max population military bonus.
      *
      * @return float
      */
-    public function getMaxPopulationMilitary()
+    public function getMaxPopulationMilitaryBonus()
     {
         // Values
         $troopsPerBarracks = 36;
