@@ -366,12 +366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WaveHack/laravel-analytics.git",
-                "reference": "283891455ee0982f45d10b710b6dfb535f9ff1b7"
+                "reference": "2d327add46700078c7538a926e12c40b44c2e306"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/283891455ee0982f45d10b710b6dfb535f9ff1b7",
-                "reference": "283891455ee0982f45d10b710b6dfb535f9ff1b7",
+                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/2d327add46700078c7538a926e12c40b44c2e306",
+                "reference": "2d327add46700078c7538a926e12c40b44c2e306",
                 "shasum": ""
             },
             "require": {
@@ -414,7 +414,7 @@
                 "issues": "https://github.com/ipunkt/laravel-analytics/issues",
                 "source": "https://github.com/ipunkt/laravel-analytics/archive/master.zip"
             },
-            "time": "2017-01-26 20:26:17"
+            "time": "2017-01-26 20:43:58"
         },
         {
             "name": "laravel/framework",
