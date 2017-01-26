@@ -91,7 +91,6 @@ class ProductionCalculator extends AbstractDominionCalculator
 
         // Racial Bonus
         $multiplier += $this->dominion->race->getPerkMultiplier('platinum_production');
-        // todo
 
         // Spell: Midas Touch
         // todo

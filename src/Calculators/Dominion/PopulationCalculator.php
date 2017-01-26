@@ -125,7 +125,7 @@ class PopulationCalculator extends AbstractDominionCalculator
      * Returns the Dominion's max population multiplier.
      *
      * Max population multiplier is affected by:
-     * - Racial bonuses (todo)
+     * - Racial Bonus
      * - Improvement: Keep (todo)
      * - Tech: Urban Mastery and Construction (todo)
      * - Prestige bonus
@@ -140,8 +140,8 @@ class PopulationCalculator extends AbstractDominionCalculator
 //        $techUrbanMasteryMultiplier = 7.5;
 //        $techConstructionMultiplier = 2;
 
-        // Racial bonus
-        // todo
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('max_population');
 
         // Improvement: Keep
         // todo
@@ -156,7 +156,6 @@ class PopulationCalculator extends AbstractDominionCalculator
         // todo: $prestige / 10000?
         $multiplier *= (1 + (($this->dominion->prestige / 250) * 2.5) / 100);
         $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += 1;
 
         /*
         = ($Overview.$I$15
@@ -170,7 +169,7 @@ class PopulationCalculator extends AbstractDominionCalculator
         + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
         */
 
-        return (float)$multiplier;
+        return (float)(1 + $multiplier);
     }
 
     /**
@@ -230,8 +229,8 @@ class PopulationCalculator extends AbstractDominionCalculator
         //$spellHarmony = 1.5;
         //$templeBonus = 6;
 
-        // Racial bonus
-        // todo
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('population_growth');
 
         // Spell: Harmony
         // todo

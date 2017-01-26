@@ -53,7 +53,8 @@ class MilitaryCalculator extends AbstractDominionCalculator
         $opPerGryphonNest = 1.75;
         $gryphonNestMaxOp = 35;
 
-        // todo: Racial Bonus
+        // Racial Bonus
+        $multiplier += $this->dominion->race->getPerkMultiplier('offense');
 
         // Gryphon Nests
         $multiplier += min(
@@ -126,7 +127,7 @@ class MilitaryCalculator extends AbstractDominionCalculator
         $guardTowerMaxDp = 35;
 
         // Racial Bonus
-        // todo
+        $multiplier += $this->dominion->race->getPerkMultiplier('defense');
 
         // Improvement: Walls
         // todo
