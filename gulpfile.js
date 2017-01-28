@@ -1,10 +1,11 @@
-var elixir = require('laravel-elixir');
+var elixir = require('laravel-elixir'),
+    config = elixir.config;
 
-elixir.config.appPath = 'src';
-elixir.config.assetsPath = 'app/resources/assets';
-elixir.config.viewPath = 'app/resources/views';
-elixir.config.css.outputFolder = 'assets/app/css';
-elixir.config.js.outputFolder = 'assets/app/js';
+config.appPath = 'src';
+config.assetsPath = 'app/resources/assets';
+config.viewPath = 'app/resources/views';
+config.css.outputFolder = 'assets/app/css';
+config.js.outputFolder = 'assets/app/js';
 
 var vendorFiles = {
 
