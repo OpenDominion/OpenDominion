@@ -366,12 +366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WaveHack/laravel-analytics.git",
-                "reference": "9a0a5b564952cc2f5df3ff7aa32959f591adc751"
+                "reference": "974b7869d6ef1886f8e2fe7d55a6b4d0ea88a1f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/9a0a5b564952cc2f5df3ff7aa32959f591adc751",
-                "reference": "9a0a5b564952cc2f5df3ff7aa32959f591adc751",
+                "url": "https://api.github.com/repos/WaveHack/laravel-analytics/zipball/974b7869d6ef1886f8e2fe7d55a6b4d0ea88a1f6",
+                "reference": "974b7869d6ef1886f8e2fe7d55a6b4d0ea88a1f6",
                 "shasum": ""
             },
             "require": {
@@ -414,20 +414,20 @@
                 "issues": "https://github.com/ipunkt/laravel-analytics/issues",
                 "source": "https://github.com/ipunkt/laravel-analytics/archive/master.zip"
             },
-            "time": "2017-01-26 22:15:46"
+            "time": "2017-01-27 08:43:37"
         },
         {
             "name": "laravel/framework",
-            "version": "v5.4.5",
+            "version": "v5.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "6f2395d3a97728c1150da083898d1f5a2904b3a0"
+                "reference": "5913b960656d7f978605ff9c1513ffbfd190c173"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/6f2395d3a97728c1150da083898d1f5a2904b3a0",
-                "reference": "6f2395d3a97728c1150da083898d1f5a2904b3a0",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/5913b960656d7f978605ff9c1513ffbfd190c173",
+                "reference": "5913b960656d7f978605ff9c1513ffbfd190c173",
                 "shasum": ""
             },
             "require": {
@@ -543,7 +543,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-01-26T20:30:57+00:00"
+            "time": "2017-01-27T19:27:15+00:00"
         },
         {
             "name": "league/flysystem",
@@ -1249,7 +1249,7 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v3.1.9",
+            "version": "v3.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
@@ -3791,16 +3791,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.7.8",
+            "version": "5.7.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "bee7755d964f8e56d6ecb79046480fd0320b686d"
+                "reference": "69f832b87c731d5cacad7f91948778fe98335fdd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/bee7755d964f8e56d6ecb79046480fd0320b686d",
-                "reference": "bee7755d964f8e56d6ecb79046480fd0320b686d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/69f832b87c731d5cacad7f91948778fe98335fdd",
+                "reference": "69f832b87c731d5cacad7f91948778fe98335fdd",
                 "shasum": ""
             },
             "require": {
@@ -3869,7 +3869,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-01-26T15:28:51+00:00"
+            "time": "2017-01-28T06:14:33+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -4620,16 +4620,16 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v3.1.9",
+            "version": "v3.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "a950260ebc947578fba82a3222e2085d90682376"
+                "reference": "7eede2a901a19928494194f7d1815a77b9a473a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/a950260ebc947578fba82a3222e2085d90682376",
-                "reference": "a950260ebc947578fba82a3222e2085d90682376",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/7eede2a901a19928494194f7d1815a77b9a473a0",
+                "reference": "7eede2a901a19928494194f7d1815a77b9a473a0",
                 "shasum": ""
             },
             "require": {
@@ -4672,7 +4672,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-02T20:31:54+00:00"
+            "time": "2017-01-21T17:13:55+00:00"
         },
         {
             "name": "symfony/filesystem",
