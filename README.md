@@ -39,6 +39,7 @@ Stuff that need implementing (in rough order of priority):
 - Magic
 - Castle improvements
 - Other pages (messages, council, op center, government, diplomacy, rankings, town crier)
+- Other races
 - Tech
 
 ## Contributing
