@@ -17,6 +17,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Setting up](#setting-up)
   - [Directory structure](#directory-structure)
   - [Deviation from Laravel](#deviation-from-laravel)
+  - [Things to keep in mind](#things-to-keep-in-mind)
   - [How to run OpenDominion](#how-to-run-opendominion)
   - [How to run tests](#how-to-run-tests)
   - [How to update](#how-to-update)
@@ -187,6 +188,13 @@ The rest should be pretty self-explanatory, assuming you're at least somewhat co
 - Source code is in `src` instead of `app`
 - Bootstrap, config, database, resources, routes and storage are in `app`
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
+
+### Things to keep in mind
+
+- The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance, and service classes (`src/Services`).
+- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.4/container). There's a circular dependency issue between calculator classes, which is circumvented with the `DependencyInitializableInterface` interface.
+- Also see `AppServiceProvider.php` for this.
+- There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
 
 ### How to run OpenDominion
 
