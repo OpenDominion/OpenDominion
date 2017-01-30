@@ -192,10 +192,13 @@ The rest should be pretty self-explanatory, assuming you're at least somewhat co
 ### Things to keep in mind
 
 - The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance, and service classes (`src/Services`).
+- Classes for actions that a user takes with a dominion (e.g. exploring, invading) are called 'action services' and reside in `src/Services/Actions`.
+- Misc code that doesn't belong in a calculator or factory should generally go in a service class.
 - This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.4/container). There's a circular dependency issue between calculator classes, which is circumvented with the `DependencyInitializableInterface` interface.
 - Also see `AppServiceProvider.php` for this.
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
 - The `GameTickCommand` command is executed every hour at xx:00 from the console kernel.
+- Slim controllers, slim models, many slim services. 
 
 ### How to run OpenDominion
 
