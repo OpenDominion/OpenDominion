@@ -78,7 +78,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 - Your PHP has the extensions: mbstring, openssl (todo: needed?), pdo_sqlite and optionally xdebug
 - You have composer installed and in your path
 - You have npm, yarn and gulp installed and in your path
-- You have a basic understanding of the [Laravel framework](https://laravel.com/docs)
+- You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
 ##### Languages, frameworks, libraries and tools
 
