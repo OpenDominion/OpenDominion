@@ -15,6 +15,28 @@ OpenDominion is an online text-based strategy game based on [Dominion](http://do
 
 The goal of OpenDominion is to be an open source clone of Dominion, so that players can keep playing the game and developers can contribute and collaborate to develop and improve the game.
 
+## Progress
+
+Stuff that is implemented:
+
+- Exploration
+- Construction (not all buildings are functional yet)
+- Basic realm page
+
+Stuff that need implementing (in rough order of priority):
+
+- Destroy buildings
+- Rezone land
+- National bank
+- Military training + set draft rate
+- Release troops
+- Invasion
+- Espionage
+- Magic
+- Castle improvements
+- Other pages (messages, council, op center, government, diplomacy, rankings, town crier)
+- Tech
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
