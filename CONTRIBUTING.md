@@ -195,6 +195,7 @@ The rest should be pretty self-explanatory, assuming you're at least somewhat co
 - This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.4/container). There's a circular dependency issue between calculator classes, which is circumvented with the `DependencyInitializableInterface` interface.
 - Also see `AppServiceProvider.php` for this.
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
+- The `GameTickCommand` command is executed every hour at xx:00 from the console kernel.
 
 ### How to run OpenDominion
 
