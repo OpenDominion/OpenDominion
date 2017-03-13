@@ -17,7 +17,7 @@
                         <div class="form-group">
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
-                                <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+                                <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ old('email') }}">
                             </div>
                         </div>
 
