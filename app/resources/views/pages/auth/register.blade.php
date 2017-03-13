@@ -17,7 +17,7 @@
                         <div class="form-group">
                             <label for="display_name" class="col-sm-3 control-label">Display Name</label>
                             <div class="col-sm-9">
-                                <input type="text" name="display_name" id="display_name" class="form-control" placeholder="Display Name">
+                                <input type="text" name="display_name" id="display_name" class="form-control" placeholder="Display Name" value="{{ old('display_name') }}">
                             </div>
                         </div>
 
@@ -25,7 +25,7 @@
                         <div class="form-group">
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
-                                <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+                                <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ old('email') }}">
                             </div>
                         </div>
 
