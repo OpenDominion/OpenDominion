@@ -13,9 +13,11 @@
 
 OpenDominion is an online text-based fantasy war game based on [Dominion](http://dominion.lykanthropos.com/www.kamikazegames.com/dominion/index.htm), a defunct online text-based strategy game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](http://dominion.lykanthropos.com/www.kamikazegames.com/dominion/GameOver.htm).
 
-*"You have reached the online game Dominion. What is Dominion? It's a TOTALLY FREE online fantasy war game. You take control of a plot of land in a realm consisting of a group of other players. With your dominion and allied players, you combat the forces of good or evil using military, magic, or espionage. The goal? To finish at the top of the heap. To make your dominion and your realm the most powerful in the land, and to crush your enemies."* <sup>[\[1\]](#notes-1)</sup>
-
 OpenDominion is a free and open source clone of Dominion and is written in PHP on the [Laravel 5.4](https://laravel.com/) framework.
+
+Original intro text:
+
+> You have reached the online game Dominion. What is Dominion? It's a TOTALLY FREE online fantasy war game. You take control of a plot of land in a realm consisting of a group of other players. With your dominion and allied players, you combat the forces of good or evil using military, magic, or espionage. The goal? To finish at the top of the heap. To make your dominion and your realm the most powerful in the land, and to crush your enemies. <sup>[\[1\]](#notes-1)</sup>
 
 ## Progress
 
