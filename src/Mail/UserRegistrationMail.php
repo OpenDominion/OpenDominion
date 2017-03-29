@@ -13,7 +13,7 @@ class UserRegistrationMail extends Mailable
     use Queueable, SerializesModels;
 
     /** @var User */
-    protected $user;
+    public $user;
 
     /**
      * Create a new message instance.
@@ -32,8 +32,6 @@ class UserRegistrationMail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.auth.registration', [
-            'activation_code' => $this->user->activation_code,
-        ]);
+        return $this->markdown('emails.auth.registration');
     }
 }
