@@ -3,19 +3,7 @@
 use Illuminate\Routing\Router;
 
 /** @var Router $router */
-$router->get('/', ['as' => 'home', function () {
-    if (Auth::check()) {
-        $dominionSelectorService = app()->make(\OpenDominion\Services\DominionSelectorService::class);
-
-        if ($dominionSelectorService->hasUserSelectedDominion()) {
-            return redirect()->route('dominion.status');
-        }
-
-        return redirect()->route('dashboard');
-    }
-
-    return view('pages.home');
-}]);
+$router->get('/', ['as' => 'home', 'uses' => 'HomeController@getIndex']);
 
 // Authentication
 
