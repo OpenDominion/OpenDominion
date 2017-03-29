@@ -3,7 +3,7 @@ const {mix} = require('laravel-mix');
 mix.setPublicPath('public');
 
 
-const vendorFiles = {
+const vendorDirs = {
 
     // AdminLTE
     'node_modules/admin-lte/dist': 'public/assets/vendor/admin-lte',
@@ -20,8 +20,8 @@ const vendorFiles = {
 
 };
 
-for (let file in vendorFiles) {
-    mix.copy(file, vendorFiles[file], false);
+for (let dir in vendorDirs) {
+    mix.copyDirectory(dir, vendorDirs[dir]);
 }
 
 // mix.copy('app/resources/assets/images', 'public/assets/app/images', false);
