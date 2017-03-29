@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" href="{{ asset('assets/vendor/admin-lte/css/skins/skin-blue.min.css') }}">
 
-<link rel="stylesheet" href="{{ asset('assets/app/css/app.css') }}">
+<link rel="stylesheet" href="{{ mix('assets/app/css/app.css') }}">
 
 {{-- Page specific styles --}}
 @stack('page-styles')
