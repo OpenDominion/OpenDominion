@@ -5,8 +5,6 @@
 
 <script type="text/javascript" src="{{ mix('assets/app/js/app.js') }}"></script>
 
-{{-- todo: app.js --}}
-
 {{-- Page specific scripts --}}
 @stack('page-scripts')
 
