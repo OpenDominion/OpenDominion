@@ -22,12 +22,6 @@
     "symfony/css-selector": "3.1.*",
     "symfony/dom-crawler": "3.1.*"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/WaveHack/laravel-analytics"
-    }
-  ],
   "autoload": {
     "classmap": [
       "app/database"
