@@ -14,7 +14,7 @@ class ProductionCalculator extends AbstractDominionCalculator
      */
     public function initDependencies()
     {
-        $this->populationCalculator = app()->make(PopulationCalculator::class);
+        $this->populationCalculator = resolve(PopulationCalculator::class);
     }
 
     /**

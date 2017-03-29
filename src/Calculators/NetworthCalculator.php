@@ -22,8 +22,8 @@ class NetworthCalculator implements DependencyInitializableInterface
      */
     public function initDependencies()
     {
-        $this->buildingCalculator = app()->make(BuildingCalculator::class);
-        $this->landCalculator = app()->make(LandCalculator::class);
+        $this->buildingCalculator = resolve(BuildingCalculator::class);
+        $this->landCalculator = resolve(LandCalculator::class);
     }
 
     /**

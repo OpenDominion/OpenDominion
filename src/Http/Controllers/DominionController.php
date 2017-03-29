@@ -27,7 +27,7 @@ class DominionController extends AbstractController
 {
     public function postSelect(Dominion $dominion)
     {
-        $dominionSelectorService = app()->make(DominionSelectorService::class);
+        $dominionSelectorService = resolve(DominionSelectorService::class);
 
         try {
             $dominionSelectorService->selectUserDominion($dominion);
@@ -37,7 +37,7 @@ class DominionController extends AbstractController
         }
 
         // todo: fire laravel event
-        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService = resolve(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'select'
@@ -50,8 +50,8 @@ class DominionController extends AbstractController
 
     public function getStatus()
     {
-        $landCalculator = app()->make(LandCalculator::class);
-        $populationCalculator = app()->make(PopulationCalculator::class);
+        $landCalculator = resolve(LandCalculator::class);
+        $populationCalculator = resolve(PopulationCalculator::class);
 
         // todo: make status view a partial for here + other dominion status and include stuff like OOP here
 
@@ -68,8 +68,8 @@ class DominionController extends AbstractController
 
     public function getAdvisorsProduction()
     {
-        $populationCalculator = app()->make(PopulationCalculator::class);
-        $productionCalculator = app()->make(ProductionCalculator::class);
+        $populationCalculator = resolve(PopulationCalculator::class);
+        $productionCalculator = resolve(ProductionCalculator::class);
 
         return view('pages.dominion.advisors.production', compact(
             'populationCalculator',
@@ -84,9 +84,9 @@ class DominionController extends AbstractController
 
     public function getAdvisorsLand()
     {
-        $landHelper = app()->make(LandHelper::class);
-        $landCalculator = app()->make(LandCalculator::class);
-        $dominionQueueService = app()->make(DominionQueueService::class);
+        $landHelper = resolve(LandHelper::class);
+        $landCalculator = resolve(LandCalculator::class);
+        $dominionQueueService = resolve(DominionQueueService::class);
 
         return view('pages.dominion.advisors.land', compact(
             'landHelper',
@@ -97,10 +97,10 @@ class DominionController extends AbstractController
 
     public function getAdvisorsConstruction()
     {
-        $buildingHelper = app()->make(BuildingHelper::class);
-        $buildingCalculator = app()->make(BuildingCalculator::class);
-        $landCalculator = app()->make(LandCalculator::class);
-        $dominionQueueService = app()->make(DominionQueueService::class);
+        $buildingHelper = resolve(BuildingHelper::class);
+        $buildingCalculator = resolve(BuildingCalculator::class);
+        $landCalculator = resolve(LandCalculator::class);
+        $dominionQueueService = resolve(DominionQueueService::class);
 
         return view('pages.dominion.advisors.construction', compact(
             'buildingHelper',
@@ -114,9 +114,9 @@ class DominionController extends AbstractController
 
     public function getExplore()
     {
-        $landHelper = app()->make(LandHelper::class);
-        $landCalculator = app()->make(LandCalculator::class);
-        $dominionQueueService = app()->make(DominionQueueService::class);
+        $landHelper = resolve(LandHelper::class);
+        $landCalculator = resolve(LandCalculator::class);
+        $dominionQueueService = resolve(DominionQueueService::class);
         $dominionQueueService->setDominion($this->getSelectedDominion());
 
         return view('pages.dominion.explore', compact(
@@ -129,7 +129,7 @@ class DominionController extends AbstractController
     public function postExplore(ExploreActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
-        $explorationActionService = app()->make(ExplorationActionService::class);
+        $explorationActionService = resolve(ExplorationActionService::class);
 
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
@@ -162,7 +162,7 @@ class DominionController extends AbstractController
         );
 
         // todo: fire laravel event
-        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService = resolve(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'explore',
@@ -176,10 +176,10 @@ class DominionController extends AbstractController
 
     public function getConstruction()
     {
-        $buildingHelper = app()->make(BuildingHelper::class);
-        $buildingCalculator = app()->make(BuildingCalculator::class);
-        $landCalculator = app()->make(LandCalculator::class);
-        $dominionQueueService = app()->make(DominionQueueService::class);
+        $buildingHelper = resolve(BuildingHelper::class);
+        $buildingCalculator = resolve(BuildingCalculator::class);
+        $landCalculator = resolve(LandCalculator::class);
+        $dominionQueueService = resolve(DominionQueueService::class);
         $dominionQueueService->setDominion($this->getSelectedDominion());
 
         return view('pages.dominion.construction', compact(
@@ -193,7 +193,7 @@ class DominionController extends AbstractController
     public function postConstruction(/*ConstructionActionRequest*/ Request $request)
     {
         $dominion = $this->getSelectedDominion();
-        $constructionActionService = app()->make(ConstructionActionService::class);
+        $constructionActionService = resolve(ConstructionActionService::class);
 
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
@@ -225,7 +225,7 @@ class DominionController extends AbstractController
         );
 
         // todo: fire laravel event
-        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService = resolve(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'construct',
@@ -245,8 +245,8 @@ class DominionController extends AbstractController
 
     public function getRealm(Realm $realm = null)
     {
-        $landCalculator = app()->make(LandCalculator::class);
-        $networthCalculator = app()->make(NetworthCalculator::class);
+        $landCalculator = resolve(LandCalculator::class);
+        $networthCalculator = resolve(NetworthCalculator::class);
 
         if (!$realm->exists) {
             $realm = $this->getSelectedDominion()->realm;
@@ -283,8 +283,8 @@ class DominionController extends AbstractController
 
 //    public function getOtherStatus(Dominion $dominion)
 //    {
-//        $landCalculator = app()->make(LandCalculator::class);
-//        $populationCalculator = app()->make(PopulationCalculator::class);
+//        $landCalculator = resolve(LandCalculator::class);
+//        $populationCalculator = resolve(PopulationCalculator::class);
 //
 //        $landCalculator->setDominion($dominion);
 //        $populationCalculator->setDominion($dominion);
@@ -301,7 +301,7 @@ class DominionController extends AbstractController
      */
     protected function getSelectedDominion()
     {
-        $dominionSelectorService = app()->make(DominionSelectorService::class);
+        $dominionSelectorService = resolve(DominionSelectorService::class);
         return $dominionSelectorService->getUserSelectedDominion();
     }
 }

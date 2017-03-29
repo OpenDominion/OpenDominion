@@ -47,9 +47,9 @@ class GameTickCommand extends Command
         parent::__construct();
 
         $this->dominions = $dominions;
-        $this->populationCalculator = app()->make(PopulationCalculator::class);
-        $this->productionCalculator = app()->make(ProductionCalculator::class);
-        $this->networthCalculator = app()->make(NetworthCalculator::class);
+        $this->populationCalculator = resolve(PopulationCalculator::class);
+        $this->productionCalculator = resolve(ProductionCalculator::class);
+        $this->networthCalculator = resolve(NetworthCalculator::class);
     }
 
     /**

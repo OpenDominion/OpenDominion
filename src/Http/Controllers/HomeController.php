@@ -10,7 +10,7 @@ class HomeController extends AbstractController
     public function getIndex()
     {
         if (Auth::check()) {
-            $dominionSelectorService = app()->make(DominionSelectorService::class);
+            $dominionSelectorService = resolve(DominionSelectorService::class);
 
             if ($dominionSelectorService->hasUserSelectedDominion()) {
                 return redirect()->route('dominion.status');

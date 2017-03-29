@@ -28,8 +28,8 @@ class DominionQueueService
      */
     public function __construct()
     {
-        $this->buildingHelper = app()->make(BuildingHelper::class);
-        $this->landHelper = app()->make(LandHelper::class);
+        $this->buildingHelper = resolve(BuildingHelper::class);
+        $this->landHelper = resolve(LandHelper::class);
     }
 
     // Exploration

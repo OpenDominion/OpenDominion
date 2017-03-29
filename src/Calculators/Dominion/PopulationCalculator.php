@@ -18,8 +18,8 @@ class PopulationCalculator extends AbstractDominionCalculator
      */
     public function initDependencies()
     {
-        $this->buildingHelper = app()->make(BuildingHelper::class);
-        $this->landCalculator = app()->make(LandCalculator::class);
+        $this->buildingHelper = resolve(BuildingHelper::class);
+        $this->landCalculator = resolve(LandCalculator::class);
     }
 
     /**

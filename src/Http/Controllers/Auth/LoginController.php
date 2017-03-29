@@ -28,12 +28,12 @@ class LoginController extends AbstractController
     protected function authenticated(Request $request, User $user)
     {
         if ($user->dominions->count() === 1) {
-            $dominionSelectorService = app()->make(DominionSelectorService::class);
+            $dominionSelectorService = resolve(DominionSelectorService::class);
             $dominionSelectorService->selectUserDominion($user->dominions->first());
         }
 
         // todo: fire laravel event
-        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService = resolve(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'user',
             'login'
@@ -45,7 +45,7 @@ class LoginController extends AbstractController
         $response = $this->logout($request);
 
         // todo: fire laravel event
-        $analyticsService = app()->make(AnalyticsService::class);
+        $analyticsService = resolve(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'user',
             'logout'

@@ -14,7 +14,7 @@ class MilitaryCalculator extends AbstractDominionCalculator
      */
     public function initDependencies()
     {
-        $this->landCalculator = app()->make(LandCalculator::class);
+        $this->landCalculator = resolve(LandCalculator::class);
     }
 
     /**

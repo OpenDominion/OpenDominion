@@ -27,7 +27,7 @@ class ExplorationActionService
         $data = array_map('intval', $data);
 
         /** @var LandCalculator $landCalculator */
-        $landCalculator = app()->make(LandCalculator::class);
+        $landCalculator = resolve(LandCalculator::class);
         $landCalculator->init($dominion);
 
         $totalLandToExplore = array_sum($data);
