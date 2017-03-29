@@ -1,13 +1,9 @@
-var elixir = require('laravel-elixir'),
-    config = elixir.config;
+const {mix} = require('laravel-mix');
 
-config.appPath = 'src';
-config.assetsPath = 'app/resources/assets';
-config.viewPath = 'app/resources/views';
-config.css.outputFolder = 'assets/app/css';
-config.js.outputFolder = 'assets/app/js';
+mix.setPublicPath('public');
 
-var vendorFiles = {
+
+const vendorFiles = {
 
     // AdminLTE
     'node_modules/admin-lte/dist': 'public/assets/vendor/admin-lte',
@@ -24,14 +20,12 @@ var vendorFiles = {
 
 };
 
-elixir(function (mix) {
+for (let file in vendorFiles) {
+    mix.copy(file, vendorFiles[file], false);
+}
 
-    // Copy vendor assets
-    for (var file in vendorFiles) {
-        mix.copy(file, vendorFiles[file]);
-    }
+// mix.copy('app/resources/assets/images', 'public/assets/app/images', false);
 
-    // Compile app assets
-    mix.sass('app.scss');
-
-});
+mix.js('app/resources/assets/js/app.js', 'public/assets/app/js')
+    .sass('app/resources/assets/sass/app.scss', 'public/assets/app/css')
+    .version();
