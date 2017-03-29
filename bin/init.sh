@@ -57,11 +57,11 @@ if [[ ! ${env} == testing ]]; then
     # Bower
     [[ -f bower.json && ! -d bower_components ]] && bower install
 
-    # Gulp
+    # Laravel Elixir
     if [[ ${env} == production ]]; then
-        gulp --production
+        npm run production
     else
-        gulp
+        npm run dev
     fi
 
 fi
