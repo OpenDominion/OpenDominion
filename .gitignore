@@ -4,7 +4,7 @@
 /.idea/vcs.xml
 /.idea/workspace.xml
 /app/storage/*.key
-/bower_components/
+/app/storage/local.sqlite
 /node_modules/
 /public/assets/
 /public/hot/
