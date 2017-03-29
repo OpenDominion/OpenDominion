@@ -12,7 +12,7 @@
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! printMethodValues($buildingCalculator, [
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($buildingCalculator, [
                             'getTotalBuildings',
                             'getConstructionPlatinumCost',
                             'getConstructionLumberCost',
@@ -28,7 +28,7 @@
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! printMethodValues($landCalculator, [
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($landCalculator, [
                             'getTotalLand',
                             'getTotalBarrenLand',
                             'getBarrenLandByLandType',
@@ -48,7 +48,7 @@
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! printMethodValues($populationCalculator, [
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($populationCalculator, [
                             'getPopulation',
                             'getPopulationMilitary',
                             'getMaxPopulation',
@@ -79,7 +79,7 @@
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! printMethodValues($productionCalculator, [
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($productionCalculator, [
                             'getPlatinumProduction',
                             'getPlatinumProductionRaw',
                             'getPlatinumProductionMultiplier',
@@ -119,7 +119,7 @@
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! printMethodValues($militaryCalculator, [
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($militaryCalculator, [
                             'getOffensivePower',
                             'getOffensivePowerRaw',
                             'getOffensivePowerMultiplier',

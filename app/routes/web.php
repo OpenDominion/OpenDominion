@@ -84,68 +84,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             // Debug
 
-            $router->get('debug', function () {
-                if (app()->environment() === 'production') {
-                    return redirect()->route('dominion.status');
-                }
-
-                $buildingCalculator = app()->make(\OpenDominion\Calculators\Dominion\BuildingCalculator::class);
-                $landCalculator = app()->make(\OpenDominion\Calculators\Dominion\LandCalculator::class);
-                $militaryCalculator = app()->make(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
-                $populationCalculator = app()->make(\OpenDominion\Calculators\Dominion\PopulationCalculator::class);
-                $productionCalculator = app()->make(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
-                $networthCalculator = app()->make(\OpenDominion\Calculators\NetworthCalculator::class);
-
-                $networthCalculator->initDependencies();
-
-                function printMethodValues($class, array $methods) {
-                    $return = '';
-
-                    foreach ($methods as $method) {
-                        $label = implode(' ', preg_split('/(?=[A-Z])/', ltrim($method, 'get')));
-                        $value = $class->$method();
-                        $type = gettype($value);
-
-                        $return .= ($label . ' :');
-
-                        if (is_scalar($value)) {
-                            if (is_int($value)) {
-                                $value = number_format($value);
-                            } elseif (is_float($value) || is_double($value)) {
-
-                                if (substr($label, -10) === 'Multiplier') {
-                                    $value = number_format($value * 100 - 100, 2);
-                                    $value = ((($value < 0) ? '-' : '+') . $value . '%');
-                                } else {
-                                    $value = number_format($value, 2);
-                                }
-
-                                if (substr($label, -10) === 'Percentage') {
-                                    $value .= '%';
-                                }
-                            }
-
-                            $return .= (' <b>' . $value . '</b> (' . $type . ')');
-
-                        } elseif (is_array($value)) {
-                            $return .= ('<pre>' . print_r($value, true) . '</pre>');
-                        }
-
-                        $return .= '<br>';
-                    }
-
-                    return $return;
-                }
-
-                return view('pages.dominion.debug', compact(
-                    'buildingCalculator',
-                    'landCalculator',
-                    'militaryCalculator',
-                    'populationCalculator',
-                    'productionCalculator',
-                    'networthCalculator'
-                ));
-            });
+            $router->get('debug')->uses('DebugController@getIndex');
 
         });
 
