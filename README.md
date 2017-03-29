@@ -19,26 +19,24 @@ OpenDominion aims to be a free and open source clone of Dominion and is written 
 
 ## Progress
 
-Stuff that is implemented:
+- [ ] Castle improvements
+- [x] Construction (not all buildings are functional yet)
+- [ ] Destroy buildings
+- [ ] Espionage system
+- [x] Exploration
+- [ ] Invasion / combat system
+- [ ] Magic system
+- [ ] Military training
+- [ ] National bank
+- [ ] Release troops
+- [ ] Rezone land
+- [ ] Tech system
+- [x] The Realm
+- [ ] Implement remaining buildings
+- [ ] Implement other races
+- [ ] Implement other pages (messages, council, op center, government, diplomacy, rankings, town crier)
 
-- Exploration
-- Construction (not all buildings are functional yet)
-- Basic realm page
-
-Stuff that need implementing (in rough order of priority):
-
-- Destroy buildings
-- Rezone land
-- National bank
-- Military training + set draft rate
-- Release troops
-- Invasion
-- Espionage
-- Magic
-- Castle improvements
-- Other pages (messages, council, op center, government, diplomacy, rankings, town crier)
-- Other races
-- Tech
+See the [issue list](https://github.com/WaveHack/OpenDominion/issues) for more details.
 
 ## Contributing
 
