@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Auth;
 
+use Exception;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Mail;
@@ -42,7 +43,7 @@ class RegisterController extends AbstractController
             // todo: move to job
             Mail::to($user->email)->send(new UserRegistrationMail($user));
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (app()->environment() === 'local') {
                 throw $e;
             }
