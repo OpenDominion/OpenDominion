@@ -44,10 +44,6 @@ class RegisterController extends AbstractController
             Mail::to($user->email)->send(new UserRegistrationMail($user));
 
         } catch (Exception $e) {
-            if (app()->environment() === 'local') {
-                throw $e;
-            }
-
             $request->session()->flash('alert-danger', 'Something went wrong with sending the registration mail. Your account was not created.');
 
             return redirect()->route('auth.register')
