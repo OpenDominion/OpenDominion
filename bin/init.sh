@@ -68,13 +68,8 @@ fi
 
 # Fix for Travis
 if [[ ${env} == testing ]]; then
-
     touch public/assets/dummy
-    echo '{ \
-        "/assets/app/css/app.css": "/dummy", \
-        "/assets/app/js/app.js": "/dummy" \
-        }' > public/mix-manifest.json
-
+    echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
 fi
 
 # Show message on production
