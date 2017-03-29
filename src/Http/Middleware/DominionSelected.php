@@ -18,7 +18,7 @@ class DominionSelected
     public function handle($request, Closure $next)
     {
         if (!$this->dominionSelectorService->hasUserSelectedDominion()) {
-            return redirect(route('dashboard'));
+            return redirect()->route('dashboard');
         }
 
         return $next($request);

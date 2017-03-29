@@ -8,10 +8,10 @@ $router->get('/', ['as' => 'home', function () {
         $dominionSelectorService = app()->make(\OpenDominion\Services\DominionSelectorService::class);
 
         if ($dominionSelectorService->hasUserSelectedDominion()) {
-            return redirect(route('dominion.status'));
+            return redirect()->route('dominion.status');
         }
 
-        return redirect(route('dashboard'));
+        return redirect()->route('dashboard');
     }
 
     return view('pages.home');
@@ -52,7 +52,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
     $router->group(['prefix' => 'dominion'], function (Router $router) {
 
-        $router->get('{dominion}/select', function () { return redirect(route('dashboard')); });
+        $router->get('{dominion}/select', function () { return redirect()->route('dashboard'); });
         $router->post('{dominion}/select', ['as' => 'dominion.select', 'uses' => 'DominionController@postSelect']);
 
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
@@ -98,7 +98,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             $router->get('debug', function () {
                 if (app()->environment() === 'production') {
-                    return redirect(route('dominion.status'));
+                    return redirect()->route('dominion.status');
                 }
 
                 $buildingCalculator = app()->make(\OpenDominion\Calculators\Dominion\BuildingCalculator::class);

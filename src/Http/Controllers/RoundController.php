@@ -72,7 +72,7 @@ class RoundController extends AbstractController
         $request->session()->flash('alert-success',
             "You have successfully registered to round {$round->number} ({$round->league->description}).");
 
-        return redirect(route('dominion.status'));
+        return redirect()->route('dominion.status');
     }
 
     protected function checkIfUserAlreadyHasDominionInThisRound(Round $round)

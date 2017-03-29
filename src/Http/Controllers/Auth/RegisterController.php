@@ -79,7 +79,7 @@ class RegisterController extends AbstractController
 
         Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
 
-        return redirect(route('dashboard'));
+        return redirect()->route('dashboard');
     }
 
     protected function validator(array $data)

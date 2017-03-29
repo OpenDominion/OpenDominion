@@ -43,7 +43,7 @@ class DominionController extends AbstractController
             'select'
         ));
 
-        return redirect(route('dominion.status'));
+        return redirect()->route('dominion.status');
     }
 
     // Dominion
@@ -63,7 +63,7 @@ class DominionController extends AbstractController
 
     public function getAdvisors()
     {
-        return redirect(route('dominion.advisors.production'));
+        return redirect()->route('dominion.advisors.production');
     }
 
     public function getAdvisorsProduction()
@@ -137,20 +137,20 @@ class DominionController extends AbstractController
         } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'Exploration was not begun due to bad input.');
 
-            return redirect(route('dominion.explore'))
+            return redirect()->route('dominion.explore')
                 ->withInput($request->all());
 
         } catch (NotEnoughResourcesException $e) {
             $totalLandToExplore = array_sum($request->get('explore'));
             $request->session()->flash('alert-danger', "You do not have enough platinum/draftees to explore for {$totalLandToExplore} acres.");
 
-            return redirect(route('dominion.explore'))
+            return redirect()->route('dominion.explore')
                 ->withInput($request->all());
 
         } catch (Exception $e) {
             $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
 
-            return redirect(route('dominion.explore'))
+            return redirect()->route('dominion.explore')
                 ->withInput($request->all());
         }
 
@@ -171,7 +171,7 @@ class DominionController extends AbstractController
         ));
 
         $request->session()->flash('alert-success', $message);
-        return redirect(route('dominion.explore'));
+        return redirect()->route('dominion.explore');
     }
 
     public function getConstruction()
@@ -201,20 +201,20 @@ class DominionController extends AbstractController
         } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'Construction was not started due to bad input.');
 
-            return redirect(route('dominion.construction'))
+            return redirect()->route('dominion.construction')
                 ->withInput($request->all());
 
         } catch (NotEnoughResourcesException $e) {
             $totalBuildingsToConstruct = array_sum($request->get('construct'));
             $request->session()->flash('alert-danger', "You do not have enough platinum/lumber/barren land to construct {$totalBuildingsToConstruct} buildings.");
 
-            return redirect(route('dominion.construction'))
+            return redirect()->route('dominion.construction')
                 ->withInput($request->all());
 
         } catch (Exception $e) {
             $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
 
-            return redirect(route('dominion.construction'))
+            return redirect()->route('dominion.construction')
                 ->withInput($request->all());
         }
 
@@ -234,7 +234,7 @@ class DominionController extends AbstractController
         ));
 
         $request->session()->flash('alert-success', $message);
-        return redirect(route('dominion.construction'));
+        return redirect()->route('dominion.construction');
     }
 
     // Black Ops
