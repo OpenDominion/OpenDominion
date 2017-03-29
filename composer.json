@@ -4,7 +4,7 @@
     "php": ">=5.6.4",
     "atrox/haikunator": "^1.2",
     "guzzlehttp/guzzle": "^6.2",
-    "ipunkt/laravel-analytics": "dev-master",
+    "ipunkt/laravel-analytics": "^1.3.4",
     "laravel/framework": "5.4.*",
     "prettus/l5-repository": "^2.6",
     "roave/security-advisories": "dev-master",
@@ -18,7 +18,7 @@
     "laravel/browser-kit-testing": "^1.0",
     "mockery/mockery": "0.9.*",
     "phpunit/phpunit": "~5.0",
-    "satooshi/php-coveralls": "dev-master",
+    "satooshi/php-coveralls": "^1.0.1",
     "symfony/css-selector": "3.1.*",
     "symfony/dom-crawler": "3.1.*"
   },
