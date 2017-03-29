@@ -38,7 +38,21 @@ class RegisterController extends AbstractController
 
         $user = $this->create($request->all());
 
-        Mail::to($user->email)->send(new UserRegistrationMail($user));
+        try {
+            // todo: move to job
+            Mail::to($user->email)->send(new UserRegistrationMail($user));
+
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-danger', 'Something went wrong with sending the registration mail. Your account was not created.');
+
+            return redirect()->route('auth.register')
+                ->withInput()
+                ->withErrors([
+                    $e->getMessage(),
+                ]);
+        }
+
+        $user->save();
 
         // todo: fire laravel event
         $analyticsService = resolve(AnalyticsService::class);
@@ -93,7 +107,7 @@ class RegisterController extends AbstractController
 
     protected function create(array $data)
     {
-        return User::create([
+        return new User([
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'display_name' => $data['display_name'],
