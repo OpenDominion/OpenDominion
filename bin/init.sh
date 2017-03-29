@@ -66,6 +66,11 @@ if [[ ! ${env} == testing ]]; then
 
 fi
 
+# Fix for testing
+if [[ ${env} == testing ]]; then
+    echo '{}' > public/mix-manifest.json
+fi
+
 # Show message on production
 if [[ ${env} == production ]]; then
     echo "Don't forget to setup your .env file and run 'php bin/artisan migrate --seed'"
