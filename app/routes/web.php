@@ -54,10 +54,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             $router->get('status')->uses('DominionController@getStatus')->name('status');
             $router->get('advisors')->uses('DominionController@getAdvisors')->name('advisors');
-            $router->get('advisors/production')->uses('DominionController@getAdvisorsProduction')->name('production');
-            $router->get('advisors/military')->uses('DominionController@getAdvisorsMilitary')->name('military');
-            $router->get('advisors/land')->uses('DominionController@getAdvisorsLand')->name('land');
-            $router->get('advisors/construction')->uses('DominionController@getAdvisorsConstruction')->name('construction');
+            $router->get('advisors/production')->uses('DominionController@getAdvisorsProduction')->name('advisors.production');
+            $router->get('advisors/military')->uses('DominionController@getAdvisorsMilitary')->name('advisors.military');
+            $router->get('advisors/land')->uses('DominionController@getAdvisorsLand')->name('advisors.land');
+            $router->get('advisors/construction')->uses('DominionController@getAdvisorsConstruction')->name('advisors.construction');
 
             // Actions
 
