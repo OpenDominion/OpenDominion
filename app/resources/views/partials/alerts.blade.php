@@ -1,7 +1,5 @@
 @if (App::environment() !== 'production')
-    <div class="alert alert-warning alert-dismissible">
-        <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <h4><i class="icon fa fa-warning"></i> Heads up!</h4>
+    <div class="alert alert-warning">
         <p>This installation of OpenDominion is running on <b>{{ App::environment() }}</b> environment and is not meant for production purposes. Any data you register and actions you take on this instance might be wiped without notice.</p>
     </div>
 @endif
