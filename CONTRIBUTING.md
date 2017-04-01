@@ -61,6 +61,8 @@ You can report bugs to the [issue tracker](https://github.com/WaveHack/OpenDomin
 
 Please search the issue tracker first if the particular bug already has an open issue. If it does, add your message to the existing issue instead of opening a new issue.
 
+If a closed or resolved issue exists for your particular bug, reopen it. If in doubt, just open a new issue.
+
 ### Making changes
 
 First, make sure the changes you're going to do adhere to the [vision of OpenDominion](#vision).
