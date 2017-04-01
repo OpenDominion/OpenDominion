@@ -82,7 +82,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 - You have PHP 5.6 (or greater) installed and in your path
 - Your PHP has the extensions: curl, mbstring, openssl, pdo_sqlite and optionally xdebug
 - You have composer installed and in your path
-- You have npm, yarn and gulp installed and in your path
+- You have npm and yarn installed and in your path
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
 ##### Languages, frameworks, libraries and tools
@@ -91,7 +91,7 @@ OpenDominion is built on the Laravel 5.4 PHP framework, using PHP 5.6 as languag
 
 Composer production packages include L5-Repository (for model repositories), Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
 
-Node packages include Gulp and Laravel Elixir, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
+Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
 
 I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a `.idea` directory for you if you do use PhpStorm.
 
@@ -134,7 +134,7 @@ $ php bin/artisan optimize
 
 # Frontend stuff
 $ yarn install
-$ gulp
+$ npm run dev
 ```
 
 Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own SMTP server (or just set it to `log`). 
@@ -162,7 +162,7 @@ Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own
 |   +-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
 +-- bin # Artisan, init.sh and deploy.sh scripts
 +-- public # Web root
-|   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update the gulpfile to copy them
+|   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update webpack.mix.js to copy them
 |       +-- app # Application assets, compiled and/or copied from app/resources/
 |       +-- vendor # Vendor assets, usually copied from node_modules/$library/dist
 +-- src # Source files. These are pretty Laravel generic, with the addition of:
@@ -230,7 +230,7 @@ Consult PHPUnit's manual for running specific tests or test files.
 
 ### How to update
 
-For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `yarn install` and/or `gulp`, depending on which files have changed.
+For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `yarn install` and/or `npm run dev`, depending on which files have changed.
 
 
 ### How to reset
