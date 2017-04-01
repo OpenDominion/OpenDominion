@@ -1,0 +1,198 @@
+/*   File name:  game  Author:     Ulf Frisk    Description: The stylesheet for Legends*/
+/* css for index.html file below */
+
+
+/* This is the outline round the main forum tables */
+table.menutable	{ 
+    background-color: #000000; 
+    border: 2px #212121 solid; 
+    font-family: verdana;
+    font-size: 10pt;
+    font-weight: normal;
+    color: #FFFFFF;
+}
+
+td.title {
+    text-align: center;
+    color: #FFFFCC; 
+    font-size: 12px;
+    background-color: #000000;
+    background-repeat: repeat-x;
+}
+
+.smallannounce {
+    font-family: verdana;
+    font-size: 8pt;
+    font-weight: normal;
+    color: #FFFF00;
+}
+
+/* new game css stuff */
+
+td.level1 {
+    font-size: 15px;
+    font-family: verdana;
+    font-weight: bold;
+    color: #FFFFCC;
+    text-align: center;
+    background-color: #008800;
+}
+
+td.level2 {
+    font-size: 13px;
+    font-family: verdana;    
+    color: #FFFFCC;
+    text-align: center;
+    background-color: #006600;
+}
+td.level3 {   
+    color: #FFFFCC;
+    text-align: left;
+	font-weight: bold;
+}
+td.level3b {   
+    color: #FFFFCC;
+    text-align: left;
+	font-weight: bold;
+}
+
+/* game css stuff */
+body {
+    color: #FFFFFF;
+    background-color: #222222;
+    font-family: verdana;
+    font-size: 10pt;
+}
+
+input {
+    font-family: verdana;
+    font-size: 10pt;
+    font-weight: normal;
+    background-color: #FFFFFF;
+    border: 1px solid #008800;
+}
+
+input.checkbox {
+    background-color: transparent;
+    border: 0px;
+}
+
+input.button {
+    background-color: #AAAAAA;
+}
+
+.std {
+    font-family: verdana;
+    font-size: 10pt;
+    font-weight: normal;
+    color: #FFFFFF;
+}
+
+.ccol {
+    background-color: #222222;
+}
+
+.small {
+    font-family: verdana;
+    font-size: 8pt;
+    font-weight: normal;
+    color: #FFFFFF;
+}
+
+.action {
+    color: #FF0000;
+    font-weight: bold;
+    font-family: verdana;
+    font-size: 10pt;
+}
+
+font.greendesc {
+    color: #55FF55;
+}
+
+font.inactive {
+    font-family: verdana;
+    font-size: 10pt;
+    font-weight: normal;
+    color: #666666;
+}
+
+a:hover {
+}
+
+a {
+    font-weight: bold;
+    color: #CCCCCC;
+}
+
+a:hover.nounderline {
+    font-weight: bold;
+    color: #CCCCCC;
+    text-decoration: underline;
+}
+
+a.nounderline {
+    font-weight: bold;
+    color: #CCCCCC;
+    text-decoration: none;
+}
+
+a:visited.council {
+    color: #999999;
+}
+
+/*td.level1 {
+    font-size: 12pt;
+    font-family: verdana;
+    font-weight: bold;
+    background-color: #008800;
+    text-align: center;
+}*/
+
+td.obslevel1 {
+    font-size: 12pt;
+    font-family: verdana;
+    font-weight: bold;
+    background-color: #770000;
+    text-align: center;
+}
+
+/*td.level2 {
+    font-size: 11pt;
+    font-family: verdana;
+
+    background-color: #006600;
+    text-align: center;
+}*/
+
+table.topbar {
+    font-family: verdana;
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+td.topbar_name {
+    color: #FFFFFF;
+    background-color: #008800;
+}
+
+td.topbar_value {
+    color: #FFFFFF;
+    background-color: #004400;
+    text-align: right;
+}
+
+hr {
+    height: 0px;
+    border: solid #FFFFFF 0px;
+    border-top-width: 1px;
+}
+
+font.newspaper_ownrealm {    color: #CCFFCC;}
+font.newspaper_otherrealm {    color: #FFCCCC;}
+font.newspaper_negative {    font-weight: bold;    color: #FF3333;}
+font.newspaper_positive {    font-weight: bold;    color: #33FF33;}
+font.ownrealm {    color: #CCFFCC;}
+font.otherrealm {    color: #FFCCCC;}
+font.negative {    font-weight: bold;    color: #FF3333;}
+font.positive {    font-weight: bold;    color: #33FF33;}
