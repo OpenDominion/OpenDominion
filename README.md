@@ -38,7 +38,7 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 - [ ] Implement other races
 - [ ] Implement other pages (messages, council, op center, government, diplomacy, rankings, town crier)
 
-See the [issue list](https://github.com/WaveHack/OpenDominion/issues) for more details.
+See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and [issue tracker](https://github.com/WaveHack/OpenDominion/issues) for more details.
 
 ## Contributing
 
