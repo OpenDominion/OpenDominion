@@ -6,6 +6,10 @@ This branch serves to hold resources to help develop OpenDominion.
 
 A mirror of the original Dominion website I scaped off the web archive.
 
+## DomSim
+
+Screenshots and scraped html/css from the [RedFox Dominion Protection Simulator](https://dominion.lykanthropos.com/DomSim/) which miraculously started working again.
+
 ## Blackreign's OOP simulator
 
 This spreadsheet contains a load of macros and won't properly work on LibreOffice and possibly versions of Excel newer than 2003.
