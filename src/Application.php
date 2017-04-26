@@ -16,22 +16,22 @@ class Application extends LaravelApplication
         $this->bindPathsInContainer();
     }
 
-    public function path()
+    public function path($path = '')
     {
         return ($this->basePath . DIRECTORY_SEPARATOR . 'src');
     }
 
-    public function bootstrapPath()
+    public function bootstrapPath($path = '')
     {
         return ($this->appPath . DIRECTORY_SEPARATOR . 'bootstrap');
     }
 
-    public function configPath()
+    public function configPath($path = '')
     {
         return ($this->appPath . DIRECTORY_SEPARATOR . 'config');
     }
 
-    public function databasePath()
+    public function databasePath($path = '')
     {
         return ($this->appPath . DIRECTORY_SEPARATOR . 'database');
     }
