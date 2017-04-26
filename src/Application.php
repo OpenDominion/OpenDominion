@@ -15,7 +15,9 @@ class Application extends LaravelApplication
         $this->appPath = ($this->basePath() . DIRECTORY_SEPARATOR . 'app');
         $this->bindPathsInContainer();
 
-        define('ARTISAN_BINARY', 'bin/artisan');
+        if (!defined('ARTISAN_BINARY')) {
+            define('ARTISAN_BINARY', 'bin/artisan');
+        }
     }
 
     public function path($path = '')
