@@ -16,10 +16,11 @@ class RegistrationTest extends AbstractBrowserKitTestCase
     {
         $this->visit('/auth/register')
             ->see('Register')
+            ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
-            ->type('John Doe', 'display_name')
+            ->check('terms')
             ->press('Register')
             ->seePageIs('/')
             ->see('You have been successfully registered. An activation email has been dispatched to your address.')
@@ -86,10 +87,11 @@ class RegistrationTest extends AbstractBrowserKitTestCase
 
         $this->visit('/auth/register')
             ->see('Register')
+            ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
-            ->type('John Doe', 'display_name')
+            ->check('terms')
             ->press('Register')
             ->seePageIs('/auth/register')
             ->see('The email has already been taken.');
@@ -101,10 +103,11 @@ class RegistrationTest extends AbstractBrowserKitTestCase
 
         $this->visit('/auth/register')
             ->see('Register')
+            ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
-            ->type('John Doe', 'display_name')
+            ->check('terms')
             ->press('Register')
             ->seePageIs('/auth/register')
             ->see('The display name has already been taken.');
@@ -114,12 +117,26 @@ class RegistrationTest extends AbstractBrowserKitTestCase
     {
         $this->visit('/auth/register')
             ->see('Register')
+            ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
             ->type('password1', 'password')
             ->type('password2', 'password_confirmation')
-            ->type('John Doe', 'display_name')
+            ->check('terms')
             ->press('Register')
             ->seePageIs('/auth/register')
             ->see('The password confirmation does not match.');
+    }
+
+    public function testUserCantRegisterWithoutAgreeingToTheTerms()
+    {
+        $this->visit('/auth/register')
+            ->see('Register')
+            ->type('John Doe', 'display_name')
+            ->type('johndoe@example.com', 'email')
+            ->type('password', 'password')
+            ->type('password', 'password_confirmation')
+            ->press('Register')
+            ->seePageIs('/auth/register')
+            ->see('The terms field is required.');
     }
 }
