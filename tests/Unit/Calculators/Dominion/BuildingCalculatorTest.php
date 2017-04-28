@@ -70,17 +70,25 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testGetConstructionPlatinumCost()
     {
-        // Starting values
-        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
-        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
+        $scenarios = [
+            [
+                'totalBuildings' => 90,
+                'totalLand' => 250,
+                'platinumCost' => 850,
+            ],
+            [
+                'totalBuildings' => 1250,
+                'totalLand' => 1250,
+                'platinumCost' => 2380,
+            ]
+        ];
 
-        $this->assertEquals(850, $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
+        foreach ($scenarios as $scenario) {
+            $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn($scenario['totalBuildings'])->byDefault();
+            $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn($scenario['totalLand'])->byDefault();
 
-        // Test with 1250 buildings, 1250 land
-        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(1250)->byDefault();
-        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(1250)->byDefault();
-
-        $this->assertEquals(2380, $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
+            $this->assertEquals($scenario['platinumCost'], $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
+        }
     }
 
     public function testGetConstructionLumberCost()
