@@ -11,9 +11,9 @@
 
 ## Introduction
 
-OpenDominion is an online text-based fantasy war game based on [Dominion](http://dominion.lykanthropos.com/www.kamikazegames.com/dominion/index.htm), a defunct online text-based strategy game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](http://dominion.lykanthropos.com/www.kamikazegames.com/dominion/GameOver.htm).
+OpenDominion is a free and open-source clone of Dominion, an online text-based and persistent browser-based (PBBG) fantasy war game. OpenDominion is written in PHP on the [Laravel 5.4](https://laravel.com) framework.
 
-OpenDominion is a free and open source clone of Dominion and is written in PHP on the [Laravel 5.4](https://laravel.com/) framework.
+The original Dominion, now defunct, was a game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](http://dominion.lykanthropos.com/www.kamikazegames.com/dominion/GameOver.htm).
 
 Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
