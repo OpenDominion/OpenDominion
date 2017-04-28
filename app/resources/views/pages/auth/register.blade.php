@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <!-- ToC -->
+                        <!-- Terms and Conditions -->
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
                                 <div class="checkbox">
