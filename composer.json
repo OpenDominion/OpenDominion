@@ -6,6 +6,7 @@
     "guzzlehttp/guzzle": "^6.2",
     "ipunkt/laravel-analytics": "^1.3.4",
     "laravel/framework": "5.4.16",
+    "laravel/tinker": "^1.0",
     "prettus/l5-repository": "^2.6",
     "roave/security-advisories": "dev-master",
     "thomaswelton/laravel-gravatar": "~1.0"

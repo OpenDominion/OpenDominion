@@ -167,6 +167,7 @@ return [
          * Package Service Providers...
          */
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
+        Laravel\Tinker\TinkerServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 
