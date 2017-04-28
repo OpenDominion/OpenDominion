@@ -86,17 +86,18 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testGetConstructionLumberCost()
     {
-        // Starting values
-        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(90)->byDefault();
-        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250)->byDefault();
+        $scenarios = [
+            ['totalBuildings' => 90, 'totalLand' => 250, 'expectedLumberCost' => 88],
+            ['totalBuildings' => 1250, 'totalLand' => 1250, 'expectedLumberCost' => 688],
+        ];
 
-        $this->assertEquals(88, $this->buildingCalculatorTestMock->getConstructionLumberCost());
+        foreach ($scenarios as $scenario) {
+            $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn($scenario['totalBuildings'])->byDefault();
+            $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn($scenario['totalLand'])->byDefault();
 
-        // Test with 1250 buildings, 1250 land
-        $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn(1250)->byDefault();
-        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(1250)->byDefault();
-
-        $this->assertEquals(688, $this->buildingCalculatorTestMock->getConstructionLumberCost());
+            $this->assertEquals($scenario['expectedLumberCost'],
+                $this->buildingCalculatorTestMock->getConstructionLumberCost());
+        }
     }
 
     public function testGetConstructionMaxAfford()
