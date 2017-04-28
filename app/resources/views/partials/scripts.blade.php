@@ -3,6 +3,7 @@
 <script type="text/javascript" src="{{ asset('assets/vendor/admin-lte/bootstrap/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/vendor/admin-lte/js/app.min.js') }}"></script>
 
+{{-- App scripts --}}
 <script type="text/javascript" src="{{ mix('assets/app/js/app.js') }}"></script>
 
 {{-- Page specific scripts --}}
