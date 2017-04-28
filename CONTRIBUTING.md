@@ -226,7 +226,13 @@ You can run tests with:
 $ vendor/bin/phpunit
 ```
 
+There are two test suites, named as follows:
+
+- Feature Tests
+- Unit Tests
+
 Consult PHPUnit's manual for running specific tests or test files.
+
 
 ### How to update
 
