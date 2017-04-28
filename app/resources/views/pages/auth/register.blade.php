@@ -50,7 +50,7 @@
                             <div class="col-sm-offset-3 col-sm-9">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="terms"> I agree to the <a href="#" style="text-decoration: line-through;">Terms and Conditions</a> (todo)
+                                        <input type="checkbox" name="terms" required> I agree to the <a href="#" style="text-decoration: line-through;">Terms and Conditions</a> (todo)
                                     </label>
                                 </div>
                                 <div class="help-block">

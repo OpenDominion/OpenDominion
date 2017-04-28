@@ -103,6 +103,7 @@ class RegisterController extends AbstractController
             'display_name' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
+            'terms' => 'required',
         ]);
     }
 
