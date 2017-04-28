@@ -13,7 +13,7 @@
 
                     <div class="box-body">
 
-                        <!-- Email -->
+                        {{-- Email --}}
                         <div class="form-group">
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
@@ -21,7 +21,7 @@
                             </div>
                         </div>
 
-                        <!-- Password -->
+                        {{-- Password --}}
                         <div class="form-group">
                             <label for="password" class="col-sm-3 control-label">Password</label>
                             <div class="col-sm-9">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
 
-                        <!-- Remember me -->
+                        {{-- Remember Me --}}
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
                                 <div class="checkbox">

@@ -13,7 +13,7 @@
 
                     <div class="box-body">
 
-                        <!-- Display Name -->
+                        {{-- Display Name --}}
                         <div class="form-group">
                             <label for="display_name" class="col-sm-3 control-label">Display Name</label>
                             <div class="col-sm-9">
@@ -21,7 +21,7 @@
                             </div>
                         </div>
 
-                        <!-- Email -->
+                        {{-- Email --}}
                         <div class="form-group">
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
 
-                        <!-- Password -->
+                        {{-- Password --}}
                         <div class="form-group">
                             <label for="password" class="col-sm-3 control-label">Password</label>
                             <div class="col-sm-9">
@@ -37,7 +37,7 @@
                             </div>
                         </div>
 
-                        <!-- Password Confirm -->
+                        {{-- Password (confirm) --}}
                         <div class="form-group">
                             <label for="password_confirmation" class="col-sm-3 control-label">Password (confirm)</label>
                             <div class="col-sm-9">
@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <!-- Terms and Conditions -->
+                        {{-- Terms and Conditions --}}
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
                                 <div class="checkbox">
