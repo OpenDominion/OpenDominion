@@ -10,7 +10,7 @@
   "dependencies": {
     "admin-lte": "^2.3.8",
     "font-awesome": "^4.7.0",
-    "laravel-mix": "^0.10.0",
+    "laravel-mix": "0.*",
     "lodash": "^4.17.4",
     "rpg-awesome": "^0.1.1"
   }
