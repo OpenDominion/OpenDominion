@@ -4,6 +4,7 @@ Thank you for considering contributing to OpenDominion. This document contains s
 
 Do note that almost nothing is set in stone. Feel free to even contribute to this document!
 
+
 #### Table of Contents
 
 - [Before getting started](#before-getting-started)
@@ -25,6 +26,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Style guide and standards](#style-guide-and-standards)
 - [Resources](#resources)
 
+
 ## Before getting started
 
 ### Prerequisites
@@ -34,6 +36,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
 Collaboration and contributing will be primarily done through GitHub.
 
 If possible, join the [OpenDominion Gitter chat](https://gitter.im/opendominion/Lobby) for asking questions and a general easy method of communication.
+
 
 ### Vision
 
@@ -47,6 +50,7 @@ OpenDominion aims to be an open source clone of Dominion (round 70 ruleset), wit
 
 This means that pretty much all of vanilla Dominion's content (land, buildings, races, units, spells, wonders etc) and mechanics *are* set in stone.
  
+ 
 ## How can I contribute?
 
 ### Providing info
@@ -55,6 +59,7 @@ The original Dominion has been dead for quite a while now. Even links and resour
 
 Even though I've played Dominion myself, I can't remember how everything looked or worked. If you're a veteran player, please get in contact with me and share any knowledge, screenshots/drawings, info or anything relevant to the original Dominion that you want to share! I started this project alone, but I need **your** help to make it the great game it once was.
 
+
 ### Reporting bugs
 
 You can report bugs to the [issue tracker](https://github.com/WaveHack/OpenDominion/issues).
@@ -62,6 +67,7 @@ You can report bugs to the [issue tracker](https://github.com/WaveHack/OpenDomin
 Please search the issue tracker first if the particular bug already has an open issue. If it does, add your message to the existing issue instead of opening a new issue.
 
 If a closed or resolved issue exists for your particular bug, reopen it. If in doubt, just open a new issue.
+
 
 ### Making changes
 
@@ -72,6 +78,7 @@ Fork the repository on GitHub. Then, based on the size of the change, either mak
 When making changes, preferably add tests with your changes if it involves game mechanic-related code (like calculators or services).
 
 Once you're satisfied with your modifications, send me a pull request. I will review it, edit it as needed and merge it with the development branch.
+
 
 ## Local development
  
@@ -85,6 +92,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 - You have npm and yarn installed and in your path
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
+
 ##### Languages, frameworks, libraries and tools
 
 OpenDominion is built on the Laravel 5.4 PHP framework, using PHP 5.6 as language and Laravel's Blade as view/templating language.
@@ -95,12 +103,14 @@ Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RP
 
 I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a `.idea` directory for you if you do use PhpStorm.
 
+
 ##### Cloning the repository:
 
 ```bash
 $ git pull https://github.com/WaveHack/OpenDominion.git OpenDominion
 $ cd OpenDominion
 ```
+
 
 ##### Init script
 
@@ -138,6 +148,7 @@ $ npm run dev
 ```
 
 Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own SMTP server (or just set it to `log`). 
+
 
 ### Directory structure
 
@@ -186,12 +197,14 @@ Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own
 
 The rest should be pretty self-explanatory, assuming you're at least somewhat comfortable with Laravel.
 
+
 ### Deviation from Laravel
 
 - Artisan is in `bin`: `$ php bin/artisan [command]`
 - Source code is in `src` instead of `app`
 - Bootstrap, config, database, resources, routes and storage are in `app`
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
+
 
 ### Things to keep in mind
 
@@ -203,6 +216,7 @@ The rest should be pretty self-explanatory, assuming you're at least somewhat co
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
 - The `GameTickCommand` command is executed every hour at xx:00 from the console kernel.
 - Slim controllers, slim models, many slim services. 
+
 
 ### How to run OpenDominion
 
@@ -217,6 +231,7 @@ $ php bin/artisan serve
 OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to.
 
 Make sure the directories `app/bootstrap/cache` and `app/storage` are writable.
+
 
 ### How to run tests
 
@@ -257,11 +272,13 @@ Note that any registered user accounts and dominions will have to be re-register
 
 Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`app/storage/logs/laravel.log`).
 
+
 ### Style guide and standards
 
 PHP code should be in PSR2-style with a few additional rules (todo: add and link to .styleci.yml - just look at existing files for now :^) ).
 
 Please add relevant unit tests or feature tests if possible.
+
 
 ## Resources
 
