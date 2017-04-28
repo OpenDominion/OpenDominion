@@ -30,24 +30,20 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
     # Artisan stuff
     php bin/artisan migrate --force
 
-    #php bin/artisan clear-compiled
+    php bin/artisan clear-compiled
     php bin/artisan cache:clear
-    #php bin/artisan optimize
+    php bin/artisan optimize
 
-    # todo: php bin/artisan version: update
+    php bin/artisan version:update
 
     # Npm packages
-    npm install
-    # todo: npm install --production?
+    yarn install
 
-    # Bower
-    [[ -f bower.json ]] && bower install
-
-    # Gulp
+    # Frontend
     if [[ ${env} == production ]]; then
-        gulp --production
+        npm run production
     else
-        gulp
+        npm run dev
     fi
 
     php bin/artisan up
