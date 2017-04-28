@@ -23,6 +23,7 @@ use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
+use Symfony\Component\HttpFoundation\Response;
 
 class DominionController extends AbstractController
 {
@@ -139,6 +140,7 @@ class DominionController extends AbstractController
             $request->session()->flash('alert-danger', 'Exploration was not begun due to bad input.');
 
             return redirect()->route('dominion.explore')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
 
         } catch (NotEnoughResourcesException $e) {
@@ -146,12 +148,14 @@ class DominionController extends AbstractController
             $request->session()->flash('alert-danger', "You do not have enough platinum/draftees to explore for {$totalLandToExplore} acres.");
 
             return redirect()->route('dominion.explore')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
 
         } catch (Exception $e) {
             $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
 
             return redirect()->route('dominion.explore')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
         }
 
@@ -203,6 +207,7 @@ class DominionController extends AbstractController
             $request->session()->flash('alert-danger', 'Construction was not started due to bad input.');
 
             return redirect()->route('dominion.construction')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
 
         } catch (NotEnoughResourcesException $e) {
@@ -210,12 +215,14 @@ class DominionController extends AbstractController
             $request->session()->flash('alert-danger', "You do not have enough platinum/lumber/barren land to construct {$totalBuildingsToConstruct} buildings.");
 
             return redirect()->route('dominion.construction')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
 
         } catch (Exception $e) {
             $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
 
             return redirect()->route('dominion.construction')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
         }
 
@@ -263,13 +270,14 @@ class DominionController extends AbstractController
             $request->session()->flash('alert-danger', 'The destruction was not completed due to incorrect input.');
 
             return redirect()->route('dominion.destroy')
-                // todo: http status code?
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
 
         } catch (Exception $e) {
             $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
 
             return redirect()->route('dominion.destroy')
+                ->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->withInput($request->all());
         }
 
