@@ -66,6 +66,8 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             $router->get('construction')->uses('DominionController@getConstruction')->name('construction');
             $router->post('construction')->uses('DominionController@postConstruction');
+            $router->get('destroy')->uses('DominionController@getDestroy')->name('destroy');
+            $router->post('destroy')->uses('DominionController@postDestroy');
 
 //            $router->get('rezone-land', ['as' => 'dominion.rezone-land', 'uses' => 'DominionController@getRezoneLand']);
 //            $router->get('improvements', ['as' => 'dominion.improvements', 'uses' => 'DominionController@getImprovements']);

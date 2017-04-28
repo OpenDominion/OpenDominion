@@ -12,7 +12,7 @@
                     <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
                 </div>
                 <div class="box-body">
-                    <p>You may also <a href="#{{-- route('dominion.destroy') --}}" class="nyi">destroy</a> buildings if you wish.</p>
+                    <p>You may also <a href="{{ route('dominion.destroy') }}">destroy</a> buildings if you wish.</p>
                     <p>
                         Construction per building will come at a cost of {{ number_format($buildingCalculator->getConstructionPlatinumCost()) }} platinum and {{ number_format($buildingCalculator->getConstructionLumberCost()) }} lumber.<br>
                         You can afford: {{ number_format($buildingCalculator->getConstructionMaxAfford()) }} buildings.

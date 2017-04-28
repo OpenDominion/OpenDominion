@@ -18,6 +18,7 @@ use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Actions\ConstructionActionService;
+use OpenDominion\Services\Actions\DestroyActionService;
 use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\DominionQueueService;
@@ -230,11 +231,64 @@ class DominionController extends AbstractController
             'dominion',
             'construct',
             '',
-            array_sum($request->get('construct'))
+            array_sum($request->get('construct')) // todo: get from $result
         ));
 
         $request->session()->flash('alert-success', $message);
         return redirect()->route('dominion.construction');
+    }
+
+    public function getDestroy()
+    {
+        $buildingHelper = resolve(BuildingHelper::class);
+        $buildingCalculator = resolve(BuildingCalculator::class);
+        $landCalculator = resolve(LandCalculator::class);
+
+        return view('pages.dominion.destroy', compact(
+            'buildingHelper',
+            'buildingCalculator',
+            'landCalculator'
+        ));
+    }
+
+    public function postDestroy(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $destroyActionService = resolve(DestroyActionService::class);
+
+        try {
+            $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
+
+        } catch (BadInputException $e) {
+            $request->session()->flash('alert-danger', 'The destruction was not completed due to incorrect input.');
+
+            return redirect()->route('dominion.destroy')
+                // todo: http status code?
+                ->withInput($request->all());
+
+        } catch (Exception $e) {
+            $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
+
+            return redirect()->route('dominion.destroy')
+                ->withInput($request->all());
+        }
+
+        $message = sprintf(
+            'Destruction of %s buildings is complete',
+            number_format($result['totalBuildingsDestroyed'])
+        );
+
+        // todo: laravel event
+        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+            'dominion',
+            'destroy',
+            '',
+            $result['totalBuildingsDestroyed']
+        ));
+
+        $request->session()->flash('alert-success', $message);
+        return redirect()->route('dominion.destroy');
     }
 
     // Black Ops

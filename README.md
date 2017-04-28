@@ -23,7 +23,7 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 - [ ] Castle improvements
 - [x] Construction (not all buildings are functional yet)
-- [ ] Destroy buildings
+- [x] Destroy buildings
 - [ ] Espionage system
 - [x] Exploration
 - [ ] Invasion / combat system
