@@ -33,7 +33,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
 
 Collaboration and contributing will be primarily done through GitHub.
 
-If possible, join the [OpenDominion Gitter chat](https://gitter.im/opendominion/Lobby) for asking questions and a general easy method of communcation.
+If possible, join the [OpenDominion Gitter chat](https://gitter.im/opendominion/Lobby) for asking questions and a general easy method of communication.
 
 ### Vision
 
