@@ -71,23 +71,16 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetConstructionPlatinumCost()
     {
         $scenarios = [
-            [
-                'totalBuildings' => 90,
-                'totalLand' => 250,
-                'platinumCost' => 850,
-            ],
-            [
-                'totalBuildings' => 1250,
-                'totalLand' => 1250,
-                'platinumCost' => 2380,
-            ]
+            ['totalBuildings' => 90, 'totalLand' => 250, 'expectedPlatinumCost' => 850],
+            ['totalBuildings' => 1250, 'totalLand' => 1250, 'expectedPlatinumCost' => 2380],
         ];
 
         foreach ($scenarios as $scenario) {
             $this->buildingCalculatorTestMock->shouldReceive('getTotalBuildings')->andReturn($scenario['totalBuildings'])->byDefault();
             $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn($scenario['totalLand'])->byDefault();
 
-            $this->assertEquals($scenario['platinumCost'], $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
+            $this->assertEquals($scenario['expectedPlatinumCost'],
+                $this->buildingCalculatorTestMock->getConstructionPlatinumCost());
         }
     }
 
