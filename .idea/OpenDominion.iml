@@ -81,19 +81,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/filesystem" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/finder" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/http-foundation" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/http-kernel" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/process" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/routing" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/stopwatch" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/yaml" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/thomaswelton/gravatarlib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/thomaswelton/laravel-gravatar" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-console" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zendframework/zend-filter" />
@@ -182,19 +174,11 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
           <root url="file://$MODULE_DIR$/vendor/symfony/filesystem" />
           <root url="file://$MODULE_DIR$/vendor/symfony/finder" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/http-foundation" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/http-kernel" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/process" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/routing" />
           <root url="file://$MODULE_DIR$/vendor/symfony/stopwatch" />
           <root url="file://$MODULE_DIR$/vendor/symfony/translation" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
           <root url="file://$MODULE_DIR$/vendor/symfony/yaml" />
           <root url="file://$MODULE_DIR$/vendor/thomaswelton/gravatarlib" />
           <root url="file://$MODULE_DIR$/vendor/thomaswelton/laravel-gravatar" />
-          <root url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
-          <root url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
           <root url="file://$MODULE_DIR$/vendor/webmozart/assert" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zend-console" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zend-filter" />
@@ -279,35 +263,17 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
           <root url="file://$MODULE_DIR$/vendor/symfony/filesystem" />
           <root url="file://$MODULE_DIR$/vendor/symfony/finder" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/http-foundation" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/http-kernel" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/process" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/routing" />
           <root url="file://$MODULE_DIR$/vendor/symfony/stopwatch" />
           <root url="file://$MODULE_DIR$/vendor/symfony/translation" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
           <root url="file://$MODULE_DIR$/vendor/symfony/yaml" />
           <root url="file://$MODULE_DIR$/vendor/thomaswelton/gravatarlib" />
           <root url="file://$MODULE_DIR$/vendor/thomaswelton/laravel-gravatar" />
-          <root url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
-          <root url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
           <root url="file://$MODULE_DIR$/vendor/webmozart/assert" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zend-console" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zend-filter" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zend-stdlib" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zend-validator" />
           <root url="file://$MODULE_DIR$/vendor/zfcampus/zf-console" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="PHARS">
-        <CLASSES>
-          <root url="phar://$MODULE_DIR$/vendor/phpunit/phpunit/tests/_files/phpunit-example-extension/tools/phpunit.d/phpunit-example-extension-1.0.0.phar/" />
-        </CLASSES>
-        <SOURCES>
-          <root url="phar://$MODULE_DIR$/vendor/phpunit/phpunit/tests/_files/phpunit-example-extension/tools/phpunit.d/phpunit-example-extension-1.0.0.phar/" />
         </SOURCES>
       </library>
     </orderEntry>
