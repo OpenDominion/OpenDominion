@@ -102,12 +102,31 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testGetConstructionMaxAfford()
     {
-        // Starting values
-        $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(100000);
-        $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn(15000);
-        $this->buildingCalculatorTestMock->shouldReceive('getConstructionPlatinumCost')->andReturn(850);
-        $this->buildingCalculatorTestMock->shouldReceive('getConstructionLumberCost')->andReturn(88);
+        $scenarios = [
+            [
+                'platinum' => 100000,
+                'lumber' => 15000,
+                'platinumCost' => 850,
+                'lumberCost' => 88,
+                'expectedMaxAfford' => 117
+            ],
+            [
+                'platinum' => 1000000,
+                'lumber' => 150000,
+                'platinumCost' => 2380,
+                'lumberCost' => 688,
+                'expectedMaxAfford' => 218
+            ],
+        ];
 
-        $this->assertEquals(117, $this->buildingCalculatorTestMock->getConstructionMaxAfford());
+        foreach ($scenarios as $scenario) {
+            $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($scenario['platinum'])->byDefault();
+            $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn($scenario['lumber'])->byDefault();
+            $this->buildingCalculatorTestMock->shouldReceive('getConstructionPlatinumCost')->andReturn($scenario['platinumCost'])->byDefault();
+            $this->buildingCalculatorTestMock->shouldReceive('getConstructionLumberCost')->andReturn($scenario['lumberCost'])->byDefault();
+
+            $this->assertEquals($scenario['expectedMaxAfford'],
+                $this->buildingCalculatorTestMock->getConstructionMaxAfford());
+        }
     }
 }
