@@ -33,58 +33,50 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
 $router->group(['middleware' => 'auth'], function (Router $router) {
 
+    // Dashboard
     $router->get('dashboard')->uses('DashboardController@getIndex')->name('dashboard');
 
+    // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');
 
     $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], function (Router $router) {
 
+        // Dominion Select
 //        $router->get('{dominion}/select')->uses(function () { return redirect()->route('dashboard'); });
-        $router->post('{dominion}/select')->uses('DominionController@postSelect')->name('select');
+        $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
+        // Dominion
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
 
-            // Other Dominion actions
+            // Status
+            $router->get('status')->uses('Dominion\StatusController@getStatus')->name('status');
 
-            $router->get('realm/{realm}')->uses('DominionController@getRealm')->name('other.realm');
-//            $router->get('{dominion}/status', ['as' => 'dominion.other.status', 'uses' => 'DominionController@getOtherStatus']);
+            // Advisors
+            $router->get('advisors')->uses('Dominion\AdvisorsController@getAdvisors')->name('advisors');
+            $router->get('advisors/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('advisors.production');
+            $router->get('advisors/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('advisors.military');
+            $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
+            $router->get('advisors/construction')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construction');
+            // todo: magic advisor
+            // todo: statistics advisor
+            // todo: growth advisor
 
-            // Dominion
+            // Exploration
+            $router->get('explore')->uses('Dominion\ExplorationController@getExplore')->name('explore');
+            $router->post('explore')->uses('Dominion\ExplorationController@postExplore');
 
-            $router->get('status')->uses('DominionController@getStatus')->name('status');
-            $router->get('advisors')->uses('DominionController@getAdvisors')->name('advisors');
-            $router->get('advisors/production')->uses('DominionController@getAdvisorsProduction')->name('advisors.production');
-            $router->get('advisors/military')->uses('DominionController@getAdvisorsMilitary')->name('advisors.military');
-            $router->get('advisors/land')->uses('DominionController@getAdvisorsLand')->name('advisors.land');
-            $router->get('advisors/construction')->uses('DominionController@getAdvisorsConstruction')->name('advisors.construction');
-
-            // Actions
-
-            $router->get('explore')->uses('DominionController@getExplore')->name('explore');
-            $router->post('explore')->uses('DominionController@postExplore');
-
-            $router->get('construction')->uses('DominionController@getConstruction')->name('construction');
-            $router->post('construction')->uses('DominionController@postConstruction');
-            $router->get('destroy')->uses('DominionController@getDestroy')->name('destroy');
-            $router->post('destroy')->uses('DominionController@postDestroy');
-
-//            $router->get('rezone-land', ['as' => 'dominion.rezone-land', 'uses' => 'DominionController@getRezoneLand']);
-//            $router->get('improvements', ['as' => 'dominion.improvements', 'uses' => 'DominionController@getImprovements']);
-//            $router->get('national-bank', ['as' => 'dominion.national-bank', 'uses' => 'DominionController@getNationalBank']);
-
-            // Black Ops
-
-            // Comms?
+            // Construction
+            $router->get('construction')->uses('Dominion\ConstructionController@getConstruction')->name('construction');
+            $router->post('construction')->uses('Dominion\ConstructionController@postConstruction');
+            $router->get('destroy')->uses('Dominion\ConstructionController@getDestroy')->name('destroy');
+            $router->post('destroy')->uses('Dominion\ConstructionController@postDestroy');
 
             // Realm
+            $router->get('realm/{realm}')->uses('Dominion\RealmController@getRealm')->name('other.realm');
+            $router->get('realm')->uses('Dominion\RealmController@getRealm')->name('realm');
 
-            $router->get('realm')->uses('DominionController@getRealm')->name('realm');
-            // todo: post/change realm
-
-            // Misc?
-
-            // Debug
+            // todo: post/change realm?
 
             $router->get('debug')->uses('DebugController@getIndex');
 
