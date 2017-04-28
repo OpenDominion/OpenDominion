@@ -187,8 +187,8 @@ Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own
 |   +-- Traits # DominionAwareTrait
 |   +-- Application.php # Custom application class to overwrite Laravel's default paths
 +-- tests # Test files. Note that tests are namespaced!
-    +-- Feature # Feature tests. Mostly user stories
-    +-- Unit # Tests which test a single class
+    +-- Feature # Feature tests
+    +-- Unit # Unit tests
         +-- Calculators # Unit tests which test a single method per test method. Don't do database testing in here, just mock everything except the test method
         |   +-- Dominion # Same as above, but with a Dominion
         +-- Factories # Factory tests, must touch database
@@ -246,7 +246,13 @@ There are two test suites, named as follows:
 - Feature Tests
 - Unit Tests
 
-Consult PHPUnit's manual for running specific tests or test files.
+The term "should (not) touch the database" refers to the inclusion of the Laravel `DatabaseMigrations` trait in a testcase. Using this trait allows the test to communicate with a in-memory Sqlite database. This will increase the time the test takes to run significantly.
+
+Feature tests can be seen as user stories if you're familiar with Agile. These **should** generally touch the database because of its nature.
+
+Unit tests are tests that generally correspond to a single source class to test the implementation of the business logic. Unit tests **may** touch the database if the class under test is interacting with the database (such as factory classes), but generally **should** not do so otherwise. Unit tests methods **should** correspond to a matching source class method under test using a `testNameOfMethodUnderTest` naming convention.
+
+Consult PHPUnit's manual for running specific test suites or individual files.
 
 
 ### How to update
