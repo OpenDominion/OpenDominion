@@ -3,7 +3,7 @@
 
 
 ### Current Behavior
-*What is the current situation and/or output for bugs? For feature*
+*What is the current situation and/or output for bugs?*
 
 
 ### Steps to Reproduce
