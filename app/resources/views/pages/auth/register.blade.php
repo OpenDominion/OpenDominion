@@ -45,6 +45,29 @@
                             </div>
                         </div>
 
+                        <!-- ToC -->
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="terms"> I agree to the <a href="#" style="text-decoration: line-through;">Terms and Conditions</a> (todo)
+                                    </label>
+                                </div>
+                                <div class="help-block">
+                                    <p>TL;DR version:</p>
+                                    <ul>
+                                        <li>Don't be an ass</li>
+                                        <li>One account per player</li>
+                                        <li>No cheating/botting/scripting</li>
+                                        <li>Anonimized analytical data will be collected for development and improvement purposes</li>
+                                        <li>Your data (including analytical data) will not be forwarded to third parties unless laws demand it</li>
+                                        <li>We will only send you game-related emails on your email address</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <p>Note that unlike vanilla Dominion, you will register for a round with dominion details later. Your user account will be persistent across rounds and Dominions.</p>
 
                     </div>
