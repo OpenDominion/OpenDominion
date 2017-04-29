@@ -18,22 +18,22 @@ class Application extends LaravelApplication
 
     public function path($path = '')
     {
-        return ($this->basePath . DIRECTORY_SEPARATOR . 'src');
+        return ($this->basePath . DIRECTORY_SEPARATOR . 'src' . $this->getSuffixPath($path));
     }
 
     public function bootstrapPath($path = '')
     {
-        return ($this->appPath . DIRECTORY_SEPARATOR . 'bootstrap');
+        return ($this->appPath . DIRECTORY_SEPARATOR . 'bootstrap' . $this->getSuffixPath($path));
     }
 
     public function configPath($path = '')
     {
-        return ($this->appPath . DIRECTORY_SEPARATOR . 'config');
+        return ($this->appPath . DIRECTORY_SEPARATOR . 'config' . $this->getSuffixPath($path));
     }
 
     public function databasePath($path = '')
     {
-        return ($this->appPath . DIRECTORY_SEPARATOR . 'database');
+        return ($this->appPath . DIRECTORY_SEPARATOR . 'database' . $this->getSuffixPath($path));
     }
 
     public function langPath()
@@ -44,5 +44,10 @@ class Application extends LaravelApplication
     public function storagePath()
     {
         return ($this->appPath . DIRECTORY_SEPARATOR . 'storage');
+    }
+
+    protected function getSuffixPath($path = '')
+    {
+        return ($path ? (DIRECTORY_SEPARATOR . $path) : '');
     }
 }
