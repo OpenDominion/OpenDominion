@@ -133,7 +133,7 @@ $ cp .env.template.local .env
 $ php bin/artisan key:generate
 
 # Database
-$ touch app/storage/databases/local.sqlite
+$ touch app/storage/local.sqlite
 $ php bin/artisan migrate --seed
 
 # Optional IDE helpers
