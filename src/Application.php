@@ -6,6 +6,11 @@ use Illuminate\Foundation\Application as LaravelApplication;
 
 class Application extends LaravelApplication
 {
+    /**
+     * The application app path.
+     *
+     * @var string
+     */
     protected $appPath;
 
     /**
