@@ -148,7 +148,7 @@ $ yarn install
 $ npm run dev
 ```
 
-Make sure to change the `MAIL_DRIVER` in your `.env` if you want to use your own SMTP server (or just set it to `log`). 
+Make sure to change the `MAIL_*` settings in your `.env` if you want to use your own SMTP server (or just set `MAIL_DRIVER` to `log`). 
 
 
 ### Directory structure
