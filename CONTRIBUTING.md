@@ -233,7 +233,7 @@ OpenDominion uses a SQLite database by default for development, so there's no ne
 
 Due to hardcoded SQL queries in the [GameTickCommand class](https://github.com/WaveHack/OpenDominion/blob/master/src/Console/Commands/GameTickCommand.php), database engines other than Sqlite and MySQL are **not** supported.
 
-Make sure the directories `app/bootstrap/cache` and `app/storage` are writable.
+Make sure the directories `app/bootstrap/cache` and `app/storage` (and every directory under `app/storage`) are writable.
 
 
 ### How to run tests
