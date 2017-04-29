@@ -161,7 +161,11 @@
             <h3 class="box-title">Dominion</h3>
         </div>
         <div class="box-body">
-            <pre>{{ print_r(json_decode($selectedDominion), true) }}</pre>
+            @php
+            $dominion = clone $selectedDominion;
+            unset($dominion->realm);
+            @endphp
+            <pre>{{ print_r(json_decode($dominion), true) }}</pre>
         </div>
     </div>
 
