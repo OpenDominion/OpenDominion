@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\DominionSelectorService;
 
