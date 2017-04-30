@@ -46,7 +46,35 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-6">
-                            draft rate
+                            <form action="{{ route('dominion.military.change-draft-rate') }}" method="post">
+                                {!! csrf_field() !!}
+
+                                <table class="table">
+                                    <colgroup>
+                                        <col width="50%">
+                                        <col width="50%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" class="text-center">Draft Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">Draft Rate:</td>
+                                            <td class="text-center">
+                                                <input type="number" name="draft_rate" class="text-center" placeholder="0" min="0" max="100" value="{{ $selectedDominion->draft_rate }}"> %
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="text-center">
+                                                <button type="submit" class="btn btn-primary">Change</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
                         </div>
 
                     </div>

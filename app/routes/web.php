@@ -74,6 +74,8 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
             // Military
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
+            $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');
+//            $router->post('military/train')->uses('Dominion\MilitaryController@postTrain')->name('military.train');
 
             // Realm
             $router->get('realm/{realm}')->uses('Dominion\RealmController@getRealm')->name('other.realm');
