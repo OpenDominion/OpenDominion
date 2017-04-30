@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 
 class PopulationCalculator extends AbstractDominionCalculator
@@ -13,6 +14,9 @@ class PopulationCalculator extends AbstractDominionCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var UnitHelper */
+    protected $unitHelper;
+
     /**
      * {@inheritDoc}
      */
@@ -20,6 +24,7 @@ class PopulationCalculator extends AbstractDominionCalculator
     {
         $this->buildingHelper = resolve(BuildingHelper::class);
         $this->landCalculator = resolve(LandCalculator::class);
+        $this->unitHelper = resolve(UnitHelper::class);
     }
 
     /**
@@ -298,6 +303,57 @@ class PopulationCalculator extends AbstractDominionCalculator
         return (float)(($this->getPopulationMilitary() / $this->getPopulation()) * 100);
     }
 
+    public function getPopulationMilitaryTrainingCostPerUnit()
+    {
+        $costsPerUnit = [];
+
+        // Values
+        $spyPlatinumCost = 500;
+        $wizardPlatinumCost = 500;
+        $archmagePlatinumCost = 1000;
+
+        $units = $this->dominion->race->units;
+
+        foreach ($this->unitHelper->getUnitTypes() as $unitType) {
+            $cost = [];
+
+            switch ($unitType) {
+                case 'spies':
+                    $cost['platinum'] = $spyPlatinumCost;
+                    break;
+
+                case 'wizards':
+                    $cost['platinum'] = $wizardPlatinumCost;
+                    break;
+
+                case 'archmages':
+                    $cost['platinum'] = $archmagePlatinumCost;
+                    $cost['wizards'] = 1;
+                    break;
+
+                default:
+                    $unitSlot = (((int)str_replace('unit', '', $unitType)) - 1);
+
+                    $platinum = $units[$unitSlot]->cost_platinum;
+                    $ore = $units[$unitSlot]->cost_ore;
+
+                    if ($platinum > 0) {
+                        $cost['platinum'] = $platinum;
+                    }
+
+                    if ($ore > 0) {
+                        $cost['ore'] = $ore;
+                    }
+
+                    break;
+            }
+
+            $costsPerUnit[$unitType] = $cost;
+        }
+
+        return $costsPerUnit;
+    }
+
     /**
      * Returns the Dominion's max military trainable population.
      *
@@ -306,6 +362,8 @@ class PopulationCalculator extends AbstractDominionCalculator
     public function getPopulationMilitaryMaxTrainable()
     {
         $trainable = [];
+
+        dd($this->getPopulationMilitaryTrainingCostPerUnit());
 
         // Values
         $spyPlatinumCost = 500;

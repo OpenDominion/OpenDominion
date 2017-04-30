@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-6">
-                            <form action="{{ route('dominion.military.change-draft-rate') }}" method="post">
+                            <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
                                 {!! csrf_field() !!}
 
                                 <table class="table">
@@ -83,7 +83,57 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="ra ra-muscle-up"></i> Train</h3>
+                </div>
+                <div class="box-body">
+                    You have {{ number_format($selectedDominion->military_draftees) }} draftees available to train.
+                </div>
+                <form action="{{ route('dominion.military.train') }}" method="post" role="form">
+                    {!! csrf_field() !!}
+                    <div class="box-body no-padding">
+                        <table class="table">
+                            <colgroup>
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                                <col width="200">
+                                <col width="100">
+                                <col width="100">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Unit</th>
+                                    <th class="text-center">Trained</th>
+                                    <th class="text-center">Training</th>
+                                    <th class="text-center">Cost Per Unit</th>
+                                    <th class="text-center">Max Trainable</th>
+                                    <th class="text-center">Train</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($unitHelper->getUnitTypes() as $unitType)
+                                    <tr>
+                                        <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
+                                        <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
+                                        <td class="text-center">NYI</td>
+                                        <td>275p, 25r</td>
+                                        <td class="text-center">{{ number_format($militaryMaxTrainable[$unitType]) }}</td>
+                                        <td class="text-center">
+                                            <input type="number" name="train[0]" class="text-center" placeholder="0" min="0" max="0" value="">
+                                        </td>
+                                    </tr>
+                                @endforeach
 
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer">
+                        //
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>

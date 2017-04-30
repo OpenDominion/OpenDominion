@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\Actions\MilitaryActionService;
 use OpenDominion\Services\AnalyticsService;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,9 +15,14 @@ class MilitaryController extends AbstractDominionController
     public function getMilitary()
     {
         $populationCalculator = resolve(PopulationCalculator::class);
+        $unitHelper = resolve(UnitHelper::class);
+
+        $militaryMaxTrainable = $populationCalculator->getPopulationMilitaryMaxTrainable();
 
         return view('pages.dominion.military', compact(
-            'populationCalculator'
+            'populationCalculator',
+            'unitHelper',
+            'militaryMaxTrainable'
         ));
     }
 
