@@ -3,13 +3,16 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 
 class MilitaryController extends AbstractDominionController
 {
     public function getMilitary()
     {
+        $populationCalculator = resolve(PopulationCalculator::class);
+
         return view('pages.dominion.military', compact(
-            null
+            'populationCalculator'
         ));
     }
 
