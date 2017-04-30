@@ -72,6 +72,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('destroy')->uses('Dominion\ConstructionController@getDestroy')->name('destroy');
             $router->post('destroy')->uses('Dominion\ConstructionController@postDestroy');
 
+            // Military
+            $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
+
             // Realm
             $router->get('realm/{realm}')->uses('Dominion\RealmController@getRealm')->name('other.realm');
             $router->get('realm')->uses('Dominion\RealmController@getRealm')->name('realm');

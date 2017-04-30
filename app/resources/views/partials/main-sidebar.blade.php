@@ -27,6 +27,8 @@
                 {{--<li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>--}}
                 {{--<li class="{{ Route::is('dominion.national-bank') ? 'active' : null }}"><a href="{{ route('dominion.national-bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a></li>--}}
 
+                <li class="header">MILITARY</li>
+                <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
 
                 {{--<li class="header">BLACK OPS</li>--}}
 
