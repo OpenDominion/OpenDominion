@@ -5,24 +5,11 @@
 @section('content')
     <div class="row">
 
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-9">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-building"></i> Construction</h3>
-                    <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
                 </div>
-                <div class="box-body">
-                    <p>You may also <a href="{{ route('dominion.destroy') }}">destroy</a> buildings if you wish.</p>
-                    <p>
-                        Construction per building will come at a cost of {{ number_format($buildingCalculator->getConstructionPlatinumCost()) }} platinum and {{ number_format($buildingCalculator->getConstructionLumberCost()) }} lumber.<br>
-                        You can afford: {{ number_format($buildingCalculator->getConstructionMaxAfford()) }} buildings.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-6">
-            <div class="box">
                 <form action="{{ route('dominion.construction') }}" method="post" role="form">
                     {!! csrf_field() !!}
                     <div class="box-body no-padding">
@@ -84,6 +71,20 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                    <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
+                </div>
+                <div class="box-body">
+                    <p>You may also <a href="{{ route('dominion.destroy') }}">destroy</a> buildings if you wish.</p>
+                    <p>Construction per building will come at a cost of {{ number_format($buildingCalculator->getConstructionPlatinumCost()) }} platinum and {{ number_format($buildingCalculator->getConstructionLumberCost()) }} lumber.</p>
+                    <p>You can afford: {{ number_format($buildingCalculator->getConstructionMaxAfford()) }} buildings.</p>
+                </div>
             </div>
         </div>
 
