@@ -5,26 +5,11 @@
 @section('content')
     <div class="row">
 
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-9">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-search"></i> Explore</h3>
-                    <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
                 </div>
-                <div class="box-body">
-                    <p>Cost per acre:</p>
-                    <p>
-                        Platinum: {{ number_format($landCalculator->getExplorationPlatinumCost()) }}<br>
-                        Draftees: {{ number_format($landCalculator->getExplorationDrafteeCost()) }}
-                    </p>
-                    <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
-                    <p>You can afford to explore for {{ number_format($landCalculator->getExplorationMaxAfford()) }} acres of land at that rate.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-6">
-            <div class="box">
                 <form action="{{ route('dominion.explore') }}" method="post" role="form">
                     {!! csrf_field() !!}
                     <div class="box-body no-padding">
@@ -66,6 +51,24 @@
                         <button type="submit" class="btn btn-primary">Explore</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                    <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
+                </div>
+                <div class="box-body">
+                    <p>Cost per acre:</p>
+                    <p>
+                        Platinum: {{ number_format($landCalculator->getExplorationPlatinumCost()) }}<br>
+                        Draftees: {{ number_format($landCalculator->getExplorationDrafteeCost()) }}
+                    </p>
+                    <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
+                    <p>You can afford to explore for {{ number_format($landCalculator->getExplorationMaxAfford()) }} acres of land at that rate.</p>
+                </div>
             </div>
         </div>
 
