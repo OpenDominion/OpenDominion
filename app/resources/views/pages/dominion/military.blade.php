@@ -87,9 +87,6 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-muscle-up"></i> Train</h3>
                 </div>
-                <div class="box-body">
-                    You have {{ number_format($selectedDominion->military_draftees) }} draftees available to train.
-                </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
                     {!! csrf_field() !!}
                     <div class="box-body no-padding">
@@ -98,8 +95,8 @@
                                 <col>
                                 <col width="100">
                                 <col width="100">
-                                <col width="200">
-                                <col width="100">
+                                <col width="150">
+                                <col width="150">
                                 <col width="100">
                             </colgroup>
                             <thead>
@@ -118,7 +115,33 @@
                                         <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
                                         <td class="text-center">NYI</td>
-                                        <td>275p, 25r</td>
+                                        <td class="text-center">
+                                            @php
+                                            // todo: move this shit to view presenter or something
+                                            $labelParts = [];
+
+                                            foreach ($militaryTrainingCostPerUnit[$unitType] as $costType => $value) {
+                                                switch ($costType) {
+                                                    case 'platinum':
+                                                        $labelParts[] = "{$value}p";
+                                                        break;
+
+                                                    case 'ore':
+                                                        $labelParts[] = "{$value}r";
+                                                        break;
+
+                                                    case 'wizards':
+                                                        $labelParts[] = 'Wizard';
+                                                        break;
+
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+
+                                            echo implode(', ', $labelParts);
+                                            @endphp
+                                        </td>
                                         <td class="text-center">{{ number_format($militaryMaxTrainable[$unitType]) }}</td>
                                         <td class="text-center">
                                             <input type="number" name="train[0]" class="text-center" placeholder="0" min="0" max="0" value="">
@@ -130,7 +153,10 @@
                         </table>
                     </div>
                     <div class="box-footer">
-                        //
+                        <button type="submit" class="btn btn-primary" disabled>Train</button>
+                        <div class="pull-right">
+                            You have {{ number_format($selectedDominion->military_draftees) }} draftees available to train.
+                        </div>
                     </div>
                 </form>
             </div>

@@ -319,10 +319,12 @@ class PopulationCalculator extends AbstractDominionCalculator
 
             switch ($unitType) {
                 case 'spies':
+                    $cost['draftees'] = 1;
                     $cost['platinum'] = $spyPlatinumCost;
                     break;
 
                 case 'wizards':
+                    $cost['draftees'] = 1;
                     $cost['platinum'] = $wizardPlatinumCost;
                     break;
 
@@ -345,6 +347,8 @@ class PopulationCalculator extends AbstractDominionCalculator
                         $cost['ore'] = $ore;
                     }
 
+                    $cost['draftees'] = 1;
+
                     break;
             }
 
@@ -363,31 +367,24 @@ class PopulationCalculator extends AbstractDominionCalculator
     {
         $trainable = [];
 
-        dd($this->getPopulationMilitaryTrainingCostPerUnit());
+        $fieldMapping = [
+            'platinum' => 'resource_platinum',
+            'ore' => 'resource_ore',
+            'draftees' => 'military_draftees',
+            'wizards' => 'military_wizards',
+        ];
 
-        // Values
-        $spyPlatinumCost = 500;
-        $wizardPlatinumCost = 500;
-        $archmagePlatinumCost = 1000;
+        $costsPerUnit = $this->getPopulationMilitaryTrainingCostPerUnit();
 
-        $units = $this->dominion->race->units;
+        foreach ($costsPerUnit as $unitType => $costs) {
+            $trainableByCost = [];
 
-        for ($i = 0; $i < 4; $i++) {
-            $slot = ($i + 1);
+            foreach ($costs as $type => $value) {
+                $trainableByCost[$type] = (int)floor($this->dominion->{$fieldMapping[$type]} / $value);
+            }
 
-            $trainable['unit' . $slot] = min(
-                $this->dominion->military_draftees,
-                floor($this->dominion->resource_platinum / $units->get($i)->cost_platinum),
-                floor($this->dominion->resource_ore / $units->get($i)->cost_ore)
-            );
+            $trainable[$unitType] = min($trainableByCost);
         }
-
-        $trainable['spies'] = min($this->dominion->military_draftees,
-            floor($this->dominion->resource_platinum / $spyPlatinumCost));
-        $trainable['wizards'] = min($this->dominion->military_draftees,
-            floor($this->dominion->resource_platinum / $wizardPlatinumCost));
-        $trainable['archmages'] = min($this->dominion->military_wizards,
-            floor($this->dominion->resource_platinum / $archmagePlatinumCost));
 
         return $trainable;
     }

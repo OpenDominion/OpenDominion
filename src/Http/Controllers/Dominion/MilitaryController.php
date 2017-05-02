@@ -14,14 +14,19 @@ class MilitaryController extends AbstractDominionController
 {
     public function getMilitary()
     {
+        /** @var PopulationCalculator $populationCalculator */
         $populationCalculator = resolve(PopulationCalculator::class);
+
+        /** @var UnitHelper $unitHelper */
         $unitHelper = resolve(UnitHelper::class);
 
+        $militaryTrainingCostPerUnit = $populationCalculator->getPopulationMilitaryTrainingCostPerUnit();
         $militaryMaxTrainable = $populationCalculator->getPopulationMilitaryMaxTrainable();
 
         return view('pages.dominion.military', compact(
             'populationCalculator',
             'unitHelper',
+            'militaryTrainingCostPerUnit',
             'militaryMaxTrainable'
         ));
     }
