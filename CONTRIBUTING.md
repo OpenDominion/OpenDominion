@@ -11,6 +11,8 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Prerequisites](#prerequisites)
   - [Vision](#vision)
 - [How can I contribute?](#how-can-i-contribute)
+  - [Joining the community](#joining-the-community)
+  - [Participating in the beta](#participating-in-the-beta)
   - [Providing info](#providing-info)
   - [Reporting bugs](#reporting-bugs)
   - [Making changes](#making-changes)
@@ -53,6 +55,31 @@ This means that pretty much all of vanilla Dominion's content (land, buildings, 
  
  
 ## How can I contribute?
+
+### Joining the community
+
+While the original Dominion community back in the day was quite sizable, the OpenDominion project started a few years after Dominion closed down and the when the original community had already dwindled to a fraction of its former size. When starting OpenDominion, the goal was to code and work on the project as much as possible, before trying to gain popularity and build a community.
+
+By time of writing, a few years of hard work have passed and significant progress has been made. Though still incomplete and under development, OpenDominion is slowly gaining GitHub followers, Gitter participants and beta testers.
+
+As author of the OpenDominion project, I'd like to personally invite **you** (yes you, you're reading this, after all) to join us in the journey if you're interested in the project. Which I assume you somewhat are, since you're reading this! 
+
+It doesn't matter if you're a Dominion veteran of if you've new, feel free and be welcomed to:
+
+- Join the [Gitter chat](https://gitter.im/opendominion/Lobby) to chat with me and other interested people. If you've any questions about (Open)Dominion, feel free to ask!
+- [Participate in the beta](#participating-in-the-beta)!
+- Keeping an eye on the project by watching it on GitHub.
+- Praise the project by starring it on GitHub.
+
+
+### Participating in the beta
+
+The beta of OpenDominion is currently running at [https://dev.opendominion.wavehack.net](https://dev.opendominion.wavehack.net).
+
+Feel free to register and play around!
+
+Do note that some data incidentally gets reset for development and testing purposes. If you have registered before and get a 'failed to login' message, feel free to re-register with your same credentials! 
+
 
 ### Providing info
 
