@@ -35,6 +35,7 @@ class Kernel extends HttpKernel
             \OpenDominion\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
+            \OpenDominion\Http\Middleware\LogoutUserAfterDatabaseReset::class,
             \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
             \OpenDominion\Http\Middleware\ShareSelectedDominion::class,
             \OpenDominion\Http\Middleware\FireAnalyticsFlashEvents::class,
