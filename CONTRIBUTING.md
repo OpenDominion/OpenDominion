@@ -15,7 +15,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Participating in the beta](#participating-in-the-beta)
   - [Providing info](#providing-info)
   - [Reporting bugs](#reporting-bugs)
-  - [Making changes](#making-changes)
+  - [Collaborating with development](#collaborating-with-development)
 - [Local development](#local-development)
   - [Setting up](#setting-up)
   - [Directory structure](#directory-structure)
@@ -97,7 +97,7 @@ Please search the issue tracker first if the particular bug already has an open 
 If a closed or resolved issue exists for your particular bug, reopen it. If in doubt, just open a new issue.
 
 
-### Making changes
+### Collaborating with development
 
 First, make sure the changes you're going to do adhere to the [vision of OpenDominion](#vision).
 
