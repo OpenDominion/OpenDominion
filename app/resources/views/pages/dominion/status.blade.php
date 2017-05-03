@@ -157,4 +157,15 @@
             </div>
         </div>
     </div>
+
+    {{-- @todo: UX --}}
+    @if ($dominionProtectionService->isUnderProtection())
+        <div class="text-center">
+            <p>You are under a magical state of protection for {{ number_format($dominionProtectionService->getUnderProtectionHoursLeft(), 2) }} hours.</p>
+
+            @if ($dominionProtectionService->getUnderProtectionHoursLeft() > 71)
+                <p>No production occurs until you have less than 71 hours of protection remaining!</p>
+            @endif
+        </div>
+    @endif
 @endsection
