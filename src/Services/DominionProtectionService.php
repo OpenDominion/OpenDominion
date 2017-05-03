@@ -21,9 +21,7 @@ class DominionProtectionService
         $roundStartDate = Carbon::parse($this->dominion->round->start_date);
         $dominionCreatedDate = Carbon::parse($this->dominion->created_at);
 
-        $protectionStartDate = (($dominionCreatedDate > $roundStartDate) ? $dominionCreatedDate : $roundStartDate);
-
-        return Carbon::parse($protectionStartDate->format('Y-m-d H:00:00'));
+        return (($dominionCreatedDate > $roundStartDate) ? $dominionCreatedDate : $roundStartDate);
     }
 
     /**
@@ -33,7 +31,9 @@ class DominionProtectionService
      */
     public function getProtectionEndDate()
     {
-        return $this->getProtectionStartDate()->addHours(self::PROTECTION_DURATION_IN_HOURS + 1);
+        $modifiedStartDate = Carbon::parse($this->getProtectionStartDate()->format('Y-m-d H:00:00'));
+
+        return $modifiedStartDate->addHours(self::PROTECTION_DURATION_IN_HOURS);
     }
 
     /**
@@ -49,7 +49,7 @@ class DominionProtectionService
     /**
      * Returns the hours the Dominion is still under protection for.
      *
-     * @return int
+     * @return float
      */
     public function getUnderProtectionHoursLeft()
     {
@@ -57,6 +57,11 @@ class DominionProtectionService
             return 0;
         }
 
-        return $this->getProtectionEndDate()->diffInHours(Carbon::now());
+        $minutes = (int)Carbon::now()->format('i');
+        $seconds = (int)Carbon::now()->format('s');
+
+        $fraction = (1 - ((($minutes * 60) + $seconds) / 3600));
+
+        return ($this->getProtectionEndDate()->diffInHours(Carbon::now()) + $fraction);
     }
 }
