@@ -3,6 +3,7 @@
 namespace OpenDominion\Console\Commands\Game\Round;
 
 use Illuminate\Console\Command;
+use Log;
 
 class EndCommand extends Command
 {
@@ -19,6 +20,6 @@ class EndCommand extends Command
      */
     public function handle()
     {
-        // todo
+        Log::info('Ending current round');
     }
 }

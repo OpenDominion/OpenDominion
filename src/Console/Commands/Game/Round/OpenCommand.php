@@ -3,6 +3,7 @@
 namespace OpenDominion\Console\Commands\Game\Round;
 
 use Illuminate\Console\Command;
+use Log;
 
 class OpenCommand extends Command
 {
@@ -19,6 +20,6 @@ class OpenCommand extends Command
      */
     public function handle()
     {
-        // todo
+        Log::info('Opening new round');
     }
 }
