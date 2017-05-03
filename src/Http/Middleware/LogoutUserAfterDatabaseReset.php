@@ -12,21 +12,13 @@ class LogoutUserAfterDatabaseReset
     {
         // Check if the user and dominion records still exists. If they're gone that probably means the database has
         // been reset since their last request and they need to be logged out so they can re-register
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            dd([
-                $user,
-                $user->dominions->isEmpty(),
-                $user->dominions()
-            ]);
-
-            if (($user === null) || $user->dominions->isEmpty()) {
-                return $this->logout($request);
-            }
-        }
-
-        dd('no auth check');
+//        if (Auth::check()) {
+//            $user = Auth::user();
+//
+//            if (($user === null) || $user->dominions->isEmpty()) {
+//                return $this->logout($request);
+//            }
+//        }
 
         return $next($request);
     }
