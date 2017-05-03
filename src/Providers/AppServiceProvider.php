@@ -15,6 +15,7 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Interfaces\DependencyInitializableInterface;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RealmRepository;
+use OpenDominion\Services\DominionProtectionService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
 use OpenDominion\Services\RealmFinderService;
@@ -51,6 +52,10 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerServices()
     {
+        $this->app->singleton(DominionProtectionService::class, function ($app) {
+            return new DominionProtectionService;
+        });
+
         $this->app->singleton(DominionQueueService::class, function ($app) {
             return new DominionQueueService;
         });

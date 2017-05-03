@@ -4,17 +4,19 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Services\DominionProtectionService;
 
 class StatusController extends AbstractDominionController
 {
     public function getStatus()
     {
+        $dominionProtectionService = resolve(DominionProtectionService::class);
+        $dominionProtectionService->setDominion($this->getSelectedDominion());
         $landCalculator = resolve(LandCalculator::class);
         $populationCalculator = resolve(PopulationCalculator::class);
 
-        // todo: make status view a partial for here + other dominion status and include stuff like OOP here?
-
         return view('pages.dominion.status', compact(
+            'dominionProtectionService',
             'landCalculator',
             'populationCalculator'
         ));
