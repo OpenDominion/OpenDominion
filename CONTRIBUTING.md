@@ -282,7 +282,7 @@ Feature tests can be seen as user stories if you're familiar with Agile. These *
 
 Unit tests are tests that generally correspond to a single source class to test the implementation of the business logic. Unit tests **may** touch the database if the class under test is interacting with the database (such as factory classes), but generally **should** not do so otherwise. Unit tests methods **should** correspond to a matching source class method under test using a `testNameOfMethodUnderTest` naming convention.
 
-Consult PHPUnit's manual for running specific test suites or individual files.
+Consult [PHPUnit's manual](https://phpunit.de/manual/5.7/en/index.html) for running specific test suites or individual files.
 
 
 ### How to update
