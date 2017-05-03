@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Middleware;
 
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use OpenDominion\Services\DominionSelectorService;
 
 class ShareSelectedDominion
@@ -18,7 +19,15 @@ class ShareSelectedDominion
     public function handle($request, Closure $next)
     {
         if ($this->dominionSelectorService->hasUserSelectedDominion()) {
-            $dominion = $this->dominionSelectorService->getUserSelectedDominion();
+            try {
+                $dominion = $this->dominionSelectorService->getUserSelectedDominion();
+            } catch (ModelNotFoundException $e) {
+                $this->dominionSelectorService->unsetUserSelectedDominion();
+
+                $request->session()->flash('alert-danger', 'The database has been reset for development purposes since your last visit. Please re-register a new account. You can use the same credentials you\'ve used before.');
+
+                return redirect()->route('home');
+            }
 
             foreach (app()->tagged('dominionCalculators') as $calculator) {
                 $calculator->init($dominion);

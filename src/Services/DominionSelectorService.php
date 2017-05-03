@@ -5,6 +5,7 @@ namespace OpenDominion\Services;
 use Auth;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
+use Session;
 
 class DominionSelectorService
 {
@@ -62,5 +63,10 @@ class DominionSelectorService
         }
 
         return $this->selectedDominion;
+    }
+
+    public function unsetUserSelectedDominion()
+    {
+        Session::forget(self::SESSION_NAME);
     }
 }
