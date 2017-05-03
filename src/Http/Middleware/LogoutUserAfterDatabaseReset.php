@@ -15,10 +15,18 @@ class LogoutUserAfterDatabaseReset
         if (Auth::check()) {
             $user = Auth::user();
 
+            dd([
+                $user,
+                $user->dominions->isEmpty(),
+                $user->dominions()
+            ]);
+
             if (($user === null) || $user->dominions->isEmpty()) {
                 return $this->logout($request);
             }
         }
+
+        dd('no auth check');
 
         return $next($request);
     }
