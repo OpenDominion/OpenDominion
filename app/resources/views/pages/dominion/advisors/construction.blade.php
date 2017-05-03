@@ -30,7 +30,7 @@
                         <tbody>
                         @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
                             <tr>
-                                <td>{{ ucfirst($buildingType) }}</td>
+                                <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
                                 <td class="text-center">{{ number_format($selectedDominion->{'building_' . $buildingType}) }}</td>
                                 <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand()) * 100), 2) }}%</td>
                             </tr>
@@ -67,7 +67,7 @@
                         <tbody>
                         @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
                             <tr>
-                                <td>{{ ucfirst($buildingType) }}</td>
+                                <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
                                 @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
                                         @if ($dominionQueueService->getConstructionQueue()[$buildingType][$i] === 0)
