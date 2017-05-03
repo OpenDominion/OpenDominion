@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Console\Commands;
+namespace OpenDominion\Console\Commands\Game;
 
 use Carbon\Carbon;
 use Config;
@@ -14,7 +14,7 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
-class GameTickCommand extends Command
+class TickCommand extends Command
 {
     /** @var string The name and signature of the console command */
     protected $signature = 'game:tick';
