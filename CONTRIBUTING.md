@@ -68,6 +68,7 @@ It doesn't matter if you're a Dominion veteran of if you've new, feel free and b
 
 - Join the [Gitter chat](https://gitter.im/opendominion/Lobby) to chat with me and other interested people. If you've any questions about (Open)Dominion, feel free to ask!
 - [Participate in the beta](#participating-in-the-beta)!
+- Spread the word of those you know might be interested.
 - Keeping an eye on the project by watching it on GitHub.
 - Praise the project by starring it on GitHub.
 
