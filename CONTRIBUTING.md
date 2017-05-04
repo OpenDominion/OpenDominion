@@ -79,7 +79,7 @@ The beta of OpenDominion is currently running at [https://dev.opendominion.waveh
 
 Feel free to register and play around!
 
-Do note that some data incidentally gets reset for development and testing purposes. If you have registered before and get a 'failed to login' message, feel free to re-register with your same credentials! 
+**Note:** Some data incidentally gets reset for development and testing purposes. If you have registered before and get a 'failed to login' message, feel free to re-register with your same credentials! 
 
 
 ### Providing info
@@ -305,7 +305,7 @@ If that doesn't work, remove the `app/storage/databases/local.sqlite` file, crea
 $ php bin/artisan migrate --seed
 ```
 
-Note that any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
+**Note:** Any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
 
 Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`app/storage/logs/laravel.log`).
 
