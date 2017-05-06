@@ -312,7 +312,7 @@ Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=lo
 
 ### Style guide and standards
 
-PHP code should be in PSR2-style with a few additional rules (todo: add and link to .styleci.yml - just look at existing files for now :^) ).
+PHP code should be in PSR2-style with a few additional rules. See [.styleci.yml](https://github.com/WaveHack/OpenDominion/blob/master/.styleci.yml) for the defined [preset](https://styleci.readme.io/docs/presets#section-psr2) and [additional rules](https://styleci.readme.io/docs/fixers).
 
 Please add relevant unit tests or feature tests if possible.
 
