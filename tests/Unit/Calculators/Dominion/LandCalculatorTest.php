@@ -82,6 +82,11 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(67, $this->landCalculator->getTotalBarrenLand());
     }
 
+    public function testGetTotalBarrenLandByLandType()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function testGetBarrenLandByLandType()
     {
         $raceMock = m::mock(Race::class);
@@ -139,5 +144,25 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         }
 
         $this->assertEquals($expected, $this->landCalculator->getBarrenLandByLandType());
+    }
+
+    public function testGetExplorationPlatinumCost()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetExplorationDrafteeCost()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetExplorationMaxAfford()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testGetExplorationMoraleDrop()
+    {
+        $this->markTestIncomplete();
     }
 }
