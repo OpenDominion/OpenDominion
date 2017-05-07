@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -36,9 +37,24 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->networthCalculatorTestMock->initDependencies();
     }
 
-    public function setGetRealmNetworth()
+    public function testGetRealmNetworth()
     {
-        $this->markTestIncomplete();
+        /** @var Realm $realmMock */
+        $realmMock = m::mock(Realm::class);
+
+        $dominions = [];
+
+        for ($i = 0; $i < 5; $i++) {
+            $dominion = m::mock(Dominion::class);
+
+            $this->networthCalculatorTestMock->shouldReceive('getDominionNetworth')->with($dominion)->andReturn(100);
+
+            $dominions[] = $dominion;
+        }
+
+        $realmMock->shouldReceive('getAttribute')->with('dominions')->andReturn($dominions);
+
+        $this->assertEquals(500, $this->networthCalculatorTestMock->getRealmNetworth($realmMock));
     }
 
     public function testGetDominionNetworth()
