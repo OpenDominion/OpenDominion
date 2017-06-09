@@ -11,6 +11,8 @@ use Log;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Interfaces\DependencyInitializableInterface;
+use OpenDominion\Interfaces\DominionInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
@@ -316,6 +318,7 @@ class TickCommand extends Command
     protected function initCalculatorDependencies()
     {
         foreach (app()->tagged('initializableCalculators') as $calculator) {
+            /** @var DependencyInitializableInterface $calculator */
             $calculator->initDependencies();
         }
     }
@@ -328,6 +331,7 @@ class TickCommand extends Command
     protected function initCalculatorsForDominion(Dominion $dominion)
     {
         foreach (app()->tagged('dominionCalculators') as $calculator) {
+            /** @var DominionInitializableInterface $calculator */
             $calculator->init($dominion);
         }
     }
