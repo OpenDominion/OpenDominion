@@ -119,10 +119,10 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Assumptions:
 
-- You have PHP 5.6 (or greater) installed and in your path
+- You have [PHP](http://www.php.net/) 5.6 (or greater) installed and in your path
 - Your PHP has the extensions: curl, mbstring, openssl, pdo_sqlite and optionally xdebug
-- You have composer installed and in your path
-- You have npm and yarn installed and in your path
+- You have [Composer](https://getcomposer.org/) installed and in your path
+- You have [NPM](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/) installed and in your path
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
 
