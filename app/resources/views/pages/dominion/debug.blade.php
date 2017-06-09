@@ -151,8 +151,8 @@
                 </div>
                 <div class="box-body">
                     <p>
-                        Realm Networth: <b>{{ $networthCalculator->getRealmNetworth($selectedDominion->realm) }}</b><br>
-                        Dominion Networth: <b>{{ $networthCalculator->getDominionNetworth($selectedDominion) }}</b><br>
+                        Realm Networth: <b>{{ number_format($networthCalculator->getRealmNetworth($selectedDominion->realm)) }}</b><br>
+                        Dominion Networth: <b>{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</b><br>
                     </p>
                 </div>
             </div>
