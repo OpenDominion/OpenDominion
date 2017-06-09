@@ -90,7 +90,7 @@ Even though I've played Dominion myself, I can't remember how everything looked 
 
 Feel free to browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) and reply with your thoughts if you feel like it. Not everything is related to the original Dominion gameplay and I could use some help with other things, like [design](https://github.com/WaveHack/OpenDominion/issues/63) and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)) at time of writing.
 
-Also if you feel like you want to bring up a topic that you think should get looked into, don't hesitate to poke me on Gitter or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
+Also if want to bring up a topic that you think should get looked into, don't hesitate to poke me on Gitter or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
 
 
 ### Reporting bugs
