@@ -53,9 +53,9 @@ class TickCommand extends Command
     }
 
     /**
-     * Execute the console command.
+     * Execute the game:tick console command.
      *
-     * @return mixed
+     * @throws Exception
      */
     public function handle()
     {
@@ -83,9 +83,16 @@ class TickCommand extends Command
 
         DB::commit();
 
-        Log::info('Ticked');
+        Log::info('Tick');
     }
 
+    /**
+     * Saves the database driver name so we can easily reference it later when we need driver-specific SQL.
+     *
+     * Only MySQL and Sqlite are supported at this time.
+     *
+     * @throws Exception
+     */
     public function setDatabaseDriver()
     {
         $connector = Config::get('database.default');
@@ -98,6 +105,9 @@ class TickCommand extends Command
         $this->databaseDriver = $driver;
     }
 
+    /**
+     * Ticks dominion resources.
+     */
     public function tickDominionResources()
     {
         Log::debug('Tick resources started');
@@ -135,6 +145,9 @@ class TickCommand extends Command
         Log::debug("Ticked resources, {$affected} dominion(s) affected");
     }
 
+    /**
+     * Ticks dominion morale.
+     */
     public function tickDominionMorale()
     {
         Log::debug('Tick morale started');
@@ -161,6 +174,9 @@ class TickCommand extends Command
         Log::debug("Ticked morale, {$affected} dominion(s) affected");
     }
 
+    /**
+     * Ticks dominion spy strength.
+     */
     public function tickDominionSpyStrength()
     {
         Log::debug('Tick spy strength started');
@@ -185,6 +201,9 @@ class TickCommand extends Command
         Log::debug("Ticked spy strength, {$affected} dominion(s) affected");
     }
 
+    /**
+     * Ticks dominion wizard strength.
+     */
     public function tickDominionWizardStrength()
     {
         Log::debug('Tick wizard strength started');
@@ -209,6 +228,9 @@ class TickCommand extends Command
         Log::debug("Ticked wizard strength, {$affected} dominion(s) affected");
     }
 
+    /**
+     * Ticks dominion exploration queue.
+     */
     public function tickExplorationQueue()
     {
         Log::debug('Tick exploration queue');
@@ -238,6 +260,9 @@ class TickCommand extends Command
         Log::debug("Ticked exploration queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 
+    /**
+     * Ticks dominion construction queue.
+     */
     public function tickConstructionQueue()
     {
         Log::debug('Tick construction queue');
@@ -267,6 +292,9 @@ class TickCommand extends Command
         Log::debug("Ticked construction queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 
+    /**
+     * Ticks dominion networth.
+     */
     public function tickDominionNetworth()
     {
         Log::debug('Tick dominion networth');
@@ -282,6 +310,9 @@ class TickCommand extends Command
         }
     }
 
+    /**
+     * Initialize calculator dependencies.
+     */
     protected function initCalculatorDependencies()
     {
         foreach (app()->tagged('initializableCalculators') as $calculator) {
@@ -289,6 +320,11 @@ class TickCommand extends Command
         }
     }
 
+    /**
+     * Initialize calculators with dominion.
+     *
+     * @param Dominion $dominion
+     */
     protected function initCalculatorsForDominion(Dominion $dominion)
     {
         foreach (app()->tagged('dominionCalculators') as $calculator) {
