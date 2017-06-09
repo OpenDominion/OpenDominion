@@ -91,7 +91,7 @@ class TickCommand extends Command
         $connector = Config::get('database.default');
         $driver = Config::get("database.connections.{$connector}.driver");
 
-        if (!in_array($driver, ['mysql', 'sqlite'])) {
+        if (!in_array($driver, ['mysql', 'sqlite'], true)) {
             throw new Exception("Database driver {$driver} not supported for game:tick command :(");
         }
 
