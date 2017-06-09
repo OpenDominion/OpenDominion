@@ -45,11 +45,11 @@ If possible, join the [OpenDominion Gitter chat](https://gitter.im/opendominion/
 
 OpenDominion aims to be an open source clone of Dominion (round 70 ruleset), with a few changes and improvements:
 
-- An open source project with well-written, documented and (unit-)tested code
-- A modern and responsive design, developed and tested for desktop, tablet and mobile
-- Free to play. No premium accounts or features
-- No advertisements
-- Lifetime accounts by default
+- An open source project with well-written, documented and (unit-)tested code.
+- A modern and responsive design, developed and tested for desktop, tablet and mobile.
+- Free to play. No premium accounts or features.
+- No advertisements.
+- Lifetime accounts by default.
 
 This means that pretty much all of vanilla Dominion's content (land, buildings, races, units, spells, wonders etc) and mechanics *are* set in stone.
  
@@ -229,9 +229,9 @@ The rest should be pretty self-explanatory, assuming you're at least somewhat co
 
 ### Deviation from Laravel
 
-- Artisan is in `bin`: `$ php bin/artisan [command]`
-- Source code is in `src` instead of `app`
-- Bootstrap, config, database, resources, routes and storage are in `app`
+- Artisan is in `bin`: `$ php bin/artisan [command]`.
+- Source code is in `src` instead of `app`.
+- Bootstrap, config, database, resources, routes and storage are in `app`.
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
 
@@ -244,7 +244,7 @@ The rest should be pretty self-explanatory, assuming you're at least somewhat co
 - Also see `AppServiceProvider.php` for this.
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
 - The `GameTickCommand` command is executed every hour at xx:00 from the console kernel.
-- Slim controllers, slim models, many slim services. 
+- Slim controllers, slim models, many slim services.
 
 
 ### How to run OpenDominion
