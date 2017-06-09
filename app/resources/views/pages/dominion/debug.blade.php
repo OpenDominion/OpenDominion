@@ -1,8 +1,12 @@
 @extends('layouts.master')
 
-@section('page-header', 'Super Secret Debug Page')
+@section('page-header', 'Super Secret Debug Page&trade;')
 
 @section('content')
+    <div class="alert alert-danger">
+        <p>This is the Super Secret Debug Page&trade;, which is used for development and debugging purposes. This section will <strong>not</strong> be included in the final version. So don't get too used to seeing all this information directly.</p>
+    </div>
+
     <div class="row">
 
         <div class="col-sm-12 col-md-4">
