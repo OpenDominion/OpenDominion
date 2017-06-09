@@ -224,10 +224,14 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
         +-- Services # Service tests, may touch database
 ```
 
-The rest should be pretty self-explanatory, assuming you're at least somewhat comfortable with Laravel.
+The rest should be pretty self-explanatory, assuming you're at least somewhat comfortable with the Laravel framework.
 
 
 ### Deviation from Laravel
+
+OpenDominion is built with the Laravel [*framework*](https://github.com/laravel/framework), but doesn't necessarily follow the Laravel [boiler plate](https://github.com/laravel/laravel) layout.
+
+With that said, here are some things to keep in mind if you're used to the Laravel boiler plate project code:
 
 - Artisan is in `bin`: `$ php bin/artisan [command]`.
 - Source code is in `src` instead of `app`.
