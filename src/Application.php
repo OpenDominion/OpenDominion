@@ -75,6 +75,14 @@ class Application extends LaravelApplication
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function resourcePath($path = '')
+    {
+        return ($this->appPath . DIRECTORY_SEPARATOR . 'resources' . $this->getSuffixPath($path));
+    }
+
+    /**
      * Get path prefixed by directory separator if not empty.
      *
      * @param string $path
