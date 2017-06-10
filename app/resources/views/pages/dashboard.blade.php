@@ -100,18 +100,14 @@
                             <colgroup>
                                 <col width="40">
                                 <col>
-                                <col width="80">
-                                <col width="00">
-                                <col width="00">
+                                <col width="160">
                                 <col width="80">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
                                     <th>Name</th>
-                                    <th class="text-center">Start</th>
-                                    <th class="text-center">End</th>
-                                    <th class="text-center">Duration</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center">Register</th>
                                 </tr>
                             </thead>
@@ -137,39 +133,22 @@
                                             <span class="text-muted">({{ $round->league->description }})</span>
                                         </td>
                                         <td class="text-center">
-                                            @if ($round->hasStarted())
-                                                <abbr class="text-warning" title="Started at {{ $round->start_date }}">Started!</abbr>
-                                                {{-- todo: Show current round milestone (mid, end etc) with appropriate text color --}}
-                                            @else
-                                                <abbr title="Starting at {{ $round->start_date }}">
-                                                    @php($daysUntilStart = $round->daysUntilStart())
-                                                    @if ($daysUntilStart === 1)
-                                                        {{ $daysUntilStart }} day
-                                                    @else
-                                                        {{ $daysUntilStart }} days
-                                                    @endif
-                                                </abbr>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
                                             @if ($round->hasEnded())
                                                 <abbr title="Ended at {{ $round->end_date }}">Ended</abbr>
-                                            @else
+                                            @elseif ($round->isActive())
                                                 <abbr title="Ending at {{ $round->end_date }}">
-                                                    @php($daysUntilEnd = $round->daysUntilEnd())
-                                                    @if ($daysUntilEnd === 1)
-                                                        {{ $daysUntilEnd }} day
-                                                    @else
-                                                        {{ $daysUntilEnd }} days
-                                                    @endif
+                                                    Ending in {{ $round->daysUntilEnd() }} day{{ ($round->daysUntilEnd() > 1) ? 's' : '' }}
+                                                </abbr>
+                                            @else
+                                                <abbr title="Starting at {{ $round->start_date }}">
+                                                    Starting in {{ $round->daysUntilStart() }} day{{ ($round->daysUntilStart > 1) ? 's' : '' }}
                                                 </abbr>
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <abbr title="Ending at {{ $round->end_date }}">{{ $round->durationInDays() }} days</abbr>
-                                        </td>
-                                        <td class="text-center">
-                                            @if ($userAlreadyRegistered)
+                                            @if ($round->isActive())
+                                                Playing
+                                            @elseif ($userAlreadyRegistered)
                                                 Already registered!
                                             @elseif ($round->openForRegistration())
                                                 <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
