@@ -70,6 +70,16 @@ class Round extends AbstractModel
     }
 
     /**
+     * Returns the amount in days until the round ends, from today on.
+     *
+     * @return int
+     */
+    public function daysUntilEnd()
+    {
+        return $this->end_date->diffInDays(Carbon::now());
+    }
+
+    /**
      * Returns the round duration in days.
      *
      * @return int

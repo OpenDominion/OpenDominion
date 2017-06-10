@@ -102,6 +102,7 @@
                                 <col>
                                 <col width="80">
                                 <col width="00">
+                                <col width="00">
                                 <col width="80">
                             </colgroup>
                             <thead>
@@ -109,6 +110,7 @@
                                     <th class="text-center">#</th>
                                     <th>Name</th>
                                     <th class="text-center">Start</th>
+                                    <th class="text-center">End</th>
                                     <th class="text-center">Duration</th>
                                     <th class="text-center">Register</th>
                                 </tr>
@@ -141,6 +143,16 @@
                                             @else
                                                 <abbr title="Starting at {{ $round->start_date }}">In {{ $round->daysUntilStart() }} day(s)</abbr>
                                             @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <abbr title="Ending at {{ $round->end_date }}">
+                                                @php($daysUntilEnd = $round->daysUntilEnd())
+                                                @if ($daysUntilEnd === 1)
+                                                    {{ $daysUntilEnd }} day
+                                                @else
+                                                    {{ $daysUntilEnd }} days
+                                                @endif
+                                            </abbr>
                                         </td>
                                         <td class="text-center">
                                             <abbr title="Ending at {{ $round->end_date }}">{{ $round->durationInDays() }} days</abbr>
