@@ -3,7 +3,6 @@
 namespace OpenDominion\Http\Controllers;
 
 use OpenDominion\Repositories\Criteria\Dominion\DominionFromCurrentLoggedInUserCriteria;
-use OpenDominion\Repositories\Criteria\Round\RoundHasntEndedCriteria;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RoundRepository;
 
@@ -26,7 +25,6 @@ class DashboardController extends AbstractController
         $this->dominions->pushCriteria(DominionFromCurrentLoggedInUserCriteria::class);
         $dominions = $this->dominions->with(['round', 'realm', 'race'])->all();
 
-        $this->rounds->pushCriteria(RoundHasntEndedCriteria::class);
         $rounds = $this->rounds->with('league')->all();
 
         return view('pages.dashboard', [

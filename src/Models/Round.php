@@ -50,13 +50,33 @@ class Round extends AbstractModel
     }
 
     /**
-     * Return whether a round has started or not.
+     * Returns whether a round has started.
      *
      * @return bool
      */
     public function hasStarted()
     {
         return ($this->start_date <= Carbon::today());
+    }
+
+    /**
+     * Returns whether a round has ended.
+     *
+     * @return bool
+     */
+    public function hasEnded()
+    {
+        return ($this->end_date <= Carbon::today());
+    }
+
+    /**
+     * Returns whether a round is active.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return ($this->hasStarted() && !$this->hasEnded());
     }
 
     /**

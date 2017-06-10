@@ -141,18 +141,29 @@
                                                 <abbr class="text-warning" title="Started at {{ $round->start_date }}">Started!</abbr>
                                                 {{-- todo: Show current round milestone (mid, end etc) with appropriate text color --}}
                                             @else
-                                                <abbr title="Starting at {{ $round->start_date }}">In {{ $round->daysUntilStart() }} day(s)</abbr>
+                                                <abbr title="Starting at {{ $round->start_date }}">
+                                                    @php($daysUntilStart = $round->daysUntilStart())
+                                                    @if ($daysUntilStart === 1)
+                                                        {{ $daysUntilStart }} day
+                                                    @else
+                                                        {{ $daysUntilStart }} days
+                                                    @endif
+                                                </abbr>
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <abbr title="Ending at {{ $round->end_date }}">
-                                                @php($daysUntilEnd = $round->daysUntilEnd())
-                                                @if ($daysUntilEnd === 1)
-                                                    {{ $daysUntilEnd }} day
-                                                @else
-                                                    {{ $daysUntilEnd }} days
-                                                @endif
-                                            </abbr>
+                                            @if ($round->hasEnded())
+                                                <abbr title="Ended at {{ $round->end_date }}">Ended</abbr>
+                                            @else
+                                                <abbr title="Ending at {{ $round->end_date }}">
+                                                    @php($daysUntilEnd = $round->daysUntilEnd())
+                                                    @if ($daysUntilEnd === 1)
+                                                        {{ $daysUntilEnd }} day
+                                                    @else
+                                                        {{ $daysUntilEnd }} days
+                                                    @endif
+                                                </abbr>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <abbr title="Ending at {{ $round->end_date }}">{{ $round->durationInDays() }} days</abbr>
