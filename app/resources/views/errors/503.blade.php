@@ -58,25 +58,33 @@
                                 <h3 class="box-title">Status 503: Service Unavailable</h3>
                             </div>
                             <div class="box-body">
-                                <p>OpenDominion is currently down for maintenance.</p>
+                                <p>
+                                    @if ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException)
+                                        OpenDominion is currently down for maintenance.
+                                    @else
+                                        OpenDominion encountered a server error.
+                                    @endif
+                                </p>
                                 <p>
                                     <dl>
                                         <dt>Message:</dt>
                                         <dd>{{ $exception->getMessage() }}</dd>
-                                        <dt>Went down:</dt>
-                                        <dd>
-                                            <abbr title="Went down at {{ $exception->wentDownAt }}">
-                                                {{ $exception->wentDownAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s) ago
-                                            </abbr>
-                                        </dd>
-                                        <dt>Estimated back:</dt>
-                                        <dd>
-                                            @if ($exception->willBeAvailableAt = \Carbon\Carbon::now())
-                                                Any second now!
-                                            @else
-                                                In {{ $exception->willBeAvailableAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s)
-                                            @endif
-                                        </dd>
+                                        @if ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException)
+                                            <dt>Went down:</dt>
+                                            <dd>
+                                                <abbr title="Went down at {{ $exception->wentDownAt }}">
+                                                    {{ $exception->wentDownAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s) ago
+                                                </abbr>
+                                            </dd>
+                                            <dt>Estimated back:</dt>
+                                            <dd>
+                                                @if ($exception->willBeAvailableAt = \Carbon\Carbon::now())
+                                                    Any second now!
+                                                @else
+                                                    In {{ $exception->willBeAvailableAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s)
+                                                @endif
+                                            </dd>
+                                        @endif
                                     </dl>
                                 </p>
                             </div>
