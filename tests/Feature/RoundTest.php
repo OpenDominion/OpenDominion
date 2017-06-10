@@ -30,8 +30,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->seeElement('tr', ['class' => 'warning'])
             ->see('Testing Round')
             ->see('(Standard league)')
-            ->see('Started!')
-            ->see('50 days')
+            ->see('Ending in 50 days')
             ->see('Register')
             ->seeInElement('a', 'Register');
     }
@@ -47,8 +46,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->seeElement('tr', ['class' => 'success'])
             ->see('Testing Round')
             ->see('(Standard league)')
-//            ->see('In 3 day(s)')// fixme: test sometimes fail on this
-            ->see('50 days')
+            ->see('Starting in 3 days')
             ->seeInElement('a', 'Register');
     }
 
@@ -63,9 +61,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->seeElement('tr', ['class' => 'danger'])
             ->see('Testing Round')
             ->see('(Standard league)')
-//            ->see('In 5 day(s)') // fixme: test sometimes fail on this
-            ->see('50 days')
-//            ->see('In 2 day(s)')
+            ->see('Starting in 5 days')
             ->dontSeeInElement('a', 'Register');
     }
 

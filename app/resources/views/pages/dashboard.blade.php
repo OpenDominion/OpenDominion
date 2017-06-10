@@ -141,14 +141,14 @@
                                                 </abbr>
                                             @else
                                                 <abbr title="Starting at {{ $round->start_date }}">
-                                                    Starting in {{ $round->daysUntilStart() }} day{{ ($round->daysUntilStart > 1) ? 's' : '' }}
+                                                    Starting in {{ $round->daysUntilStart() }} day{{ ($round->daysUntilStart() > 1) ? 's' : '' }}
                                                 </abbr>
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($round->isActive())
+                                            @if ($userAlreadyRegistered && $round->isActive())
                                                 Playing
-                                            @elseif ($userAlreadyRegistered)
+                                            @elseif ($userAlreadyRegistered && !$round->hasStarted())
                                                 Already registered!
                                             @elseif ($round->openForRegistration())
                                                 <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>

@@ -3,7 +3,6 @@
 namespace OpenDominion\Tests;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Console\Kernel;
 use Laravel\BrowserKitTesting\TestCase;
 use Mail;
 use OpenDominion\Factories\DominionFactory;
@@ -79,8 +78,8 @@ abstract class AbstractBrowserKitTestCase extends TestCase
             'round_league_id' => 1,
             'number' => 1,
             'name' => 'Testing Round',
-            'start_date' => new Carbon($startDate),
-            'end_date' => new Carbon($endDate),
+            'start_date' => new Carbon($startDate . ' midnight'),
+            'end_date' => new Carbon($endDate . ' midnight'),
         ]);
 
         return $round;
