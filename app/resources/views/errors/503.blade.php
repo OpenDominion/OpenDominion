@@ -78,7 +78,7 @@
                                             </dd>
                                             <dt>Estimated back:</dt>
                                             <dd>
-                                                @if ($exception->willBeAvailableAt >= \Carbon\Carbon::now())
+                                                @if (\Carbon\Carbon::now() >= $exception->willBeAvailableAt)
                                                     Any second now!
                                                 @else
                                                     In {{ $exception->willBeAvailableAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s)
