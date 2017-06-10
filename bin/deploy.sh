@@ -14,7 +14,7 @@ git fetch origin ${branch}
 git checkout --force ${branch}
 
 if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 origin/${branch}) ]; then
-    php bin/artisan down
+    php bin/artisan down --message="Updating" --retry="300"
 
     git reset --hard origin/${branch}
 
