@@ -8,12 +8,12 @@ keys:
 folders:
     -
         map: .
-        to: /home/vagrant/Code/opendominion
+        to: /home/vagrant/OpenDominion
 sites:
     -
         map: opendominion.app
-        to: /home/vagrant/Code/opendominion/public
+        to: /home/vagrant/OpenDominion/public
 databases:
     - homestead
-name: opendominion
+name: OpenDominion
 hostname: opendominion
