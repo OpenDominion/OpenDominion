@@ -176,8 +176,10 @@ $ php bin/artisan ide-helper:meta
 $ php bin/artisan optimize
 
 # Frontend stuff
-$ yarn install
-$ npm run dev
+$ yarn install # Optionally with --no-bin-links on mounted drives, like with Vagrant
+# If using Vagrant, node-sass might fail to install properly.
+# If so, run: npm rebuild node-sass --no-bin-links 
+$ yarn run dev
 ```
 
 Make sure to change the `MAIL_*` settings in your `.env` if you want to use your own SMTP server (or just set `MAIL_DRIVER` to `log`). 

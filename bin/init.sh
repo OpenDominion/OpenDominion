@@ -51,7 +51,10 @@ fi
 if [[ ! ${env} == testing ]]; then
 
     # Npm packages
-    [[ -d node_modules ]] || yarn install
+    if [[ ! -d node_modules ]]; then
+        yarn install --no-bin-links
+        npm rebuild node-sass --no-bin-links
+    fi
 
     # Laravel Elixir
     if [[ ${env} == production ]]; then
