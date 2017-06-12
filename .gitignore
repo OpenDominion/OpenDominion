@@ -3,6 +3,7 @@
 /.idea/*.local.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/.vagrant/
 /app/storage/*.key
 /app/storage/local.sqlite
 /node_modules/
@@ -15,8 +16,4 @@
 /.phpstorm.meta.php
 /_ide_helper.php
 /_ide_helper_models.php
-/after.sh
-/aliases
-/Homestead.yaml
 /phpunit.xml
-/Vagrantfile

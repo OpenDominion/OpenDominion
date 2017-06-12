@@ -1,0 +1,19 @@
+ip: 192.168.10.10
+memory: 2048
+cpus: 1
+provider: virtualbox
+authorize: ~/.ssh/id_rsa.pub
+keys:
+    - ~/.ssh/id_rsa
+folders:
+    -
+        map: .
+        to: /home/vagrant/Code/opendominion
+sites:
+    -
+        map: opendominion.app
+        to: /home/vagrant/Code/opendominion/public
+databases:
+    - homestead
+name: opendominion
+hostname: opendominion
