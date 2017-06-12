@@ -51,17 +51,13 @@ fi
 if [[ ! ${env} == testing ]]; then
 
     # Npm packages
-    [[ -d node_modules ]] || npm install
-    # todo: npm insttall --production
-
-    # Bower
-    [[ -f bower.json && ! -d bower_components ]] && bower install
+    [[ -d node_modules ]] || yarn install
 
     # Laravel Elixir
     if [[ ${env} == production ]]; then
-        npm run production
+        yarn run production
     else
-        npm run dev
+        yarn run dev
     fi
 
 fi
