@@ -56,7 +56,13 @@
                                                 <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
                                             @endif--}}
                                         </td>
-                                        <td class="text-center">{{ $dominion->race->name }}</td>
+                                        <td class="text-center">
+                                            {{ $dominion->race->name }}
+                                            {{--
+                                            todo: fix above statement which generates this query:
+                                            select * from "units" where "units"."race_id" = '1' and "units"."race_id" is not null order by "slot" asc limit 4
+                                            --}}
+                                        </td>
                                         <td class="text-center">{{ $landCalculator->getTotalLand() }}</td>
                                         <td class="text-center">{{ $dominion->networth }}</td>
                                     </tr>

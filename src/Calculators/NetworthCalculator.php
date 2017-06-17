@@ -37,6 +37,8 @@ class NetworthCalculator implements DependencyInitializableInterface
     {
         $networth = 0;
 
+        // todo: fix line below which generates this query:
+        // select * from "dominions" where "dominions"."realm_id" = '1' and "dominions"."realm_id" is not null
         foreach ($realm->dominions as $dominion) {
             $networth += $this->getDominionNetworth($dominion);
         }
@@ -64,7 +66,7 @@ class NetworthCalculator implements DependencyInitializableInterface
         $networthPerArchMage = 5;
         $networthPerLand = 20;
         $networthPerBuilding = 5;
-
+//return 0;
         foreach ($dominion->race->units as $unit) {
             $networth += ($dominion->{'military_unit' . $unit->slot} * $this->getUnitNetworth($unit));
         }

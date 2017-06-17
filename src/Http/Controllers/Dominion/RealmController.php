@@ -21,7 +21,7 @@ class RealmController extends AbstractDominionController
             $realm = $this->getSelectedDominion()->realm;
         }
 
-        $dominions = $realm->dominions()/*->with('race')*/->orderBy('networth', 'desc')->get();
+        $dominions = $realm->dominions()/*->with(['race.units'])*/->orderBy('networth', 'desc')->get();
 
         // Todo: optimize this hacky hacky stuff
         $prevRealm = DB::table('realms')
