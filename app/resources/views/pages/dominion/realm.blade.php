@@ -76,7 +76,8 @@
                 </div>
                 <div class="box-body">
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
-                    <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> dominion(s) and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong></p>
+                    <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> dominion(s) and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
+                    {{-- todo: change this to a table? --}}
                 </div>
                 <div class="box-footer">
                     <div class="row">
@@ -86,6 +87,7 @@
                             @endif
                         </div>
                         <div class="col-xs-4">
+                            {{-- todo: make this a submit form to go to specific realm number --}}
                             <input type="number" name="realm_number" class="form-control text-center" placeholder="{{ $realm->number }}">
                         </div>
                         <div class="col-xs-4 text-right">
