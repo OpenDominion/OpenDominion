@@ -49,6 +49,6 @@ class RealmController extends AbstractDominionController
 
     public function postChangeRealm(Request $request)
     {
-        return redirect()->route('dominion.other.realm', $request->get('realm'));
+        return redirect()->route('dominion.realm', $request->get('realm'));
     }
 }
