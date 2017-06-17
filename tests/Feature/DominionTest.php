@@ -13,6 +13,7 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testUserSeesNoActiveDominionsWhenUserDoesntHaveAnyActiveDominions()
     {
+        // todo: move to DashboardTest
         $this->createAndImpersonateUser();
 
         $this->visit('/dashboard')
@@ -22,6 +23,9 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testUserCantPlayYetDuringPreRound()
     {
+        // todo: segment this and move this to dominion select, have general
+        // dominion page tests for http 200 responses, action requests etc
+        // aka acceptance tests
         $this->markTestIncomplete();
     }
 
@@ -37,7 +41,7 @@ class DominionTest extends AbstractBrowserKitTestCase
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
 
-        $this->visit('dominion/status')
+        $this->visit('/dominion/status')
             ->seePageIs('/dashboard');
     }
 
@@ -51,7 +55,7 @@ class DominionTest extends AbstractBrowserKitTestCase
 
         $dominionSelectorService->selectUserDominion($dominion);
 
-        $this->visit('dominion/status')
+        $this->visit('/dominion/status')
             ->see("The Dominion of {$dominion->name}");
     }
 }

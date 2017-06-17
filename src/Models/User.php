@@ -20,6 +20,11 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 //        return $this->dominions()->where('round_id', $round->id)->get();
 //    }
 
+    public function activities()
+    {
+        return $this->hasMany(UserActivity::class);
+    }
+
     public function dominions()
     {
         return $this->hasMany(Dominion::class);

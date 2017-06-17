@@ -4,6 +4,9 @@ namespace OpenDominion\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
+//use OpenDominion\Events\UserLoginEvent;
+//use OpenDominion\Listeners\User\ActivityListener;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -12,6 +15,16 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        \OpenDominion\Listeners\User\Auth\ActivitySubscriber::class,
+        \OpenDominion\Listeners\User\Auth\AnalyticsSubscriber::class,
     ];
 
     /**

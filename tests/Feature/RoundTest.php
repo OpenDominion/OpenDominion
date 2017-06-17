@@ -103,5 +103,6 @@ class RoundTest extends AbstractBrowserKitTestCase
     }
 
     // todo: round milestones (prot to d3, early to d16, mid to d33, late to d45, end to d50)
+    // todo: other round stages, like war/black ops stuff (after 5/7 days)
     // todo: post-round stuff
 }

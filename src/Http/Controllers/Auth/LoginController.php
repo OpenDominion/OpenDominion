@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use OpenDominion\Events\UserLoginEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
 use OpenDominion\Services\AnalyticsService;
@@ -27,21 +28,25 @@ class LoginController extends AbstractController
 
     protected function authenticated(Request $request, User $user)
     {
+        event(new UserLoginEvent($user));
+
+        // todo: refactor to something like dominionSelectorService->trySelectActiveDominion()
+//        if ($user->hasActiveDominion()) {
+//            resolve(DominionSelectorService::class)
+//                ->selectUserDominion($user->getActiveDominion());
+//        }
+
         if ($user->dominions->count() === 1) {
+            /** @var DominionSelectorService $dominionSelectorService */
             $dominionSelectorService = resolve(DominionSelectorService::class);
             $dominionSelectorService->selectUserDominion($user->dominions->first());
         }
-
-        // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
-            'user',
-            'login'
-        ));
     }
 
     public function postLogout(Request $request)
     {
+//        event(new UserLogoutEvent(auth()->user()));
+
         $response = $this->logout($request);
 
         // todo: fire laravel event

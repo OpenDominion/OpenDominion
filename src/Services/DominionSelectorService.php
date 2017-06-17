@@ -36,13 +36,18 @@ class DominionSelectorService
      */
     public function selectUserDominion(Dominion $dominion)
     {
+        $user = Auth::user();
+
         // Check if Dominion belongs to logged in user
-        if ($dominion->user_id != Auth::user()->id) {
+        if ($dominion->user_id != $user->id) {
             throw new \Exception('User cannot select someone else\'s Dominion');
         }
 
         // Check that round is active
         // todo
+
+        // todo: fire laravel event
+//        event(new Dominion\SelectedEvent($user, $dominion));
 
         session([self::SESSION_NAME => $dominion->id]);
     }
