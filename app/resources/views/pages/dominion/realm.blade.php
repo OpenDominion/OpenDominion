@@ -85,24 +85,26 @@
                     <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> dominion(s) and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
                     {{-- todo: change this to a table? --}}
                 </div>
-                <div class="box-footer">
-                    <div class="row">
-                        <div class="col-xs-4">
-                            @if ($prevRealm !== null)
-                                <a href="{{ route('dominion.other.realm', $prevRealm->id) }}">&lt; {{ $prevRealm->name }} (# {{  $prevRealm->number }})</a>
-                            @endif
-                        </div>
-                        <div class="col-xs-4">
-                            {{-- todo: make this a submit form to go to specific realm number --}}
-                            <input type="number" name="realm_number" class="form-control text-center" placeholder="{{ $realm->number }}">
-                        </div>
-                        <div class="col-xs-4 text-right">
-                            @if ($nextRealm !== null)
-                                <a href="{{ route('dominion.other.realm', $nextRealm->id) }}">{{ $nextRealm->name }} (# {{  $nextRealm->number }}) &gt;</a>
-                            @endif
+                @if (($prevRealm !== null) || ($nextRealm !== null))
+                    <div class="box-footer">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                @if ($prevRealm !== null)
+                                    <a href="{{ route('dominion.other.realm', $prevRealm->id) }}">&lt; {{ $prevRealm->name }} (# {{  $prevRealm->number }})</a>
+                                @endif
+                            </div>
+                            <div class="col-xs-4">
+                                {{-- todo: make this a submit form to go to specific realm number --}}
+                                <input type="number" name="realm_number" class="form-control text-center" placeholder="{{ $realm->number }}">
+                            </div>
+                            <div class="col-xs-4 text-right">
+                                @if ($nextRealm !== null)
+                                    <a href="{{ route('dominion.other.realm', $nextRealm->id) }}">{{ $nextRealm->name }} (# {{  $nextRealm->number }}) &gt;</a>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
 
