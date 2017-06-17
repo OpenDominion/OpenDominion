@@ -32,7 +32,7 @@ class RealmController extends AbstractDominionController
 
         $nextRealm = DB::table('realms')
             ->where('number', '>', $realm->number)
-            ->orderBy('number', 'asc')
+            ->orderBy('number')
             ->limit(1)
             ->first();
 
