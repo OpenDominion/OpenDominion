@@ -78,8 +78,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->post('military/train')->uses('Dominion\MilitaryController@postTrain')->name('military.train');
 
             // Realm
-            $router->get('realm/{realm}')->uses('Dominion\RealmController@getRealm')->name('other.realm'); // todo: test rename to realm and delete line below
-            $router->get('realm')->uses('Dominion\RealmController@getRealm')->name('realm');
+            $router->get('realm/{realm?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
             // todo: post/change realm?
