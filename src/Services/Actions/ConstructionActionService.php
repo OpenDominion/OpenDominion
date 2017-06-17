@@ -29,14 +29,14 @@ class ConstructionActionService
         $data = array_map('intval', $data);
 
         /** @var LandHelper $landHelper */
-        $landHelper = resolve(LandHelper::class);
+        $landHelper = app(LandHelper::class);
 
         /** @var BuildingCalculator $buildingCalculator */
-        $buildingCalculator = resolve(BuildingCalculator::class);
+        $buildingCalculator = app(BuildingCalculator::class);
         $buildingCalculator->init($dominion);
 
         /** @var LandCalculator $landCalculator */
-        $landCalculator = resolve(LandCalculator::class);
+        $landCalculator = app(LandCalculator::class);
         $landCalculator->init($dominion);
 
         $totalBuildingsToConstruct = array_sum($data);

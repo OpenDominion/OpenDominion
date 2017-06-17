@@ -32,13 +32,13 @@ class LoginController extends AbstractController
 
         // todo: refactor to something like dominionSelectorService->trySelectActiveDominion()
 //        if ($user->hasActiveDominion()) {
-//            resolve(DominionSelectorService::class)
+//            app(DominionSelectorService::class)
 //                ->selectUserDominion($user->getActiveDominion());
 //        }
 
         if ($user->dominions->count() === 1) {
             /** @var DominionSelectorService $dominionSelectorService */
-            $dominionSelectorService = resolve(DominionSelectorService::class);
+            $dominionSelectorService = app(DominionSelectorService::class);
             $dominionSelectorService->selectUserDominion($user->dominions->first());
         }
     }
@@ -50,7 +50,7 @@ class LoginController extends AbstractController
         $response = $this->logout($request);
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'user',
             'logout'

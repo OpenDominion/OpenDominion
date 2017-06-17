@@ -58,11 +58,11 @@ class RoundController extends AbstractController
             $request->get('dominion_name')
         );
 
-        $dominionSelectorService = resolve(DominionSelectorService::class);
+        $dominionSelectorService = app(DominionSelectorService::class);
         $dominionSelectorService->selectUserDominion($dominion);
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'round',
             'register',

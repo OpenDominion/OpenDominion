@@ -13,7 +13,7 @@ abstract class AbstractDominionController extends AbstractController
      */
     protected function getSelectedDominion()
     {
-        $dominionSelectorService = resolve(DominionSelectorService::class);
+        $dominionSelectorService = app(DominionSelectorService::class);
         return $dominionSelectorService->getUserSelectedDominion();
     }
 }

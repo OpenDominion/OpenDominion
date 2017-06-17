@@ -13,7 +13,7 @@ class ExploreActionRequest extends FormRequest
 
     public function __construct()
     {
-        $this->landHelper = resolve(LandHelper::class);
+        $this->landHelper = app(LandHelper::class);
     }
 
     /**

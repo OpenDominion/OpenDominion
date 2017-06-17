@@ -15,10 +15,10 @@ class MilitaryController extends AbstractDominionController
     public function getMilitary()
     {
         /** @var PopulationCalculator $populationCalculator */
-        $populationCalculator = resolve(PopulationCalculator::class);
+        $populationCalculator = app(PopulationCalculator::class);
 
         /** @var UnitHelper $unitHelper */
-        $unitHelper = resolve(UnitHelper::class);
+        $unitHelper = app(UnitHelper::class);
 
         $militaryTrainingCostPerUnit = $populationCalculator->getPopulationMilitaryTrainingCostPerUnit();
         $militaryMaxTrainable = $populationCalculator->getPopulationMilitaryMaxTrainable();
@@ -34,7 +34,7 @@ class MilitaryController extends AbstractDominionController
     public function postChangeDraftRate(/* MilitaryChangeDraftRateActionRequest */ Request $request)
     {
         $dominion = $this->getSelectedDominion();
-        $militaryActionService = resolve(MilitaryActionService::class);
+        $militaryActionService = app(MilitaryActionService::class);
 
         try {
             $result = $militaryActionService->changeDraftRate($dominion, $request->get('draft_rate'));
@@ -53,7 +53,7 @@ class MilitaryController extends AbstractDominionController
         );
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'military.change-draft-rate',

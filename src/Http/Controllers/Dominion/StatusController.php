@@ -10,10 +10,10 @@ class StatusController extends AbstractDominionController
 {
     public function getStatus()
     {
-        $dominionProtectionService = resolve(DominionProtectionService::class);
+        $dominionProtectionService = app(DominionProtectionService::class);
         $dominionProtectionService->setDominion($this->getSelectedDominion());
-        $landCalculator = resolve(LandCalculator::class);
-        $populationCalculator = resolve(PopulationCalculator::class);
+        $landCalculator = app(LandCalculator::class);
+        $populationCalculator = app(PopulationCalculator::class);
 
         return view('pages.dominion.status', compact(
             'dominionProtectionService',

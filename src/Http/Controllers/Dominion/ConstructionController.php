@@ -19,10 +19,10 @@ class ConstructionController extends AbstractDominionController
 {
     public function getConstruction()
     {
-        $buildingHelper = resolve(BuildingHelper::class);
-        $buildingCalculator = resolve(BuildingCalculator::class);
-        $landCalculator = resolve(LandCalculator::class);
-        $dominionQueueService = resolve(DominionQueueService::class);
+        $buildingHelper = app(BuildingHelper::class);
+        $buildingCalculator = app(BuildingCalculator::class);
+        $landCalculator = app(LandCalculator::class);
+        $dominionQueueService = app(DominionQueueService::class);
         $dominionQueueService->setDominion($this->getSelectedDominion());
 
         return view('pages.dominion.construction', compact(
@@ -36,7 +36,7 @@ class ConstructionController extends AbstractDominionController
     public function postConstruction(/*ConstructionActionRequest*/ Request $request)
     {
         $dominion = $this->getSelectedDominion();
-        $constructionActionService = resolve(ConstructionActionService::class);
+        $constructionActionService = app(ConstructionActionService::class);
 
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
@@ -71,7 +71,7 @@ class ConstructionController extends AbstractDominionController
         );
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'construct',
@@ -85,9 +85,9 @@ class ConstructionController extends AbstractDominionController
 
     public function getDestroy()
     {
-        $buildingHelper = resolve(BuildingHelper::class);
-        $buildingCalculator = resolve(BuildingCalculator::class);
-        $landCalculator = resolve(LandCalculator::class);
+        $buildingHelper = app(BuildingHelper::class);
+        $buildingCalculator = app(BuildingCalculator::class);
+        $landCalculator = app(LandCalculator::class);
 
         return view('pages.dominion.destroy', compact(
             'buildingHelper',
@@ -99,7 +99,7 @@ class ConstructionController extends AbstractDominionController
     public function postDestroy(Request $request)
     {
         $dominion = $this->getSelectedDominion();
-        $destroyActionService = resolve(DestroyActionService::class);
+        $destroyActionService = app(DestroyActionService::class);
 
         try {
             $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
@@ -125,7 +125,7 @@ class ConstructionController extends AbstractDominionController
         );
 
         // todo: laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'destroy',

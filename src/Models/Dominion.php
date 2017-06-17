@@ -34,7 +34,7 @@ class Dominion extends AbstractModel
     public function isSelectedByAuthUser()
     {
         // todo: repository criteria?
-        $dominionSelectorService = resolve(DominionSelectorService::class);
+        $dominionSelectorService = app(DominionSelectorService::class);
 
         $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
 

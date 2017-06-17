@@ -51,7 +51,7 @@ class DominionTest extends AbstractBrowserKitTestCase
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
-        $dominionSelectorService = resolve(DominionSelectorService::class);
+        $dominionSelectorService = app(DominionSelectorService::class);
 
         $dominionSelectorService->selectUserDominion($dominion);
 

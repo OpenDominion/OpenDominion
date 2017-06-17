@@ -26,10 +26,10 @@ class LandCalculator extends AbstractDominionCalculator
      */
     public function initDependencies()
     {
-        $this->buildingHelper = resolve(BuildingHelper::class);
-        $this->landHelper = resolve(LandHelper::class);
-        $this->buildingCalculator = resolve(BuildingCalculator::class);
-        $this->dominionQueueService = resolve(DominionQueueService::class);
+        $this->buildingHelper = app(BuildingHelper::class);
+        $this->landHelper = app(LandHelper::class);
+        $this->buildingCalculator = app(BuildingCalculator::class);
+        $this->dominionQueueService = app(DominionQueueService::class);
     }
 
     /**

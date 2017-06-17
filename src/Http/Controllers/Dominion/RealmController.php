@@ -12,10 +12,10 @@ class RealmController extends AbstractDominionController
     public function getRealm(Realm $realm = null)
     {
         /** @var LandCalculator $landCalculator */
-        $landCalculator = resolve(LandCalculator::class);
+        $landCalculator = app(LandCalculator::class);
 
         /** @var NetworthCalculator $networthCalculator */
-        $networthCalculator = resolve(NetworthCalculator::class);
+        $networthCalculator = app(NetworthCalculator::class);
 
         if (($realm === null) || !$realm->exists) {
             $realm = $this->getSelectedDominion()->realm;

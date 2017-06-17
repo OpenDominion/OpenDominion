@@ -17,9 +17,9 @@ class ExplorationController extends AbstractDominionController
 {
     public function getExplore()
     {
-        $landHelper = resolve(LandHelper::class);
-        $landCalculator = resolve(LandCalculator::class);
-        $dominionQueueService = resolve(DominionQueueService::class);
+        $landHelper = app(LandHelper::class);
+        $landCalculator = app(LandCalculator::class);
+        $dominionQueueService = app(DominionQueueService::class);
         $dominionQueueService->setDominion($this->getSelectedDominion());
 
         return view('pages.dominion.explore', compact(
@@ -32,7 +32,7 @@ class ExplorationController extends AbstractDominionController
     public function postExplore(ExploreActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
-        $explorationActionService = resolve(ExplorationActionService::class);
+        $explorationActionService = app(ExplorationActionService::class);
 
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
@@ -68,7 +68,7 @@ class ExplorationController extends AbstractDominionController
         );
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'explore',

@@ -23,7 +23,7 @@ class ComposerServiceProvider extends ServiceProvider
         });
 
         view()->composer('partials.resources-overview', function (View $view) {
-            $networthCalculator = resolve(NetworthCalculator::class);
+            $networthCalculator = app(NetworthCalculator::class);
             $networthCalculator->initDependencies();
             $view->with('networthCalculator', $networthCalculator);
         });

@@ -25,15 +25,15 @@ class DestroyActionService
         $data = array_map('intval', $data);
 
         /** @var BuildingCalculator $buildingCalculator */
-        $buildingCalculator = resolve(BuildingCalculator::class)
+        $buildingCalculator = app(BuildingCalculator::class)
             ->init($dominion);
 
         /** @var LandCalculator $landCalculator */
-        $landCalculator = resolve(LandCalculator::class)
+        $landCalculator = app(LandCalculator::class)
             ->init($dominion);
 
         /** @var LandHelper $landHelper */
-        $landHelper = resolve(LandHelper::class);
+        $landHelper = app(LandHelper::class);
 
         $totalBuildingsToDestroy = array_sum($data);
 

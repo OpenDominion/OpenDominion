@@ -56,7 +56,7 @@ class RegisterController extends AbstractController
         $user->save();
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'user',
             'register'
@@ -86,7 +86,7 @@ class RegisterController extends AbstractController
 
         auth()->login($user);
 
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'user',
             'activate'

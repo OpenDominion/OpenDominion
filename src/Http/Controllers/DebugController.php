@@ -17,12 +17,12 @@ class DebugController extends AbstractController
             return redirect()->route('dominion.status');
         }
 
-        $buildingCalculator = resolve(BuildingCalculator::class);
-        $landCalculator = resolve(LandCalculator::class);
-        $militaryCalculator = resolve(MilitaryCalculator::class);
-        $populationCalculator = resolve(PopulationCalculator::class);
-        $productionCalculator = resolve(ProductionCalculator::class);
-        $networthCalculator = resolve(NetworthCalculator::class);
+        $buildingCalculator = app(BuildingCalculator::class);
+        $landCalculator = app(LandCalculator::class);
+        $militaryCalculator = app(MilitaryCalculator::class);
+        $populationCalculator = app(PopulationCalculator::class);
+        $productionCalculator = app(ProductionCalculator::class);
+        $networthCalculator = app(NetworthCalculator::class);
 
         $networthCalculator->initDependencies();
 

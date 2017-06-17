@@ -11,7 +11,7 @@ class SelectController extends AbstractDominionController
 {
     public function postSelect(Dominion $dominion)
     {
-        $dominionSelectorService = resolve(DominionSelectorService::class);
+        $dominionSelectorService = app(DominionSelectorService::class);
 
         try {
             $dominionSelectorService->selectUserDominion($dominion);
@@ -21,7 +21,7 @@ class SelectController extends AbstractDominionController
         }
 
         // todo: fire laravel event
-        $analyticsService = resolve(AnalyticsService::class);
+        $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsService\Event(
             'dominion',
             'select'

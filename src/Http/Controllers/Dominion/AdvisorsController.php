@@ -19,8 +19,8 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsProduction()
     {
-        $populationCalculator = resolve(PopulationCalculator::class);
-        $productionCalculator = resolve(ProductionCalculator::class);
+        $populationCalculator = app(PopulationCalculator::class);
+        $productionCalculator = app(ProductionCalculator::class);
 
         return view('pages.dominion.advisors.production', compact(
             'populationCalculator',
@@ -35,9 +35,9 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsLand()
     {
-        $landHelper = resolve(LandHelper::class);
-        $landCalculator = resolve(LandCalculator::class);
-        $dominionQueueService = resolve(DominionQueueService::class);
+        $landHelper = app(LandHelper::class);
+        $landCalculator = app(LandCalculator::class);
+        $dominionQueueService = app(DominionQueueService::class);
 
         return view('pages.dominion.advisors.land', compact(
             'landHelper',
@@ -48,10 +48,10 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsConstruction()
     {
-        $buildingHelper = resolve(BuildingHelper::class);
-        $buildingCalculator = resolve(BuildingCalculator::class);
-        $landCalculator = resolve(LandCalculator::class);
-        $dominionQueueService = resolve(DominionQueueService::class);
+        $buildingHelper = app(BuildingHelper::class);
+        $buildingCalculator = app(BuildingCalculator::class);
+        $landCalculator = app(LandCalculator::class);
+        $dominionQueueService = app(DominionQueueService::class);
 
         return view('pages.dominion.advisors.construction', compact(
             'buildingHelper',

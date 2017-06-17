@@ -49,9 +49,9 @@ class TickCommand extends Command
         parent::__construct();
 
         $this->dominions = $dominions;
-        $this->populationCalculator = resolve(PopulationCalculator::class);
-        $this->productionCalculator = resolve(ProductionCalculator::class);
-        $this->networthCalculator = resolve(NetworthCalculator::class);
+        $this->populationCalculator = app(PopulationCalculator::class);
+        $this->productionCalculator = app(ProductionCalculator::class);
+        $this->networthCalculator = app(NetworthCalculator::class);
     }
 
     /**
