@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Realm;
@@ -44,5 +45,10 @@ class RealmController extends AbstractDominionController
             'prevRealm',
             'nextRealm'
         ));
+    }
+
+    public function postChangeRealm(Request $request)
+    {
+        return redirect()->route('dominion.other.realm', $request->get('realm'));
     }
 }

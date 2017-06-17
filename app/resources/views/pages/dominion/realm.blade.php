@@ -94,8 +94,10 @@
                                 @endif
                             </div>
                             <div class="col-xs-4">
-                                {{-- todo: make this a submit form to go to specific realm number --}}
-                                <input type="number" name="realm_number" class="form-control text-center" placeholder="{{ $realm->number }}">
+                                <form action="{{ route('dominion.realm.change-realm') }}" method="post" role="form">
+                                    {!! csrf_field() !!}
+                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}">
+                                </form>
                             </div>
                             <div class="col-xs-4 text-right">
                                 @if ($nextRealm !== null)
