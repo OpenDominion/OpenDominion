@@ -67,7 +67,7 @@
                                         </td>
                                         <td class="text-center">{{ number_format($militaryMaxTrainable[$unitType]) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="train[0]" class="text-center" placeholder="0" min="0" max="0" value="">
+                                            <input type="number" name="train[0]" class="form-control text-center" placeholder="0" min="0" max="0" value="" disabled>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -137,14 +137,14 @@
                                 <tr>
                                     <td class="text-center">Draft Rate:</td>
                                     <td class="text-center">
-                                        <input type="number" name="draft_rate" class="text-center" placeholder="0" min="0" max="100" value="{{ $selectedDominion->draft_rate }}"> %
+                                        <input type="number" name="draft_rate" class="form-control text-center" style="display: inline-block; width: 80px;" placeholder="0" min="0" max="100" value="{{ $selectedDominion->draft_rate }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}> %
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Change</button>
+                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change</button>
                     </div>
                 </form>
             </div>

@@ -54,7 +54,7 @@
                                             </td>
                                             <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($buildingType)) }}</td>
                                             <td class="text-center">
-                                                <input type="number" name="construct[{{ $buildingType }}]" class="text-center" placeholder="0" min="0" max="{{ $buildingCalculator->getConstructionMaxAfford() }}" value="{{ old('construct.' . $buildingType) }}">
+                                                <input type="number" name="construct[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $buildingCalculator->getConstructionMaxAfford() }}" value="{{ old('construct.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -65,7 +65,7 @@
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Build</button>
+                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Build</button>
                         <div class="pull-right">
                             You have {{ number_format($landCalculator->getTotalLand()) }} acres of land.
                         </div>

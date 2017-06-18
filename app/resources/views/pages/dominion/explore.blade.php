@@ -40,7 +40,7 @@
                                         </td>
                                         <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($landType)) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="explore[{{ $landType }}]" class="text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}" value="{{ old('explore.' . $landType) }}">
+                                            <input type="number" name="explore[{{ $landType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}" value="{{ old('explore.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -48,7 +48,7 @@
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Explore</button>
+                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Explore</button>
                     </div>
                 </form>
             </div>

@@ -49,7 +49,7 @@
                                         </small>
                                     </td>
                                     <td class="text-center">
-                                        <input type="number" name="destroy[{{ $buildingType }}]" class="text-center" placeholder="0" min="0" max="{{ $selectedDominion->{'building_' . $buildingType} }}" value="{{ old('destroy.' . $buildingType) }}">
+                                        <input type="number" name="destroy[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $selectedDominion->{'building_' . $buildingType} }}" value="{{ old('destroy.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </td>
                                 </tr>
                             @endforeach
@@ -60,7 +60,7 @@
                 </table>
             </div>
             <div class="box-footer">
-                <button type="submit" class="btn btn-danger">Destroy</button>
+                <button type="submit" class="btn btn-danger" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Destroy</button>
             </div>
         </div>
     </form>
