@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\GameTickCommand::class,
+        Commands\RoundStartCommand::class,
         Commands\UpdateVersionCommand::class,
     ];
 
