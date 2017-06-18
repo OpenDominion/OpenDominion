@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Console\Commands\Game;
+namespace OpenDominion\Console\Commands;
 
 use Carbon\Carbon;
 use Config;
@@ -16,7 +16,7 @@ use OpenDominion\Interfaces\DominionInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
-class TickCommand extends Command
+class GameTickCommand extends Command
 {
     /** @var string The name and signature of the console command */
     protected $signature = 'game:tick';
