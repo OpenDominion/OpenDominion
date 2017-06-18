@@ -13,9 +13,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-//        Commands\Game\Round\EndCommand::class,
-//        Commands\Game\Round\OpenCommand::class,
-//        Commands\Game\Round\StartCommand::class,
         Commands\GameTickCommand::class,
         Commands\UpdateVersionCommand::class,
     ];
@@ -30,15 +27,6 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('game:tick')
             ->hourly();
-
-//        $schedule->command('game:round-start')
-//            ->monthlyOn(1);
-//
-//        $schedule->command('game:round-end')
-//            ->monthlyOn(25);
-//
-//        $schedule->command('game:round-open')
-//            ->monthlyOn(27);
     }
 
     /**
