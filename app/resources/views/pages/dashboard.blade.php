@@ -53,7 +53,7 @@
                                         <td>
                                             @if ($dominion->isSelectedByAuthUser())
                                                 <a href="{{ route('dominion.status') }}" style="padding: 6px 12px;">{{ $dominion->name }}</a>
-                                                <span class="label label-success">Active</span>
+                                                <span class="label label-success">Selected</span>
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                     {!! csrf_field() !!}
