@@ -23,7 +23,7 @@ class DashboardController extends AbstractController
     public function getIndex()
     {
         $this->dominions->pushCriteria(DominionFromCurrentLoggedInUserCriteria::class);
-        $dominions = $this->dominions->with(['round', 'realm', 'race'])->all();
+        $dominions = $this->dominions->with(['round', 'realm', 'race'])->orderBy('created_at', 'desc')->all();
 
         $rounds = $this->rounds->with('league')->orderBy('created_at', 'desc')->all();
 

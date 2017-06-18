@@ -51,18 +51,26 @@
                                 @foreach ($dominions->all() as $dominion)
                                     <tr>
                                         <td>
-                                            @if ($dominion->isSelectedByAuthUser())
-                                                <a href="{{ route('dominion.status') }}" style="padding: 6px 12px;">{{ $dominion->name }}</a>
+                                            @if (!$dominion->round->hasStarted())
+                                                {{ $dominion->name }}
+                                                <abbr title="Available at {{ $dominion->round->start_date }}" class="label label-primary">In {{ $dominion->round->daysUntilStart() }} day(s)</abbr>
+
+                                            @elseif ($dominion->isSelectedByAuthUser())
+                                                <a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a>
                                                 <span class="label label-success">Selected</span>
+
+                                                @if ($dominion->isLocked())
+                                                    <span class="label label-danger">Locked</span>
+                                                @endif
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                     {!! csrf_field() !!}
-                                                    <button type="submit" class="btn btn-link">{{ $dominion->name }}</button>
-                                                </form>
-                                            @endif
+                                                    <button type="submit" class="btn btn-link" style="padding: 0;">{{ $dominion->name }}</button>
 
-                                            @if ($dominion->isLocked())
-                                                <span class="label label-danger">Locked</span>
+                                                    @if ($dominion->isLocked())
+                                                        <span class="label label-danger">Locked</span>
+                                                    @endif
+                                                </form>
                                             @endif
                                         </td>
                                         <td class="text-center">
