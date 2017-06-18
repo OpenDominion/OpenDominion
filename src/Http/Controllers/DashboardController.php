@@ -25,7 +25,7 @@ class DashboardController extends AbstractController
         $this->dominions->pushCriteria(DominionFromCurrentLoggedInUserCriteria::class);
         $dominions = $this->dominions->with(['round', 'realm', 'race'])->all();
 
-        $rounds = $this->rounds->with('league')->all();
+        $rounds = $this->rounds->with('league')->orderBy('created_at', 'desc')->all();
 
         return view('pages.dashboard', [
             'dominions' => $dominions,

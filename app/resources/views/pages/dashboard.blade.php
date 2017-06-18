@@ -121,7 +121,9 @@
                                         $trClass = 'danger';
                                         $userAlreadyRegistered = $round->userAlreadyRegistered(Auth::user());
 
-                                        if ($userAlreadyRegistered) {
+                                        if ($round->hasEnded()) {
+                                            $trClass = '';
+                                        } elseif ($userAlreadyRegistered) {
                                             $trClass = 'info';
                                         } elseif ($round->hasStarted()) {
                                             $trClass = 'warning';
@@ -150,10 +152,12 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($userAlreadyRegistered && $round->isActive())
+                                            @if ($round->hasEnded())
+                                                &nbsp;
+                                            @elseif ($userAlreadyRegistered && $round->isActive())
                                                 Playing
                                             @elseif ($userAlreadyRegistered && !$round->hasStarted())
-                                                Already registered!
+                                                Registered
                                             @elseif ($round->openForRegistration())
                                                 <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
                                             @else
