@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\Actions\MilitaryActionService;
 use OpenDominion\Services\AnalyticsService;
@@ -38,6 +39,13 @@ class MilitaryController extends AbstractDominionController
 
         try {
             $result = $militaryActionService->changeDraftRate($dominion, $request->get('draft_rate'));
+
+        } catch (DominionLockedException $e) {
+            $request->session()->flash('alert-danger', 'Draft rate not changed due to the dominion being locked.');
+
+            return redirect()->route('dominion.military') // todo: back()
+                ->setStatusCode(Response::HTTP_FORBIDDEN)
+                ->withInput($request->all());
 
         } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'Draft rate not changed due to bad input.');

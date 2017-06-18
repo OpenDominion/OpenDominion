@@ -114,6 +114,7 @@ class TickCommand extends Command
     {
         Log::debug('Tick resources started');
 
+        // todo: fetch only non-locked dominions
         $dominions = $this->dominions->all();
 
         foreach ($dominions as $dominion) {

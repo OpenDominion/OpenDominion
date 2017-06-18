@@ -60,6 +60,10 @@
                                                     <button type="submit" class="btn btn-link">{{ $dominion->name }}</button>
                                                 </form>
                                             @endif
+
+                                            @if ($dominion->isLocked())
+                                                <span class="label label-danger">Locked</span>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}

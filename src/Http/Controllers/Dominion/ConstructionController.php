@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Services\Actions\ConstructionActionService;
@@ -40,6 +41,13 @@ class ConstructionController extends AbstractDominionController
 
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
+
+        } catch (DominionLockedException $e) {
+            $request->session()->flash('alert-danger', 'Construction was not started due to the dominion being locked.');
+
+            return redirect()->route('dominion.construction')
+                ->setStatusCode(Response::HTTP_FORBIDDEN)
+                ->withInput($request->all());
 
         } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'Construction was not started due to bad input.');
@@ -103,6 +111,13 @@ class ConstructionController extends AbstractDominionController
 
         try {
             $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
+
+        } catch (DominionLockedException $e) {
+            $request->session()->flash('alert-danger', 'The destruction was not completed due to the dominion being locked.');
+
+            return redirect()->route('dominion.destroy')
+                ->setStatusCode(Response::HTTP_FORBIDDEN)
+                ->withInput($request->all());
 
         } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'The destruction was not completed due to incorrect input.');

@@ -4,6 +4,12 @@
     </div>
 @endif
 
+@if (isset($selectedDominion) && $selectedDominion->isLocked())
+    <div class="alert alert-warning">
+        <p>This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.</p>
+    </div>
+@endif
+
 @if (!$errors->isEmpty())
     <div class="alert alert-danger alert-dismissible">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

@@ -7,23 +7,30 @@ use DB;
 use Exception;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Traits\DominionGuardsTrait;
 
 class ExplorationActionService
 {
+    use DominionGuardsTrait;
+
     /**
      * Does an explore action for a Dominion.
      *
      * @param Dominion $dominion
      * @param array $data
      * @return array
+     * @throws DominionLockedException
      * @throws Exception
      * @throws BadInputException
      * @throws NotEnoughResourcesException
      */
     public function explore(Dominion $dominion, array $data)
     {
+        $this->guardLockedDominion($dominion);
+
         $data = array_map('intval', $data);
 
         /** @var LandCalculator $landCalculator */

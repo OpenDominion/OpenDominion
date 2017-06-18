@@ -7,21 +7,28 @@ use Exception;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Traits\DominionGuardsTrait;
 
 class DestroyActionService
 {
+    use DominionGuardsTrait;
+
     /**
      * Does a destroy buildings action for a Dominion.
      *
      * @param Dominion $dominion
      * @param array $data
      * @return array
+     * @throws DominionLockedException
      * @throws BadInputException
      */
     public function destroy(Dominion $dominion, array $data)
     {
+        $this->guardLockedDominion($dominion);
+
         $data = array_map('intval', $data);
 
         /** @var BuildingCalculator $buildingCalculator */

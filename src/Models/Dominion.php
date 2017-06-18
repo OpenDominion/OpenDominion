@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Carbon\Carbon;
 use OpenDominion\Services\DominionSelectorService;
 
 class Dominion extends AbstractModel
@@ -43,5 +44,17 @@ class Dominion extends AbstractModel
         }
 
         return ($this->id === $selectedDominion->id);
+    }
+
+    /**
+     * Returns whether this Dominion is locked due to the round having ended.
+     *
+     * Locked Dominions cannot perform actions and are read-only.
+     *
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return (Carbon::now() >= $this->round->end_date);
     }
 }

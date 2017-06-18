@@ -8,24 +8,31 @@ use Exception;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Traits\DominionGuardsTrait;
 
 class ConstructionActionService
 {
+    use DominionGuardsTrait;
+
     /**
      * Does a construction action for a Dominion.
      *
      * @param Dominion $dominion
      * @param array $data
      * @return array
+     * @throws DominionLockedException
      * @throws BadInputException
      * @throws Exception
      * @throws NotEnoughResourcesException
      */
     public function construct(Dominion $dominion, array $data)
     {
+        $this->guardLockedDominion($dominion);
+
         $data = array_map('intval', $data);
 
         /** @var LandHelper $landHelper */

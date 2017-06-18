@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Exception;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
+use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
@@ -36,6 +37,13 @@ class ExplorationController extends AbstractDominionController
 
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
+
+        } catch (DominionLockedException $e) {
+            $request->session()->flash('alert-danger', 'Exploration was not begun due to the dominion being locked.');
+
+            return redirect()->route('dominion.explore')
+                ->setStatusCode(Response::HTTP_FORBIDDEN)
+                ->withInput($request->all());
 
         } catch (BadInputException $e) {
             $request->session()->flash('alert-danger', 'Exploration was not begun due to bad input.');
