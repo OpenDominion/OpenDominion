@@ -52,7 +52,7 @@
                                     <tr>
                                         <td>
                                             @if ($dominion->isSelectedByAuthUser())
-                                                <button class="btn btn-link disabled">{{ $dominion->name }}</button>
+                                                <a href="{{ route('dominion.status') }}" style="padding: 6px 12px;">{{ $dominion->name }}</a>
                                                 <span class="label label-success">Active</span>
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
