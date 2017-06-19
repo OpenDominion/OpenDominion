@@ -35,6 +35,9 @@
                             @yield('page-subheader')
                         </small>
                     @endif
+
+                    @include('partials.tickers')
+
                 </h1>
                 {{--<ol class="breadcrumb">
                     <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
