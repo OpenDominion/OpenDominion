@@ -16,6 +16,8 @@ use OpenDominion\Interfaces\DominionInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
+// todo: refactor this class
+
 class GameTickCommand extends Command
 {
     /** @var string The name and signature of the console command */
@@ -26,6 +28,9 @@ class GameTickCommand extends Command
 
     /** @var string */
     protected $databaseDriver;
+
+    /** @var int[] */
+    protected $dominionsIdsToUpdate = [];
 
     /** @var DominionRepository */
     protected $dominions;
@@ -69,7 +74,7 @@ class GameTickCommand extends Command
 
         DB::beginTransaction();
 
-        // todo: below only for current active rounds
+        $this->fetchDominionsToUpdate();
 
         $this->tickDominionResources();
         // todo: Population (peasants & draftees)
@@ -107,6 +112,22 @@ class GameTickCommand extends Command
         $this->databaseDriver = $driver;
     }
 
+    public function fetchDominionsToUpdate()
+    {
+        $this->dominionsIdsToUpdate = DB::table('dominions')
+            ->select('dominions.id')
+            ->join('rounds', function ($join) {
+                $join->on('rounds.id', '=', 'dominions.round_id');
+            })
+            ->where('rounds.start_date', '<=', Carbon::now())
+            ->where('rounds.end_date', '>', Carbon::now())
+            ->get()
+            ->map(function ($dominion) {
+                return $dominion->id;
+            })
+            ->toArray();
+    }
+
     /**
      * Ticks dominion resources.
      */
@@ -115,7 +136,7 @@ class GameTickCommand extends Command
         Log::debug('Tick resources started');
 
         // todo: fetch only non-locked dominions
-        $dominions = $this->dominions->all();
+        $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate);
 
         foreach ($dominions as $dominion) {
             /** @var $dominion Dominion */
@@ -164,11 +185,11 @@ class GameTickCommand extends Command
 
         switch ($this->databaseDriver) {
             case 'sqlite':
-                $sql = 'UPDATE `dominions` SET `morale` = MIN(100, (`morale` + (CASE WHEN (`morale` < :moraleThreshold) THEN :moraleAddedBelowThreshold ELSE :moraleAddedAboveThreshold END))) WHERE `morale` < 100;';
+                $sql = ('UPDATE `dominions` SET `morale` = MIN(100, (`morale` + (CASE WHEN (`morale` < :moraleThreshold) THEN :moraleAddedBelowThreshold ELSE :moraleAddedAboveThreshold END))) WHERE `morale` < 100 AND `id` IN (' . implode(', ', $this->dominionsIdsToUpdate) . ');');
                 break;
 
             case 'mysql':
-                $sql = 'UPDATE `dominions` SET `morale` = LEAST(100, (`morale` + IF(`morale` < :moraleThreshold, :moraleAddedBelowThreshold, :moraleAddedAboveThreshold))) WHERE `morale` < 100;';
+                $sql = ('UPDATE `dominions` SET `morale` = LEAST(100, (`morale` + IF(`morale` < :moraleThreshold, :moraleAddedBelowThreshold, :moraleAddedAboveThreshold))) WHERE `morale` < 100 AND `id` IN (' . implode(', ', $this->dominionsIdsToUpdate) . ');');
                 break;
         }
 
@@ -191,11 +212,11 @@ class GameTickCommand extends Command
 
         switch ($this->databaseDriver) {
             case 'sqlite':
-                $sql = 'UPDATE `dominions` SET `spy_strength` = MIN(100, `spy_strength` + :spyStrengthAdded) WHERE `spy_strength` < 100;';
+                $sql = ('UPDATE `dominions` SET `spy_strength` = MIN(100, `spy_strength` + :spyStrengthAdded) WHERE `spy_strength` < 100 AND `id` IN (' . implode(', ', $this->dominionsIdsToUpdate) . ');');
                 break;
 
             case 'mysql':
-                $sql = 'UPDATE `dominions` SET `spy_strength` = LEAST(100, `spy_strength` + :spyStrengthAdded) WHERE `spy_strength` < 100;';
+                $sql = ('UPDATE `dominions` SET `spy_strength` = LEAST(100, `spy_strength` + :spyStrengthAdded) WHERE `spy_strength` < 100 AND `id` IN (' . implode(', ', $this->dominionsIdsToUpdate) . ');');
                 break;
         }
 
@@ -218,11 +239,11 @@ class GameTickCommand extends Command
 
         switch ($this->databaseDriver) {
             case 'sqlite':
-                $sql = 'UPDATE `dominions` SET `wizard_strength` = MIN(100, `wizard_strength` + :wizardStrengthAdded) WHERE `wizard_strength` < 100;';
+                $sql = ('UPDATE `dominions` SET `wizard_strength` = MIN(100, `wizard_strength` + :wizardStrengthAdded) WHERE `wizard_strength` < 100 AND `id` IN (' . implode(', ', $this->dominionsIdsToUpdate) . ');');
                 break;
 
             case 'mysql':
-                $sql = 'UPDATE `dominions` SET `wizard_strength` = LEAST(100, `wizard_strength` + :wizardStrengthAdded) WHERE `wizard_strength` < 100;';
+                $sql = ('UPDATE `dominions` SET `wizard_strength` = LEAST(100, `wizard_strength` + :wizardStrengthAdded) WHERE `wizard_strength` < 100 AND `id` IN (' . implode(', ', $this->dominionsIdsToUpdate) . ');');
                 break;
         }
 
@@ -302,7 +323,7 @@ class GameTickCommand extends Command
     {
         Log::debug('Tick dominion networth');
 
-        $dominions = $this->dominions->all();
+        $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate)();
 
         foreach ($dominions as $dominion) {
             /** @var $dominion Dominion */
