@@ -31,10 +31,10 @@ class RoundStartCommand extends Command
             ->orderBy('number', 'desc')
             ->firstOrFail();
 
-        if ($lastRound->isActive()) {
-            $this->output->writeln("<error>Did not create a new round because round {$lastRound->number} in {$standardRoundLeague->description} is still active!</error>");
-            return false;
-        }
+//        if ($lastRound->isActive()) {
+//            $this->output->writeln("<error>Did not create a new round because round {$lastRound->number} in {$standardRoundLeague->description} is still active!</error>");
+//            return false;
+//        }
 
         $newRound = Round::create([
             'round_league_id' => $standardRoundLeague->id,
