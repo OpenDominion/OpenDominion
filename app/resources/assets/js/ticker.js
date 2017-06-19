@@ -14,7 +14,7 @@ function tick() {
     nextHour.setSeconds(0);
     const el = document.getElementById('tickers');
     if (el != null) {
-        el.getElementsByClassName('ticker-local')[0].innerHTML = hms(now);
+        // el.getElementsByClassName('ticker-local')[0].innerHTML = hms(now);
         el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(now));
         el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - now);
     }
