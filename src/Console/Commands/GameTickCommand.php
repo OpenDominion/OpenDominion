@@ -326,7 +326,7 @@ class GameTickCommand extends Command
     {
         Log::debug('Tick dominion networth');
 
-        $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate)();
+        $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate);
 
         foreach ($dominions as $dominion) {
             /** @var $dominion Dominion */
