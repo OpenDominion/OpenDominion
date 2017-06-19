@@ -40,8 +40,8 @@ class RoundStartCommand extends Command
             'round_league_id' => $standardRoundLeague->id,
             'number' => ($lastRound->number + 1),
             'name' => 'Development Round',
-            'start_date' => new Carbon('tomorrow midnight'),
-            'end_date' => new Carbon('+51 days midnight'),
+            'start_date' => new Carbon('+5 days midnight'),
+            'end_date' => new Carbon('+55 days midnight'),
         ]);
 
         $this->output->writeln("<info>Round {$newRound->number} created successfully</info>");
