@@ -12,7 +12,6 @@ use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Services\Actions\ExplorationActionService;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\DominionQueueService;
-use Symfony\Component\HttpFoundation\Response;
 
 class ExplorationController extends AbstractDominionController
 {
@@ -39,33 +38,26 @@ class ExplorationController extends AbstractDominionController
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
 
         } catch (DominionLockedException $e) {
-            $request->session()->flash('alert-danger', 'Exploration was not begun due to the dominion being locked.');
-
-            return redirect()->route('dominion.explore')
-                ->setStatusCode(Response::HTTP_FORBIDDEN)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Exploration was not begun due to the dominion being locked.']);
 
         } catch (BadInputException $e) {
-            $request->session()->flash('alert-danger', 'Exploration was not begun due to bad input.');
-
-            return redirect()->route('dominion.explore')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Exploration was not begun due to bad input.']);
 
         } catch (NotEnoughResourcesException $e) {
             $totalLandToExplore = array_sum($request->get('explore'));
-            $request->session()->flash('alert-danger', "You do not have enough platinum/draftees to explore for {$totalLandToExplore} acres.");
 
-            return redirect()->route('dominion.explore')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(["You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres."]);
 
         } catch (Exception $e) {
-            $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
-
-            return redirect()->route('dominion.explore')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Something went wrong. Please try again later.']);
         }
 
         $message = sprintf(

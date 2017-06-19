@@ -14,7 +14,6 @@ use OpenDominion\Services\Actions\ConstructionActionService;
 use OpenDominion\Services\Actions\DestroyActionService;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\DominionQueueService;
-use Symfony\Component\HttpFoundation\Response;
 
 class ConstructionController extends AbstractDominionController
 {
@@ -43,33 +42,26 @@ class ConstructionController extends AbstractDominionController
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
 
         } catch (DominionLockedException $e) {
-            $request->session()->flash('alert-danger', 'Construction was not started due to the dominion being locked.');
-
-            return redirect()->route('dominion.construction')
-                ->setStatusCode(Response::HTTP_FORBIDDEN)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Construction was not started due to the dominion being locked.']);
 
         } catch (BadInputException $e) {
-            $request->session()->flash('alert-danger', 'Construction was not started due to bad input.');
-
-            return redirect()->route('dominion.construction')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Construction was not started due to bad input.']);
 
         } catch (NotEnoughResourcesException $e) {
             $totalBuildingsToConstruct = array_sum($request->get('construct'));
-            $request->session()->flash('alert-danger', "You do not have enough platinum/lumber/barren land to construct {$totalBuildingsToConstruct} buildings.");
 
-            return redirect()->route('dominion.construction')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(["You do not have enough platinum, lumber and/or barren land to construct {$totalBuildingsToConstruct} buildings."]);
 
         } catch (Exception $e) {
-            $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
-
-            return redirect()->route('dominion.construction')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Something went wrong. Please try again later.']);
         }
 
         $message = sprintf(
@@ -113,25 +105,19 @@ class ConstructionController extends AbstractDominionController
             $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
 
         } catch (DominionLockedException $e) {
-            $request->session()->flash('alert-danger', 'The destruction was not completed due to the dominion being locked.');
-
-            return redirect()->route('dominion.destroy')
-                ->setStatusCode(Response::HTTP_FORBIDDEN)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['The destruction was not completed due to the dominion being locked.']);
 
         } catch (BadInputException $e) {
-            $request->session()->flash('alert-danger', 'The destruction was not completed due to incorrect input.');
-
-            return redirect()->route('dominion.destroy')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['The destruction was not completed due to incorrect input.']);
 
         } catch (Exception $e) {
-            $request->session()->flash('alert-danger', 'Something went wrong. Please try again later.');
-
-            return redirect()->route('dominion.destroy')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Something went wrong. Please try again later.']);
         }
 
         $message = sprintf(

@@ -9,7 +9,6 @@ use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\Actions\MilitaryActionService;
 use OpenDominion\Services\AnalyticsService;
-use Symfony\Component\HttpFoundation\Response;
 
 class MilitaryController extends AbstractDominionController
 {
@@ -41,18 +40,14 @@ class MilitaryController extends AbstractDominionController
             $result = $militaryActionService->changeDraftRate($dominion, $request->get('draft_rate'));
 
         } catch (DominionLockedException $e) {
-            $request->session()->flash('alert-danger', 'Draft rate not changed due to the dominion being locked.');
-
-            return redirect()->route('dominion.military') // todo: back()
-                ->setStatusCode(Response::HTTP_FORBIDDEN)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Draft rate not changed due to the dominion being locked.']);
 
         } catch (BadInputException $e) {
-            $request->session()->flash('alert-danger', 'Draft rate not changed due to bad input.');
-
-            return redirect()->route('dominion.military')
-                ->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->withInput($request->all());
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(['Draft rate not changed due to bad input.']);
         }
 
         $message = sprintf(
