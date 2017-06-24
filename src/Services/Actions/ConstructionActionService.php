@@ -5,8 +5,8 @@ namespace OpenDominion\Services\Actions;
 use Carbon\Carbon;
 use DB;
 use Exception;
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
@@ -17,6 +17,29 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class ConstructionActionService
 {
     use DominionGuardsTrait;
+
+    /** @var ConstructionCalculator */
+    protected $constructionCalculator;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    /** @var LandHelper */
+    protected $landHelper;
+
+    /**
+     * ConstructionActionService constructor.
+     *
+     * @param ConstructionCalculator $constructionCalculator
+     * @param LandCalculator $landCalculator
+     * @param LandHelper $landHelper
+     */
+    public function __construct(ConstructionCalculator $constructionCalculator, LandCalculator $landCalculator, LandHelper $landHelper)
+    {
+        $this->constructionCalculator = $constructionCalculator;
+        $this->landCalculator = $landCalculator;
+        $this->landHelper = $landHelper;
+    }
 
     /**
      * Does a construction action for a Dominion.
@@ -33,18 +56,10 @@ class ConstructionActionService
     {
         $this->guardLockedDominion($dominion);
 
+        // todo: refactor this
+        $this->landCalculator->init($dominion);
+
         $data = array_map('intval', $data);
-
-        /** @var LandHelper $landHelper */
-        $landHelper = app(LandHelper::class);
-
-        /** @var BuildingCalculator $buildingCalculator */
-        $buildingCalculator = app(BuildingCalculator::class);
-        $buildingCalculator->init($dominion);
-
-        /** @var LandCalculator $landCalculator */
-        $landCalculator = app(LandCalculator::class);
-        $landCalculator->init($dominion);
 
         $totalBuildingsToConstruct = array_sum($data);
 
@@ -52,7 +67,7 @@ class ConstructionActionService
             throw new BadInputException;
         }
 
-        $maxAfford = $buildingCalculator->getConstructionMaxAfford();
+        $maxAfford = $this->constructionCalculator->getMaxAfford($dominion);
 
         if ($totalBuildingsToConstruct > $maxAfford) {
             throw new NotEnoughResourcesException;
@@ -63,17 +78,17 @@ class ConstructionActionService
                 continue;
             }
 
-            $landType = $landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
+            $landType = $this->landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
 
-            if ($amount > $landCalculator->getTotalBarrenLandByLandType($landType)) {
+            if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($landType)) {
                 throw new NotEnoughResourcesException;
             }
         }
 
-        $platinumCost = ($buildingCalculator->getConstructionPlatinumCost() * $totalBuildingsToConstruct);
+        $platinumCost = ($this->constructionCalculator->getPlatinumCost($dominion) * $totalBuildingsToConstruct);
         $newPlatinum = ($dominion->resource_platinum - $platinumCost);
 
-        $lumberCost = ($buildingCalculator->getConstructionLumberCost() * $totalBuildingsToConstruct);
+        $lumberCost = ($this->constructionCalculator->getLumberCost($dominion) * $totalBuildingsToConstruct);
         $newLumber = ($dominion->resource_lumber - $lumberCost);
 
         $dateTime = new Carbon;

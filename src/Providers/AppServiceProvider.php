@@ -3,13 +3,14 @@
 namespace OpenDominion\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use OpenDominion\Calculators\Dominion\AbstractDominionCalculator;
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Interfaces\DependencyInitializableInterface;
@@ -43,11 +44,15 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
+        // todo: refactor
         $this->registerServices();
         $this->registerHelpers();
         $this->registerCalculators();
 
         $this->initCalculatorDependencies();
+        // todo: /refactor
+
+        $this->registerContracts();
     }
 
     protected function registerServices()
@@ -121,5 +126,10 @@ class AppServiceProvider extends ServiceProvider
             /** @var DependencyInitializableInterface $calculator */
             $calculator->initDependencies();
         }
+    }
+
+    protected function registerContracts()
+    {
+        $this->app->bind(ConstructionCalculatorContract::class, ConstructionCalculator::class);
     }
 }

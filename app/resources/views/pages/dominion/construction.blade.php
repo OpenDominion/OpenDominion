@@ -54,7 +54,7 @@
                                             </td>
                                             <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($buildingType)) }}</td>
                                             <td class="text-center">
-                                                <input type="number" name="construct[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $buildingCalculator->getConstructionMaxAfford() }}" value="{{ old('construct.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <input type="number" name="construct[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $constructionCalculator->getMaxAfford($selectedDominion) }}" value="{{ old('construct.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -82,8 +82,8 @@
                 </div>
                 <div class="box-body">
                     <p>You may also <a href="{{ route('dominion.destroy') }}">destroy</a> buildings if you wish.</p>
-                    <p>Construction per building will come at a cost of {{ number_format($buildingCalculator->getConstructionPlatinumCost()) }} platinum and {{ number_format($buildingCalculator->getConstructionLumberCost()) }} lumber.</p>
-                    <p>You can afford: {{ number_format($buildingCalculator->getConstructionMaxAfford()) }} buildings.</p>
+                    <p>Construction per building will come at a cost of {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
+                    <p>You can afford: {{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} buildings.</p>
                 </div>
             </div>
         </div>

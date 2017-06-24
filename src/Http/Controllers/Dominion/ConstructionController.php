@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
@@ -19,18 +20,19 @@ class ConstructionController extends AbstractDominionController
 {
     public function getConstruction()
     {
-        $buildingHelper = app(BuildingHelper::class);
-        $buildingCalculator = app(BuildingCalculator::class);
-        $landCalculator = app(LandCalculator::class);
-        $dominionQueueService = app(DominionQueueService::class);
-        $dominionQueueService->setDominion($this->getSelectedDominion());
+//        $buildingHelper = app(BuildingHelper::class);
+//        $buildingCalculator = app(BuildingCalculator::class);
+//        $landCalculator = app(LandCalculator::class);
+//        $dominionQueueService = app(DominionQueueService::class);
+//        $dominionQueueService->setDominion($this->getSelectedDominion());
 
-        return view('pages.dominion.construction', compact(
-            'buildingHelper',
-            'buildingCalculator',
-            'landCalculator',
-            'dominionQueueService'
-        ));
+        return view('pages.dominion.construction', [
+            'buildingHelper' => app(BuildingHelper::class),
+            'buildingCalculator' => app(BuildingCalculator::class),
+            'constructionCalculator' => app(ConstructionCalculator::class),
+            'landCalculator' => app(LandCalculator::class),
+            'dominionQueueService' => app(DominionQueueService::class)->setDominion($this->getSelectedDominion()),
+        ]);
     }
 
     public function postConstruction(/*ConstructionActionRequest*/ Request $request)
