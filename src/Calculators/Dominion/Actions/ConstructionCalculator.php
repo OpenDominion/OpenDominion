@@ -94,6 +94,7 @@ class ConstructionCalculator implements ConstructionCalculatorInterface
         $this->buildingCalculator->setDominion($dominion);
         $this->landCalculator->setDominion($dominion);
 
+        // todo: check if round() is needed
         return (int)round(min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             floor($dominion->resource_lumber / $this->getLumberCost($dominion))
