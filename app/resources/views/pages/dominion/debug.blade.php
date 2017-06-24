@@ -18,9 +18,21 @@
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($buildingCalculator, [
                             'getTotalBuildings',
-                            'getConstructionPlatinumCost',
-                            'getConstructionLumberCost',
-                            'getConstructionMaxAfford',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Construction Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($constructionCalculator, [
+                            'getPlatinumCost',
+                            'getLumberCost',
+                            'getMaxAfford',
                         ]) !!}
                     </p>
                 </div>

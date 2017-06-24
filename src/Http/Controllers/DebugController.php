@@ -8,16 +8,23 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Http\Controllers\Dominion\AbstractDominionController;
 
-class DebugController extends AbstractController
+class DebugController extends AbstractDominionController
 {
+    static protected $selectedDominion;
+
     public function getIndex()
     {
         if (app()->environment() === 'production') {
             return redirect()->route('dominion.status');
         }
 
+        static::$selectedDominion = $this->getSelectedDominion();
+
         $buildingCalculator = app(BuildingCalculator::class);
+        $constructionCalculator = app(ConstructionCalculator::class);
         $landCalculator = app(LandCalculator::class);
         $militaryCalculator = app(MilitaryCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
@@ -28,6 +35,7 @@ class DebugController extends AbstractController
 
         return view('pages.dominion.debug', compact(
             'buildingCalculator',
+            'constructionCalculator',
             'landCalculator',
             'militaryCalculator',
             'populationCalculator',
@@ -40,8 +48,21 @@ class DebugController extends AbstractController
         $return = '';
 
         foreach ($methods as $method) {
+            $reflectionMethod = new \ReflectionMethod($class, $method);
+
             $label = implode(' ', preg_split('/(?=[A-Z])/', ltrim($method, 'get')));
-            $value = $class->$method();
+
+            if ($reflectionMethod->getNumberOfParameters() === 1) {
+                $value = $class->$method(static::$selectedDominion);
+
+            } elseif ($reflectionMethod->getNumberOfParameters() === 0) {
+                $value = $class->$method();
+                $label = ('[REFACTOR] ' . $label);
+
+            } else {
+                throw new \Exception('welp');
+            }
+
             $type = gettype($value);
 
             $return .= ($label . ' :');

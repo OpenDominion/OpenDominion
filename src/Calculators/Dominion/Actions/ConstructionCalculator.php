@@ -89,7 +89,6 @@ class ConstructionCalculator implements ConstructionCalculatorContract
     public function getMaxAfford(Dominion $dominion)
     {
         // todo: refactor calcs and remove these lines
-        $this->buildingCalculator->setDominion($dominion);
         $this->landCalculator->setDominion($dominion);
 
         // todo: check if round() is needed
