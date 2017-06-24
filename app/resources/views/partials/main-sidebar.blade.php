@@ -22,7 +22,7 @@
                 <li class="header">DOMINION</li>
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="fa fa-search fa-fw"></i> <span>Explore</span></a></li>
                 <li class="{{ Route::is('dominion.construction') ? 'active' : null }}"><a href="{{ route('dominion.construction') }}"><i class="fa fa-home fa-fw"></i> <span>Construction</span></a></li>
-                {{--<li class="{{ Route::is('dominion.rezone-land') ? 'active' : null }}"><a href="{{ route('dominion.rezone-land') }}"><i class="ra ra-cycle ra-fw"></i> <span>Re-zone Land</span></a></li>--}}
+                <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="ra ra-cycle ra-fw"></i> <span>Re-zone Land</span></a></li>
                 {{--<li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>--}}
                 {{--<li class="{{ Route::is('dominion.national-bank') ? 'active' : null }}"><a href="{{ route('dominion.national-bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a></li>--}}
 

@@ -12,9 +12,12 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Interfaces\DependencyInitializableInterface;
+use OpenDominion\Interfaces\Services\Actions\RezoneActionServiceInterface;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RealmRepository;
+use OpenDominion\Services\Actions\RezoneActionService;
 use OpenDominion\Services\DominionProtectionService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
@@ -48,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
         $this->registerCalculators();
 
         $this->initCalculatorDependencies();
+
+        $this->app->bind(LandCalculatorInterface::class, LandCalculator::class);
     }
 
     protected function registerServices()
@@ -67,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(RealmFinderService::class, function ($app) {
             return new RealmFinderService(new RealmRepository($app));
         });
+
+        $this->app->bind(RezoneActionServiceInterface::class, RezoneActionService::class);
     }
 
     protected function registerHelpers()
