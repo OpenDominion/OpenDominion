@@ -6,9 +6,9 @@ use Mockery as m;
 use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Actions\RezoneActionService;
-use OpenDominion\Tests\TestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RezoneActionServiceTest extends TestCase
+class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 {
     /** @var  \OpenDominion\Services\Actions\RezoneActionService */
     protected $service;
