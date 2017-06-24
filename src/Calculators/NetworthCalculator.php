@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Calculators;
 
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Interfaces\DependencyInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -17,12 +17,17 @@ class NetworthCalculator implements DependencyInitializableInterface
     /** @var LandCalculator */
     protected $landCalculator;
 
+    public function __construct(BuildingCalculator $buildingCalculator)
+    {
+        $this->buildingCalculator = $buildingCalculator;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function initDependencies()
     {
-        $this->buildingCalculator = app(BuildingCalculator::class);
+//        $this->buildingCalculator = app(BuildingCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
     }
 

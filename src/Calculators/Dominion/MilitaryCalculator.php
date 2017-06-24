@@ -2,50 +2,42 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCalculatorContract;
 use OpenDominion\Models\Dominion;
 
-class MilitaryCalculator extends AbstractDominionCalculator
+class MilitaryCalculator implements MilitaryCalculatorContract
 {
     /** @var LandCalculator */
     protected $landCalculator;
 
     /**
-     * {@inheritDoc}
+     * MilitaryCalculator constructor.
+     *
+     * @param LandCalculator $landCalculator
      */
-    public function initDependencies()
+    public function __construct(LandCalculator $landCalculator)
     {
-        $this->landCalculator = app(LandCalculator::class);
+        $this->landCalculator = $landCalculator;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init(Dominion $dominion)
+    public function getOffensivePower(Dominion $dominion)
     {
-        parent::init($dominion);
-
-        $this->landCalculator->setDominion($dominion);
-
-        return $this;
+        return ($this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion));
     }
 
-    public function getOffensivePower()
-    {
-        return ($this->getOffensivePowerRaw() * $this->getOffensivePowerMultiplier());
-    }
-
-    public function getOffensivePowerRaw()
+    public function getOffensivePowerRaw(Dominion $dominion)
     {
         $op = 0;
 
-        foreach ($this->dominion->race->units as $unit) {
-            $op += ($this->dominion->{'military_unit' . $unit->slot} * $unit->power_offense);
+        foreach ($dominion->race->units as $unit) {
+            $op += ($dominion->{'military_unit' . $unit->slot} * $unit->power_offense);
         }
 
         return (float)$op;
     }
 
-    public function getOffensivePowerMultiplier()
+    public function getOffensivePowerMultiplier(Dominion $dominion)
     {
         $multiplier = 0;
 
@@ -54,11 +46,11 @@ class MilitaryCalculator extends AbstractDominionCalculator
         $gryphonNestMaxOp = 35;
 
         // Racial Bonus
-        $multiplier += $this->dominion->race->getPerkMultiplier('offense');
+        $multiplier += $dominion->race->getPerkMultiplier('offense');
 
         // Gryphon Nests
         $multiplier += min(
-            (($opPerGryphonNest * $this->dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand()),
+            (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
             ($gryphonNestMaxOp / 100)
         );
 
@@ -68,7 +60,7 @@ class MilitaryCalculator extends AbstractDominionCalculator
         // todo
 
         // Prestige
-        $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
 
         // Tech: Military (+5%)
         // Tech: Magical Weaponry (+10%)
@@ -77,22 +69,22 @@ class MilitaryCalculator extends AbstractDominionCalculator
         return (float)(1 + $multiplier);
     }
 
-    public function getOffensivePowerRatio()
+    public function getOffensivePowerRatio(Dominion $dominion)
     {
-        return (float)($this->getOffensivePower() / $this->landCalculator->getTotalLand());
+        return (float)($this->getOffensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
-    public function getOffensivePowerRatioRaw()
+    public function getOffensivePowerRatioRaw(Dominion $dominion)
     {
-        return (float)($this->getOffensivePowerRaw() / $this->landCalculator->getTotalLand());
+        return (float)($this->getOffensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
-    public function getDefensivePower()
+    public function getDefensivePower(Dominion $dominion)
     {
-        return ($this->getDefensivePowerRaw() * $this->getDefensivePowerMultiplier());
+        return ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
     }
 
-    public function getDefensivePowerRaw()
+    public function getDefensivePowerRaw(Dominion $dominion)
     {
         $dp = 0;
 
@@ -118,7 +110,7 @@ class MilitaryCalculator extends AbstractDominionCalculator
         return (float)$dp;
     }
 
-    public function getDefensivePowerMultiplier()
+    public function getDefensivePowerMultiplier(Dominion $dominion)
     {
         $multiplier = 0;
 
@@ -147,23 +139,23 @@ class MilitaryCalculator extends AbstractDominionCalculator
         return (float)(1 + $multiplier);
     }
 
-    public function getDefensivePowerRatio()
+    public function getDefensivePowerRatio(Dominion $dominion)
     {
         return (float)($this->getDefensivePower() / $this->landCalculator->getTotalLand());
     }
 
-    public function getDefensivePowerRatioRaw()
+    public function getDefensivePowerRatioRaw(Dominion $dominion)
     {
         return (float)($this->getDefensivePowerRaw() / $this->landCalculator->getTotalLand());
     }
 
-    public function getSpyRatio()
+    public function getSpyRatio(Dominion $dominion)
     {
         return $this->getSpyRatioRaw();
         // todo: racial spy strength multiplier
     }
 
-    public function getSpyRatioRaw()
+    public function getSpyRatioRaw(Dominion $dominion)
     {
         return (float)($this->dominion->military_spies / $this->landCalculator->getTotalLand());
     }
@@ -177,13 +169,13 @@ class MilitaryCalculator extends AbstractDominionCalculator
 //        return $regen;
 //    }
 
-    public function getWizardRatio()
+    public function getWizardRatio(Dominion $dominion)
     {
         return $this->getWizardRatioRaw();
         // todo: racial multiplier + Magical Weaponry tech (+15%)
     }
 
-    public function getWizardRatioRaw()
+    public function getWizardRatioRaw(Dominion $dominion)
     {
         return (float)(($this->dominion->military_wizards + ($this->dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand());
     }

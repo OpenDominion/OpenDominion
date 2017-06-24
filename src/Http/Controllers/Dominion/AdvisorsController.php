@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Services\DominionQueueService;

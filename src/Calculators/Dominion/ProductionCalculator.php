@@ -2,9 +2,10 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Models\Dominion;
 
-class ProductionCalculator extends AbstractDominionCalculator
+class ProductionCalculator implements ProductionCalculatorContract
 {
     /** @var PopulationCalculator */
     protected $populationCalculator;

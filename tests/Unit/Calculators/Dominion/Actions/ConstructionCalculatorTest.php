@@ -3,9 +3,9 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion\Actions;
 
 use Mockery as m;
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 

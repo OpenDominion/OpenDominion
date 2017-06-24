@@ -4,9 +4,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
 use Illuminate\Http\Request;
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;

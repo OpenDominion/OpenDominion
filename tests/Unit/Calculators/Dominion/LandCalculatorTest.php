@@ -3,8 +3,8 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\DominionQueueService;
@@ -143,7 +143,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
             }
         }
 
-        $this->assertEquals($expected, $this->landCalculator->getBarrenLandByLandType());
+        $this->assertEquals($expected, $this->landCalculator->getBarrenLand());
     }
 
     public function testGetExplorationPlatinumCost()

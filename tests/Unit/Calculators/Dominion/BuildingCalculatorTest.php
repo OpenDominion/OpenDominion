@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 

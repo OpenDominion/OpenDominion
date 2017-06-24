@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Http\Controllers\Dominion\AbstractDominionController;
 
 class DebugController extends AbstractDominionController

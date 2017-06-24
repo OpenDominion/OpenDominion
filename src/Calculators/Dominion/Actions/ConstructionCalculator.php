@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 
 class ConstructionCalculator implements ConstructionCalculatorContract
@@ -32,12 +32,9 @@ class ConstructionCalculator implements ConstructionCalculatorContract
      */
     public function getPlatinumCost(Dominion $dominion)
     {
-        // todo: refactor calcs and remove these lines
-        $this->landCalculator->setDominion($dominion);
-
         $platinum = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
-        $totalLand = $this->landCalculator->getTotalLand();
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         if ($totalBuildings >= 1250) {
             $platinum += max(
@@ -60,12 +57,9 @@ class ConstructionCalculator implements ConstructionCalculatorContract
      */
     public function getLumberCost(Dominion $dominion)
     {
-        // todo: refactor calcs and remove these lines
-        $this->landCalculator->setDominion($dominion);
-
         $lumber = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
-        $totalLand = $this->landCalculator->getTotalLand();
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         if ($totalBuildings >= 1250) {
             $lumber += max(
@@ -88,13 +82,9 @@ class ConstructionCalculator implements ConstructionCalculatorContract
      */
     public function getMaxAfford(Dominion $dominion)
     {
-        // todo: refactor calcs and remove these lines
-        $this->landCalculator->setDominion($dominion);
-
-        // todo: check if round() is needed
-        return (int)round(min(
+        return (int)min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             floor($dominion->resource_lumber / $this->getLumberCost($dominion))
-        ));
+        );
     }
 }

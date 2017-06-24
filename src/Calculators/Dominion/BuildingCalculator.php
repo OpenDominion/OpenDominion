@@ -2,10 +2,11 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator as BuildingCalculatorContract;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
 
-class BuildingCalculator
+class BuildingCalculator implements BuildingCalculatorContract
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -21,10 +22,7 @@ class BuildingCalculator
     }
 
     /**
-     * Returns the Dominion' total number of constructed buildings.
-     *
-     * @param Dominion $dominion
-     * @return int
+     * {@inheritdoc}
      */
     public function getTotalBuildings(Dominion $dominion)
     {
@@ -36,6 +34,4 @@ class BuildingCalculator
 
         return $totalBuildings;
     }
-
-    // todo: building under construction?
 }

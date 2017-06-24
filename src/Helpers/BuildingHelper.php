@@ -31,7 +31,7 @@ class BuildingHelper
         ];
     }
 
-    public function getBuildingTypesByLandType(Race $race = null)
+    public function getBuildingTypesByRace(Race $race = null)
     {
         $return = [
             'plain' => [

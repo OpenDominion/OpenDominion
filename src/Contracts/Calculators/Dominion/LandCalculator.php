@@ -1,10 +1,10 @@
 <?php
 
-namespace OpenDominion\Interfaces\Calculators\Dominion;
+namespace OpenDominion\Contracts\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
 
-interface LandCalculatorInterface
+interface LandCalculator
 {
     /**
      * Returns the Dominion's total acres of land.
@@ -29,16 +29,9 @@ interface LandCalculatorInterface
     public function getTotalBarrenLandByLandType(Dominion $dominion, $landType);
 
     /**
-     * Returns the Dominion's barren land.
+     * Returns the Dominion's barren land by land type.
      *
      * @return int[]
      */
     public function getBarrenLand(Dominion $dominion);
-
-//    /**
-//     * Returns the Dominion's rezoning platinum cost per acre.
-//     *
-//     * @return int
-//     */
-//    public function getRezoningPlatinumCost();
 }
