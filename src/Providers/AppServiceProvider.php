@@ -12,9 +12,12 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Interfaces\DependencyInitializableInterface;
+use OpenDominion\Interfaces\Services\Actions\RezoneActionServiceInterface;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RealmRepository;
+use OpenDominion\Services\Actions\RezoneActionService;
 use OpenDominion\Services\DominionProtectionService;
 use OpenDominion\Services\DominionQueueService;
 use OpenDominion\Services\DominionSelectorService;
@@ -130,5 +133,7 @@ class AppServiceProvider extends ServiceProvider
     protected function registerContracts()
     {
         $this->app->bind(ConstructionCalculatorContract::class, ConstructionCalculator::class);
+        $this->app->bind(LandCalculatorInterface::class, LandCalculator::class);
+        $this->app->bind(RezoneActionServiceInterface::class, RezoneActionService::class);
     }
 }
