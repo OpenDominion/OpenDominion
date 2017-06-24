@@ -104,12 +104,10 @@ class RezoneActionServiceTest extends TestCase
         $this->service->rezone($dominion, ['cavern' => 1], ['hill' => 1]);
     }
 
-
     protected function getMockDominion()
     {
         $dominion = m::mock(Dominion::class);
         $dominion->shouldReceive('isLocked')->andReturn(false)->byDefault();
         return $dominion;
     }
-
 }

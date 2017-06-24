@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Interfaces\Services\Actions;
 
-
 use OpenDominion\Models\Dominion;
 
 interface RezoneActionServiceInterface

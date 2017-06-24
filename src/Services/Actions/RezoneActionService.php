@@ -63,7 +63,6 @@ class RezoneActionService implements RezoneActionServiceInterface
             }
         }
 
-
         $this->landCalculator->init($dominion);
         $costPerAcre = $this->landCalculator->getRezoningPlatinumCost($dominion);
         $totalCost = $totalLand * $costPerAcre;
@@ -82,7 +81,5 @@ class RezoneActionService implements RezoneActionServiceInterface
             $dominion->{'land_' . $landType} += $amount;
         }
 
-
     }
-
 }
