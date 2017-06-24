@@ -38,6 +38,7 @@ class RezoneActionServiceTest extends TestCase
         $dominion->shouldReceive('setAttribute')->with('land_hill', 1);
         $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(100);
         $dominion->shouldReceive('setAttribute')->with('resource_platinum', 75);
+        $dominion->shouldReceive('save');
         $this->service->rezone($dominion, ['cavern' => 1], ['hill' => 1]);
     }
 
@@ -58,6 +59,7 @@ class RezoneActionServiceTest extends TestCase
         $dominion->shouldReceive('setAttribute')->with('land_plain', 104);
         $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(200);
         $dominion->shouldReceive('setAttribute')->with('resource_platinum', 100);
+        $dominion->shouldReceive('save');
         $this->service->rezone($dominion, ['cavern' => 10, 'hill' => 2], ['cavern' => 8, 'plain' => 4]);
     }
 
