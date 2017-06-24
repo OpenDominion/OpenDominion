@@ -21,9 +21,11 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->dominionMock = m::mock(Dominion::class);
 
-        $this->buildingCalculatorTestMock = m::mock(BuildingCalculator::class)->makePartial(); // todo: check makePartial needed after refactor
-        $this->buildingCalculatorTestMock->initDependencies(); // todo
-        $this->buildingCalculatorTestMock->init($this->dominionMock); // todo
+        $this->buildingCalculatorTestMock = $this->app->make(BuildingCalculator::class);
+
+//        $this->buildingCalculatorTestMock = m::mock(BuildingCalculator::class)->makePartial(); // todo: check makePartial needed after refactor
+//        $this->buildingCalculatorTestMock->initDependencies(); // todo
+//        $this->buildingCalculatorTestMock->init($this->dominionMock); // todo
     }
 
     public function testGetTotalBuildings()
@@ -57,6 +59,6 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
             $expected++; // todo: use this style for every dominion land/building/etc iteration test
         }
 
-        $this->assertEquals($expected, $this->buildingCalculatorTestMock->getTotalBuildings());
+        $this->assertEquals($expected, $this->buildingCalculatorTestMock->getTotalBuildings($this->dominionMock));
     }
 }

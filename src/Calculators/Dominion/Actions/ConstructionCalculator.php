@@ -33,11 +33,10 @@ class ConstructionCalculator implements ConstructionCalculatorContract
     public function getPlatinumCost(Dominion $dominion)
     {
         // todo: refactor calcs and remove these lines
-        $this->buildingCalculator->setDominion($dominion);
         $this->landCalculator->setDominion($dominion);
 
         $platinum = 0;
-        $totalBuildings = $this->buildingCalculator->getTotalBuildings();
+        $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
         $totalLand = $this->landCalculator->getTotalLand();
 
         if ($totalBuildings >= 1250) {
@@ -62,11 +61,10 @@ class ConstructionCalculator implements ConstructionCalculatorContract
     public function getLumberCost(Dominion $dominion)
     {
         // todo: refactor calcs and remove these lines
-        $this->buildingCalculator->setDominion($dominion);
         $this->landCalculator->setDominion($dominion);
 
         $lumber = 0;
-        $totalBuildings = $this->buildingCalculator->getTotalBuildings();
+        $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
         $totalLand = $this->landCalculator->getTotalLand();
 
         if ($totalBuildings >= 1250) {

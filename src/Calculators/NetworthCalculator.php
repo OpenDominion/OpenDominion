@@ -55,7 +55,7 @@ class NetworthCalculator implements DependencyInitializableInterface
      */
     public function getDominionNetworth(Dominion $dominion)
     {
-        $this->buildingCalculator->setDominion($dominion);
+//        $this->buildingCalculator->setDominion($dominion);
         $this->landCalculator->setDominion($dominion);
 
         $networth = 0;
@@ -76,7 +76,7 @@ class NetworthCalculator implements DependencyInitializableInterface
         $networth += ($dominion->military_archmages * $networthPerArchMage);
 
         $networth += ($this->landCalculator->getTotalLand() * $networthPerLand);
-        $networth += ($this->buildingCalculator->getTotalBuildings() * $networthPerBuilding);
+        $networth += ($this->buildingCalculator->getTotalBuildings($dominion) * $networthPerBuilding);
 
         // Todo: racial network bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
 

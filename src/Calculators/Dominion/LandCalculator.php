@@ -40,7 +40,7 @@ class LandCalculator extends AbstractDominionCalculator implements LandCalculato
     {
         parent::init($dominion);
 
-        $this->buildingCalculator->setDominion($dominion);
+//        $this->buildingCalculator->setDominion($dominion);
         $this->dominionQueueService->setDominion($dominion);
 
         return $this;
@@ -69,7 +69,7 @@ class LandCalculator extends AbstractDominionCalculator implements LandCalculato
      */
     public function getTotalBarrenLand()
     {
-        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings() - $this->dominionQueueService->getConstructionQueueTotal());
+        return ($this->getTotalLand() - $this->buildingCalculator->getTotalBuildings($this->dominion) - $this->dominionQueueService->getConstructionQueueTotal());
     }
 
     /**
@@ -116,7 +116,7 @@ class LandCalculator extends AbstractDominionCalculator implements LandCalculato
     public function getExplorationPlatinumCost()
     {
         $platinum = 0;
-        $totalLand = $this->getTotalLand();
+        $totalLand = $this->getTotalLand($this->dominion);
 
         if ($totalLand < 300) {
             $platinum += -(3 * (300 - $totalLand));
@@ -138,7 +138,7 @@ class LandCalculator extends AbstractDominionCalculator implements LandCalculato
     public function getExplorationDrafteeCost()
     {
         $draftees = 0;
-        $totalLand = $this->getTotalLand();
+        $totalLand = $this->getTotalLand($this->dominion);
 
         if ($totalLand < 300) {
             $draftees = -(300 / $totalLand);

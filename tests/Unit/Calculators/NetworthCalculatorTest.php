@@ -88,7 +88,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominionMock->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
 
         $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250);
-        $this->buildingCalculatorDependencyMock->shouldReceive('getTotalBuildings')->andReturn(90);
+        $this->buildingCalculatorDependencyMock->shouldReceive('getTotalBuildings')->with($dominionMock)->andReturn(90);
 
         $this->assertEquals(8950, $this->networthCalculatorTestMock->getDominionNetworth($dominionMock));
     }

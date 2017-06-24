@@ -56,7 +56,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
             $this->buildingCalculator->shouldReceive('setDominion');
             $this->landCalculator->shouldReceive('setDominion');
 
-            $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn($scenario['totalBuildings'])->byDefault();
+            $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->andReturn($scenario['totalBuildings'])->byDefault();
             $this->landCalculator->shouldReceive('getTotalLand')->andReturn($scenario['totalLand'])->byDefault();
 
             $this->assertEquals($scenario['expectedPlatinumCost'], $this->sut->getPlatinumCost($this->dominionMock));
@@ -75,7 +75,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
             $this->buildingCalculator->shouldReceive('setDominion');
             $this->landCalculator->shouldReceive('setDominion');
 
-            $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn($scenario['totalBuildings'])->byDefault();
+            $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->andReturn($scenario['totalBuildings'])->byDefault();
             $this->landCalculator->shouldReceive('getTotalLand')->andReturn($scenario['totalLand'])->byDefault();
 
             $this->assertEquals($scenario['expectedLumberCost'], $this->sut->getLumberCost($this->dominionMock));
@@ -108,7 +108,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
 
             $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($scenario['platinum'])->byDefault();
             $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn($scenario['lumber'])->byDefault();
-            $this->buildingCalculator->shouldReceive('getTotalBuildings')->andReturn($scenario['totalBuildings'])->byDefault();
+            $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->andReturn($scenario['totalBuildings'])->byDefault();
             $this->landCalculator->shouldReceive('getTotalLand')->andReturn($scenario['totalLand'])->byDefault();
 
             $this->assertEquals($scenario['expectedMaxAfford'], $this->sut->getMaxAfford($this->dominionMock));

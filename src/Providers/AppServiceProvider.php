@@ -4,7 +4,6 @@ namespace OpenDominion\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
-use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
@@ -103,7 +102,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Dominion calculators
         $dominionCalculatorClasses = [
-            BuildingCalculator::class,
+//            BuildingCalculator::class,
             LandCalculator::class,
             MilitaryCalculator::class,
             PopulationCalculator::class,

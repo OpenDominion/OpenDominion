@@ -75,7 +75,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->dominionMock->shouldReceive('getAttribute')->with('land_hill')->andReturn(10);
         $this->dominionMock->shouldReceive('getAttribute')->with('land_water')->andReturn(10);
 
-        $this->buildingCalculatorMock->shouldReceive('getTotalBuildings')->andReturn(1);
+        $this->buildingCalculatorMock->shouldReceive('getTotalBuildings')->with($this->dominionMock)->andReturn(1);
 
         $this->dominionQueueServiceMock->shouldReceive('getConstructionQueueTotal')->andReturn(2);
 
