@@ -81,5 +81,8 @@ class RezoneActionService implements RezoneActionServiceInterface
             $dominion->{'land_' . $landType} += $amount;
         }
 
+        $dominion->save();
+
+        return $totalCost;
     }
 }
