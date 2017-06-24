@@ -4,10 +4,11 @@ namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\DominionQueueService;
 
-class LandCalculator extends AbstractDominionCalculator
+class LandCalculator extends AbstractDominionCalculator implements LandCalculatorInterface
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -173,5 +174,15 @@ class LandCalculator extends AbstractDominionCalculator
     public function getExplorationMoraleDrop($amount)
     {
         return (int)round(($amount + 2) / 3);
+    }
+
+    /**
+     * Returns the Dominion's rezoning cost per acre.
+     *
+     * @return int
+     */
+    public function getRezoningPlatinumCost()
+    {
+        return round((($this->getTotalLand() - 250) * 0.6) + 250);
     }
 }
