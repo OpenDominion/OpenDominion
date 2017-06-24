@@ -75,10 +75,9 @@ interface LandCalculatorInterface
     public function getExplorationMoraleDrop($amount);
 
     /**
-     * Returns the Dominion's rezoning cost per acre.
+     * Returns the Dominion's rezoning platinum cost per acre.
      *
-     * @param \OpenDominion\Models\Dominion $dominion
      * @return int
      */
-    public function getRezoningPlatinumCost(Dominion $dominion);
+    public function getRezoningPlatinumCost();
 }

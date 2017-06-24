@@ -179,12 +179,10 @@ class LandCalculator extends AbstractDominionCalculator implements LandCalculato
     /**
      * Returns the Dominion's rezoning cost per acre.
      *
-     * @param \OpenDominion\Models\Dominion $dominion
      * @return int
      */
-    public function getRezoningPlatinumCost(Dominion $dominion)
+    public function getRezoningPlatinumCost()
     {
-        $this->init($dominion);
         return round((($this->getTotalLand() - 250) * 0.6) + 250);
     }
 }
