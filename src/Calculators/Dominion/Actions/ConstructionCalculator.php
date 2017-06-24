@@ -4,10 +4,10 @@ namespace OpenDominion\Calculators\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
-use OpenDominion\Interfaces\Calculators\Dominion\Actions\ConstructionCalculatorInterface;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
 use OpenDominion\Models\Dominion;
 
-class ConstructionCalculator implements ConstructionCalculatorInterface
+class ConstructionCalculator implements ConstructionCalculatorContract
 {
     /** @var BuildingCalculator */
     protected $buildingCalculator;

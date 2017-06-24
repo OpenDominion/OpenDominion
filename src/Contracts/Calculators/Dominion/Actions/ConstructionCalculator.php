@@ -1,10 +1,10 @@
 <?php
 
-namespace OpenDominion\Interfaces\Calculators\Dominion\Actions;
+namespace OpenDominion\Contracts\Calculators\Dominion\Actions;
 
 use OpenDominion\Models\Dominion;
 
-interface ConstructionCalculatorInterface
+interface ConstructionCalculator
 {
     /**
      * Returns the Dominion's construction platinum cost (per building).
