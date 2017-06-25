@@ -24,25 +24,16 @@ class DebugController extends AbstractDominionController
 
         static::$selectedDominion = $this->getSelectedDominion();
 
-        $buildingCalculator = app(BuildingCalculator::class);
-        $constructionCalculator = app(ConstructionCalculator::class);
-        $explorationCalculator = app(ExplorationCalculator::class);
-        $landCalculator = app(LandCalculator::class);
-        $militaryCalculator = app(MilitaryCalculator::class);
-        $populationCalculator = app(PopulationCalculator::class);
-        $productionCalculator = app(ProductionCalculator::class);
-        $networthCalculator = app(NetworthCalculator::class);
-
-        return view('pages.dominion.debug', compact(
-            'buildingCalculator',
-            'constructionCalculator',
-            'explorationCalculator',
-            'landCalculator',
-            'militaryCalculator',
-            'populationCalculator',
-            'productionCalculator',
-            'networthCalculator'
-        ));
+        return view('pages.dominion.debug', [
+            'buildingCalculator' => app(BuildingCalculator::class),
+            'constructionCalculator' => app(ConstructionCalculator::class),
+            'explorationCalculator' => app(ExplorationCalculator::class),
+            'landCalculator' => app(LandCalculator::class),
+            'militaryCalculator' => app(MilitaryCalculator::class),
+            'populationCalculator' => app(PopulationCalculator::class),
+            'productionCalculator' => app(ProductionCalculator::class),
+            'networthCalculator' => app(NetworthCalculator::class),
+        ]);
     }
 
     public static function printMethodValues($class, array $methods) {
