@@ -9,6 +9,8 @@ use OpenDominion\Services\DominionSelectorService;
 abstract class AbstractDominionController extends AbstractController
 {
     /**
+     * Returns the logged in user's currently selected dominion.
+     *
      * @return Dominion
      */
     protected function getSelectedDominion()
