@@ -5,7 +5,7 @@ namespace OpenDominion\Providers;
 use Cache;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
-use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Calculators\NetworthCalculator;
 
 class ComposerServiceProvider extends ServiceProvider
 {

@@ -3,7 +3,7 @@
 namespace OpenDominion\Factories;
 
 use Exception;
-use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;

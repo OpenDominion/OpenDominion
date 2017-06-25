@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Services\Actions;
 
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\LandHelper;

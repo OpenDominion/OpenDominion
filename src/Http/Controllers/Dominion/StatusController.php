@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use OpenDominion\Calculators\Dominion\LandCalculator;
-use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Services\DominionProtectionService;
 
 class StatusController extends AbstractDominionController
