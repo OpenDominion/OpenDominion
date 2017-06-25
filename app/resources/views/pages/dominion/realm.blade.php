@@ -31,10 +31,6 @@
                             @for ($i = 0; $i < 12; $i++)
                                 @php
                                     $dominion = $dominions->get($i);
-
-                                    if ($dominion !== null) {
-                                        $landCalculator->setDominion($dominion);
-                                    }
                                 @endphp
 
                                 @if ($dominion === null)
@@ -63,7 +59,7 @@
                                             select * from "units" where "units"."race_id" = '1' and "units"."race_id" is not null order by "slot" asc limit 4
                                             --}}
                                         </td>
-                                        <td class="text-center">{{ number_format($landCalculator->getTotalLand()) }}</td>
+                                        <td class="text-center">{{ number_format($landCalculator->getTotalLand($dominion)) }}</td>
                                         <td class="text-center">{{ number_format($dominion->networth) }}</td>
                                     </tr>
                                 @endif
