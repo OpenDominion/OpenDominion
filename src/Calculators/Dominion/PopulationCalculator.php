@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -18,80 +19,53 @@ class PopulationCalculator implements PopulationCalculatorContract
     /** @var UnitHelper */
     protected $unitHelper;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function initDependencies()
+    public function __construct(BuildingHelper $buildingHelper, LandCalculator $landCalculator, UnitHelper $unitHelper)
     {
-        $this->buildingHelper = app(BuildingHelper::class);
-        $this->landCalculator = app(LandCalculator::class);
-        $this->unitHelper = app(UnitHelper::class);
+        $this->buildingHelper = $buildingHelper;
+        $this->landCalculator = $landCalculator;
+        $this->unitHelper = $unitHelper;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function init(Dominion $dominion)
+    public function getPopulation(Dominion $dominion)
     {
-        parent::init($dominion);
-
-        $this->landCalculator->setDominion($dominion);
-
-        return $this;
+        return ($dominion->peasants + $this->getPopulationMilitary($dominion));
     }
 
     /**
-     * Returns the Dominion's total population, both peasants and military.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getPopulation()
+    public function getPopulationMilitary(Dominion $dominion)
     {
-        return (int)($this->dominion->peasants + $this->getPopulationMilitary());
-    }
-
-    /**
-     * Returns the Dominion's military population.
-     *
-     * The military consists of draftees, combat units, spies, wizards and archmages.
-     *
-     * @return int
-     */
-    public function getPopulationMilitary()
-    {
-        return (int)(
-            $this->dominion->military_draftees
-            + $this->dominion->military_unit1
-            + $this->dominion->military_unit2
-            + $this->dominion->military_unit3
-            + $this->dominion->military_unit4
-            + $this->dominion->military_spies
-            + $this->dominion->military_wizards
-            + $this->dominion->military_archmages
+        return (
+            $dominion->military_draftees
+            + $dominion->military_unit1
+            + $dominion->military_unit2
+            + $dominion->military_unit3
+            + $dominion->military_unit4
+            + $dominion->military_spies
+            + $dominion->military_wizards
+            + $dominion->military_archmages
         );
     }
 
     /**
-     * Returns the Dominion's max population.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getMaxPopulation()
+    public function getMaxPopulation(Dominion $dominion)
     {
         return (int)round(
-            ($this->getMaxPopulationRaw() * $this->getMaxPopulationMultiplier())
-            + $this->getMaxPopulationMilitaryBonus()
+            ($this->getMaxPopulationRaw($dominion) * $this->getMaxPopulationMultiplier($dominion))
+            + $this->getMaxPopulationMilitaryBonus($dominion) // todo: re-check this formula
         );
     }
 
     /**
-     * Returns the Dominion's raw max population.
-     *
-     * Maximum population is determined by housing in homes, other buildings (sans barracks) and barren land.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getMaxPopulationRaw()
+    public function getMaxPopulationRaw(Dominion $dominion)
     {
         $population = 0;
 
@@ -118,27 +92,19 @@ class PopulationCalculator implements PopulationCalculatorContract
                     break;
             }
 
-            $population += ($this->dominion->{'building_' . $buildingType} * $housing);
+            $population += ($dominion->{'building_' . $buildingType} * $housing);
         }
 
         // Housing per barren land
-        $population += ($this->landCalculator->getTotalBarrenLand() * $housingPerBarrenLand);
+        $population += ($this->landCalculator->getTotalBarrenLand($dominion) * $housingPerBarrenLand);
 
         return (float)$population;
     }
 
     /**
-     * Returns the Dominion's max population multiplier.
-     *
-     * Max population multiplier is affected by:
-     * - Racial Bonus
-     * - Improvement: Keep (todo)
-     * - Tech: Urban Mastery and Construction (todo)
-     * - Prestige bonus
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getMaxPopulationMultiplier()
+    public function getMaxPopulationMultiplier(Dominion $dominion)
     {
         $multiplier = 0;
 
@@ -147,7 +113,7 @@ class PopulationCalculator implements PopulationCalculatorContract
 //        $techConstructionMultiplier = 2;
 
         // Racial Bonus
-        $multiplier += $this->dominion->race->getPerkMultiplier('max_population');
+        $multiplier += $dominion->race->getPerkMultiplier('max_population');
 
         // Improvement: Keep
         // todo
@@ -160,10 +126,12 @@ class PopulationCalculator implements PopulationCalculatorContract
 
         // Prestige bonus
         // todo: $prestige / 10000?
-        $multiplier *= (1 + (($this->dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += ((($this->dominion->prestige / 250) * 2.5) / 100);
+        $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
+        // todo: re-check this vs other prestige formulae
 
         /*
+        todo: cleanup
         = ($Overview.$I$15
             + $Imps.Z3
             + MAX(
@@ -175,41 +143,35 @@ class PopulationCalculator implements PopulationCalculatorContract
         + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
         */
 
-        return (float)(1 + $multiplier);
+        return (float)(1 + $multiplier); // todo: 1+$multiplier? check for refactoring
     }
 
     /**
-     * Returns the Dominion's max population military bonus.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getMaxPopulationMilitaryBonus()
+    public function getMaxPopulationMilitaryBonus(Dominion $dominion)
     {
         // Values
         $troopsPerBarracks = 36;
 
         return (float)min(
-            ($this->getPopulationMilitary() - $this->dominion->military_draftees), // todo: -training queue
-            ($this->dominion->building_barracks * $troopsPerBarracks)
+            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees), // todo: -training queue
+            ($dominion->building_barracks * $troopsPerBarracks)
         );
     }
 
     /**
-     * Returns the Dominion's population birth.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getPopulationBirth()
+    public function getPopulationBirth(Dominion $dominion)
     {
-        return (int)round($this->getPopulationBirthRaw() * $this->getPopulationBirthMultiplier());
+        return (int)round($this->getPopulationBirthRaw($dominion) * $this->getPopulationBirthMultiplier($dominion));
     }
 
     /**
-     * Returns the Dominions raw population birth.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getPopulationBirthRaw()
+    public function getPopulationBirthRaw(Dominion $dominion)
     {
         $birth = 0;
 
@@ -217,17 +179,15 @@ class PopulationCalculator implements PopulationCalculatorContract
         $growthFactor = 3;
 
         // Growth
-        $birth += (($this->dominion->peasants - $this->getPopulationDrafteeGrowth()) * ($growthFactor / 100));
+        $birth += (($dominion->peasants - $this->getPopulationDrafteeGrowth($dominion)) * ($growthFactor / 100));
 
         return (float)$birth;
     }
 
     /**
-     * Returns the Dominion's population birth multiplier.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getPopulationBirthMultiplier()
+    public function getPopulationBirthMultiplier(Dominion $dominion)
     {
         $multiplier = 1;
 
@@ -236,7 +196,7 @@ class PopulationCalculator implements PopulationCalculatorContract
         //$templeBonus = 6;
 
         // Racial Bonus
-        $multiplier += $this->dominion->race->getPerkMultiplier('population_growth');
+        $multiplier += $dominion->race->getPerkMultiplier('population_growth');
 
         // Spell: Harmony
         // todo
@@ -244,64 +204,54 @@ class PopulationCalculator implements PopulationCalculatorContract
         // Temples
         //$multiplier += (($this->dominion->building_temple * $templeBonus) / $this->landCalculator->getTotalLand());
 
-        return (float)$multiplier;
+        return (float)$multiplier; // todo: see 1+$multiplier todo above
     }
 
     /**
-     * Returns the Dominion's population peasant growth.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getPopulationPeasantGrowth()
+    public function getPopulationPeasantGrowth(Dominion $dominion)
     {
         return (int)max(
-            ((-0.05 * $this->dominion->peasants) - $this->getPopulationDrafteeGrowth()),
+            ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
             min(
-                ($this->getMaxPopulation() - $this->getPopulation() - $this->getPopulationDrafteeGrowth()),
-                ($this->getPopulationBirth() - $this->getPopulationDrafteeGrowth())
+                ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
+                ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion))
             )
         );
     }
 
     /**
-     * Returns the Dominion's population draftee growth.
-     *
-     * Draftee growth is influenced by draft rate.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getPopulationDrafteeGrowth()
+    public function getPopulationDrafteeGrowth(Dominion $dominion)
     {
         $draftees = 0;
 
         // Values (percentages)
         $growthFactor = 1;
 
-        if ($this->getPopulationMilitaryPercentage() < $this->dominion->draft_rate) {
-            $draftees += ($this->dominion->peasants * ($growthFactor / 100));
+        if ($this->getPopulationMilitaryPercentage($dominion) < $dominion->draft_rate) {
+            $draftees += ($dominion->peasants * ($growthFactor / 100));
         }
 
         return (int)$draftees;
     }
 
     /**
-     * Returns the Dominion's population peasant percentage.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getPopulationPeasantPercentage()
+    public function getPopulationPeasantPercentage(Dominion $dominion)
     {
-        return (float)(($this->dominion->peasants / $this->getPopulation()) * 100);
+        return (float)(($dominion->peasants / $this->getPopulation($dominion)) * 100);
     }
 
     /**
-     * Returns the Dominion's population military percentage.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getPopulationMilitaryPercentage()
+    public function getPopulationMilitaryPercentage(Dominion $dominion)
     {
-        return (float)(($this->getPopulationMilitary() / $this->getPopulation()) * 100);
+        return (float)(($this->getPopulationMilitary($dominion) / $this->getPopulation($dominion)) * 100);
     }
 
 //    public function getPopulationMilitaryTrainingCostPerUnit()
@@ -391,57 +341,45 @@ class PopulationCalculator implements PopulationCalculatorContract
 //    }
 
     /**
-     * Returns the Dominion's employment jobs.
-     *
-     * Each building (sans home and barracks) employs 20 peasants.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getEmploymentJobs()
+    public function getEmploymentJobs(Dominion $dominion)
     {
+        // todo: get these from buildinghelper and unset barracks/etc
         return (20 * (
-                $this->dominion->building_alchemy
-                + $this->dominion->building_farm
-                + $this->dominion->building_smithy
-                + $this->dominion->building_masonry
-                + $this->dominion->building_ore_mine
-                + $this->dominion->building_gryphon_nest
-                + $this->dominion->building_tower
-                + $this->dominion->building_wizard_guild
-                + $this->dominion->building_temple
-                + $this->dominion->building_diamond_mine
-                + $this->dominion->building_school
-                + $this->dominion->building_lumberyard
-                + $this->dominion->building_forest_haven
-                + $this->dominion->building_factory
-                + $this->dominion->building_guard_tower
-                + $this->dominion->building_shrine
-                + $this->dominion->building_dock
+                $dominion->building_alchemy
+                + $dominion->building_farm
+                + $dominion->building_smithy
+                + $dominion->building_masonry
+                + $dominion->building_ore_mine
+                + $dominion->building_gryphon_nest
+                + $dominion->building_tower
+                + $dominion->building_wizard_guild
+                + $dominion->building_temple
+                + $dominion->building_diamond_mine
+                + $dominion->building_school
+                + $dominion->building_lumberyard
+                + $dominion->building_forest_haven
+                + $dominion->building_factory
+                + $dominion->building_guard_tower
+                + $dominion->building_shrine
+                + $dominion->building_dock
             ));
     }
 
     /**
-     * Returns the Dominion's employed population.
-     *
-     * The employed population consists of the Dominion's peasant count, up to the number of max available jobs.
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getPopulationEmployed()
+    public function getPopulationEmployed(Dominion $dominion)
     {
-        return (int)min($this->getEmploymentJobs(), $this->dominion->peasants);
+        return (int)min($this->getEmploymentJobs($dominion), $dominion->peasants);
     }
 
     /**
-     * Returns the Dominion's employment percentage.
-     *
-     * If employment is at or above 100%, then one should strive to build more homes to get more peasants to the working
-     * force. If employment is below 100%, then one should construct more buildings to employ idle peasants.
-     *
-     * @return float
+     * {@inheritdoc}
      */
-    public function getEmploymentPercentage()
+    public function getEmploymentPercentage(Dominion $dominion)
     {
-        return (float)(min(1, ($this->getPopulationEmployed() / $this->dominion->peasants)) * 100);
+        return (float)(min(1, ($this->getPopulationEmployed($dominion) / $dominion->peasants)) * 100);
     }
 }
