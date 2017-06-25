@@ -32,7 +32,7 @@
                             </tr>
                             <tr>
                                 <td>Land:</td>
-                                <td>{{ number_format($landCalculator->getTotalLand()) }}</td>
+                                <td>{{ number_format($landCalculator->getTotalLand($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Peasants:</td>
@@ -40,7 +40,7 @@
                             </tr>
                             <tr>
                                 <td>Employment:</td>
-                                <td>{{ number_format($populationCalculator->getEmploymentPercentage()) }}%</td>
+                                <td>{{ number_format($populationCalculator->getEmploymentPercentage($selectedDominion)) }}%</td>
                             </tr>
                             <tr>
                                 <td>Networth:</td>
