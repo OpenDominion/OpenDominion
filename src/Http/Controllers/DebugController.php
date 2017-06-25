@@ -31,8 +31,6 @@ class DebugController extends AbstractDominionController
         $productionCalculator = app(ProductionCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
 
-        $networthCalculator->initDependencies();
-
         return view('pages.dominion.debug', compact(
             'buildingCalculator',
             'constructionCalculator',
