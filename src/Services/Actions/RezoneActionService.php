@@ -52,14 +52,14 @@ class RezoneActionService implements RezoneActionServiceContract
 
         if ($totalLand === 0) {
             // Nothing to do.
-            return;
+            return 0;
         }
 
         // Check if the requested amount of land is barren.
         foreach ($remove as $landType => $landToRemove) {
             $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($landType);
             if ($landToRemove > $landAvailable) {
-                throw new NotEnoughResourcesException('Can only rezone ' . $landAvailable . ' ' . $landType);
+                throw new NotEnoughResourcesException('Can only rezone ' . $landAvailable . ' ' . str_plural($landType, $landAvailable));
             }
         }
 

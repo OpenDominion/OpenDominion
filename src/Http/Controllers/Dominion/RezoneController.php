@@ -43,20 +43,16 @@ class RezoneController extends AbstractDominionController
         try {
             $result = $rezoneActionService->rezone($dominion, $request->get('remove'), $request->get('add'));
         } catch (DominionLockedException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
+            return back()->withInput()
                 ->withErrors(['Re-zoning was not done due to the dominion being locked.']);
         } catch (BadInputException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
+            return back()->withInput()
                 ->withErrors([$e->getMessage()]);
         } catch (NotEnoughResourcesException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
+            return back()->withInput()
                 ->withErrors([$e->getMessage()]);
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput($request->all())
+            return back()->withInput()
                 ->withErrors(['Something went wrong. Please try again later.']);
         }
 
