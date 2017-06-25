@@ -33,8 +33,8 @@
                                 <tr>
                                     <td>{{ ucfirst($landType) }}</td>
                                     <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
-                                    <td class="text-center">{{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand()) * 100), 2) }}%</td>
-                                    <td class="text-center">{{ number_format($landCalculator->getBarrenLandByLandType()[$landType]) }}</td>
+                                    <td class="text-center">{{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
+                                    <td class="text-center">{{ number_format($landCalculator->getBarrenLand($selectedDominion)[$landType]) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -72,14 +72,14 @@
                                 <td>{{ ucfirst($landType) }}</td>
                                 @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
-                                        @if ($dominionQueueService->getExplorationQueue()[$landType][$i] === 0)
+                                        @if ($dominionQueueService->getExplorationQueue($selectedDominion)[$landType][$i] === 0)
                                             -
                                         @else
-                                            {{ number_format($dominionQueueService->getExplorationQueue()[$landType][$i]) }}
+                                            {{ number_format($dominionQueueService->getExplorationQueue($selectedDominion)[$landType][$i]) }}
                                         @endif
                                     </td>
                                 @endfor
-                                <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($landType)) }}</td>
+                                <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($selectedDominion, $landType)) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
