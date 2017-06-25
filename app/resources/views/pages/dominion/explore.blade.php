@@ -35,12 +35,12 @@
                                         <td class="text-center">
                                             {{ number_format($selectedDominion->{'land_' . $landType}) }}
                                             <small>
-                                                ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand()) * 100), 1) }}%)
+                                                ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
                                             </small>
                                         </td>
-                                        <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($landType)) }}</td>
+                                        <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($selectedDominion, $landType)) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="explore[{{ $landType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $landCalculator->getExplorationMaxAfford() }}" value="{{ old('explore.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <input type="number" name="explore[{{ $landType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $explorationCalculator->getMaxAfford($selectedDominion) }}" value="{{ old('explore.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -63,11 +63,11 @@
                 <div class="box-body">
                     <p>Cost per acre:</p>
                     <p>
-                        Platinum: {{ number_format($landCalculator->getExplorationPlatinumCost()) }}<br>
-                        Draftees: {{ number_format($landCalculator->getExplorationDrafteeCost()) }}
+                        Platinum: {{ number_format($explorationCalculator->getPlatinumCost($selectedDominion)) }}<br>
+                        Draftees: {{ number_format($explorationCalculator->getDrafteeCost($selectedDominion)) }}
                     </p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
-                    <p>You can afford to explore for {{ number_format($landCalculator->getExplorationMaxAfford()) }} acres of land at that rate.</p>
+                    <p>You can afford to explore for {{ number_format($explorationCalculator->getMaxAfford($selectedDominion)) }} acres of land at that rate.</p>
                 </div>
             </div>
         </div>

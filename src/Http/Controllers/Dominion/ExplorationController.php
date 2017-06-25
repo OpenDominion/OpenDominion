@@ -3,7 +3,8 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
@@ -17,16 +18,12 @@ class ExplorationController extends AbstractDominionController
 {
     public function getExplore()
     {
-        $landHelper = app(LandHelper::class);
-        $landCalculator = app(LandCalculator::class);
-        $dominionQueueService = app(DominionQueueService::class);
-        $dominionQueueService->setDominion($this->getSelectedDominion());
-
-        return view('pages.dominion.explore', compact(
-            'landHelper',
-            'landCalculator',
-            'dominionQueueService'
-        ));
+        return view('pages.dominion.explore', [
+            'dominionQueueService' => app(DominionQueueService::class),
+            'explorationCalculator' => app(ExplorationCalculator::class),
+            'landCalculator' => app(LandCalculator::class),
+            'landHelper' => app(LandHelper::class),
+        ]);
     }
 
     public function postExplore(ExploreActionRequest $request)

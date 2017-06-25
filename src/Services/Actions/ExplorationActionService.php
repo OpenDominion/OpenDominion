@@ -5,7 +5,7 @@ namespace OpenDominion\Services\Actions;
 use Carbon\Carbon;
 use DB;
 use Exception;
-use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
@@ -15,6 +15,19 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class ExplorationActionService
 {
     use DominionGuardsTrait;
+
+    /** @var ExplorationCalculator */
+    protected $explorationCalculator;
+
+    /**
+     * ExplorationActionService constructor.
+     *
+     * @param ExplorationCalculator $explorationCalculator
+     */
+    public function __construct(ExplorationCalculator $explorationCalculator)
+    {
+        $this->explorationCalculator = $explorationCalculator;
+    }
 
     /**
      * Does an explore action for a Dominion.
@@ -33,29 +46,25 @@ class ExplorationActionService
 
         $data = array_map('intval', $data);
 
-        /** @var LandCalculator $landCalculator */
-        $landCalculator = app(LandCalculator::class);
-        $landCalculator->init($dominion);
-
         $totalLandToExplore = array_sum($data);
 
         if ($totalLandToExplore === 0) {
             throw new BadInputException;
         }
 
-        $maxAfford = $landCalculator->getExplorationMaxAfford();
+        $maxAfford = $this->explorationCalculator->getMaxAfford($dominion);
 
         if ($totalLandToExplore > $maxAfford) {
             throw new NotEnoughResourcesException;
         }
 
-        $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $landCalculator->getExplorationMoraleDrop($totalLandToExplore)));
+        $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));
         $moraleDrop = ($dominion->morale - $newMorale);
 
-        $platinumCost = ($landCalculator->getExplorationPlatinumCost() * $totalLandToExplore);
+        $platinumCost = ($this->explorationCalculator->getPlatinumCost($dominion) * $totalLandToExplore);
         $newPlatinum = ($dominion->resource_platinum - $platinumCost);
 
-        $drafteeCost = ($landCalculator->getExplorationDrafteeCost() * $totalLandToExplore);
+        $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
         $newDraftee = ($dominion->military_draftees - $drafteeCost);
 
         $dateTime = new Carbon;
