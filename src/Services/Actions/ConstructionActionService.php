@@ -56,9 +56,6 @@ class ConstructionActionService
     {
         $this->guardLockedDominion($dominion);
 
-        // todo: refactor this
-        $this->landCalculator->init($dominion);
-
         $data = array_map('intval', $data);
 
         $totalBuildingsToConstruct = array_sum($data);
@@ -80,7 +77,7 @@ class ConstructionActionService
 
             $landType = $this->landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
 
-            if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($landType)) {
+            if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)) {
                 throw new NotEnoughResourcesException;
             }
         }
