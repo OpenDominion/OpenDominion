@@ -5,12 +5,10 @@ namespace OpenDominion\Services;
 use DB;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
-use OpenDominion\Traits\DominionAwareTrait;
+use OpenDominion\Models\Dominion;
 
 class DominionQueueService
 {
-    use DominionAwareTrait;
-
     /** @var BuildingHelper */
     protected $buildingHelper;
 
@@ -34,14 +32,14 @@ class DominionQueueService
 
     // Exploration
 
-    public function getExplorationQueue()
+    public function getExplorationQueue(Dominion $dominion)
     {
         if ($this->explorationQueue) {
             return $this->explorationQueue;
         }
 
         $rows = DB::table('queue_exploration')
-            ->where('dominion_id', $this->dominion->id)
+            ->where('dominion_id', $dominion->id)
             ->get(['land_type', 'amount', 'hours']);
 
         $explorationQueue = array_fill_keys($this->landHelper->getLandTypes(), array_fill(0, 12, 0));
@@ -54,10 +52,10 @@ class DominionQueueService
         return $explorationQueue;
     }
 
-    public function getExplorationQueueTotal()
+    public function getExplorationQueueTotal(Dominion $dominion)
     {
         $total = 0;
-        $explorationQueue = $this->getExplorationQueue();
+        $explorationQueue = $this->getExplorationQueue($dominion);
 
         foreach ($explorationQueue as $landType => $data) {
             foreach ($data as $hours => $amount) {
@@ -68,21 +66,21 @@ class DominionQueueService
         return $total;
     }
 
-    public function getExplorationQueueTotalByLand($land)
+    public function getExplorationQueueTotalByLand(Dominion $dominion, $land)
     {
-        return array_sum($this->getExplorationQueue()[$land]);
+        return array_sum($this->getExplorationQueue($dominion)[$land]);
     }
 
     // Construction
 
-    public function getConstructionQueue()
+    public function getConstructionQueue(Dominion $dominion)
     {
         if ($this->constructionQueue) {
             return $this->constructionQueue;
         }
 
         $rows = DB::table('queue_construction')
-            ->where('dominion_id', $this->dominion->id)
+            ->where('dominion_id', $dominion->id)
             ->get(['building', 'amount', 'hours']);
 
         $constructionQueue = array_fill_keys($this->buildingHelper->getBuildingTypes(), array_fill(0, 12, 0));
@@ -95,10 +93,10 @@ class DominionQueueService
         return $constructionQueue;
     }
 
-    public function getConstructionQueueTotal()
+    public function getConstructionQueueTotal(Dominion $dominion)
     {
         $total = 0;
-        $constructionQueue = $this->getConstructionQueue();
+        $constructionQueue = $this->getConstructionQueue($dominion);
 
         foreach ($constructionQueue as $buildingType => $data) {
             foreach ($data as $hours => $amount) {
@@ -109,19 +107,19 @@ class DominionQueueService
         return $total;
     }
 
-    public function getConstructionQueueTotalByBuilding($building)
+    public function getConstructionQueueTotalByBuilding(Dominion $dominion, $building)
     {
-        return array_sum($this->getConstructionQueue()[$building]);
+        return array_sum($this->getConstructionQueue($dominion)[$building]);
     }
 
     // Military
 
-    public function getMilitaryTrainingQueue()
+    public function getMilitaryTrainingQueue(Dominion $dominion)
     {
         //
     }
 
-    public function getMilitaryReturningQueue()
+    public function getMilitaryReturningQueue(Dominion $dominion)
     {
         //
     }
