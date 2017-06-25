@@ -3,8 +3,9 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
+use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\AnalyticsService\Event;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class SelectController extends AbstractDominionController
@@ -22,7 +23,7 @@ class SelectController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+        $analyticsService->queueFlashEvent(new Event(
             'dominion',
             'select'
         ));

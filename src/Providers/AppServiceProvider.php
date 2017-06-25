@@ -23,6 +23,10 @@ use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCa
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
+use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
+use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
+use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\AnalyticsService\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -105,5 +109,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ExplorationCalculatorContract::class, ExplorationCalculator::class);
         $this->app->bind(RezoningCalculatorContract::class, RezoningCalculator::class);
         $this->app->bind(TrainingCalculatorContract::class, TrainingCalculator::class);
+
+        // Services
+        $this->app->bind(AnalyticsServiceContract::class, AnalyticsService::class);
+        $this->app->bind(EventContract::class, Event::class);
     }
 }

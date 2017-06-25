@@ -6,11 +6,12 @@ use Exception;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Mail;
+use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Mail\UserRegistrationMail;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\UserRepository;
-use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\AnalyticsService\Event;
 use Session;
 use Validator;
 
@@ -57,7 +58,7 @@ class RegisterController extends AbstractController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+        $analyticsService->queueFlashEvent(new Event(
             'user',
             'register'
         ));
@@ -87,7 +88,7 @@ class RegisterController extends AbstractController
         auth()->login($user);
 
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+        $analyticsService->queueFlashEvent(new Event(
             'user',
             'activate'
         ));

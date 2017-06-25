@@ -2,10 +2,11 @@
 
 namespace OpenDominion\Services;
 
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
+use OpenDominion\Contracts\Services\AnalyticsService\Event;
 use RuntimeException;
 
-class AnalyticsService
+class AnalyticsService implements AnalyticsServiceContract
 {
     const SESSION_NAME_FLASH = 'analyticsservice_flash_events';
 

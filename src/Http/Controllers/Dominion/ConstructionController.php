@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
-use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\AnalyticsService\Event;
 use OpenDominion\Services\Dominion\Actions\ConstructionActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -68,7 +69,7 @@ class ConstructionController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+        $analyticsService->queueFlashEvent(new Event(
             'dominion',
             'construct',
             '',
@@ -123,7 +124,7 @@ class ConstructionController extends AbstractDominionController
 
         // todo: laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+        $analyticsService->queueFlashEvent(new Event(
             'dominion',
             'destroy',
             '',

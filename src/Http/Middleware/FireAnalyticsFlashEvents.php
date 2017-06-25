@@ -4,8 +4,8 @@ namespace OpenDominion\Http\Middleware;
 
 use Analytics;
 use Closure;
-use OpenDominion\Services\AnalyticsService;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\AnalyticsService\Event;
 
 class FireAnalyticsFlashEvents
 {
@@ -24,10 +24,10 @@ class FireAnalyticsFlashEvents
         foreach ($this->analyticsService->getFlashEvents() as $event) {
             /** @var Event $event */
             Analytics::trackEvent(
-                $event->category,
-                $event->action,
-                $event->label,
-                $event->value
+                $event->getCategory(),
+                $event->getAction(),
+                $event->getLabel(),
+                $event->getValue()
             );
         }
 

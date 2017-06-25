@@ -5,11 +5,12 @@ namespace OpenDominion\Http\Controllers;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
+use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RaceRepository;
-use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\AnalyticsService\Event;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class RoundController extends AbstractController
@@ -65,7 +66,7 @@ class RoundController extends AbstractController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsService\Event(
+        $analyticsService->queueFlashEvent(new Event(
             'round',
             'register',
             (string)$round->number

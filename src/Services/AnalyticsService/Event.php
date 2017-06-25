@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Services\AnalyticsService;
 
-class Event
+use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
+
+class Event implements EventContract
 {
     /** @var string */
     public $category;
@@ -30,5 +32,37 @@ class Event
         $this->action = $action;
         $this->label = $label;
         $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }
