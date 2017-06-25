@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
                                 <td class="text-center">{{ number_format($selectedDominion->{'building_' . $buildingType}) }}</td>
-                                <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand()) * 100), 2) }}%</td>
+                                <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -70,14 +70,14 @@
                                 <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
                                 @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
-                                        @if ($dominionQueueService->getConstructionQueue()[$buildingType][$i] === 0)
+                                        @if ($dominionQueueService->getConstructionQueue($selectedDominion)[$buildingType][$i] === 0)
                                             -
                                         @else
-                                            {{ number_format($dominionQueueService->getConstructionQueue()[$buildingType][$i]) }}
+                                            {{ number_format($dominionQueueService->getConstructionQueue($selectedDominion)[$buildingType][$i]) }}
                                         @endif
                                     </td>
                                 @endfor
-                                <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($buildingType)) }}</td>
+                                <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
