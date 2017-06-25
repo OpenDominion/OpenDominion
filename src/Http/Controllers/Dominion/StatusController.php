@@ -11,7 +11,6 @@ class StatusController extends AbstractDominionController
     public function getStatus()
     {
         $dominionProtectionService = app(DominionProtectionService::class);
-        $dominionProtectionService->setDominion($this->getSelectedDominion());
         $landCalculator = app(LandCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
 

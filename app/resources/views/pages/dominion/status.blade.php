@@ -159,11 +159,11 @@
     </div>
 
     {{-- @todo: UX --}}
-    @if ($dominionProtectionService->isUnderProtection())
+    @if ($dominionProtectionService->isUnderProtection($selectedDominion))
         <div class="text-center">
-            <p>You are under a magical state of protection for {{ number_format($dominionProtectionService->getUnderProtectionHoursLeft(), 2) }} hours.</p>
+            <p>You are under a magical state of protection for {{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }} hours.</p>
 
-            @if ($dominionProtectionService->getUnderProtectionHoursLeft() > 71)
+            @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
                 <p>No production occurs until you have less than 71 hours of protection remaining!</p>
             @endif
         </div>
