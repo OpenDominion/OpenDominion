@@ -3,13 +3,13 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculatorContract;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
-use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\DominionQueueService;
 
-class LandCalculator implements LandCalculatorInterface
+class LandCalculator implements LandCalculatorContract
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
