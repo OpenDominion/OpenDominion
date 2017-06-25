@@ -47,10 +47,22 @@
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($landCalculator, [
                             'getTotalLand',
                             'getTotalBarrenLand',
-                            'getBarrenLandByLandType',
-                            'getExplorationPlatinumCost',
-                            'getExplorationDrafteeCost',
-                            'getExplorationMaxAfford',
+                            'getBarrenLand',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Exploration Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($explorationCalculator, [
+                            'getPlatinumCost',
+                            'getDrafteeCost',
+                            'getMaxAfford',
                         ]) !!}
                     </p>
                 </div>

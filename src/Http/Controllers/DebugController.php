@@ -2,13 +2,14 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use OpenDominion\Calculators\Dominion\LandCalculator;
-use OpenDominion\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Contracts\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\Dominion\AbstractDominionController;
 
 class DebugController extends AbstractDominionController
@@ -25,6 +26,7 @@ class DebugController extends AbstractDominionController
 
         $buildingCalculator = app(BuildingCalculator::class);
         $constructionCalculator = app(ConstructionCalculator::class);
+        $explorationCalculator = app(ExplorationCalculator::class);
         $landCalculator = app(LandCalculator::class);
         $militaryCalculator = app(MilitaryCalculator::class);
         $populationCalculator = app(PopulationCalculator::class);
@@ -34,6 +36,7 @@ class DebugController extends AbstractDominionController
         return view('pages.dominion.debug', compact(
             'buildingCalculator',
             'constructionCalculator',
+            'explorationCalculator',
             'landCalculator',
             'militaryCalculator',
             'populationCalculator',
