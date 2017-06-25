@@ -3,6 +3,11 @@
 @section('page-header', 'Military')
 
 @section('content')
+    @php
+        // todo
+        $militaryTrainingCostPerUnit = $populationCalculator->getPopulationMilitaryTrainingCostPerUnit($selectedDominion);
+        $militaryMaxTrainable = $populationCalculator->getPopulationMilitaryMaxTrainable($selectedDominion);
+    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
@@ -40,34 +45,35 @@
                                         <td class="text-center">NYI</td>
                                         <td class="text-center">
                                             @php
-                                            // todo: move this shit to view presenter or something
-                                            $labelParts = [];
+                                                // todo: move this shit to view presenter or something
+                                                $labelParts = [];
 
-                                            foreach ($militaryTrainingCostPerUnit[$unitType] as $costType => $value) {
-                                                switch ($costType) {
-                                                    case 'platinum':
-                                                        $labelParts[] = "{$value}p";
-                                                        break;
+                                                foreach ($militaryTrainingCostPerUnit[$unitType] as $costType => $value) {
+                                                    switch ($costType) {
+                                                        case 'platinum':
+                                                            $labelParts[] = "{$value}p";
+                                                            break;
 
-                                                    case 'ore':
-                                                        $labelParts[] = "{$value}r";
-                                                        break;
+                                                        case 'ore':
+                                                            $labelParts[] = "{$value}r";
+                                                            break;
 
-                                                    case 'wizards':
-                                                        $labelParts[] = 'Wizard';
-                                                        break;
+                                                        case 'wizards':
+                                                            $labelParts[] = 'Wizard';
+                                                            break;
 
-                                                    default:
-                                                        break;
+                                                        default:
+                                                            break;
+                                                    }
                                                 }
-                                            }
 
-                                            echo implode(', ', $labelParts);
+                                                echo implode(', ', $labelParts);
                                             @endphp
                                         </td>
                                         <td class="text-center">{{ number_format($militaryMaxTrainable[$unitType]) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="train[0]" class="form-control text-center" placeholder="0" min="0" max="0" value="" disabled>
+                                            <input type="number" name="train[0]" class="form-control text-center"
+                                                   placeholder="0" min="0" max="0" value="" disabled>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -78,7 +84,8 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" disabled>Train</button>
                         <div class="pull-right">
-                            You have {{ number_format($selectedDominion->military_draftees) }} draftees available to train.
+                            You have {{ number_format($selectedDominion->military_draftees) }} draftees available to
+                            train.
                         </div>
                     </div>
                 </form>
@@ -107,13 +114,15 @@
                             <tr>
                                 <td class="text-center">Peasants</td>
                                 <td class="text-center">
-                                    {{ number_format($selectedDominion->peasants) }} ({{ number_format($populationCalculator->getPopulationPeasantPercentage(), 2) }}%)
+                                    {{ number_format($selectedDominion->peasants) }}
+                                    ({{ number_format($populationCalculator->getPopulationPeasantPercentage($selectedDominion), 2) }}%)
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-center">Military</td>
                                 <td class="text-center">
-                                    {{ number_format($populationCalculator->getPopulationMilitary()) }} ({{ number_format($populationCalculator->getPopulationMilitaryPercentage(), 2) }}%)
+                                    {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}
+                                    ({{ number_format($populationCalculator->getPopulationMilitaryPercentage($selectedDominion), 2) }}%)
                                 </td>
                             </tr>
                         </tbody>
@@ -137,14 +146,20 @@
                                 <tr>
                                     <td class="text-center">Draft Rate:</td>
                                     <td class="text-center">
-                                        <input type="number" name="draft_rate" class="form-control text-center" style="display: inline-block; width: 80px;" placeholder="0" min="0" max="100" value="{{ $selectedDominion->draft_rate }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}> %
+                                        <input type="number" name="draft_rate" class="form-control text-center"
+                                               style="display: inline-block; width: 80px;" placeholder="0" min="0"
+                                               max="100"
+                                               value="{{ $selectedDominion->draft_rate }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        %
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change</button>
+                        <button type="submit"
+                                class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change
+                        </button>
                     </div>
                 </form>
             </div>

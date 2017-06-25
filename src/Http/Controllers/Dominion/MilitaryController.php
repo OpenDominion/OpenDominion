@@ -3,7 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
-use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\UnitHelper;
@@ -14,21 +14,10 @@ class MilitaryController extends AbstractDominionController
 {
     public function getMilitary()
     {
-        /** @var PopulationCalculator $populationCalculator */
-        $populationCalculator = app(PopulationCalculator::class);
-
-        /** @var UnitHelper $unitHelper */
-        $unitHelper = app(UnitHelper::class);
-
-        $militaryTrainingCostPerUnit = $populationCalculator->getPopulationMilitaryTrainingCostPerUnit();
-        $militaryMaxTrainable = $populationCalculator->getPopulationMilitaryMaxTrainable();
-
-        return view('pages.dominion.military', compact(
-            'populationCalculator',
-            'unitHelper',
-            'militaryTrainingCostPerUnit',
-            'militaryMaxTrainable'
-        ));
+        return view('pages.dominion.military', [
+            'populationCalculator' => app(PopulationCalculator::class),
+            'unitHelper' => app(UnitHelper::class),
+        ]);
     }
 
     public function postChangeDraftRate(/* MilitaryChangeDraftRateActionRequest */ Request $request)
@@ -51,7 +40,7 @@ class MilitaryController extends AbstractDominionController
         }
 
         $message = sprintf(
-            'Draft rate changed to %d%%',
+            'Draft rate changed to %d%%.',
             $result['draftRate']
         );
 
