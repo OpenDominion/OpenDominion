@@ -4,18 +4,15 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
 use Illuminate\Http\Request;
-use OpenDominion\Calculators\Dominion\LandCalculator;
-use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\NetworthCalculator;
 use OpenDominion\Models\Realm;
 
 class RealmController extends AbstractDominionController
 {
     public function getRealm(Realm $realm = null)
     {
-        /** @var LandCalculator $landCalculator */
         $landCalculator = app(LandCalculator::class);
-
-        /** @var NetworthCalculator $networthCalculator */
         $networthCalculator = app(NetworthCalculator::class);
 
         if (($realm === null) || !$realm->exists) {
@@ -24,15 +21,17 @@ class RealmController extends AbstractDominionController
 
         $dominions = $realm->dominions()/*->with(['race.units'])*/->orderBy('networth', 'desc')->get();
 
-        // Todo: optimize this hacky hacky stuff
+        // Todo: refactor this hacky hacky navigation stuff
         $prevRealm = DB::table('realms')
             ->where('number', '<', $realm->number)
+//            ->where('realm_id', $realm->id)
             ->orderBy('number', 'desc')
             ->limit(1)
             ->first();
 
         $nextRealm = DB::table('realms')
             ->where('number', '>', $realm->number)
+//            ->where('realm_id', $realm->id)
             ->orderBy('number')
             ->limit(1)
             ->first();
