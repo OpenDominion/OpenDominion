@@ -4,9 +4,23 @@ namespace OpenDominion\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
+use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator as ExplorationCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator as RezoningCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator as TrainingCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator as BuildingCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
+use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -117,7 +131,17 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerContracts()
     {
+        // Dominion Calculators
         $this->app->bind(BuildingCalculatorContract::class,BuildingCalculator::class);
+        $this->app->bind(LandCalculatorContract::class,LandCalculator::class);
+        $this->app->bind(MilitaryCalculatorContract::class,MilitaryCalculator::class);
+        $this->app->bind(PopulationCalculatorContract::class,PopulationCalculator::class);
+        $this->app->bind(ProductionCalculatorContract::class,ProductionCalculator::class);
+
+        // Dominion Action Calculators
         $this->app->bind(ConstructionCalculatorContract::class, ConstructionCalculator::class);
+        $this->app->bind(ExplorationCalculatorContract::class, ExplorationCalculator::class);
+        $this->app->bind(RezoningCalculatorContract::class, RezoningCalculator::class);
+        $this->app->bind(TrainingCalculatorContract::class, TrainingCalculator::class);
     }
 }
