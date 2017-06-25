@@ -94,17 +94,17 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         $peasantsPerForestHaven = 20;
 
         // Military
-        foreach ($this->dominion->race->units as $unit) {
-            $dp += ($this->dominion->{'military_unit' . $unit->slot} * $unit->power_defense);
+        foreach ($dominion->race->units as $unit) {
+            $dp += ($dominion->{'military_unit' . $unit->slot} * $unit->power_defense);
         }
 
         // Draftees
-        $dp += ($this->dominion->military_draftees * $dpPerDraftee);
+        $dp += ($dominion->military_draftees * $dpPerDraftee);
 
         // Forest Havens
         $dp += min(
-            ($this->dominion->peasants * $forestHavenDpPerPeasant),
-            ($this->dominion->building_forest_haven * $forestHavenDpPerPeasant * $peasantsPerForestHaven)
+            ($dominion->peasants * $forestHavenDpPerPeasant),
+            ($dominion->building_forest_haven * $forestHavenDpPerPeasant * $peasantsPerForestHaven)
         );
 
         return (float)$dp;
@@ -119,14 +119,14 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         $guardTowerMaxDp = 35;
 
         // Racial Bonus
-        $multiplier += $this->dominion->race->getPerkMultiplier('defense');
+        $multiplier += $dominion->race->getPerkMultiplier('defense');
 
         // Improvement: Walls
         // todo
 
         // Guard Towers
         $multiplier += min(
-            (($dpPerGuardTower * $this->dominion->building_guard_tower) / $this->landCalculator->getTotalLand()),
+            (($dpPerGuardTower * $dominion->building_guard_tower) / $this->landCalculator->getTotalLand($dominion)),
             ($guardTowerMaxDp / 100)
         );
 
@@ -141,51 +141,51 @@ class MilitaryCalculator implements MilitaryCalculatorContract
 
     public function getDefensivePowerRatio(Dominion $dominion)
     {
-        return (float)($this->getDefensivePower() / $this->landCalculator->getTotalLand());
+        return (float)($this->getDefensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     public function getDefensivePowerRatioRaw(Dominion $dominion)
     {
-        return (float)($this->getDefensivePowerRaw() / $this->landCalculator->getTotalLand());
+        return (float)($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     public function getSpyRatio(Dominion $dominion)
     {
-        return $this->getSpyRatioRaw();
+        return $this->getSpyRatioRaw($dominion);
         // todo: racial spy strength multiplier
     }
 
     public function getSpyRatioRaw(Dominion $dominion)
     {
-        return (float)($this->dominion->military_spies / $this->landCalculator->getTotalLand());
+        return (float)($dominion->military_spies / $this->landCalculator->getTotalLand($dominion));
     }
 
-//    public function getSpyStrengthRegen()
-//    {
-//        $regen = 4;
-//
-//        // todo: Spy Master / Dark Artistry tech
-//
-//        return $regen;
-//    }
+    public function getSpyStrengthRegen(Dominion $dominion)
+    {
+        $regen = 4;
+
+        // todo: Spy Master / Dark Artistry tech
+
+        return $regen;
+    }
 
     public function getWizardRatio(Dominion $dominion)
     {
-        return $this->getWizardRatioRaw();
+        return $this->getWizardRatioRaw($dominion);
         // todo: racial multiplier + Magical Weaponry tech (+15%)
     }
 
     public function getWizardRatioRaw(Dominion $dominion)
     {
-        return (float)(($this->dominion->military_wizards + ($this->dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand());
+        return (float)(($dominion->military_wizards + ($dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand($dominion));
     }
 
-//    public function getWizardStrengthRegen()
-//    {
-//        $regen = 5;
-//
-//        // todo: Master of Magi / Dark Artistry tech
-//
-//        return $regen;
-//    }
+    public function getWizardStrengthRegen(Dominion $dominion)
+    {
+        $regen = 5;
+
+        // todo: Master of Magi / Dark Artistry tech
+
+        return $regen;
+    }
 }
