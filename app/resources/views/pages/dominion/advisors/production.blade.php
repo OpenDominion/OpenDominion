@@ -26,27 +26,27 @@
                         <tbody>
                             <tr>
                                 <td>Platinum:</td>
-                                <td>{{ number_format($productionCalculator->getPlatinumProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getPlatinumProduction($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Food:</td>
-                                <td>{{ number_format($productionCalculator->getFoodProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getFoodProduction($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Lumber:</td>
-                                <td>{{ number_format($productionCalculator->getLumberProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getLumberProduction($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Mana:</td>
-                                <td>{{ number_format($productionCalculator->getManaProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getManaProduction($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Ore:</td>
-                                <td>{{ number_format($productionCalculator->getOreProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getOreProduction($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Gems:</td>
-                                <td>{{ number_format($productionCalculator->getGemProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getGemProduction($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td class="nyi">Research points:</td>
@@ -54,7 +54,7 @@
                             </tr>
                             <tr>
                                 <td>Boats:</td>
-                                <td>{{ number_format($productionCalculator->getBoatProduction()) }}</td>
+                                <td>{{ number_format($productionCalculator->getBoatProduction($selectedDominion)) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -74,19 +74,19 @@
                         <tbody>
                             <tr>
                                 <td>Food Eaten:</td>
-                                <td>{{ number_format($productionCalculator->getFoodConsumption()) }}</td>
+                                <td>{{ number_format($productionCalculator->getFoodConsumption($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Food Decayed:</td>
-                                <td>{{ number_format($productionCalculator->getFoodDecay()) }}</td>
+                                <td>{{ number_format($productionCalculator->getFoodDecay($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Lumber Rotted:</td>
-                                <td>{{ number_format($productionCalculator->getLumberDecay()) }}</td>
+                                <td>{{ number_format($productionCalculator->getLumberDecay($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Mana Drain:</td>
-                                <td>{{ number_format($productionCalculator->getManaDecay()) }}</td>
+                                <td>{{ number_format($productionCalculator->getManaDecay($selectedDominion)) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -109,15 +109,15 @@
                             </tr>
                             <tr>
                                 <td>Food:</td>
-                                <td>{{ number_format($productionCalculator->getFoodNetChange()) }}</td>
+                                <td>{{ number_format($productionCalculator->getFoodNetChange($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Lumber:</td>
-                                <td>{{ number_format($productionCalculator->getLumberNetChange()) }}</td>
+                                <td>{{ number_format($productionCalculator->getLumberNetChange($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Mana:</td>
-                                <td>{{ number_format($productionCalculator->getManaNetChange()) }}</td>
+                                <td>{{ number_format($productionCalculator->getManaNetChange($selectedDominion)) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -130,10 +130,10 @@
     <div class="box">
         <div class="box-body">
             Peasant change last hour: {{ number_format($selectedDominion->peasants_last_hour) }}<br>
-            Maximum population: {{ number_format($populationCalculator->getMaxPopulation()) }}<br>
-            Maximum peasant population: {{ number_format($populationCalculator->getMaxPopulation() - $populationCalculator->getPopulationMilitary()) }}<br>
-            Jobs total: {{ number_format($populationCalculator->getEmploymentJobs()) }}<br>
-            Jobs available: {{ number_format($populationCalculator->getEmploymentJobs() - $populationCalculator->getPopulationMilitary()) }}<br>
+            Maximum population: {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
+            Maximum peasant population: {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
+            Jobs total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
+            Jobs available: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
             <span class="nyi">Opportunity cost of job overrun: NYI</span>
         </div>
     </div>
