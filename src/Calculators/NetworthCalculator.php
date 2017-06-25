@@ -2,14 +2,14 @@
 
 namespace OpenDominion\Calculators;
 
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Interfaces\DependencyInitializableInterface;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 
-class NetworthCalculator implements DependencyInitializableInterface
+class NetworthCalculator implements NetworthCalculatorContract
 {
     /** @var BuildingCalculator */
     protected $buildingCalculator;
@@ -17,26 +17,20 @@ class NetworthCalculator implements DependencyInitializableInterface
     /** @var LandCalculator */
     protected $landCalculator;
 
-    public function __construct(BuildingCalculator $buildingCalculator)
+    /**
+     * NetworthCalculator constructor.
+     *
+     * @param BuildingCalculator $buildingCalculator
+     * @param LandCalculator $landCalculator
+     */
+    public function __construct(BuildingCalculator $buildingCalculator, LandCalculator $landCalculator)
     {
         $this->buildingCalculator = $buildingCalculator;
+        $this->landCalculator = $landCalculator;
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function initDependencies()
-    {
-//        $this->buildingCalculator = app(BuildingCalculator::class);
-        $this->landCalculator = app(LandCalculator::class);
-    }
-
-    /**
-     * Calculates and returns a Realm's networth.
-     *
-     * @param Realm $realm
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getRealmNetworth(Realm $realm)
     {
@@ -52,17 +46,10 @@ class NetworthCalculator implements DependencyInitializableInterface
     }
 
     /**
-     * Calculates and returns a Dominion's networth.
-     *
-     * @param Dominion $dominion
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getDominionNetworth(Dominion $dominion)
     {
-//        $this->buildingCalculator->setDominion($dominion);
-        $this->landCalculator->setDominion($dominion);
-
         $networth = 0;
 
         // Values
@@ -71,7 +58,7 @@ class NetworthCalculator implements DependencyInitializableInterface
         $networthPerArchMage = 5;
         $networthPerLand = 20;
         $networthPerBuilding = 5;
-//return 0;
+
         foreach ($dominion->race->units as $unit) {
             $networth += ($dominion->{'military_unit' . $unit->slot} * $this->getUnitNetworth($unit));
         }
@@ -89,11 +76,7 @@ class NetworthCalculator implements DependencyInitializableInterface
     }
 
     /**
-     * Calculates and returns a Unit's networth.
-     *
-     * @param Unit $unit
-     *
-     * @return float
+     * {@inheritdoc}
      */
     public function getUnitNetworth(Unit $unit)
     {

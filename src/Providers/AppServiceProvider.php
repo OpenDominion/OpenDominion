@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator as ExplorationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator as RezoningCalculatorContract;
@@ -21,6 +22,7 @@ use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculator
 use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
+use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,9 +50,6 @@ class AppServiceProvider extends ServiceProvider
         // todo: refactor
 //        $this->registerServices();
 //        $this->registerHelpers();
-//        $this->registerCalculators();
-
-//        $this->initCalculatorDependencies();
         // todo: /refactor
 
         $this->registerContracts();
@@ -89,48 +88,11 @@ class AppServiceProvider extends ServiceProvider
 //        }
 //    }
 
-//    protected function registerCalculators()
-//    {
-//        // Generic calculators
-//        $genericCalculatorClasses = [
-////            NetworthCalculator::class,
-//        ];
-//
-//        foreach ($genericCalculatorClasses as $class) {
-//            $this->app->singleton($class, function ($app) use ($class) {
-//                return new $class;
-//            });
-//        }
-//
-//        // Dominion calculators
-//        $dominionCalculatorClasses = [
-////            BuildingCalculator::class,
-//            LandCalculator::class,
-//            MilitaryCalculator::class,
-//            PopulationCalculator::class,
-//            ProductionCalculator::class,
-//        ];
-//
-//        foreach ($dominionCalculatorClasses as $class) {
-//            $this->app->instance($class, new $class);
-//        }
-//
-//        $this->app->tag($dominionCalculatorClasses, 'dominionCalculators');
-//
-//        $allCalculatorClasses = array_merge($dominionCalculatorClasses, $genericCalculatorClasses);
-//        $this->app->tag($allCalculatorClasses, 'initializableCalculators');
-//    }
-//
-//    protected function initCalculatorDependencies()
-//    {
-//        foreach ($this->app->tagged('initializableCalculators') as $calculator) {
-//            /** @var DependencyInitializableInterface $calculator */
-//            $calculator->initDependencies();
-//        }
-//    }
-
     protected function registerContracts()
     {
+        // Generic Calculators
+        $this->app->bind(NetworthCalculatorContract::class,NetworthCalculator::class);
+
         // Dominion Calculators
         $this->app->bind(BuildingCalculatorContract::class,BuildingCalculator::class);
         $this->app->bind(LandCalculatorContract::class,LandCalculator::class);
