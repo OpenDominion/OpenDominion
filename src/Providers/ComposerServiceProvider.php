@@ -6,7 +6,6 @@ use Cache;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\NetworthCalculator;
-use OpenDominion\Services\DominionSelectorService;
 
 class ComposerServiceProvider extends ServiceProvider
 {
@@ -22,9 +21,9 @@ class ComposerServiceProvider extends ServiceProvider
             $view->with('version', $version);
         });
 
+        // todo: do we need this here in this class?
         view()->composer('partials.resources-overview', function (View $view) {
             $networthCalculator = app(NetworthCalculator::class);
-            $networthCalculator->initDependencies();
             $view->with('networthCalculator', $networthCalculator);
         });
     }
