@@ -99,6 +99,4 @@ class LandCalculator implements LandCalculatorInterface
 
         return $return;
     }
-
-
 }
