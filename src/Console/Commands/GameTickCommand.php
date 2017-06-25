@@ -134,12 +134,11 @@ class GameTickCommand extends Command
     {
         Log::debug('Tick resources started');
 
-        // todo: fetch only non-locked dominions
+        /** @var Dominion[] $dominions */
         $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate);
+        // todo: fetch only non-locked dominions
 
         foreach ($dominions as $dominion) {
-            /** @var $dominion Dominion */
-
             // Resources
             $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
             $dominion->resource_food += $this->productionCalculator->getFoodNetChange($dominion);
@@ -321,11 +320,10 @@ class GameTickCommand extends Command
     {
         Log::debug('Tick dominion networth');
 
+        /** @var Dominion[] $dominions */
         $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate);
 
         foreach ($dominions as $dominion) {
-            /** @var $dominion Dominion */
-
             $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
             $dominion->save();
         }
