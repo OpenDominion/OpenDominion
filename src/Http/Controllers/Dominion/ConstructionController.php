@@ -20,18 +20,12 @@ class ConstructionController extends AbstractDominionController
 {
     public function getConstruction()
     {
-//        $buildingHelper = app(BuildingHelper::class);
-//        $buildingCalculator = app(BuildingCalculator::class);
-//        $landCalculator = app(LandCalculator::class);
-//        $dominionQueueService = app(DominionQueueService::class);
-//        $dominionQueueService->setDominion($this->getSelectedDominion());
-
         return view('pages.dominion.construction', [
-            'buildingHelper' => app(BuildingHelper::class),
             'buildingCalculator' => app(BuildingCalculator::class),
+            'buildingHelper' => app(BuildingHelper::class),
             'constructionCalculator' => app(ConstructionCalculator::class),
+            'dominionQueueService' => app(DominionQueueService::class),
             'landCalculator' => app(LandCalculator::class),
-            'dominionQueueService' => app(DominionQueueService::class)->setDominion($this->getSelectedDominion()),
         ]);
     }
 

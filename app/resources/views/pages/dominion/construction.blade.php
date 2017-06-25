@@ -21,7 +21,7 @@
                                 <col width="100">
                             </colgroup>
 
-                            @foreach ($buildingHelper->getBuildingTypesByLandType($selectedDominion->race) as $landType => $buildingTypes)
+                            @foreach ($buildingHelper->getBuildingTypesByRace($selectedDominion->race) as $landType => $buildingTypes)
 
                                 @if (empty($buildingTypes))
                                     @continue
@@ -29,7 +29,7 @@
 
                                 <thead>
                                     <tr>
-                                        <th colspan="3">{{ ucfirst($landType) }} <span class="small">(Barren: {{ number_format($landCalculator->getTotalBarrenLandByLandType($landType)) }})</span></th>
+                                        <th colspan="3">{{ ucfirst($landType) }} <span class="small">(Barren: {{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }})</span></th>
                                     </tr>
                                     <tr>
                                         <th>Building</th>
@@ -49,10 +49,10 @@
                                             <td class="text-center">
                                                 {{ $selectedDominion->{'building_' . $buildingType} }}
                                                 <small>
-                                                    ({{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand()) * 100), 1) }}%)
+                                                    ({{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
                                                 </small>
                                             </td>
-                                            <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($buildingType)) }}</td>
+                                            <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
                                             <td class="text-center">
                                                 <input type="number" name="construct[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $constructionCalculator->getMaxAfford($selectedDominion) }}" value="{{ old('construct.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             </td>
@@ -67,7 +67,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Build</button>
                         <div class="pull-right">
-                            You have {{ number_format($landCalculator->getTotalLand()) }} acres of land.
+                            You have {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} acres of land.
                         </div>
                     </div>
                 </form>
