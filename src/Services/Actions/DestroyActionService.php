@@ -2,11 +2,8 @@
 
 namespace OpenDominion\Services\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
-use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -28,17 +25,6 @@ class DestroyActionService
         $this->guardLockedDominion($dominion);
 
         $data = array_map('intval', $data);
-
-        /** @var BuildingCalculator $buildingCalculator */
-        $buildingCalculator = app(BuildingCalculator::class)
-            ->init($dominion);
-
-        /** @var LandCalculator $landCalculator */
-        $landCalculator = app(LandCalculator::class)
-            ->init($dominion);
-
-        /** @var LandHelper $landHelper */
-        $landHelper = app(LandHelper::class);
 
         $totalBuildingsToDestroy = array_sum($data);
 

@@ -117,7 +117,7 @@ class ConstructionController extends AbstractDominionController
         }
 
         $message = sprintf(
-            'Destruction of %s buildings is complete',
+            'Destruction of %s buildings is complete.',
             number_format($result['totalBuildingsDestroyed'])
         );
 
