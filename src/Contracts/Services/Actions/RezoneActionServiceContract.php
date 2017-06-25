@@ -1,10 +1,10 @@
 <?php
 
-namespace OpenDominion\Interfaces\Services\Actions;
+namespace OpenDominion\Contracts\Services\Actions;
 
 use OpenDominion\Models\Dominion;
 
-interface RezoneActionServiceInterface
+interface RezoneActionServiceContract
 {
     /**
      * Does a rezone action for a Dominion.

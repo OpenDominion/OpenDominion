@@ -2,14 +2,14 @@
 
 namespace OpenDominion\Services\Actions;
 
+use OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
-use OpenDominion\Interfaces\Services\Actions\RezoneActionServiceInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
-class RezoneActionService implements RezoneActionServiceInterface
+class RezoneActionService implements RezoneActionServiceContract
 {
     use DominionGuardsTrait;
 

@@ -3,11 +3,11 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
+use OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
-use OpenDominion\Interfaces\Services\Actions\RezoneActionServiceInterface;
 use OpenDominion\Services\AnalyticsService;
 
 class RezoneController extends AbstractDominionController
@@ -18,9 +18,9 @@ class RezoneController extends AbstractDominionController
     /**
      * RezoneController constructor.
      *
-     * @param \OpenDominion\Interfaces\Services\Actions\RezoneActionServiceInterface $rezoneActionService
+     * @param \OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract $rezoneActionService
      */
-    public function __construct(RezoneActionServiceInterface $rezoneActionService)
+    public function __construct(RezoneActionServiceContract $rezoneActionService)
     {
         $this->rezoneActionService = $rezoneActionService;
     }
@@ -36,7 +36,7 @@ class RezoneController extends AbstractDominionController
         return view('pages.dominion.rezone', compact('dominion', 'rezoningPlatinumCost', 'canAfford', 'barrenLand'));
     }
 
-    public function postRezone(Request $request, RezoneActionServiceInterface $rezoneActionService)
+    public function postRezone(Request $request, RezoneActionServiceContract $rezoneActionService)
     {
         $dominion = $this->getSelectedDominion();
 
