@@ -64,32 +64,6 @@
 
 </div>
 
-{{--<div id="wrapper">
-
-    @include('partials.navbar')
-
-    <div id="page-wrapper">
-
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">
-                    @yield('page-header')
-                </h1>
-            </div>
-        </div>
-
-        @include('partials.alerts')
-
-        @if (($dominion = Request::route()->getParameter('dominion')) && Request::is('dominion/*') && !Request::is('dominion/*/status'))
-            @include('partials.resources-overview')
-        @endif
-
-        @yield('content')
-
-    </div>
-
-</div>--}}
-
 @include('partials.scripts')
 
 </body>
