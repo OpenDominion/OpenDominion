@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Services;
+namespace OpenDominion\Services\Dominion;
 
 use Auth;
 use Exception;
@@ -8,7 +8,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 use Session;
 
-class DominionSelectorService
+class SelectorService
 {
     const SESSION_NAME = 'selected_dominion_id';
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Services\Actions;
+namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;

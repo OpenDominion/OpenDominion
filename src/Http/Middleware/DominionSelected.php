@@ -3,14 +3,14 @@
 namespace OpenDominion\Http\Middleware;
 
 use Closure;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class DominionSelected
 {
-    /** @var DominionSelectorService */
+    /** @var SelectorService */
     protected $dominionSelectorService;
 
-    public function __construct(DominionSelectorService $dominionSelectorService)
+    public function __construct(SelectorService $dominionSelectorService)
     {
         $this->dominionSelectorService = $dominionSelectorService;
     }

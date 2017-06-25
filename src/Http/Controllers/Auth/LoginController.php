@@ -8,7 +8,7 @@ use OpenDominion\Events\UserLoginEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
 use OpenDominion\Services\AnalyticsService;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class LoginController extends AbstractController
 {
@@ -37,8 +37,8 @@ class LoginController extends AbstractController
 //        }
 
         if ($user->dominions->count() === 1) {
-            /** @var DominionSelectorService $dominionSelectorService */
-            $dominionSelectorService = app(DominionSelectorService::class);
+            /** @var SelectorService $dominionSelectorService */
+            $dominionSelectorService = app(SelectorService::class);
             $dominionSelectorService->selectUserDominion($user->dominions->first());
         }
     }

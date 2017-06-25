@@ -4,7 +4,7 @@ namespace OpenDominion\Tests\Feature;
 
 use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DominionTest extends AbstractBrowserKitTestCase
@@ -51,7 +51,7 @@ class DominionTest extends AbstractBrowserKitTestCase
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
-        $dominionSelectorService = app(DominionSelectorService::class);
+        $dominionSelectorService = app(SelectorService::class);
 
         $dominionSelectorService->selectUserDominion($dominion);
 

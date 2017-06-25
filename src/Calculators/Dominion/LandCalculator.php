@@ -7,7 +7,7 @@ use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculator
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\DominionQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class LandCalculator implements LandCalculatorContract
 {
@@ -20,7 +20,7 @@ class LandCalculator implements LandCalculatorContract
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
-    /** @var DominionQueueService */
+    /** @var QueueService */
     protected $dominionQueueService;
 
     /**
@@ -29,13 +29,13 @@ class LandCalculator implements LandCalculatorContract
      * @param BuildingCalculator $buildingCalculator
      * @param BuildingHelper $buildingHelper
      * @param LandHelper $landHelper
-     * @param DominionQueueService $dominionQueueService
+     * @param QueueService $dominionQueueService
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
         BuildingHelper $buildingHelper,
         LandHelper $landHelper,
-        DominionQueueService $dominionQueueService
+        QueueService $dominionQueueService
     ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->buildingHelper = $buildingHelper;

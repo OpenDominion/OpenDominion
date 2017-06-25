@@ -3,14 +3,14 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class HomeController extends AbstractController
 {
     public function getIndex()
     {
         if (Auth::check()) {
-            $dominionSelectorService = app(DominionSelectorService::class);
+            $dominionSelectorService = app(SelectorService::class);
 
             if ($dominionSelectorService->hasUserSelectedDominion()) {
                 return redirect()->route('dominion.status');

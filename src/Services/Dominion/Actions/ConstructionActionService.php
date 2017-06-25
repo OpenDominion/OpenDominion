@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Services\Actions;
+namespace OpenDominion\Services\Dominion\Actions;
 
 use Carbon\Carbon;
 use DB;

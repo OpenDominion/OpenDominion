@@ -4,19 +4,19 @@ namespace OpenDominion\Http\Middleware;
 
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class ShareSelectedDominion
 {
-    /** @var DominionSelectorService */
+    /** @var SelectorService */
     protected $dominionSelectorService;
 
     /**
      * ShareSelectedDominion constructor.
      *
-     * @param DominionSelectorService $dominionSelectorService
+     * @param SelectorService $dominionSelectorService
      */
-    public function __construct(DominionSelectorService $dominionSelectorService)
+    public function __construct(SelectorService $dominionSelectorService)
     {
         $this->dominionSelectorService = $dominionSelectorService;
     }

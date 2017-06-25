@@ -7,7 +7,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
-use OpenDominion\Services\DominionQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class LandCalculatorTest extends AbstractBrowserKitTestCase
@@ -18,7 +18,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
     /** @var BuildingCalculator */
     protected $buildingCalculatorMock;
 
-    /** @var DominionQueueService */
+    /** @var QueueService */
     protected $dominionQueueServiceMock;
 
     /** @var LandCalculator */
@@ -34,9 +34,9 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->buildingCalculatorMock->shouldReceive('setDominion')->with($this->dominionMock);
         $this->app->instance(BuildingCalculator::class, $this->buildingCalculatorMock);
 
-        $this->dominionQueueServiceMock = m::mock(DominionQueueService::class);
+        $this->dominionQueueServiceMock = m::mock(QueueService::class);
         $this->dominionQueueServiceMock->shouldReceive('setDominion')->with($this->dominionMock);
-        $this->app->instance(DominionQueueService::class, $this->dominionQueueServiceMock);
+        $this->app->instance(QueueService::class, $this->dominionQueueServiceMock);
 
         $this->landCalculator = $this->app->make(LandCalculator::class);
         $this->landCalculator->initDependencies();

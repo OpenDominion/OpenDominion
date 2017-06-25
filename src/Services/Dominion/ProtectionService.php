@@ -1,11 +1,11 @@
 <?php
 
-namespace OpenDominion\Services;
+namespace OpenDominion\Services\Dominion;
 
 use Carbon\Carbon;
 use OpenDominion\Models\Dominion;
 
-class DominionProtectionService
+class ProtectionService
 {
     const PROTECTION_DURATION_IN_HOURS = 72; // todo: move to config?
 

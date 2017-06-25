@@ -4,7 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 abstract class AbstractDominionController extends AbstractController
 {
@@ -15,7 +15,7 @@ abstract class AbstractDominionController extends AbstractController
      */
     protected function getSelectedDominion()
     {
-        $dominionSelectorService = app(DominionSelectorService::class);
+        $dominionSelectorService = app(SelectorService::class);
         return $dominionSelectorService->getUserSelectedDominion();
     }
 }

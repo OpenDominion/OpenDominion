@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
@@ -24,7 +24,7 @@ class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
     /** @var Dominion */
     protected $dominion;
 
-    /** @var DominionSelectorService */
+    /** @var SelectorService */
     protected $dominionSelectorService;
 
     protected function setUp()
@@ -36,7 +36,7 @@ class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
         $this->user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($this->user, $this->round);
-        $this->dominionSelectorService = $this->app->make(DominionSelectorService::class);
+        $this->dominionSelectorService = $this->app->make(SelectorService::class);
     }
 
     public function testUserCanSelectADominion()

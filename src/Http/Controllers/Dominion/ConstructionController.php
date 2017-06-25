@@ -11,10 +11,10 @@ use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
-use OpenDominion\Services\Actions\ConstructionActionService;
-use OpenDominion\Services\Actions\DestroyActionService;
 use OpenDominion\Services\AnalyticsService;
-use OpenDominion\Services\DominionQueueService;
+use OpenDominion\Services\Dominion\Actions\ConstructionActionService;
+use OpenDominion\Services\Dominion\Actions\DestroyActionService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class ConstructionController extends AbstractDominionController
 {
@@ -24,7 +24,7 @@ class ConstructionController extends AbstractDominionController
             'buildingCalculator' => app(BuildingCalculator::class),
             'buildingHelper' => app(BuildingHelper::class),
             'constructionCalculator' => app(ConstructionCalculator::class),
-            'dominionQueueService' => app(DominionQueueService::class),
+            'dominionQueueService' => app(QueueService::class),
             'landCalculator' => app(LandCalculator::class),
         ]);
     }

@@ -7,8 +7,8 @@ use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\UnitHelper;
-use OpenDominion\Services\Actions\MilitaryActionService;
 use OpenDominion\Services\AnalyticsService;
+use OpenDominion\Services\Dominion\Actions\MilitaryActionService;
 
 class MilitaryController extends AbstractDominionController
 {

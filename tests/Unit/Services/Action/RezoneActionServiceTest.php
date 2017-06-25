@@ -5,12 +5,12 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 use Mockery as m;
 use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Actions\RezoneActionService;
+use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 {
-    /** @var  \OpenDominion\Services\Actions\RezoneActionService */
+    /** @var  \OpenDominion\Services\Dominion\Actions\RezoneActionService */
     protected $service;
 
     public function setUp()

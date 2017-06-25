@@ -1,13 +1,13 @@
 <?php
 
-namespace OpenDominion\Services;
+namespace OpenDominion\Services\Dominion;
 
 use DB;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 
-class DominionQueueService
+class QueueService
 {
     /** @var BuildingHelper */
     protected $buildingHelper;

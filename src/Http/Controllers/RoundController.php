@@ -10,7 +10,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RaceRepository;
 use OpenDominion\Services\AnalyticsService;
-use OpenDominion\Services\DominionSelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class RoundController extends AbstractController
 {
@@ -59,7 +59,7 @@ class RoundController extends AbstractController
         );
 
         if ($round->isActive()) {
-            $dominionSelectorService = app(DominionSelectorService::class);
+            $dominionSelectorService = app(SelectorService::class);
             $dominionSelectorService->selectUserDominion($dominion);
         }
 

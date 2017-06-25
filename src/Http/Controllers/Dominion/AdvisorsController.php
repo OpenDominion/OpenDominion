@@ -8,7 +8,7 @@ use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
-use OpenDominion\Services\DominionQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class AdvisorsController extends AbstractDominionController
 {
@@ -37,7 +37,7 @@ class AdvisorsController extends AbstractDominionController
     {
         $landHelper = app(LandHelper::class);
         $landCalculator = app(LandCalculator::class);
-        $dominionQueueService = app(DominionQueueService::class);
+        $dominionQueueService = app(QueueService::class);
 
         return view('pages.dominion.advisors.land', compact(
             'landHelper',
@@ -51,7 +51,7 @@ class AdvisorsController extends AbstractDominionController
         $buildingHelper = app(BuildingHelper::class);
         $buildingCalculator = app(BuildingCalculator::class);
         $landCalculator = app(LandCalculator::class);
-        $dominionQueueService = app(DominionQueueService::class);
+        $dominionQueueService = app(QueueService::class);
 
         return view('pages.dominion.advisors.construction', compact(
             'buildingHelper',
