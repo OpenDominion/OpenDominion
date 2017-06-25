@@ -11,8 +11,6 @@ use Log;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
-use OpenDominion\Interfaces\DependencyInitializableInterface;
-use OpenDominion\Interfaces\DominionInitializableInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
@@ -67,8 +65,6 @@ class GameTickCommand extends Command
     public function handle()
     {
         $this->setDatabaseDriver();
-
-        $this->initCalculatorDependencies();
 
         Log::debug('Tick started');
 
@@ -143,26 +139,25 @@ class GameTickCommand extends Command
 
         foreach ($dominions as $dominion) {
             /** @var $dominion Dominion */
-            $this->initCalculatorsForDominion($dominion);
 
             // Resources
-            $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction();
-            $dominion->resource_food += $this->productionCalculator->getFoodNetChange();
+            $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
+            $dominion->resource_food += $this->productionCalculator->getFoodNetChange($dominion);
             // todo: if food < 0 then food = 0?
-            $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange();
+            $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
             // todo: if lumber < 0 then lumber = 0?
-            $dominion->resource_mana += $this->productionCalculator->getManaNetChange();
+            $dominion->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
             // todo: if mana < 0 then mana = 0?
-            $dominion->resource_ore += $this->productionCalculator->getOreProduction();
-            $dominion->resource_gems += $this->productionCalculator->getGemProduction();
-            $dominion->resource_boats += $this->productionCalculator->getBoatProduction();
+            $dominion->resource_ore += $this->productionCalculator->getOreProduction($dominion);
+            $dominion->resource_gems += $this->productionCalculator->getGemProduction($dominion);
+            $dominion->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
 
             // Population
-            $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth();
+            $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
             $dominion->peasants += $populationPeasantGrowth;
             $dominion->peasants_last_hour = $populationPeasantGrowth;
-            $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth();
+            $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
 
             $dominion->save();
         }
@@ -330,34 +325,9 @@ class GameTickCommand extends Command
 
         foreach ($dominions as $dominion) {
             /** @var $dominion Dominion */
-            $this->initCalculatorsForDominion($dominion);
 
             $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
             $dominion->save();
-        }
-    }
-
-    /**
-     * Initialize calculator dependencies.
-     */
-    protected function initCalculatorDependencies()
-    {
-        foreach (app()->tagged('initializableCalculators') as $calculator) {
-            /** @var DependencyInitializableInterface $calculator */
-            $calculator->initDependencies();
-        }
-    }
-
-    /**
-     * Initialize calculators with dominion.
-     *
-     * @param Dominion $dominion
-     */
-    protected function initCalculatorsForDominion(Dominion $dominion)
-    {
-        foreach (app()->tagged('dominionCalculators') as $calculator) {
-            /** @var DominionInitializableInterface $calculator */
-            $calculator->init($dominion);
         }
     }
 }
