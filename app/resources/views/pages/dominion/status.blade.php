@@ -44,7 +44,7 @@
                             </tr>
                             <tr>
                                 <td>Networth:</td>
-                                <td>{{ number_format($selectedDominion->networth) }}</td>
+                                <td>{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</td>
                             </tr>
                             <tr>
                                 <td>Prestige:</td>
