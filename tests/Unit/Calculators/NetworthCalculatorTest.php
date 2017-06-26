@@ -3,9 +3,9 @@
 namespace OpenDominion\Tests\Unit\Calculators;
 
 use Mockery as m;
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -15,26 +15,22 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var BuildingCalculator */
-    protected $buildingCalculatorDependencyMock;
+    protected $buildingCalculator;
 
     /** @var LandCalculator */
-    protected $landCalculatorDependencyMock;
+    protected $landCalculator;
 
     /** @var NetworthCalculator */
-    protected $networthCalculatorTestMock;
+    protected $sut;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->buildingCalculatorDependencyMock = m::mock(BuildingCalculator::class);
-        app()->instance(BuildingCalculator::class, $this->buildingCalculatorDependencyMock);
+        $this->buildingCalculator = m::mock(BuildingCalculator::class);
+        $this->landCalculator = m::mock(LandCalculator::class);
 
-        $this->landCalculatorDependencyMock = m::mock(LandCalculator::class);
-        app()->instance(LandCalculator::class, $this->landCalculatorDependencyMock);
-
-        $this->networthCalculatorTestMock = m::mock(NetworthCalculator::class)->makePartial();
-        $this->networthCalculatorTestMock->initDependencies();
+        $this->sut = m::mock(NetworthCalculator::class, [$this->buildingCalculator, $this->landCalculator])->makePartial();
     }
 
     public function testGetRealmNetworth()
@@ -47,14 +43,14 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         for ($i = 0; $i < 5; $i++) {
             $dominion = m::mock(Dominion::class);
 
-            $this->networthCalculatorTestMock->shouldReceive('getDominionNetworth')->with($dominion)->andReturn(100);
+            $this->sut->shouldReceive('getDominionNetworth')->with($dominion)->andReturn(100);
 
             $dominions[] = $dominion;
         }
 
         $realmMock->shouldReceive('getAttribute')->with('dominions')->andReturn($dominions);
 
-        $this->assertEquals(500, $this->networthCalculatorTestMock->getRealmNetworth($realmMock));
+        $this->assertEquals(500, $this->sut->getRealmNetworth($realmMock));
     }
 
     public function testGetDominionNetworth()
@@ -62,8 +58,8 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         /** @var Dominion $dominionMock */
         $dominionMock = m::mock(Dominion::class);
 
-        $this->buildingCalculatorDependencyMock ->shouldReceive('setDominion')->with($dominionMock);
-        $this->landCalculatorDependencyMock->shouldReceive('setDominion')->with($dominionMock);
+        $this->buildingCalculator ->shouldReceive('setDominion')->with($dominionMock);
+        $this->landCalculator->shouldReceive('setDominion')->with($dominionMock);
 
         $units = [];
         for ($slot = 1; $slot <= 4; $slot++) {
@@ -87,10 +83,10 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominionMock->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominionMock->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
 
-        $this->landCalculatorDependencyMock->shouldReceive('getTotalLand')->andReturn(250);
-        $this->buildingCalculatorDependencyMock->shouldReceive('getTotalBuildings')->with($dominionMock)->andReturn(90);
+        $this->landCalculator->shouldReceive('getTotalLand')->with($dominionMock)->andReturn(250);
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominionMock)->andReturn(90);
 
-        $this->assertEquals(8950, $this->networthCalculatorTestMock->getDominionNetworth($dominionMock));
+        $this->assertEquals(8950, $this->sut->getDominionNetworth($dominionMock));
     }
 
     public function testGetUnitNetworth()
@@ -115,9 +111,9 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $unit4->shouldReceive('getAttribute')->with('power_offense')->andReturn(6);
         $unit4->shouldReceive('getAttribute')->with('power_defense')->andReturn(3);
 
-        $this->assertEquals(5, $this->networthCalculatorTestMock->getUnitNetworth($unit1));
-        $this->assertEquals(5, $this->networthCalculatorTestMock->getUnitNetworth($unit2));
-        $this->assertEquals(11.7, $this->networthCalculatorTestMock->getUnitNetworth($unit3));
-        $this->assertEquals(12.15, $this->networthCalculatorTestMock->getUnitNetworth($unit4));
+        $this->assertEquals(5, $this->sut->getUnitNetworth($unit1));
+        $this->assertEquals(5, $this->sut->getUnitNetworth($unit2));
+        $this->assertEquals(11.7, $this->sut->getUnitNetworth($unit3));
+        $this->assertEquals(12.15, $this->sut->getUnitNetworth($unit4));
     }
 }
