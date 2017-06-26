@@ -3,9 +3,9 @@
 namespace OpenDominion\Tests\Unit\Calculators;
 
 use Mockery as m;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
