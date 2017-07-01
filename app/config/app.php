@@ -180,6 +180,7 @@ return [
         OpenDominion\Providers\ComposerServiceProvider::class,
         OpenDominion\Providers\EventServiceProvider::class,
         OpenDominion\Providers\RouteServiceProvider::class,
+        OpenDominion\Providers\ForumServiceProvider::class,
 
     ],
 

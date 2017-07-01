@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use OpenDominion\Contracts\Council\ForumServiceContract;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
@@ -10,10 +11,20 @@ use OpenDominion\Models\UnitPerkType;
 
 class CoreDataSeeder extends Seeder
 {
+    protected $forum;
     private $roundLeagueIds = [];
     private $racePerkTypeIds = [];
     private $unitPerkTypeIds = [];
     private $raceIds = [];
+
+    /**
+     * CoreDataSeeder constructor.
+     */
+    public function __construct(ForumServiceContract $forum)
+    {
+        $this->forum = $forum;
+    }
+
 
     public function run()
     {
@@ -23,6 +34,7 @@ class CoreDataSeeder extends Seeder
         $this->createPerks();
         $this->createRaces();
         $this->createUnits();
+        $this->createForums();
 
         DB::commit();
     }
@@ -125,5 +137,17 @@ class CoreDataSeeder extends Seeder
                 $unit = Unit::create($data);
             }
         }
+    }
+
+    /**
+     * Create the base forums.
+     */
+    protected function createForums()
+    {
+        $this->command->info('Creating forums');
+
+        $this->forum->create('General', '#3c8dbc');
+        $this->forum->create('Help', '#00a65a');
+        $this->forum->create('Off-topic', '#f39c12');
     }
 }
