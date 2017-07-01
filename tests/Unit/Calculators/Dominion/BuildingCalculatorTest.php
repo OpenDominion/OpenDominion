@@ -3,7 +3,8 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -13,7 +14,7 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
     protected $dominionMock;
 
     /** @var BuildingCalculator */
-    protected $buildingCalculatorTestMock; // todo: rename systems under test to $sut in every test class
+    protected $sut;
 
     protected function setUp()
     {
@@ -21,11 +22,9 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->dominionMock = m::mock(Dominion::class);
 
-        $this->buildingCalculatorTestMock = $this->app->make(BuildingCalculator::class);
-
-//        $this->buildingCalculatorTestMock = m::mock(BuildingCalculator::class)->makePartial(); // todo: check makePartial needed after refactor
-//        $this->buildingCalculatorTestMock->initDependencies(); // todo
-//        $this->buildingCalculatorTestMock->init($this->dominionMock); // todo
+        $this->sut = m::mock(BuildingCalculator::class, [
+            m::mock(BuildingHelper::class)->makePartial(),
+        ])->makePartial();
     }
 
     public function testGetTotalBuildings()
@@ -56,9 +55,9 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
         foreach ($buildingTypes as $buildingType) {
             $this->dominionMock->shouldReceive('getAttribute')->with('building_' . $buildingType)->andReturn(1);
-            $expected++; // todo: use this style for every dominion land/building/etc iteration test
+            $expected++;
         }
 
-        $this->assertEquals($expected, $this->buildingCalculatorTestMock->getTotalBuildings($this->dominionMock));
+        $this->assertEquals($expected, $this->sut->getTotalBuildings($this->dominionMock));
     }
 }
