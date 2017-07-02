@@ -30,6 +30,9 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
     # Artisan
     php bin/artisan migrate --force
 
+    # Deploy forum assets.
+    php bin/artisan vendor:publish --tag=chatter_assets
+
     php bin/artisan clear-compiled
     php bin/artisan cache:clear
     php bin/artisan config:clear
