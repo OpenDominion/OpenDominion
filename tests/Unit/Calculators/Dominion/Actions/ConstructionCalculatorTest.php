@@ -28,8 +28,8 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->dominionMock = m::mock(Dominion::class);
-        $this->buildingCalculator = m::mock(BuildingCalculator::class);//->makePartial();
-        $this->landCalculator = m::mock(LandCalculator::class);//->makePartial();
+        $this->buildingCalculator = m::mock(BuildingCalculator::class);
+        $this->landCalculator = m::mock(LandCalculator::class);
 
         $this->sut = m::mock(ConstructionCalculator::class, [
             $this->buildingCalculator,
