@@ -7,6 +7,7 @@
 
     <title>@yield('title', 'OpenDominion')</title>
 
+    @yield('styles')
     @include('partials.styles')
 
     <!--[if lt IE 9]>
@@ -86,6 +87,6 @@
 </div>
 
 @include('partials.scripts')
-
+@yield('scripts')
 </body>
 </html>

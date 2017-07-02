@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Http\Middleware;
 
+use Auth;
 use Closure;
+use Config;
 use OpenDominion\Contracts\Council\ForumServiceContract;
 
 class RealmForumSelect
@@ -27,7 +29,11 @@ class RealmForumSelect
      */
     public function handle($request, Closure $next)
     {
-        if (!$this->forum->canVisit($request->user(), $request->route())) {
+        if (Auth::guest()) {
+            // Use the "frontpage" for guest access to the forum.
+            Config::set('chatter.master_file_extend', 'layouts.topnav');
+        }
+        if (!$this->forum->canVisit(Auth::user(), $request->route())) {
             abort(403, 'Access denied');
         }
         return $next($request);

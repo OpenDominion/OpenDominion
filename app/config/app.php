@@ -170,6 +170,7 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
+        Pseudo\Providers\PseudoServiceProvider::class,
 
         /*
          * Application Service Providers...

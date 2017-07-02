@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c06a0ac9893d6643566573e6cb8b790e",
+    "content-hash": "8983f3669cbf4d8c87f6afddfb40960f",
     "packages": [
+        {
+            "name": "agilesdesign/pseudo",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/agilesdesign/pseudo.git",
+                "reference": "ccf0814d616192169d0a159d3f3398aa458fd971"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/agilesdesign/pseudo/zipball/ccf0814d616192169d0a159d3f3398aa458fd971",
+                "reference": "ccf0814d616192169d0a159d3f3398aa458fd971",
+                "shasum": ""
+            },
+            "require": {
+                "php": "7.*"
+            },
+            "require-dev": {
+                "laravel/laravel": "^5.4",
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "^6.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Pseudo\\Providers\\PseudoServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Pseudo\\": "src/Pseudo"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Justin Seliga",
+                    "email": "jseliga@agilesdesign.com"
+                }
+            ],
+            "description": "Guest user library for Laravel",
+            "time": "2017-06-29 15:47:12"
+        },
         {
             "name": "atrox/haikunator",
             "version": "v1.2.1",
@@ -5751,6 +5799,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "agilesdesign/pseudo": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

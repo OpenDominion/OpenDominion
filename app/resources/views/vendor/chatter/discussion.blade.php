@@ -239,8 +239,8 @@
                                 @else
 
                                     <div id="login_or_register">
-                                        <p>Please <a href="/{{ Config::get('chatter.routes.home') }}/login">login</a> or
-                                            <a href="/{{ Config::get('chatter.routes.home') }}/register">register</a> to
+                                        <p>Please <a href="{{ route('auth.login') }}">login</a> or
+                                            <a href="{{ route('auth.register') }}">register</a> to
                                             leave a response.</p>
                                     </div>
 
@@ -483,7 +483,7 @@
                     });
                     $('#new_discussion_btn, #cancel_discussion').click(function () {
                         @if(Auth::guest())
-                            window.location.href = "/{{ Config::get('chatter.routes.home') }}/login";
+                            window.location.href = "{{ route('auth.login') }}";
                         @else
                         $('#new_discussion_in_discussion_view').slideDown();
                         $('#title').focus();
