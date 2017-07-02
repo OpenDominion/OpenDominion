@@ -12,8 +12,12 @@
           <option name="LOWER_CASE_BOOLEAN_CONST" value="true" />
           <option name="LOWER_CASE_NULL_CONST" value="true" />
           <option name="KEEP_RPAREN_AND_LBRACE_ON_ONE_LINE" value="true" />
+          <option name="KEEP_BLANK_LINES_AFTER_LBRACE" value="0" />
         </PHPCodeStyleSettings>
         <codeStyleSettings language="PHP">
+          <option name="KEEP_BLANK_LINES_IN_DECLARATIONS" value="0" />
+          <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
+          <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="0" />
           <option name="BLANK_LINES_AFTER_PACKAGE" value="1" />
           <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
           <option name="CALL_PARAMETERS_WRAP" value="1" />

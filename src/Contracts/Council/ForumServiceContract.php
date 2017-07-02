@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Contracts\Council;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Route;
 use OpenDominion\Models\Realm;
@@ -43,7 +42,6 @@ interface ForumServiceContract
      */
     public function canView(User $user, Model $model);
 
-
     /**
      * Determine if the user is allowed to visit the route.
      *
@@ -53,5 +51,4 @@ interface ForumServiceContract
      * @return bool
      */
     public function canVisit(User $user, Route $route);
-
 }

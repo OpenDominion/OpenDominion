@@ -10,7 +10,6 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 class ForumTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
-
     const FORUM_LIST = 'div.chatter_sidebar';
 
     /**
@@ -95,12 +94,13 @@ class ForumTest extends AbstractBrowserKitTestCase
         $this->seeInForumList($myRealmName);
     }
 
-    private function seeInForumList($text) {
+    private function seeInForumList($text)
+    {
         return $this->seeInElement(self::FORUM_LIST, $text);
     }
 
-    private function dontSeeInForumList($text) {
+    private function dontSeeInForumList($text)
+    {
         return $this->dontSeeInElement(self::FORUM_LIST, $text);
     }
-
 }

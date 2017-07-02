@@ -15,7 +15,6 @@ use OpenDominion\Models\User;
 
 class ChatterForumService implements ForumServiceContract
 {
-
     /**
      * {@inheritdoc}
      */

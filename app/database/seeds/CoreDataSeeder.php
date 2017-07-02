@@ -25,7 +25,6 @@ class CoreDataSeeder extends Seeder
         $this->forum = $forum;
     }
 
-
     public function run()
     {
         DB::beginTransaction();

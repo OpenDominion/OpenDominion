@@ -10,7 +10,6 @@ use OpenDominion\Models\User;
 class RealmAccessPolicy
 {
     use HandlesAuthorization;
-
     protected $forum;
 
     /**
@@ -32,5 +31,4 @@ class RealmAccessPolicy
     {
         return $this->forum->canView($user, $model);
     }
-
 }
