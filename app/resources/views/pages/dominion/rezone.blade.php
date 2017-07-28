@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', 'Construction')
+@section('page-header', 'Re-zone Land')
 
 @section('content')
     <div class="row">
@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-cycle"></i> Re-zone land</h3>
                 </div>
-                <form action="{{ route('dominion.rezone') }}" method="post">
+                <form action="{{ route('dominion.rezone') }}" method="post" role="form">
                     {!! csrf_field() !!}
                     <div class="box-body no-padding">
                         <table class="table">
@@ -23,29 +23,29 @@
                             </colgroup>
                             <thead>
                                 <tr>
-                                    <th>Terrain</th>
-                                    <th>Available</th>
-                                    <th>Amount</th>
-                                    <th>Convert to</th>
-                                    <th>Amount</th>
+                                    <th>Land type</th>
+                                    <th class="text-center">Available</th>
+                                    <th class="text-center">Amount</th> {{-- wording change? --}}
+                                    <th class="text-center">Convert to</th>
+                                    <th class="text-center">Amount</th>
                                 </tr>
                             </thead>
-                            @foreach ($barrenLand as $landType => $amount)
+                            @foreach ($landCalculator->getBarrenLand($selectedDominion) as $landType => $amount)
                                 <tr>
                                     <td>{{ ucfirst($landType) }}</td>
-                                    <td>{{ number_format($amount) }}</td>
-                                    <td>
+                                    <td class="text-center">{{ number_format($amount) }}</td>
+                                    <td class="text-center">
                                         <input name="remove[{{ $landType }}]" type="number"
                                                class="form-control text-center" placeholder="0" min="0"
                                                max="{{ $amount }}"
-                                               value="{{ old('remove.' . $landType) }}" {{ $dominion->isLocked() ? 'disabled' : null }}>
+                                               value="{{ old('remove.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </td>
-                                    <td>{{ ucfirst($landType) }}:</td>
-                                    <td>
+                                    <td class="text-center">{{ ucfirst($landType) }}</td>
+                                    <td class="text-center">
                                         <input name="add[{{ $landType }}]" type="number"
                                                class="form-control text-center" placeholder="0" min="0"
-                                               max="{{ $canAfford }}"
-                                               value="{{ old('add.' . $landType) }}" {{ $dominion->isLocked() ? 'disabled' : null }}>
+                                               max="{{ $rezoningCalculator->getMaxAfford($selectedDominion) }}"
+                                               value="{{ old('add.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </td>
                                 </tr>
 
@@ -54,7 +54,7 @@
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button class="btn btn-primary" {{ $dominion->isLocked() ? 'disabled' : null }}>Re-Zone</button>
+                        <button class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Re-Zone</button>
                     </div>
                 </form>
             </div>
@@ -67,9 +67,8 @@
                     <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
-                    <p>Each acre of land being converted will come at a cost of: {{ $rezoningPlatinumCost }}
-                        platinum.</p>
-                    <p>You can afford to re-zone: {{ number_format($canAfford) }} acres.</p>
+                    <p>Each acre of land being converted will come at a cost of: {{ $rezoningCalculator->getPlatinumCost($selectedDominion) }} platinum.</p>
+                    <p>You can afford to re-zone: {{ number_format($rezoningCalculator->getMaxAfford($selectedDominion)) }} acres.</p>
                 </div>
             </div>
         </div>
