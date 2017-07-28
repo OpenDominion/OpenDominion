@@ -122,12 +122,12 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
 
             foreach ($buildingTypes as $buildingType) {
                 $this->dominionMock->shouldReceive('getAttribute')->with('building_' . $buildingType)->andReturn(2);
-                $this->dominionQueueService->shouldReceive('getConstructionQueueTotalByBuilding')->with($buildingType)->andReturn(1);
+                $this->dominionQueueService->shouldReceive('getConstructionQueueTotalByBuilding')->with($this->dominionMock, $buildingType)->andReturn(1);
                 $expected[$landType] -= 3;
             }
         }
 
-        $this->assertEquals($expected, $this->sut->getBarrenLand());
+        $this->assertEquals($expected, $this->sut->getBarrenLand($this->dominionMock));
     }
 
     public function testGetExplorationPlatinumCost()
