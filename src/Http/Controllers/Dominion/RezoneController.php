@@ -36,6 +36,7 @@ class RezoneController extends AbstractDominionController
             );
 
         } catch (DominionLockedException $e) {
+            // todo: coalesce exceptions and use $e->getMessage()
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors(['Re-zoning land was not done due to the dominion being locked.']);

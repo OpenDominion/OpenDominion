@@ -36,6 +36,7 @@ class ExplorationController extends AbstractDominionController
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
 
         } catch (DominionLockedException $e) {
+            // todo: coalesce exceptions and use $e->getMessage()
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors(['Exploration was not begun due to the dominion being locked.']);
