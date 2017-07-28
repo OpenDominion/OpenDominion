@@ -2,20 +2,28 @@
 
 namespace OpenDominion\Tests\Unit\Services\Action;
 
+use Carbon\Carbon;
 use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Services\Actions\RezoneActionService;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\Actions\RezoneActionService;
+use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
+    /** @var Round */
+    protected $round;
+
     /** @var Dominion */
     protected $dominion;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
 
     /** @var RezoneActionService */
     protected $rezoneActionService;
@@ -27,8 +35,9 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
         $this->seed(CoreDataSeeder::class);
 
         $user = $this->createAndImpersonateUser();
-        $round = $this->createRound();
-        $this->dominion = $this->createDominion($user, $round);
+        $this->round = $this->createRound();
+        $this->dominion = $this->createDominion($user, $this->round);
+        $this->landCalculator = $this->app->make(LandCalculator::class);
         $this->rezoneActionService = $this->app->make(RezoneActionService::class);
     }
 
@@ -104,9 +113,14 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testRezoningLockedDominion()
     {
-        $dominion = $this->getMockDominion();
-        $dominion->shouldReceive('isLocked')->once()->andReturn(true);
-        $this->rezoneActionService->rezone($dominion, [], []);
+        $this->assertFalse($this->dominion->isLocked());
+
+        // todo: investigate why $this->round->end_date doesn't work
+        $this->dominion->round->end_date = new Carbon('yesterday');
+
+        $this->assertTrue($this->dominion->isLocked());
+
+        $this->rezoneActionService->rezone($this->dominion, [], []);
     }
 
     /**
@@ -116,8 +130,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testMismatchedRezoning()
     {
-        $dominion = $this->getMockDominion();
-        $this->rezoneActionService->rezone($dominion, ['cavern' => 1], ['hill' => 2]);
+        $this->rezoneActionService->rezone($this->dominion, ['cavern' => 1], ['hill' => 2]);
     }
 
     /**
@@ -127,11 +140,12 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testRemovingMoreThanBarrenLand()
     {
-        $dominion = $this->getMockDominion();
-        $dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(10);
-        $dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(10);
-        $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(100000);
-        $this->rezoneActionService->rezone($dominion, ['cavern' => 10], ['hill' => 10]);
+        $this->dominion->land_cavern = 20;
+        $this->dominion->building_diamond_mine = 15;
+
+        $this->assertEquals(5, $this->landCalculator->getTotalBarrenLandByLandType($this->dominion, 'cavern'));
+
+        $this->rezoneActionService->rezone($this->dominion, ['cavern' => 10], ['hill' => 10]);
     }
 
     /**
@@ -141,22 +155,8 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testRemovingMoreThanCanBeAfforded()
     {
-        $dominion = $this->getMockDominion();
-        $dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(1);
-        $dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(0);
-        $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(1);
-        $this->rezoneActionService->rezone($dominion, ['cavern' => 1], ['hill' => 1]);
-    }
+        $this->dominion->resource_platinum = 0;
 
-    /**
-     * Get a mock dominion.
-     *
-     * @return m\MockInterface
-     */
-    protected function getMockDominion()
-    {
-        $dominion = m::mock(Dominion::class);
-        $dominion->shouldReceive('isLocked')->andReturn(false)->byDefault();
-        return $dominion;
+        $this->rezoneActionService->rezone($this->dominion, ['cavern' => 1], ['hill' => 1]);
     }
 }
