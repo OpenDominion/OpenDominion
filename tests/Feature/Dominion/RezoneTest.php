@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Feature\Dominion;
+namespace OpenDominion\Tests\Feature\Dominion;
 
 use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Services\DominionSelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -11,26 +12,18 @@ class RezoneTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
-    /** @var  \OpenDominion\Models\Dominion */
-    protected $originalDominion;
-    /** @var  \OpenDominion\Services\DominionSelectorService */
-    protected $dominionSelectorService;
-
-    const REZONE_COST = 250;
+    /** @var Dominion */
+    protected $dominion;
 
     public function setUp()
     {
         parent::setUp();
+
         $this->seed(CoreDataSeeder::class);
+
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
-        $dominion = $this->createDominion($user, $round);
-        $dominion->update(['resource_platinum' => 2 * self::REZONE_COST]);
-        // @TODO: create dominion with specified amounts of land and resources
-        // so that this test doesn't break if the defaults in the factory change.
-        $this->dominionSelectorService = app(DominionSelectorService::class);
-        $this->dominionSelectorService->selectUserDominion($dominion);
-        $this->originalDominion = clone $this->dominionSelectorService->getUserSelectedDominion();
+        $this->dominion = $this->createAndSelectDominion($user, $round);
     }
 
     /**
@@ -39,7 +32,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
     public function testOpeningRezonePage()
     {
         $this->visitRoute('dominion.rezone')
-            ->see('Re-zone land');
+            ->see('Re-zone Land');
     }
 
     /**
@@ -51,12 +44,12 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('2', 'remove[plain]')
             ->type('2', 'add[mountain]')
             ->press('Re-Zone')
-            ->see('Your land has been re-zoned');
-        $dominion = $this->dominionSelectorService->getUserSelectedDominion();
-        $this->assertEquals($this->originalDominion->land_plain - 2, $dominion->land_plain);
-        $this->assertEquals($this->originalDominion->land_mountain + 2, $dominion->land_mountain);
-        $this->assertEquals($this->originalDominion->resource_platinum - 2 * self::REZONE_COST,
-            $dominion->resource_platinum);
+            ->see('Your land has been re-zoned')
+            ->seeInDatabase('dominions', [
+                'id' => $this->dominion->id,
+                'land_plain' => 108,
+                'land_mountain' => 22,
+            ]);
     }
 
     /**
@@ -68,8 +61,8 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('10', 'add[plain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Rezoning must remove and add equal amounts of land.');
-        $this->assertDominionUnchanged();
+            ->see('Rezoning must remove and add equal amounts of land.')
+            ->assertDominionUnchanged();
     }
 
     /**
@@ -77,13 +70,16 @@ class RezoneTest extends AbstractBrowserKitTestCase
      */
     public function testRezoningWithoutEnoughPlatinumFails()
     {
+        $this->dominion->resource_platinum = 0;
+        $this->dominion->save();
+
         $this->visitRoute('dominion.rezone')
             ->type('3', 'remove[plain]')
             ->type('3', 'add[mountain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Not enough platinum.');
-        $this->assertDominionUnchanged();
+            ->see('Not enough platinum.')
+            ->assertDominionUnchanged(['resource_platinum' => 0]);
     }
 
     /**
@@ -96,19 +92,24 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('50', 'add[mountain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Can only rezone 40 plains');
-        $this->assertDominionUnchanged();
+            ->see('Can only rezone 40 plains')
+            ->assertDominionUnchanged();
     }
 
     /**
      * Helper function to assert the affected properties have not been changed.
+     *
+     * @param array $attributes
+     * @return static
      */
-    protected function assertDominionUnchanged()
+    protected function assertDominionUnchanged(array $attributes = [])
     {
-        $dominion = $this->dominionSelectorService->getUserSelectedDominion();
-        foreach (['land_plain', 'land_mountain', 'resource_platinum'] as $affectedProperty) {
-            $this->assertEquals($this->originalDominion->{$affectedProperty}, $dominion->{$affectedProperty},
-                'Unexpected change to ' . $affectedProperty);
-        }
+        // todo: pull up
+        return $this->seeInDatabase('dominions', array_merge([
+            'id' => $this->dominion->id,
+            'resource_platinum' => 100000,
+            'land_plain' => 110,
+            'land_mountain' => 20,
+        ], $attributes));
     }
 }

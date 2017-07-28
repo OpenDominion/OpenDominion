@@ -11,6 +11,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Services\Dominion\SelectorService;
 
 abstract class AbstractBrowserKitTestCase extends TestCase
 {
@@ -33,6 +34,8 @@ abstract class AbstractBrowserKitTestCase extends TestCase
 //        Notification::fake();
 //        Queue::fake();
     }
+
+    // todo: move below to a trait so we can also include this in the abstractdusktestcase
 
     /**
      * Creates a user for testing purposes.
@@ -107,7 +110,6 @@ abstract class AbstractBrowserKitTestCase extends TestCase
      * @param Round $round
      * @param Race $race
      * @return Dominion
-     * @internal param Realm $realm
      */
     protected function createDominion(User $user, Round $round, Race $race = null)
     {
@@ -122,5 +124,30 @@ abstract class AbstractBrowserKitTestCase extends TestCase
         );
 
         return $dominion;
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @return Dominion
+     */
+    protected function selectDominion(Dominion $dominion)
+    {
+        $dominionSelectorService = app(SelectorService::class);
+
+        $dominionSelectorService->selectUserDominion($dominion);
+
+        return $dominion;
+    }
+
+    /**
+     * @param User $user
+     * @param Round $round
+     * @param Race $race
+     * @return Dominion
+     */
+    protected function createAndSelectDominion(User $user, Round $round, Race $race = null)
+    {
+        $dominion = $this->createDominion($user, $round, $race);
+        return $this->selectDominion($dominion);
     }
 }
