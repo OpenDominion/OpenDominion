@@ -7,7 +7,7 @@ use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
 
-interface RezoneActionServiceContract
+interface RezoneActionService
 {
     /**
      * Does a rezone action for a Dominion.

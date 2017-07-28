@@ -2,8 +2,9 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract;
+use OpenDominion\Contracts\Services\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
@@ -16,14 +17,19 @@ class RezoneActionService implements RezoneActionServiceContract
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var RezoningCalculator */
+    protected $rezoningCalculator;
+
     /**
      * RezoneActionService constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param RezoningCalculator $rezoningCalculator
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(LandCalculator $landCalculator, RezoningCalculator $rezoningCalculator)
     {
         $this->landCalculator = $landCalculator;
+        $this->rezoningCalculator = $rezoningCalculator;
     }
 
     /**
@@ -63,15 +69,15 @@ class RezoneActionService implements RezoneActionServiceContract
             }
         }
 
-        $costPerAcre = $this->landCalculator->getRezoningPlatinumCost($dominion); // todo: fix this
-        $totalCost = $totalLand * $costPerAcre;
+        $costPerAcre = $this->rezoningCalculator->getPlatinumCost($dominion);
+        $platinumCost = $totalLand * $costPerAcre;
 
-        if ($totalCost > $dominion->resource_platinum) {
+        if ($platinumCost > $dominion->resource_platinum) {
             throw new NotEnoughResourcesException('Not enough platinum.');
         }
 
         // All fine, perform changes.
-        $dominion->resource_platinum -= $totalCost;
+        $dominion->resource_platinum -= $platinumCost;
 
         foreach ($remove as $landType => $amount) {
             $dominion->{'land_' . $landType} -= $amount;
@@ -82,6 +88,6 @@ class RezoneActionService implements RezoneActionServiceContract
 
         $dominion->save();
 
-        return $totalCost;
+        return compact('platinumCost');
     }
 }

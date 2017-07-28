@@ -12,7 +12,7 @@ use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\Actions\ExplorationActionService;
+use OpenDominion\Services\Dominion\Actions\ExplorationActionService; // todo: contract
 use OpenDominion\Services\Dominion\QueueService;
 
 class ExplorationController extends AbstractDominionController
