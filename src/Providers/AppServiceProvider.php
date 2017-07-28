@@ -26,9 +26,11 @@ use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorC
 use OpenDominion\Contracts\Services\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
+use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\AnalyticsService\Event;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
+use OpenDominion\Services\RealmFinderService;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -78,6 +80,7 @@ class AppServiceProvider extends ServiceProvider
         // Services
         $this->app->bind(AnalyticsServiceContract::class, AnalyticsService::class);
         $this->app->bind(EventContract::class, Event::class);
+        $this->app->bind(RealmFinderServiceContract::class, RealmFinderService::class);
 
         // Dominion Action Services
         $this->app->bind(RezoneActionServiceContract::class, RezoneActionService::class);

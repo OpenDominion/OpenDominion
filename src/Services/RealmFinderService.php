@@ -4,6 +4,7 @@ namespace OpenDominion\Services;
 
 use Atrox\Haikunator;
 use DB;
+use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Race;
@@ -11,7 +12,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\RealmRepository;
 
-class RealmFinderService
+class RealmFinderService implements RealmFinderServiceContract
 {
     /** @var RealmRepository */
     protected $realms;
@@ -27,16 +28,7 @@ class RealmFinderService
     }
 
     /**
-     * Finds and returns the first best realm for a new Dominion to settle in.
-     *
-     * Up to 12 Dominions can exist in a realm.
-     *
-     * @see DominionFactory::create()
-     *
-     * @param Round $round
-     * @param Race $race
-     *
-     * @return Realm|null
+     * {@inheritdoc}
      */
     public function findRandom(Round $round, Race $race)
     {
