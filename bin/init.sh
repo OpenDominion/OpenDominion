@@ -50,6 +50,9 @@ fi
 # Frontend stuff, not needed during testing
 if [[ ! ${env} == testing ]]; then
 
+    # Deploy forum assets.
+    php bin/artisan vendor:publish --tag=chatter_assets
+
     # Npm packages
     if [[ ! -d node_modules ]]; then
         yarn install --no-bin-links

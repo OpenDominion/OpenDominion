@@ -4,6 +4,7 @@ namespace OpenDominion\Factories;
 
 use Atrox\Haikunator;
 use DB;
+use OpenDominion\Contracts\Council\ForumServiceContract;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\RealmRepository;
@@ -17,10 +18,12 @@ class RealmFactory
      * RealmFactory constructor.
      *
      * @param RealmRepository $realms
+     * @param ForumServiceContract $forum
      */
-    public function __construct(RealmRepository $realms)
+    public function __construct(RealmRepository $realms, ForumServiceContract $forum)
     {
         $this->realms = $realms;
+        $this->forum = $forum;
     }
 
     /**
@@ -58,6 +61,9 @@ class RealmFactory
             'number' => $number,
             'name' => $realmName,
         ]);
+
+        // Create a forum for this realm.
+        $this->forum->createForRealm($realm);
 
         return $realm;
     }

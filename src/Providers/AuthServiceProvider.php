@@ -4,6 +4,8 @@ namespace OpenDominion\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use OpenDominion\Models\Guest;
+use Pseudo\Contracts\GuestContract;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,7 +26,11 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+    }
 
-        //
+    public function register()
+    {
+        // Bind a guest user for visitors.
+        $this->app->bind(GuestContract::class, Guest::class);
     }
 }
