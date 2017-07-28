@@ -2,39 +2,39 @@
 
 namespace OpenDominion\Tests\Unit\Services\Action;
 
+use CoreDataSeeder;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-/**
- * Class RezoneActionServiceTest
- * @package OpenDominion\Tests\Unit\Services\Action
- */
 class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 {
-    /** @var  \OpenDominion\Services\Dominion\Actions\RezoneActionService */
-    protected $service;
+    use DatabaseMigrations;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** @var Dominion */
+    protected $dominion;
+
+    /** @var RezoneActionService */
+    protected $rezoneActionService;
+
     public function setUp()
     {
         parent::setUp();
-        $landCalculator = m::mock(LandCalculator::class);
-        $landCalculator->shouldReceive('init');
-        $landCalculator->shouldReceive('getRezoningPlatinumCost')->andReturn(25);
-        $landCalculator->shouldReceive('getTotalBarrenLandByLandType', 'cavern')->andReturn(5);
-        $this->service = new RezoneActionService($landCalculator);
+
+        $this->seed(CoreDataSeeder::class);
+
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
+        $this->dominion = $this->createDominion($user, $round);
+        $this->rezoneActionService = $this->app->make(RezoneActionService::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function tearDown()
     {
+        // todo: add this to other test classes
         m::close();
     }
 
@@ -43,8 +43,11 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testDoingNothing()
     {
-        $dominion = $this->getMockDominion();
-        $this->service->rezone($dominion, [], []);
+        $this->assertEquals(100000, $this->dominion->resource_platinum);
+
+        $this->rezoneActionService->rezone($this->dominion, [], []);
+
+        $this->assertEquals(100000, $this->dominion->resource_platinum);
     }
 
     /**
@@ -52,15 +55,13 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testConvertCavernToHill()
     {
-        $dominion = $this->getMockDominion();
-        $dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(1);
-        $dominion->shouldReceive('setAttribute')->with('land_cavern', 0);
-        $dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(0);
-        $dominion->shouldReceive('setAttribute')->with('land_hill', 1);
-        $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(100);
-        $dominion->shouldReceive('setAttribute')->with('resource_platinum', 75);
-        $dominion->shouldReceive('save');
-        $this->service->rezone($dominion, ['cavern' => 1], ['hill' => 1]);
+        $this->assertEquals(20, $this->dominion->land_cavern);
+        $this->assertEquals(20, $this->dominion->land_hill);
+
+        $this->rezoneActionService->rezone($this->dominion, ['cavern' => 5], ['hill' => 5]);
+
+        $this->assertEquals(15, $this->dominion->land_cavern);
+        $this->assertEquals(25, $this->dominion->land_hill);
     }
 
     /**
@@ -68,8 +69,13 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testConvertingToSameTypeIsFree()
     {
-        $dominion = $this->getMockDominion();
-        $this->service->rezone($dominion, ['cavern' => 1], ['cavern' => 1]);
+        $this->assertEquals(100000, $this->dominion->resource_platinum);
+        $this->assertEquals(20, $this->dominion->land_cavern);
+
+        $this->rezoneActionService->rezone($this->dominion, ['cavern' => 5], ['cavern' => 5]);
+
+        $this->assertEquals(100000, $this->dominion->resource_platinum);
+        $this->assertEquals(20, $this->dominion->land_cavern);
     }
 
     /**
@@ -77,17 +83,18 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
      */
     public function testMixedConversionWithSameTypeIncluded()
     {
-        $dominion = $this->getMockDominion();
-        $dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(100);
-        $dominion->shouldReceive('setAttribute')->with('land_cavern', 98);
-        $dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(100);
-        $dominion->shouldReceive('setAttribute')->with('land_hill', 98);
-        $dominion->shouldReceive('getAttribute')->with('land_plain')->andReturn(100);
-        $dominion->shouldReceive('setAttribute')->with('land_plain', 104);
-        $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(200);
-        $dominion->shouldReceive('setAttribute')->with('resource_platinum', 100);
-        $dominion->shouldReceive('save');
-        $this->service->rezone($dominion, ['cavern' => 10, 'hill' => 2], ['cavern' => 8, 'plain' => 4]);
+        $this->assertEquals(110, $this->dominion->land_plain);
+        $this->assertEquals(20, $this->dominion->land_cavern);
+        $this->assertEquals(20, $this->dominion->land_hill);
+
+        $this->rezoneActionService->rezone($this->dominion,
+            ['cavern' => 10, 'hill' => 2],
+            ['cavern' => 8, 'plain' => 4]
+        );
+
+        $this->assertEquals(114, $this->dominion->land_plain);
+        $this->assertEquals(18, $this->dominion->land_cavern);
+        $this->assertEquals(18, $this->dominion->land_hill);
     }
 
     /**
@@ -99,7 +106,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     {
         $dominion = $this->getMockDominion();
         $dominion->shouldReceive('isLocked')->once()->andReturn(true);
-        $this->service->rezone($dominion, [], []);
+        $this->rezoneActionService->rezone($dominion, [], []);
     }
 
     /**
@@ -110,7 +117,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     public function testMismatchedRezoning()
     {
         $dominion = $this->getMockDominion();
-        $this->service->rezone($dominion, ['cavern' => 1], ['hill' => 2]);
+        $this->rezoneActionService->rezone($dominion, ['cavern' => 1], ['hill' => 2]);
     }
 
     /**
@@ -124,7 +131,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(10);
         $dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(10);
         $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(100000);
-        $this->service->rezone($dominion, ['cavern' => 10], ['hill' => 10]);
+        $this->rezoneActionService->rezone($dominion, ['cavern' => 10], ['hill' => 10]);
     }
 
     /**
@@ -138,7 +145,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('land_cavern')->andReturn(1);
         $dominion->shouldReceive('getAttribute')->with('land_hill')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('resource_platinum')->andReturn(1);
-        $this->service->rezone($dominion, ['cavern' => 1], ['hill' => 1]);
+        $this->rezoneActionService->rezone($dominion, ['cavern' => 1], ['hill' => 1]);
     }
 
     /**
