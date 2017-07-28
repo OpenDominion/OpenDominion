@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
-use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -13,15 +13,15 @@ class RezoneActionService implements RezoneActionServiceContract
 {
     use DominionGuardsTrait;
 
-    /** @var LandCalculatorInterface */
+    /** @var LandCalculator */
     protected $landCalculator;
 
     /**
      * RezoneActionService constructor.
      *
-     * @param LandCalculatorInterface $landCalculator
+     * @param LandCalculator $landCalculator
      */
-    public function __construct(LandCalculatorInterface $landCalculator)
+    public function __construct(LandCalculator $landCalculator)
     {
         $this->landCalculator = $landCalculator;
     }
@@ -57,14 +57,13 @@ class RezoneActionService implements RezoneActionServiceContract
 
         // Check if the requested amount of land is barren.
         foreach ($remove as $landType => $landToRemove) {
-            $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($landType);
+            $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType);
             if ($landToRemove > $landAvailable) {
                 throw new NotEnoughResourcesException('Can only rezone ' . $landAvailable . ' ' . str_plural($landType, $landAvailable));
             }
         }
 
-        $this->landCalculator->init($dominion);
-        $costPerAcre = $this->landCalculator->getRezoningPlatinumCost();
+        $costPerAcre = $this->landCalculator->getRezoningPlatinumCost($dominion); // todo: fix this
         $totalCost = $totalLand * $costPerAcre;
 
         if ($totalCost > $dominion->resource_platinum) {
