@@ -72,6 +72,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('destroy')->uses('Dominion\ConstructionController@getDestroy')->name('destroy');
             $router->post('destroy')->uses('Dominion\ConstructionController@postDestroy');
 
+            // Rezoning
+            $router->get('rezone')->uses('Dominion\RezoneController@getRezone')->name('rezone');
+            $router->post('rezone')->uses('Dominion\RezoneController@postRezone');
+
             // Military
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');

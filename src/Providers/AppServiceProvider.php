@@ -23,10 +23,13 @@ use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCa
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
+use OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Dominion\Actions\RezoneActionService;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,58 +54,20 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
-        // todo: refactor
-//        $this->registerServices();
-//        $this->registerHelpers();
-        // todo: /refactor
-
         $this->registerContracts();
     }
-
-//    protected function registerServices()
-//    {
-//        $this->app->singleton(DominionProtectionService::class, function ($app) {
-//            return new DominionProtectionService;
-//        });
-//
-//        $this->app->singleton(DominionQueueService::class, function ($app) {
-//            return new DominionQueueService;
-//        });
-//
-//        $this->app->singleton(DominionSelectorService::class, function ($app) {
-//            return new DominionSelectorService(new DominionRepository($app));
-//        });
-//
-//        $this->app->singleton(RealmFinderService::class, function ($app) {
-//            return new RealmFinderService(new RealmRepository($app));
-//        });
-//    }
-//
-//    protected function registerHelpers()
-//    {
-//        $helperClasses = [
-//            BuildingHelper::class,
-//            LandHelper::class,
-//        ];
-//
-//        foreach ($helperClasses as $helperClass) {
-//            $this->app->singleton($helperClass, function ($app) use ($helperClass) {
-//                return new $helperClass;
-//            });
-//        }
-//    }
 
     protected function registerContracts()
     {
         // Generic Calculators
-        $this->app->bind(NetworthCalculatorContract::class,NetworthCalculator::class);
+        $this->app->bind(NetworthCalculatorContract::class, NetworthCalculator::class);
 
         // Dominion Calculators
-        $this->app->bind(BuildingCalculatorContract::class,BuildingCalculator::class);
-        $this->app->bind(LandCalculatorContract::class,LandCalculator::class);
-        $this->app->bind(MilitaryCalculatorContract::class,MilitaryCalculator::class);
-        $this->app->bind(PopulationCalculatorContract::class,PopulationCalculator::class);
-        $this->app->bind(ProductionCalculatorContract::class,ProductionCalculator::class);
+        $this->app->bind(BuildingCalculatorContract::class, BuildingCalculator::class);
+        $this->app->bind(LandCalculatorContract::class, LandCalculator::class);
+        $this->app->bind(MilitaryCalculatorContract::class, MilitaryCalculator::class);
+        $this->app->bind(PopulationCalculatorContract::class, PopulationCalculator::class);
+        $this->app->bind(ProductionCalculatorContract::class, ProductionCalculator::class);
 
         // Dominion Action Calculators
         $this->app->bind(ConstructionCalculatorContract::class, ConstructionCalculator::class);
@@ -113,5 +78,9 @@ class AppServiceProvider extends ServiceProvider
         // Services
         $this->app->bind(AnalyticsServiceContract::class, AnalyticsService::class);
         $this->app->bind(EventContract::class, Event::class);
+
+        // Dominion Action Services
+        $this->app->bind(RezoneActionServiceContract::class, RezoneActionService::class);
+        // todo: rest
     }
 }

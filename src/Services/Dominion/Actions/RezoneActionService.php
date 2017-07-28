@@ -2,14 +2,14 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Contracts\Services\Actions\RezoneActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Interfaces\Calculators\Dominion\LandCalculatorInterface;
-use OpenDominion\Interfaces\Services\Actions\RezoneActionServiceInterface;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
-class RezoneActionService implements RezoneActionServiceInterface
+class RezoneActionService implements RezoneActionServiceContract
 {
     use DominionGuardsTrait;
 
@@ -52,14 +52,14 @@ class RezoneActionService implements RezoneActionServiceInterface
 
         if ($totalLand === 0) {
             // Nothing to do.
-            return;
+            return 0;
         }
 
         // Check if the requested amount of land is barren.
         foreach ($remove as $landType => $landToRemove) {
             $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($landType);
             if ($landToRemove > $landAvailable) {
-                throw new NotEnoughResourcesException('Can only rezone ' . $landAvailable . ' ' . $landType);
+                throw new NotEnoughResourcesException('Can only rezone ' . $landAvailable . ' ' . str_plural($landType, $landAvailable));
             }
         }
 
@@ -81,5 +81,8 @@ class RezoneActionService implements RezoneActionServiceInterface
             $dominion->{'land_' . $landType} += $amount;
         }
 
+        $dominion->save();
+
+        return $totalCost;
     }
 }
