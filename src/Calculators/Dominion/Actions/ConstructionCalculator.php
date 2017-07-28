@@ -82,6 +82,7 @@ class ConstructionCalculator implements ConstructionCalculatorContract
      */
     public function getMaxAfford(Dominion $dominion)
     {
+        // todo: factor in amount of barren land?
         return (int)min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             floor($dominion->resource_lumber / $this->getLumberCost($dominion))
