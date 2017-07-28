@@ -6,4 +6,5 @@ use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator as Tr
 
 class TrainingCalculator implements TrainingCalculatorContract
 {
+    // todo
 }
