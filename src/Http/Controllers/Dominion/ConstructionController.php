@@ -12,6 +12,7 @@ use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
 use OpenDominion\Services\Dominion\Actions\ConstructionActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
@@ -30,7 +31,7 @@ class ConstructionController extends AbstractDominionController
         ]);
     }
 
-    public function postConstruction(/*ConstructionActionRequest*/ Request $request)
+    public function postConstruction(ConstructActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $constructionActionService = app(ConstructionActionService::class);
