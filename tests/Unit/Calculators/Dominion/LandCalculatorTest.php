@@ -38,25 +38,15 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
             $this->buildingCalculator,
             $this->app->make(BuildingHelper::class),
             $this->app->make(LandHelper::class),
-            $this->app->make(QueueService::class),
+            $this->dominionQueueService,
         ])->makePartial();
     }
 
     public function testGetTotalLand()
     {
-        $landTypes = [
-            'plain',
-            'mountain',
-            'swamp',
-            'cavern',
-            'forest',
-            'hill',
-            'water',
-        ];
-
         $expected = 0;
 
-        foreach ($landTypes as $landType) {
+        foreach ($this->getLandTypes() as $landType) {
             $this->dominionMock->shouldReceive('getAttribute')->with('land_' . $landType)->andReturn(1);
             $expected++;
         }
@@ -66,19 +56,14 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
 
     public function testGetTotalBarrenLand()
     {
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_plain')->andReturn(10);
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_mountain')->andReturn(10);
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_swamp')->andReturn(10);
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_cavern')->andReturn(10);
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_forest')->andReturn(10);
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_hill')->andReturn(10);
-        $this->dominionMock->shouldReceive('getAttribute')->with('land_water')->andReturn(10);
+        foreach ($this->getLandTypes() as $landType) {
+            $this->dominionMock->shouldReceive('getAttribute')->with('land_' . $landType)->andReturn(10);
+        }
 
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->andReturn(1);
+        $this->dominionQueueService->shouldReceive('getConstructionQueueTotal')->with($this->dominionMock)->andReturn(2);
 
-        $this->dominionQueueService->shouldReceive('getConstructionQueueTotal')->andReturn(2);
-
-        $this->assertEquals(67, $this->sut->getTotalBarrenLand());
+        $this->assertEquals(67, $this->sut->getTotalBarrenLand($this->dominionMock));
     }
 
     public function testGetTotalBarrenLandByLandType()
@@ -163,5 +148,18 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetExplorationMoraleDrop()
     {
         $this->markTestIncomplete();
+    }
+
+    private function getLandTypes()
+    {
+        return [
+            'plain',
+            'mountain',
+            'swamp',
+            'cavern',
+            'forest',
+            'hill',
+            'water',
+        ];
     }
 }
