@@ -24,6 +24,7 @@ use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as Producti
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
@@ -32,6 +33,7 @@ use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\AnalyticsService\Event;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
+use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\RealmFinderService;
 
@@ -88,6 +90,7 @@ class AppServiceProvider extends AbstractServiceProvider
         // Dominion Action Services
         $this->app->bind(ConstructActionServiceContract::class, ConstructActionService::class);
         $this->app->bind(DestroyActionServiceContract::class, DestroyActionService::class);
+        $this->app->bind(ExploreActionServiceContract::class, ExploreActionService::class);
         $this->app->bind(RezoneActionServiceContract::class, RezoneActionService::class);
         // todo: rest
     }

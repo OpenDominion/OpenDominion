@@ -6,13 +6,13 @@ use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\Actions\ExplorationActionService; // todo: contract
 use OpenDominion\Services\Dominion\QueueService;
 
 class ExplorationController extends AbstractDominionController
@@ -30,7 +30,7 @@ class ExplorationController extends AbstractDominionController
     public function postExplore(ExploreActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
-        $explorationActionService = app(ExplorationActionService::class);
+        $explorationActionService = app(ExploreActionService::class);
 
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));

@@ -6,13 +6,14 @@ use Carbon\Carbon;
 use DB;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
-class ExplorationActionService
+class ExploreActionService implements ExploreActionServiceContract
 {
     use DominionGuardsTrait;
 
@@ -30,15 +31,7 @@ class ExplorationActionService
     }
 
     /**
-     * Does an explore action for a Dominion.
-     *
-     * @param Dominion $dominion
-     * @param array $data
-     * @return array
-     * @throws DominionLockedException
-     * @throws Exception
-     * @throws BadInputException
-     * @throws NotEnoughResourcesException
+     * {@inheritdoc}
      */
     public function explore(Dominion $dominion, array $data)
     {
