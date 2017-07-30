@@ -3,9 +3,8 @@
 namespace OpenDominion\Providers;
 
 use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\ServiceProvider;
 
-class BroadcastServiceProvider extends ServiceProvider
+class BroadcastServiceProvider extends AbstractServiceProvider
 {
     /**
      * Bootstrap any application services.

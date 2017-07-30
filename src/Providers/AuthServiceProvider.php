@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'OpenDominion\Model' => 'OpenDominion\Policies\ModelPolicy',
+//        'OpenDominion\Model' => 'OpenDominion\Policies\ModelPolicy',
     ];
 
     /**

@@ -4,10 +4,9 @@ namespace OpenDominion\Providers;
 
 use Cache;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\ServiceProvider;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
 
-class ComposerServiceProvider extends ServiceProvider
+class ComposerServiceProvider extends AbstractServiceProvider
 {
     /**
      * Register bindings in the container.
@@ -26,15 +25,5 @@ class ComposerServiceProvider extends ServiceProvider
             $networthCalculator = app(NetworthCalculator::class);
             $view->with('networthCalculator', $networthCalculator);
         });
-    }
-
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
     }
 }

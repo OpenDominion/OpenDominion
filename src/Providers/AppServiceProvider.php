@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
@@ -33,17 +32,8 @@ use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\RealmFinderService;
 
 
-class AppServiceProvider extends ServiceProvider
+class AppServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-    }
-
     /**
      * Register any application services.
      *
@@ -56,10 +46,16 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
-        $this->registerContracts();
+        $this->bindContracts();
     }
 
-    protected function registerContracts()
+    protected function bindContracts()
+    {
+        $this->bindCalculators();
+        $this->bindServices();
+    }
+
+    protected function bindCalculators()
     {
         // Generic Calculators
         $this->app->bind(NetworthCalculatorContract::class, NetworthCalculator::class);
@@ -76,7 +72,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ExplorationCalculatorContract::class, ExplorationCalculator::class);
         $this->app->bind(RezoningCalculatorContract::class, RezoningCalculator::class);
         $this->app->bind(TrainingCalculatorContract::class, TrainingCalculator::class);
+    }
 
+    protected function bindServices()
+    {
         // Services
         $this->app->bind(AnalyticsServiceContract::class, AnalyticsService::class);
         $this->app->bind(EventContract::class, Event::class);
