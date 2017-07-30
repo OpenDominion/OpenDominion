@@ -1,22 +1,19 @@
 <?php
 
-namespace OpenDominion\Services\Dominion\Actions;
+namespace OpenDominion\Services\Dominion\Actions\Military;
 
+use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
-class MilitaryActionService
+class ChangeDraftRateActionService implements ChangeDraftRateActionServiceContract
 {
     use DominionGuardsTrait;
 
     /**
-     * @param Dominion $dominion
-     * @param int $draftRate
-     * @return array
-     * @throws DominionLockedException
-     * @throws BadInputException
+     * {@inheritdoc}
      */
     public function changeDraftRate(Dominion $dominion, $draftRate)
     {

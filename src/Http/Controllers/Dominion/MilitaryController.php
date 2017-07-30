@@ -5,11 +5,11 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\Actions\MilitaryActionService;
 
 class MilitaryController extends AbstractDominionController
 {
@@ -24,7 +24,7 @@ class MilitaryController extends AbstractDominionController
     public function postChangeDraftRate(/* MilitaryChangeDraftRateActionRequest */ Request $request)
     {
         $dominion = $this->getSelectedDominion();
-        $militaryActionService = app(MilitaryActionService::class);
+        $militaryActionService = app(ChangeDraftRateActionService::class);
 
         try {
             $result = $militaryActionService->changeDraftRate($dominion, $request->get('draft_rate'));
