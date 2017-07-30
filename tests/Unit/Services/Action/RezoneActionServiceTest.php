@@ -7,7 +7,7 @@ use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Actions\RezoneActionService;
+use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;

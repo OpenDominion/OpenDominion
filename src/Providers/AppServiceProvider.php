@@ -22,7 +22,7 @@ use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCa
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
-use OpenDominion\Contracts\Services\Actions\RezoneActionService as RezoneActionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;

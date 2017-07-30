@@ -5,7 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Actions\RezoneActionService;
+use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;

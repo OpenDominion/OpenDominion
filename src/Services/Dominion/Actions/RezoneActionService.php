@@ -4,7 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Actions\RezoneActionService as RezoneActionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
