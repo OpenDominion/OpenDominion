@@ -2,12 +2,13 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
-class DestroyActionService
+class DestroyActionService implements DestroyActionServiceContract
 {
     use DominionGuardsTrait;
 
