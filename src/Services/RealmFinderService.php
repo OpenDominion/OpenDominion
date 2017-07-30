@@ -30,7 +30,7 @@ class RealmFinderService implements RealmFinderServiceContract
     /**
      * {@inheritdoc}
      */
-    public function findRandom(Round $round, Race $race)
+    public function findRandomRealm(Round $round, Race $race)
     {
         // todo: figure out how to do this with repositories
         $results = DB::table('realms')
@@ -49,7 +49,6 @@ class RealmFinderService implements RealmFinderServiceContract
 
         if ($results->isEmpty()) {
             return null;
-
         }
 
         // todo: repositories!!

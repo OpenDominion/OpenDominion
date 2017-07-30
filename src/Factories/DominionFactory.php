@@ -43,7 +43,7 @@ class DominionFactory
     /**
      * Creates and returns a new Dominion in a valid Realm for the current Round.
      *
-     * @see RealmFinderService::findRandom()
+     * @see RealmFinderService::findRandomRealm()
      *
      * @param User $user
      * @param Round $round
@@ -62,7 +62,7 @@ class DominionFactory
         // Try to find a vacant realm
         switch ($realmType) {
             case 'random':
-                $realm = $this->realmFinderService->findRandom($round, $race);
+                $realm = $this->realmFinderService->findRandomRealm($round, $race);
                 break;
 
             default:

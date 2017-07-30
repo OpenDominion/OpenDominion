@@ -42,12 +42,12 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
         $evilRealm = $this->createRealm($this->round, $evilRace->alignment);
 
-        $testRealm = $this->realmFinderService->findRandom($this->round, $this->goodRace);
+        $testRealm = $this->realmFinderService->findRandomRealm($this->round, $this->goodRace);
 
         $this->assertNotNull($testRealm);
         $this->assertEquals($goodRealm->id, $testRealm->id);
 
-        $testRealm = $this->realmFinderService->findRandom($this->round, $evilRace);
+        $testRealm = $this->realmFinderService->findRandomRealm($this->round, $evilRace);
 
         $this->assertNotNull($testRealm);
         $this->assertEquals($evilRealm->id, $testRealm->id);
@@ -57,11 +57,11 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
     {
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
 
-        $this->assertNull($this->realmFinderService->findRandom($this->round, $this->goodRace));
+        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
 
         $this->createRealm($this->round, $evilRace->alignment);
 
-        $this->assertNull($this->realmFinderService->findRandom($this->round, $this->goodRace));
+        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
     }
 
     public function testFindRandomReturnsNullIfAllValidRealmsAreFull()
@@ -76,6 +76,6 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 
         $this->assertEquals(3, Realm::count());
 
-        $this->assertNull($this->realmFinderService->findRandom($this->round, $this->goodRace));
+        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
     }
 }

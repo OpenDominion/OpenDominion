@@ -20,5 +20,5 @@ interface RealmFinderService
      *
      * @return Realm|null
      */
-    public function findRandom(Round $round, Race $race);
+    public function findRandomRealm(Round $round, Race $race);
 }
