@@ -5,11 +5,11 @@ namespace OpenDominion\Http\Controllers\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Events\UserLoginEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\SelectorService;
 
 class LoginController extends AbstractController
 {

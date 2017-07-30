@@ -30,6 +30,7 @@ use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as Rezo
 use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
 use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\AnalyticsService\Event;
@@ -39,6 +40,7 @@ use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\RealmFinderService;
 
 
@@ -93,6 +95,7 @@ class AppServiceProvider extends AbstractServiceProvider
 
         // Dominion Services
         $this->app->bind(ProtectionServiceContract::class, ProtectionService::class);
+        $this->app->bind(SelectorServiceContract::class, SelectorService::class);
 
         // Dominion Action Services
         $this->app->bind(ConstructActionServiceContract::class, ConstructActionService::class);

@@ -3,7 +3,7 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
 {
@@ -34,6 +34,7 @@ class Dominion extends AbstractModel
      */
     public function isSelectedByAuthUser()
     {
+        // todo: move to SelectorService
         // todo: repository criteria?
         $dominionSelectorService = app(SelectorService::class);
 

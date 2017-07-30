@@ -6,12 +6,12 @@ use Auth;
 use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Round;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Repositories\RaceRepository;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\SelectorService;
 
 class RoundController extends AbstractController
 {

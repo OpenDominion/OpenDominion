@@ -5,13 +5,13 @@ namespace OpenDominion\Tests;
 use Carbon\Carbon;
 use Laravel\BrowserKitTesting\TestCase;
 use Mail;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Services\Dominion\SelectorService;
 
 abstract class AbstractBrowserKitTestCase extends TestCase
 {
@@ -132,7 +132,7 @@ abstract class AbstractBrowserKitTestCase extends TestCase
      */
     protected function selectDominion(Dominion $dominion)
     {
-        $dominionSelectorService = app(SelectorService::class);
+        $dominionSelectorService = $this->app->make(SelectorService::class);
 
         $dominionSelectorService->selectUserDominion($dominion);
 

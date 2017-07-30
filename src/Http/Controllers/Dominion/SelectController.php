@@ -4,9 +4,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\SelectorService;
 
 class SelectController extends AbstractDominionController
 {

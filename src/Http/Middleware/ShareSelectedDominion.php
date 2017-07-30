@@ -4,7 +4,7 @@ namespace OpenDominion\Http\Middleware;
 
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 
 class ShareSelectedDominion
 {

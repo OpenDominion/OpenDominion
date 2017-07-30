@@ -4,11 +4,12 @@ namespace OpenDominion\Services\Dominion;
 
 use Auth;
 use Exception;
+use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 use Session;
 
-class SelectorService
+class SelectorService implements SelectorServiceContract
 {
     const SESSION_NAME = 'selected_dominion_id';
 
@@ -24,7 +25,7 @@ class SelectorService
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasUserSelectedDominion()
     {
@@ -32,8 +33,7 @@ class SelectorService
     }
 
     /**
-     * @param Dominion $dominion
-     * @throws Exception
+     * {@inheritdoc}
      */
     public function selectUserDominion(Dominion $dominion)
     {
@@ -56,7 +56,7 @@ class SelectorService
     }
 
     /**
-     * @return Dominion|null
+     * {@inheritdoc}
      */
     public function getUserSelectedDominion()
     {
@@ -73,6 +73,9 @@ class SelectorService
         return $this->selectedDominion;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function unsetUserSelectedDominion()
     {
         Session::forget(self::SESSION_NAME);
