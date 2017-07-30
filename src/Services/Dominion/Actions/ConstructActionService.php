@@ -7,6 +7,7 @@ use DB;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
@@ -14,7 +15,7 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 
-class ConstructionActionService
+class ConstructActionService implements ConstructActionServiceContract
 {
     use DominionGuardsTrait;
 
@@ -42,15 +43,7 @@ class ConstructionActionService
     }
 
     /**
-     * Does a construction action for a Dominion.
-     *
-     * @param Dominion $dominion
-     * @param array $data
-     * @return array
-     * @throws DominionLockedException
-     * @throws BadInputException
-     * @throws Exception
-     * @throws NotEnoughResourcesException
+     * {@inheritdoc}
      */
     public function construct(Dominion $dominion, array $data)
     {

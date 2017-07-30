@@ -8,13 +8,13 @@ use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\Actions\ConstructionActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\QueueService;
 
@@ -34,7 +34,7 @@ class ConstructionController extends AbstractDominionController
     public function postConstruction(ConstructActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
-        $constructionActionService = app(ConstructionActionService::class);
+        $constructionActionService = app(ConstructActionService::class);
 
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
