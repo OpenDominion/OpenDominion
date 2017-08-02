@@ -21,11 +21,17 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         $this->landCalculator = $landCalculator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOffensivePower(Dominion $dominion)
     {
         return ($this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOffensivePowerRaw(Dominion $dominion)
     {
         $op = 0;
@@ -37,6 +43,9 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         return (float)$op;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOffensivePowerMultiplier(Dominion $dominion)
     {
         $multiplier = 0;
@@ -69,21 +78,33 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         return (float)(1 + $multiplier);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOffensivePowerRatio(Dominion $dominion)
     {
         return (float)($this->getOffensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOffensivePowerRatioRaw(Dominion $dominion)
     {
         return (float)($this->getOffensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefensivePower(Dominion $dominion)
     {
         return ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefensivePowerRaw(Dominion $dominion)
     {
         $dp = 0;
@@ -110,6 +131,9 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         return (float)$dp;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefensivePowerMultiplier(Dominion $dominion)
     {
         $multiplier = 0;
@@ -139,27 +163,42 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         return (float)(1 + $multiplier);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefensivePowerRatio(Dominion $dominion)
     {
         return (float)($this->getDefensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefensivePowerRatioRaw(Dominion $dominion)
     {
         return (float)($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSpyRatio(Dominion $dominion)
     {
         return $this->getSpyRatioRaw($dominion);
         // todo: racial spy strength multiplier
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSpyRatioRaw(Dominion $dominion)
     {
         return (float)($dominion->military_spies / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSpyStrengthRegen(Dominion $dominion)
     {
         $regen = 4;
@@ -169,17 +208,26 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         return $regen;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWizardRatio(Dominion $dominion)
     {
         return $this->getWizardRatioRaw($dominion);
         // todo: racial multiplier + Magical Weaponry tech (+15%)
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWizardRatioRaw(Dominion $dominion)
     {
         return (float)(($dominion->military_wizards + ($dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWizardStrengthRegen(Dominion $dominion)
     {
         $regen = 5;
