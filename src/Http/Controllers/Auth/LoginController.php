@@ -31,16 +31,18 @@ class LoginController extends AbstractController
     {
         event(new UserLoginEvent($user));
 
-        // todo: refactor to something like dominionSelectorService->trySelectActiveDominion()
-//        if ($user->hasActiveDominion()) {
-//            app(DominionSelectorService::class)
-//                ->selectUserDominion($user->getActiveDominion());
-//        }
+        // todo: refactorme
+        // Makeshift fix to redirect user to active dominion status if user has only one active dominion, instead of
+        // dashboard
+        $activeDominions = $user->dominions()
+            ->join('rounds', 'rounds.id', 'dominions.round_id')
+            ->where('rounds.start_date', '<=', \Carbon\Carbon::now())
+            ->where('rounds.end_date', '>', \Carbon\Carbon::now())
+            ->get(['dominions.*']);
 
-        if ($user->dominions->count() === 1) {
-            /** @var SelectorService $dominionSelectorService */
-            $dominionSelectorService = app(SelectorService::class);
-            $dominionSelectorService->selectUserDominion($user->dominions->first());
+        if ($activeDominions->count() === 1) {
+            $selectorService = app(SelectorService::class);
+            $selectorService->selectUserDominion($activeDominions->first());
         }
     }
 
