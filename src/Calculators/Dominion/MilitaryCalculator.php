@@ -204,8 +204,9 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         $regen = 4;
 
         // todo: Spy Master / Dark Artistry tech
+        // todo: check if this needs to be a float
 
-        return $regen;
+        return (float)$regen;
     }
 
     /**
@@ -233,7 +234,8 @@ class MilitaryCalculator implements MilitaryCalculatorContract
         $regen = 5;
 
         // todo: Master of Magi / Dark Artistry tech
+        // todo: check if this needs to be a float
 
-        return $regen;
+        return (float)$regen;
     }
 }
