@@ -20,9 +20,11 @@ class RealmController extends AbstractDominionController
         }
 
         $dominions = $realm->dominions()/*->with(['race.units'])*/->orderBy('networth', 'desc')->get();
+        $round = $realm->round;
 
         // Todo: refactor this hacky hacky navigation stuff
         $prevRealm = DB::table('realms')
+            ->where('round_id', $round->id)
             ->where('number', '<', $realm->number)
 //            ->where('realm_id', $realm->id)
             ->orderBy('number', 'desc')
@@ -30,6 +32,7 @@ class RealmController extends AbstractDominionController
             ->first();
 
         $nextRealm = DB::table('realms')
+            ->where('round_id', $round->id)
             ->where('number', '>', $realm->number)
 //            ->where('realm_id', $realm->id)
             ->orderBy('number')
