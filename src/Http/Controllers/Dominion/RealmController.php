@@ -19,14 +19,23 @@ class RealmController extends AbstractDominionController
             $realm = $this->getSelectedDominion()->realm;
         }
 
-        $dominions = $realm->dominions()/*->with(['race.units'])*/->orderBy('networth', 'desc')->get();
+        // todo: still duplicate queries on this page. investigate later
+
+        // Eager load Realm relational data to save on SQL queries down the road in NetworthCalculator
+        $realm->load(['dominions.race.units']);
+
+        $dominions = $realm->dominions()
+            ->with(['race.units'])
+            ->orderBy('networth', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         $round = $realm->round;
 
         // Todo: refactor this hacky hacky navigation stuff
         $prevRealm = DB::table('realms')
             ->where('round_id', $round->id)
             ->where('number', '<', $realm->number)
-//            ->where('realm_id', $realm->id)
             ->orderBy('number', 'desc')
             ->limit(1)
             ->first();
@@ -34,8 +43,7 @@ class RealmController extends AbstractDominionController
         $nextRealm = DB::table('realms')
             ->where('round_id', $round->id)
             ->where('number', '>', $realm->number)
-//            ->where('realm_id', $realm->id)
-            ->orderBy('number')
+            ->orderBy('number', 'asc')
             ->limit(1)
             ->first();
 
