@@ -60,13 +60,11 @@
                                         <li>One account per player</li>
                                         <li>No cheating/botting/scripting</li>
                                         <li>Anonimized analytical data will be collected for development and improvement purposes</li>
-                                        <li>Your data (including analytical data) will not be forwarded to third parties unless laws demand it</li>
                                         <li>We will only send you game-related emails on your email address</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-
 
                         <p>Note that unlike vanilla Dominion, you will register for a round with dominion details later. Your user account will be persistent across rounds and Dominions.</p>
 
