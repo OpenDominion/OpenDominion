@@ -43,7 +43,6 @@ use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\RealmFinderService;
 
-
 class AppServiceProvider extends AbstractServiceProvider
 {
     /**
