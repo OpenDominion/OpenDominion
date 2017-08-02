@@ -22,13 +22,13 @@ use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCa
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
+use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
+use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
-use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
-use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
 use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;

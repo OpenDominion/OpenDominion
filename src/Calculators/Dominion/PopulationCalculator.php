@@ -317,6 +317,7 @@ class PopulationCalculator implements PopulationCalculatorContract
      */
     public function getPopulationMilitaryMaxTrainable(Dominion $dominion)
     {
+        // /todo: move to Actions\TrainingCalculator
         $trainable = [];
 
         $fieldMapping = [
@@ -340,7 +341,6 @@ class PopulationCalculator implements PopulationCalculatorContract
 
         return $trainable;
     }
-    // /todo: move to Actions\TrainingCalculator
 
     /**
      * {@inheritdoc}

@@ -4,7 +4,6 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\User;
 
 /** @var Illuminate\Database\Eloquent\Factory $factory */
-
 $factory->define(Dominion::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->unique()->name,

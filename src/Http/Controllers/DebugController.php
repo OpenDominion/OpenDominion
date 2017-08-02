@@ -14,7 +14,7 @@ use OpenDominion\Http\Controllers\Dominion\AbstractDominionController;
 
 class DebugController extends AbstractDominionController
 {
-    static protected $selectedDominion;
+    protected static $selectedDominion;
 
     public function getIndex()
     {
