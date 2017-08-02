@@ -36,7 +36,7 @@ $factory->define(Dominion::class, function (Faker\Generator $faker) {
         'military_unit4' => 0,
         'military_spies' => 25,
         'military_wizards' => 25,
-        'military_archmages' => 25,
+        'military_archmages' => 0,
         'land_plain' => 110,
         'land_mountain' => 20,
         'land_swamp' => 20,
