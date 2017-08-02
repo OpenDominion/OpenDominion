@@ -83,7 +83,7 @@ class MilitaryCalculator implements MilitaryCalculatorContract
      */
     public function getOffensivePowerRatio(Dominion $dominion)
     {
-        return (float)($this->getOffensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
+        return ($this->getOffensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
@@ -91,7 +91,7 @@ class MilitaryCalculator implements MilitaryCalculatorContract
      */
     public function getOffensivePowerRatioRaw(Dominion $dominion)
     {
-        return (float)($this->getOffensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
+        return ($this->getOffensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
@@ -168,7 +168,7 @@ class MilitaryCalculator implements MilitaryCalculatorContract
      */
     public function getDefensivePowerRatio(Dominion $dominion)
     {
-        return (float)($this->getDefensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
+        return ($this->getDefensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
@@ -176,7 +176,7 @@ class MilitaryCalculator implements MilitaryCalculatorContract
      */
     public function getDefensivePowerRatioRaw(Dominion $dominion)
     {
-        return (float)($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
+        return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
