@@ -3,9 +3,8 @@
 namespace OpenDominion\Contracts\Services\Dominion\Actions;
 
 use Exception;
-use OpenDominion\Exceptions\DominionLockedException;
-use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
+use RuntimeException;
 
 interface ExploreActionService
 {
@@ -15,11 +14,8 @@ interface ExploreActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws DominionLockedException
      * @throws Exception
-     * @throws BadIn
-     * putException
-     * @throws NotEnoughResourcesException
+     * @throws RuntimeException
      */
     public function explore(Dominion $dominion, array $data);
 }

@@ -61,7 +61,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('10', 'add[plain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Rezoning must remove and add equal amounts of land.')
+            ->see('Re-zoning was nog completed due to bad input.')
             ->assertDominionUnchanged();
     }
 
@@ -78,7 +78,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('3', 'add[mountain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Not enough platinum.')
+            ->see('You do not have enough platinum to re-zone 3 acres of land.')
             ->assertDominionUnchanged(['resource_platinum' => 0]);
     }
 
@@ -92,7 +92,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('50', 'add[mountain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Can only rezone 40 plains')
+            ->see('You do not have enough barren land to re-zone 50 plains')
             ->assertDominionUnchanged();
     }
 

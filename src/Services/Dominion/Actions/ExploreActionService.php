@@ -7,11 +7,9 @@ use DB;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
-use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
+use RuntimeException;
 
 class ExploreActionService implements ExploreActionServiceContract
 {
@@ -42,13 +40,13 @@ class ExploreActionService implements ExploreActionServiceContract
         $totalLandToExplore = array_sum($data);
 
         if ($totalLandToExplore === 0) {
-            throw new BadInputException;
+            throw new RuntimeException('Exploration was not begun due to bad input.');
         }
 
         $maxAfford = $this->explorationCalculator->getMaxAfford($dominion);
 
         if ($totalLandToExplore > $maxAfford) {
-            throw new NotEnoughResourcesException;
+            throw new RuntimeException("You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres.");
         }
 
         $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));

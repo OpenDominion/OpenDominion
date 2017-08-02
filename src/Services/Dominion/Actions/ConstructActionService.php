@@ -8,12 +8,10 @@ use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
-use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
+use RuntimeException;
 
 class ConstructActionService implements ConstructActionServiceContract
 {
@@ -54,13 +52,13 @@ class ConstructActionService implements ConstructActionServiceContract
         $totalBuildingsToConstruct = array_sum($data);
 
         if ($totalBuildingsToConstruct === 0) {
-            throw new BadInputException;
+            throw new RuntimeException('Construction was not started due to bad input.');
         }
 
         $maxAfford = $this->constructionCalculator->getMaxAfford($dominion);
 
         if ($totalBuildingsToConstruct > $maxAfford) {
-            throw new NotEnoughResourcesException;
+            throw new RuntimeException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings.");
         }
 
         foreach ($data as $buildingType => $amount) {
@@ -71,7 +69,7 @@ class ConstructActionService implements ConstructActionServiceContract
             $landType = $this->landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
 
             if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)) {
-                throw new NotEnoughResourcesException;
+                throw new RuntimeException("You do not have enough barren land to construct {$totalBuildingsToConstruct} buildings.");
             }
         }
 

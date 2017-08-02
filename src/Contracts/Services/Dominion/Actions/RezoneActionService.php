@@ -2,10 +2,9 @@
 
 namespace OpenDominion\Contracts\Services\Dominion\Actions;
 
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
-use OpenDominion\Exceptions\NotEnoughResourcesException;
+use Exception;
 use OpenDominion\Models\Dominion;
+use RuntimeException;
 
 interface RezoneActionService
 {
@@ -16,9 +15,8 @@ interface RezoneActionService
      * @param array $remove Land to remove
      * @param array $add Land to add.
      * @return array
-     * @throws DominionLockedException
-     * @throws BadInputException
-     * @throws NotEnoughResourcesException
+     * @throws Exception
+     * @throws RuntimeException
      */
     public function rezone(Dominion $dominion, array $remove, array $add);
 }

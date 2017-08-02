@@ -35,28 +35,10 @@ class ExplorationController extends AbstractDominionController
         try {
             $result = $explorationActionService->explore($dominion, $request->get('explore'));
 
-        } catch (DominionLockedException $e) {
-            // todo: coalesce exceptions and use $e->getMessage()
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['Exploration was not begun due to the dominion being locked.']);
-
-        } catch (BadInputException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['Exploration was not begun due to bad input.']);
-
-        } catch (NotEnoughResourcesException $e) {
-            $totalLandToExplore = array_sum($request->get('explore'));
-
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(["You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres."]);
-
         } catch (Exception $e) {
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors(['Something went wrong. Please try again later.']);
+                ->withErrors([$e->getMessage()]);
         }
 
         $message = sprintf(

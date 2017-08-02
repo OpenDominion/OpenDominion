@@ -39,27 +39,10 @@ class ConstructionController extends AbstractDominionController
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
 
-        } catch (DominionLockedException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['Construction was not started due to the dominion being locked.']);
-
-        } catch (BadInputException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['Construction was not started due to bad input.']);
-
-        } catch (NotEnoughResourcesException $e) {
-            $totalBuildingsToConstruct = array_sum($request->get('construct'));
-
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(["You do not have enough platinum, lumber and/or barren land to construct {$totalBuildingsToConstruct} buildings."]);
-
         } catch (Exception $e) {
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors(['Something went wrong. Please try again later.']);
+                ->withErrors([$e->getMessage()]);
         }
 
         $message = sprintf(

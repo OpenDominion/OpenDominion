@@ -109,7 +109,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that rezoning a locked dominion is prohibited.
      *
-     * @expectedException \OpenDominion\Exceptions\DominionLockedException
+     * @expectedException \RuntimeException
      */
     public function testRezoningLockedDominion()
     {
@@ -126,7 +126,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that the amount of land to add cannot be different from the land to remove.
      *
-     * @expectedException \OpenDominion\Exceptions\BadInputException
+     * @expectedException \RuntimeException
      */
     public function testMismatchedRezoning()
     {
@@ -136,7 +136,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that only barren land can be converted.
      *
-     * @expectedException \OpenDominion\Exceptions\NotEnoughResourcesException
+     * @expectedException \RuntimeException
      */
     public function testRemovingMoreThanBarrenLand()
     {
@@ -151,7 +151,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that you cannot perform a conversion you can't afford.
      *
-     * @expectedException \OpenDominion\Exceptions\NotEnoughResourcesException
+     * @expectedException \RuntimeException
      */
     public function testRemovingMoreThanCanBeAfforded()
     {

@@ -5,10 +5,9 @@ namespace OpenDominion\Services\Dominion\Actions;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
+use RuntimeException;
 
 class RezoneActionService implements RezoneActionServiceContract
 {
@@ -53,7 +52,7 @@ class RezoneActionService implements RezoneActionServiceContract
         $totalLand = array_sum($remove);
 
         if ($totalLand !== array_sum($add)) {
-            throw new BadInputException('Rezoning must remove and add equal amounts of land.');
+            throw new RuntimeException('Re-zoning was nog completed due to bad input.');
         }
 
         if ($totalLand === 0) {
@@ -65,7 +64,7 @@ class RezoneActionService implements RezoneActionServiceContract
         foreach ($remove as $landType => $landToRemove) {
             $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType);
             if ($landToRemove > $landAvailable) {
-                throw new NotEnoughResourcesException('Can only rezone ' . $landAvailable . ' ' . str_plural($landType, $landAvailable));
+                throw new RuntimeException('You do not have enough barren land to re-zone ' . $landToRemove . ' ' . str_plural($landType, $landAvailable));
             }
         }
 
@@ -73,7 +72,7 @@ class RezoneActionService implements RezoneActionServiceContract
         $platinumCost = $totalLand * $costPerAcre;
 
         if ($platinumCost > $dominion->resource_platinum) {
-            throw new NotEnoughResourcesException('Not enough platinum.');
+            throw new RuntimeException("You do not have enough platinum to re-zone {$totalLand} acres of land.");
         }
 
         // All fine, perform changes.
