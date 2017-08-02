@@ -16,6 +16,7 @@
         <ul class="sidebar-menu">
             @if (isset($selectedDominion))
 
+                <li class="header">GENERAL</li>
                 <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="ra ra-capitol ra-fw"></i> <span>Status</span></a></li>
                 <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-group fa-fw"></i> <span>Advisors</span></a></li>
 
