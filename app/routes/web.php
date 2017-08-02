@@ -5,6 +5,42 @@ use Illuminate\Routing\Router;
 /** @var Router $router */
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 
+//$router->get('/test', function () {
+//    $networthCalculator = app(\OpenDominion\Contracts\Calculators\NetworthCalculator::class);
+//    $realmFactory = app(\OpenDominion\Factories\RealmFactory::class);
+//    $realmFinderService = app(\OpenDominion\Contracts\Services\RealmFinderService::class);
+//
+//    $round = \OpenDominion\Models\Round::find(2);
+//
+//    $races = [
+//        'good' => \OpenDominion\Models\Race::whereAlignment('good')->first(),
+//        'evil' => \OpenDominion\Models\Race::whereAlignment('evil')->first(),
+//    ];
+//
+//    for ($i = 0; $i < 500; $i++) {
+//        $raceAlignment = (($i % 2 === 0) ? 'good' : 'evil');
+//
+//        $race = $races[$raceAlignment];
+//
+//        $user = factory(\OpenDominion\Models\User::class)->create();
+//        $realm = $realmFinderService->findRandomRealm($round, $race);
+//        if (!$realm) {
+//            $realm = $realmFactory->create($round, $raceAlignment);
+//        }
+//
+//        $dominion = factory(\OpenDominion\Models\Dominion::class)->make([
+//            'user_id' => $user->id,
+//            'round_id' => $round->id,
+//            'realm_id' => $realm->id,
+//            'race_id' => $race->id,
+//        ]);
+//
+//        $dominion->networth = $networthCalculator->getDominionNetworth($dominion);
+//
+//        $dominion->save();
+//    }
+//});
+
 // Authentication
 
 $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) {
