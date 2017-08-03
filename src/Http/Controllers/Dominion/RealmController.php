@@ -59,6 +59,14 @@ class RealmController extends AbstractDominionController
 
     public function postChangeRealm(Request $request)
     {
-        return redirect()->route('dominion.realm', $request->get('realm'));
+        $dominion = $this->getSelectedDominion();
+        $realmNumber = $request->get('realm');
+
+        $realm = Realm::where([
+            'round_id' => $dominion->round_id,
+            'number' => $realmNumber,
+        ])->firstOrFail();
+
+        return redirect()->route('dominion.realm', $realm);
     }
 }
