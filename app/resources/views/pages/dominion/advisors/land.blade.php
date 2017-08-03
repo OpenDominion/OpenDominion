@@ -72,14 +72,14 @@
                                 <td>{{ ucfirst($landType) }}</td>
                                 @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
-                                        @if ($dominionQueueService->getExplorationQueue($selectedDominion)[$landType][$i] === 0)
+                                        @if ($explorationQueueService->getQueue($selectedDominion)[$landType][$i] === 0)
                                             -
                                         @else
-                                            {{ number_format($dominionQueueService->getExplorationQueue($selectedDominion)[$landType][$i]) }}
+                                            {{ number_format($explorationQueueService->getQueue($selectedDominion)[$landType][$i]) }}
                                         @endif
                                     </td>
                                 @endfor
-                                <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($selectedDominion, $landType)) }}</td>
+                                <td class="text-center">{{ number_format($explorationQueueService->getQueueTotalByLand($selectedDominion, $landType)) }}</td>
                             </tr>
                         @endforeach
                         </tbody>

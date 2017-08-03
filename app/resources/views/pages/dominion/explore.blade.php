@@ -38,7 +38,7 @@
                                                 ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
                                             </small>
                                         </td>
-                                        <td class="text-center">{{ number_format($dominionQueueService->getExplorationQueueTotalByLand($selectedDominion, $landType)) }}</td>
+                                        <td class="text-center">{{ number_format($explorationQueueService->getQueueTotalByLand($selectedDominion, $landType)) }}</td>
                                         <td class="text-center">
                                             <input type="number" name="explore[{{ $landType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $explorationCalculator->getMaxAfford($selectedDominion) }}" value="{{ old('explore.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         </td>

@@ -52,7 +52,7 @@
                                                     ({{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
                                                 </small>
                                             </td>
-                                            <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
+                                            <td class="text-center">{{ number_format($constructionQueueService->getQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
                                             <td class="text-center">
                                                 <input type="number" name="construct[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $constructionCalculator->getMaxAfford($selectedDominion) }}" value="{{ old('construct.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             </td>

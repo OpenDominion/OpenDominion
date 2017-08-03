@@ -6,9 +6,10 @@ use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
-use OpenDominion\Services\Dominion\QueueService;
 
 class AdvisorsController extends AbstractDominionController
 {
@@ -19,13 +20,10 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsProduction()
     {
-        $populationCalculator = app(PopulationCalculator::class);
-        $productionCalculator = app(ProductionCalculator::class);
-
-        return view('pages.dominion.advisors.production', compact(
-            'populationCalculator',
-            'productionCalculator'
-        ));
+        return view('pages.dominion.advisors.production', [
+            'populationCalculator' => app(PopulationCalculator::class),
+            'productionCalculator' => app(ProductionCalculator::class),
+        ]);
     }
 
     public function getAdvisorsMilitary()
@@ -35,29 +33,20 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsLand()
     {
-        $landHelper = app(LandHelper::class);
-        $landCalculator = app(LandCalculator::class);
-        $dominionQueueService = app(QueueService::class);
-
-        return view('pages.dominion.advisors.land', compact(
-            'landHelper',
-            'landCalculator',
-            'dominionQueueService'
-        ));
+        return view('pages.dominion.advisors.land', [
+            'landCalculator' => app(LandCalculator::class),
+            'landHelper' => app(LandHelper::class),
+            'explorationQueueService' => app(ExplorationQueueService::class),
+        ]);
     }
 
     public function getAdvisorsConstruction()
     {
-        $buildingHelper = app(BuildingHelper::class);
-        $buildingCalculator = app(BuildingCalculator::class);
-        $landCalculator = app(LandCalculator::class);
-        $dominionQueueService = app(QueueService::class);
-
-        return view('pages.dominion.advisors.construction', compact(
-            'buildingHelper',
-            'buildingCalculator',
-            'landCalculator',
-            'dominionQueueService'
-        ));
+        return view('pages.dominion.advisors.construction', [
+            'buildingCalculator' => app(BuildingCalculator::class),
+            'buildingHelper' => app(BuildingHelper::class),
+            'constructionQueueService' => app(ConstructionQueueService::class),
+            'landCalculator' => app(LandCalculator::class),
+        ]);
     }
 }

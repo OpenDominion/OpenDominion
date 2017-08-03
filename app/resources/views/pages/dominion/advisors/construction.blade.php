@@ -70,14 +70,14 @@
                                 <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
                                 @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
-                                        @if ($dominionQueueService->getConstructionQueue($selectedDominion)[$buildingType][$i] === 0)
+                                        @if ($constructionQueueService->getQueue($selectedDominion)[$buildingType][$i] === 0)
                                             -
                                         @else
-                                            {{ number_format($dominionQueueService->getConstructionQueue($selectedDominion)[$buildingType][$i]) }}
+                                            {{ number_format($constructionQueueService->getQueue($selectedDominion)[$buildingType][$i]) }}
                                         @endif
                                     </td>
                                 @endfor
-                                <td class="text-center">{{ number_format($dominionQueueService->getConstructionQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
+                                <td class="text-center">{{ number_format($constructionQueueService->getQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
                             </tr>
                         @endforeach
                         </tbody>

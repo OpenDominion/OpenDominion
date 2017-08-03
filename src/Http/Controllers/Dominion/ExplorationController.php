@@ -7,21 +7,21 @@ use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService;
+use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Exceptions\BadInputException;
 use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
-use OpenDominion\Services\Dominion\QueueService;
 
 class ExplorationController extends AbstractDominionController
 {
     public function getExplore()
     {
         return view('pages.dominion.explore', [
-            'dominionQueueService' => app(QueueService::class),
             'explorationCalculator' => app(ExplorationCalculator::class),
+            'explorationQueueService' => app(ExplorationQueueService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
         ]);

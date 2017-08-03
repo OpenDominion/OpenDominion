@@ -9,7 +9,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
-use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class LandCalculatorTest extends AbstractBrowserKitTestCase
@@ -20,8 +20,8 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
-    /** @var QueueService */
-    protected $dominionQueueService;
+    /** @var ConstructionQueueService */
+    protected $constructionQueueService;
 
     /** @var LandCalculator */
     protected $sut;
@@ -32,13 +32,13 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->dominionMock = m::mock(Dominion::class);
         $this->buildingCalculator = m::mock(BuildingCalculator::class);
-        $this->dominionQueueService = m::mock(QueueService::class);
+        $this->constructionQueueService = m::mock(ConstructionQueueService::class);
 
         $this->sut = m::mock(LandCalculator::class, [
             $this->buildingCalculator,
             $this->app->make(BuildingHelper::class),
+            $this->constructionQueueService,
             $this->app->make(LandHelper::class),
-            $this->dominionQueueService,
         ])->makePartial();
     }
 
@@ -61,7 +61,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         }
 
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->andReturn(1);
-        $this->dominionQueueService->shouldReceive('getConstructionQueueTotal')->with($this->dominionMock)->andReturn(2);
+        $this->constructionQueueService->shouldReceive('getQueueTotal')->with($this->dominionMock)->andReturn(2);
 
         $this->assertEquals(67, $this->sut->getTotalBarrenLand($this->dominionMock));
     }
@@ -122,7 +122,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
 
             foreach ($buildingTypes as $buildingType) {
                 $this->dominionMock->shouldReceive('getAttribute')->with('building_' . $buildingType)->andReturn(2);
-                $this->dominionQueueService->shouldReceive('getConstructionQueueTotalByBuilding')->with($this->dominionMock, $buildingType)->andReturn(1);
+                $this->constructionQueueService->shouldReceive('getQueueTotalByBuilding')->with($this->dominionMock, $buildingType)->andReturn(1);
                 $expected[$landType] -= 3;
             }
         }

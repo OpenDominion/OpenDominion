@@ -30,6 +30,8 @@ use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as Exp
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService as ConstructionQueueServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService as ExplorationQueueServiceContract;
 use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Services\AnalyticsService;
@@ -40,6 +42,8 @@ use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\RealmFinderService;
 
@@ -102,6 +106,9 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->bind(ExploreActionServiceContract::class, ExploreActionService::class);
         $this->app->bind(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
         $this->app->bind(RezoneActionServiceContract::class, RezoneActionService::class);
-        // todo: rest
+
+        // Dominion Queue Services
+        $this->app->bind(ConstructionQueueServiceContract::class, ConstructionQueueService::class);
+        $this->app->bind(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
     }
 }

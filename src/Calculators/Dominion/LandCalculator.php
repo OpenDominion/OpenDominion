@@ -4,43 +4,43 @@ namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculatorContract;
+use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\QueueService;
 
 class LandCalculator implements LandCalculatorContract
 {
-    /** @var BuildingHelper */
-    protected $buildingHelper;
-
-    /** @var LandHelper */
-    protected $landHelper;
-
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
-    /** @var QueueService */
-    protected $dominionQueueService;
+    /** @var BuildingHelper */
+    protected $buildingHelper;
+
+    /** @var ConstructionQueueService */
+    protected $constructionQueueService;
+
+    /** @var LandHelper */
+    protected $landHelper;
 
     /**
      * LandCalculator constructor.
      *
      * @param BuildingCalculator $buildingCalculator
      * @param BuildingHelper $buildingHelper
+     * @param ConstructionQueueService $constructionQueueService
      * @param LandHelper $landHelper
-     * @param QueueService $dominionQueueService
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
         BuildingHelper $buildingHelper,
-        LandHelper $landHelper,
-        QueueService $dominionQueueService
+        ConstructionQueueService $constructionQueueService,
+        LandHelper $landHelper
     ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->buildingHelper = $buildingHelper;
+        $this->constructionQueueService = $constructionQueueService;
         $this->landHelper = $landHelper;
-        $this->dominionQueueService = $dominionQueueService;
     }
 
     /**
@@ -65,7 +65,7 @@ class LandCalculator implements LandCalculatorContract
         return (
             $this->getTotalLand($dominion)
             - $this->buildingCalculator->getTotalBuildings($dominion)
-            - $this->dominionQueueService->getConstructionQueueTotal($dominion)
+            - $this->constructionQueueService->getQueueTotal($dominion)
         );
     }
 
@@ -91,7 +91,7 @@ class LandCalculator implements LandCalculatorContract
 
             foreach ($buildingTypes as $buildingType) {
                 $barrenLand -= $dominion->{'building_' . $buildingType};
-                $barrenLand -= $this->dominionQueueService->getConstructionQueueTotalByBuilding($dominion, $buildingType);
+                $barrenLand -= $this->constructionQueueService->getQueueTotalByBuilding($dominion, $buildingType);
             }
 
             $return[$landType] = $barrenLand;
