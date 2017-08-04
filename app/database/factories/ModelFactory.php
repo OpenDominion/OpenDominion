@@ -45,7 +45,7 @@ $factory->define(Dominion::class, function (Faker\Generator $faker) {
         'land_hill' => 20,
         'land_water' => 20,
         'building_home' => 10,
-        'building_alchemy' => 20,
+        'building_alchemy' => 30,
         'building_farm' => 30,
         'building_smithy' => 0,
         'building_masonry' => 0,
