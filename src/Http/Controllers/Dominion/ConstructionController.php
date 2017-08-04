@@ -11,9 +11,6 @@ use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
-use OpenDominion\Exceptions\NotEnoughResourcesException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
@@ -85,20 +82,10 @@ class ConstructionController extends AbstractDominionController
         try {
             $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
 
-        } catch (DominionLockedException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['The destruction was not completed due to the dominion being locked.']);
-
-        } catch (BadInputException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['The destruction was not completed due to incorrect input.']);
-
         } catch (Exception $e) {
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors(['Something went wrong. Please try again later.']);
+                ->withErrors([$e->getMessage()]);
         }
 
         $message = sprintf(
