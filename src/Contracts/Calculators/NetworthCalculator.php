@@ -9,28 +9,25 @@ use OpenDominion\Models\Unit;
 interface NetworthCalculator
 {
     /**
-     * Calculates and returns a Realm's networth.
+     * Returns a Realm's networth.
      *
      * @param Realm $realm
-     *
      * @return int
      */
     public function getRealmNetworth(Realm $realm);
 
     /**
-     * Calculates and returns a Dominion's networth.
+     * Returns a Dominion's networth.
      *
      * @param Dominion $dominion
-     *
      * @return int
      */
     public function getDominionNetworth(Dominion $dominion);
 
     /**
-     * Calculates and returns a Unit's networth.
+     * Returns a single Unit's networth.
      *
      * @param Unit $unit
-     *
      * @return float
      */
     public function getUnitNetworth(Unit $unit);
