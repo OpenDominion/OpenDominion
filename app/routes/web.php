@@ -121,8 +121,6 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('realm/{realm?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
-            // todo: post/change realm?
-
             $router->get('debug')->uses('DebugController@getIndex');
 
         });
