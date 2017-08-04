@@ -18,6 +18,7 @@ class SelectController extends AbstractDominionController
             $dominionSelectorService->selectUserDominion($dominion);
 
         } catch (Exception $e) {
+            // todo: redirect somewhere with error
             return response('Unauthorized', 401);
         }
 
