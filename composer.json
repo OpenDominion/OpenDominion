@@ -3,6 +3,7 @@
   "require": {
     "php": "~7.1",
     "atrox/haikunator": "^1.2",
+    "bugsnag/bugsnag-laravel": "^2.0",
     "guzzlehttp/guzzle": "^6.2",
     "ipunkt/laravel-analytics": "^1.3.4",
     "laravel/framework": "5.4.*",
