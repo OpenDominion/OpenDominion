@@ -3,10 +3,9 @@
 namespace OpenDominion\Services\Dominion\Actions\Military;
 
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
+use RuntimeException;
 
 class ChangeDraftRateActionService implements ChangeDraftRateActionServiceContract
 {
@@ -22,7 +21,7 @@ class ChangeDraftRateActionService implements ChangeDraftRateActionServiceContra
         $draftRate = (int)$draftRate;
 
         if (($draftRate < 0) || ($draftRate > 100)) {
-            throw new BadInputException;
+            throw new RuntimeException('Draft rate not changed due to bad input.');
         }
 
         $dominion->draft_rate = $draftRate;

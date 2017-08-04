@@ -2,9 +2,8 @@
 
 namespace OpenDominion\Contracts\Services\Dominion\Actions\Military;
 
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Models\Dominion;
+use RuntimeException;
 
 interface ChangeDraftRateActionService
 {
@@ -12,8 +11,7 @@ interface ChangeDraftRateActionService
      * @param Dominion $dominion
      * @param int $draftRate
      * @return array
-     * @throws DominionLockedException
-     * @throws BadInputException
+     * @throws RuntimeException
      */
     public function changeDraftRate(Dominion $dominion, $draftRate);
 }

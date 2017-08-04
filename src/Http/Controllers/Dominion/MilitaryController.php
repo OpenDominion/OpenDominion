@@ -2,12 +2,11 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
-use OpenDominion\Exceptions\BadInputException;
-use OpenDominion\Exceptions\DominionLockedException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\AnalyticsService\Event;
 
@@ -29,15 +28,10 @@ class MilitaryController extends AbstractDominionController
         try {
             $result = $militaryActionService->changeDraftRate($dominion, $request->get('draft_rate'));
 
-        } catch (DominionLockedException $e) {
+        } catch (Exception $e) {
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors(['Draft rate not changed due to the dominion being locked.']);
-
-        } catch (BadInputException $e) {
-            return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors(['Draft rate not changed due to bad input.']);
+                ->withErrors([$e->getMessage()]);
         }
 
         $message = sprintf(
