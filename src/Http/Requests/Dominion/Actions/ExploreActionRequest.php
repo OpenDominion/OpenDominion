@@ -3,9 +3,9 @@
 namespace OpenDominion\Http\Requests\Dominion\Actions;
 
 use OpenDominion\Helpers\LandHelper;
-use OpenDominion\Http\Requests\AbstractRequest;
+use OpenDominion\Http\Requests\Dominion\AbstractDominionRequest;
 
-class ExploreActionRequest extends AbstractRequest
+class ExploreActionRequest extends AbstractDominionRequest
 {
     /** @var LandHelper */
     protected $landHelper;

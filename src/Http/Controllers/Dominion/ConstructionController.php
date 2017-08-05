@@ -3,7 +3,6 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use Illuminate\Http\Request;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
@@ -13,6 +12,7 @@ use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\DestroyActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
 
 class ConstructionController extends AbstractDominionController
@@ -63,18 +63,14 @@ class ConstructionController extends AbstractDominionController
 
     public function getDestroy()
     {
-        $buildingHelper = app(BuildingHelper::class);
-        $buildingCalculator = app(BuildingCalculator::class);
-        $landCalculator = app(LandCalculator::class);
-
-        return view('pages.dominion.destroy', compact(
-            'buildingHelper',
-            'buildingCalculator',
-            'landCalculator'
-        ));
+        return view('pages.dominion.destroy', [
+            'buildingCalculator' => app(BuildingCalculator::class),
+            'buildingHelper' => app(BuildingHelper::class),
+            'landCalculator' => app(LandCalculator::class),
+        ]);
     }
 
-    public function postDestroy(Request $request)
+    public function postDestroy(DestroyActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $destroyActionService = app(DestroyActionService::class);

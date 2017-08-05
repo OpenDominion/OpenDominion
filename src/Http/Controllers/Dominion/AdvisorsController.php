@@ -34,9 +34,9 @@ class AdvisorsController extends AbstractDominionController
     public function getAdvisorsLand()
     {
         return view('pages.dominion.advisors.land', [
+            'explorationQueueService' => app(ExplorationQueueService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
-            'explorationQueueService' => app(ExplorationQueueService::class),
         ]);
     }
 

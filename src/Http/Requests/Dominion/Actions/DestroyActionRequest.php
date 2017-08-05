@@ -5,13 +5,13 @@ namespace OpenDominion\Http\Requests\Dominion\Actions;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\AbstractDominionRequest;
 
-class ConstructActionRequest extends AbstractDominionRequest
+class DestroyActionRequest extends AbstractDominionRequest
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
 
     /**
-     * ConstructActionRequest constructor.
+     * DestroyActionRequest constructor.
      */
     public function __construct()
     {
@@ -28,7 +28,7 @@ class ConstructActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-            $rules['construct.' . $buildingType] = 'integer|nullable';
+            $rules['destroy.' . $buildingType] = 'integer|nullable';
         }
 
         return $rules;
