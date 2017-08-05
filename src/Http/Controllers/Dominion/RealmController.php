@@ -22,7 +22,7 @@ class RealmController extends AbstractDominionController
         // todo: still duplicate queries on this page. investigate later
 
         // Eager load Realm relational data to save on SQL queries down the road in NetworthCalculator
-        $realm->load(['dominions.race.units']);
+        $realm->load(['dominions.race.units']); // todo: check if we can move this to inside NetworthCalculator
 
         $dominions = $realm->dominions()
             ->with(['race.units'])
