@@ -116,5 +116,34 @@ class BuildingHelper
 //            case 2:
 //                break;
         }
+
+        return null;
+    }
+
+    public function getBuildingHelpString($buildingType)
+    {
+        $helpStrings = [
+            'home' => 'Houses people, increases population',
+            'alchemy' => 'Produces platinum',
+            'farm' => 'Produces food',
+            'smithy' => 'Reduces military unit costs',
+            'masonry' => 'Increases castle bonuses',
+            'ore_mine' => 'Produces ore',
+            'gryphon_nest' => 'Increases offensive power',
+            'tower' => 'Produces mana',
+            'wizard_guild' => 'Increases wizard strength',
+            'temple' => 'Increases population growth, reduces defensive bonuses of dominions you invade',
+            'diamond_mine' => 'Produces diamonds',
+            'school' => 'Produces research points',
+            'lumberyard' => 'Produces lumber',
+            'forest_haven' => 'Increases peasant defense, reduces losses on failed spy ops, reduces incoming fireball damage and reduces the amount of platinum being stolen from you',
+            'factory' => 'Reduces construction and rezoning costs',
+            'guard_tower' => 'Increases defensive power',
+            'shrine' => 'Reduces casualties on offense',
+            'barracks' => 'Houses military people, increases military population',
+            'dock' => 'Produces boats, produces food, prevents your boats from being sunk',
+        ];
+
+        return $helpStrings[$buildingType] ?: null;
     }
 }

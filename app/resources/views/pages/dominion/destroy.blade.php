@@ -40,7 +40,8 @@
                                 <tr>
                                     <td>
                                         {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}<br>
+                                        <span class="text-muted"><i>{{ $buildingHelper->getBuildingHelpString($buildingType) }}</i></span>
                                     </td>
                                     <td class="text-center">
                                         {{ $selectedDominion->{'building_' . $buildingType} }}
