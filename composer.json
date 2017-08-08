@@ -25,7 +25,8 @@
   },
   "autoload": {
     "classmap": [
-      "app/database"
+      "app/database/factories",
+      "app/database/seeds"
     ],
     "psr-4": {
       "OpenDominion\\": "src/"
