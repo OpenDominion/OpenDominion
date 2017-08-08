@@ -3,6 +3,19 @@
 @section('page-header', 'Status')
 
 @section('content')
+
+    @if ($dominionProtectionService->isUnderProtection($selectedDominion))
+        <div class="box box-warning">
+            <div class="box-body">
+                <p>You are under a magical state of protection for <b>{{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> hours.</p>
+
+                @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
+                    <p>No production occurs until you have less than 71 hours of protection remaining.</p>
+                @endif
+            </div>
+        </div>
+    @endif
+
     <div class="box box-info">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="ra ra-capitol"></i> The Dominion of {{ $selectedDominion->name }}</h3>
@@ -158,14 +171,4 @@
         </div>
     </div>
 
-    {{-- @todo: UX --}}
-    @if ($dominionProtectionService->isUnderProtection($selectedDominion))
-        <div class="text-center">
-            <p>You are under a magical state of protection for {{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }} hours.</p>
-
-            @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
-                <p>No production occurs until you have less than 71 hours of protection remaining!</p>
-            @endif
-        </div>
-    @endif
 @endsection
