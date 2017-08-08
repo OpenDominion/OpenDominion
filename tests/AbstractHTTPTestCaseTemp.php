@@ -4,7 +4,7 @@ namespace OpenDominion\Tests;
 
 use Illuminate\Foundation\Testing\TestCase;
 
-class AbstractHTTPTestCase extends TestCase
+class AbstractHTTPTestCaseTemp extends TestCase
 {
     use CreatesApplication;
 }
