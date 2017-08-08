@@ -70,7 +70,7 @@ class NetworthCalculator implements NetworthCalculatorContract
         $networth += ($this->landCalculator->getTotalLand($dominion) * $networthPerLand);
         $networth += ($this->buildingCalculator->getTotalBuildings($dominion) * $networthPerBuilding);
 
-        // Todo: racial network bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
+        // todo: racial networth bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
 
         return (int)round($networth);
     }
