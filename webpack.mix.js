@@ -1,7 +1,7 @@
-const {mix} = require('laravel-mix');
+let mix = require('laravel-mix');
 
+// For mix-manifest.json
 mix.setPublicPath('public');
-
 
 const vendorDirs = {
 
