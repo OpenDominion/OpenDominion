@@ -12,8 +12,8 @@ class HomeTest extends AbstractHttpTestCase
 
     public function testIndex()
     {
-        $response = $this->get('/');
-        $response->assertStatus(200);
+        $this->get('/')
+            ->assertStatus(200);
     }
 
     public function testRedirectLoggedWithoutSelectedDominionToDashboard()
