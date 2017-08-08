@@ -28,4 +28,5 @@ for (let dir in vendorDirs) {
 
 mix.js('app/resources/assets/js/app.js', 'public/assets/app/js')
     .sass('app/resources/assets/sass/app.scss', 'public/assets/app/css')
+    .sourceMaps()
     .version();
