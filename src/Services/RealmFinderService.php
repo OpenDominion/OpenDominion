@@ -34,7 +34,7 @@ class RealmFinderService implements RealmFinderServiceContract
     {
         // todo: figure out how to do this with repositories
         $results = DB::table('realms')
-            ->select('realms.*', DB::raw('COUNT(dominions.id) AS dominion_count'))
+            ->select('realms.id', DB::raw('COUNT(dominions.id) AS dominion_count'))
             ->leftJoin('dominions', function ($join) use ($round) {
                 $join->on('dominions.realm_id', '=', 'realms.id')
                     ->where('dominions.round_id', '=', $round->id);
@@ -54,8 +54,6 @@ class RealmFinderService implements RealmFinderServiceContract
         // todo: repositories!!
         $realmId = $results->first()->id;
 
-        /** @var Realm $realm */
-        $realm = Realm::findOrFail($realmId);
-        return $realm;
+        return Realm::findOrFail($realmId);
     }
 }
