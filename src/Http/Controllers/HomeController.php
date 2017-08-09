@@ -9,7 +9,8 @@ class HomeController extends AbstractController
 {
     public function getIndex()
     {
-        if (Auth::check()) {
+        // Only redirect to status/dashboard if we have no referer
+        if (Auth::check() && (request()->server('HTTP_REFERER') !== '') && (url()->previous() === url()->current())) {
             $dominionSelectorService = app(SelectorService::class);
 
             if ($dominionSelectorService->hasUserSelectedDominion()) {

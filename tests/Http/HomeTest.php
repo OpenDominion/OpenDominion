@@ -16,7 +16,7 @@ class HomeTest extends AbstractHttpTestCase
             ->assertStatus(200);
     }
 
-    public function testRedirectLoggedWithoutSelectedDominionToDashboard()
+    public function testRedirectLoggedUserWithoutSelectedDominionToDashboard()
     {
         $user = $this->createAndImpersonateUser();
 
@@ -25,7 +25,7 @@ class HomeTest extends AbstractHttpTestCase
             ->assertRedirect('/dashboard');
     }
 
-    public function testRedirectLoggedWithSelectedDominionToStatus()
+    public function testRedirectLoggedUserWithSelectedDominionToStatus()
     {
         $this->seed(CoreDataSeeder::class);
         $user = $this->createAndImpersonateUser();
@@ -35,5 +35,25 @@ class HomeTest extends AbstractHttpTestCase
         $this->actingAs($user)
             ->get('/')
             ->assertRedirect('/dominion/status');
+    }
+
+    public function testUserShouldNotGetRedirectedOnReferredRequests()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+
+        $this->actingAs($user)
+            ->get('/', ['HTTP_REFERER' => 'foo'])
+            ->assertStatus(200)
+            ->assertSee('Dashboard');
+
+        $this->selectDominion($dominion);
+
+        $this->actingAs($user)
+            ->get('/', ['HTTP_REFERER' => 'foo'])
+            ->assertStatus(200)
+            ->assertSee('Play');
     }
 }

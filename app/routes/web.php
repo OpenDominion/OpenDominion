@@ -128,3 +128,22 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     });
 
 });
+
+// Scribes
+
+// Valhalla
+
+$router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $router) {
+
+    $router->get('/')->uses('ValhallaController@getIndex')->name('index');
+    $router->get('round/{round}')->uses('ValhallaController@getRound')->name('round');
+    $router->get('round/{round}/{type}')->uses('ValhallaController@getRoundType')->name('round.type');
+    $router->get('user/{user}')->uses('ValhallaController@getUser')->name('user');
+
+});
+
+// Donate
+
+// Contact
+
+// Links
