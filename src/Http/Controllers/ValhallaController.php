@@ -113,7 +113,7 @@ class ValhallaController extends AbstractController
             ->limit(100);
 
         if ($race !== null) {
-            $builder = $builder->where('race_id', $race->id);
+            $builder->where('race_id', $race->id);
         }
 
         return $builder->get()
@@ -180,7 +180,7 @@ class ValhallaController extends AbstractController
             ->limit(100);
 
         if ($race !== null) {
-            $builder = $builder->where('race_id', $race->id);
+            $builder->where('race_id', $race->id);
         }
 
         return $builder->get()
