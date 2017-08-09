@@ -5,6 +5,7 @@ namespace OpenDominion\Providers;
 use Cache;
 use Illuminate\Contracts\View\View;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
 {
@@ -15,6 +16,11 @@ class ComposerServiceProvider extends AbstractServiceProvider
      */
     public function boot()
     {
+        view()->composer('layouts.topnav', function (View $view) {
+            $selectorService = app(SelectorService::class);
+            $view->with('selectorService', $selectorService);
+        });
+
         view()->composer('partials.main-footer', function (View $view) {
             $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
             $view->with('version', $version);

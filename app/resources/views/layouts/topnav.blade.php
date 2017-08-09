@@ -37,14 +37,18 @@
                     <ul class="nav navbar-nav">
                         <li class="{{ Route::is('home') ? 'active' : null }}"><a href="{{ route('home') }}">Home</a></li>
                         <li class="{{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}">Valhalla</a></li>
+                        @if ($selectorService->hasUserSelectedDominion())
+                            <li><a href="{{ route('dominion.status') }}">Play</a></li>
+                        @else
+                            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        @endif
                     </ul>
                 </div>
 
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <li class="{{ Route::is('auth.register') ? 'active' : null }}"><a href="{{ route('auth.register') }}">Register</a></li>
-                        <li class="{{ Route::is('auth.login') ? 'active' : null }}"><a href="{{ route('auth.login') }}">Login</a></li>
+                        @include('partials.auth-user-nav')
                     </ul>
                 </div>
 

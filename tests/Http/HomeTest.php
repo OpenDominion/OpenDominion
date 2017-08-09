@@ -36,4 +36,24 @@ class HomeTest extends AbstractHttpTestCase
             ->get('/')
             ->assertRedirect('/dominion/status');
     }
+
+    public function testUserShouldNotGetRedirectedOnReferredRequests()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+
+        $this->actingAs($user)
+            ->get('/', ['HTTP_REFERER' => 'foo'])
+            ->assertStatus(200)
+            ->assertSee('Dashboard');
+
+        $this->selectDominion($dominion);
+
+        $this->actingAs($user)
+            ->get('/', ['HTTP_REFERER' => 'foo'])
+            ->assertStatus(200)
+            ->assertSee('Play');
+    }
 }
