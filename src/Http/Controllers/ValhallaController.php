@@ -96,7 +96,7 @@ class ValhallaController extends AbstractController
      */
     protected function guardAgainstActiveRound(Round $round)
     {
-        if ($round->isActive()) {
+        if ($round->isActive() || !$round->hasStarted()) {
             return redirect()->back()
                 ->withErrors(['Active rounds cannot be viewed in Valhalla']);
         }

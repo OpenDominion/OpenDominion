@@ -35,6 +35,9 @@
                                 @if ($round->isActive())
                                     {{ $round->name }}
                                     <span class="label label-info">Active</span>
+                                @elseif (!$round->hasStarted())
+                                    {{ $round->name }}
+                                    <span class="label label-warning">Not yet started</span>
                                 @else
                                     <a href="{{ route('valhalla.round', $round) }}">{{ $round->name }}</a>
                                 @endif
