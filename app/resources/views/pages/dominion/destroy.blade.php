@@ -8,7 +8,7 @@
 
         <div class="box box-danger">
             <div class="box-header with-border">
-                <h3 class="box-title"><i class="ra ra-robot-arm"></i> Destroy Buildings</h3>
+                <h3 class="box-title"><i class="ra ra-demolish"></i> Destroy Buildings</h3>
             </div>
             <div class="box-body no-padding">
                 <table class="table">
