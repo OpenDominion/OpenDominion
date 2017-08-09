@@ -2,22 +2,18 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
 
-class LoginTest extends AbstractBrowserKitTestCase
+class LoginTest extends AbstractBrowserKitDatabaseTestCase
 {
-    use DatabaseMigrations;
-
     public function testUserCanLogin()
     {
-        $password = str_random();
-        $user = $this->createUser($password);
+        $user = $this->createUser('secret');
 
         $this->visit('/auth/login')
             ->see('Login')
             ->type($user->email, 'email')
-            ->type($password, 'password')
+            ->type('secret', 'password')
             ->press('Login')
             ->seePageIs('/dashboard');
         // todo: see logged in user == $user
@@ -25,7 +21,7 @@ class LoginTest extends AbstractBrowserKitTestCase
 
     public function testUserCanLogout()
     {
-        $this->createAndImpersonateUser();
+        $this->be($this->user);
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -47,13 +43,12 @@ class LoginTest extends AbstractBrowserKitTestCase
 
     public function testUserCantLoginWhenNotActivated()
     {
-        $password = str_random();
-        $user = $this->createUser($password, ['activated' => false]);
+        $user = $this->createUser('secret', ['activated' => false]);
 
         $this->visit('/auth/login')
             ->see('Login')
             ->type($user->email, 'email')
-            ->type($password, 'password')
+            ->type('secret', 'password')
             ->press('Login')
             ->seePageIs('/auth/login')
             ->see('Your account has not been activated yet. Check your spam folder for the activation email.');

@@ -2,28 +2,16 @@
 
 namespace OpenDominion\Tests\Feature\Dominion;
 
-use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Models\Dominion;
-use OpenDominion\Services\DominionSelectorService;
-use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
 
-class RezoneTest extends AbstractBrowserKitTestCase
+class RezoneTest extends AbstractBrowserKitDatabaseTestCase
 {
-    use DatabaseMigrations;
-
-    /** @var Dominion */
-    protected $dominion;
-
     public function setUp()
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
-
-        $user = $this->createAndImpersonateUser();
-        $round = $this->createRound();
-        $this->dominion = $this->createAndSelectDominion($user, $round);
+        $this->be($this->user);
+        $this->selectDominion($this->dominion);
     }
 
     /**

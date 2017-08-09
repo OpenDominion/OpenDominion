@@ -2,63 +2,48 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use CoreDataSeeder;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
-use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
 
-class RealmTest extends AbstractBrowserKitTestCase
+class RealmTest extends AbstractBrowserKitDatabaseTestCase
 {
-    use DatabaseMigrations;
-
     public function testNewDominionGetsPlacedInARealmBasedOnRaceAlignment()
     {
-        $this->seed(CoreDataSeeder::class);
-
-        $round = $this->createRound();
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
-        $evilRace = Race::where('alignment', 'evil')->firstOrFail();
-
-        $this
-            ->dontSeeInDatabase('realms', ['alignment' => 'good'])
-            ->dontSeeInDatabase('realms', ['alignment' => 'evil']);
+        $evilRace = Race::where('alignment', 'evil')->firstOrFail();;
 
         $userWithGoodDominion = $this->createUser();
-        $goodDominion = $this->createDominion($userWithGoodDominion, $round, $goodRace);
+        $goodDominion = $this->createDominion($userWithGoodDominion, $this->round, $goodRace);
 
         $anotherUserWithGoodDominion = $this->createUser();
-        $anotherGoodDominion = $this->createDominion($anotherUserWithGoodDominion, $round, $goodRace);
+        $anotherGoodDominion = $this->createDominion($anotherUserWithGoodDominion, $this->round, $goodRace);
 
         $userWithEvilDominion = $this->createUser();
-        $evilDominion = $this->createDominion($userWithEvilDominion, $round, $evilRace);
+        $evilDominion = $this->createDominion($userWithEvilDominion, $this->round, $evilRace);
 
         $anotherUserWithEvilDominion = $this->createUser();
-        $anotherEvilDominion = $this->createDominion($anotherUserWithEvilDominion, $round, $evilRace);
+        $anotherEvilDominion = $this->createDominion($anotherUserWithEvilDominion, $this->round, $evilRace);
+
+        $goodRealm = $goodDominion->realm;
+        $evilRealm = $evilDominion->realm;
 
         $this
-            ->seeInDatabase('realms', ['id' => 1, 'alignment' => 'good'])
-            ->seeInDatabase('realms', ['id' => 2, 'alignment' => 'evil'])
-            ->seeInDatabase('dominions', ['id' => $goodDominion->id, 'realm_id' => 1])
-            ->seeInDatabase('dominions', ['id' => $anotherGoodDominion->id, 'realm_id' => 1])
-            ->seeInDatabase('dominions', ['id' => $evilDominion->id, 'realm_id' => 2])
-            ->seeInDatabase('dominions', ['id' => $anotherEvilDominion->id, 'realm_id' => 2]);
+            ->seeInDatabase('realms', ['id' => $goodRealm->id, 'alignment' => 'good'])
+            ->seeInDatabase('realms', ['id' => $evilRealm->id, 'alignment' => 'evil'])
+            ->seeInDatabase('dominions', ['id' => $goodDominion->id, 'realm_id' => $goodRealm->id])
+            ->seeInDatabase('dominions', ['id' => $anotherGoodDominion->id, 'realm_id' => $goodRealm->id])
+            ->seeInDatabase('dominions', ['id' => $evilDominion->id, 'realm_id' => $evilRealm->id])
+            ->seeInDatabase('dominions', ['id' => $anotherEvilDominion->id, 'realm_id' => $evilRealm->id]);
     }
 
     public function testRealmsCantContainMoreThan12Dominions()
     {
-        $this->seed(CoreDataSeeder::class);
-
-        $round = $this->createRound();
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
 
-        $this->dontSeeInDatabase('realms', ['alignment' => 'good']);
-
-        // Create 13 Dominions, where the first 12 should be in realm 1 and the 13th in realm 2
+        // Create 13 Dominions, where the first 11 should be in realm 1 and the last 2 in realm 2
         for ($i = 0; $i < 13; $i++) {
             $user = $this->createUser();
-            $this->createDominion($user, $round, $goodRace);
+            $this->createDominion($user, $this->round, $goodRace);
         }
 
         $this
