@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use Illuminate\Http\Response;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 
@@ -18,11 +19,22 @@ class ValhallaController extends AbstractController
 
     public function getRound(Round $round)
     {
-        // show list of types
+        if ($response = $this->guardAgainstActiveRound($round)) {
+            return $response;
+        }
+
+        return view('pages.valhalla.round', [
+            'round' => $round,
+        ]);
     }
 
-    public function getRoundType(Round $round, $type)
+    public function getRoundType(Round $round, string $type)
     {
+        if ($response = $this->guardAgainstActiveRound($round)) {
+            return $response;
+        }
+
+        dd([$type, $round]);
         // show list of dominions
     }
 
@@ -32,4 +44,18 @@ class ValhallaController extends AbstractController
     }
 
     // todo: search user
+
+    /**
+     * @param Round $round
+     * @return Response|null
+     */
+    protected function guardAgainstActiveRound(Round $round)
+    {
+        if ($round->isActive()) {
+            return redirect()->back()
+                ->withErrors(['Active rounds cannot be viewed in Valhalla']);
+        }
+
+        return null;
+    }
 }
