@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers;
 use Illuminate\Http\Response;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 
@@ -42,6 +43,7 @@ class ValhallaController extends AbstractController
             '#' => ['width' => 50, 'align-center' => true],
             'race' => ['width' => 100, 'align-center' => true],
             'realm' => ['width' => 100, 'align-center' => true],
+            'number' => ['width' => 50, 'align-center' => true],
             'networth' => ['width' => 150, 'align-center' => true],
             'land' => ['width' => 150, 'align-center' => true],
         ];
@@ -92,7 +94,7 @@ class ValhallaController extends AbstractController
             ->map(function (Dominion $dominion) use ($networthCalculator) {
                 return [
                     '#' => null,
-                    'dominion' => $dominion->name,
+                    'dominion name' => $dominion->name,
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,
                     'networth' => $networthCalculator->getDominionNetworth($dominion),
@@ -113,6 +115,23 @@ class ValhallaController extends AbstractController
     {
         $networthCalculator = app(NetworthCalculator::class);
 
-        dd('foo');
+        return $round->realms()->with(['dominions.race.units'])->limit(100)->get()
+            ->map(function (Realm $realm) use ($networthCalculator) {
+                return [
+                    '#' => null,
+                    'realm name' => $realm->name,
+                    'number' => $realm->number,
+                    'networth' => $networthCalculator->getRealmNetworth($realm),
+                ];
+            })
+            ->sortByDesc(function ($row) {
+                return $row['networth'];
+            })
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['networth'] = number_format($row['networth']);
+                return $row;
+            });
     }
 }
