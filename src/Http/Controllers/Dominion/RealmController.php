@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
+use OpenDominion\Contracts\Services\Dominion\ProtectionService;
 use OpenDominion\Models\Realm;
 
 class RealmController extends AbstractDominionController
@@ -14,6 +15,7 @@ class RealmController extends AbstractDominionController
     {
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
+        $protectionService = app(ProtectionService::class);
 
         if (($realm === null) || !$realm->exists) {
             $realm = $this->getSelectedDominion()->realm;
@@ -53,6 +55,7 @@ class RealmController extends AbstractDominionController
             'realm',
             'dominions',
             'prevRealm',
+            'protectionService',
             'nextRealm'
         ));
     }

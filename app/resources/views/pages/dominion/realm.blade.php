@@ -46,6 +46,14 @@
                                                 {{ $dominion->name }}
                                             @endif
 
+                                            @if ($protectionService->isUnderProtection($dominion))
+                                                <span class="label label-info">Protection</span>
+                                            @endif
+
+                                            {{--<span class="label label-success">Royal Guard</span>--}}
+                                            {{--<span class="label label-warning">Elite Guard</span>--}}
+                                            {{--<span class="label label-danger">Monarch</span>--}}
+
                                             {{--@if ($dominion->id !== $selectedDominion->id)
                                                 <a href="{{ route('dominion.other.status', $dominion->id) }}">{{ $dominion->name }}</a>
                                             @else
