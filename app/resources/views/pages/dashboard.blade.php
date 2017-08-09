@@ -161,7 +161,7 @@
                                         </td>
                                         <td class="text-center">
                                             @if ($round->hasEnded())
-                                                &nbsp;
+                                                <a href="{{ route('valhalla.round', $round) }}">Valhalla</a>
                                             @elseif ($userAlreadyRegistered && $round->isActive())
                                                 Playing
                                             @elseif ($userAlreadyRegistered && !$round->hasStarted())
