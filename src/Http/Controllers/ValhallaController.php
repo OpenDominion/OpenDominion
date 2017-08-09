@@ -36,7 +36,7 @@ class ValhallaController extends AbstractController
             return $response;
         }
 
-        $networthCalculator = app(NetworthCalculator::class);
+        // todo: refactor
 
         $headers = [
             '#' => ['width' => 50, 'align-center' => true],
@@ -46,28 +46,9 @@ class ValhallaController extends AbstractController
             'land' => ['width' => 150, 'align-center' => true],
         ];
 
-        // todo: refactor
         switch ($type) {
             case 'strongest-dominions':
-                $data = $round->dominions()->with(['realm', 'race.units'])->limit(100)->get()
-                    ->map(function (Dominion $dominion) use ($networthCalculator) {
-                        return [
-                            '#' => null,
-                            'dominion' => $dominion->name,
-                            'race' => $dominion->race->name,
-                            'realm' => $dominion->realm->number,
-                            'networth' => $networthCalculator->getDominionNetworth($dominion),
-                        ];
-                    })
-                    ->sortByDesc(function ($row) {
-                        return $row['networth'];
-                    })
-                    ->values()
-                    ->map(function ($row, $key) {
-                        $row['#'] = ($key + 1);
-                        $row['networth'] = number_format($row['networth']);
-                        return $row;
-                    });
+                $data = $this->getStrongestDominions($round);
                 break;
 
             default:
@@ -75,12 +56,12 @@ class ValhallaController extends AbstractController
                     ->withErrors(["Valhalla type '{$type}' not supported"]);
         }
 
-        return view('pages.valhalla.round-type', [ // todo: compact()
-            'round' => $round,
-            'type' => $type,
-            'headers' => $headers,
-            'data' => $data,
-        ]);
+        return view('pages.valhalla.round-type', compact(
+            'round',
+            'type',
+            'headers',
+            'data'
+        ));
     }
 
     public function getUser(User $user)
@@ -102,5 +83,30 @@ class ValhallaController extends AbstractController
         }
 
         return null;
+    }
+
+    protected function getStrongestDominions(Round $round)
+    {
+        $networthCalculator = app(NetworthCalculator::class);
+
+        return $round->dominions()->with(['realm', 'race.units'])->limit(100)->get()
+            ->map(function (Dominion $dominion) use ($networthCalculator) {
+                return [
+                    '#' => null,
+                    'dominion' => $dominion->name,
+                    'race' => $dominion->race->name,
+                    'realm' => $dominion->realm->number,
+                    'networth' => $networthCalculator->getDominionNetworth($dominion),
+                ];
+            })
+            ->sortByDesc(function ($row) {
+                return $row['networth'];
+            })
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['networth'] = number_format($row['networth']);
+                return $row;
+            });
     }
 }
