@@ -22,9 +22,9 @@ class AuthTest extends AbstractBrowserKitTestCase
         $this->createAndImpersonateUser();
 
         $this->visit('/auth/login')
-            ->seePageIs('/dashboard');
+            ->seePageIs('/');
 
         $this->visit('/auth/register')
-            ->seePageIs('/dashboard');
+            ->seePageIs('/');
     }
 }
