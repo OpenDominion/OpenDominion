@@ -47,9 +47,8 @@ class ValhallaController extends AbstractController
         ];
 
         switch ($type) {
-            case 'strongest-dominions':
-                $data = $this->getStrongestDominions($round);
-                break;
+            case 'strongest-dominions': $data = $this->getStrongestDominions($round); break;
+            case 'strongest-realms': $data = $this->getStrongestRealms($round); break;
 
             default:
                 return redirect()->back()
@@ -108,5 +107,12 @@ class ValhallaController extends AbstractController
                 $row['networth'] = number_format($row['networth']);
                 return $row;
             });
+    }
+
+    protected function getStrongestRealms(Round $round)
+    {
+        $networthCalculator = app(NetworthCalculator::class);
+
+        dd('foo');
     }
 }
