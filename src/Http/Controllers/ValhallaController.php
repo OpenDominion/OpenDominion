@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
@@ -56,8 +57,22 @@ class ValhallaController extends AbstractController
             case 'largest-realms': $data = $this->getLargestRealms($round); break;
 
             default:
-                return redirect()->back()
-                    ->withErrors(["Valhalla type '{$type}' not supported"]);
+                if (!preg_match('/(strongest|largest)-(\w+)/', $type, $matches)) {
+                    return redirect()->back()
+                        ->withErrors(["Valhalla type '{$type}' not supported"]);
+                }
+
+                list(, $prefix, $raceName) = $matches;
+                $raceName = ucfirst(str_singular($raceName)); // todo: refactor this
+
+                $race = Race::where('name', $raceName)->firstOrFail();
+
+                if ($prefix === 'strongest') {
+                    $data = $this->getStrongestDominions($round, $race);
+                } else {
+                    $data = $this->getLargestDominions($round, $race);
+                }
+                break;
         }
 
         return view('pages.valhalla.round-type', compact(
@@ -89,19 +104,37 @@ class ValhallaController extends AbstractController
         return null;
     }
 
-    protected function getStrongestDominions(Round $round)
+    protected function getStrongestDominions(Round $round, Race $race = null)
     {
         $networthCalculator = app(NetworthCalculator::class);
 
-        return $round->dominions()->with(['realm', 'race.units'])->limit(100)->get()
-            ->map(function (Dominion $dominion) use ($networthCalculator) {
-                return [
+        $builder = $round->dominions()
+            ->with(['realm', 'race.units'])
+            ->limit(100);
+
+        if ($race !== null) {
+            $builder = $builder->where('race_id', $race->id);
+        }
+
+        return $builder->get()
+            ->map(function (Dominion $dominion) use ($networthCalculator, $race) {
+                $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'race' => $dominion->race->name,
+                ];
+
+                if ($race === null) {
+                    $data += [
+                        'race' => $dominion->race->name,
+                    ];
+                }
+
+                $data += [
                     'realm' => $dominion->realm->number,
                     'networth' => $networthCalculator->getDominionNetworth($dominion),
                 ];
+
+                return $data;
             })
             ->sortByDesc(function ($row) {
                 return $row['networth'];
@@ -138,19 +171,37 @@ class ValhallaController extends AbstractController
             });
     }
 
-    protected function getLargestDominions(Round $round)
+    protected function getLargestDominions(Round $round, Race $race = null)
     {
         $landCalculator = app(LandCalculator::class);
 
-        return $round->dominions()->with(['realm', 'race.units'])->limit(100)->get()
-            ->map(function (Dominion $dominion) use ($landCalculator) {
-                return [
+        $builder = $round->dominions()
+            ->with(['realm', 'race.units'])
+            ->limit(100);
+
+        if ($race !== null) {
+            $builder = $builder->where('race_id', $race->id);
+        }
+
+        return $builder->get()
+            ->map(function (Dominion $dominion) use ($landCalculator, $race) {
+                $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'race' => $dominion->race->name,
+                ];
+
+                if ($race === null) {
+                    $data += [
+                        'race' => $dominion->race->name,
+                    ];
+                }
+
+                $data += [
                     'realm' => $dominion->realm->number,
                     'land' => $landCalculator->getTotalLand($dominion),
                 ];
+
+                return $data;
             })
             ->sortByDesc(function ($row) {
                 return $row['land'];
