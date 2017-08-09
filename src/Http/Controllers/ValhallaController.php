@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use Illuminate\Http\Response;
+use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -51,6 +52,8 @@ class ValhallaController extends AbstractController
         switch ($type) {
             case 'strongest-dominions': $data = $this->getStrongestDominions($round); break;
             case 'strongest-realms': $data = $this->getStrongestRealms($round); break;
+            case 'largest-dominions': $data = $this->getLargestDominions($round); break;
+            case 'largest-realms': $data = $this->getLargestRealms($round); break;
 
             default:
                 return redirect()->back()
@@ -94,7 +97,7 @@ class ValhallaController extends AbstractController
             ->map(function (Dominion $dominion) use ($networthCalculator) {
                 return [
                     '#' => null,
-                    'dominion name' => $dominion->name,
+                    'dominion' => $dominion->name,
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,
                     'networth' => $networthCalculator->getDominionNetworth($dominion),
@@ -131,6 +134,57 @@ class ValhallaController extends AbstractController
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
                 $row['networth'] = number_format($row['networth']);
+                return $row;
+            });
+    }
+
+    protected function getLargestDominions(Round $round)
+    {
+        $landCalculator = app(LandCalculator::class);
+
+        return $round->dominions()->with(['realm', 'race.units'])->limit(100)->get()
+            ->map(function (Dominion $dominion) use ($landCalculator) {
+                return [
+                    '#' => null,
+                    'dominion' => $dominion->name,
+                    'race' => $dominion->race->name,
+                    'realm' => $dominion->realm->number,
+                    'land' => $landCalculator->getTotalLand($dominion),
+                ];
+            })
+            ->sortByDesc(function ($row) {
+                return $row['land'];
+            })
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['land'] = number_format($row['land']);
+                return $row;
+            });
+    }
+
+    protected function getLargestRealms(Round $round)
+    {
+        $landCalculator = app(LandCalculator::class);
+
+        return $round->realms()->with(['dominions.race.units'])->limit(100)->get()
+            ->map(function (Realm $realm) use ($landCalculator) {
+                return [
+                    '#' => null,
+                    'realm name' => $realm->name,
+                    'number' => $realm->number,
+                    'land' => $realm->dominions->reduce(function ($carry, Dominion $dominion) use ($landCalculator) {
+                        return ($carry + $landCalculator->getTotalLand($dominion));
+                    }),
+                ];
+            })
+            ->sortByDesc(function ($row) {
+                return $row['land'];
+            })
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['land'] = number_format($row['land']);
                 return $row;
             });
     }
