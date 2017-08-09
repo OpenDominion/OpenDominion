@@ -98,7 +98,7 @@ class ValhallaController extends AbstractController
     {
         if ($round->isActive() || !$round->hasStarted()) {
             return redirect()->back()
-                ->withErrors(['Active rounds cannot be viewed in Valhalla']);
+                ->withErrors(['Only ended rounds can be viewed in Valhalla']);
         }
 
         return null;
