@@ -24,6 +24,7 @@
     @include('partials.main-sidebar')
 
     <div class="content-wrapper">
+        @include('partials.beta-indicator')
 
         @hasSection('page-header')
             <div class="content-header">

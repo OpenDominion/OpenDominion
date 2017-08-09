@@ -1,9 +1,3 @@
-@if (App::environment() !== 'production')
-    <div class="alert alert-warning">
-        <p><i class="icon fa fa-warning"></i> This installation of OpenDominion is running on <b>{{ App::environment() }}</b> environment and is not meant for production purposes. Any data you register and actions you take on this instance might be wiped without notice.</p>
-    </div>
-@endif
-
 @if (isset($selectedDominion) && $selectedDominion->isLocked())
     <div class="alert alert-warning">
         <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.</p>

@@ -54,6 +54,8 @@
 
     <!-- Content -->
     <div class="content-wrapper">
+        @include('partials.beta-indicator')
+
         <div class="container">
 
             @hasSection('page-header')
