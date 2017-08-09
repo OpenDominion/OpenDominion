@@ -9,7 +9,11 @@ class ValhallaController extends AbstractController
 {
     public function getIndex()
     {
-        // show list of rounds
+        $rounds = Round::with('league')->orderBy('start_date', 'desc')->get();
+
+        return view('pages.valhalla.index', [
+            'rounds' => $rounds,
+        ]);
     }
 
     public function getRound(Round $round)
