@@ -7,7 +7,7 @@
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
 [![Gitter](https://badges.gitter.im/opendominion/Lobby.svg)](https://gitter.im/opendominion/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-*Note: OpenDominion is still in early development. Many features of the game have not been implemented yet.*
+*Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
 
 ## Introduction
 
@@ -48,9 +48,11 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 - [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1)
-- [OpenDominion (Development)](https://dev.opendominion.wavehack.net/)
+- [Discord](https://discord.gg/9vjYUrt) (#opendominion on pbbg.site)
+- [OpenDominion (Open Beta)](https://dev.opendominion.wavehack.net/)
   - Development version used for testing purposes. Feel free to register and participate in testing!
   - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) for general gameplay information. Note that not every functionality has been implemented yet in OpenDominion.
+
 
 ## License
 
