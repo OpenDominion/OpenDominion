@@ -49,7 +49,7 @@ class ValhallaController extends AbstractController
         // todo: refactor
         switch ($type) {
             case 'strongest-dominions':
-                $data = $round->dominions()->limit(100)->get()
+                $data = $round->dominions()->with(['realm', 'race.units'])->limit(100)->get()
                     ->map(function (Dominion $dominion) use ($networthCalculator) {
                         return [
                             '#' => null,
