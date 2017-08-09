@@ -3,6 +3,8 @@
 namespace OpenDominion\Http\Controllers;
 
 use Illuminate\Http\Response;
+use OpenDominion\Contracts\Calculators\NetworthCalculator;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 
@@ -34,8 +36,51 @@ class ValhallaController extends AbstractController
             return $response;
         }
 
-        dd([$type, $round]);
-        // show list of dominions
+        $networthCalculator = app(NetworthCalculator::class);
+
+        $headers = [
+            '#' => ['width' => 50, 'align-center' => true],
+            'race' => ['width' => 100, 'align-center' => true],
+            'realm' => ['width' => 100, 'align-center' => true],
+            'networth' => ['width' => 150, 'align-center' => true],
+            'land' => ['width' => 150, 'align-center' => true],
+        ];
+
+        // todo: refactor
+        switch ($type) {
+            case 'strongest-dominions':
+                $data = $round->dominions()->limit(100)->get()
+                    ->map(function (Dominion $dominion) use ($networthCalculator) {
+                        return [
+                            '#' => null,
+                            'dominion' => $dominion->name,
+                            'race' => $dominion->race->name,
+                            'realm' => $dominion->realm->number,
+                            'networth' => $networthCalculator->getDominionNetworth($dominion),
+                        ];
+                    })
+                    ->sortByDesc(function ($row) {
+                        return $row['networth'];
+                    })
+                    ->values()
+                    ->map(function ($row, $key) {
+                        $row['#'] = ($key + 1);
+                        $row['networth'] = number_format($row['networth']);
+                        return $row;
+                    });
+                break;
+
+            default:
+                return redirect()->back()
+                    ->withErrors(["Valhalla type '{$type}' not supported"]);
+        }
+
+        return view('pages.valhalla.round-type', [ // todo: compact()
+            'round' => $round,
+            'type' => $type,
+            'headers' => $headers,
+            'data' => $data,
+        ]);
     }
 
     public function getUser(User $user)

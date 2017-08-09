@@ -3,7 +3,7 @@
 @section('content')
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla for round {{ $round->number }}: {{ $round->name }}</h3>
+            <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla for round {{ number_format($round->number) }}: {{ $round->name }}</h3>
         </div>
         <div class="box-body">
 
