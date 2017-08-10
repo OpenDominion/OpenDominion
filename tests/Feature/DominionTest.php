@@ -2,10 +2,14 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
+use CoreDataSeeder;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class DominionTest extends AbstractBrowserKitDatabaseTestCase
+class DominionTest extends AbstractBrowserKitTestCase
 {
+    use DatabaseMigrations;
+
     public function testUserSeesNoActiveDominionsWhenUserDoesntHaveAnyActiveDominions()
     {
         // todo: move to DashboardTest
@@ -31,7 +35,10 @@ class DominionTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testUserCantSeeStatusPageIfNoDominionIsSelected()
     {
-        $this->be($this->user);
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
 
         $this->visit('/dominion/status')
             ->seePageIs('/dashboard');
@@ -39,10 +46,12 @@ class DominionTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testUserCanSeeStatusPage()
     {
-        $this->be($this->user);
-        $this->selectDominion($this->dominion);
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
+        $dominion = $this->createAndSelectDominion($user, $round);
 
         $this->visit('/dominion/status')
-            ->see("The Dominion of {$this->dominion->name}");
+            ->see("The Dominion of {$dominion->name}");
     }
 }

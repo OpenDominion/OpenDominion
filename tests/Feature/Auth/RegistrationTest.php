@@ -2,12 +2,16 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mail;
+use Mockery as m;
 use OpenDominion\Mail\UserRegistrationMail;
-use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RegistrationTest extends AbstractBrowserKitDatabaseTestCase
+class RegistrationTest extends AbstractBrowserKitTestCase
 {
+    use DatabaseMigrations;
+
     public function testUserCanRegister()
     {
         $this->visit('/auth/register')

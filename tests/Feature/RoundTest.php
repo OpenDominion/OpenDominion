@@ -2,15 +2,17 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
+use CoreDataSeeder;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RoundTest extends AbstractBrowserKitDatabaseTestCase
+class RoundTest extends AbstractBrowserKitTestCase
 {
+    use DatabaseMigrations;
+
     public function testUserSeesNoActiveRoundsWhenNoRoundsAreActive()
     {
-        $this->be($this->user);
-        $this->round->delete();
-        $this->dominion->delete();
+        $this->createAndImpersonateUser();
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -19,8 +21,9 @@ class RoundTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testUserCanSeeActiveRounds()
     {
-        $this->be($this->user);
-        $this->dominion->delete();
+        $this->seed(CoreDataSeeder::class);
+        $this->createAndImpersonateUser();
+        $this->createRound();
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -34,7 +37,8 @@ class RoundTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testUserCanSeeRoundWhichStartSoon()
     {
-        $this->be($this->user);
+        $this->seed(CoreDataSeeder::class);
+        $this->createAndImpersonateUser();
         $this->createRound('+3 days', '+53 days');
 
         $this->visit('/dashboard')
@@ -48,7 +52,8 @@ class RoundTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testUserCanSeeRoundsWhichDontStartSoon()
     {
-        $this->be($this->user);
+        $this->seed(CoreDataSeeder::class);
+        $this->createAndImpersonateUser();
         $this->createRound('+5 days', '+55 days');
 
         $this->visit('/dashboard')
@@ -62,8 +67,9 @@ class RoundTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testUserCanRegisterToARound()
     {
-        $this->be($this->user);
-        $this->dominion->delete();
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
 
         $this->visit('/dashboard')
             ->see('Dashboard')
@@ -77,8 +83,8 @@ class RoundTest extends AbstractBrowserKitDatabaseTestCase
             ->seePageIs('dominion/status')
             ->see('You have successfully registered to round 1 (Standard league)')
             ->seeInDatabase('dominions', [
-                'user_id' => $this->user->id,
-                'round_id' => $this->round->id,
+                'user_id' => $user->id,
+                'round_id' => $round->id,
                 'race_id' => 1,
                 'name' => 'dominionname',
             ])

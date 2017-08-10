@@ -2,10 +2,13 @@
 
 namespace OpenDominion\Tests\Feature\Auth;
 
-use OpenDominion\Tests\AbstractBrowserKitDatabaseTestCase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class AuthTest extends AbstractBrowserKitDatabaseTestCase
+class AuthTest extends AbstractBrowserKitTestCase
 {
+    use DatabaseMigrations;
+
     public function testGuestCantAccessProtectedPages()
     {
         $this->visit('/dashboard')
@@ -16,7 +19,7 @@ class AuthTest extends AbstractBrowserKitDatabaseTestCase
 
     public function testAuthenticatedUserCantAccessLoginAndRegisterPages()
     {
-        $this->be($this->user);
+        $this->createAndImpersonateUser();
 
         $this->visit('/auth/login')
             ->seePageIs('/');
