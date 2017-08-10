@@ -37,7 +37,8 @@ class UpdateVersionCommand extends Command
 
         $version = "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
 
-        Cache::forever('version', $version);
+        Cache::forever('version', "r{$commits} @ {$env} ({$branch} {$shortHash})");
+        Cache::forever('version-html', $version);
 
         Log::info("Version updated to {$shortHash}");
     }

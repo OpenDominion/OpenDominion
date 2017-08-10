@@ -22,7 +22,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
         });
 
         view()->composer('partials.main-footer', function (View $view) {
-            $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
+            $version = (Cache::has('version-html') ? Cache::get('version-html') : 'unknown');
             $view->with('version', $version);
         });
 
