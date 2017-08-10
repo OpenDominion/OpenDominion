@@ -10,7 +10,7 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
             'name' => 'OpenDominion',
             'born' => '2013-02-04',
             'registered_players' => \OpenDominion\Models\User::count(),
-            'tags' => ['multiplayer', 'strategy', 'fantasy']
+            'tags' => ['fantasy', 'multiplayer', 'strategy'],
         ];
     });
 
@@ -19,7 +19,7 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
             'name' => 'OpenDominion',
             'version' => (Cache::has('version') ? Cache::get('version') : 'unknown'),
             'description' => 'A text-based, persistent browser-based strategy game (PBBG) in a fantasy war setting',
-            'tags' => ['multiplayer', 'strategy', 'fantasy'],
+            'tags' => ['fantasy', 'multiplayer', 'strategy'],
             'status' => 'up',
             'dates' => [
                 'born' => '2013-02-04',
