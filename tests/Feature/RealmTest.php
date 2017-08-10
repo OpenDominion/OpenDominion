@@ -10,7 +10,7 @@ class RealmTest extends AbstractBrowserKitDatabaseTestCase
     public function testNewDominionGetsPlacedInARealmBasedOnRaceAlignment()
     {
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
-        $evilRace = Race::where('alignment', 'evil')->firstOrFail();;
+        $evilRace = Race::where('alignment', 'evil')->firstOrFail();
 
         $userWithGoodDominion = $this->createUser();
         $goodDominion = $this->createDominion($userWithGoodDominion, $this->round, $goodRace);
