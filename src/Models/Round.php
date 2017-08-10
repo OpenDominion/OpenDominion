@@ -30,7 +30,7 @@ class Round extends AbstractModel
      */
     public function openForRegistration()
     {
-        return ($this->start_date <= new Carbon('+3 days'));
+        return ($this->start_date <= new Carbon('+3 days midnight'));
     }
 
     /**
@@ -40,7 +40,7 @@ class Round extends AbstractModel
      */
     public function daysUntilRegistration()
     {
-        return $this->start_date->diffInDays(new Carbon('+3 days'));
+        return $this->start_date->diffInDays(new Carbon('+3 days midnight'));
     }
 
     public function userAlreadyRegistered(User $user)
@@ -91,7 +91,7 @@ class Round extends AbstractModel
      */
     public function daysUntilStart()
     {
-        return $this->start_date->diffInDays(Carbon::now()) + 1;
+        return $this->start_date->diffInDays(Carbon::now());
     }
 
     /**
@@ -101,7 +101,7 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return $this->end_date->diffInDays(Carbon::now()) + 1;
+        return $this->end_date->diffInDays(Carbon::now());
     }
 
     /**
