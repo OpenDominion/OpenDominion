@@ -27,18 +27,18 @@ class UpdateVersionCommand extends Command
 
         $commits = shell_exec('git rev-list --count HEAD');
 
-        $shortHash = shell_exec('git log --pretty="%h" -n1 HEAD');
-        $longHash = shell_exec('git log --pretty="%H" -n1 HEAD');
+        $shortHash = trim(shell_exec('git log --pretty="%h" -n1 HEAD'));
+        $longHash = trim(shell_exec('git log --pretty="%H" -n1 HEAD'));
+        $date = trim(shell_exec('git log --pretty="%ci" -n1 HEAD'));
 
-        $branch = shell_exec('git branch | grep \' * \'');
+        $branch = trim(shell_exec('git branch | grep \'* \''));
         $branch = str_replace('* ', '', trim($branch));
 
         $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
 
-        $version = "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
-
-        Cache::forever('version', "r{$commits} @ {$env} ({$branch} {$shortHash})");
-        Cache::forever('version-html', $version);
+        Cache::forever('version', "r{$commits} @ {$env} ({$branch} #{$shortHash})");
+        Cache::forever('version-date', $date);
+        Cache::forever('version-html', "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)");
 
         Log::info("Version updated to {$shortHash}");
     }

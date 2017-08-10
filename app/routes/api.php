@@ -23,7 +23,7 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
             'status' => 'up',
             'dates' => [
                 'born' => '2013-02-04',
-                // 'updated' => '',
+                'updated' => (Cache::has('version-date') ? (new \Carbon\Carbon(Cache::get('version-date')))->format('Y-m-d') : null),
             ],
             'players' => [
                 'registered' => \OpenDominion\Models\User::count(),
