@@ -78,9 +78,6 @@ class GameTickCommand extends Command
         $this->tickDominionSpyStrength();
         $this->tickDominionWizardStrength();
 
-        // todo: cleanup queue tables for locked dominions
-        // note: queues get processed even if a dominion is locked. this is to keep the queue tables somewhat clean
-        // might produce some unwanted results in the future
         $this->tickExplorationQueue();
         $this->tickConstructionQueue();
         // todo: Military training queue
