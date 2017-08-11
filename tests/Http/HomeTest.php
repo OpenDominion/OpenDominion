@@ -16,7 +16,7 @@ class HomeTest extends AbstractHttpTestCase
             ->assertStatus(200);
     }
 
-    public function testRedirectLoggedUserWithoutSelectedDominionToDashboard()
+    public function testRedirectLoggedInUserWithoutSelectedDominionToDashboard()
     {
         $user = $this->createAndImpersonateUser();
 
@@ -25,7 +25,7 @@ class HomeTest extends AbstractHttpTestCase
             ->assertRedirect('/dashboard');
     }
 
-    public function testRedirectLoggedUserWithSelectedDominionToStatus()
+    public function testRedirectLoggedInUserWithSelectedDominionToStatus()
     {
         $this->seed(CoreDataSeeder::class);
         $user = $this->createAndImpersonateUser();
