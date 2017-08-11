@@ -77,4 +77,52 @@ class TickTest extends AbstractBrowserKitTestCase
             ->dontSeeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain'])
             ->dontSeeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home']);
     }
+
+    public function testQueueShouldntTickLockedDominions()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createUser();
+        $round = $this->createRound('-2 days', '-1 days');
+        $dominion = $this->createDominion($user, $round);
+
+        $dominion->fill([
+            'peasants' => 0,
+            'morale' => 0,
+            'spy_strength' => 0,
+            'wizard_strength' => 0,
+            'resource_platinum' => 0,
+            'building_home' => 100,
+            'building_alchemy' => 100,
+        ])->save();
+
+        $this->assertTrue($dominion->isLocked());
+
+        DB::table('queue_exploration')->insert([
+            'dominion_id' => $dominion->id,
+            'land_type' => 'plain',
+            'amount' => 10,
+            'hours' => 3,
+        ]);
+
+        DB::table('queue_construction')->insert([
+            'dominion_id' => $dominion->id,
+            'building' => 'home',
+            'amount' => 10,
+            'hours' => 3,
+        ]);
+
+        Artisan::call('game:tick');
+
+        $this
+            ->seeInDatabase('dominions', [
+                'id' => $dominion->id,
+                'peasants' => 0,
+                'morale' => 0,
+                'spy_strength' => 0,
+                'wizard_strength' => 0,
+                'resource_platinum' => 0,
+            ])
+            ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 3])
+            ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 3]);
+    }
 }

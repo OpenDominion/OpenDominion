@@ -259,15 +259,25 @@ class GameTickCommand extends Command
 
         // Two-step process to avoid getting UNIQUE constraint integrity errors since we can't reliably use deferred
         // transactions, deferred update queries or update+orderby cross-database
-        DB::table('queue_exploration')->where('hours', '>', 0)->update([
-            'hours' => DB::raw('-(`hours` - 1)'),
-        ]);
-        $affectedUpdated = DB::table('queue_exploration')->where('hours', '<', 0)->update([
-            'hours' => DB::raw('-`hours`'),
-            'updated_at' => new Carbon(),
-        ]);
+        DB::table('queue_exploration')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', '>', 0)
+            ->update([
+                'hours' => DB::raw('-(`hours` - 1)'),
+            ]);
 
-        $rows = DB::table('queue_exploration')->where('hours', 0)->get();
+        $affectedUpdated = DB::table('queue_exploration')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', '<', 0)
+            ->update([
+                'hours' => DB::raw('-`hours`'),
+                'updated_at' => new Carbon(),
+            ]);
+
+        $rows = DB::table('queue_exploration')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', 0)
+            ->get();
 
         foreach ($rows as $row) {
             DB::table('dominions')->where('id', $row->dominion_id)->update([
@@ -275,7 +285,9 @@ class GameTickCommand extends Command
             ]);
         }
 
-        $affectedFinished = DB::table('queue_exploration')->where('hours', 0)->delete();
+        $affectedFinished = DB::table('queue_exploration')
+            ->where('hours', 0)
+            ->delete();
 
         $affectedUpdated -= $affectedFinished;
 
@@ -291,15 +303,25 @@ class GameTickCommand extends Command
 
         // Two-step process to avoid getting UNIQUE constraint integrity errors since we can't reliably use deferred
         // transactions, deferred update queries or update+orderby cross-database
-        DB::table('queue_construction')->where('hours', '>', 0)->update([
-            'hours' => DB::raw('-(`hours` - 1)'),
-        ]);
-        $affectedUpdated = DB::table('queue_construction')->where('hours', '<', 0)->update([
-            'hours' => DB::raw('-`hours`'),
-            'updated_at' => new Carbon(),
-        ]);
+        DB::table('queue_construction')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', '>', 0)
+            ->update([
+                'hours' => DB::raw('-(`hours` - 1)'),
+            ]);
 
-        $rows = DB::table('queue_construction')->where('hours', 0)->get();
+        $affectedUpdated = DB::table('queue_construction')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', '<', 0)
+            ->update([
+                'hours' => DB::raw('-`hours`'),
+                'updated_at' => new Carbon(),
+            ]);
+
+        $rows = DB::table('queue_construction')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', 0)
+            ->get();
 
         foreach ($rows as $row) {
             DB::table('dominions')->where('id', $row->dominion_id)->update([
@@ -319,6 +341,7 @@ class GameTickCommand extends Command
      */
     public function tickDominionNetworth()
     {
+        // todo: figure out what to do with dominion->networth
         Log::debug('Tick dominion networth');
 
         /** @var Dominion[] $dominions */
