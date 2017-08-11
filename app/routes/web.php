@@ -85,6 +85,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
         // Dominion
         $router->group(['middleware' => 'dominionselected'], function (Router $router) {
 
+            $router->get('/', function () {
+                return redirect()->route('dominion.status');
+            });
+
             // Status
             $router->get('status')->uses('Dominion\StatusController@getStatus')->name('status');
 
@@ -116,6 +120,13 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');
             $router->post('military/train')->uses('Dominion\MilitaryController@postTrain')->name('military.train');
+
+            // Council
+            $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
+            $router->get('council/create')->uses('Dominion\CouncilController@getCreate')->name('council.create');
+            $router->post('council/create')->uses('Dominion\CouncilController@postCreate');
+            $router->get('council/{thread}')->uses('Dominion\CouncilController@getThread')->name('council.thread');
+            $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
 
             // Realm
             $router->get('realm/{realm?}')->uses('Dominion\RealmController@getRealm')->name('realm');

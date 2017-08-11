@@ -4,6 +4,11 @@ namespace OpenDominion\Models;
 
 class Realm extends AbstractModel
 {
+    public function councilThreads()
+    {
+        return $this->hasMany(Council\Thread::class);
+    }
+
     public function dominions()
     {
         return $this->hasMany(Dominion::class);

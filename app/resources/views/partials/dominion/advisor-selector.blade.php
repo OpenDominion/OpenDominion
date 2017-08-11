@@ -1,6 +1,6 @@
 <div class="box">
     <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-group"></i> Consult advisor</h3>
+        <h3 class="box-title"><i class="fa fa-question-circle"></i> Consult advisor</h3>
     </div>
     <div class="box-body">
         <div class="row">

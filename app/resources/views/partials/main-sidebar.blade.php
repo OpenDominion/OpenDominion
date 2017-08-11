@@ -18,7 +18,8 @@
 
                 <li class="header">GENERAL</li>
                 <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="ra ra-capitol ra-fw"></i> <span>Status</span></a></li>
-                <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-group fa-fw"></i> <span>Advisors</span></a></li>
+                <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-question-circle fa-fw"></i> <span>Advisors</span></a></li>
+                {{-- daily bonuses --}}
 
                 <li class="header">DOMINION</li>
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="fa fa-search fa-fw"></i> <span>Explore</span></a></li>
@@ -29,8 +30,12 @@
 
                 <li class="header">BLACK OPS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
+                {{-- invade --}}
+                {{-- magic --}}
+                {{-- espionage --}}
 
-                {{--<li class="header">COMMS?</li>--}}
+                <li class="header">COMMS</li>
+                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group ra-fw"></i> <span>The Council</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
 
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>

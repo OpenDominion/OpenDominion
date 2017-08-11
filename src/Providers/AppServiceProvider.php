@@ -24,6 +24,7 @@ use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as Producti
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
 use OpenDominion\Contracts\Services\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
+use OpenDominion\Contracts\Services\CouncilService as CouncilServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
@@ -36,6 +37,7 @@ use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceC
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Services\AnalyticsService;
 use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
@@ -96,6 +98,7 @@ class AppServiceProvider extends AbstractServiceProvider
     {
         // Services
         $this->app->bind(AnalyticsServiceContract::class, AnalyticsService::class);
+        $this->app->bind(CouncilServiceContract::class, CouncilService::class);
         $this->app->bind(EventContract::class, Event::class);
         $this->app->bind(RealmFinderServiceContract::class, RealmFinderService::class);
 
@@ -111,7 +114,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->bind(RezoneActionServiceContract::class, RezoneActionService::class);
 
         // Dominion Queue Services
-        $this->app->bind(ConstructionQueueServiceContract::class, ConstructionQueueService::class);
+        $this->app->bind(ConstructionQueueServiceContract::class, ConstructionQueueService::class); // todo: singleton
         $this->app->bind(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
     }
 }

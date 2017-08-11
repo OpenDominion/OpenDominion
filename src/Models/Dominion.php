@@ -7,6 +7,11 @@ use OpenDominion\Contracts\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
 {
+    public function councilThreads()
+    {
+        return $this->hasMany(Council\Thread::class);
+    }
+
     public function race()
     {
         return $this->belongsTo(Race::class);
