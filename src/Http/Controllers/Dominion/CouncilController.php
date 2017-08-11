@@ -18,6 +18,7 @@ class CouncilController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $realm = $dominion->realm;
         $councilThreads = $realm->councilThreads() // todo: move to CouncilService
+            ->with(['dominion', 'posts.dominion'])
             ->orderBy('created_at', 'desc')
             ->get();
 
