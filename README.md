@@ -88,11 +88,24 @@ OpenDominion is open-sourced software licensed under the [MIT License](https://o
 
 ## Acknowledgments
 
+### Legal
+
 Dominion and most of its game-related content (concept, mechanics, buildings, races etc) is/was a product of Kamikaze Games, Inc.
 
 OpenDominion aims to be a free and open source clone based on the original Dominion from Kamikaze Games, Inc. No copyright infringement intended.
 
 All rights belong to their respective owners.
+
+### Shoutouts / Thanks
+
+- Ross from Kamikaze Games Inc., for creating and running Dominion
+- RedFox for creating [DomSim](https://dominion.lykanthropos.com/DomSim/)
+- BlackReign for his OOP sim
+- All the people who contributed to the [Dominion Encyclopedia](web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
+- Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala from Lala's Crypt and Mickles from DomHQ
+- All the contributors to the OpenDominion project
+- All the people who are participating in the open beta or otherwise being involved with the project
+
 
 ## Notes
 
