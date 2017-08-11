@@ -21,24 +21,52 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 ## Progress
 
-- [ ] Castle improvements
-- [x] Construction (not all buildings are functional yet)
-- [x] Destroy buildings
-- [ ] Espionage system
-- [x] Exploration
-- [ ] Invasion / combat system
-- [ ] Magic system
-- [ ] Military training
-- [ ] National bank
-- [ ] Release troops
-- [x] Rezone land
-- [ ] Tech system
-- [x] The Realm
-- [ ] Implement remaining buildings
-- [ ] Implement other races
-- [ ] Implement other pages (messages, council, op center, government, diplomacy, rankings, town crier)
-
 See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and [issue tracker](https://github.com/WaveHack/OpenDominion/issues) for more details.
+
+### Systems
+
+| System         | Status                                    |
+| -------------- | ----------------------------------------- |
+| Authentication | ![Progress](http://progressed.io/bar/95)  |
+| Buildings      | ![Progress](http://progressed.io/bar/40)  |
+| Land           | ![Progress](http://progressed.io/bar/100) |
+| Heroes         | ![Progress](http://progressed.io/bar/0)   |
+| Messages       | ![Progress](http://progressed.io/bar/0)   |
+| Notifications  | ![Progress](http://progressed.io/bar/0)   |
+| Population     | ![Progress](http://progressed.io/bar/99)  |
+| Races & Units  | ![Progress](http://progressed.io/bar/5)   |
+| Resources      | ![Progress](http://progressed.io/bar/80)  |
+| Tech           | ![Progress](http://progressed.io/bar/0)   |
+
+### Pages
+
+| Page                | Status                                    |
+| ------------------- | ----------------------------------------- |
+| Status              | ![Progress](http://progressed.io/bar/95)  |
+| Advisors            | ![Progress](http://progressed.io/bar/40)  |
+| Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
+| Exploration         | ![Progress](http://progressed.io/bar/100) |
+| Construction        | ![Progress](http://progressed.io/bar/100) |
+| Building Destroying | ![Progress](http://progressed.io/bar/100) |
+| Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
+| Castle Improvements | ![Progress](http://progressed.io/bar/0)   |
+| National Bank       | ![Progress](http://progressed.io/bar/0)   |
+| Military Training   | ![Progress](http://progressed.io/bar/10)  |
+| Release Troops      | ![Progress](http://progressed.io/bar/0)   |
+| Invading            | ![Progress](http://progressed.io/bar/0)   |
+| Magic               | ![Progress](http://progressed.io/bar/0)   |
+| Espionage           | ![Progress](http://progressed.io/bar/0)   |
+| Message System      | ![Progress](http://progressed.io/bar/0)   |
+| Realm Council       | ![Progress](http://progressed.io/bar/100) |
+| Op Center           | ![Progress](http://progressed.io/bar/0)   |
+| Government          | ![Progress](http://progressed.io/bar/0)   |
+| Diplomacy           | ![Progress](http://progressed.io/bar/0)   |
+| Realm Page          | ![Progress](http://progressed.io/bar/100) |
+| Rankings            | ![Progress](http://progressed.io/bar/0)   |
+| Town Crier          | ![Progress](http://progressed.io/bar/0)   |
+| Valhalla            | ![Progress](http://progressed.io/bar/100) |
+| Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   |
+
 
 ## Contributing
 
