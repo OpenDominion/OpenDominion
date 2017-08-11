@@ -91,7 +91,7 @@ class Round extends AbstractModel
      */
     public function daysUntilStart()
     {
-        return $this->start_date->diffInDays(Carbon::now());
+        return $this->start_date->diffInDays(Carbon::now()) + 1;
     }
 
     /**
@@ -101,7 +101,7 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return $this->end_date->diffInDays(Carbon::now());
+        return $this->end_date->diffInDays(Carbon::now()) + 1;
     }
 
     /**
@@ -111,6 +111,6 @@ class Round extends AbstractModel
      */
     public function durationInDays()
     {
-        return $this->start_date->diffInDays($this->end_date);
+        return $this->start_date->diffInDays($this->end_date) + 1;
     }
 }
