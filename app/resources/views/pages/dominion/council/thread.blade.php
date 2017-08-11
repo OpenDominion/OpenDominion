@@ -8,8 +8,7 @@
             <h3 class="box-title">Thread: {{ $thread->title }}</h3>
         </div>
         <div class="box-body">
-            {{-- todo: markdown --}}
-            {!! nl2br(htmlentities($thread->body)) !!}
+            {!! Markdown::convertToHtml($thread->body) !!}
         </div>
         <div class="box-footer">
             <small><i>Posted {{ $thread->created_at->diffForHumans() }} by {{ $thread->dominion->name }}</i></small>
@@ -20,8 +19,7 @@
         @foreach ($thread->posts as $post)
             <div class="box box-default">
                 <div class="box-body">
-                    {{-- todo: markdown --}}
-                    {!! nl2br(htmlentities($post->body)) !!}
+                    {!! Markdown::convertToHtml($post->body) !!}
                 </div>
                 <div class="box-footer">
                     <small><i>Posted {{ $post->created_at->diffForHumans() }} by {{ $post->dominion->name }}</i></small>

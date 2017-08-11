@@ -167,6 +167,7 @@ return [
          * Package Service Providers...
          */
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+        GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
@@ -234,6 +235,7 @@ return [
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Gravatar' => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
+        'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
 
     ],
 
