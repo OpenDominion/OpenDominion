@@ -78,43 +78,43 @@ class AppServiceProvider extends AbstractServiceProvider
     protected function bindCalculators()
     {
         // Generic Calculators
-        $this->app->bind(NetworthCalculatorContract::class, NetworthCalculator::class);
+        $this->app->singleton(NetworthCalculatorContract::class, NetworthCalculator::class);
 
         // Dominion Calculators
-        $this->app->bind(BuildingCalculatorContract::class, BuildingCalculator::class);
-        $this->app->bind(LandCalculatorContract::class, LandCalculator::class);
-        $this->app->bind(MilitaryCalculatorContract::class, MilitaryCalculator::class);
-        $this->app->bind(PopulationCalculatorContract::class, PopulationCalculator::class);
-        $this->app->bind(ProductionCalculatorContract::class, ProductionCalculator::class);
+        $this->app->singleton(BuildingCalculatorContract::class, BuildingCalculator::class);
+        $this->app->singleton(LandCalculatorContract::class, LandCalculator::class);
+        $this->app->singleton(MilitaryCalculatorContract::class, MilitaryCalculator::class);
+        $this->app->singleton(PopulationCalculatorContract::class, PopulationCalculator::class);
+        $this->app->singleton(ProductionCalculatorContract::class, ProductionCalculator::class);
 
         // Dominion Action Calculators
-        $this->app->bind(ConstructionCalculatorContract::class, ConstructionCalculator::class);
-        $this->app->bind(ExplorationCalculatorContract::class, ExplorationCalculator::class);
-        $this->app->bind(RezoningCalculatorContract::class, RezoningCalculator::class);
-        $this->app->bind(TrainingCalculatorContract::class, TrainingCalculator::class);
+        $this->app->singleton(ConstructionCalculatorContract::class, ConstructionCalculator::class);
+        $this->app->singleton(ExplorationCalculatorContract::class, ExplorationCalculator::class);
+        $this->app->singleton(RezoningCalculatorContract::class, RezoningCalculator::class);
+        $this->app->singleton(TrainingCalculatorContract::class, TrainingCalculator::class);
     }
 
     protected function bindServices()
     {
         // Services
-        $this->app->bind(AnalyticsServiceContract::class, AnalyticsService::class);
-        $this->app->bind(CouncilServiceContract::class, CouncilService::class);
-        $this->app->bind(EventContract::class, Event::class);
-        $this->app->bind(RealmFinderServiceContract::class, RealmFinderService::class);
+        $this->app->singleton(AnalyticsServiceContract::class, AnalyticsService::class);
+        $this->app->singleton(CouncilServiceContract::class, CouncilService::class);
+        $this->app->singleton(EventContract::class, Event::class);
+        $this->app->singleton(RealmFinderServiceContract::class, RealmFinderService::class);
 
         // Dominion Services
-        $this->app->bind(ProtectionServiceContract::class, ProtectionService::class);
-        $this->app->bind(SelectorServiceContract::class, SelectorService::class);
+        $this->app->singleton(ProtectionServiceContract::class, ProtectionService::class);
+        $this->app->singleton(SelectorServiceContract::class, SelectorService::class);
 
         // Dominion Action Services
-        $this->app->bind(ConstructActionServiceContract::class, ConstructActionService::class);
-        $this->app->bind(DestroyActionServiceContract::class, DestroyActionService::class);
-        $this->app->bind(ExploreActionServiceContract::class, ExploreActionService::class);
-        $this->app->bind(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
-        $this->app->bind(RezoneActionServiceContract::class, RezoneActionService::class);
+        $this->app->singleton(ConstructActionServiceContract::class, ConstructActionService::class);
+        $this->app->singleton(DestroyActionServiceContract::class, DestroyActionService::class);
+        $this->app->singleton(ExploreActionServiceContract::class, ExploreActionService::class);
+        $this->app->singleton(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
+        $this->app->singleton(RezoneActionServiceContract::class, RezoneActionService::class);
 
         // Dominion Queue Services
-        $this->app->bind(ConstructionQueueServiceContract::class, ConstructionQueueService::class); // todo: singleton
-        $this->app->bind(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
+        $this->app->singleton(ConstructionQueueServiceContract::class, ConstructionQueueService::class); // todo: singleton
+        $this->app->singleton(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
     }
 }
