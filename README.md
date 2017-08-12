@@ -31,7 +31,6 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 | Buildings      | ![Progress](http://progressed.io/bar/40)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
-| Messages       | ![Progress](http://progressed.io/bar/0)   |
 | Notifications  | ![Progress](http://progressed.io/bar/0)   |
 | Population     | ![Progress](http://progressed.io/bar/99)  |
 | Races & Units  | ![Progress](http://progressed.io/bar/5)   |
@@ -47,7 +46,7 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 | Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
 | Construction        | ![Progress](http://progressed.io/bar/100) |
-| Building Destroying | ![Progress](http://progressed.io/bar/100) |
+| Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
 | Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
 | Castle Improvements | ![Progress](http://progressed.io/bar/0)   |
 | National Bank       | ![Progress](http://progressed.io/bar/0)   |
@@ -56,7 +55,7 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
 | Magic               | ![Progress](http://progressed.io/bar/0)   |
 | Espionage           | ![Progress](http://progressed.io/bar/0)   |
-| Message System      | ![Progress](http://progressed.io/bar/0)   |
+| Messages            | ![Progress](http://progressed.io/bar/0)   |
 | Realm Council       | ![Progress](http://progressed.io/bar/100) |
 | Op Center           | ![Progress](http://progressed.io/bar/0)   |
 | Government          | ![Progress](http://progressed.io/bar/0)   |
