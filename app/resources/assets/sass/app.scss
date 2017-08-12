@@ -23,6 +23,12 @@
   text-decoration: line-through;
 }
 
+// Allow inline select elements.
+.form-control.form-inline {
+  width:auto;
+  display:inline-block;
+}
+
 .align-middle {
   vertical-align: middle !important;
 }
