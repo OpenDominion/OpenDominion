@@ -75,7 +75,7 @@ It doesn't matter if you're a Dominion veteran of if you've new, feel free and b
 
 ### Participating in the beta
 
-The beta of OpenDominion is currently running at [https://dev.opendominion.wavehack.net](https://dev.opendominion.wavehack.net).
+The beta of OpenDominion is currently running at [https://beta.opendominion.net](https://beta.opendominion.net).
 
 Feel free to register and play around!
 
