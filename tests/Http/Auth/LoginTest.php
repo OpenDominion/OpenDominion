@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Tests\Feature\Auth;
+namespace OpenDominion\Tests\Http\Auth;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -9,17 +9,22 @@ class LoginTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
+    public function testLoginPage()
+    {
+        $this->visitRoute('auth.login')
+            ->seeStatusCode(200);
+    }
+
     public function testUserCanLogin()
     {
-        $password = str_random();
-        $user = $this->createUser($password);
+        $user = $this->createUser('secret');
 
-        $this->visit('/auth/login')
+        $this->visitRoute('auth.login')
             ->see('Login')
             ->type($user->email, 'email')
-            ->type($password, 'password')
+            ->type('secret', 'password')
             ->press('Login')
-            ->seePageIs('/dashboard');
+            ->seeRouteIs('dashboard');
         // todo: see logged in user == $user
     }
 
@@ -27,35 +32,34 @@ class LoginTest extends AbstractBrowserKitTestCase
     {
         $this->createAndImpersonateUser();
 
-        $this->visit('/dashboard')
+        $this->visitRoute('dashboard')
             ->see('Dashboard')
             ->press('Logout')
-            ->seePageIs('/')
+            ->seeRouteIs('home')
             ->see('You have been logged out.');
     }
 
     public function testUserCantLoginWithInvalidCredentials()
     {
-        $this->visit('/auth/login')
+        $this->visitRoute('auth.login')
             ->see('Login')
             ->type('nonexistant@example.com', 'email')
             ->type('somepassword', 'password')
             ->press('Login')
-            ->seePageIs('/auth/login')
+            ->seeRouteIs('auth.login')
             ->see('These credentials do not match our records');
     }
 
     public function testUserCantLoginWhenNotActivated()
     {
-        $password = str_random();
-        $user = $this->createUser($password, ['activated' => false]);
+        $user = $this->createUser('secret', ['activated' => false]);
 
-        $this->visit('/auth/login')
+        $this->visitRoute('auth.login')
             ->see('Login')
             ->type($user->email, 'email')
-            ->type($password, 'password')
+            ->type('secret', 'password')
             ->press('Login')
-            ->seePageIs('/auth/login')
+            ->seeRouteIs('auth.login')
             ->see('Your account has not been activated yet. Check your spam folder for the activation email.');
     }
 }
