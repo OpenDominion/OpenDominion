@@ -64,7 +64,7 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 | Realm Page          | ![Progress](http://progressed.io/bar/100) |
 | Rankings            | ![Progress](http://progressed.io/bar/0)   |
 | Town Crier          | ![Progress](http://progressed.io/bar/0)   |
-| Valhalla            | ![Progress](http://progressed.io/bar/100) |
+| Valhalla            | ![Progress](http://progressed.io/bar/20)  |
 | Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   |
 
 
