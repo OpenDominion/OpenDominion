@@ -103,7 +103,7 @@ All rights belong to their respective owners.
 - All the people who contributed to the [Dominion Encyclopedia](http://web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
 - Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala from Lala's Crypt and Mickles from DomHQ
 - All the contributors to the OpenDominion project
-- All the people who are participating in the open beta or otherwise being involved with the project
+- All the people who are participating in the open beta or otherwise being involved with the OpenDominion project
 
 
 ## Notes
