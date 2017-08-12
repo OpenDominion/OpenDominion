@@ -9,9 +9,9 @@ class HomeTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
-    public function testIndex()
+    public function testHomePage()
     {
-        $this->visit('/')
+        $this->visitRoute('home')
             ->seeStatusCode(200);
     }
 
@@ -19,7 +19,7 @@ class HomeTest extends AbstractBrowserKitTestCase
     {
         $this->createAndImpersonateUser();
 
-        $this->visit('/')
+        $this->visitRoute('home')
             ->seeRouteIs('dashboard');
     }
 
@@ -30,7 +30,7 @@ class HomeTest extends AbstractBrowserKitTestCase
         $round = $this->createRound();
         $this->createAndSelectDominion($user, $round);
 
-        $this->visit('/')
+        $this->visitRoute('home')
             ->seeRouteIs('dominion.status');
     }
 
@@ -41,13 +41,15 @@ class HomeTest extends AbstractBrowserKitTestCase
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
 
-        $this->get('/', ['HTTP_REFERER' => 'foo'])
+        $route = route('home');
+
+        $this->get($route, ['HTTP_REFERER' => 'foo'])
             ->seeStatusCode(200)
             ->see('Dashboard');
 
         $this->selectDominion($dominion);
 
-        $this->get('/', ['HTTP_REFERER' => 'foo'])
+        $this->get($route, ['HTTP_REFERER' => 'foo'])
             ->seeStatusCode(200)
             ->see('Play');
     }
