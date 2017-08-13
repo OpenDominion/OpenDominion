@@ -1,28 +1,27 @@
 <?php
 
-namespace OpenDominion\Tests\Feature\Auth;
+namespace OpenDominion\Tests\Http\Auth;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mail;
-use Mockery as m;
 use OpenDominion\Mail\UserRegistrationMail;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class RegistrationTest extends AbstractBrowserKitTestCase
+class RegisterTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
     public function testUserCanRegister()
     {
-        $this->visit('/auth/register')
+        $this->visitRoute('auth.register')
             ->see('Register')
             ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
-            ->type('password', 'password')
-            ->type('password', 'password_confirmation')
+            ->type('secret', 'password')
+            ->type('secret', 'password_confirmation')
             ->check('terms')
             ->press('Register')
-            ->seePageIs('/')
+            ->seeRouteIs('home')
             ->see('You have been successfully registered. An activation email has been dispatched to your address.')
             ->seeInDatabase('users', [
                 'email' => 'johndoe@example.com',
@@ -44,8 +43,8 @@ class RegistrationTest extends AbstractBrowserKitTestCase
             'activation_code' => $activation_code,
         ]);
 
-        $this->visit("/auth/activate/{$activation_code}")
-            ->seePageIs('/dashboard')
+        $this->visitRoute('auth.activate', $activation_code)
+            ->seeRouteIs('dashboard')
             ->see('Your account has been activated and you are now logged in.')
             ->seeInDatabase('users', [
                 'id' => $user->id,
@@ -61,8 +60,8 @@ class RegistrationTest extends AbstractBrowserKitTestCase
             'activation_code' => 'foo',
         ]);
 
-        $this->visit('/auth/activate/bar')
-            ->seePageIs('/')
+        $this->visitRoute('auth.activate', 'bar')
+            ->seeRouteIs('home')
             ->see('Invalid activation code')
             ->dontSeeInDatabase('users', [
                 'id' => $user->id,
@@ -72,10 +71,10 @@ class RegistrationTest extends AbstractBrowserKitTestCase
 
     public function testUserCantRegisterWithBlankData()
     {
-        $this->visit('/auth/register')
+        $this->visitRoute('auth.register')
             ->see('Register')
             ->press('Register')
-            ->seePageIs('/auth/register')
+            ->seeRouteIs('auth.register')
             ->see('The display name field is required.')
             ->see('The email field is required.')
             ->see('The password field is required.');
@@ -85,7 +84,7 @@ class RegistrationTest extends AbstractBrowserKitTestCase
     {
         $this->createUser(null, ['email' => 'johndoe@example.com']);
 
-        $this->visit('/auth/register')
+        $this->visitRoute('auth.register')
             ->see('Register')
             ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
@@ -93,7 +92,7 @@ class RegistrationTest extends AbstractBrowserKitTestCase
             ->type('password', 'password_confirmation')
             ->check('terms')
             ->press('Register')
-            ->seePageIs('/auth/register')
+            ->seeRouteIs('auth.register')
             ->see('The email has already been taken.');
     }
 
@@ -101,7 +100,7 @@ class RegistrationTest extends AbstractBrowserKitTestCase
     {
         $this->createUser(null, ['display_name' => 'John Doe']);
 
-        $this->visit('/auth/register')
+        $this->visitRoute('auth.register')
             ->see('Register')
             ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
@@ -109,13 +108,13 @@ class RegistrationTest extends AbstractBrowserKitTestCase
             ->type('password', 'password_confirmation')
             ->check('terms')
             ->press('Register')
-            ->seePageIs('/auth/register')
+            ->seeRouteIs('auth.register')
             ->see('The display name has already been taken.');
     }
 
     public function testUserCantRegisterWithNonMatchingPasswords()
     {
-        $this->visit('/auth/register')
+        $this->visitRoute('auth.register')
             ->see('Register')
             ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
@@ -123,20 +122,20 @@ class RegistrationTest extends AbstractBrowserKitTestCase
             ->type('password2', 'password_confirmation')
             ->check('terms')
             ->press('Register')
-            ->seePageIs('/auth/register')
+            ->seeRouteIs('auth.register')
             ->see('The password confirmation does not match.');
     }
 
     public function testUserCantRegisterWithoutAgreeingToTheTerms()
     {
-        $this->visit('/auth/register')
+        $this->visitRoute('auth.register')
             ->see('Register')
             ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
             ->press('Register')
-            ->seePageIs('/auth/register')
+            ->seeRouteIs('auth.register')
             ->see('The terms field is required.');
     }
 }
