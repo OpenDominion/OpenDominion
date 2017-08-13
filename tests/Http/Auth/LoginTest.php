@@ -62,4 +62,23 @@ class LoginTest extends AbstractBrowserKitTestCase
             ->seeRouteIs('auth.login')
             ->see('Your account has not been activated yet. Check your spam folder for the activation email.');
     }
+
+    public function testGuestCantAccessProtectedPages()
+    {
+        $this->visitRoute('dashboard')
+            ->seeRouteIs('auth.login');
+
+        // todo: expand?
+    }
+
+    public function testAuthenticatedUserCantAccessLoginAndRegisterPages()
+    {
+        $this->createAndImpersonateUser();
+
+        $this->visitRoute('auth.login')
+            ->seeRouteIs('home');
+
+        $this->visitRoute('auth.register')
+            ->seeRouteIs('home');
+    }
 }
