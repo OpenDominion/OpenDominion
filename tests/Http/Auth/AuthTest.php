@@ -3,16 +3,16 @@
 namespace OpenDominion\Tests\Http\Auth;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Tests\AbstractHttpTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class AuthTest extends AbstractHttpTestCase
+class AuthTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
     public function testGuestCantAccessProtectedPages()
     {
-        $this->get('/dashboard')
-            ->assertRedirect('/auth/login');
+        $this->visitRoute('dashboard')
+            ->seeRouteIs('auth.login');
 
         // todo: expand?
     }
@@ -21,10 +21,10 @@ class AuthTest extends AbstractHttpTestCase
     {
         $this->createAndImpersonateUser();
 
-        $this->get('/auth/login')
-            ->assertRedirect('/');
+        $this->visitRoute('auth.login')
+            ->seeRouteIs('home');
 
-        $this->get('/auth/register')
-            ->assertRedirect('/');
+        $this->visitRoute('auth.register')
+            ->seeRouteIs('home');
     }
 }
