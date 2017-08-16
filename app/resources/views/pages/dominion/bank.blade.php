@@ -116,7 +116,8 @@
         (function ($) {
             const resources = JSON.parse('{!! json_encode($resources) !!}');
 
-            let sourceElement = $('#source'),
+            // todo: let/const aka ES6 this
+            var sourceElement = $('#source'),
                 targetElement = $('#target'),
                 amountElement = $('#amount'),
                 amountLabelElement = $('#amountLabel'),
@@ -125,7 +126,7 @@
                 resultElement = $('#result');
 
             function updateResources() {
-                const sourceOption = sourceElement.find(':selected'),
+                var sourceOption = sourceElement.find(':selected'),
                     sourceResourceType = _.get(resources, sourceOption.val()),
                     sourceAmount = Math.min(parseInt(amountElement.val()), _.get(sourceResourceType, 'max')),
                     targetOption = targetElement.find(':selected'),
