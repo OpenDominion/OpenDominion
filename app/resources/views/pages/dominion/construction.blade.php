@@ -84,6 +84,7 @@
                 <div class="box-body">
                     <p>You may also <a href="{{ route('dominion.destroy') }}">destroy</a> buildings if you wish.</p>
                     <p>Construction per building will come at a cost of {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
+                    <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} acres of barren land, {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->resource_lumber) }} lumber.</p>
                     <p>You can afford: {{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} buildings.</p>
                 </div>
             </div>
