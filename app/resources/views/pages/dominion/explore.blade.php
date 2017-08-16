@@ -31,7 +31,13 @@
                             <tbody>
                                 @foreach ($landHelper->getLandTypes() as $landType)
                                     <tr>
-                                        <td>{{ ucfirst($landType) }}</td>
+                                        <td>
+                                            {{ ucfirst($landType) }}
+                                            @if ($landType === $selectedDominion->race->home_land_type)
+                                                <br>
+                                                <small class="text-muted"><i><span title="This is the land type where your {{ strtolower($selectedDominion->race->name) }} race constructs home buildings on">Home land type</span></i></small>
+                                            @endif
+                                        </td>
                                         <td class="text-center">
                                             {{ number_format($selectedDominion->{'land_' . $landType}) }}
                                             <small>
