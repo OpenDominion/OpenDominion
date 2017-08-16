@@ -39,6 +39,8 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 
 ### Pages
 
+This indicates which pages are funtional. Some pages will be restyled later. 
+
 | Page                | Status                                    |
 | ------------------- | ----------------------------------------- |
 | Status              | ![Progress](http://progressed.io/bar/95)  |
@@ -49,7 +51,7 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 | Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
 | Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
 | Castle Improvements | ![Progress](http://progressed.io/bar/0)   |
-| National Bank       | ![Progress](http://progressed.io/bar/0)   |
+| National Bank       | ![Progress](http://progressed.io/bar/100) |
 | Military Training   | ![Progress](http://progressed.io/bar/10)  |
 | Release Troops      | ![Progress](http://progressed.io/bar/0)   |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
