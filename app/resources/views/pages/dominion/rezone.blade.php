@@ -67,6 +67,7 @@
                     <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
+                    <p>Land rezoning is the art of converting land of one type into another type. Land rezoning is instant.</p>
                     <p>Each acre of barren land being converted will come at a cost of: {{ $rezoningCalculator->getPlatinumCost($selectedDominion) }} platinum.</p>
                     <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} acres of barren land and {{ number_format($selectedDominion->resource_platinum) }} platinum.</p>
                     <p>You can afford to re-zone <b>{{ number_format($rezoningCalculator->getMaxAfford($selectedDominion)) }} acres of barren land</b> at that rate.</p>
