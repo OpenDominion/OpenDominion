@@ -63,7 +63,7 @@
                 <div class="box-body">
                     <p>Exploration per acre of barren land will come at a cost of {{ number_format($explorationCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($explorationCalculator->getDrafteeCost($selectedDominion)) }} draftees.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
-                    <p>You can afford to explore for {{ number_format($explorationCalculator->getMaxAfford($selectedDominion)) }} acres of barren land at that rate.</p>
+                    <p>You can afford to explore for <b>{{ number_format($explorationCalculator->getMaxAfford($selectedDominion)) }} acres of barren land</b> at that rate.</p>
                 </div>
             </div>
         </div>
