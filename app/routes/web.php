@@ -116,7 +116,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('rezone')->uses('Dominion\RezoneController@getRezone')->name('rezone');
             $router->post('rezone')->uses('Dominion\RezoneController@postRezone');
 
-            // National bank
+            // National Bank
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
             $router->post('bank')->uses('Dominion\BankController@postBank');
 
