@@ -70,19 +70,29 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetMaxAfford()
     {
         $scenarios = [
-            [
+            [ // totalBuildings < 1250
                 'totalBuildings' => 90,
                 'totalLand' => 250,
+                'totalBarrenLand' => 160,
                 'platinum' => 100000,
                 'lumber' => 15000,
-                'expectedMaxAfford' => 117
+                'expectedMaxAfford' => 117,
             ],
-            [
+            [ // totalBuildings >= 1250
                 'totalBuildings' => 1250,
-                'totalLand' => 1250,
+                'totalLand' => 5000,
+                'totalBarrenLand' => 4750,
                 'platinum' => 1000000,
                 'lumber' => 150000,
-                'expectedMaxAfford' => 218
+                'expectedMaxAfford' => 68,
+            ],
+            [ // capped by barren land
+                'totalBuildings' => 90,
+                'totalLand' => 250,
+                'totalBarrenLand' => 160,
+                'platinum' => 10000000,
+                'lumber' => 1500000,
+                'expectedMaxAfford' => 160,
             ],
         ];
 
@@ -92,6 +102,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
 
             $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalBuildings'])->byDefault();
             $this->landCalculator->shouldReceive('getTotalLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalLand'])->byDefault();
+            $this->landCalculator->shouldReceive('getTotalBarrenLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalBarrenLand'])->byDefault();
 
             $this->assertEquals($scenario['expectedMaxAfford'], $this->sut->getMaxAfford($this->dominionMock));
         }
