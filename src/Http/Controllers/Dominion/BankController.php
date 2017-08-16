@@ -13,10 +13,9 @@ class BankController extends AbstractDominionController
 {
     public function getBank()
     {
-        $dominion = $this->getSelectedDominion();
-        $resources = app(BankingCalculator::class)->getResources($dominion);
-
-        return view('pages.dominion.bank', compact('resources'));
+        return view('pages.dominion.bank', [
+            'bankingCalculator' => app(BankingCalculator::class),
+        ]);
     }
 
     public function postBank(BankActionRequest $request)
