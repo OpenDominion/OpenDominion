@@ -91,7 +91,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The National Bank allows you to exchange resources with the empire.</p>
+                    <p>The National Bank allows you to exchange resources with the empire. Exchanging resources is <b>instant</b>.</p>
                     <p>Platinum, lumber and ore trade 2 for 1.<br>Gems trade 1:2 platinum, lumber or ore.<br>Food sells for 4 platinum, lumber or ore, or 1 gem.</p>
                     <p>You have {{ number_format($selectedDominion->resource_gems) }} gems, {{ number_format($selectedDominion->resource_lumber) }} lumber, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->resource_platinum) }} platinum.</p>
                 </div>
