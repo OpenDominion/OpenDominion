@@ -8,6 +8,7 @@ use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Http\Requests\Dominion\Actions\ChangeDraftRateActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
 
 class MilitaryController extends AbstractDominionController
@@ -20,7 +21,7 @@ class MilitaryController extends AbstractDominionController
         ]);
     }
 
-    public function postChangeDraftRate(/* MilitaryChangeDraftRateActionRequest */ Request $request)
+    public function postChangeDraftRate(ChangeDraftRateActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $militaryActionService = app(ChangeDraftRateActionService::class);
