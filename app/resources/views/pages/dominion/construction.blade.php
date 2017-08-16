@@ -82,7 +82,7 @@
                     <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
                 </div>
                 <div class="box-body">
-                    <p>Construction will net you additional buildings and will take 12 hours to process.</p>
+                    <p>Construction will let you construct additional buildings and will take <b>12 hours</b> to process.</p>
                     <p>Construction per building will come at a cost of 1 acre of barren land of the building type, {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
                     <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} acres of barren land, {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->resource_lumber) }} lumber.</p>
                     <p>You can afford to construct <b>{{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} buildings</b> at that rate.</p>
