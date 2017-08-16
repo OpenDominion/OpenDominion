@@ -95,7 +95,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ConstructionCalculatorContract::class, ConstructionCalculator::class);
         $this->app->singleton(ExplorationCalculatorContract::class, ExplorationCalculator::class);
         $this->app->singleton(RezoningCalculatorContract::class, RezoningCalculator::class);
-        $this->app->bind(BankingCalculatorContract::class, BankingCalculator::class);
+        $this->app->singleton(BankingCalculatorContract::class, BankingCalculator::class);
         $this->app->singleton(TrainingCalculatorContract::class, TrainingCalculator::class);
     }
 
