@@ -82,7 +82,7 @@
                     <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
                 </div>
                 <div class="box-body">
-                    <p>Construction per building will come at a cost of {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
+                    <p>Construction per building will come at a cost of 1 acre of barren land of the building type, {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
                     <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} acres of barren land, {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->resource_lumber) }} lumber.</p>
                     <p>You can afford to construct {{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} buildings at that rate.</p>
                     <p>You may also <a href="{{ route('dominion.destroy') }}">destroy</a> buildings if you wish.</p>
