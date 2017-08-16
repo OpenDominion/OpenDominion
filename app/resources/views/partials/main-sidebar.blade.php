@@ -17,7 +17,7 @@
             @if (isset($selectedDominion))
 
                 <li class="header">GENERAL</li>
-                <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="ra ra-capitol ra-fw"></i> <span>Status</span></a></li>
+                <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="fa fa-bar-chart fa-fw"></i> <span>Status</span></a></li>
                 <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-question-circle fa-fw"></i> <span>Advisors</span></a></li>
                 {{-- daily bonuses --}}
 
@@ -26,7 +26,7 @@
                 <li class="{{ Route::is('dominion.construction') ? 'active' : null }}"><a href="{{ route('dominion.construction') }}"><i class="fa fa-home fa-fw"></i> <span>Construction</span></a></li>
                 <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="ra ra-cycle ra-fw"></i> <span>Re-zone Land</span></a></li>
                 {{--<li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>--}}
-                <li class="{{ Route::is('dominion.national-bank') ? 'active' : null }}"><a href="{{ route('dominion.national-bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a></li>
+                <li class="{{ Route::is('dominion.national-bank') ? 'active' : null }}"><a href="{{ route('dominion.national-bank') }}"><i class="ra ra-capitol ra-fw"></i> <span>National Bank</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
 
                 <li class="header">BLACK OPS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>

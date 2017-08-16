@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-cycle"></i> National Bank</h3>
+                    <h3 class="box-title"><i class="ra ra-capitol"></i> National Bank</h3>
                 </div>
                 <form action="{{ route('dominion.national-bank') }}" method="post" role="form">
                     {!! csrf_field() !!}

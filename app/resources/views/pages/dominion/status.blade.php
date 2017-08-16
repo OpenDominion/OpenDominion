@@ -18,7 +18,7 @@
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="ra ra-capitol"></i> The Dominion of {{ $selectedDominion->name }}</h3>
+            <h3 class="box-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }}</h3>
         </div>
         <div class="box-body no-padding">
             <div class="row">
