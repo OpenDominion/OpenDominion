@@ -34,7 +34,7 @@
                                     <tr>
                                         <th>Building</th>
                                         <th class="text-center">Owned</th>
-                                        <th class="text-center">Building</th>
+                                        <th class="text-center">Constructing</th>
                                         <th class="text-center">Build</th>
                                     </tr>
                                 </thead>
