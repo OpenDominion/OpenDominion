@@ -13,5 +13,4 @@ interface BankingCalculator
      * @return array
      */
     public function getResources(Dominion $dominion): array;
-
 }
