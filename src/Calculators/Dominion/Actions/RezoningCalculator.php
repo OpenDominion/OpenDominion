@@ -34,7 +34,9 @@ class RezoningCalculator implements RezoningCalculatorContract
      */
     public function getMaxAfford(Dominion $dominion)
     {
-        // todo: factor in amount of barren land?
-        return (int)floor($dominion->resource_platinum / $this->getPlatinumCost($dominion));
+        return (int)min(
+            floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
+            $this->landCalculator->getTotalBarrenLand($dominion)
+        );
     }
 }
