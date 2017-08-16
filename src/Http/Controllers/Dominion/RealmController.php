@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
 use OpenDominion\Contracts\Calculators\NetworthCalculator;
@@ -60,15 +61,24 @@ class RealmController extends AbstractDominionController
         ));
     }
 
-    public function postChangeRealm(Request $request)
+    public function postChangeRealm(Request $request) // todo: RealmChangeRequest, parse realm number to int
     {
         $dominion = $this->getSelectedDominion();
-        $realmNumber = $request->get('realm');
+        $realmNumber = (int)$request->get('realm');
 
-        $realm = Realm::where([
-            'round_id' => $dominion->round_id,
-            'number' => $realmNumber,
-        ])->firstOrFail();
+        try {
+            $realm = Realm::where([
+                'round_id' => $dominion->round_id,
+                'number' => $realmNumber,
+            ])->firstOrFail();
+
+        } catch (Exception $e) {
+            $numRealms = Realm::where('round_id', $dominion->round_id)->count();
+
+            return redirect()->back()
+                ->withErrors(["Realm with number $realmNumber not found. There are {$numRealms} realms in this round."]);
+        }
+
 
         return redirect()->route('dominion.realm', $realm);
     }
