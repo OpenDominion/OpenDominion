@@ -3,6 +3,7 @@
 namespace OpenDominion\Contracts\Services\Dominion\Actions;
 
 use OpenDominion\Models\Dominion;
+use RuntimeException;
 
 interface BankActionService
 {
@@ -13,6 +14,7 @@ interface BankActionService
      * @param string $source
      * @param string $target
      * @param int $amount
+     * @throws RuntimeException
      */
-    public function exchange(Dominion $dominion, $source, $target, $amount);
+    public function exchange(Dominion $dominion, string $source, string $target, int $amount): void;
 }

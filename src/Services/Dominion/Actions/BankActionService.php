@@ -27,10 +27,8 @@ class BankActionService implements BankActionServiceContract
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \RuntimeException
      */
-    public function exchange(Dominion $dominion, $source, $target, $amount)
+    public function exchange(Dominion $dominion, string $source, string $target, int $amount): void
     {
         $this->guardLockedDominion($dominion);
 
@@ -56,5 +54,6 @@ class BankActionService implements BankActionServiceContract
 
         $dominion->save();
 
+        // todo: return array, see #90
     }
 }
