@@ -31,7 +31,12 @@
                         <tbody>
                             @foreach ($landHelper->getLandTypes() as $landType)
                                 <tr>
-                                    <td>{{ ucfirst($landType) }}</td>
+                                    <td>
+                                        {{ ucfirst($landType) }}
+                                        @if ($landType === $selectedDominion->race->home_land_type)
+                                            <small class="text-muted"><i>(home)</i></small>
+                                        @endif
+                                    </td>
                                     <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
                                     <td class="text-center">{{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
                                     <td class="text-center">{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</td>
@@ -69,7 +74,12 @@
                         <tbody>
                         @foreach ($landHelper->getLandTypes() as $landType)
                             <tr>
-                                <td>{{ ucfirst($landType) }}</td>
+                                <td>
+                                    {{ ucfirst($landType) }}
+                                    @if ($landType === $selectedDominion->race->home_land_type)
+                                        <small class="text-muted"><i>(home)</i></small>
+                                    @endif
+                                </td>
                                 @for ($i = 0; $i < 12; $i++)
                                     <td class="text-center">
                                         @if ($explorationQueueService->getQueue($selectedDominion)[$landType][$i] === 0)
