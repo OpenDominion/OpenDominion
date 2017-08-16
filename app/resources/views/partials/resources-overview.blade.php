@@ -1,5 +1,5 @@
 @if (isset($selectedDominion) && !Route::is('dominion.status'))
-    <div class="box box-info">
+    <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-bar-chart"></i> {{ $selectedDominion->name }} Overview</h3>
         </div>

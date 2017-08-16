@@ -11,7 +11,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-sword"></i> Military</h3>
                 </div>

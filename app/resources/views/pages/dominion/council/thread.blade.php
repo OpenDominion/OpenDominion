@@ -28,7 +28,7 @@
         @endforeach
     @endif
 
-    <div class="box box-default">
+    <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">Post Reply</h3>
         </div>
