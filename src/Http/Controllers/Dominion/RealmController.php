@@ -79,7 +79,6 @@ class RealmController extends AbstractDominionController
                 ->withErrors(["Realm with number $realmNumber not found. There are {$numRealms} realms in this round."]);
         }
 
-
         return redirect()->route('dominion.realm', $realm);
     }
 }
