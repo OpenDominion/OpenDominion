@@ -133,7 +133,7 @@ class BuildingHelper
             'tower' => 'Produces mana',
             'wizard_guild' => 'Increases wizard strength',
             'temple' => 'Increases population growth, reduces defensive bonuses of dominions you invade',
-            'diamond_mine' => 'Produces diamonds',
+            'diamond_mine' => 'Produces gems',
             'school' => 'Produces research points',
             'lumberyard' => 'Produces lumber',
             'forest_haven' => 'Increases peasant defense, reduces losses on failed spy ops, reduces incoming fireball damage and reduces the amount of platinum being stolen from you',
