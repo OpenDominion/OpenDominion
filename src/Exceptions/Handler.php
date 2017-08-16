@@ -14,12 +14,12 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        \Illuminate\Auth\AuthenticationException::class,
-        \Illuminate\Auth\Access\AuthorizationException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-        \Illuminate\Session\TokenMismatchException::class,
-        \Illuminate\Validation\ValidationException::class,
+//        \Illuminate\Auth\AuthenticationException::class,
+//        \Illuminate\Auth\Access\AuthorizationException::class,
+//        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+//        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+//        \Illuminate\Session\TokenMismatchException::class,
+//        \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -60,6 +60,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest('login');
+        return redirect()->guest('login'); // todo: look into path and fix it if needed
     }
 }

@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests;
 
 use Carbon\Carbon;
+use CoreDataSeeder;
 use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
@@ -13,6 +14,14 @@ use OpenDominion\Models\User;
 
 trait CreatesData
 {
+    /**
+     * Seeds the database with core data (races, units etc).
+     */
+    public function seedDatabase()
+    {
+        $this->seed(CoreDataSeeder::class);
+    }
+
     /**
      * Creates a user for testing purposes.
      *

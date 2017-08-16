@@ -56,11 +56,12 @@
                                 <div class="help-block">
                                     <p>TL;DR version:</p>
                                     <ul>
-                                        <li>Don't be an ass</li>
-                                        <li>One account per player</li>
-                                        <li>No cheating/botting/scripting</li>
-                                        <li>Anonimized analytical data will be collected for development and improvement purposes</li>
-                                        <li>We will only send you game-related emails on your email address</li>
+                                        <li>Don't be an ass.</li>
+                                        <li>One account per player.</li>
+                                        <li>No cheating, botting or scripting. More on this later.</li>
+                                        <li>Anonimized analytical data will be collected for development and improvement purposes. You're free to install an adblocker or Ghostery to exempt yourself, although I prefer if you wouldn't.</li>
+                                        <li>We will not share your data to anyone.</li>
+                                        <li>We will only send you game-related emails on your email address.</li>
                                     </ul>
                                 </div>
                             </div>

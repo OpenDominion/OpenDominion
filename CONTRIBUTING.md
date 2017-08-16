@@ -68,6 +68,7 @@ It doesn't matter if you're a Dominion veteran of if you've new, feel free and b
 
 - Join the [Gitter chat](https://gitter.im/opendominion/Lobby) to chat with me and other interested people. If you've any questions about (Open)Dominion, feel free to ask!
 - [Participate in the beta](#participating-in-the-beta)!
+- Joining the [Discord](https://discord.gg/9vjYUrt) (#opendominion on pbbg.site) 
 - Spread the word of those you know might be interested.
 - Keeping an eye on the project by watching it on GitHub.
 - Praise the project by starring it on GitHub.
@@ -75,11 +76,9 @@ It doesn't matter if you're a Dominion veteran of if you've new, feel free and b
 
 ### Participating in the beta
 
-The beta of OpenDominion is currently running at [https://dev.opendominion.wavehack.net](https://dev.opendominion.wavehack.net).
+The beta of OpenDominion is currently running at [https://beta.opendominion.net](https://beta.opendominion.net).
 
 Feel free to register and play around!
-
-**Note:** Some data incidentally gets reset for development and testing purposes. If you have registered before and get a 'failed to login' message, feel free to re-register with your same credentials! 
 
 
 ### Providing info

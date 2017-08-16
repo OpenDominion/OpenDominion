@@ -2,58 +2,55 @@
 
 namespace OpenDominion\Tests\Http;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Tests\AbstractHttpTestCase;
+use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class HomeTest extends AbstractHttpTestCase
+class HomeTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
-    public function testIndex()
+    public function testHomePage()
     {
-        $this->get('/')
-            ->assertStatus(200);
+        $this->visitRoute('home')
+            ->seeStatusCode(200);
     }
 
     public function testRedirectLoggedInUserWithoutSelectedDominionToDashboard()
     {
-        $user = $this->createAndImpersonateUser();
+        $this->createAndImpersonateUser();
 
-        $this->actingAs($user)
-            ->get('/')
-            ->assertRedirect('/dashboard');
+        $this->visitRoute('home')
+            ->seeRouteIs('dashboard');
     }
 
     public function testRedirectLoggedInUserWithSelectedDominionToStatus()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $this->createAndSelectDominion($user, $round);
 
-        $this->actingAs($user)
-            ->get('/')
-            ->assertRedirect('/dominion/status');
+        $this->visitRoute('home')
+            ->seeRouteIs('dominion.status');
     }
 
     public function testUserShouldNotGetRedirectedOnReferredRequests()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
 
-        $this->actingAs($user)
-            ->get('/', ['HTTP_REFERER' => 'foo'])
-            ->assertStatus(200)
-            ->assertSee('Dashboard');
+        $route = route('home');
+
+        $this->get($route, ['HTTP_REFERER' => 'foo'])
+            ->seeStatusCode(200)
+            ->see('Dashboard');
 
         $this->selectDominion($dominion);
 
-        $this->actingAs($user)
-            ->get('/', ['HTTP_REFERER' => 'foo'])
-            ->assertStatus(200)
-            ->assertSee('Play');
+        $this->get($route, ['HTTP_REFERER' => 'foo'])
+            ->seeStatusCode(200)
+            ->see('Play');
     }
 }

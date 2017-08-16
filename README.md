@@ -76,7 +76,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 - [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1)
 - [Discord](https://discord.gg/9vjYUrt) (#opendominion on pbbg.site)
-- [OpenDominion (Open Beta)](https://dev.opendominion.wavehack.net/)
+- [OpenDominion (Open Beta)](https://beta.opendominion.net)
   - Development version used for testing purposes. Feel free to register and participate in testing!
   - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) for general gameplay information. Note that not every functionality has been implemented yet in OpenDominion.
 
@@ -100,10 +100,10 @@ All rights belong to their respective owners.
 - Ross from Kamikaze Games Inc., for creating and running Dominion
 - RedFox for creating [DomSim](https://dominion.lykanthropos.com/DomSim/)
 - BlackReign for his OOP sim
-- All the people who contributed to the [Dominion Encyclopedia](web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
+- All the people who contributed to the [Dominion Encyclopedia](http://web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
 - Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala from Lala's Crypt and Mickles from DomHQ
 - All the contributors to the OpenDominion project
-- All the people who are participating in the open beta or otherwise being involved with the project
+- All the people who are participating in the open beta or otherwise being involved with the OpenDominion project
 
 
 ## Notes

@@ -33,7 +33,7 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
                 })->count(),
             ],
             'links' => [
-                'beta' => 'https://dev.opendominion.wavehack.net/',
+                'beta' => 'https://beta.opendominion.net',
                 'github' => 'https://github.com/WaveHack/OpenDominion',
             ],
         ];

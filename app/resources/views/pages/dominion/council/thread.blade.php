@@ -33,6 +33,7 @@
             <h3 class="box-title">Post Reply</h3>
         </div>
         <form action="{{ route('dominion.council.reply', $thread) }}" method="post" class="form-horizontal" role="form">
+            {!! csrf_field() !!}
             <div class="box-body">
 
                 {{-- Body --}}
