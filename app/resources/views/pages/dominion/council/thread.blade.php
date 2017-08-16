@@ -17,7 +17,7 @@
 
     @if (!$thread->posts->isEmpty())
         @foreach ($thread->posts as $post)
-            <div class="box box-default">
+            <div class="box">
                 <div class="box-body">
                     {!! Markdown::convertToHtml($post->body) !!}
                 </div>

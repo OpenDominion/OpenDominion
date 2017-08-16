@@ -1,13 +1,13 @@
 @extends('layouts.topnav')
 
 @section('content')
-    <div class="box box-default">
+    <div class="box">
         <div class="box-body">
             <p>It is in Valhalla that you will be able to see the brave warriors of the past that have become revered by warriors of the present. These souls battled long and hard, and were the best of their generations.</p>
         </div>
     </div>
 
-    <div class="box box-default">
+    <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla</h3>
         </div>

@@ -53,7 +53,7 @@
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2">
 
-                        <div class="box box-default">
+                        <div class="box box-primary">
                             <div class="box-header with-border">
                                 <h3 class="box-title">Status 503: Service Unavailable</h3>
                             </div>

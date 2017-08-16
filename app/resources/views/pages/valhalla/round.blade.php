@@ -1,7 +1,7 @@
 @extends('layouts.topnav')
 
 @section('content')
-    <div class="box box-default">
+    <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla for round {{ number_format($round->number) }}: {{ $round->name }}</h3>
         </div>
