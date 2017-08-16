@@ -16,7 +16,7 @@ class BankController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $resources = app(BankingCalculator::class)->getResources($dominion);
 
-        return view('pages.dominion.national-bank', compact('resources'));
+        return view('pages.dominion.bank', compact('resources'));
     }
 
     public function postBank(BankActionRequest $request)
@@ -51,6 +51,6 @@ class BankController extends AbstractDominionController
         ));
 
         $request->session()->flash('alert-success', $message);
-        return redirect()->route('dominion.national-bank');
+        return redirect()->route('dominion.bank');
     }
 }

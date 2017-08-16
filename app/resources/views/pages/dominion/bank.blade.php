@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-capitol"></i> National Bank</h3>
                 </div>
-                <form action="{{ route('dominion.national-bank') }}" method="post" role="form">
+                <form action="{{ route('dominion.bank') }}" method="post" role="form">
                     {!! csrf_field() !!}
                     <div class="box-body no-padding">
                         <div class="box-body">Exchange <select id="source" name="source"
