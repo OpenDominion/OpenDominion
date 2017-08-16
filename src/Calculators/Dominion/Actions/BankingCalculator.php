@@ -8,9 +8,7 @@ use OpenDominion\Models\Dominion;
 class BankingCalculator implements BankingCalculatorContract
 {
     /**
-     * Returns the Dominion's Banking platinum cost (per acre of land).
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getResources(Dominion $dominion): array
     {
@@ -46,6 +44,7 @@ class BankingCalculator implements BankingCalculatorContract
                 'max' => $dominion->resource_food,
             ],
         ];
+
         return $resources;
     }
 }
