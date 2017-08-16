@@ -3,12 +3,14 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use Illuminate\Http\Request;
+use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
+use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Helpers\UnitHelper;
-use OpenDominion\Http\Requests\Dominion\Actions\ChangeDraftRateActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
 
 class MilitaryController extends AbstractDominionController
@@ -17,6 +19,7 @@ class MilitaryController extends AbstractDominionController
     {
         return view('pages.dominion.military', [
             'populationCalculator' => app(PopulationCalculator::class),
+            'trainingCalculator' => app(TrainingCalculator::class),
             'unitHelper' => app(UnitHelper::class),
         ]);
     }
@@ -24,10 +27,10 @@ class MilitaryController extends AbstractDominionController
     public function postChangeDraftRate(ChangeDraftRateActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
-        $militaryActionService = app(ChangeDraftRateActionService::class);
+        $changeDraftRateActionService = app(ChangeDraftRateActionService::class);
 
         try {
-            $result = $militaryActionService->changeDraftRate($dominion, $request->get('draft_rate'));
+            $result = $changeDraftRateActionService->changeDraftRate($dominion, $request->get('draft_rate'));
 
         } catch (Exception $e) {
             return redirect()->back()
@@ -53,8 +56,32 @@ class MilitaryController extends AbstractDominionController
         return redirect()->route('dominion.military');
     }
 
-    public function postTrain(/* MilitaryTrainActionRequest */ Request $request)
+    public function postTrain(TrainActionRequest $request)
     {
-        dd($request);
+        $dominion = $this->getSelectedDominion();
+        $militaryTrainActionService = app(TrainActionService::class);
+
+//        try {
+            $result = $militaryTrainActionService->train($dominion, $request->get('train'));
+
+//        } catch (Exception $e) {
+//            return redirect()->back()
+//                ->withInput($request->all())
+//                ->withErrors([$e->getMessage()]);
+//        }
+
+        $message = $result['message']; // todo: ActionResponse
+
+        // todo: fire laravel event
+        $analyticsService = app(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new Event(
+            'dominion',
+            'military.train',
+            '',
+            null //$result['totalUnits']
+        ));
+
+        $request->session()->flash('alert-success', $message);
+        return redirect()->route('dominion.military');
     }
 }

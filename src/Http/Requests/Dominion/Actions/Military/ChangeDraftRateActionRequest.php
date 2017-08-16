@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Http\Requests\Dominion\Actions;
+namespace OpenDominion\Http\Requests\Dominion\Actions\Military;
 
 use OpenDominion\Http\Requests\Dominion\AbstractDominionRequest;
 

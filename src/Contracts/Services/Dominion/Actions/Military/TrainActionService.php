@@ -2,18 +2,20 @@
 
 namespace OpenDominion\Contracts\Services\Dominion\Actions\Military;
 
+use Exception;
 use OpenDominion\Models\Dominion;
 use RuntimeException;
 
-interface ChangeDraftRateActionService
+interface TrainActionService
 {
     /**
-     * Does a military change draft rate action for a Dominion.
+     * Does a military train action for a Dominion.
      *
      * @param Dominion $dominion
-     * @param int $draftRate
+     * @param array $data
      * @return array
      * @throws RuntimeException
+     * @throws Exception
      */
-    public function changeDraftRate(Dominion $dominion, $draftRate);
+    public function train(Dominion $dominion, array $data);
 }

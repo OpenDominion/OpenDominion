@@ -32,6 +32,7 @@ use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as C
 use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService as TrainActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService as ConstructionQueueServiceContract;
@@ -46,6 +47,7 @@ use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
+use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
@@ -92,10 +94,10 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ProductionCalculatorContract::class, ProductionCalculator::class);
 
         // Dominion Action Calculators
+        $this->app->singleton(BankingCalculatorContract::class, BankingCalculator::class);
         $this->app->singleton(ConstructionCalculatorContract::class, ConstructionCalculator::class);
         $this->app->singleton(ExplorationCalculatorContract::class, ExplorationCalculator::class);
         $this->app->singleton(RezoningCalculatorContract::class, RezoningCalculator::class);
-        $this->app->singleton(BankingCalculatorContract::class, BankingCalculator::class);
         $this->app->singleton(TrainingCalculatorContract::class, TrainingCalculator::class);
     }
 
@@ -112,12 +114,13 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(SelectorServiceContract::class, SelectorService::class);
 
         // Dominion Action Services
+        $this->app->singleton(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
+        $this->app->singleton(TrainActionServiceContract::class,TrainActionService::class);
+        $this->app->singleton(BankActionServiceContract::class, BankActionService::class);
         $this->app->singleton(ConstructActionServiceContract::class, ConstructActionService::class);
         $this->app->singleton(DestroyActionServiceContract::class, DestroyActionService::class);
         $this->app->singleton(ExploreActionServiceContract::class, ExploreActionService::class);
-        $this->app->singleton(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
         $this->app->singleton(RezoneActionServiceContract::class, RezoneActionService::class);
-        $this->app->bind(BankActionServiceContract::class, BankActionService::class);
 
         // Dominion Queue Services
         $this->app->singleton(ConstructionQueueServiceContract::class, ConstructionQueueService::class); // todo: singleton

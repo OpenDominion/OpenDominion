@@ -3,11 +3,6 @@
 @section('page-header', 'Military')
 
 @section('content')
-    @php
-        // todo
-        $militaryTrainingCostPerUnit = $populationCalculator->getPopulationMilitaryTrainingCostPerUnit($selectedDominion);
-        $militaryMaxTrainable = $populationCalculator->getPopulationMilitaryMaxTrainable($selectedDominion);
-    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
@@ -48,7 +43,7 @@
                                                 // todo: move this shit to view presenter or something
                                                 $labelParts = [];
 
-                                                foreach ($militaryTrainingCostPerUnit[$unitType] as $costType => $value) {
+                                                foreach ($trainingCalculator->getTrainingCostsPerUnit($selectedDominion)[$unitType] as $costType => $value) {
                                                     switch ($costType) {
                                                         case 'platinum':
                                                             $labelParts[] = "{$value}p";
@@ -70,10 +65,9 @@
                                                 echo implode(', ', $labelParts);
                                             @endphp
                                         </td>
-                                        <td class="text-center">{{ number_format($militaryMaxTrainable[$unitType]) }}</td>
+                                        <td class="text-center">{{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="train[0]" class="form-control text-center"
-                                                   placeholder="0" min="0" max="0" value="" disabled>
+                                            <input type="number" name="train[{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -82,7 +76,7 @@
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary" disabled>Train</button>
+                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Train</button>
                         <div class="pull-right">
                             You have {{ number_format($selectedDominion->military_draftees) }} draftees available to
                             train.

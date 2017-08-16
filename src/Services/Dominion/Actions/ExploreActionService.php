@@ -49,6 +49,7 @@ class ExploreActionService implements ExploreActionServiceContract
             throw new RuntimeException("You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres.");
         }
 
+        // todo: refactor. see training action service. same with other action services
         $newMorale = max(0, $dominion->morale - ($totalLandToExplore * $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));
         $moraleDrop = ($dominion->morale - $newMorale);
 
@@ -69,7 +70,7 @@ class ExploreActionService implements ExploreActionServiceContract
                     'morale' => $newMorale,
                     'resource_platinum' => $newPlatinum,
                     'military_draftees' => $newDraftee,
-                ]);
+                ]); // todo: use Eloquent
 
             // Check for existing queue
             $existingQueueRows = DB::table('queue_exploration')
