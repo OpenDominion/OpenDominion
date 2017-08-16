@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-search"></i> Explore</h3>
+                    <h3 class="box-title"><i class="fa fa-search"></i> Explore Land</h3>
                 </div>
                 <form action="{{ route('dominion.explore') }}" method="post" role="form">
                     {!! csrf_field() !!}
@@ -61,6 +61,7 @@
                     <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
+                    <p>Exploration will net you additional acres of barren land to construct buildings upon. Your race is {{ strtolower($selectedDominion->race->name) }} and home land type is {{ $selectedDominion->race->home_land_type }}.</p>
                     <p>Exploration per acre of barren land will come at a cost of {{ number_format($explorationCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($explorationCalculator->getDrafteeCost($selectedDominion)) }} draftees.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
                     <p>You can afford to explore for <b>{{ number_format($explorationCalculator->getMaxAfford($selectedDominion)) }} acres of barren land</b> at that rate.</p>
