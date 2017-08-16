@@ -61,11 +61,7 @@
                     <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
-                    <p>Cost per acre:</p>
-                    <p>
-                        Platinum: {{ number_format($explorationCalculator->getPlatinumCost($selectedDominion)) }}<br>
-                        Draftees: {{ number_format($explorationCalculator->getDrafteeCost($selectedDominion)) }}
-                    </p>
+                    <p>Exploration per acre of land will come at a cost of {{ number_format($explorationCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($explorationCalculator->getDrafteeCost($selectedDominion)) }} draftees.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
                     <p>You can afford to explore for {{ number_format($explorationCalculator->getMaxAfford($selectedDominion)) }} acres of land at that rate.</p>
                 </div>
