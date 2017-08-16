@@ -6,6 +6,7 @@
     @php($resources = $bankingCalculator->getResources($selectedDominion))
 
     <div class="row">
+
         <div class="col-sm-12 col-md-9">
             <div class="box">
                 <div class="box-header with-border">
@@ -85,6 +86,7 @@
                 </form>
             </div>
         </div>
+
         <div class="col-sm-12 col-md-3">
             <div class="box">
                 <div class="box-header with-border">
@@ -97,6 +99,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 

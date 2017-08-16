@@ -54,9 +54,7 @@
                                                value="{{ old('add.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </td>
                                 </tr>
-
                             @endforeach
-
                         </table>
                     </div>
                     <div class="box-footer">
