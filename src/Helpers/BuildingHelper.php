@@ -140,7 +140,7 @@ class BuildingHelper
             'factory' => 'Reduces construction costs (up to 18.75% of land) and rezoning costs (up to 25% of land)',
             'guard_tower' => 'Increases defensive power (up to 20% of land)',
             'shrine' => 'Reduces casualties on offense (up to 20% of land)',
-            'barracks' => 'Houses 36 military people',
+            'barracks' => 'Houses 36 military units',
             'dock' => 'Produces 1 boat every 20 hours on average, produces 35 food and prevents 2.5 your boats from being sunk',
         ];
 
