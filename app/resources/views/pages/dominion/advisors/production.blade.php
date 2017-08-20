@@ -152,6 +152,9 @@
                             Opportunity cost of job overrun: <b>{{ number_format(2.7 * abs($jobsNeeded)) }} platinum</b><br>
                             <br>
                             <i>"You should construct additional <b>housing</b> and acquire more peasants, since you have jobs to fulfill.<br><br>Only employed peasants pay their income tax in platinum to the dominion." -Advisor</i>
+                        @elseif ($jobsNeeded === 0)
+                            Jobs available: 0<br>
+                            No opportunity cost
                         @else
                             Jobs needed: {{ number_format($jobsNeeded) }}<br>
                             Opportunity cost of job underrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b><br>
