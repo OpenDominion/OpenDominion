@@ -144,11 +144,12 @@
                         Military population: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
                         Peasant change last hour: <b>{{ ((($selectedDominion->peasants_last_hour > 0) ? '+' : null) . number_format($selectedDominion->peasants_last_hour)) }}</b><br>
                         <br>
-                        Jobs total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }} / {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }}<br>
+                        Jobs total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
+                        Jobs fulfilled: {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }}<br>
                         @php($jobsNeeded = ($selectedDominion->peasants - $populationCalculator->getEmploymentJobs($selectedDominion)))
                         @if ($jobsNeeded < 0)
-                            Jobs available: {{ number_format($jobsNeeded) }}<br>
-                            Opportunity cost of job overrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b>
+                            Jobs available: {{ number_format(abs($jobsNeeded)) }}<br>
+                            Opportunity cost of job overrun: <b>{{ number_format(2.7 * abs($jobsNeeded)) }} platinum</b>
                         @else
                             Jobs needed: {{ number_format($jobsNeeded) }}<br>
                             Opportunity cost of job underrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b>
