@@ -141,7 +141,7 @@ class TrainActionService implements TrainActionServiceContract
             throw $e;
         }
 
-        // todo: refactor this shit
+        // todo: refactor this slightly less shit
         $unitsToTrainStringParts = [];
 
         foreach ($unitsToTrain as $unitType => $amount) {
@@ -149,7 +149,7 @@ class TrainActionService implements TrainActionServiceContract
         }
 
         $unitsToTrainString = implode(', ', $unitsToTrainStringParts);
-        $unitsToTrainString = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($unitsToTrainString), 2))); //output: bourbon, scotch, and beer
+        $unitsToTrainString = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($unitsToTrainString), 2)));
 
         $message = sprintf(
             'Training of %s begun at a cost of %s platinum, %s ore, %s draftees and %s wizards.',
