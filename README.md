@@ -5,6 +5,7 @@
 [![Dependency Status](https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
 [![Coverage Status](https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=master)](https://coveralls.io/github/WaveHack/OpenDominion?branch=master)
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
+[![Patreon](https://img.shields.io/badge/donate-patreon-ff69b4.svg)](https://www.patreon.com/OpenDominion)
 [![Discord](https://img.shields.io/discord/325315157335212032.svg)](https://discord.gg/mFk2wZT)
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
