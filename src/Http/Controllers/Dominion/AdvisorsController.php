@@ -8,8 +8,10 @@ use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\UnitHelper;
 
 class AdvisorsController extends AbstractDominionController
 {
@@ -28,7 +30,10 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsMilitary()
     {
-        return view('pages.dominion.advisors.military');
+        return view('pages.dominion.advisors.military', [
+            'trainingQueueService' => app(TrainingQueueService::class),
+            'unitHelper' => app(UnitHelper::class),
+        ]);
     }
 
     public function getAdvisorsLand()

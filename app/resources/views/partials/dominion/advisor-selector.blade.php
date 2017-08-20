@@ -11,11 +11,11 @@
                 </a>
             </div>
 
-            {{--<div class="col-xs-6 col-sm-3">
+            <div class="col-xs-6 col-sm-3">
                 <a href="{{ route('dominion.advisors.military') }}" class="btn btn-app btn-block">
-                    <i class="ra ra-crossed-swords"></i> Military
+                    <i class="ra ra-sword"></i> Military
                 </a>
-            </div>--}}
+            </div>
 
             <div class="col-xs-6 col-sm-3">
                 <a href="{{ route('dominion.advisors.land') }}" class="btn btn-app btn-block">

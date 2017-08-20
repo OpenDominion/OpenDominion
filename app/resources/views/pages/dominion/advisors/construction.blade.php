@@ -18,23 +18,22 @@
                             <col>
                             <col width="100">
                             <col width="100">
-                            <col width="100">
                         </colgroup>
                         <thead>
-                        <tr>
-                            <th>Building Type</th>
-                            <th class="text-center">Number</th>
-                            <th class="text-center">% of land</th>
-                        </tr>
+                            <tr>
+                                <th>Building Type</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">% of land</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
-                            <tr>
-                                <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
-                                <td class="text-center">{{ number_format($selectedDominion->{'building_' . $buildingType}) }}</td>
-                                <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
-                            </tr>
-                        @endforeach
+                            @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
+                                <tr>
+                                    <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                                    <td class="text-center">{{ number_format($selectedDominion->{'building_' . $buildingType}) }}</td>
+                                    <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -56,30 +55,30 @@
                             <col width="100">
                         </colgroup>
                         <thead>
-                        <tr>
-                            <th>Land Type</th>
-                            @for ($i = 0; $i < 12; $i++)
-                                <th class="text-center">{{ ($i + 1) }}</th>
-                            @endfor
-                            <th class="text-center">Total</th>
-                        </tr>
+                            <tr>
+                                <th>Land Type</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
-                            <tr>
-                                <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <td class="text-center">
-                                        @if ($constructionQueueService->getQueue($selectedDominion)[$buildingType][$i] === 0)
-                                            -
-                                        @else
-                                            {{ number_format($constructionQueueService->getQueue($selectedDominion)[$buildingType][$i]) }}
-                                        @endif
-                                    </td>
-                                @endfor
-                                <td class="text-center">{{ number_format($constructionQueueService->getQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
-                            </tr>
-                        @endforeach
+                            @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
+                                <tr>
+                                    <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        <td class="text-center">
+                                            @if ($constructionQueueService->getQueue($selectedDominion)[$buildingType][$i] === 0)
+                                                -
+                                            @else
+                                                {{ number_format($constructionQueueService->getQueue($selectedDominion)[$buildingType][$i]) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">{{ number_format($constructionQueueService->getQueueTotalByBuilding($selectedDominion, $buildingType)) }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
