@@ -5,7 +5,7 @@
 [![Dependency Status](https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
 [![Coverage Status](https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=master)](https://coveralls.io/github/WaveHack/OpenDominion?branch=master)
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
-[![Gitter](https://badges.gitter.im/opendominion/Lobby.svg)](https://gitter.im/opendominion/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Discord](https://img.shields.io/discord/325315157335212032.svg)](https://discord.gg/mFk2wZT)
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
 
@@ -77,7 +77,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 - [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1)
-- [Discord](https://discord.gg/9vjYUrt) (#opendominion on pbbg.site)
+- [Discord](https://discord.gg/mFk2wZT)
 - [OpenDominion (Open Beta)](https://beta.opendominion.net)
   - Development version used for testing purposes. Feel free to register and participate in testing!
   - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) for general gameplay information. Note that not every functionality has been implemented yet in OpenDominion.
