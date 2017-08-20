@@ -29,13 +29,13 @@
                 <li class="{{ Route::is('dominion.bank') ? 'active' : null }}"><a href="{{ route('dominion.bank') }}"><i class="ra ra-capitol ra-fw"></i> <span>National Bank</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
 
                 <li class="header">BLACK OPS</li>
-                <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
+                <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
                 {{-- invade --}}
                 {{-- magic --}}
                 {{-- espionage --}}
 
                 <li class="header">COMMS</li>
-                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group ra-fw"></i> <span>The Council</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group ra-fw"></i> <span>The Council</span></a></li>
 
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>
