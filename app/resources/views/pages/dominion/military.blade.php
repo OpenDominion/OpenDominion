@@ -93,6 +93,17 @@
 
             <div class="box">
                 <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                    <a href="{{ route('dominion.advisors.military') }}" class="pull-right">Military Advisor</a>
+                </div>
+                <div class="box-body">
+                    <p>Here you can train your draftees into proper military units. Training units takes <b>12 hours</b> to process.</p>
+                    <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
                     <h3 class="box-title">Statistics</h3>
                 </div>
                 <div class="box-body no-padding">
