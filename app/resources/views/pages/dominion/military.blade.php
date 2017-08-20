@@ -35,7 +35,10 @@
                             <tbody>
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                                     <tr>
-                                        <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
+                                        <td>
+                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}<br>
+                                            <span class="text-muted"><i>{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}</i></span>
+                                        </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
                                         <td class="text-center">{{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}</td>
                                         <td class="text-center">

@@ -29,4 +29,35 @@ class UnitHelper
 
         return $race->units[$unitSlot]->name;
     }
+
+    public function getUnitHelpString($unitType, Race $race)
+    {
+        $helpStrings = [
+            'unit1' => 'Offensive specialist.',
+            'unit2' => 'Defensive specialist.',
+            'unit3' => 'Defensive elite.',
+            'unit4' => 'Offensive elite.',
+            'spies' => 'Used for espionage.',
+            'wizards' => 'Used for casting offensive spells.',
+            'archmages' => 'Used for casting offensive spells. Twice as strong as regular wizards.',
+        ];
+
+        // todo: refactor this. very inefficient
+        $perkTypeStrings = [
+            'fewer_casualties' => '%s%% fewer casualties.',
+            'faster_return' => 'Returns %s hours faster from battle.',
+        ];
+
+        foreach ($race->units as $unit) {
+            $perkType = $unit->perkType;
+
+            if ($perkType === null) {
+                continue;
+            }
+
+            $helpStrings['unit'. $unit->slot] .= (' ' . sprintf($perkTypeStrings[$perkType->key], $unit->unit_perk_type_values));
+        }
+
+        return $helpStrings[$unitType] ?: null;
+    }
 }
