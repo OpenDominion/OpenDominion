@@ -66,7 +66,6 @@ As author of the OpenDominion project, I'd like to personally invite **you** (ye
 
 It doesn't matter if you're a Dominion veteran of if you've new, feel free and be welcomed to:
 
-- Join the [Gitter chat](https://gitter.im/opendominion/Lobby) to chat with me and other interested people. If you've any questions about (Open)Dominion, feel free to ask!
 - [Participate in the beta](#participating-in-the-beta)!
 - Joining the [Discord](https://discord.gg/mFk2wZT) 
 - Spread the word of those you know might be interested.
