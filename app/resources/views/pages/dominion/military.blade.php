@@ -37,7 +37,7 @@
                                     <tr>
                                         <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
-                                        <td class="text-center">NYI</td>
+                                        <td class="text-center">{{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}</td>
                                         <td class="text-center">
                                             @php
                                                 // todo: move this shit to view presenter or something

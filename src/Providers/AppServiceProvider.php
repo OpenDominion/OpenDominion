@@ -37,6 +37,7 @@ use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as Rezo
 use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService as ConstructionQueueServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService as ExplorationQueueServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService as TrainingQueueServiceContract;
 use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Services\AnalyticsService;
@@ -52,6 +53,7 @@ use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\RealmFinderService;
 
@@ -125,5 +127,6 @@ class AppServiceProvider extends AbstractServiceProvider
         // Dominion Queue Services
         $this->app->singleton(ConstructionQueueServiceContract::class, ConstructionQueueService::class); // todo: singleton
         $this->app->singleton(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
+        $this->app->singleton(TrainingQueueServiceContract::class, TrainingQueueService::class);
     }
 }

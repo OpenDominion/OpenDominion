@@ -44,8 +44,7 @@ class ExplorationQueueService implements ExplorationQueueServiceContract
             $explorationQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
         }
 
-        $this->explorationQueue = $explorationQueue;
-        return $explorationQueue;
+        return $this->explorationQueue = $explorationQueue;
     }
 
     /**

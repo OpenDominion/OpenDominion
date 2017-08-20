@@ -8,6 +8,7 @@ use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService;
+use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
@@ -20,6 +21,7 @@ class MilitaryController extends AbstractDominionController
         return view('pages.dominion.military', [
             'populationCalculator' => app(PopulationCalculator::class),
             'trainingCalculator' => app(TrainingCalculator::class),
+            'trainingQueueService' => app(TrainingQueueService::class),
             'unitHelper' => app(UnitHelper::class),
         ]);
     }
@@ -61,14 +63,14 @@ class MilitaryController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $militaryTrainActionService = app(TrainActionService::class);
 
-//        try {
+        try {
             $result = $militaryTrainActionService->train($dominion, $request->get('train'));
 
-//        } catch (Exception $e) {
-//            return redirect()->back()
-//                ->withInput($request->all())
-//                ->withErrors([$e->getMessage()]);
-//        }
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
 
         $message = $result['message']; // todo: ActionResponse
 

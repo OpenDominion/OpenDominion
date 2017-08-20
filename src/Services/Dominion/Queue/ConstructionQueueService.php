@@ -44,8 +44,7 @@ class ConstructionQueueService implements ConstructionQueueServiceContract
             $constructionQueue[$row->building][$row->hours - 1] = (int)$row->amount;
         }
 
-        $this->constructionQueue = $constructionQueue;
-        return $constructionQueue;
+        return $this->constructionQueue = $constructionQueue;
     }
 
     /**
