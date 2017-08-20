@@ -139,12 +139,20 @@
                 <div class="box-body">
                     <p>The production advisor tells you about your resource production, general population and jobs.</p>
                     <p>
-                        Peasant change last hour: {{ number_format($selectedDominion->peasants_last_hour) }}<br>
-                        Maximum population: {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
-                        Maximum peasant population: {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
-                        Jobs total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
-                        Jobs available: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
-                        <span class="nyi">Opportunity cost of job overrun: NYI</span>
+                        Total population: {{ number_format($populationCalculator->getPopulation($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
+                        Peasant population: {{ number_format($populationCalculator->getPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
+                        Military population: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
+                        Peasant change last hour: <b>{{ ((($selectedDominion->peasants_last_hour > 0) ? '+' : null) . number_format($selectedDominion->peasants_last_hour)) }}</b><br>
+                        <br>
+                        Jobs total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }} / {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }}<br>
+                        @php($jobsNeeded = ($selectedDominion->peasants - $populationCalculator->getEmploymentJobs($selectedDominion)))
+                        @if ($jobsNeeded < 0)
+                            Jobs available: {{ number_format($jobsNeeded) }}<br>
+                            Opportunity cost of job overrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b>
+                        @else
+                            Jobs needed: {{ number_format($jobsNeeded) }}<br>
+                            Opportunity cost of job underrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b>
+                        @endif
                     </p>
                 </div>
             </div>
