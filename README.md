@@ -45,7 +45,7 @@ This indicates which pages are funtional. Some pages will be restyled later.
 | Page                | Status                                    |
 | ------------------- | ----------------------------------------- |
 | Status              | ![Progress](http://progressed.io/bar/95)  |
-| Advisors            | ![Progress](http://progressed.io/bar/40)  |
+| Advisors            | ![Progress](http://progressed.io/bar/60)  |
 | Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
 | Construction        | ![Progress](http://progressed.io/bar/100) |
@@ -53,7 +53,7 @@ This indicates which pages are funtional. Some pages will be restyled later.
 | Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
 | Castle Improvements | ![Progress](http://progressed.io/bar/0)   |
 | National Bank       | ![Progress](http://progressed.io/bar/100) |
-| Military Training   | ![Progress](http://progressed.io/bar/10)  |
+| Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/0)   |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
 | Magic               | ![Progress](http://progressed.io/bar/0)   |
