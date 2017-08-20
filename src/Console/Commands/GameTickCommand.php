@@ -80,7 +80,7 @@ class GameTickCommand extends Command
 
         $this->tickExplorationQueue();
         $this->tickConstructionQueue();
-        // todo: Military training queue
+        $this->tickTrainingQueue();
         // todo: Military returning queue
         // todo: Magic queue
         $this->tickDominionNetworth();
@@ -331,6 +331,48 @@ class GameTickCommand extends Command
         $affectedUpdated -= $affectedFinished;
 
         Log::debug("Ticked construction queue, {$affectedUpdated} updated, {$affectedFinished} finished");
+    }
+
+    /**
+     * Ticks dominion training queue.
+     */
+    public function tickTrainingQueue()
+    {
+        Log::debug('Tick training queue');
+
+        // Two-step process to avoid getting UNIQUE constraint integrity errors since we can't reliably use deferred
+        // transactions, deferred update queries or update+orderby cross-database
+        DB::table('queue_training')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', '>', 0)
+            ->update([
+                'hours' => DB::raw('-(`hours` - 1)'),
+            ]);
+
+        $affectedUpdated = DB::table('queue_training')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', '<', 0)
+            ->update([
+                'hours' => DB::raw('-`hours`'),
+                'updated_at' => new Carbon(),
+            ]);
+
+        $rows = DB::table('queue_training')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('hours', 0)
+            ->get();
+
+        foreach ($rows as $row) {
+            DB::table('dominions')->where('id', $row->dominion_id)->update([
+                "military_{$row->unit_type}" => DB::raw("`military_{$row->unit_type}` + {$row->amount}"),
+            ]);
+        }
+
+        $affectedFinished = DB::table('queue_training')->where('hours', 0)->delete();
+
+        $affectedUpdated -= $affectedFinished;
+
+        Log::debug("Ticked training queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 
     /**
