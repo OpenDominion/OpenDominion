@@ -33,7 +33,7 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
 | Notifications  | ![Progress](http://progressed.io/bar/0)   |
-| Population     | ![Progress](http://progressed.io/bar/99)  |
+| Population     | ![Progress](http://progressed.io/bar/100) |
 | Races & Units  | ![Progress](http://progressed.io/bar/5)   |
 | Resources      | ![Progress](http://progressed.io/bar/80)  |
 | Tech           | ![Progress](http://progressed.io/bar/0)   |
@@ -44,8 +44,8 @@ This indicates which pages are funtional. Some pages will be restyled later.
 
 | Page                | Status                                    |
 | ------------------- | ----------------------------------------- |
-| Status              | ![Progress](http://progressed.io/bar/95)  |
-| Advisors            | ![Progress](http://progressed.io/bar/60)  |
+| Status              | ![Progress](http://progressed.io/bar/99)  |
+| Advisors            | ![Progress](http://progressed.io/bar/90)  |
 | Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
 | Construction        | ![Progress](http://progressed.io/bar/100) |
