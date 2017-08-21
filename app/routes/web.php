@@ -98,9 +98,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('advisors/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('advisors.military');
             $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
             $router->get('advisors/construction')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construction');
-            // todo: magic advisor
-            // todo: statistics advisor
-            // todo: growth advisor
+            $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
+            $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
+            $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
             // Exploration
             $router->get('explore')->uses('Dominion\ExplorationController@getExplore')->name('explore');
