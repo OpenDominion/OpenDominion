@@ -54,7 +54,7 @@ This indicates which pages are funtional. Some pages will be restyled later.
 | Castle Improvements | ![Progress](http://progressed.io/bar/0)   |
 | National Bank       | ![Progress](http://progressed.io/bar/100) |
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
-| Release Troops      | ![Progress](http://progressed.io/bar/0)   |
+| Release Troops      | ![Progress](http://progressed.io/bar/100) |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
 | Magic               | ![Progress](http://progressed.io/bar/0)   |
 | Espionage           | ![Progress](http://progressed.io/bar/0)   |
