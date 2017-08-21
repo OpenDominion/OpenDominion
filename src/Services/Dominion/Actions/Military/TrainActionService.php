@@ -145,7 +145,7 @@ class TrainActionService implements TrainActionServiceContract
         $unitsToTrainStringParts = [];
 
         foreach ($unitsToTrain as $unitType => $amount) {
-            $unitsToTrainStringParts[] = (number_format($amount) . ' ' . strtolower($unitType));
+            $unitsToTrainStringParts[] = (number_format($amount) . ' ' . strtolower($this->unitHelper->getUnitName($unitType, $dominion->race)));
         }
 
         $unitsToTrainString = implode(', ', $unitsToTrainStringParts);
