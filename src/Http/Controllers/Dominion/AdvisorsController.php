@@ -57,7 +57,9 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsMagic()
     {
-        //
+        return view('pages.dominion.advisors.magic', [
+            //
+        ]);
     }
 
     public function getAdvisorsRankings()
