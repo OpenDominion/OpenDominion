@@ -29,27 +29,63 @@
                                 <tbody>
                                     <tr>
                                         <td>Platinum:</td>
-                                        <td>{{ number_format($productionCalculator->getPlatinumProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($platinumProduction = $productionCalculator->getPlatinumProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($platinumProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Food:</td>
-                                        <td>{{ number_format($productionCalculator->getFoodProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($foodProduction = $productionCalculator->getFoodProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($foodProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Lumber:</td>
-                                        <td>{{ number_format($productionCalculator->getLumberProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($lumberProduction = $productionCalculator->getLumberProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($lumberProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Mana:</td>
-                                        <td>{{ number_format($productionCalculator->getManaProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($manaProduction = $productionCalculator->getManaProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($manaProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Ore:</td>
-                                        <td>{{ number_format($productionCalculator->getOreProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($oreProduction = $productionCalculator->getOreProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($oreProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Gems:</td>
-                                        <td>{{ number_format($productionCalculator->getGemProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($gemProduction = $productionCalculator->getGemProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($gemProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="nyi">Research points:</td>
@@ -57,7 +93,13 @@
                                     </tr>
                                     <tr>
                                         <td>Boats:</td>
-                                        <td>{{ number_format($productionCalculator->getBoatProduction($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($boatProduction = $productionCalculator->getBoatProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($boatProduction, 2) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -77,19 +119,43 @@
                                 <tbody>
                                     <tr>
                                         <td>Food Eaten:</td>
-                                        <td>{{ number_format($productionCalculator->getFoodConsumption($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($foodConsumption = $productionCalculator->getFoodConsumption($selectedDominion))
+                                                <span class="text-red">-{{ number_format($foodConsumption) }}</span>
+                                            @else
+                                                <span class="text-green">0</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Food Decayed:</td>
-                                        <td>{{ number_format($productionCalculator->getFoodDecay($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($foodDecay = $productionCalculator->getFoodDecay($selectedDominion))
+                                                <span class="text-red">-{{ number_format($foodDecay) }}</span>
+                                            @else
+                                                <span class="text-green">0</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Lumber Rotted:</td>
-                                        <td>{{ number_format($productionCalculator->getLumberDecay($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($lumberDecay = $productionCalculator->getLumberDecay($selectedDominion))
+                                                <span class="text-red">-{{ number_format($lumberDecay) }}</span>
+                                            @else
+                                                <span class="text-green">0</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Mana Drain:</td>
-                                        <td>{{ number_format($productionCalculator->getManaDecay($selectedDominion)) }}</td>
+                                        <td>
+                                            @if ($manaDecay = $productionCalculator->getManaDecay($selectedDominion))
+                                                <span class="text-red">-{{ number_format($manaDecay) }}</span>
+                                            @else
+                                                <span class="text-green">0</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -112,15 +178,33 @@
                                     </tr>
                                     <tr>
                                         <td>Food:</td>
-                                        <td>{{ number_format($productionCalculator->getFoodNetChange($selectedDominion)) }}</td>
+                                        <td>
+                                            @if (($foodNetChange = $productionCalculator->getFoodNetChange($selectedDominion)) < 0)
+                                                <span class="text-red">{{ number_format($foodNetChange) }}</span>
+                                            @else
+                                                <span class="text-green">+{{ number_format($foodNetChange) }}</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Lumber:</td>
-                                        <td>{{ number_format($productionCalculator->getLumberNetChange($selectedDominion)) }}</td>
+                                        <td>
+                                            @if (($lumberNetChange = $productionCalculator->getLumberNetChange($selectedDominion)) < 0)
+                                                <span class="text-red">{{ number_format($lumberNetChange) }}</span>
+                                            @else
+                                                <span class="text-green">+{{ number_format($lumberNetChange) }}</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Mana:</td>
-                                        <td>{{ number_format($productionCalculator->getManaNetChange($selectedDominion)) }}</td>
+                                        <td>
+                                            @if (($manaNetChange = $productionCalculator->getManaNetChange($selectedDominion)) < 0)
+                                                <span class="text-red">{{ number_format($manaNetChange) }}</span>
+                                            @else
+                                                <span class="text-green">+{{ number_format($manaNetChange) }}</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
