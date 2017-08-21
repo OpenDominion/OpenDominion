@@ -38,7 +38,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The magic advisor tells you the current spells affecting your dominion and their duration.</p>
+                    <p>The magic advisor tells you the current spells affecting your dominion and their remaining duration.</p>
                 </div>
             </div>
         </div>
