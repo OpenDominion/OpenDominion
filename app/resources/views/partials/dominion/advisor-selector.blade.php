@@ -41,11 +41,11 @@
                 </a>
             </div>
 
-            <div class="col-xs-4 col-sm-3 col-md-2 col-lg-1">
+            {{--<div class="col-xs-4 col-sm-3 col-md-2 col-lg-1">
                 <a href="{{ route('dominion.advisors.rankings') }}" class="btn btn-app btn-block">
                     <i class="fa fa-trophy"></i> Rankings
                 </a>
-            </div>
+            </div>--}}
 
             <div class="col-xs-12 visible-xs visible-md">&nbsp;</div>
 
