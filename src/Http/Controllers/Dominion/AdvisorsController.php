@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
@@ -69,6 +70,9 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsStatistics()
     {
-        //
+        return view('pages.dominion.advisors.statistics', [
+            'landCalculator' => app(LandCalculator::class),
+            'militaryCalculator' => app(MilitaryCalculator::class),
+        ]);
     }
 }
