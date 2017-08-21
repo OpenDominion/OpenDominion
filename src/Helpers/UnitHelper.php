@@ -55,7 +55,7 @@ class UnitHelper
                 continue;
             }
 
-            $helpStrings['unit'. $unit->slot] .= (' ' . sprintf($perkTypeStrings[$perkType->key], $unit->unit_perk_type_values));
+            $helpStrings['unit' . $unit->slot] .= (' ' . sprintf($perkTypeStrings[$perkType->key], $unit->unit_perk_type_values));
         }
 
         return $helpStrings[$unitType] ?: null;

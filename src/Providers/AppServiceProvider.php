@@ -117,7 +117,7 @@ class AppServiceProvider extends AbstractServiceProvider
 
         // Dominion Action Services
         $this->app->singleton(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
-        $this->app->singleton(TrainActionServiceContract::class,TrainActionService::class);
+        $this->app->singleton(TrainActionServiceContract::class, TrainActionService::class);
         $this->app->singleton(BankActionServiceContract::class, BankActionService::class);
         $this->app->singleton(ConstructActionServiceContract::class, ConstructActionService::class);
         $this->app->singleton(DestroyActionServiceContract::class, DestroyActionService::class);
