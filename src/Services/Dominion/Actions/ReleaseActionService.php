@@ -86,7 +86,6 @@ class ReleaseActionService implements ReleaseActionServiceContract
             }
         }
 
-
         if (!empty($troopsReleasedStringPartsParts)) {
             $tmp = implode(', ', $troopsReleasedStringPartsParts);
             $tmp = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($tmp), 2)));
