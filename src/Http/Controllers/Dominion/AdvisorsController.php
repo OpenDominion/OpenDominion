@@ -54,4 +54,19 @@ class AdvisorsController extends AbstractDominionController
             'landCalculator' => app(LandCalculator::class),
         ]);
     }
+
+    public function getAdvisorsMagic()
+    {
+        //
+    }
+
+    public function getAdvisorsRankings()
+    {
+        //
+    }
+
+    public function getAdvisorsStatistics()
+    {
+        //
+    }
 }
