@@ -123,7 +123,7 @@
                                             @if ($foodConsumption = $productionCalculator->getFoodConsumption($selectedDominion))
                                                 <span class="text-red">-{{ number_format($foodConsumption) }}</span>
                                             @else
-                                                <span class="text-green">0</span>
+                                                <span class="text-green">+0</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -133,7 +133,7 @@
                                             @if ($foodDecay = $productionCalculator->getFoodDecay($selectedDominion))
                                                 <span class="text-red">-{{ number_format($foodDecay) }}</span>
                                             @else
-                                                <span class="text-green">0</span>
+                                                <span class="text-green">+0</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -143,7 +143,7 @@
                                             @if ($lumberDecay = $productionCalculator->getLumberDecay($selectedDominion))
                                                 <span class="text-red">-{{ number_format($lumberDecay) }}</span>
                                             @else
-                                                <span class="text-green">0</span>
+                                                <span class="text-green">+0</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -153,7 +153,7 @@
                                             @if ($manaDecay = $productionCalculator->getManaDecay($selectedDominion))
                                                 <span class="text-red">-{{ number_format($manaDecay) }}</span>
                                             @else
-                                                <span class="text-green">0</span>
+                                                <span class="text-green">+0</span>
                                             @endif
                                         </td>
                                     </tr>
