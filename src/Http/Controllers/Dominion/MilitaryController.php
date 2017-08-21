@@ -110,33 +110,16 @@ class MilitaryController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // You cannot release more draftees than you have.
-        // Military release was not completed due to bad input.
-        // Military release aborted due to bad input. (all 0)
-
-        // You successfully released 1 draftees into the peasantry.
-        // You successfully released 1 Archer into draftees.
-        // You successfully released 1 draftees into the peasantry and 1 Archer, 1 Spies into draftees.
-        // You destroyed 1 Guard Towers.
-        // You successfully released 1 draftees into the peasantry and 1 Archer into draftees. You also destroyed 1 Guard Towers.
-
-//        $message = sprintf(
-//            'Destruction of %s buildings is complete.',
-//            number_format($result['totalBuildingsDestroyed'])
-//        );
-
-        $message = '';
-
         // todo: laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new Event(
             'dominion',
             'release',
-            '', // todo: make null everywhere where ''
-            null //$result['totalBuildingsDestroyed']
+            null, // todo: make null everywhere where ''
+            $result['totalTroopsReleased']
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.military.release');
 
     }
