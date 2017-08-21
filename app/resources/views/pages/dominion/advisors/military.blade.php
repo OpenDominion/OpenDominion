@@ -8,7 +8,7 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            <div class="box box-info">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-sword"></i> Units in training and home</h3>
                 </div>
