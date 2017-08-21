@@ -441,11 +441,10 @@ class ProductionCalculator implements ProductionCalculatorContract
         $boats = 0;
 
         // Values
-        $docksPerBoat = 20;
+        $docksPerBoatPerTick = 20;
 
-        // todo: store boats as float? i.e +1 boat every 20 hours with 1 dock
-        $boats += floor($dominion->building_dock / $docksPerBoat);
+        $boats += ($dominion->building_dock / $docksPerBoatPerTick);
 
-        return (int)$boats;
+        return (float)$boats;
     }
 }

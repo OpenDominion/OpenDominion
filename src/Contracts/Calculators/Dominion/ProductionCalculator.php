@@ -182,9 +182,9 @@ interface ProductionCalculator
     public function getGemProductionMultiplier(Dominion $dominion);
 
     /**
-     * Returns the Dominion's boat production.
+     * Returns the Dominion's average boat production.
      *
-     * @return int
+     * @return float
      */
     public function getBoatProduction(Dominion $dominion);
 }

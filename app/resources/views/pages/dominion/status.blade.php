@@ -99,7 +99,7 @@
                                     </tr>
                                     <tr>
                                         <td>Boats:</td>
-                                        <td>{{ number_format($selectedDominion->resource_boats) }}</td>
+                                        <td>{{ number_format(floor($selectedDominion->resource_boats)) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
