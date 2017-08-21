@@ -22,7 +22,7 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 ## Progress
 
-See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and [issue tracker](https://github.com/WaveHack/OpenDominion/issues) for more details.
+See the [issue tracker](https://github.com/WaveHack/OpenDominion/issues) for more details.
 
 ### Systems
 
@@ -77,7 +77,6 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 ## Links
 
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
-- [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1)
 - [Discord](https://discord.gg/mFk2wZT)
 - [OpenDominion (Open Beta)](https://beta.opendominion.net)
   - Development version used for testing purposes. Feel free to register and participate in testing!
