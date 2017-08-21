@@ -17,13 +17,13 @@
                 </a>
             </div>
 
+            <div class="col-xs-12 visible-xs">&nbsp;</div>
+
             <div class="col-xs-6 col-sm-3">
                 <a href="{{ route('dominion.advisors.land') }}" class="btn btn-app btn-block">
                     <i class="ra ra-honeycomb"></i> Land
                 </a>
             </div>
-
-            <div class="visible-xs">&nbsp;</div>
 
             <div class="col-xs-6 col-sm-3">
                 <a href="{{ route('dominion.advisors.construction') }}" class="btn btn-app btn-block">
