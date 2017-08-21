@@ -124,6 +124,8 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');
             $router->post('military/train')->uses('Dominion\MilitaryController@postTrain')->name('military.train');
+            $router->get('military/release')->uses('Dominion\MilitaryController@getRelease')->name('military.release');
+            $router->post('military/release')->uses('Dominion\MilitaryController@postRelease');
 
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');

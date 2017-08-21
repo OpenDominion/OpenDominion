@@ -8,10 +8,12 @@ use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService;
+use OpenDominion\Contracts\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
+use OpenDominion\Http\Requests\Dominion\Actions\ReleaseActionRequest;
 use OpenDominion\Services\AnalyticsService\Event;
 
 class MilitaryController extends AbstractDominionController
@@ -85,5 +87,57 @@ class MilitaryController extends AbstractDominionController
 
         $request->session()->flash('alert-success', $message);
         return redirect()->route('dominion.military');
+    }
+
+    public function getRelease()
+    {
+        return view('pages.dominion.release', [
+            'unitHelper' => app(UnitHelper::class),
+        ]);
+    }
+
+    public function postRelease(ReleaseActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $releaseActionService = app(ReleaseActionService::class);
+
+        try {
+            $result = $releaseActionService->release($dominion, $request->get('release'));
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        // You cannot release more draftees than you have.
+        // Military release was not completed due to bad input.
+        // Military release aborted due to bad input. (all 0)
+
+        // You successfully released 1 draftees into the peasantry.
+        // You successfully released 1 Archer into draftees.
+        // You successfully released 1 draftees into the peasantry and 1 Archer, 1 Spies into draftees.
+        // You destroyed 1 Guard Towers.
+        // You successfully released 1 draftees into the peasantry and 1 Archer into draftees. You also destroyed 1 Guard Towers.
+
+//        $message = sprintf(
+//            'Destruction of %s buildings is complete.',
+//            number_format($result['totalBuildingsDestroyed'])
+//        );
+
+        $message = '';
+
+        // todo: laravel event
+        $analyticsService = app(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new Event(
+            'dominion',
+            'release',
+            '', // todo: make null everywhere where ''
+            null //$result['totalBuildingsDestroyed']
+        ));
+
+        $request->session()->flash('alert-success', $message);
+        return redirect()->route('dominion.military.release');
+
     }
 }

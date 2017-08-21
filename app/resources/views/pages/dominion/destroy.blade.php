@@ -75,8 +75,8 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p><b>Warning</b>: You are about to destroy buildings.</p>
-                    <p>The platinum and lumber used to construct any destroyed buildings <b>will be lost</b>. No reimbursements other than the barren land used to build it upon will be issued.</p>
+                    <p><b>Warning</b>: You are about to destroy buildings to reclaim barren land.</p>
+                    <p>Any platinum and lumber used to construct any destroyed buildings <b>will be lost</b>.</p>
                     <p>Destroying buildings processes <b>instantly</b>.</p>
                 </div>
             </div>

@@ -33,6 +33,7 @@ use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as Des
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService as TrainActionServiceContract;
+use OpenDominion\Contracts\Services\Dominion\Actions\ReleaseActionService as ReleaseActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService as ConstructionQueueServiceContract;
@@ -49,6 +50,7 @@ use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
+use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
@@ -122,10 +124,11 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ConstructActionServiceContract::class, ConstructActionService::class);
         $this->app->singleton(DestroyActionServiceContract::class, DestroyActionService::class);
         $this->app->singleton(ExploreActionServiceContract::class, ExploreActionService::class);
+        $this->app->singleton(ReleaseActionServiceContract::class, ReleaseActionService::class);
         $this->app->singleton(RezoneActionServiceContract::class, RezoneActionService::class);
 
         // Dominion Queue Services
-        $this->app->singleton(ConstructionQueueServiceContract::class, ConstructionQueueService::class); // todo: singleton
+        $this->app->singleton(ConstructionQueueServiceContract::class, ConstructionQueueService::class);
         $this->app->singleton(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
         $this->app->singleton(TrainingQueueServiceContract::class, TrainingQueueService::class);
     }
