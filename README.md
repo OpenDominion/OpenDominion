@@ -40,11 +40,11 @@ See the [Kanban board](https://github.com/WaveHack/OpenDominion/projects/1) and 
 
 ### Pages
 
-This indicates which pages are funtional. Some pages will be restyled later. 
+This indicates which pages are functional. Some pages will be restyled or revisited upon building different functionality later. 
 
 | Page                | Status                                    |
 | ------------------- | ----------------------------------------- |
-| Status              | ![Progress](http://progressed.io/bar/99)  |
+| Status              | ![Progress](http://progressed.io/bar/100) |
 | Advisors            | ![Progress](http://progressed.io/bar/90)  |
 | Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
@@ -59,7 +59,7 @@ This indicates which pages are funtional. Some pages will be restyled later.
 | Magic               | ![Progress](http://progressed.io/bar/0)   |
 | Espionage           | ![Progress](http://progressed.io/bar/0)   |
 | Messages            | ![Progress](http://progressed.io/bar/0)   |
-| Realm Council       | ![Progress](http://progressed.io/bar/100) |
+| Realm Council       | ![Progress](http://progressed.io/bar/50)  |
 | Op Center           | ![Progress](http://progressed.io/bar/0)   |
 | Government          | ![Progress](http://progressed.io/bar/0)   |
 | Diplomacy           | ![Progress](http://progressed.io/bar/0)   |
