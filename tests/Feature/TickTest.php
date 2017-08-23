@@ -154,6 +154,7 @@ class TickTest extends AbstractBrowserKitTestCase
         Artisan::call('game:tick');
 
         $this->seeInDatabase('dominions', [
+            'id' => $dominion->id,
             'resource_gems' => 300,
             'resource_mana' => 500,
         ]);
