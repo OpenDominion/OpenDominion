@@ -125,4 +125,37 @@ class TickTest extends AbstractBrowserKitTestCase
             ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 3])
             ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 3]);
     }
+
+    public function testResourcesGetGeneratedOnTheSameHourThatBuildingsComeIn()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+
+        $dominion->resource_gems = 0;
+        $dominion->resource_mana = 0;
+        $dominion->save();
+
+        DB::table('queue_construction')->insert([
+            'dominion_id' => $dominion->id,
+            'building' => 'diamond_mine',
+            'amount' => 20,
+            'hours' => 1,
+        ]);
+
+        DB::table('queue_construction')->insert([
+            'dominion_id' => $dominion->id,
+            'building' => 'tower',
+            'amount' => 20,
+            'hours' => 1,
+        ]);
+
+        Artisan::call('game:tick');
+
+        $this->seeInDatabase('dominions', [
+            'resource_gems' => 300,
+            'resource_mana' => 500,
+        ]);
+    }
 }

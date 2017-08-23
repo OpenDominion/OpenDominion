@@ -72,17 +72,17 @@ class GameTickCommand extends Command
 
         $this->fetchDominionsToUpdate();
 
-        $this->tickDominionResources();
-        // todo: Population (peasants & draftees)
-        $this->tickDominionMorale();
-        $this->tickDominionSpyStrength();
-        $this->tickDominionWizardStrength();
-
         $this->tickExplorationQueue();
         $this->tickConstructionQueue();
         $this->tickTrainingQueue();
         // todo: Military returning queue
         // todo: Magic queue
+
+        $this->tickDominionResources();
+        // todo: Population (peasants & draftees)
+        $this->tickDominionMorale();
+        $this->tickDominionSpyStrength();
+        $this->tickDominionWizardStrength();
         $this->tickDominionNetworth();
 
         DB::commit();
