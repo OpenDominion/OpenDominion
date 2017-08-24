@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\SelectorService;
-use OpenDominion\Events\UserLoginEvent;
+use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
 use OpenDominion\Services\AnalyticsService\Event;
@@ -29,7 +29,7 @@ class LoginController extends AbstractController
 
     protected function authenticated(Request $request, User $user)
     {
-        event(new UserLoginEvent($user));
+        event(new UserLoggedInEvent($user));
 
         // todo: refactorme
         // Makeshift fix to redirect user to active dominion status if user has only one active dominion, instead of

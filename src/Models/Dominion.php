@@ -3,10 +3,14 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use Illuminate\Notifications\HasDatabaseNotifications;
+use Illuminate\Notifications\Notifiable;
 use OpenDominion\Contracts\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
 {
+    use HasDatabaseNotifications, Notifiable;
+
     public function councilThreads()
     {
         return $this->hasMany(Council\Thread::class);
@@ -30,6 +34,17 @@ class Dominion extends AbstractModel
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @return string
+     */
+    public function routeNotificationForMail(): string
+    {
+        // todo: test
+        return $this->user->email;
     }
 
     /**

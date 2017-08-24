@@ -4,7 +4,7 @@ namespace OpenDominion\Listeners\User\Auth;
 
 use Illuminate\Events\Dispatcher;
 use OpenDominion\Contracts\Services\AnalyticsService;
-use OpenDominion\Events\UserLoginEvent;
+use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Services\AnalyticsService\Event;
 
 class AnalyticsSubscriber implements SubscriberInterface
@@ -17,13 +17,13 @@ class AnalyticsSubscriber implements SubscriberInterface
         $this->analyticsService = $analyticsService;
     }
 
-    public function onLogin(UserLoginEvent $event)
+    public function onLogin(UserLoggedInEvent $event)
     {
         $this->analyticsService->queueFlashEvent(new Event('user', 'login'));
     }
 
     public function subscribe(Dispatcher $events)
     {
-        $events->listen(UserLoginEvent::class, (static::class . '@onLogin'));
+        $events->listen(UserLoggedInEvent::class, (static::class . '@onLogin'));
     }
 }

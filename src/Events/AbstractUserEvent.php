@@ -5,7 +5,7 @@ namespace OpenDominion\Events;
 use Illuminate\Queue\SerializesModels;
 use OpenDominion\Models\User;
 
-class UserLoginEvent
+abstract class AbstractUserEvent
 {
     use SerializesModels;
 
@@ -13,7 +13,7 @@ class UserLoginEvent
     public $user;
 
     /**
-     * UserLoginEvent constructor.
+     * AbstractUserEvent constructor.
      *
      * @param User $user
      */

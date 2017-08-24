@@ -2,13 +2,12 @@
 
 namespace OpenDominion\Http\Controllers\Auth;
 
-use Exception;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
-use Mail;
 use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
-use OpenDominion\Mail\UserRegistrationMail;
+use OpenDominion\Jobs\SendUserRegistrationMail;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\UserRepository;
 use OpenDominion\Services\AnalyticsService\Event;
@@ -39,22 +38,28 @@ class RegisterController extends AbstractController
         $this->validator($request->all())->validate();
 
         $user = $this->create($request->all());
-
-        try {
-            // todo: move to job
-            Mail::to($user->email)->send(new UserRegistrationMail($user));
-
-        } catch (Exception $e) {
-            $request->session()->flash('alert-danger', 'Something went wrong with sending the registration mail. Your account was not created.');
-
-            return redirect()->route('auth.register')
-                ->withInput()
-                ->withErrors([
-                    $e->getMessage(),
-                ]);
-        }
-
         $user->save();
+
+        dispatch(new SendUserRegistrationMail($user));
+
+        event(new UserRegisteredEvent($user));
+
+
+//        try {
+//            // todo: move to job
+//            Mail::to($user->email)->send(new UserRegistrationMail($user));
+//
+//        } catch (Exception $e) {
+//            $request->session()->flash('alert-danger', 'Something went wrong with sending the registration mail. Your account was not created.');
+//
+//            return redirect()->route('auth.register')
+//                ->withInput()
+//                ->withErrors([
+//                    $e->getMessage(),
+//                ]);
+//        }
+
+
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);

@@ -3,7 +3,7 @@
 namespace OpenDominion\Listeners\User\Auth;
 
 use Illuminate\Events\Dispatcher;
-use OpenDominion\Events\UserLoginEvent;
+use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Services\User\ActivityService;
 
 class ActivitySubscriber implements SubscriberInterface
@@ -16,13 +16,13 @@ class ActivitySubscriber implements SubscriberInterface
         $this->userActivityService = $userActivityService;
     }
 
-    public function onLogin(UserLoginEvent $event)
+    public function onLogin(UserLoggedInEvent $event)
     {
         $this->userActivityService->recordActivity($event->user, 'auth.login');
     }
 
     public function subscribe(Dispatcher $events)
     {
-        $events->listen(UserLoginEvent::class, (static::class . '@onLogin'));
+        $events->listen(UserLoggedInEvent::class, (static::class . '@onLogin'));
     }
 }
