@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Services\AnalyticsService;
 use OpenDominion\Events\UserRegisteredEvent;
@@ -16,17 +17,14 @@ use Validator;
 
 class RegisterController extends AbstractController
 {
-    use RedirectsUsers;
+    use RegistersUsers;
 
-    /** @var UserRepository */
-    protected $users;
-
+    /**
+     * Where to redirect users after registration.
+     *
+     * @var string
+     */
     protected $redirectTo = '/';
-
-    public function __construct(UserRepository $users)
-    {
-        $this->users = $users;
-    }
 
     public function getRegister()
     {
@@ -35,42 +33,7 @@ class RegisterController extends AbstractController
 
     public function postRegister(Request $request)
     {
-        $this->validator($request->all())->validate();
-
-        $user = $this->create($request->all());
-        $user->save();
-
-        dispatch(new SendUserRegistrationMail($user));
-
-        event(new UserRegisteredEvent($user));
-
-
-//        try {
-//            // todo: move to job
-//            Mail::to($user->email)->send(new UserRegistrationMail($user));
-//
-//        } catch (Exception $e) {
-//            $request->session()->flash('alert-danger', 'Something went wrong with sending the registration mail. Your account was not created.');
-//
-//            return redirect()->route('auth.register')
-//                ->withInput()
-//                ->withErrors([
-//                    $e->getMessage(),
-//                ]);
-//        }
-
-
-
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
-            'user',
-            'register'
-        ));
-
-        $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
-
-        return redirect($this->redirectPath());
+        return $this->register($request);
     }
 
     public function getActivate($activation_code)
@@ -101,6 +64,26 @@ class RegisterController extends AbstractController
         Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
 
         return redirect()->route('dashboard');
+    }
+
+    protected function registered(Request $request, $user)
+    {
+        dispatch(new SendUserRegistrationMail($user));
+
+        event(new UserRegisteredEvent($user));
+
+        $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
+    }
+
+    protected function activated(Request $request, $user)
+    {
+//        dispatch(new SendUserActivatedMail($user));
+
+//        event(new UserActivatedEvent($user));
+
+//        Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
+
+//        return redirect()->route('dashboard'); //?
     }
 
     protected function validator(array $data)

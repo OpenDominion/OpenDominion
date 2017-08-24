@@ -12,10 +12,10 @@ class Event implements EventContract
     /** @var string */
     public $action;
 
-    /** @var null|string */
+    /** @var string */
     public $label;
 
-    /** @var int|null */
+    /** @var int */
     public $value;
 
     /**
@@ -23,10 +23,10 @@ class Event implements EventContract
      *
      * @param string $category
      * @param string $action
-     * @param string|null $label
-     * @param int|null $value
+     * @param string $label
+     * @param int $value
      */
-    public function __construct($category, $action, $label = null, $value = null)
+    public function __construct(string $category, string $action, string $label = null, int $value = null)
     {
         $this->category = $category;
         $this->action = $action;
@@ -37,7 +37,7 @@ class Event implements EventContract
     /**
      * @return string
      */
-    public function getCategory()
+    public function getCategory(): string
     {
         return $this->category;
     }
@@ -45,23 +45,23 @@ class Event implements EventContract
     /**
      * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->label;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getValue()
+    public function getValue(): ?int
     {
         return $this->value;
     }

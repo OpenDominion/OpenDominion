@@ -4,11 +4,11 @@ namespace OpenDominion\Contracts\Services\AnalyticsService;
 
 interface Event
 {
-    public function getCategory();
+    public function getCategory(): string;
 
-    public function getAction();
+    public function getAction(): string;
 
-    public function getLabel();
+    public function getLabel(): ?string;
 
-    public function getValue();
+    public function getValue(): ?int;
 }

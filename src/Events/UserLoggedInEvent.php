@@ -2,6 +2,13 @@
 
 namespace OpenDominion\Events;
 
-class UserLoggedInEvent extends AbstractUserEvent
+use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
+use OpenDominion\Services\AnalyticsService\Event;
+
+class UserLoggedInEvent extends AbstractUserEvent implements AnalyticsEvent
 {
+    public function getAnalyticsEvent(): EventContract
+    {
+        return new Event('user', 'login');
+    }
 }
