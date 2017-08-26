@@ -2,13 +2,21 @@
 
 namespace OpenDominion\Events;
 
-use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
-class UserRegisteredEvent extends AbstractUserEvent implements AnalyticsEvent
+//use OpenDominion\Events\AnalyticsEvent;
+
+class UserRegisteredEvent extends AbstractUserEvent implements HasAnalyticsEvent, HasAuditEvent
 {
-    public function getAnalyticsEvent(): EventContract
+    public function getAnalyticsEvent(): AnalyticsEventContract
     {
-        return new Event('user', 'register');
+        return new AnalyticsEvent('user', 'register');
+//        return new AnalyticsEvent('user', 'register');
+    }
+
+    public function getAuditEvent()
+    {
+//        return new AuditEvent('user.register');
     }
 }

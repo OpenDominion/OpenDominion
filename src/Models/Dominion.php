@@ -3,13 +3,12 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use OpenDominion\Contracts\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
 {
-    use HasDatabaseNotifications, Notifiable;
+    use Notifiable;
 
     public function councilThreads()
     {
@@ -43,7 +42,7 @@ class Dominion extends AbstractModel
      */
     public function routeNotificationForMail(): string
     {
-        // todo: test
+        // todo: test this
         return $this->user->email;
     }
 

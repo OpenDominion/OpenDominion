@@ -4,10 +4,10 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\BankingCalculator;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\BankActionService;
 use OpenDominion\Http\Requests\Dominion\Actions\BankActionRequest;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class BankController extends AbstractDominionController
 {
@@ -42,7 +42,7 @@ class BankController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'Bank',
             '', // todo: make null?

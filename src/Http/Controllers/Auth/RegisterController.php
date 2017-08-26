@@ -3,21 +3,19 @@
 namespace OpenDominion\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Auth\RedirectsUsers;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Jobs\SendUserRegistrationMail;
 use OpenDominion\Models\User;
-use OpenDominion\Repositories\UserRepository;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 use Session;
 use Validator;
 
 class RegisterController extends AbstractController
 {
-    use RegistersUsers;
+    use RedirectsUsers;
 
     /**
      * Where to redirect users after registration.
@@ -33,7 +31,13 @@ class RegisterController extends AbstractController
 
     public function postRegister(Request $request)
     {
-        return $this->register($request);
+        $this->validator($request->all())->validate();
+
+        event(new UserRegisteredEvent($user = $this->create($request->all())));
+
+        $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
+
+        return redirect($this->redirectPath());
     }
 
     public function getActivate($activation_code)
@@ -56,7 +60,7 @@ class RegisterController extends AbstractController
         auth()->login($user);
 
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'user',
             'activate'
         ));
@@ -64,15 +68,6 @@ class RegisterController extends AbstractController
         Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
 
         return redirect()->route('dashboard');
-    }
-
-    protected function registered(Request $request, $user)
-    {
-        dispatch(new SendUserRegistrationMail($user));
-
-        event(new UserRegisteredEvent($user));
-
-        $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
     }
 
     protected function activated(Request $request, $user)
@@ -98,7 +93,7 @@ class RegisterController extends AbstractController
 
     protected function create(array $data)
     {
-        return new User([
+        return User::create([
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'display_name' => $data['display_name'],

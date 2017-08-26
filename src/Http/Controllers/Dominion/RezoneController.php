@@ -5,10 +5,10 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Http\Requests\Dominion\Actions\RezoneActionRequest;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class RezoneController extends AbstractDominionController
 {
@@ -45,7 +45,7 @@ class RezoneController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'rezone',
             '', // todo: make null?

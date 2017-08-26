@@ -1,10 +1,10 @@
 <?php
 
-namespace OpenDominion\Services\AnalyticsService;
+namespace OpenDominion\Services\Analytics;
 
-use OpenDominion\Contracts\Services\AnalyticsService\Event as EventContract;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
 
-class Event implements EventContract
+class AnalyticsEvent implements AnalyticsEventContract
 {
     /** @var string */
     public $category;
@@ -19,7 +19,7 @@ class Event implements EventContract
     public $value;
 
     /**
-     * Event constructor.
+     * AnalyticsEvent constructor.
      *
      * @param string $category
      * @param string $action
@@ -35,7 +35,7 @@ class Event implements EventContract
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getCategory(): string
     {
@@ -43,7 +43,7 @@ class Event implements EventContract
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAction(): string
     {
@@ -51,7 +51,7 @@ class Event implements EventContract
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getLabel(): ?string
     {
@@ -59,7 +59,7 @@ class Event implements EventContract
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getValue(): ?int
     {

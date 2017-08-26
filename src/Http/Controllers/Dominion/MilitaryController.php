@@ -5,7 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Contracts\Services\Dominion\Actions\ReleaseActionService;
@@ -14,7 +14,7 @@ use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\ReleaseActionRequest;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class MilitaryController extends AbstractDominionController
 {
@@ -49,7 +49,7 @@ class MilitaryController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'military.change-draft-rate',
             '',
@@ -78,7 +78,7 @@ class MilitaryController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'military.train',
             '',
@@ -112,7 +112,7 @@ class MilitaryController extends AbstractDominionController
 
         // todo: laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'release',
             null, // todo: make null everywhere where ''

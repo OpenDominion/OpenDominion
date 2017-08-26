@@ -5,12 +5,12 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class ExplorationController extends AbstractDominionController
 {
@@ -47,7 +47,7 @@ class ExplorationController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'explore',
             '', // todo: make null?

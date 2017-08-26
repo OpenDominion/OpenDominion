@@ -6,14 +6,14 @@ use Exception;
 use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DestroyActionRequest;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class ConstructionController extends AbstractDominionController
 {
@@ -50,7 +50,7 @@ class ConstructionController extends AbstractDominionController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'construct',
             '',
@@ -91,7 +91,7 @@ class ConstructionController extends AbstractDominionController
 
         // todo: laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'destroy',
             '',

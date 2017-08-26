@@ -4,12 +4,12 @@ namespace OpenDominion\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use OpenDominion\Contracts\Services\AnalyticsService;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
-use OpenDominion\Services\AnalyticsService\Event;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class LoginController extends AbstractController
 {
@@ -54,7 +54,7 @@ class LoginController extends AbstractController
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new Event(
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'user',
             'logout'
         ));
