@@ -4,7 +4,7 @@ namespace OpenDominion\Tests\Http\Auth;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mail;
-use OpenDominion\Mail\UserRegistrationMail;
+use OpenDominion\Mail\UserRegistrationMail; // todo: fix
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RegisterTest extends AbstractBrowserKitTestCase

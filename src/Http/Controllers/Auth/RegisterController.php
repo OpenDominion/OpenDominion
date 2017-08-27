@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
-use OpenDominion\Jobs\SendUserRegistrationMail;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use Session;
