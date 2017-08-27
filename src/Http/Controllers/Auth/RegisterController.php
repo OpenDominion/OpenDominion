@@ -2,14 +2,14 @@
 
 namespace OpenDominion\Http\Controllers\Auth;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
+use OpenDominion\Events\UserActivatedEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
-use Session;
 use Validator;
 
 class RegisterController extends AbstractController
@@ -23,12 +23,12 @@ class RegisterController extends AbstractController
      */
     protected $redirectTo = '/';
 
-    public function getRegister()
+    public function getRegister(): View
     {
         return view('pages.auth.register');
     }
 
-    public function postRegister(Request $request)
+    public function postRegister(Request $request): RedirectResponse
     {
         $this->validator($request->all())->validate();
 
@@ -39,47 +39,31 @@ class RegisterController extends AbstractController
         return redirect($this->redirectPath());
     }
 
-    public function getActivate($activation_code)
+    public function getActivate(Request $request, string $activation_code): RedirectResponse
     {
-        $users = $this->users->findWhere([
+        $user = User::where([
             'activated' => false,
             'activation_code' => $activation_code,
-        ]);
+        ])->firstOrFail();
 
-        if ($users->isEmpty()) {
-            Session::flash('alert-danger', 'Invalid activation code');
-
-            return redirect($this->redirectPath());
-        }
-
-        $user = $users->first();
         $user->activated = true;
         $user->save();
 
         auth()->login($user);
 
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'user',
-            'activate'
-        ));
+        event(new UserActivatedEvent($user));
 
-        Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
+        $request->session()->flash('alert-success', 'Your account has been activated and you are now logged in.');
 
         return redirect()->route('dashboard');
     }
 
-    protected function activated(Request $request, $user)
-    {
-//        dispatch(new SendUserActivatedMail($user));
-
-//        event(new UserActivatedEvent($user));
-
-//        Session::flash('alert-success', 'Your account has been activated and you are now logged in.');
-
-//        return redirect()->route('dashboard'); //?
-    }
-
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param array $data
+     * @return \Illuminate\Validation\Validator
+     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -90,6 +74,12 @@ class RegisterController extends AbstractController
         ]);
     }
 
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param array $data
+     * @return User
+     */
     protected function create(array $data)
     {
         return User::create([

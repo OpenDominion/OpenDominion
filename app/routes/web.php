@@ -6,11 +6,13 @@ use Illuminate\Routing\Router;
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 
 $router->get('/test', function () {
-    $user = \OpenDominion\Models\User::first();
-    event(new \OpenDominion\Events\UserRegisteredEvent($user));
+//    $user = \OpenDominion\Models\User::first();
+//    event(new \OpenDominion\Events\UserRegisteredEvent($user));
 
-    $analyticsService = app(\OpenDominion\Contracts\Services\Analytics\AnalyticsService::class);
-    return $analyticsService->getFlashEvents();
+//    $analyticsService = app(\OpenDominion\Contracts\Services\Analytics\AnalyticsService::class);
+//    return $analyticsService->getFlashEvents();
+
+
 
 //    $networthCalculator = app(\OpenDominion\Contracts\Calculators\NetworthCalculator::class);
 //    $realmFactory = app(\OpenDominion\Factories\RealmFactory::class);
