@@ -7,9 +7,6 @@ use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Listeners\SendUserRegistrationNotification;
 use OpenDominion\Listeners\Subscribers\AnalyticsSubscriber;
 
-//use OpenDominion\Events\UserLoginEvent;
-//use OpenDominion\Listeners\User\ActivityListener;
-
 class EventServiceProvider extends ServiceProvider
 {
     /**
