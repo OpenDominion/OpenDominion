@@ -29,7 +29,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        \OpenDominion\Listeners\User\Auth\ActivitySubscriber::class,
+//        \OpenDominion\Listeners\User\Auth\ActivitySubscriber::class,
         AnalyticsSubscriber::class,
     ];
 
