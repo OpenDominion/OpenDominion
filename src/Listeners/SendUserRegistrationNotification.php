@@ -8,10 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Notifications\UserRegisteredNotification;
 
-class SendUserRegistrationNotification implements ShouldQueue
+class SendUserRegistrationNotification
 {
-    use InteractsWithQueue;
-
     /**
      * Handle the event.
      *
