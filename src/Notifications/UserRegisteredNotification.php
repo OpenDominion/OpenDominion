@@ -39,7 +39,7 @@ class UserRegisteredNotification extends Notification
             ->line('If you did indeed register for OpenDominion, then welcome to the game! Please click the activation link below because you *will need to click it*, and there is no way to activate your account other than contacting the owner if you delete this message.')
             ->action('Activate your account', route('auth.activate', $user->activation_code))
             ->line('You can find OpenDominion at: ' . route('home'))
-            ->line('Thank you for playin, and have fun!')
+            ->line('Thank you for playing, and have fun!')
             ->salutation('-OpenDominion');
     }
 
