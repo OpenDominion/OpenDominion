@@ -5,7 +5,13 @@ use Illuminate\Routing\Router;
 /** @var Router $router */
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 
-//$router->get('/test', function () {
+$router->get('/test', function () {
+    $user = \OpenDominion\Models\User::first();
+    event(new \OpenDominion\Events\UserRegisteredEvent($user));
+
+    $analyticsService = app(\OpenDominion\Contracts\Services\Analytics\AnalyticsService::class);
+    return $analyticsService->getFlashEvents();
+
 //    $networthCalculator = app(\OpenDominion\Contracts\Calculators\NetworthCalculator::class);
 //    $realmFactory = app(\OpenDominion\Factories\RealmFactory::class);
 //    $realmFinderService = app(\OpenDominion\Contracts\Services\RealmFinderService::class);
@@ -39,7 +45,7 @@ $router->get('/')->uses('HomeController@getIndex')->name('home');
 //
 //        $dominion->save();
 //    }
-//});
+});
 
 // Authentication
 

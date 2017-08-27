@@ -6,18 +6,11 @@ use OpenDominion\Events\OpenDominionEventsUserRegisteredEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use OpenDominion\Events\UserRegisteredEvent;
+use OpenDominion\Notifications\UserRegisteredNotification;
 
 class SendUserRegistrationNotification implements ShouldQueue
 {
     use InteractsWithQueue;
-
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * Handle the event.
@@ -27,6 +20,6 @@ class SendUserRegistrationNotification implements ShouldQueue
      */
     public function handle(UserRegisteredEvent $event): void
     {
-        //
+        $event->user->notify(new UserRegisteredNotification());
     }
 }
