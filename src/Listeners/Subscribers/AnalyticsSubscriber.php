@@ -5,6 +5,8 @@ namespace OpenDominion\Listeners\Subscribers;
 use Illuminate\Events\Dispatcher;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Events\HasAnalyticsEvent;
+use OpenDominion\Events\UserActivatedEvent;
+use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 
 class AnalyticsSubscriber implements SubscriberInterface
@@ -14,6 +16,8 @@ class AnalyticsSubscriber implements SubscriberInterface
 
     /** @var string[] */
     protected $events = [
+        UserActivatedEvent::class,
+        UserLoggedInEvent::class,
         UserRegisteredEvent::class,
     ];
 
