@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Listeners;
 
-use OpenDominion\Events\OpenDominionEventsUserRegisteredEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Notifications\UserRegisteredNotification;
 
@@ -16,6 +15,6 @@ class SendUserRegistrationNotification
      */
     public function handle(UserRegisteredEvent $event): void
     {
-        $event->user->notify(new UserRegisteredNotification);
+        $event->getUser()->notify(new UserRegisteredNotification);
     }
 }

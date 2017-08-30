@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Activity;
 
 use OpenDominion\Contracts\Services\Activity\ActivityEvent as ActivityEventContract;
+use OpenDominion\Models\User;
 
 interface HasActivityEvent
 {
@@ -12,4 +13,11 @@ interface HasActivityEvent
      * @return ActivityEventContract
      */
     public function getActivityEvent(): ActivityEventContract;
+
+    /**
+     * Returns the User associated with this event.
+     *
+     * @return User
+     */
+    public function getUser(): User;
 }

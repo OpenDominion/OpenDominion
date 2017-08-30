@@ -8,8 +8,14 @@ use OpenDominion\Services\Analytics\HasAnalyticsEvent;
 
 class UserLoggedInEvent extends AbstractUserEvent implements HasAnalyticsEvent
 {
+    // todo: activityevent
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAnalyticsEvent(): EventContract
     {
+        // todo: ioc
         return new AnalyticsEvent('user', 'login');
     }
 }

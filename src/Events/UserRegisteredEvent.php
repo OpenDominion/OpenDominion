@@ -9,17 +9,8 @@ use OpenDominion\Services\Activity\HasActivityEvent;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\HasAnalyticsEvent;
 
-class UserRegisteredEvent extends AbstractUserEvent implements HasAnalyticsEvent, HasActivityEvent
+class UserRegisteredEvent extends AbstractUserEvent implements HasActivityEvent, HasAnalyticsEvent
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAnalyticsEvent(): AnalyticsEventContract
-    {
-        // todo: ioc
-        return new AnalyticsEvent('user', 'register');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -27,5 +18,14 @@ class UserRegisteredEvent extends AbstractUserEvent implements HasAnalyticsEvent
     {
         // todo: ioc
         return new ActivityEvent('user.register', ActivityEventContract::STATUS_SUCCESS);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAnalyticsEvent(): AnalyticsEventContract
+    {
+        // todo: ioc
+        return new AnalyticsEvent('user', 'register');
     }
 }
