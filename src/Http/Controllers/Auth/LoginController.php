@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Dominion\SelectorService;
+use OpenDominion\Events\UserFailedLoginEvent;
 use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
@@ -13,7 +14,9 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 
 class LoginController extends AbstractController
 {
-    use AuthenticatesUsers;
+    use AuthenticatesUsers {
+        sendFailedLoginResponse as protected traitSendFailedLoginResponse;
+    }
 
     protected $redirectTo = '/dominion/status';
 
@@ -62,5 +65,17 @@ class LoginController extends AbstractController
         session()->flash('alert-success', 'You have been logged out.');
 
         return $response;
+    }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        // Register user activity if a user with supplied email exists
+        $user = User::where('email', $request->get('email'))->first();
+
+        if ($user) {
+            event(new UserFailedLoginEvent($user));
+        }
+
+        return $this->traitSendFailedLoginResponse($request);
     }
 }

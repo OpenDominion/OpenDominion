@@ -5,6 +5,7 @@ namespace OpenDominion\Listeners\Subscribers;
 use Illuminate\Events\Dispatcher;
 use OpenDominion\Contracts\Services\Activity\ActivityService;
 use OpenDominion\Events\UserActivatedEvent;
+use OpenDominion\Events\UserFailedLoginEvent;
 use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Services\Activity\HasActivityEvent;
@@ -17,6 +18,7 @@ class ActivitySubscriber implements SubscriberInterface
     /** @var string[] */
     protected $events = [
         UserActivatedEvent::class,
+        UserFailedLoginEvent::class,
         UserLoggedInEvent::class,
         UserRegisteredEvent::class,
     ];
