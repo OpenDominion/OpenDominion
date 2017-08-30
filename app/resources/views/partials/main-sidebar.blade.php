@@ -42,6 +42,7 @@
 
                 {{--<li class="header">MISC</li>--}}
 
+                {{-- todo: fix debug page --}}
                 {{--@if (app()->environment() !== 'production')
                     <li class="header">SECRET</li>
                     <li class="{{ Request::is('dominion/debug') ? 'active' : null }}"><a href="{{ url('dominion/debug') }}"><i class="ra ra-dragon ra-fw"></i> <span>Debug Page</span></a></li>
