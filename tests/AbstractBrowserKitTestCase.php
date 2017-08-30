@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests;
 
 use Laravel\BrowserKitTesting\TestCase;
-use Mail;
+use Notification;
 
 abstract class AbstractBrowserKitTestCase extends TestCase
 {
@@ -22,8 +22,8 @@ abstract class AbstractBrowserKitTestCase extends TestCase
 
 //        Bus::fake();
 //        Event::fake();
-        Mail::fake();
-//        Notification::fake();
+//        Mail::fake();
+        Notification::fake();
 //        Queue::fake();
     }
 }
