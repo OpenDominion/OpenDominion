@@ -12,8 +12,6 @@ $router->get('/test', function () {
 //    $analyticsService = app(\OpenDominion\Contracts\Services\Analytics\AnalyticsService::class);
 //    return $analyticsService->getFlashEvents();
 
-
-
 //    $networthCalculator = app(\OpenDominion\Contracts\Calculators\NetworthCalculator::class);
 //    $realmFactory = app(\OpenDominion\Factories\RealmFactory::class);
 //    $realmFinderService = app(\OpenDominion\Contracts\Services\RealmFinderService::class);

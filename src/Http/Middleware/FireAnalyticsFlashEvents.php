@@ -4,8 +4,8 @@ namespace OpenDominion\Http\Middleware;
 
 use Analytics;
 use Closure;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
 
 class FireAnalyticsFlashEvents
 {

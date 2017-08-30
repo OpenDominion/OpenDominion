@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Services\Analytics;
 
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Contracts\Services\Analytics\AnalyticsService as AnalyticsServiceContract;
 
 class AnalyticsService implements AnalyticsServiceContract
 {

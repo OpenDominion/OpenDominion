@@ -3,8 +3,6 @@
 namespace OpenDominion\Listeners;
 
 use OpenDominion\Events\OpenDominionEventsUserRegisteredEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Notifications\UserRegisteredNotification;
 

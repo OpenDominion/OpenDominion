@@ -11,4 +11,3 @@ interface SubscriberInterface
      */
     public function subscribe(Dispatcher $events): void;
 }
-
