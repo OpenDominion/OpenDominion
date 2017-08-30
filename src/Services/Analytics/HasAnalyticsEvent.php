@@ -1,13 +1,13 @@
 <?php
 
-namespace OpenDominion\Events;
+namespace OpenDominion\Services\Analytics;
 
 use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
 
 interface HasAnalyticsEvent
 {
     /**
-     * Returns the AnalyticsEvent associated with this Event.
+     * Returns the AnalyticsEvent associated with this event.
      *
      * @return AnalyticsEventContract
      */

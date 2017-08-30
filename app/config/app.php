@@ -169,6 +169,7 @@ return [
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
@@ -232,6 +233,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
         'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Gravatar' => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,

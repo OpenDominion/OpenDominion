@@ -24,6 +24,8 @@ use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCa
 use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
 use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
+use OpenDominion\Contracts\Services\Activity\ActivityEvent as ActivityEventContract;
+use OpenDominion\Contracts\Services\Activity\ActivityService as ActivityServiceContract;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsService as AnalyticsServiceContract;
 use OpenDominion\Contracts\Services\CouncilService as CouncilServiceContract;
@@ -41,6 +43,8 @@ use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService as Ex
 use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService as TrainingQueueServiceContract;
 use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
+use OpenDominion\Services\Activity\ActivityEvent;
+use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
@@ -76,10 +80,10 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
 
-        $this->bindContracts();
+        $this->bindApplicationContracts();
     }
 
-    protected function bindContracts()
+    protected function bindApplicationContracts()
     {
         $this->bindCalculators();
         $this->bindServices();
@@ -108,6 +112,8 @@ class AppServiceProvider extends AbstractServiceProvider
     protected function bindServices()
     {
         // Services
+        $this->app->bind(ActivityEventContract::class, ActivityEvent::class);
+        $this->app->singleton(ActivityServiceContract::class, ActivityService::class);
         $this->app->bind(AnalyticsEventContract::class, AnalyticsEvent::class);
         $this->app->singleton(AnalyticsServiceContract::class, AnalyticsService::class);
         $this->app->singleton(CouncilServiceContract::class, CouncilService::class);

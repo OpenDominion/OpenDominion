@@ -7,16 +7,16 @@ use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventCo
 class AnalyticsEvent implements AnalyticsEventContract
 {
     /** @var string */
-    public $category;
+    protected $category;
 
     /** @var string */
-    public $action;
+    protected $action;
 
     /** @var string */
-    public $label;
+    protected $label;
 
     /** @var int */
-    public $value;
+    protected $value;
 
     /**
      * AnalyticsEvent constructor.

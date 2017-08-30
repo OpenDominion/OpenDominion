@@ -18,6 +18,6 @@ class SendUserRegistrationNotification
      */
     public function handle(UserRegisteredEvent $event): void
     {
-        $event->user->notify(new UserRegisteredNotification());
+        $event->user->notify(new UserRegisteredNotification);
     }
 }

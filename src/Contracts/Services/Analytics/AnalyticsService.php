@@ -2,9 +2,6 @@
 
 namespace OpenDominion\Contracts\Services\Analytics;
 
-use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent;
-use RuntimeException;
-
 interface AnalyticsService
 {
     /**

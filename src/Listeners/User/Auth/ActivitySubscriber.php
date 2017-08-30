@@ -5,7 +5,7 @@ namespace OpenDominion\Listeners\User\Auth;
 use Illuminate\Events\Dispatcher;
 use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Listeners\Subscribers\SubscriberInterface;
-use OpenDominion\Services\User\ActivityService;
+use OpenDominion\Services\Activity\ActivityService;
 
 class ActivitySubscriber implements SubscriberInterface
 {
