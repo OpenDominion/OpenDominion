@@ -41,10 +41,7 @@ class RegisterController extends AbstractController
 
     public function getActivate(Request $request, string $activation_code): RedirectResponse
     {
-        $user = User::where([
-            'activated' => false,
-            'activation_code' => $activation_code,
-        ])->firstOrFail();
+        $user = User::where(['activated' => false, 'activation_code' => $activation_code])->firstOrFail();
 
         $user->activated = true;
         $user->save();
