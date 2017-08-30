@@ -26,8 +26,6 @@ use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as Producti
 use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
 use OpenDominion\Contracts\Services\Analytics\AnalyticsService as AnalyticsServiceContract;
-use OpenDominion\Contracts\Services\Audit\AuditEvent as AuditEventContract;
-use OpenDominion\Contracts\Services\Audit\AuditService as AuditServiceContract;
 use OpenDominion\Contracts\Services\CouncilService as CouncilServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\BankActionService as BankActionServiceContract;
 use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
@@ -45,8 +43,6 @@ use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceC
 use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
-use OpenDominion\Services\Audit\AuditEvent;
-use OpenDominion\Services\Audit\AuditService;
 use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
@@ -114,8 +110,6 @@ class AppServiceProvider extends AbstractServiceProvider
         // Services
         $this->app->bind(AnalyticsEventContract::class, AnalyticsEvent::class);
         $this->app->singleton(AnalyticsServiceContract::class, AnalyticsService::class);
-        $this->app->bind(AuditEventContract::class, AuditEvent::class);
-        $this->app->singleton(AuditServiceContract::class, AuditService::class);
         $this->app->singleton(CouncilServiceContract::class, CouncilService::class);
         $this->app->singleton(RealmFinderServiceContract::class, RealmFinderService::class);
 
