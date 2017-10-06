@@ -63,7 +63,11 @@
                     </table>
                 </div>
                 <div class="box-footer {{--clearfix--}}">
-                    <a href="{{ $selectedDominion->isLocked() ? '#' : route('dominion.council.create') }}" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>New Thread</a>
+                    @if (!$selectedDominion->isLocked())
+                        <a href="{{ route('dominion.council.create') }}" class="btn btn-primary">New Thread</a>
+                    @else
+                        <button class="btn btn-primary disabled">New Thread</button>
+                    @endif
                 </div>
             </div>
         </div>
