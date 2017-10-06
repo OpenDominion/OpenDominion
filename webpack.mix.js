@@ -24,7 +24,7 @@ for (let dir in vendorDirs) {
     mix.copyDirectory(dir, vendorDirs[dir]);
 }
 
-// mix.copy('app/resources/assets/images', 'public/assets/app/images', false);
+mix.copy('app/resources/assets/images', 'public/assets/app/images');
 
 mix.js('app/resources/assets/js/app.js', 'public/assets/app/js')
     .sass('app/resources/assets/sass/app.scss', 'public/assets/app/css')

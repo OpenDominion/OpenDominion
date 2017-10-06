@@ -241,4 +241,8 @@ return [
 
     ],
 
+    // Custom config vars
+
+    'discord_invite_link' => env('DISCORD_INVITE_LINK'),
+
 ];
