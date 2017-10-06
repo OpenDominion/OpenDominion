@@ -32,7 +32,9 @@ class RegisterController extends AbstractController
     {
         $this->validator($request->all())->validate();
 
-        event(new UserRegisteredEvent($user = $this->create($request->all())));
+        $user = $this->create($request->all());
+
+        event(new UserRegisteredEvent($user));
 
         $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
 
