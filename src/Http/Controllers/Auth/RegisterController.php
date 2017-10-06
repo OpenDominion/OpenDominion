@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Auth;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,13 @@ class RegisterController extends AbstractController
 
     public function getActivate(Request $request, string $activation_code): RedirectResponse
     {
-        $user = User::where(['activated' => false, 'activation_code' => $activation_code])->firstOrFail();
+        try {
+            $user = User::where(['activated' => false, 'activation_code' => $activation_code])->firstOrFail();
+
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('home')
+                ->withErrors(['Invalid activation code']);
+        }
 
         $user->activated = true;
         $user->save();
