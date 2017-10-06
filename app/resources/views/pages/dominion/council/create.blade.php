@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label for="title" class="col-sm-3 control-label">Title</label>
                     <div class="col-sm-9">
-                        <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus>
+                        <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                     </div>
                 </div>
 
