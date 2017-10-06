@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="form-group col-sm-6">
                                         <label for="source">Exchange this</label>
-                                        <select name="source" id="source" class="form-control">
+                                        <select name="source" id="source" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             @foreach ($resources as $field => $resource)
                                                 @if (!$resource['sell'])
                                                     @continue
@@ -32,7 +32,7 @@
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label for="target">Into this</label>
-                                        <select name="target" id="target" class="form-control">
+                                        <select name="target" id="target" class="form-control" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             @foreach ($resources as $field => $resource)
                                                 @if (!$resource['buy'])
                                                     @continue
@@ -56,7 +56,7 @@
                                                placeholder="0"
                                                min="0"
                                                max="{{ reset($resources)['max'] }}"
-                                               {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label for="amountSlider">Amount</label>
@@ -70,7 +70,8 @@
                                                data-slider-step="1"
                                                data-slider-tooltip="show"
                                                data-slider-handle="triangle"
-                                               data-slider-id="yellow">
+                                               data-slider-id="yellow"
+                                                {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </div>
                                     <div class="form-group col-sm-3">
                                         <label id="resultLabel">{{ reset($resources)['label'] }}</label>
