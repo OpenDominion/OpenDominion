@@ -35,7 +35,7 @@ class UserRegisteredNotification extends Notification implements ShouldQueue
             ->replyTo('email@wavehack.net', 'WaveHack')
             ->subject('OpenDominion Registration')
             ->greeting('OpenDominion Registration')
-            ->line($user->display_name)
+            ->line('Hello ' . $user->display_name . '!')
             ->line('You are receiving this email because someone using this email address recently registered for the free online strategy / war game OpenDominion. If you did not register for OpenDominion, don\'t worry, the person using this email address will need to click the activation link below to continue playing.')
             ->line('If you did indeed register for OpenDominion, then welcome to the game! Please click the activation link below because you *will need to click it*, and there is no way to activate your account other than contacting the owner if you delete this message.')
             ->action('Activate your account', route('auth.activate', $user->activation_code))
