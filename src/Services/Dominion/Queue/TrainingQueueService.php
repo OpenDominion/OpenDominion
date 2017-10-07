@@ -3,11 +3,10 @@
 namespace OpenDominion\Services\Dominion\Queue;
 
 use DB;
-use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService as TrainingQueueServiceContract;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 
-class TrainingQueueService implements TrainingQueueServiceContract
+class TrainingQueueService
 {
     /** @var array */
     protected $trainingQueue;
@@ -25,7 +24,13 @@ class TrainingQueueService implements TrainingQueueServiceContract
         $this->unitHelper = $unitHelper;
     }
 
-    public function getQueue(Dominion $dominion)
+    /**
+     * Returns the training queue of a dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
+     */
+    public function getQueue(Dominion $dominion): array
     {
         if ($this->trainingQueue) {
             return $this->trainingQueue;
@@ -44,7 +49,13 @@ class TrainingQueueService implements TrainingQueueServiceContract
         return $this->trainingQueue = $trainingQueue;
     }
 
-    public function getQueueTotal(Dominion $dominion)
+    /**
+     * Returns the total number of units being trained of a dominion.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getQueueTotal(Dominion $dominion): int
     {
         $total = 0;
         $trainingQueue = $this->getQueue($dominion);
@@ -58,7 +69,14 @@ class TrainingQueueService implements TrainingQueueServiceContract
         return $total;
     }
 
-    public function getQueueTotalByUnitType(Dominion $dominion, string $unitType)
+    /**
+     * Returns the total number of a specific unit being trained by a dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $unitType
+     * @return int
+     */
+    public function getQueueTotalByUnitType(Dominion $dominion, string $unitType): int
     {
         return array_sum($this->getQueue($dominion)[$unitType]);
     }
