@@ -57,7 +57,7 @@ class RezoneActionService
         $totalLand = array_sum($remove);
 
         if (($totalLand === 0) || $totalLand !== array_sum($add)) {
-            throw new RuntimeException('Re-zoning was nog completed due to bad input.');
+            throw new RuntimeException('Re-zoning was not completed due to bad input.');
         }
 
         // Check if the requested amount of land is barren.

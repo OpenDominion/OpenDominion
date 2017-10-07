@@ -49,6 +49,8 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Baseline.
+     *
+     * @expectedException \RuntimeException
      */
     public function testDoingNothing()
     {
@@ -75,6 +77,8 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Test that nothing happens when the target land is the same as the source.
+     *
+     * @expectedException \RuntimeException
      */
     public function testConvertingToSameTypeIsFree()
     {
