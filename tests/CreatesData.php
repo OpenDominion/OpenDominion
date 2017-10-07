@@ -4,13 +4,13 @@ namespace OpenDominion\Tests;
 
 use Carbon\Carbon;
 use CoreDataSeeder;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Services\Dominion\SelectorService;
 
 trait CreatesData
 {
