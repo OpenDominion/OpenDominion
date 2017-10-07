@@ -2,13 +2,12 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use OpenDominion\Contracts\Services\Dominion\Actions\ReleaseActionService as ReleaseActionServiceContract;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class ReleaseActionService implements ReleaseActionServiceContract
+class ReleaseActionService
 {
     use DominionGuardsTrait;
 
@@ -26,9 +25,14 @@ class ReleaseActionService implements ReleaseActionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Does a release troops action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $data
+     * @return array
+     * @throws RuntimeException
      */
-    public function release(Dominion $dominion, array $data)
+    public function release(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
 
