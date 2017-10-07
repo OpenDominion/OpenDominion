@@ -88,7 +88,6 @@ class NetworthCalculator
      */
     public function getUnitNetworth(Unit $unit): float
     {
-        dd($unit->slot);
         if (in_array($unit->slot, [1, 2])) {
             return 5;
         }
