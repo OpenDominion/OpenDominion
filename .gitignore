@@ -1,5 +1,6 @@
 /.idea/**/profiles_settings.xml
 /.idea/dataSources/
+/.idea/dictionaries/
 /.idea/*.ids
 /.idea/*.local.xml
 /.idea/vcs.xml
