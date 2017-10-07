@@ -2,14 +2,13 @@
 
 namespace OpenDominion\Calculators;
 
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
 
-class NetworthCalculator implements NetworthCalculatorContract
+class NetworthCalculator
 {
     /** @var BuildingCalculator */
     protected $buildingCalculator;
@@ -30,9 +29,12 @@ class NetworthCalculator implements NetworthCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a Realm's networth.
+     *
+     * @param Realm $realm
+     * @return int
      */
-    public function getRealmNetworth(Realm $realm)
+    public function getRealmNetworth(Realm $realm): int
     {
         $networth = 0;
 
@@ -46,9 +48,12 @@ class NetworthCalculator implements NetworthCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a Dominion's networth.
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getDominionNetworth(Dominion $dominion)
+    public function getDominionNetworth(Dominion $dominion): int
     {
         $networth = 0;
 
@@ -76,10 +81,14 @@ class NetworthCalculator implements NetworthCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a single Unit's networth.
+     *
+     * @param Unit $unit
+     * @return float
      */
-    public function getUnitNetworth(Unit $unit)
+    public function getUnitNetworth(Unit $unit): float
     {
+        dd($unit->slot);
         if (in_array($unit->slot, [1, 2])) {
             return 5;
         }
