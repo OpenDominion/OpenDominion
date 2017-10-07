@@ -3,11 +3,10 @@
 namespace OpenDominion\Services\Dominion\Queue;
 
 use DB;
-use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService as ConstructionQueueServiceContract;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
 
-class ConstructionQueueService implements ConstructionQueueServiceContract
+class ConstructionQueueService
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -26,9 +25,12 @@ class ConstructionQueueService implements ConstructionQueueServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the construction queue of a dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
      */
-    public function getQueue(Dominion $dominion)
+    public function getQueue(Dominion $dominion): array
     {
         if ($this->constructionQueue) {
             return $this->constructionQueue;
@@ -48,9 +50,12 @@ class ConstructionQueueService implements ConstructionQueueServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the total number of buildings being constructed of a dominion.
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getQueueTotal(Dominion $dominion)
+    public function getQueueTotal(Dominion $dominion): int
     {
         $total = 0;
         $constructionQueue = $this->getQueue($dominion);
@@ -65,9 +70,14 @@ class ConstructionQueueService implements ConstructionQueueServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the total number of a specific building being constructed by a
+     * dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $building
+     * @return int
      */
-    public function getQueueTotalByBuilding(Dominion $dominion, $building)
+    public function getQueueTotalByBuilding(Dominion $dominion, string $building): int
     {
         return array_sum($this->getQueue($dominion)[$building]);
     }
