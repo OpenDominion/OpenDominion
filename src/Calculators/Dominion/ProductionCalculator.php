@@ -2,10 +2,9 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
 use OpenDominion\Models\Dominion;
 
-class ProductionCalculator implements ProductionCalculatorContract
+class ProductionCalculator
 {
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -23,17 +22,21 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Platinum
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's platinum production.
+     *
+     * @return int
      */
-    public function getPlatinumProduction(Dominion $dominion)
+    public function getPlatinumProduction(Dominion $dominion): int
     {
         return (int)floor($this->getPlatinumProductionRaw($dominion) * $this->getPlatinumProductionMultiplier($dominion));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's raw platinum production.
+     *
+     * @return float
      */
-    public function getPlatinumProductionRaw(Dominion $dominion)
+    public function getPlatinumProductionRaw(Dominion $dominion): float
     {
         $platinum = 0;
 
@@ -61,9 +64,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's platinum production multiplier.
+     *
+     * @return float
      */
-    public function getPlatinumProductionMultiplier(Dominion $dominion)
+    public function getPlatinumProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0.0;
 
@@ -94,17 +99,21 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Food
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's food production.
+     *
+     * @return int
      */
-    public function getFoodProduction(Dominion $dominion)
+    public function getFoodProduction(Dominion $dominion): int
     {
         return (int)floor($this->getFoodProductionRaw($dominion) * $this->getFoodProductionMultiplier($dominion));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's raw food production.
+     *
+     * @return float
      */
-    public function getFoodProductionRaw(Dominion $dominion)
+    public function getFoodProductionRaw(Dominion $dominion): float
     {
         $food = 0;
 
@@ -122,9 +131,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's food production multiplier.
+     *
+     * @return float
      */
-    public function getFoodProductionMultiplier(Dominion $dominion)
+    public function getFoodProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0.0;
 
@@ -156,9 +167,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's food consumption.
+     *
+     * @return float
      */
-    public function getFoodConsumption(Dominion $dominion)
+    public function getFoodConsumption(Dominion $dominion): float
     {
         $consumption = 0;
 
@@ -175,9 +188,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's food decay.
+     *
+     * @return float
      */
-    public function getFoodDecay(Dominion $dominion)
+    public function getFoodDecay(Dominion $dominion): float
     {
         $decay = 0;
 
@@ -190,9 +205,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's net food change.
+     *
+     * @return int
      */
-    public function getFoodNetChange(Dominion $dominion)
+    public function getFoodNetChange(Dominion $dominion): int
     {
         return (int)round($this->getFoodProduction($dominion) - $this->getFoodConsumption($dominion) - $this->getFoodDecay($dominion));
     }
@@ -200,17 +217,21 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Lumber
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's lumber production.
+     *
+     * @return int
      */
-    public function getLumberProduction(Dominion $dominion)
+    public function getLumberProduction(Dominion $dominion): int
     {
         return (int)floor($this->getLumberProductionRaw($dominion) * $this->getLumberProductionMultiplier($dominion));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's raw lumber production.
+     *
+     * @return float
      */
-    public function getLumberProductionRaw(Dominion $dominion)
+    public function getLumberProductionRaw(Dominion $dominion): float
     {
         $lumber = 0;
 
@@ -224,9 +245,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's lumber production multiplier.
+     *
+     * @return float
      */
-    public function getLumberProductionMultiplier(Dominion $dominion)
+    public function getLumberProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0.0;
 
@@ -247,9 +270,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's lumber decay.
+     *
+     * @return float
      */
-    public function getLumberDecay(Dominion $dominion)
+    public function getLumberDecay(Dominion $dominion): float
     {
         $decay = 0;
 
@@ -262,9 +287,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's net lumber change.
+     *
+     * @return int
      */
-    public function getLumberNetChange(Dominion $dominion)
+    public function getLumberNetChange(Dominion $dominion): int
     {
         return (int)round($this->getLumberProduction($dominion) - $this->getLumberDecay($dominion));
     }
@@ -272,17 +299,21 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Mana
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's mana production.
+     *
+     * @return int
      */
-    public function getManaProduction(Dominion $dominion)
+    public function getManaProduction(Dominion $dominion): int
     {
         return (int)floor($this->getManaProductionRaw($dominion) * $this->getManaProductionMultiplier($dominion));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's raw mana production.
+     *
+     * @return float
      */
-    public function getManaProductionRaw(Dominion $dominion)
+    public function getManaProductionRaw(Dominion $dominion): float
     {
         $mana = 0;
 
@@ -296,9 +327,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's mana production multiplier.
+     *
+     * @return float
      */
-    public function getManaProductionMultiplier(Dominion $dominion)
+    public function getManaProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0.0;
 
@@ -314,9 +347,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's mana decay.
+     *
+     * @return float
      */
-    public function getManaDecay(Dominion $dominion)
+    public function getManaDecay(Dominion $dominion): float
     {
         $decay = 0;
 
@@ -329,9 +364,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's net mana change.
+     *
+     * @return int
      */
-    public function getManaNetChange(Dominion $dominion)
+    public function getManaNetChange(Dominion $dominion): int
     {
         return (int)round($this->getManaProduction($dominion) - $this->getManaDecay($dominion));
     }
@@ -339,17 +376,21 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Ore
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's ore production.
+     *
+     * @return int
      */
-    public function getOreProduction(Dominion $dominion)
+    public function getOreProduction(Dominion $dominion): int
     {
         return (int)floor($this->getOreProductionRaw($dominion) * $this->getOreProductionMultiplier($dominion));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's raw ore production.
+     *
+     * @return float
      */
-    public function getOreProductionRaw(Dominion $dominion)
+    public function getOreProductionRaw(Dominion $dominion): float
     {
         $ore = 0;
 
@@ -366,9 +407,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's ore production multiplier.
+     *
+     * @return float
      */
-    public function getOreProductionMultiplier(Dominion $dominion)
+    public function getOreProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0.0;
 
@@ -388,17 +431,21 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Gems
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's gem production.
+     *
+     * @return int
      */
-    public function getGemProduction(Dominion $dominion)
+    public function getGemProduction(Dominion $dominion): int
     {
         return (int)floor($this->getGemProductionRaw($dominion) * $this->getGemProductionMultiplier($dominion));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's raw gem production.
+     *
+     * @return float
      */
-    public function getGemProductionRaw(Dominion $dominion)
+    public function getGemProductionRaw(Dominion $dominion): float
     {
         $gems = 0;
 
@@ -412,9 +459,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's gem production multiplier.
+     *
+     * @return float
      */
-    public function getGemProductionMultiplier(Dominion $dominion)
+    public function getGemProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0.0;
 
@@ -434,9 +483,11 @@ class ProductionCalculator implements ProductionCalculatorContract
     // Boats
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's average boat production.
+     *
+     * @return float
      */
-    public function getBoatProduction(Dominion $dominion)
+    public function getBoatProduction(Dominion $dominion): float
     {
         $boats = 0;
 
