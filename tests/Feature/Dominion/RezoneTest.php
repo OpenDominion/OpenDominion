@@ -5,7 +5,6 @@ namespace OpenDominion\Tests\Feature\Dominion;
 use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\DominionSelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RezoneTest extends AbstractBrowserKitTestCase
