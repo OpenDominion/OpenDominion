@@ -2,11 +2,10 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator as TrainingCalculatorContract;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 
-class TrainingCalculator implements TrainingCalculatorContract
+class TrainingCalculator
 {
     /** @var UnitHelper */
     protected $unitHelper;
@@ -22,7 +21,10 @@ class TrainingCalculator implements TrainingCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's training costs per unit.
+     *
+     * @param Dominion $dominion
+     * @return array
      */
     public function getTrainingCostsPerUnit(Dominion $dominion): array
     {
@@ -80,7 +82,10 @@ class TrainingCalculator implements TrainingCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's max military trainable population.
+     *
+     * @param Dominion $dominion
+     * @return array
      */
     public function getMaxTrainable(Dominion $dominion): array
     {
