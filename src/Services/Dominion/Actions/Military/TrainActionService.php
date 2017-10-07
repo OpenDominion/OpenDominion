@@ -5,14 +5,13 @@ namespace OpenDominion\Services\Dominion\Actions\Military;
 use Carbon\Carbon;
 use DB;
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator;
-use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService as TrainActionServiceContract;
+use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class TrainActionService implements TrainActionServiceContract
+class TrainActionService
 {
     use DominionGuardsTrait;
 
@@ -35,9 +34,15 @@ class TrainActionService implements TrainActionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Does a military train action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $data
+     * @return array
+     * @throws RuntimeException
+     * @throws Exception
      */
-    public function train(Dominion $dominion, array $data)
+    public function train(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
 
