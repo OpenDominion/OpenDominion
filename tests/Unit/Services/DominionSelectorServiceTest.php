@@ -5,10 +5,10 @@ namespace OpenDominion\Tests\Unit\Services;
 use CoreDataSeeder;
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DominionSelectorServiceTest extends AbstractBrowserKitTestCase

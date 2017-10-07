@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RezoneActionServiceTest extends AbstractBrowserKitTestCase
