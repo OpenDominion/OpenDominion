@@ -3,12 +3,12 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
-use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService;
+use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Http\Requests\Dominion\Actions\RezoneActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\Analytics\AnalyticsService;
+use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 
 class RezoneController extends AbstractDominionController
 {

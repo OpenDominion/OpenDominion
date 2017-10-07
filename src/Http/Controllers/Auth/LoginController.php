@@ -2,15 +2,16 @@
 
 namespace OpenDominion\Http\Controllers\Auth;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Events\UserFailedLoginEvent;
 use OpenDominion\Events\UserLoggedInEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\Analytics\AnalyticsService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class LoginController extends AbstractController
 {
@@ -39,8 +40,8 @@ class LoginController extends AbstractController
         // dashboard
         $activeDominions = $user->dominions()
             ->join('rounds', 'rounds.id', 'dominions.round_id')
-            ->where('rounds.start_date', '<=', \Carbon\Carbon::now())
-            ->where('rounds.end_date', '>', \Carbon\Carbon::now())
+            ->where('rounds.start_date', '<=', Carbon::now())
+            ->where('rounds.end_date', '>', Carbon::now())
             ->get(['dominions.*']);
 
         if ($activeDominions->count() === 1) {

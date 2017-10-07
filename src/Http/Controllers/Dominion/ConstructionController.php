@@ -3,17 +3,17 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
-use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService;
-use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService;
-use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DestroyActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\Analytics\AnalyticsService;
+use OpenDominion\Services\Dominion\Actions\ConstructActionService;
+use OpenDominion\Services\Dominion\Actions\DestroyActionService;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 
 class ConstructionController extends AbstractDominionController
 {

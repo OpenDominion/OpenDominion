@@ -3,18 +3,18 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
-use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
-use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService;
-use OpenDominion\Contracts\Services\Dominion\Actions\ReleaseActionService;
-use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\ReleaseActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\Analytics\AnalyticsService;
+use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
+use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
+use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
+use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 
 class MilitaryController extends AbstractDominionController
 {

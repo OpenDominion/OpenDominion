@@ -5,10 +5,10 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Calculators\NetworthCalculator;
-use OpenDominion\Contracts\Services\Dominion\ProtectionService;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Realm;
+use OpenDominion\Services\Dominion\ProtectionService;
 
 class RealmController extends AbstractDominionController
 {

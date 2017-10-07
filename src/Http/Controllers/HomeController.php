@@ -3,7 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class HomeController extends AbstractController
 {

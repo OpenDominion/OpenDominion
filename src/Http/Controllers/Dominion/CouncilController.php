@@ -3,12 +3,11 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
-use OpenDominion\Contracts\Services\CouncilService;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\CouncilService;
 use RuntimeException;
 
 class CouncilController extends AbstractDominionController

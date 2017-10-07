@@ -2,14 +2,14 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Contracts\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\Dominion\AbstractDominionController;
 
 class DebugController extends AbstractDominionController

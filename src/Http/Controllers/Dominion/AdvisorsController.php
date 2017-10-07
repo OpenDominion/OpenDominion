@@ -2,17 +2,17 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService;
-use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 
 class AdvisorsController extends AbstractDominionController
 {

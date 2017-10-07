@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\SelectorService;
 
 abstract class AbstractDominionController extends AbstractController
 {

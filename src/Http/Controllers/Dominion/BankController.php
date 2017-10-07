@@ -3,11 +3,11 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\BankingCalculator;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService;
-use OpenDominion\Contracts\Services\Dominion\Actions\BankActionService;
+use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Http\Requests\Dominion\Actions\BankActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\Analytics\AnalyticsService;
+use OpenDominion\Services\Dominion\Actions\BankActionService;
 
 class BankController extends AbstractDominionController
 {
