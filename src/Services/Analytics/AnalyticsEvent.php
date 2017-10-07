@@ -2,9 +2,7 @@
 
 namespace OpenDominion\Services\Analytics;
 
-use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
-
-class AnalyticsEvent implements AnalyticsEventContract
+class AnalyticsEvent
 {
     /** @var string */
     protected $category;
@@ -35,7 +33,7 @@ class AnalyticsEvent implements AnalyticsEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getCategory(): string
     {
@@ -43,7 +41,7 @@ class AnalyticsEvent implements AnalyticsEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getAction(): string
     {
@@ -51,7 +49,7 @@ class AnalyticsEvent implements AnalyticsEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return string|null
      */
     public function getLabel(): ?string
     {
@@ -59,7 +57,7 @@ class AnalyticsEvent implements AnalyticsEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return int}null
      */
     public function getValue(): ?int
     {
