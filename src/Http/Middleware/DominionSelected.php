@@ -3,7 +3,7 @@
 namespace OpenDominion\Http\Middleware;
 
 use Closure;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class DominionSelected
 {
