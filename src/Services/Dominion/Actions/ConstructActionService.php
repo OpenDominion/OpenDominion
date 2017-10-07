@@ -5,15 +5,14 @@ namespace OpenDominion\Services\Dominion\Actions;
 use Carbon\Carbon;
 use DB;
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class ConstructActionService implements ConstructActionServiceContract
+class ConstructActionService
 {
     use DominionGuardsTrait;
 
@@ -41,9 +40,15 @@ class ConstructActionService implements ConstructActionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Does a construction action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $data
+     * @return array
+     * @throws Exception
+     * @throws RuntimeException
      */
-    public function construct(Dominion $dominion, array $data)
+    public function construct(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
 
