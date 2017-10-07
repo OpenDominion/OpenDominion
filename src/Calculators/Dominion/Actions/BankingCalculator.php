@@ -2,13 +2,15 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\BankingCalculator as BankingCalculatorContract;
 use OpenDominion\Models\Dominion;
 
-class BankingCalculator implements BankingCalculatorContract
+class BankingCalculator
 {
     /**
-     * {@inheritdoc}
+     * Returns resources and prices for exchanging.
+     *
+     * @param Dominion $dominion
+     * @return array
      */
     public function getResources(Dominion $dominion): array
     {
