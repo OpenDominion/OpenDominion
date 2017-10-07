@@ -74,11 +74,11 @@ class ExplorationQueueService
      * dominion.
      *
      * @param Dominion $dominion
-     * @param string $land
+     * @param string $landType
      * @return int
      */
-    public function getQueueTotalByLand(Dominion $dominion, string $land): int
+    public function getQueueTotalByLand(Dominion $dominion, string $landType): int
     {
-        return array_sum($this->getQueue($dominion)[$land]);
+        return array_sum($this->getQueue($dominion)[$landType]);
     }
 }

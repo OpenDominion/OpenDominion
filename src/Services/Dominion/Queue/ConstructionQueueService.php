@@ -74,11 +74,11 @@ class ConstructionQueueService
      * dominion.
      *
      * @param Dominion $dominion
-     * @param string $building
+     * @param string $buildingType
      * @return int
      */
-    public function getQueueTotalByBuilding(Dominion $dominion, string $building): int
+    public function getQueueTotalByBuilding(Dominion $dominion, string $buildingType): int
     {
-        return array_sum($this->getQueue($dominion)[$building]);
+        return array_sum($this->getQueue($dominion)[$buildingType]);
     }
 }
