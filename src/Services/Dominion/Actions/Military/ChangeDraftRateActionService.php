@@ -18,7 +18,7 @@ class ChangeDraftRateActionService
      * @return array
      * @throws RuntimeException
      */
-    public function changeDraftRate(Dominion $dominion, $draftRate): array
+    public function changeDraftRate(Dominion $dominion, int $draftRate): array
     {
         $this->guardLockedDominion($dominion);
 
