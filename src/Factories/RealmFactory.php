@@ -31,7 +31,7 @@ class RealmFactory
      *
      * @return Realm
      */
-    public function create(Round $round, $alignment)
+    public function create(Round $round, $alignment): Realm
     {
         // todo: whitelist $alignment?
         // todo: repositories?

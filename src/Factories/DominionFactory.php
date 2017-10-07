@@ -54,7 +54,7 @@ class DominionFactory
      * @throws Exception
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, $realmType, $name)
+    public function create(User $user, Round $round, Race $race, $realmType, $name): Dominion
     {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
@@ -159,7 +159,7 @@ class DominionFactory
      *
      * @param Dominion $dominion
      */
-    public function updateNetworth(Dominion $dominion)
+    public function updateNetworth(Dominion $dominion): void
     {
         $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
         $dominion->save();

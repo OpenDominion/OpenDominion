@@ -20,7 +20,7 @@ class CouncilService
      * @return Council\Thread
      * @throws RuntimeException
      */
-    public function createThread(Dominion $dominion, string $title, string $body)
+    public function createThread(Dominion $dominion, string $title, string $body): Council\Thread
     {
         $this->guardLockedDominion($dominion);
 
@@ -41,7 +41,7 @@ class CouncilService
      * @return Council\Post
      * @throws RuntimeException
      */
-    public function postReply(Dominion $dominion, Council\Thread $thread, string $body)
+    public function postReply(Dominion $dominion, Council\Thread $thread, string $body): Council\Post
     {
         $this->guardLockedDominion($dominion);
 

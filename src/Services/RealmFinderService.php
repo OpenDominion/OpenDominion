@@ -36,7 +36,7 @@ class RealmFinderService
      *
      * @return Realm|null
      */
-    public function findRandomRealm(Round $round, Race $race)
+    public function findRandomRealm(Round $round, Race $race): ?Realm
     {
         // todo: figure out how to do this with repositories
         $results = DB::table('realms')
@@ -57,9 +57,8 @@ class RealmFinderService
             return null;
         }
 
-        // todo: repositories!!
         $realmId = $results->first()->id;
 
-        return Realm::findOrFail($realmId);
+        return Realm::find($realmId);
     }
 }
