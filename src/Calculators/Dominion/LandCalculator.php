@@ -2,14 +2,12 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculatorContract;
-use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 
-class LandCalculator implements LandCalculatorContract
+class LandCalculator
 {
     /** @var BuildingCalculator */
     protected $buildingCalculator;
@@ -44,9 +42,11 @@ class LandCalculator implements LandCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's total acres of land.
+     *
+     * @return int
      */
-    public function getTotalLand(Dominion $dominion)
+    public function getTotalLand(Dominion $dominion): int
     {
         $totalLand = 0;
 
@@ -58,9 +58,11 @@ class LandCalculator implements LandCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's total acres of barren land.
+     *
+     * @return int
      */
-    public function getTotalBarrenLand(Dominion $dominion)
+    public function getTotalBarrenLand(Dominion $dominion): int
     {
         return (
             $this->getTotalLand($dominion)
@@ -70,17 +72,22 @@ class LandCalculator implements LandCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's total barren land by land type.
+     *
+     * @param string $landType
+     * @return int
      */
-    public function getTotalBarrenLandByLandType(Dominion $dominion, $landType)
+    public function getTotalBarrenLandByLandType(Dominion $dominion, $landType): int
     {
         return $this->getBarrenLand($dominion)[$landType];
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's barren land by land type.
+     *
+     * @return int[]
      */
-    public function getBarrenLand(Dominion $dominion)
+    public function getBarrenLand(Dominion $dominion): array
     {
         $buildingTypesbyLandType = $this->buildingHelper->getBuildingTypesByRace($dominion->race);
 
