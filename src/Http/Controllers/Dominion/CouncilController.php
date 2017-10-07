@@ -18,8 +18,10 @@ class CouncilController extends AbstractDominionController
         $realm = $dominion->realm;
         $councilThreads = $realm->councilThreads() // todo: move to CouncilService
             ->with(['dominion', 'posts.dominion'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->leftJoin('council_posts', 'council_posts.council_thread_id', '=', 'council_threads.id')
+            ->groupBy('council_threads.id')
+            ->orderBy('council_posts.created_at', 'desc')
+            ->get(['council_threads.*']); // hey it works ¯\_(ツ)_/¯
 
         return view('pages.dominion.council.index', compact(
             'councilThreads',
