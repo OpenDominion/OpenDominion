@@ -34,7 +34,7 @@ class DebugController extends AbstractDominionController
             'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
-            'bankingCalculator' => app(BankingCalculator::class),
+//            'bankingCalculator' => app(BankingCalculator::class),
             'constructionCalculator' => app(ConstructionCalculator::class),
             'explorationCalculator' => app(ExplorationCalculator::class),
             'rezoningCalculator'  => app(RezoningCalculator::class),
