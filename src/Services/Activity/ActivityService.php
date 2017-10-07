@@ -3,15 +3,17 @@
 namespace OpenDominion\Services\Activity;
 
 use Jenssegers\Agent\Agent;
-use OpenDominion\Contracts\Services\Activity\ActivityEvent;
-use OpenDominion\Contracts\Services\Activity\ActivityService as ActivityServiceContract;
 use OpenDominion\Models\User;
 use OpenDominion\Models\UserActivity;
 
-class ActivityService implements ActivityServiceContract
+class ActivityService
 {
     /**
-     * {@inheritdoc}
+     * Records an activity event for a user.
+     *
+     * @param User $user
+     * @param ActivityEvent $activityEvent
+     * @return void
      */
     public function recordActivity(User $user, ActivityEvent $activityEvent): void
     {
@@ -24,7 +26,12 @@ class ActivityService implements ActivityServiceContract
         ]));
     }
 
-    protected function getDeviceString()
+    /**
+     * Returns a friendly user device string.
+     *
+     * @return string|null
+     */
+    protected function getDeviceString(): ?string
     {
         $userAgent = request()->userAgent();
 
