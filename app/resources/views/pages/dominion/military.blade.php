@@ -157,7 +157,7 @@
                                     <td class="text-center">
                                         <input type="number" name="draft_rate" class="form-control text-center"
                                                style="display: inline-block; width: 80px;" placeholder="0" min="0"
-                                               max="100"
+                                               max="90"
                                                value="{{ $selectedDominion->draft_rate }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         %
                                     </td>

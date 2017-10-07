@@ -24,7 +24,7 @@ class ChangeDraftRateActionService
 
         $draftRate = (int)$draftRate;
 
-        if (($draftRate < 0) || ($draftRate > 100)) {
+        if (($draftRate < 0) || ($draftRate > 90)) {
             throw new RuntimeException('Draft rate not changed due to bad input.');
         }
 
