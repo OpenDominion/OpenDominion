@@ -3,13 +3,12 @@
 namespace OpenDominion\Services\Dominion;
 
 use Auth;
-use Exception;
-use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
+use RuntimeException;
 use Session;
 
-class SelectorService implements SelectorServiceContract
+class SelectorService
 {
     const SESSION_NAME = 'selected_dominion_id';
 
@@ -25,7 +24,9 @@ class SelectorService implements SelectorServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns whether the current logged in user has selected a dominion.
+     *
+     * @return bool
      */
     public function hasUserSelectedDominion()
     {
@@ -33,7 +34,10 @@ class SelectorService implements SelectorServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Selects a dominion for the logged in user.
+     *
+     * @param Dominion $dominion
+     * @throws RuntimeException
      */
     public function selectUserDominion(Dominion $dominion)
     {
@@ -41,12 +45,12 @@ class SelectorService implements SelectorServiceContract
 
         // Check if Dominion belongs to logged in user
         if ($dominion->user_id != $user->id) {
-            throw new Exception('User cannot select someone else\'s Dominion');
+            throw new RuntimeException('User cannot select someone else\'s Dominion');
         }
 
         // Check that round is active
         if (!$dominion->round->hasStarted()) {
-            throw new Exception('Cannot select a dominion when the round hasn\'t started yet');
+            throw new RuntimeException('Cannot select a dominion when the round hasn\'t started yet');
         }
 
         // todo: fire laravel event
@@ -56,7 +60,10 @@ class SelectorService implements SelectorServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the selected dominion for the logged in user, or null if user
+     * hasn't selected any.
+     *
+     * @return Dominion|null
      */
     public function getUserSelectedDominion()
     {
@@ -74,7 +81,9 @@ class SelectorService implements SelectorServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Unsets the selected dominion for the logged in user.
+     *
+     * @return void
      */
     public function unsetUserSelectedDominion()
     {
