@@ -60,7 +60,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
             ->type('10', 'add[plain]')
             ->press('Re-Zone')
             ->see('One or more errors occurred')
-            ->see('Re-zoning was nog completed due to bad input.')
+            ->see('Re-zoning was not completed due to bad input.')
             ->assertDominionUnchanged();
     }
 
