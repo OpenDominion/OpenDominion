@@ -5,13 +5,12 @@ namespace OpenDominion\Services\Dominion\Actions;
 use Carbon\Carbon;
 use DB;
 use Exception;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator;
-use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
+use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class ExploreActionService implements ExploreActionServiceContract
+class ExploreActionService
 {
     use DominionGuardsTrait;
 
@@ -29,9 +28,15 @@ class ExploreActionService implements ExploreActionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Does an explore action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $data
+     * @return array
+     * @throws Exception
+     * @throws RuntimeException
      */
-    public function explore(Dominion $dominion, array $data)
+    public function explore(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
 
