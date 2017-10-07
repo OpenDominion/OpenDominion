@@ -2,19 +2,23 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class DestroyActionService implements DestroyActionServiceContract
+class DestroyActionService
 {
     use DominionGuardsTrait;
 
     /**
-     * {@inheritdoc}
+     * Does a destroy buildings action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $data
+     * @return array
+     * @throws RuntimeException
      */
-    public function destroy(Dominion $dominion, array $data)
+    public function destroy(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
 
