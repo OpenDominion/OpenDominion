@@ -3,15 +3,16 @@
 namespace OpenDominion\Services\Dominion;
 
 use Carbon\Carbon;
-use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
 use OpenDominion\Models\Dominion;
 
-class ProtectionService implements ProtectionServiceContract
+class ProtectionService
 {
     const PROTECTION_DURATION_IN_HOURS = 72; // todo: move to config?
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's 'under protection' start date.
+     *
+     * @return Carbon
      */
     public function getProtectionStartDate(Dominion $dominion)
     {
@@ -22,7 +23,9 @@ class ProtectionService implements ProtectionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's 'under protection' end date.
+     *
+     * @return Carbon
      */
     public function getProtectionEndDate(Dominion $dominion)
     {
@@ -32,7 +35,9 @@ class ProtectionService implements ProtectionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns whether this Dominion instance is under protection.
+     *
+     * @return bool
      */
     public function isUnderProtection(Dominion $dominion)
     {
@@ -40,7 +45,9 @@ class ProtectionService implements ProtectionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the hours the Dominion is still under protection for.
+     *
+     * @return float
      */
     public function getUnderProtectionHoursLeft(Dominion $dominion)
     {
