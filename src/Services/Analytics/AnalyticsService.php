@@ -2,15 +2,14 @@
 
 namespace OpenDominion\Services\Analytics;
 
-use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService as AnalyticsServiceContract;
-
-class AnalyticsService implements AnalyticsServiceContract
+class AnalyticsService
 {
     const SESSION_NAME_FLASH = 'analyticsservice_flash_events';
-
     /**
-     * {@inheritdoc}
+     * Queues an Analytics flash event to be fired on the next request.
+     *
+     * @param AnalyticsEvent $event
+     * @return void
      */
     public function queueFlashEvent(AnalyticsEvent $event): void
     {
@@ -24,7 +23,10 @@ class AnalyticsService implements AnalyticsServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns all flash events.
+     *
+     * @param bool $clear
+     * @return AnalyticsEvent[]
      */
     public function getFlashEvents(bool $clear = true): array
     {
