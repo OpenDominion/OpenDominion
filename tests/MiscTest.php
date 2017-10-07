@@ -1,5 +1,5 @@
 <?php
-// todo: move this somewhere
+
 namespace OpenDominion\Tests;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -16,6 +16,7 @@ class MiscTest extends AbstractBrowserKitTestCase
 
     public function testUserLastOnlineGetsUpdated()
     {
+        // todo: move this somewhere
         $user = $this->createAndImpersonateUser();
 
         $this

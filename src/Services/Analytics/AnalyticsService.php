@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Analytics;
 class AnalyticsService
 {
     const SESSION_NAME_FLASH = 'analyticsservice_flash_events';
+
     /**
      * Queues an Analytics flash event to be fired on the next request.
      *
