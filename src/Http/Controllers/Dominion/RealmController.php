@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\ProtectionService;
 
@@ -29,9 +30,11 @@ class RealmController extends AbstractDominionController
 
         $dominions = $realm->dominions()
             ->with(['race.units'])
-            ->orderBy('networth', 'desc')
-            ->orderBy('created_at', 'asc')
             ->get();
+
+        $dominions = $dominions->sortBy(function (Dominion $dominion) use ($landCalculator) {
+            return $landCalculator->getTotalLand($dominion);
+        }, SORT_REGULAR, true);
 
         $round = $realm->round;
 
