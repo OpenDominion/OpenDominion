@@ -4,8 +4,8 @@ namespace OpenDominion\Providers;
 
 use Cache;
 use Illuminate\Contracts\View\View;
-use OpenDominion\Contracts\Calculators\NetworthCalculator;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
+use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
 {
