@@ -2,10 +2,14 @@
 
 namespace OpenDominion\Services\Activity;
 
-use OpenDominion\Contracts\Services\Activity\ActivityEvent as ActivityEventContract;
-
-class ActivityEvent implements ActivityEventContract
+class ActivityEvent
 {
+    const STATUS_SUCCESS = 'success';
+    const STATUS_INFO = 'info';
+    const STATUS_GENERIC = 'generic';
+    const STATUS_WARNING = 'warning';
+    const STATUS_DANGER = 'danger';
+
     /** @var string */
     protected $key;
 
@@ -22,7 +26,7 @@ class ActivityEvent implements ActivityEventContract
      * @param string $status
      * @param array $context
      */
-    public function __construct(string $key, string $status = ActivityEventContract::STATUS_GENERIC, array $context = [])
+    public function __construct(string $key, string $status = self::STATUS_GENERIC, array $context = [])
     {
         $this->key = $key;
         $this->status = $status;
@@ -30,7 +34,7 @@ class ActivityEvent implements ActivityEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getKey(): string
     {
@@ -38,7 +42,7 @@ class ActivityEvent implements ActivityEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getStatus(): string
     {
@@ -46,7 +50,7 @@ class ActivityEvent implements ActivityEventContract
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function getContext(): array
     {
