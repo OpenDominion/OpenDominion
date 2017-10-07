@@ -2,11 +2,10 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator as RezoningCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 
-class RezoningCalculator implements RezoningCalculatorContract
+class RezoningCalculator
 {
     /** @var LandCalculator */
     protected $landCalculator;
@@ -22,17 +21,23 @@ class RezoningCalculator implements RezoningCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's rezoning platinum cost (per acre of land).
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getPlatinumCost(Dominion $dominion)
+    public function getPlatinumCost(Dominion $dominion): int
     {
         return (int)round((($this->landCalculator->getTotalLand($dominion) - 250) * 0.6) + 250);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the maximum number of acres of land a Dominion can rezone.
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getMaxAfford(Dominion $dominion)
+    public function getMaxAfford(Dominion $dominion): int
     {
         return (int)min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
