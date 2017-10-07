@@ -8,9 +8,9 @@ use DB;
 use Exception;
 use Illuminate\Console\Command;
 use Log;
-use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Contracts\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
 
