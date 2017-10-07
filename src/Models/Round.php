@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use DB;
 
 class Round extends AbstractModel
 {
@@ -45,7 +46,7 @@ class Round extends AbstractModel
 
     public function userAlreadyRegistered(User $user)
     {
-        $results = \DB::table('dominions')
+        $results = DB::table('dominions')
             ->where('user_id', $user->id)
             ->where('round_id', $this->id)
             ->limit(1)

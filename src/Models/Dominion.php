@@ -4,7 +4,7 @@ namespace OpenDominion\Models;
 
 use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
 {
