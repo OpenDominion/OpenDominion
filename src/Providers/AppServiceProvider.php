@@ -13,39 +13,7 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\BankingCalculator as BankingCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator as ExplorationCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator as RezoningCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\Actions\TrainingCalculator as TrainingCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator as BuildingCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator as LandCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\MilitaryCalculator as MilitaryCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\PopulationCalculator as PopulationCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\ProductionCalculator as ProductionCalculatorContract;
-use OpenDominion\Contracts\Calculators\NetworthCalculator as NetworthCalculatorContract;
-use OpenDominion\Contracts\Services\Activity\ActivityEvent as ActivityEventContract;
-use OpenDominion\Contracts\Services\Activity\ActivityService as ActivityServiceContract;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsEvent as AnalyticsEventContract;
-use OpenDominion\Contracts\Services\Analytics\AnalyticsService as AnalyticsServiceContract;
-use OpenDominion\Contracts\Services\CouncilService as CouncilServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\BankActionService as BankActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\ConstructActionService as ConstructActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\DestroyActionService as DestroyActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\ExploreActionService as ExploreActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\Military\TrainActionService as TrainActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\ReleaseActionService as ReleaseActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\ProtectionService as ProtectionServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Queue\ConstructionQueueService as ConstructionQueueServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService as ExplorationQueueServiceContract;
-use OpenDominion\Contracts\Services\Dominion\Queue\TrainingQueueService as TrainingQueueServiceContract;
-use OpenDominion\Contracts\Services\Dominion\SelectorService as SelectorServiceContract;
-use OpenDominion\Contracts\Services\RealmFinderService as RealmFinderServiceContract;
-use OpenDominion\Services\Activity\ActivityEvent;
 use OpenDominion\Services\Activity\ActivityService;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
@@ -80,62 +48,55 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
 
-        $this->bindApplicationContracts();
+        $this->registerCalculators();
+        $this->registerServices();
     }
 
-    protected function bindApplicationContracts()
-    {
-        $this->bindCalculators();
-        $this->bindServices();
-    }
-
-    protected function bindCalculators()
+    protected function registerCalculators()
     {
         // Generic Calculators
-        $this->app->singleton(NetworthCalculatorContract::class, NetworthCalculator::class);
+        $this->app->singleton(NetworthCalculator::class);
 
         // Dominion Calculators
-        $this->app->singleton(BuildingCalculatorContract::class, BuildingCalculator::class);
-        $this->app->singleton(LandCalculatorContract::class, LandCalculator::class);
-        $this->app->singleton(MilitaryCalculatorContract::class, MilitaryCalculator::class);
-        $this->app->singleton(PopulationCalculatorContract::class, PopulationCalculator::class);
-        $this->app->singleton(ProductionCalculatorContract::class, ProductionCalculator::class);
+        $this->app->singleton(BuildingCalculator::class);
+        $this->app->singleton(LandCalculator::class);
+        $this->app->singleton(MilitaryCalculator::class);
+        $this->app->singleton(PopulationCalculator::class);
+        $this->app->singleton(ProductionCalculator::class);
 
         // Dominion Action Calculators
-        $this->app->singleton(BankingCalculatorContract::class, BankingCalculator::class);
-        $this->app->singleton(ConstructionCalculatorContract::class, ConstructionCalculator::class);
-        $this->app->singleton(ExplorationCalculatorContract::class, ExplorationCalculator::class);
-        $this->app->singleton(RezoningCalculatorContract::class, RezoningCalculator::class);
-        $this->app->singleton(TrainingCalculatorContract::class, TrainingCalculator::class);
+        $this->app->singleton(BankingCalculator::class);
+        $this->app->singleton(ConstructionCalculator::class);
+        $this->app->singleton(ExplorationCalculator::class);
+        $this->app->singleton(RezoningCalculator::class);
+        $this->app->singleton(TrainingCalculator::class);
     }
 
-    protected function bindServices()
+    protected function registerServices()
     {
         // Services
-        $this->app->bind(ActivityEventContract::class, ActivityEvent::class);
-        $this->app->singleton(ActivityServiceContract::class, ActivityService::class);
-        $this->app->bind(AnalyticsEventContract::class, AnalyticsEvent::class);
-        $this->app->singleton(AnalyticsServiceContract::class, AnalyticsService::class);
-        $this->app->singleton(CouncilServiceContract::class, CouncilService::class);
-        $this->app->singleton(RealmFinderServiceContract::class, RealmFinderService::class);
+        $this->app->singleton(ActivityService::class);
+        $this->app->singleton(AnalyticsService::class);
+        $this->app->singleton(CouncilService::class);
+        $this->app->singleton(RealmFinderService::class);
 
         // Dominion Services
-        $this->app->singleton(ProtectionServiceContract::class, ProtectionService::class);
-        $this->app->singleton(SelectorServiceContract::class, SelectorService::class);
+        $this->app->singleton(ProtectionService::class);
+        $this->app->singleton(SelectorService::class);
 
         // Dominion Action Services
-        $this->app->singleton(ChangeDraftRateActionServiceContract::class, ChangeDraftRateActionService::class);
-        $this->app->singleton(TrainActionServiceContract::class, TrainActionService::class);
-        $this->app->singleton(BankActionServiceContract::class, BankActionService::class);
-        $this->app->singleton(ConstructActionServiceContract::class, ConstructActionService::class);
-        $this->app->singleton(DestroyActionServiceContract::class, DestroyActionService::class);
-        $this->app->singleton(ExploreActionServiceContract::class, ExploreActionService::class);
-        $this->app->singleton(ReleaseActionServiceContract::class, ReleaseActionService::class);
-        $this->app->singleton(RezoneActionServiceContract::class, RezoneActionService::class);
+        $this->app->singleton(ChangeDraftRateActionService::class);
+        $this->app->singleton(TrainActionService::class);
+        $this->app->singleton(BankActionService::class);
+        $this->app->singleton(ConstructActionService::class);
+        $this->app->singleton(DestroyActionService::class);
+        $this->app->singleton(ExploreActionService::class);
+        $this->app->singleton(ReleaseActionService::class);
+        $this->app->singleton(RezoneActionService::class);
 
         // Dominion Queue Services
-        $this->app->singleton(ConstructionQueueServiceContract::class, ConstructionQueueService::class);
-        $this->app->singleton(ExplorationQueueServiceContract::class, ExplorationQueueService::class);
-        $this->app->singleton(TrainingQueueServiceContract::class, TrainingQueueService::class);
+        $this->app->singleton(ConstructionQueueService::class);
+        $this->app->singleton(ExplorationQueueService::class);
+        $this->app->singleton(TrainingQueueService::class);
     }
 }
