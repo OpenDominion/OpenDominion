@@ -2,8 +2,11 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
+use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -25,14 +28,17 @@ class DebugController extends AbstractDominionController
         static::$selectedDominion = $this->getSelectedDominion();
 
         return view('pages.dominion.debug', [
+            'networthCalculator' => app(NetworthCalculator::class),
             'buildingCalculator' => app(BuildingCalculator::class),
-            'constructionCalculator' => app(ConstructionCalculator::class),
-            'explorationCalculator' => app(ExplorationCalculator::class),
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
-            'networthCalculator' => app(NetworthCalculator::class),
+            'bankingCalculator' => app(BankingCalculator::class),
+            'constructionCalculator' => app(ConstructionCalculator::class),
+            'explorationCalculator' => app(ExplorationCalculator::class),
+            'rezoningCalculator'  => app(RezoningCalculator::class),
+            'trainingCalculator'  => app(TrainingCalculator::class),
         ]);
     }
 

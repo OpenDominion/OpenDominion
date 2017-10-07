@@ -8,8 +8,36 @@
     </div>
 
     <div class="row">
-
         <div class="col-sm-12 col-md-4">
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Networth Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        Realm Networth: <b>{{ number_format($networthCalculator->getRealmNetworth($selectedDominion->realm)) }}</b><br>
+                        Dominion Networth: <b>{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</b><br>
+                    </p>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Dominion</h3>
+                </div>
+                <div class="box-body">
+                    @php
+                        $dominion = clone $selectedDominion;
+                        unset($dominion->realm);
+                    @endphp
+                    <pre>{{ print_r(json_decode($dominion), true) }}</pre>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-12 col-md-4">
+
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Building Calculator</h3>
@@ -18,21 +46,6 @@
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($buildingCalculator, [
                             'getTotalBuildings',
-                        ]) !!}
-                    </p>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Construction Calculator</h3>
-                </div>
-                <div class="box-body">
-                    <p>
-                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($constructionCalculator, [
-                            'getPlatinumCost',
-                            'getLumberCost',
-                            'getMaxAfford',
                         ]) !!}
                     </p>
                 </div>
@@ -55,21 +68,30 @@
 
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Exploration Calculator</h3>
+                    <h3 class="box-title">Military Calculator</h3>
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($explorationCalculator, [
-                            'getPlatinumCost',
-                            'getDrafteeCost',
-                            'getMaxAfford',
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($militaryCalculator, [
+                            'getOffensivePower',
+                            'getOffensivePowerRaw',
+                            'getOffensivePowerMultiplier',
+                            'getOffensivePowerRatio',
+                            'getOffensivePowerRatioRaw',
+                            'getDefensivePower',
+                            'getDefensivePowerRaw',
+                            'getDefensivePowerMultiplier',
+                            'getDefensivePowerRatio',
+                            'getDefensivePowerRatioRaw',
+                            'getSpyRatio',
+                            'getSpyRatioRaw',
+                            'getWizardRatio',
+                            'getWizardRatioRaw',
                         ]) !!}
                     </p>
                 </div>
             </div>
-        </div>
 
-        <div class="col-sm-12 col-md-4">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Population Calculator</h3>
@@ -90,7 +112,6 @@
                             'getPopulationDrafteeGrowth',
                             'getPopulationPeasantPercentage',
                             'getPopulationMilitaryPercentage',
-                            'getPopulationMilitaryMaxTrainable',
                             'getEmploymentJobs',
                             'getPopulationEmployed',
                             'getEmploymentPercentage',
@@ -98,9 +119,7 @@
                     </p>
                 </div>
             </div>
-        </div>
 
-        <div class="col-sm-12 col-md-4">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Production Calculator</h3>
@@ -138,62 +157,81 @@
                     </p>
                 </div>
             </div>
-        </div>
 
+        </div>
         <div class="col-sm-12 col-md-4">
+
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Military Calculator</h3>
+                    <h3 class="box-title">Banking Calculator</h3>
                 </div>
                 <div class="box-body">
                     <p>
-                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($militaryCalculator, [
-                            'getOffensivePower',
-                            'getOffensivePowerRaw',
-                            'getOffensivePowerMultiplier',
-                            'getOffensivePowerRatio',
-                            'getOffensivePowerRatioRaw',
-                            'getDefensivePower',
-                            'getDefensivePowerRaw',
-                            'getDefensivePowerMultiplier',
-                            'getDefensivePowerRatio',
-                            'getDefensivePowerRatioRaw',
-                            'getSpyRatio',
-                            'getSpyRatioRaw',
-                            'getWizardRatio',
-                            'getWizardRatioRaw',
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($bankingCalculator, [
+                            'getResources',
                         ]) !!}
                     </p>
                 </div>
             </div>
-        </div>
 
-        <div class="col-sm-12 col-md-4">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Networth Calculator</h3>
+                    <h3 class="box-title">Construction Calculator</h3>
                 </div>
                 <div class="box-body">
                     <p>
-                        Realm Networth: <b>{{ number_format($networthCalculator->getRealmNetworth($selectedDominion->realm)) }}</b><br>
-                        Dominion Networth: <b>{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</b><br>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($constructionCalculator, [
+                            'getPlatinumCost',
+                            'getLumberCost',
+                            'getMaxAfford',
+                        ]) !!}
                     </p>
                 </div>
             </div>
-        </div>
 
-    </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Exploration Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($explorationCalculator, [
+                            'getPlatinumCost',
+                            'getDrafteeCost',
+                            'getMaxAfford',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Dominion</h3>
-        </div>
-        <div class="box-body">
-            @php
-            $dominion = clone $selectedDominion;
-            unset($dominion->realm);
-            @endphp
-            <pre>{{ print_r(json_decode($dominion), true) }}</pre>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Rezoning Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($rezoningCalculator, [
+                            'getPlatinumCost',
+                            'getMaxAfford',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Training Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($trainingCalculator, [
+                            'getTrainingCostsPerUnit',
+                            'getMaxTrainable',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+
         </div>
     </div>
 
