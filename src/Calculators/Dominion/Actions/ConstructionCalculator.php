@@ -2,12 +2,11 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ConstructionCalculator as ConstructionCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\BuildingCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 
-class ConstructionCalculator implements ConstructionCalculatorContract
+class ConstructionCalculator
 {
     /** @var BuildingCalculator */
     protected $buildingCalculator;
@@ -28,9 +27,12 @@ class ConstructionCalculator implements ConstructionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's construction platinum cost (per building).
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getPlatinumCost(Dominion $dominion)
+    public function getPlatinumCost(Dominion $dominion): int
     {
         $platinum = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
@@ -53,9 +55,12 @@ class ConstructionCalculator implements ConstructionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's construction lumber cost (per building).
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getLumberCost(Dominion $dominion)
+    public function getLumberCost(Dominion $dominion): int
     {
         $lumber = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
@@ -78,9 +83,12 @@ class ConstructionCalculator implements ConstructionCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the maximum number of building a Dominion can construct.
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getMaxAfford(Dominion $dominion)
+    public function getMaxAfford(Dominion $dominion): int
     {
         // todo: factor in amount of barren land?
         return (int)min(
