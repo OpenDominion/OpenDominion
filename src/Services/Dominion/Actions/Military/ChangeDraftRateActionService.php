@@ -2,19 +2,23 @@
 
 namespace OpenDominion\Services\Dominion\Actions\Military;
 
-use OpenDominion\Contracts\Services\Dominion\Actions\Military\ChangeDraftRateActionService as ChangeDraftRateActionServiceContract;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class ChangeDraftRateActionService implements ChangeDraftRateActionServiceContract
+class ChangeDraftRateActionService
 {
     use DominionGuardsTrait;
 
     /**
-     * {@inheritdoc}
+     * Does a military change draft rate action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param int $draftRate
+     * @return array
+     * @throws RuntimeException
      */
-    public function changeDraftRate(Dominion $dominion, $draftRate)
+    public function changeDraftRate(Dominion $dominion, $draftRate): array
     {
         $this->guardLockedDominion($dominion);
 
