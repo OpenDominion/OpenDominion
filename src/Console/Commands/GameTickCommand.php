@@ -5,7 +5,6 @@ namespace OpenDominion\Console\Commands;
 use Carbon\Carbon;
 use Config;
 use DB;
-use Exception;
 use Illuminate\Console\Command;
 use Log;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
@@ -13,6 +12,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Repositories\DominionRepository;
+use RuntimeException;
 
 // todo: refactor this class
 
@@ -60,7 +60,7 @@ class GameTickCommand extends Command
     /**
      * Execute the game:tick console command.
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function handle()
     {
@@ -95,7 +95,7 @@ class GameTickCommand extends Command
      *
      * Only MySQL and Sqlite are supported at this time.
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function setDatabaseDriver()
     {
@@ -103,7 +103,7 @@ class GameTickCommand extends Command
         $driver = Config::get("database.connections.{$connector}.driver");
 
         if (!in_array($driver, ['mysql', 'sqlite'], true)) {
-            throw new Exception("Database driver {$driver} not supported for game:tick command :(");
+            throw new RuntimeException("Database driver {$driver} not supported for game:tick command :(");
         }
 
         $this->databaseDriver = $driver;

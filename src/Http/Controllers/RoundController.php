@@ -3,7 +3,6 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
-use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Round;
@@ -12,6 +11,7 @@ use OpenDominion\Repositories\RaceRepository;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
+use RuntimeException;
 
 class RoundController extends AbstractController
 {
@@ -86,7 +86,7 @@ class RoundController extends AbstractController
         ], ['id']);
 
         if (!$dominions->isEmpty()) {
-            throw new Exception("User already has a dominion in round {$round->number}");
+            throw new RuntimeException("User already has a dominion in round {$round->number}");
         }
     }
 }

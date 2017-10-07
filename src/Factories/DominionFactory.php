@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Factories;
 
-use Exception;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -10,6 +9,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Services\RealmFinderService;
+use RuntimeException;
 
 class DominionFactory
 {
@@ -51,7 +51,7 @@ class DominionFactory
      * @param string $realmType Currently only 'random'. Future will support packs
      * @param string $name
      *
-     * @throws Exception
+     * @throws RuntimeException
      * @return Dominion
      */
     public function create(User $user, Round $round, Race $race, string $realmType, string $name): Dominion
@@ -66,7 +66,7 @@ class DominionFactory
                 break;
 
             default:
-                throw new Exception("Realm type '{$realmType}' not supported");
+                throw new RuntimeException("Realm type '{$realmType}' not supported");
         }
 
         // No vacant realm. Create a new one instead
