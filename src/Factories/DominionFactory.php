@@ -7,15 +7,11 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Repositories\DominionRepository;
 use OpenDominion\Services\RealmFinderService;
 use RuntimeException;
 
 class DominionFactory
 {
-    /** @var DominionRepository */
-    protected $dominions;
-
     /** @var NetworthCalculator */
     protected $networthCalculator;
 
@@ -28,13 +24,11 @@ class DominionFactory
     /**
      * DominionFactory constructor.
      *
-     * @param DominionRepository $dominions
      * @param NetworthCalculator $networthCalculator
      * @param RealmFinderService $realmFinderService
      */
-    public function __construct(DominionRepository $dominions, NetworthCalculator $networthCalculator, RealmFinderService $realmFinderService, RealmFactory $realmFactory)
+    public function __construct(NetworthCalculator $networthCalculator, RealmFinderService $realmFinderService, RealmFactory $realmFactory)
     {
-        $this->dominions = $dominions;
         $this->networthCalculator = $networthCalculator;
         $this->realmFinderService = $realmFinderService;
         $this->realmFactory = $realmFactory;
@@ -77,7 +71,7 @@ class DominionFactory
         // todo: get starting values from config
 
         // Create dominion
-        $dominion = $this->dominions->create([
+        $dominion = Dominion::create([
             'user_id' => $user->id,
             'round_id' => $round->id,
             'realm_id' => $realm->id,

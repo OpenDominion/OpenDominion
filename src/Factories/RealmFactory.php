@@ -6,23 +6,9 @@ use Atrox\Haikunator;
 use DB;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
-use OpenDominion\Repositories\RealmRepository;
 
 class RealmFactory
 {
-    /** @var RealmRepository */
-    protected $realms;
-
-    /**
-     * RealmFactory constructor.
-     *
-     * @param RealmRepository $realms
-     */
-    public function __construct(RealmRepository $realms)
-    {
-        $this->realms = $realms;
-    }
-
     /**
      * Creates and returns a new Realm in a Round based on alignment.
      *
@@ -52,7 +38,7 @@ class RealmFactory
             'delimiter' => ' '
         ]));
 
-        $realm = $this->realms->create([
+        $realm = Realm::create([
             'round_id' => $round->id,
             'alignment' => $alignment,
             'number' => $number,

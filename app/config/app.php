@@ -171,7 +171,6 @@ return [
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
-        Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 
         /*

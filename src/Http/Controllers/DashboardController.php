@@ -2,30 +2,22 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use OpenDominion\Repositories\Criteria\Dominion\DominionFromCurrentLoggedInUserCriteria;
-use OpenDominion\Repositories\DominionRepository;
-use OpenDominion\Repositories\RoundRepository;
+use Auth;
+use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Round;
 
 class DashboardController extends AbstractController
 {
-    /** @var DominionRepository */
-    protected $dominions;
-
-    /** @var RoundRepository */
-    protected $rounds;
-
-    public function __construct(DominionRepository $dominions, RoundRepository $rounds)
-    {
-        $this->dominions = $dominions;
-        $this->rounds = $rounds;
-    }
-
     public function getIndex()
     {
-        $this->dominions->pushCriteria(DominionFromCurrentLoggedInUserCriteria::class);
-        $dominions = $this->dominions->with(['round', 'realm', 'race'])->orderBy('created_at', 'desc')->all();
+        $dominions = Dominion::with(['round', 'realm', 'race'])
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        $rounds = $this->rounds->with('league')->orderBy('created_at', 'desc')->all();
+        $rounds = Round::with('league')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('pages.dashboard', [
             'dominions' => $dominions,

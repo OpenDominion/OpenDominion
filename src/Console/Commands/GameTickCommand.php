@@ -11,7 +11,6 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Repositories\DominionRepository;
 use RuntimeException;
 
 // todo: refactor this class
@@ -30,9 +29,6 @@ class GameTickCommand extends Command
     /** @var int[] */
     protected $dominionsIdsToUpdate = [];
 
-    /** @var DominionRepository */
-    protected $dominions;
-
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
@@ -44,14 +40,11 @@ class GameTickCommand extends Command
 
     /**
      * GameTickCommand constructor.
-     *
-     * @param DominionRepository $dominions
      */
-    public function __construct(DominionRepository $dominions)
+    public function __construct()
     {
         parent::__construct();
 
-        $this->dominions = $dominions;
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
@@ -68,6 +61,7 @@ class GameTickCommand extends Command
 
         Log::debug('Tick started');
 
+        // todo: DB::transaction(function () { ... });
         DB::beginTransaction();
 
         $this->fetchDominionsToUpdate();
@@ -132,9 +126,7 @@ class GameTickCommand extends Command
     {
         Log::debug('Tick resources started');
 
-        /** @var Dominion[] $dominions */
-        $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate);
-        // todo: fetch only non-locked dominions
+        $dominions = $this->getDominionsToUpdate();
 
         foreach ($dominions as $dominion) {
             // Resources
@@ -383,12 +375,16 @@ class GameTickCommand extends Command
         // todo: figure out what to do with dominion->networth
         Log::debug('Tick dominion networth');
 
-        /** @var Dominion[] $dominions */
-        $dominions = $this->dominions->findWhereIn('id', $this->dominionsIdsToUpdate);
-
-        foreach ($dominions as $dominion) {
+        foreach ($this->getDominionsToUpdate() as $dominion) {
             $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
             $dominion->save();
         }
+    }
+
+    protected function getDominionsToUpdate()
+    {
+        // todo: fetch only non-locked dominions
+
+        return Dominion::whereIn('id', $this->dominionsIdsToUpdate)->get();
     }
 }

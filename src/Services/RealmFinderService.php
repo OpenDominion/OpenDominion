@@ -7,23 +7,9 @@ use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
-use OpenDominion\Repositories\RealmRepository;
 
 class RealmFinderService
 {
-    /** @var RealmRepository */
-    protected $realms;
-
-    /**
-     * RealmService constructor.
-     *
-     * @param RealmRepository $realms
-     */
-    public function __construct(RealmRepository $realms)
-    {
-        $this->realms = $realms;
-    }
-
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
      *

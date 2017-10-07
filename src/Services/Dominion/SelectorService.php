@@ -4,7 +4,6 @@ namespace OpenDominion\Services\Dominion;
 
 use Auth;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Repositories\DominionRepository;
 use RuntimeException;
 use Session;
 
@@ -12,16 +11,8 @@ class SelectorService
 {
     const SESSION_NAME = 'selected_dominion_id';
 
-    /** @var DominionRepository */
-    protected $dominions;
-
     /** @var Dominion */
     protected $selectedDominion;
-
-    public function __construct(DominionRepository $dominions)
-    {
-        $this->dominions = $dominions;
-    }
 
     /**
      * Returns whether the current logged in user has selected a dominion.
@@ -74,7 +65,7 @@ class SelectorService
         }
 
         if ($this->selectedDominion === null || ($dominionId !== $this->selectedDominion->id)) {
-            $this->selectedDominion = $this->dominions->with(['realm', 'race.perks', 'race.perks.type', 'race', 'race.units'])->find($dominionId);
+            $this->selectedDominion = Dominion::with(['realm', 'race.perks', 'race.perks.type', 'race', 'race.units'])->findOrFail($dominionId);
         }
 
         return $this->selectedDominion;
