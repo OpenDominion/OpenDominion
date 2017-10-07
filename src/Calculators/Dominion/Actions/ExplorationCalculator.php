@@ -2,11 +2,10 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\ExplorationCalculator as ExplorationCalculatorContract;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 
-class ExplorationCalculator implements ExplorationCalculatorContract
+class ExplorationCalculator
 {
     /** @var LandCalculator */
     protected $landCalculator;
@@ -22,9 +21,12 @@ class ExplorationCalculator implements ExplorationCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's exploration platinum cost (per acre of land).
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getPlatinumCost(Dominion $dominion)
+    public function getPlatinumCost(Dominion $dominion): int
     {
         $platinum = 0;
         $totalLand = $this->landCalculator->getTotalLand($dominion);
@@ -42,9 +44,12 @@ class ExplorationCalculator implements ExplorationCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the Dominion's exploration draftee cost (per acre of land).
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getDrafteeCost(Dominion $dominion)
+    public function getDrafteeCost(Dominion $dominion): int
     {
         $draftees = 0;
         $totalLand = $this->landCalculator->getTotalLand($dominion);
@@ -62,9 +67,13 @@ class ExplorationCalculator implements ExplorationCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the maximum number of acres of land a Dominion can afford to
+     * explore.
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getMaxAfford(Dominion $dominion)
+    public function getMaxAfford(Dominion $dominion): int
     {
         return (int)min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
@@ -73,9 +82,13 @@ class ExplorationCalculator implements ExplorationCalculatorContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the morale drop after exploring for $amount of acres of land.
+     *
+     * @param int $amount
+     * @return int
+     * @todo Does this really belong here? Maybe it should go in a helper, since it isn't dependent on a Dominion instance
      */
-    public function getMoraleDrop($amount)
+    public function getMoraleDrop($amount): int
     {
         return (int)round(($amount + 2) / 3);
     }
