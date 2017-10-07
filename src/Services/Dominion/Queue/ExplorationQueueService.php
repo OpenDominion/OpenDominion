@@ -3,11 +3,10 @@
 namespace OpenDominion\Services\Dominion\Queue;
 
 use DB;
-use OpenDominion\Contracts\Services\Dominion\Queue\ExplorationQueueService as ExplorationQueueServiceContract;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 
-class ExplorationQueueService implements ExplorationQueueServiceContract
+class ExplorationQueueService
 {
     /** @var LandHelper */
     protected $landHelper;
@@ -26,9 +25,12 @@ class ExplorationQueueService implements ExplorationQueueServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the exploration queue of a dominion.
+     *
+     * @param Dominion $dominion
+     * @return array
      */
-    public function getQueue(Dominion $dominion)
+    public function getQueue(Dominion $dominion): array
     {
         if ($this->explorationQueue) {
             return $this->explorationQueue;
@@ -48,9 +50,12 @@ class ExplorationQueueService implements ExplorationQueueServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the total number of land being explored of a dominion.
+     *
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getQueueTotal(Dominion $dominion)
+    public function getQueueTotal(Dominion $dominion): int
     {
         $total = 0;
         $explorationQueue = $this->getQueue($dominion);
@@ -65,9 +70,14 @@ class ExplorationQueueService implements ExplorationQueueServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the total number of a specific land being explored by a
+     * dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $land
+     * @return int
      */
-    public function getQueueTotalByLand(Dominion $dominion, $land)
+    public function getQueueTotalByLand(Dominion $dominion, string $land): int
     {
         return array_sum($this->getQueue($dominion)[$land]);
     }
