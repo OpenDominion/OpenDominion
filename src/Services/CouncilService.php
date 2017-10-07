@@ -2,18 +2,23 @@
 
 namespace OpenDominion\Services;
 
-use OpenDominion\Contracts\Services\CouncilService as CouncilServiceContract;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class CouncilService implements CouncilServiceContract
+class CouncilService
 {
     use DominionGuardsTrait;
 
     /**
-     * {@inheritdoc}
+     * Creates a new council thread.
+     *
+     * @param Dominion $dominion
+     * @param string $title
+     * @param string $body
+     * @return Council\Thread
+     * @throws RuntimeException
      */
     public function createThread(Dominion $dominion, string $title, string $body)
     {
@@ -28,7 +33,13 @@ class CouncilService implements CouncilServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a reply post on a council thread.
+     *
+     * @param Dominion $dominion
+     * @param Council\Thread $thread
+     * @param string $body
+     * @return Council\Post
+     * @throws RuntimeException
      */
     public function postReply(Dominion $dominion, Council\Thread $thread, string $body)
     {
