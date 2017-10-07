@@ -3,13 +3,13 @@
 namespace OpenDominion\Factories;
 
 use Exception;
-use OpenDominion\Contracts\Calculators\NetworthCalculator;
-use OpenDominion\Contracts\Services\RealmFinderService;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Repositories\DominionRepository;
+use OpenDominion\Services\RealmFinderService;
 
 class DominionFactory
 {
