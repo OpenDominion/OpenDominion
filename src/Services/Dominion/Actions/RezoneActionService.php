@@ -2,14 +2,13 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use OpenDominion\Contracts\Calculators\Dominion\Actions\RezoningCalculator;
-use OpenDominion\Contracts\Calculators\Dominion\LandCalculator;
-use OpenDominion\Contracts\Services\Dominion\Actions\RezoneActionService as RezoneActionServiceContract;
+use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
-class RezoneActionService implements RezoneActionServiceContract
+class RezoneActionService
 {
     use DominionGuardsTrait;
 
@@ -32,9 +31,15 @@ class RezoneActionService implements RezoneActionServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Does a rezone action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $remove Land to remove
+     * @param array $add Land to add.
+     * @return array
+     * @throws RuntimeException
      */
-    public function rezone(Dominion $dominion, array $remove, array $add)
+    public function rezone(Dominion $dominion, array $remove, array $add): array
     {
         $this->guardLockedDominion($dominion);
 
@@ -51,13 +56,8 @@ class RezoneActionService implements RezoneActionServiceContract
 
         $totalLand = array_sum($remove);
 
-        if ($totalLand !== array_sum($add)) {
+        if (($totalLand === 0) || $totalLand !== array_sum($add)) {
             throw new RuntimeException('Re-zoning was nog completed due to bad input.');
-        }
-
-        if ($totalLand === 0) {
-            // Nothing to do.
-            return 0;
         }
 
         // Check if the requested amount of land is barren.
