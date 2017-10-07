@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Http\Requests\Dominion;
 
-use OpenDominion\Contracts\Services\Dominion\SelectorService;
 use OpenDominion\Http\Requests\AbstractRequest;
+use OpenDominion\Services\Dominion\SelectorService;
 
 abstract class AbstractDominionRequest extends AbstractRequest
 {
