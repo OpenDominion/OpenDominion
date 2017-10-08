@@ -32,9 +32,9 @@ class RealmController extends AbstractDominionController
             ->with(['race.units'])
             ->get();
 
-        $dominions = $dominions->sortBy(function (Dominion $dominion) use ($landCalculator) {
+        $dominions = $dominions->sortByDesc(function (Dominion $dominion) use ($landCalculator) {
             return $landCalculator->getTotalLand($dominion);
-        }, SORT_REGULAR, true);
+        })->values();
 
         $round = $realm->round;
 
