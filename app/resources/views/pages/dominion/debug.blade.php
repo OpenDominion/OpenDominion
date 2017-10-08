@@ -29,6 +29,7 @@
                 <div class="box-body">
                     @php
                         $dominion = clone $selectedDominion;
+                        $dominion->load('race.units.perkType');
                         unset($dominion->realm);
                     @endphp
                     <pre>{{ print_r(json_decode($dominion), true) }}</pre>
