@@ -10,7 +10,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-capitol"></i> National Bank <span class="label label-success">New!</span></h3>
+                    <h3 class="box-title"><i class="ra ra-capitol"></i> National Bank</h3>
                 </div>
                 <form action="{{ route('dominion.bank') }}" method="post" {{--class="form-inline" --}}role="form">
                     {!! csrf_field() !!}

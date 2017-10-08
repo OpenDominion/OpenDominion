@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-sword"></i> Military <span class="label label-success">New!</span></h3>
+                    <h3 class="box-title"><i class="ra ra-sword"></i> Military</h3>
                 </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
                     {!! csrf_field() !!}
