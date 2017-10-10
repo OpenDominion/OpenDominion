@@ -9,7 +9,7 @@ use OpenDominion\Models\RoundLeague;
 
 class RoundStartCommand extends Command
 {
-    protected $signature = 'round:start';
+    protected $signature = 'round:start {--open?}';
 
     protected $description = 'Starts a new round (dev only)';
 
@@ -36,12 +36,22 @@ class RoundStartCommand extends Command
 //            return false;
 //        }
 
+        // Do we have an open flag or not?
+        $openFlag = $this->option('open') ? true : false;
+
+        // Default our start and end days
+        $startDate = $openFlag ? 'today midnight'  : '+5 days midnight';
+        $endDate   = $openFlag ? '+53 days midnight' : '+55 days midnight';
+
+        // Some CLI information
+        if ($openFlag) $this->output->writeln("<info>Round will open {$startDate}</info>");
+
         $newRound = Round::create([
             'round_league_id' => $standardRoundLeague->id,
             'number' => ($lastRound->number + 1),
             'name' => 'Development Round',
-            'start_date' => new Carbon('+5 days midnight'),
-            'end_date' => new Carbon('+55 days midnight'),
+            'start_date' => new Carbon($startDate),
+            'end_date' => new Carbon($endDate),
         ]);
 
         $this->output->writeln("<info>Round {$newRound->number} created successfully</info>");
