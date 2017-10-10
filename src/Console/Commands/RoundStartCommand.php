@@ -44,7 +44,7 @@ class RoundStartCommand extends Command
         $endDate   = $openFlag ? '+53 days midnight' : '+55 days midnight';
 
         // Some CLI information
-        if ($openFlag) $this->output->writeln("<info>Round will open " . $startDate . "</info>");
+        if ($openFlag) $this->output->writeln("<info>Round will open {$startDate}</info>");
 
         $newRound = Round::create([
             'round_league_id' => $standardRoundLeague->id,
