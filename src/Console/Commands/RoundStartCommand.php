@@ -9,17 +9,13 @@ use OpenDominion\Models\RoundLeague;
 
 class RoundStartCommand extends Command
 {
-    protected $signature = 'round:start';
+    protected $signature = 'round:start {--open}';
 
     protected $description = 'Starts a new round (dev only)';
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        //
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function handle()
     {
         $this->output->writeln('<info>Attempting to start a new round</info>');
@@ -31,16 +27,13 @@ class RoundStartCommand extends Command
             ->orderBy('number', 'desc')
             ->firstOrFail();
 
-//        if ($lastRound->isActive()) {
-//            $this->output->writeln("<error>Did not create a new round because round {$lastRound->number} in {$standardRoundLeague->description} is still active!</error>");
-//            return false;
-//        }
+        $startDate = $this->option('open') ? new Carbon('midnight') : new Carbon('+5 days midnight');
 
         $newRound = Round::create([
             'round_league_id' => $standardRoundLeague->id,
             'number' => ($lastRound->number + 1),
             'name' => 'Development Round',
-            'start_date' => new Carbon('+5 days midnight'),
+            'start_date' => $startDate,
             'end_date' => new Carbon('+55 days midnight'),
         ]);
 
