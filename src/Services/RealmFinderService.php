@@ -24,7 +24,6 @@ class RealmFinderService
      */
     public function findRandomRealm(Round $round, Race $race): ?Realm
     {
-        // todo: figure out how to do this with repositories
         $results = DB::table('realms')
             ->select('realms.id', DB::raw('COUNT(dominions.id) AS dominion_count'))
             ->leftJoin('dominions', function ($join) use ($round) {
