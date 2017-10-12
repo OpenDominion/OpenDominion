@@ -55,7 +55,7 @@ class TickCommand extends Command
      *
      * @throws RuntimeException
      */
-    public function handle()
+    public function handle(): void
     {
         $this->setDatabaseDriver();
 

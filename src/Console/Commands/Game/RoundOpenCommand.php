@@ -39,7 +39,7 @@ class RoundOpenCommand extends Command
      *
      * @throws RuntimeException
      */
-    public function handle()
+    public function handle(): void
     {
         $now = $this->option('now');
         $open = $this->option('open');
