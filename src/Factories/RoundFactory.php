@@ -28,7 +28,7 @@ class RoundFactory
             'number' => $number,
             'name' => "Beta Round {$number}", // todo
             'start_date' => $startDate,
-            'end_date' => $startDate->addDays(static::ROUND_DURATION_IN_DAYS),
+            'end_date' => (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS),
         ]);
     }
 
