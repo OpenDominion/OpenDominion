@@ -13,10 +13,23 @@
                     <small>Playing since {{ Auth::user()->created_at->toFormattedDateString() }}</small>
                 </p>
             </li>
-            <li class="user-footer">
-                <div class="pull-left">
-                    <a href="{{ route('dashboard') }}" class="btn btn-default btn-flat"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+            <li class="user-body">
+                <div class="row">
+                    <div class="col-xs-4 text-center">
+                        <span class="nyi">Profile</span>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <a href="{{ route('dashboard') }}">Dashboard</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <a href="{{ route('settings') }}">Settings</a>
+                    </div>
                 </div>
+            </li>
+            <li class="user-footer">
+                {{--<div class="pull-left">
+                    <a href="{{ route('dashboard') }}" class="btn btn-default btn-flat"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                </div>--}}
                 <div class="pull-right">
                     <form action="{{ route('auth.logout') }}" method="post">
                         {!! csrf_field() !!}

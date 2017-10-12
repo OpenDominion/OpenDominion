@@ -75,8 +75,22 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
 $router->group(['middleware' => 'auth'], function (Router $router) {
 
+    // Profile
+    // todo
+
     // Dashboard
     $router->get('dashboard')->uses('DashboardController@getIndex')->name('dashboard');
+
+    // Settings
+    $router->group(['prefix' => 'settings', 'as' => 'settings'], function (Router $router) {
+
+        $router->get('/')->uses('SettingsController@getIndex');
+
+        $router->get('account')->uses('SettingsController@getAccount')->name('.account');
+        $router->get('notifications')->uses('SettingsController@getNotifications')->name('.notifications');
+        $router->get('security')->uses('SettingsController@getSecurity')->name('.security');
+
+    });
 
     // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
