@@ -24,7 +24,7 @@
                             <thead>
                                 <tr>
                                     <th>Land type</th>
-                                    <th class="text-center">Available</th>
+                                    <th class="text-center">Barren</th>
                                     <th class="text-center">Amount</th> {{-- wording change? --}}
                                     <th class="text-center">Convert to</th>
                                     <th class="text-center">Amount</th>
