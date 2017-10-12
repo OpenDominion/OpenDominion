@@ -1,0 +1,53 @@
+<?php
+
+namespace OpenDominion\Factories;
+
+use Carbon\Carbon;
+use OpenDominion\Models\Round;
+use OpenDominion\Models\RoundLeague;
+
+class RoundFactory
+{
+    // todo: move to config somewhere?
+    const ROUND_DURATION_IN_DAYS = 50;
+
+    /**
+     * Creates and returns a new Round in a RoundLeague.
+     *
+     * @param RoundLeague $league
+     * @param Carbon $startDate
+     *
+     * @return Round
+     */
+    public function create(RoundLeague $league, Carbon $startDate): Round
+    {
+        $number = ($this->getLastRoundNumber($league) + 1);
+
+        return Round::create([
+            'round_league_id' => $league->id,
+            'number' => $number,
+            'name' => "Beta Round {$number}", // todo
+            'start_date' => $startDate,
+            'end_date' => $startDate->addDays(static::ROUND_DURATION_IN_DAYS),
+        ]);
+    }
+
+    /**
+     * Returns the last round number in a round league.
+     *
+     * @param RoundLeague $league
+     * @return int
+     */
+    protected function getLastRoundNumber(RoundLeague $league): int
+    {
+        $round = Round::where('round_league_id', $league->id)
+            ->orderBy('number', 'desc')
+            ->first();
+
+        if ($round) {
+            return $round->number;
+        }
+
+        return 0;
+    }
+}
