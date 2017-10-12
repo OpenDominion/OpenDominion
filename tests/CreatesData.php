@@ -5,6 +5,7 @@ namespace OpenDominion\Tests;
 use Carbon\Carbon;
 use CoreDataSeeder;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -61,6 +62,8 @@ trait CreatesData
      */
     protected function createRound($startDate = 'today', $endDate = '+50 days')
     {
+        // todo: RoundFactory
+
         $round = Round::create([
             'round_league_id' => 1,
             'number' => 1,
@@ -79,6 +82,8 @@ trait CreatesData
      */
     protected function createRealm(Round $round, $alignment = 'good')
     {
+        // todo: RealmFactory
+
         $realm = Realm::create([
             'round_id' => $round->id,
             'alignment' => $alignment,
