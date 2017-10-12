@@ -10,16 +10,23 @@ use RuntimeException;
 
 class RoundOpenCommand extends Command
 {
+    /** @var string The name and signature of the console command. */
     protected $signature = 'game:round:open
                              {--now : Start the round right now (dev & testing only)}
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
                              {--league=standard : Round league to use}';
 
+    /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
 
     /** @var RoundFactory  */
     protected $roundFactory;
 
+    /**
+     * RoundOpenCommand constructor.
+     *
+     * @param RoundFactory $roundFactory
+     */
     public function __construct(RoundFactory $roundFactory)
     {
         parent::__construct();
@@ -27,6 +34,11 @@ class RoundOpenCommand extends Command
         $this->roundFactory = $roundFactory;
     }
 
+    /**
+     * Execute the console command.
+     *
+     * @throws RuntimeException
+     */
     public function handle()
     {
         $now = $this->option('now');
