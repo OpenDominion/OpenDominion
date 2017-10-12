@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Console\Commands;
+namespace OpenDominion\Console\Commands\Game;
 
 use Carbon\Carbon;
 use Config;
@@ -15,7 +15,7 @@ use RuntimeException;
 
 // todo: refactor this class
 
-class GameTickCommand extends Command
+class TickCommand extends Command
 {
     /** @var string The name and signature of the console command */
     protected $signature = 'game:tick';

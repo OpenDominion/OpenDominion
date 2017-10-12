@@ -13,8 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\GameTickCommand::class,
         Commands\Game\RoundOpenCommand::class,
+        Commands\Game\TickCommand::class,
         Commands\UpdateVersionCommand::class,
     ];
 
