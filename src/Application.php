@@ -20,10 +20,19 @@ class Application extends LaravelApplication
      */
     public function __construct($basePath = null)
     {
-        parent::__construct($basePath);
+        if ($basePath) {
+            $this->basePath = rtrim($basePath, '\/');
+        }
 
         $this->appPath = ($this->basePath() . DIRECTORY_SEPARATOR . 'app');
+
         $this->bindPathsInContainer();
+
+        $this->registerBaseBindings();
+
+        $this->registerBaseServiceProviders();
+
+        $this->registerCoreContainerAliases();
     }
 
     /**
