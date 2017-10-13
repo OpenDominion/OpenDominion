@@ -47,15 +47,13 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "Illuminate\\Foundation\\ComposerScripts::postInstall",
-      "php bin/artisan optimize"
+      "Illuminate\\Foundation\\ComposerScripts::postInstall"
     ],
     "post-update-cmd": [
       "Illuminate\\Foundation\\ComposerScripts::postUpdate",
       "php bin/artisan ide-helper:generate",
       "php bin/artisan ide-helper:models -N",
-      "php bin/artisan ide-helper:meta",
-      "php bin/artisan optimize"
+      "php bin/artisan ide-helper:meta"
     ],
     "post-autoload-dump": [
       "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

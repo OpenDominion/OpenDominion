@@ -171,7 +171,6 @@ $ php bin/artisan clear-compiled
 $ php bin/artisan ide-helper:generate
 $ php bin/artisan ide-helper:models -N
 $ php bin/artisan ide-helper:meta
-$ php bin/artisan optimize
 
 # Frontend stuff
 $ yarn install # Optionally with --no-bin-links on mounted drives, like with Vagrant

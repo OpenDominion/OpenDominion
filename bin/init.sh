@@ -44,7 +44,6 @@ if [[ ${IDE_HELPERS} ]]; then
     php bin/artisan ide-helper:generate
     php bin/artisan ide-helper:models -N
     php bin/artisan ide-helper:meta
-    php bin/artisan optimize
 fi
 
 # Frontend stuff, not needed during testing
