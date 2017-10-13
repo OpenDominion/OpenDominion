@@ -167,11 +167,7 @@ return [
          * Package Service Providers...
          */
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class,
-        Laravel\Tinker\TinkerServiceProvider::class,
-        Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 
         /*
          * Application Service Providers...

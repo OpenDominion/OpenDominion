@@ -42,7 +42,6 @@ class AppServiceProvider extends AbstractServiceProvider
     {
         if ($this->app->environment() === 'local') {
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
-            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
         $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
