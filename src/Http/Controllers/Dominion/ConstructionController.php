@@ -42,12 +42,6 @@ class ConstructionController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = sprintf(
-            'Construction started at a cost of %s platinum and %s lumber.',
-            number_format($result['platinumCost']),
-            number_format($result['lumberCost'])
-        );
-
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
@@ -57,7 +51,7 @@ class ConstructionController extends AbstractDominionController
             array_sum($request->get('construct')) // todo: get from $result
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.construction');
     }
 
@@ -84,21 +78,16 @@ class ConstructionController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = sprintf(
-            'Destruction of %s buildings is complete.',
-            number_format($result['totalBuildingsDestroyed'])
-        );
-
         // todo: laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'destroy',
             '',
-            $result['totalBuildingsDestroyed']
+            $result['data']['totalBuildingsDestroyed']
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.destroy');
     }
 }

@@ -38,13 +38,6 @@ class ExplorationController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = sprintf(
-            'Exploration begun at a cost of %s platinum and %s draftees. Your orders for exploration disheartens the military, and morale drops %s%%.',
-            number_format($result['platinumCost']),
-            number_format($result['drafteeCost']),
-            number_format($result['moraleDrop'])
-        );
-
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
@@ -54,7 +47,7 @@ class ExplorationController extends AbstractDominionController
             array_sum($request->get('explore'))
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.explore');
     }
 }

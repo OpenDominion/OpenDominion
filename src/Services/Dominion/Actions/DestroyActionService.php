@@ -47,7 +47,10 @@ class DestroyActionService
         $dominion->save();
 
         return [
-            'totalBuildingsDestroyed' => $totalBuildingsToDestroy,
+            'message' => sprintf('Destruction of %d buildings is complete.', $totalBuildingsToDestroy),
+            'data' => [
+                'totalBuildingsDestroyed' => $totalBuildingsToDestroy,
+            ],
         ];
     }
 }

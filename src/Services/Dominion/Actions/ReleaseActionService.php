@@ -107,7 +107,9 @@ class ReleaseActionService
 
         return [
             'message' => $troopsReleasedString,
-            'totalTroopsReleased' => $totalTroopsToRelease,
+            'data' => [
+                'totalTroopsReleased' => $totalTroopsToRelease,
+            ],
         ];
     }
 }
