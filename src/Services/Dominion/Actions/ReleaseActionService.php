@@ -74,36 +74,26 @@ class ReleaseActionService
 
         $dominion->save();
 
-        // todo: refactor
         $troopsReleasedStringParts = ['You successfully released'];
-        $troopsReleasedStringPartsParts = []; // todo: refactooooooor
+
+        if (isset($troopsReleased['draftees'])) {
+            $amount = $troopsReleased['draftees'];
+            $troopsReleasedStringParts[] = sprintf('%s %s into the peasantry', number_format($amount), str_plural('draftee', $amount));
+        }
 
         foreach ($troopsReleased as $unitType => $amount) {
-            if ($amount === 0) {
+            if ($amount === 0 || $unitType === 'draftees') {
                 continue;
             }
-
-            if ($unitType === 'draftees') {
-                $troopsReleasedStringParts[] = sprintf('%s %s into the peasantry', number_format($amount), str_plural('draftee', $amount));
-            } else {
-                $troopsReleasedStringPartsParts[] = (number_format($amount) . ' ' . str_plural(str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race))), $amount));
+            else {
+                $conjunction = count($troopsReleasedStringParts) === 1 ? '' : 'and ';
+                $troopsReleasedStringParts[] = $conjunction . (number_format($amount) . ' ' . str_plural(str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race))), $amount));
             }
         }
 
-        if (!empty($troopsReleasedStringPartsParts)) {
-            $tmp = implode(', ', $troopsReleasedStringPartsParts);
-            $tmp = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($tmp), 2)));
-
-            if (isset($troopsReleased['draftees'])) {
-                $troopsReleasedStringParts[] = 'and';
-            }
-
-            $troopsReleasedStringParts[] = $tmp;
-            $troopsReleasedStringParts[] = 'into draftees';
-        }
+        $troopsReleasedStringParts[] = 'into draftees';
 
         $troopsReleasedString = (implode(' ', $troopsReleasedStringParts) . '.');
-        // todo: /refactor
 
         return [
             'message' => $troopsReleasedString,
