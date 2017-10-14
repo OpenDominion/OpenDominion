@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-home"></i> Construct Buildings</h3>
                 </div>
-                <form action="{{ route('dominion.construction') }}" method="post" role="form">
+                <form action="{{ route('dominion.construct') }}" method="post" role="form">
                     {!! csrf_field() !!}
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
@@ -79,7 +79,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
+                    <a href="{{ route('dominion.advisors.construct') }}" class="pull-right">Construction Advisor</a>
                 </div>
                 <div class="box-body">
                     <p>Construction will let you construct additional buildings and will take <b>12 hours</b> to process.</p>

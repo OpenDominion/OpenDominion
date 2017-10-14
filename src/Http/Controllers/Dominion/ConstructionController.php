@@ -58,7 +58,7 @@ class ConstructionController extends AbstractDominionController
         ));
 
         $request->session()->flash('alert-success', $message);
-        return redirect()->route('dominion.construction');
+        return redirect()->route('dominion.construct');
     }
 
     public function getDestroy()
