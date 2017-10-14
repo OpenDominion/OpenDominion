@@ -157,12 +157,14 @@ class TrainActionService
         $unitsToTrainString = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($unitsToTrainString), 2)));
 
         $message = sprintf(
-            'Training of %s begun at a cost of %s platinum, %s ore, %s draftees and %s wizards.',
+            'Training of %s begun at a cost of %s platinum, %s ore, %s %s and %s %s.',
             $unitsToTrainString,
             number_format($totalCosts['platinum']),
             number_format($totalCosts['ore']),
             number_format($totalCosts['draftees']),
-            number_format($totalCosts['wizards'])
+            str_plural('draftee', $totalCosts['draftees']),
+            number_format($totalCosts['wizards']),
+            str_plural('wizard', $totalCosts['wizards'])
         );
 
         return [

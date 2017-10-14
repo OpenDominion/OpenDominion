@@ -140,7 +140,11 @@ class ConstructActionService
         }
 
         return [
-            'message' => sprintf('Construction started at a cost of %d platinum and %d lumber.', $platinumCost, $lumberCost),
+            'message' => sprintf(
+                'Construction started at a cost of %s platinum and %s lumber.',
+                number_format($platinumCost),
+                number_format($lumberCost)
+            ),
             'data' => [
                 'platinumCost' => $platinumCost,
                 'lumberCost' => $lumberCost,

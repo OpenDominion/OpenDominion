@@ -121,7 +121,13 @@ class ExploreActionService
         }
 
         return [
-            'message' => sprintf('Exploration begun at a cost of %d platinum and %d draftees. Your orders for exploration disheartens the military, and morale drops %d%%.', $platinumCost, $drafteeCost, $moraleDrop),
+            'message' => sprintf(
+                'Exploration begun at a cost of %s platinum and %s %s. Your orders for exploration disheartens the military, and morale drops %d%%.',
+                number_format($platinumCost),
+                number_format($drafteeCost),
+                str_plural('draftee', $drafteeCost),
+                $moraleDrop
+            ),
             'data' => [
                 'platinumCost' => $platinumCost,
                 'drafteeCost' => $drafteeCost,
