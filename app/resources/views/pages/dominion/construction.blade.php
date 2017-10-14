@@ -12,7 +12,7 @@
                 </div>
                 <form action="{{ route('dominion.construction') }}" method="post" role="form">
                     {!! csrf_field() !!}
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
