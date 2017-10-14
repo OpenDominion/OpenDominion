@@ -55,11 +55,4 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
     }
 
     // todo: test realmType / multiple dominions in realm?
-
-    public function testCreateUpdatesDominionNetworth()
-    {
-        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy');
-
-        $this->assertEquals(6450, $dominion->networth);
-    }
 }
