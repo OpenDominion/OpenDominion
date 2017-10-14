@@ -87,6 +87,11 @@ class RezoneActionService
 
         $dominion->save();
 
-        return compact('platinumCost');
+        return [
+            'message' => sprintf('Your land has been re-zoned at a cost of %d platinum.', $platinumCost),
+            'data' => [
+                'platinumCost' => $platinumCost,
+            ]
+        ];
     }
 }

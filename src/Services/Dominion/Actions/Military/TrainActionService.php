@@ -167,6 +167,9 @@ class TrainActionService
 
         return [
             'message' => $message,
+            'data' => [
+                'totalCosts' => $totalCosts,
+            ],
         ];
     }
 }

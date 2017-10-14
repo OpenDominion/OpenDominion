@@ -42,21 +42,16 @@ class MilitaryController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = sprintf(
-            'Draft rate changed to %d%%.',
-            $result['draftRate']
-        );
-
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'military.change-draft-rate',
             '',
-            $result['draftRate']
+            $result['data']['draftRate']
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.military');
     }
 
@@ -74,8 +69,6 @@ class MilitaryController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = $result['message']; // todo: ActionResponse
-
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
@@ -85,7 +78,7 @@ class MilitaryController extends AbstractDominionController
             null //$result['totalUnits']
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.military');
     }
 
@@ -116,7 +109,7 @@ class MilitaryController extends AbstractDominionController
             'dominion',
             'release',
             null, // todo: make null everywhere where ''
-            $result['totalTroopsReleased']
+            $result['data']['totalTroopsReleased']
         ));
 
         $request->session()->flash('alert-success', $result['message']);

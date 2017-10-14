@@ -31,6 +31,11 @@ class ChangeDraftRateActionService
         $dominion->draft_rate = $draftRate;
         $dominion->save();
 
-        return compact('draftRate');
+        return [
+            'message' => sprintf('Draft rate changed to %d%%.', $draftRate),
+            'data' => [
+                'draftRate' => $draftRate,
+            ],
+        ];
     }
 }

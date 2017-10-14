@@ -120,6 +120,13 @@ class ExploreActionService
             throw $e;
         }
 
-        return compact('platinumCost', 'drafteeCost', 'moraleDrop');
+        return [
+            'message' => sprintf('Exploration begun at a cost of %d platinum and %d draftees. Your orders for exploration disheartens the military, and morale drops %d%%.', $platinumCost, $drafteeCost, $moraleDrop),
+            'data' => [
+                'platinumCost' => $platinumCost,
+                'drafteeCost' => $drafteeCost,
+                'moraleDrop' => $moraleDrop,
+            ]
+        ];
     }
 }
