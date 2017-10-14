@@ -38,7 +38,7 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
     php bin/artisan version:update
 
     # Npm packages
-    yarn install
+    npm install
 
     # Frontend
     if [[ ${env} == production ]]; then

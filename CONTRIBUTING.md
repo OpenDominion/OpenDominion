@@ -117,10 +117,10 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 7.1 installed and in your path.
+- You have [PHP](http://www.php.net/) 7.1 or higher installed and in your path.
 - Your PHP has the extensions: curl, mbstring, openssl, pdo_sqlite and optionally [xdebug](https://xdebug.org/).
 - You have [Composer](https://getcomposer.org/) installed and in your path.
-- You have [NPM](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/) installed and in your path.
+- You have [NPM](https://nodejs.org/en/) 5 or higher installed and in your path.
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
 
@@ -173,10 +173,10 @@ $ php bin/artisan ide-helper:models -N
 $ php bin/artisan ide-helper:meta
 
 # Frontend stuff
-$ yarn install # Optionally with --no-bin-links on mounted drives, like with Vagrant
+$ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
 # If using Vagrant, node-sass might fail to install properly.
 # If so, run: npm rebuild node-sass --no-bin-links 
-$ yarn run dev
+$ npm run dev
 ```
 
 Make sure to change the `MAIL_*` settings in your `.env` if you want to use your own SMTP server (or just set `MAIL_DRIVER` to `log`). 
@@ -295,7 +295,7 @@ Consult [PHPUnit's manual](https://phpunit.de/manual/5.7/en/index.html) for runn
 
 ### How to update
 
-For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `yarn install` and/or `npm run dev`, depending on which files have changed.
+For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `npm install` and/or `npm run dev`, depending on which files have changed.
 
 
 ### How to reset
