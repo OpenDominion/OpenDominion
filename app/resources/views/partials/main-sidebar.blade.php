@@ -13,7 +13,7 @@
             </div>
         @endif
 
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu" data-widget="tree">
             @if (isset($selectedDominion))
 
                 <li class="header">GENERAL</li>

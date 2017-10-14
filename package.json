@@ -10,7 +10,7 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
-    "admin-lte": "^2.3.8",
+    "admin-lte": "^2.4.2",
     "cross-env": "^5.0.1",
     "font-awesome": "^4.7.0",
     "laravel-mix": "^1.0",

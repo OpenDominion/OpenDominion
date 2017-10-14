@@ -7,20 +7,25 @@ const vendorDirs = {
 
     // AdminLTE
     'node_modules/admin-lte/dist': 'public/assets/vendor/admin-lte',
-    'node_modules/admin-lte/bootstrap': 'public/assets/vendor/admin-lte/bootstrap',
     'node_modules/admin-lte/plugins': 'public/assets/vendor/admin-lte/plugins',
+
+    // Bootstrap
+    'node_modules/bootstrap/dist': 'public/assets/vendor/bootstrap',
 
     // Font Awesome
     'node_modules/font-awesome/css': 'public/assets/vendor/font-awesome/css',
     'node_modules/font-awesome/fonts': 'public/assets/vendor/font-awesome/fonts',
 
+    // jQuery
+    'node_modules/jquery/dist': 'public/assets/vendor/jquery',
+
     // RPG Awesome
     'node_modules/rpg-awesome/css': 'public/assets/vendor/rpg-awesome/css',
-    'node_modules/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts'
+    'node_modules/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts',
 
 };
 
-for (let dir in vendorDirs) {
+for (const dir in vendorDirs) {
     mix.copyDirectory(dir, vendorDirs[dir]);
 }
 
