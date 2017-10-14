@@ -6,7 +6,6 @@ use Faker\Generator as Faker;
 $factory->define(\OpenDominion\Models\Dominion::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->name,
-        'networth' => 0,
         'prestige' => 250,
         'peasants' => 1300,
         'peasants_last_hour' => 0,

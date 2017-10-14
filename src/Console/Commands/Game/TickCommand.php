@@ -77,7 +77,6 @@ class TickCommand extends Command
         $this->tickDominionMorale();
         $this->tickDominionSpyStrength();
         $this->tickDominionWizardStrength();
-        $this->tickDominionNetworth();
 
         DB::commit();
 
@@ -365,20 +364,6 @@ class TickCommand extends Command
         $affectedUpdated -= $affectedFinished;
 
         Log::debug("Ticked training queue, {$affectedUpdated} updated, {$affectedFinished} finished");
-    }
-
-    /**
-     * Ticks dominion networth.
-     */
-    public function tickDominionNetworth()
-    {
-        // todo: figure out what to do with dominion->networth
-        Log::debug('Tick dominion networth');
-
-        foreach ($this->getDominionsToUpdate() as $dominion) {
-            $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
-            $dominion->save();
-        }
     }
 
     protected function getDominionsToUpdate()
