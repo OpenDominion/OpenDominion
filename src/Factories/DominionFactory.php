@@ -78,7 +78,6 @@ class DominionFactory
             'race_id' => $race->id,
 
             'name' => $name,
-            'networth' => 0,
             'prestige' => 250,
 
             'peasants' => 1300,
@@ -143,19 +142,6 @@ class DominionFactory
             'building_dock' => 0,
         ]);
 
-        $this->updateNetworth($dominion);
-
         return $dominion;
-    }
-
-    /**
-     * Calculates and updates a Dominion's networth.
-     *
-     * @param Dominion $dominion
-     */
-    public function updateNetworth(Dominion $dominion): void
-    {
-        $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
-        $dominion->save();
     }
 }

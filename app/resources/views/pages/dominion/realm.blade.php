@@ -68,7 +68,7 @@
                                             --}}
                                         </td>
                                         <td class="text-center">{{ number_format($landCalculator->getTotalLand($dominion)) }}</td>
-                                        <td class="text-center">{{ number_format($dominion->networth) }}</td>
+                                        <td class="text-center">{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}</td>
                                     </tr>
                                 @endif
                             @endfor
