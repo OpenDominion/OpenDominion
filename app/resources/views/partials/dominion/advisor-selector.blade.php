@@ -28,7 +28,7 @@
             <div class="col-xs-12 visible-xs">&nbsp;</div>
 
             <div class="col-xs-4 col-sm-3 col-md-2 col-lg-1">
-                <a href="{{ route('dominion.advisors.construction') }}" class="btn btn-app btn-block">
+                <a href="{{ route('dominion.advisors.construct') }}" class="btn btn-app btn-block">
                     <i class="fa fa-home"></i> Construction
                 </a>
             </div>
