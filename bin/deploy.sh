@@ -42,7 +42,7 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
 
     # Frontend
     if [[ ${env} == production ]]; then
-        npm run production
+        npm run prod
     else
         npm run dev
     fi
