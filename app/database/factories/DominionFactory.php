@@ -1,10 +1,9 @@
 <?php
 
-use OpenDominion\Models\Dominion;
-use OpenDominion\Models\User;
+use Faker\Generator as Faker;
 
 /** @var Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(Dominion::class, function (Faker\Generator $faker) {
+$factory->define(\OpenDominion\Models\Dominion::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->name,
         'networth' => 0,
@@ -63,19 +62,5 @@ $factory->define(Dominion::class, function (Faker\Generator $faker) {
         'building_shrine' => 0,
         'building_barracks' => 0,
         'building_dock' => 0,
-    ];
-});
-
-$factory->define(User::class, function (Faker\Generator $faker) {
-    static $password;
-
-    return [
-        'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
-        'display_name' => $faker->unique()->name,
-        'remember_token' => str_random(10),
-        'activated' => true,
-        'activation_code' => str_random(60),
-        'last_online' => null,
     ];
 });

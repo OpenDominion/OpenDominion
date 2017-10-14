@@ -18,6 +18,6 @@
 /.phpstorm.meta.php
 /_ide_helper.php
 /_ide_helper_models.php
-/npm-debug.log
 /phpunit.xml
-/yarn-error.log
+npm-debug.log
+yarn-error.log

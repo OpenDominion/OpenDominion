@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6607e3d7561554aa82650a356d212053",
+    "content-hash": "cf87c308d71d074dc4b33c1d31260e72",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -569,6 +569,63 @@
                 "parser"
             ],
             "time": "2017-05-14T14:47:48+00:00"
+        },
+        {
+            "name": "fideloper/proxy",
+            "version": "3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fideloper/TrustedProxy.git",
+                "reference": "9cdf6f118af58d89764249bbcc7bb260c132924f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/9cdf6f118af58d89764249bbcc7bb260c132924f",
+                "reference": "9cdf6f118af58d89764249bbcc7bb260c132924f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "illuminate/http": "~5.0",
+                "mockery/mockery": "~0.9.3",
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Fideloper\\Proxy\\TrustedProxyServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fideloper\\Proxy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Fidao",
+                    "email": "fideloper@gmail.com"
+                }
+            ],
+            "description": "Set trusted proxies for Laravel",
+            "keywords": [
+                "load balancing",
+                "proxy",
+                "trusted proxy"
+            ],
+            "time": "2017-06-15T17:19:42+00:00"
         },
         {
             "name": "graham-campbell/markdown",
@@ -6380,7 +6437,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~7.1"
+        "php": ">=7.1.0"
     },
     "platform-dev": []
 }

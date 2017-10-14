@@ -2,6 +2,7 @@
 <?php
 
 define('ARTISAN_BINARY', 'bin/artisan');
+define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,9 @@ define('ARTISAN_BINARY', 'bin/artisan');
 |
 */
 
-require __DIR__.'/../app/bootstrap/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$app = require_once __DIR__.'/../app/bootstrap/app.php';
+$app = require_once __DIR__ . '/../app/bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,7 @@ $status = $kernel->handle(
 | Shutdown The Application
 |--------------------------------------------------------------------------
 |
-| Once Artisan has finished running. We will fire off the shutdown events
+| Once Artisan has finished running, we will fire off the shutdown events
 | so that any final work may be done by the application before we shut
 | down the process. This is the last thing to happen to the request.
 |
