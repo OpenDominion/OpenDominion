@@ -38,11 +38,6 @@ class RezoneController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = sprintf(
-            'Your land has been re-zoned at a cost of %s platinum.',
-            number_format($result['platinumCost'])
-        );
-
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
@@ -52,7 +47,7 @@ class RezoneController extends AbstractDominionController
             array_sum($request->get('remove'))
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.rezone');
     }
 }

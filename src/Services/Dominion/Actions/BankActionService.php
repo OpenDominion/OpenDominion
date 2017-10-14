@@ -31,9 +31,10 @@ class BankActionService
      * @param string $source
      * @param string $target
      * @param int $amount
+     * @return array
      * @throws RuntimeException
      */
-    public function exchange(Dominion $dominion, string $source, string $target, int $amount): void
+    public function exchange(Dominion $dominion, string $source, string $target, int $amount): array
     {
         $this->guardLockedDominion($dominion);
 
@@ -59,6 +60,8 @@ class BankActionService
 
         $dominion->save();
 
-        // todo: return array, see #90
+        return [
+            'message' => 'Your resources have been exchanged.',
+        ];
     }
 }

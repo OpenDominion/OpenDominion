@@ -24,7 +24,7 @@ class BankController extends AbstractDominionController
         $bankActionService = app(BankActionService::class);
 
         try {
-            $bankActionService->exchange(
+            $result = $bankActionService->exchange(
                 $dominion,
                 $request->get('source'),
                 $request->get('target'),
@@ -38,8 +38,6 @@ class BankController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = 'Your resources have been exchanged.';
-
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
@@ -49,7 +47,7 @@ class BankController extends AbstractDominionController
             $request->get('amount')
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.bank');
     }
 }
