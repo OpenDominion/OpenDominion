@@ -44,8 +44,8 @@
                                         <tr>
                                             <td>
                                                 {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}<br>
-                                                <span class="text-muted"><i>{{ $buildingHelper->getBuildingHelpString($buildingType) }}</i></span>
+                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                                             </td>
                                             <td class="text-center">
                                                 {{ $selectedDominion->{'building_' . $buildingType} }}
