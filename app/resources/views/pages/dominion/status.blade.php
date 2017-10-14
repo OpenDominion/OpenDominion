@@ -175,7 +175,7 @@
             @if ($dominionProtectionService->isUnderProtection($selectedDominion))
                 <div class="box box-warning">
                     <div class="box-body">
-                        <p>You are under a magical state of protection for <b>{{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> hours.</p>
+                        <p>You are under a magical state of protection for <b>{{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> {{ str_plural('hour', $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion)) }}.</p>
                         <p>During protection you cannot be attacked or attack other dominions. You can neither cast any offensive spells or engage in espionage.</p>
                         {{-- todo: remove line below once those things have been developed --}}
                         <p><i>You can't do that regardless yet because OpenDominion is still in development and those features haven't been built yet.</i></p>
