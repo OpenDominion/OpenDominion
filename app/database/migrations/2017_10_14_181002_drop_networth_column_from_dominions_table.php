@@ -26,7 +26,7 @@ class DropNetworthColumnFromDominionsTable extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->integer('networth')->default(0)->after('name');
+            $table->integer('networth')->nullable()->after('name');
         });
     }
 }
