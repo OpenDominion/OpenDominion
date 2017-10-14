@@ -86,7 +86,7 @@
                 </div>
                 <div class="box-body">
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
-                    <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> dominion(s) and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
+                    <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }} and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
                     {{-- todo: change this to a table? --}}
                 </div>
                 @if (($prevRealm !== null) || ($nextRealm !== null))
