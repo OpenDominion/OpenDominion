@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Factories;
 
-use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -12,9 +11,6 @@ use RuntimeException;
 
 class DominionFactory
 {
-    /** @var NetworthCalculator */
-    protected $networthCalculator;
-
     /** @var RealmFinderService */
     protected $realmFinderService;
 
@@ -24,12 +20,11 @@ class DominionFactory
     /**
      * DominionFactory constructor.
      *
-     * @param NetworthCalculator $networthCalculator
      * @param RealmFinderService $realmFinderService
+     * @param RealmFactory $realmFactory
      */
-    public function __construct(NetworthCalculator $networthCalculator, RealmFinderService $realmFinderService, RealmFactory $realmFactory)
+    public function __construct(RealmFinderService $realmFinderService, RealmFactory $realmFactory)
     {
-        $this->networthCalculator = $networthCalculator;
         $this->realmFinderService = $realmFinderService;
         $this->realmFactory = $realmFactory;
     }
