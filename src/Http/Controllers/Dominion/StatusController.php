@@ -14,7 +14,7 @@ class StatusController extends AbstractDominionController
         return view('pages.dominion.status', [
             'dominionProtectionService' => app(ProtectionService::class),
             'landCalculator' => app(LandCalculator::class),
-            'networthCalculator' => app(NetworthCalculator::class), // todo: remove or refactor $dominion->networth
+            'networthCalculator' => app(NetworthCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
         ]);
     }

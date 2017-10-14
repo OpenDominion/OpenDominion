@@ -41,8 +41,6 @@ $router->get('/test', function () {
 //            'race_id' => $race->id,
 //        ]);
 //
-//        $dominion->networth = $networthCalculator->getDominionNetworth($dominion);
-//
 //        $dominion->save();
 //    }
 });

@@ -9,7 +9,6 @@ use Illuminate\Console\Command;
 use Log;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use RuntimeException;
 
@@ -35,9 +34,6 @@ class TickCommand extends Command
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
-    /** @var NetworthCalculator */
-    protected $networthCalculator;
-
     /**
      * GameTickCommand constructor.
      */
@@ -47,7 +43,6 @@ class TickCommand extends Command
 
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
-        $this->networthCalculator = app(NetworthCalculator::class);
     }
 
     /**
