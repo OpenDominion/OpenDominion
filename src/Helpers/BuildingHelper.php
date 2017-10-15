@@ -123,10 +123,10 @@ class BuildingHelper
     public function getBuildingHelpString($buildingType)
     {
         $helpStrings = [
-            'home' => 'Houses 30 people',
-            'alchemy' => 'Produces 45 platinum',
-            'farm' => 'Produces 80 food',
-            'smithy' => 'Reduces non-wizard/archmage/spy unit costs (up to 18% of land)',
+            'home' => 'Houses 30 people.',
+            'alchemy' => 'Produces 45 platinum per hour.',
+            'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of a bushel of food per hour.',
+            'smithy' => 'Reduces specialist and elite military unit costs.<br><br>Up to a maximum of 36% at 18% land.',
             'masonry' => 'Increases castle bonuses. Also reduces lightning bolt damage (up to 33.3% of land)',
             'ore_mine' => 'Produces 60 ore',
             'gryphon_nest' => 'Increases offensive power (up to 20% of land)',
