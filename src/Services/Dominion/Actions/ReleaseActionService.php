@@ -86,11 +86,10 @@ class ReleaseActionService
             if ($unitType === 'draftees') {
                 continue;
             }
-            else {
-                $troopsCreated = true;
-                $conjunction = count($troopsReleasedStringParts) === 1 ? '' : 'and ';
-                $troopsReleasedStringParts[] = $conjunction . (number_format($amount) . ' ' . str_plural(str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race))), $amount));
-            }
+
+            $troopsCreated = true;
+            $conjunction = count($troopsReleasedStringParts) === 1 ? '' : 'and ';
+            $troopsReleasedStringParts[] = $conjunction . (number_format($amount) . ' ' . str_plural(str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race))), $amount));
         }
 
         if ($troopsCreated) {
