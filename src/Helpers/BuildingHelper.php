@@ -126,22 +126,22 @@ class BuildingHelper
             'home' => 'Houses 30 people.',
             'alchemy' => 'Produces 45 platinum per hour.',
             'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of a bushel of food per hour.',
-            'smithy' => 'Reduces specialist and elite military unit costs.<br><br>Up to a maximum of 36% at 18% land.',
-            'masonry' => 'Increases castle bonuses. Also reduces lightning bolt damage (up to 33.3% of land)',
-            'ore_mine' => 'Produces 60 ore',
-            'gryphon_nest' => 'Increases offensive power (up to 20% of land)',
-            'tower' => 'Produces 25 mana',
-            'wizard_guild' => 'Increases wizard strength refresh rate, decreases wizard/archmage cost and decreases spell costs (up to 20% of land)',
-            'temple' => 'Increases population growth, reduces defensive bonuses of dominions you invade',
-            'diamond_mine' => 'Produces 15 gems',
-            'school' => 'Produces research points',
-            'lumberyard' => 'Produces 50 lumber',
-            'forest_haven' => 'Reduces losses on failed spy ops, reduces incoming fireball damage and reduces the amount of platinum being stolen from you (up to 10% of land). Also increases peasant defense',
-            'factory' => 'Reduces construction costs (up to 18.75% of land) and rezoning costs (up to 25% of land)',
-            'guard_tower' => 'Increases defensive power (up to 20% of land)',
-            'shrine' => 'Reduces casualties on offense (up to 20% of land)',
-            'barracks' => 'Houses 36 military units',
-            'dock' => 'Produces 1 boat every 20 hours on average, produces 35 food and prevents 2.5 your boats from being sunk',
+            'smithy' => 'Reduces specialist and elite military unit training costs.<br><br>Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.',
+            'masonry' => 'Increases castle bonuses and reduces Lightning Bolt damage.<br><br>Bonuses increased by 2.75% per 1% owned.<br>Lightning Bolt damage decreased by 0.75% per 1% owned, up to a maximum of 25% at 33.3% owned.',
+            'ore_mine' => 'Produces 60 ore per hour.',
+            'gryphon_nest' => 'Increases offensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
+            'tower' => 'Produces 25 mana per hour.',
+            'wizard_guild' => 'Increases wizard strength refresh rate, decreases wizard/archmage cost and decreases spell costs (up to 20% of land)', // todo
+            'temple' => 'Increases population growth, reduces defensive bonuses of dominions you invade', // todo
+            'diamond_mine' => 'Produces 15 gems per hour.',
+            'school' => 'Produces research points', // todo
+            'lumberyard' => 'Produces 50 lumber per hour.',
+            'forest_haven' => 'Reduces losses on failed spy ops, reduces incoming fireball damage and reduces the amount of platinum being stolen from you (up to 10% of land). Also increases peasant defense', // todo
+            'factory' => 'Reduces construction costs (up to 18.75% of land) and rezoning costs (up to 25% of land)', // todo
+            'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
+            'shrine' => 'Reduces casualties on offense (up to 20% of land)', // todo
+            'barracks' => 'Houses 36 trained or training military units.<br><br>Does not increase in capacity for population bonuses.', // todo?
+            'dock' => 'Produces 1 boat every 20 hours on average, produces 35 bushels of food per hour and each dock prevents 2.5 your boats from being sunk.',
         ];
 
         return $helpStrings[$buildingType] ?: null;
