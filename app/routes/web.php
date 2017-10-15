@@ -108,6 +108,11 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
+            // Daily
+            $router->get('bonuses')->uses('Dominion\DailyBonusesController@getBonuses')->name('bonuses');
+            $router->post('bonuses/platinum')->uses('Dominion\DailyBonusesController@postBonusesPlatinum')->name('bonuses.platinum');
+            $router->post('bonuses/land')->uses('Dominion\DailyBonusesController@postBonusesLand')->name('bonuses.land');
+
             // Exploration
             $router->get('explore')->uses('Dominion\ExplorationController@getExplore')->name('explore');
             $router->post('explore')->uses('Dominion\ExplorationController@postExplore');

@@ -79,6 +79,8 @@ class TickCommand extends Command
         $this->tickDominionWizardStrength();
         $this->tickDominionNetworth();
 
+        $this->tickDailyBonuses();
+
         DB::commit();
 
         Log::info('Tick');
@@ -378,6 +380,22 @@ class TickCommand extends Command
         foreach ($this->getDominionsToUpdate() as $dominion) {
             $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
             $dominion->save();
+        }
+    }
+
+    /**
+     * Resets daily bonuses.
+     */
+    public function tickDailyBonuses() {
+        Log::debug('Tick daily bonuses');
+
+        $now = Carbon::now();
+        if ($now->hour == 0 && $now->minute == 0) {
+            foreach ($this->getDominionsToUpdate() as $dominion) {
+                $dominion->daily_platinum = false;
+                $dominion->daily_land = false;
+                $dominion->save();
+            }
         }
     }
 
