@@ -184,6 +184,7 @@
                             'getPlatinumCost',
                             'getLumberCost',
                             'getMaxAfford',
+                            'getCostMultiplier',
                         ]) !!}
                     </p>
                 </div>
