@@ -33,14 +33,14 @@ class UnitHelper
     public function getUnitHelpString($unitType, Race $race)
     {
         $helpStrings = [
-            'draftees' => 'Basic military unit. Used for exploring and training other units.',
+            'draftees' => 'Basic military unit.<br><br>Used for exploring and training other units.',
             'unit1' => 'Offensive specialist.',
             'unit2' => 'Defensive specialist.',
             'unit3' => 'Defensive elite.',
             'unit4' => 'Offensive elite.',
             'spies' => 'Used for espionage.',
             'wizards' => 'Used for casting offensive spells.',
-            'archmages' => 'Used for casting offensive spells. Twice as strong as regular wizards.',
+            'archmages' => 'Used for casting offensive spells.<br><br>Immortal and twice as strong as regular wizards.',
         ];
 
         // todo: refactor this. very inefficient
@@ -56,7 +56,7 @@ class UnitHelper
                 continue;
             }
 
-            $helpStrings['unit' . $unit->slot] .= (' ' . sprintf($perkTypeStrings[$perkType->key], $unit->unit_perk_type_values));
+            $helpStrings['unit' . $unit->slot] .= ('<br><br>' . sprintf($perkTypeStrings[$perkType->key], $unit->unit_perk_type_values));
         }
 
         return $helpStrings[$unitType] ?: null;
