@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class ChangeDominionsWizardSpyStrengthType extends Migration
 {
@@ -27,8 +27,8 @@ class ChangeDominionsWizardSpyStrengthType extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->integer('spy_strength')->unsigned()->change();
-            $table->integer('wizard_strength')->unsigned()->change();
+            $table->unsignedInteger('spy_strength')->change();
+            $table->unsignedInteger('wizard_strength')->change();
         });
     }
 }
