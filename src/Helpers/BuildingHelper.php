@@ -86,7 +86,7 @@ class BuildingHelper
             'home' => 2,
             'alchemy' => 2,
             'farm' => 2,
-            'smithy' => 0, // reduce military unit cost
+            'smithy' => 2,
             'masonry' => 0, // increase castle bonuses
             'ore_mine' => 2,
             'gryphon_nest' => 2,
