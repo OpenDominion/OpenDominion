@@ -150,7 +150,7 @@
                                         <td>{{ number_format($selectedDominion->military_wizards) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Archmages:</td>
+                                        <td>ArchMages:</td>
                                         <td>{{ number_format($selectedDominion->military_archmages) }}</td>
                                     </tr>
                                 </tbody>
