@@ -128,14 +128,14 @@ class TrainingCalculator
     {
         $multiplier = 1.0;
 
-        // Values
+        // Values (percentages)
         $smithiesReduction = 2;
         $smithiesReductionMax = 36;
 
         // Smithies
         $multiplier -= min(
             (($dominion->building_smithy / $this->landCalculator->getTotalLand($dominion)) * $smithiesReduction),
-            $smithiesReductionMax
+            ($smithiesReductionMax / 100)
         );
 
         return $multiplier;
