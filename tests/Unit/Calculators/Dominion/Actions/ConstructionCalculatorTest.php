@@ -41,8 +41,13 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     {
         $scenarios = [
             ['totalBuildings' => 90, 'totalLand' => 250, 'expectedPlatinumCost' => 850],
-            ['totalBuildings' => 1250, 'totalLand' => 1250, 'expectedPlatinumCost' => 2380],
+            ['totalBuildings' => 2000, 'totalLand' => 2000, 'expectedPlatinumCost' => 3528],
+            ['totalBuildings' => 4000, 'totalLand' => 4000, 'expectedPlatinumCost' => 6588],
+            ['totalBuildings' => 6000, 'totalLand' => 6000, 'expectedPlatinumCost' => 9648],
+            ['totalBuildings' => 8000, 'totalLand' => 8000, 'expectedPlatinumCost' => 12708],
         ];
+
+        $this->sut->shouldReceive('getCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
 
         foreach ($scenarios as $scenario) {
             $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalBuildings'])->byDefault();
@@ -56,8 +61,13 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     {
         $scenarios = [
             ['totalBuildings' => 90, 'totalLand' => 250, 'expectedLumberCost' => 88],
-            ['totalBuildings' => 1250, 'totalLand' => 1250, 'expectedLumberCost' => 688],
+            ['totalBuildings' => 2000, 'totalLand' => 2000, 'expectedLumberCost' => 700], // 1138 vs 700
+            ['totalBuildings' => 4000, 'totalLand' => 4000, 'expectedLumberCost' => 1400], // 2338 vs 1400
+            ['totalBuildings' => 6000, 'totalLand' => 6000, 'expectedLumberCost' => 2100], // 3538 vs 2100
+            ['totalBuildings' => 8000, 'totalLand' => 8000, 'expectedLumberCost' => 2800], // 4738 vs 2800
         ];
+
+        $this->sut->shouldReceive('getCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
 
         foreach ($scenarios as $scenario) {
             $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalBuildings'])->byDefault();
@@ -70,7 +80,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     public function testGetMaxAfford()
     {
         $scenarios = [
-            [ // totalBuildings < 1250
+            [ // new dominion
                 'totalBuildings' => 90,
                 'totalLand' => 250,
                 'totalBarrenLand' => 160,
@@ -78,23 +88,25 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'lumber' => 15000,
                 'expectedMaxAfford' => 117,
             ],
-            [ // totalBuildings >= 1250
-                'totalBuildings' => 1250,
+            [
+                'totalBuildings' => 2000,
                 'totalLand' => 5000,
-                'totalBarrenLand' => 4750,
+                'totalBarrenLand' => 3000,
                 'platinum' => 1000000,
                 'lumber' => 150000,
-                'expectedMaxAfford' => 68,
+                'expectedMaxAfford' => 214,
             ],
-            [ // capped by barren land
-                'totalBuildings' => 90,
-                'totalLand' => 250,
-                'totalBarrenLand' => 160,
+            [
+                'totalBuildings' => 4000,
+                'totalLand' => 8000,
+                'totalBarrenLand' => 4000,
                 'platinum' => 10000000,
                 'lumber' => 1500000,
-                'expectedMaxAfford' => 160,
+                'expectedMaxAfford' => 1071,
             ],
         ];
+
+        $this->sut->shouldReceive('getCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
 
         foreach ($scenarios as $scenario) {
             $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($scenario['platinum'])->byDefault();

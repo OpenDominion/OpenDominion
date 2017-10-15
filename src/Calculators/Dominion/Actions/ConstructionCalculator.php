@@ -82,7 +82,7 @@ class ConstructionCalculator
         );
 
         $lumber -= 250;
-        $lumber += 0.35;
+        $lumber *= 0.35;
         $lumber += 87.5;
 
         // Wiki formula. >= 1250 seems correct at start, but is reportedly incorrect later in the round
