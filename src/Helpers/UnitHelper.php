@@ -33,6 +33,7 @@ class UnitHelper
     public function getUnitHelpString($unitType, Race $race)
     {
         $helpStrings = [
+            'draftees' => 'Basic military unit. Used for exploring and training other units.',
             'unit1' => 'Offensive specialist.',
             'unit2' => 'Defensive specialist.',
             'unit3' => 'Defensive elite.',

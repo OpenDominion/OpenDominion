@@ -12,7 +12,7 @@
                 </div>
                 <form action="{{ route('dominion.destroy') }}" method="post" role="form">
                     {!! csrf_field() !!}
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -42,8 +42,8 @@
                                         <tr>
                                             <td>
                                                 {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}<br>
-                                                <span class="text-muted"><i>{{ $buildingHelper->getBuildingHelpString($buildingType) }}</i></span>
+                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                                             </td>
                                             <td class="text-center">
                                                 {{ $selectedDominion->{'building_' . $buildingType} }}
