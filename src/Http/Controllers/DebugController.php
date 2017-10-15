@@ -83,7 +83,7 @@ class DebugController extends AbstractDominionController
 
                     if (substr($label, -10) === 'Multiplier') {
                         $value = number_format($value * 100 - 100, 2);
-                        $value = ((($value < 0) ? '-' : '+') . $value . '%');
+                        $value = ((($value < 0) ? '' : '+') . $value . '%');
                     } else {
                         $value = number_format($value, 2);
                     }
