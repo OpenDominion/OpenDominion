@@ -78,12 +78,13 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Links
 
-- [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
+- [Open Beta](https://beta.opendominion.net)
+  - The open beta is used for development and testing purposes. Feel free to register and participate!
+  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
+  - Do note that not every functionality has been implemented yet in OpenDominion.
 - [Discord](https://discord.gg/mFk2wZT)
-- [OpenDominion (Open Beta)](https://beta.opendominion.net)
-  - Development version used for testing purposes. Feel free to register and participate in testing!
-  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) for general gameplay information. Note that not every functionality has been implemented yet in OpenDominion.
-
+  - This will be the main place for out of game communication, developmnet talk and game announcements.
+- [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 
 ## License
 
