@@ -138,6 +138,8 @@ class TrainingCalculator
             ($smithiesReductionMax / 100)
         );
 
+        // todo: Master of Resources Tech (note: no ore reduction for gnomes)
+
         return $multiplier;
     }
 }
