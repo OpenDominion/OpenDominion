@@ -61,10 +61,10 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     {
         $scenarios = [
             ['totalBuildings' => 90, 'totalLand' => 250, 'expectedLumberCost' => 88],
-            ['totalBuildings' => 2000, 'totalLand' => 2000, 'expectedLumberCost' => 700], // 1138 vs 700
-            ['totalBuildings' => 4000, 'totalLand' => 4000, 'expectedLumberCost' => 1400], // 2338 vs 1400
-            ['totalBuildings' => 6000, 'totalLand' => 6000, 'expectedLumberCost' => 2100], // 3538 vs 2100
-            ['totalBuildings' => 8000, 'totalLand' => 8000, 'expectedLumberCost' => 2800], // 4738 vs 2800
+            ['totalBuildings' => 2000, 'totalLand' => 2000, 'expectedLumberCost' => 700],
+            ['totalBuildings' => 4000, 'totalLand' => 4000, 'expectedLumberCost' => 1400],
+            ['totalBuildings' => 6000, 'totalLand' => 6000, 'expectedLumberCost' => 2100],
+            ['totalBuildings' => 8000, 'totalLand' => 8000, 'expectedLumberCost' => 2800],
         ];
 
         $this->sut->shouldReceive('getCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
