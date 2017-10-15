@@ -73,6 +73,8 @@ class ConstructionCalculator
         $lumber *= 0.35;
         $lumber += 87.5;
 
+        $lumber *= $this->getCostMultiplier($dominion);
+
         return (int)round($lumber);
     }
 
