@@ -127,20 +127,20 @@ class BuildingHelper
             'alchemy' => 'Produces 45 platinum per hour.',
             'farm' => 'Produces 80 bushels of food per hour.<br><br>Each person eats 0.25 of a bushel of food per hour.',
             'smithy' => 'Reduces specialist and elite military unit training costs.<br><br>Training cost reduced by 2% per 1% owned, up to a maximum of 36% at 18% owned.',
-            'masonry' => 'Increases castle bonuses and reduces Lightning Bolt damage.<br><br>Bonuses increased by 2.75% per 1% owned.<br>Lightning Bolt damage decreased by 0.75% per 1% owned, up to a maximum of 25% at 33.3% owned.',
+            'masonry' => 'Increases castle bonuses and reduces Lightning Bolt damage.<br><br>Bonuses increased by 2.75% per 1% owned.<br>Lightning Bolt damage reduced by 0.75% per 1% owned, up to a maximum of 25% at 33.3% owned.',
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Increases offensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
-            'wizard_guild' => 'Increases wizard strength refresh rate, decreases wizard/archmage cost and decreases spell costs (up to 20% of land)', // todo
-            'temple' => 'Increases population growth, reduces defensive bonuses of dominions you invade', // todo
+            'wizard_guild' => 'Increases Wizard Strength refresh rate, reduces Wizard and ArchMages training cost and reduces spell costs.<br><br>Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Wizard and ArchMage training and spell costs reduced by 2% per 1% owned, up to a maximum of 40% at 20% owned.',
+            'temple' => 'Increases population growth and reduces defensive bonuses of dominions you invade.<br><br>Population growth increased by 6% per 1% owned.<br>Defensive bonuses reduced by 1.5% per 1% owned, up to a maximum of 25% at 16.7% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
-            'school' => 'Produces research points', // todo
+            'school' => 'Produces research points.',
             'lumberyard' => 'Produces 50 lumber per hour.',
-            'forest_haven' => 'Reduces losses on failed spy ops, reduces incoming fireball damage and reduces the amount of platinum being stolen from you (up to 10% of land). Also increases peasant defense', // todo
-            'factory' => 'Reduces construction costs (up to 18.75% of land) and rezoning costs (up to 25% of land)', // todo
+            'forest_haven' => 'Increases peasant defense, reduces losses on failed spy ops, reduces incoming Fireball damage and reduces platinum theft.<br><br>Each Forest Haven gives 20 peasants 0.75 defense each.<br>Failed spy ops losses reduced by 3% per 1% owned, up to a maximum of 30% at 10% owned.<br>Fireball and platinum theft reduced by 8% per 1% owned, up to a maximum of 80% at 10% owned.',
+            'factory' => 'Reduces construction and land rezoning costs.<br><br>Construction costs reduced by 4% per 1% owned, up to a maximum of 75% at 18.75% owned.<br>Rezoning costs reduced by 3% per 1% owned, up to a maximum of 75% at 25% owned.',
             'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
-            'shrine' => 'Reduces casualties on offense (up to 20% of land)', // todo
-            'barracks' => 'Houses 36 trained or training military units.<br><br>Does not increase in capacity for population bonuses.', // todo?
+            'shrine' => 'Reduces offensive casualties.<br><br>Casualties reduced by 4% per 1% owned, up to a maximum of 80% at 20% owned.', // todo: hero level gain and hero bonuses
+            'barracks' => 'Houses 36 trained or training military units.<br><br>Does not increase in capacity for population bonuses.',
             'dock' => 'Produces 1 boat every 20 hours on average, produces 35 bushels of food per hour and each dock prevents 2.5 your boats from being sunk.',
         ];
 
