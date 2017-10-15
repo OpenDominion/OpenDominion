@@ -214,6 +214,7 @@
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($rezoningCalculator, [
                             'getPlatinumCost',
                             'getMaxAfford',
+                            'getCostMultiplier',
                         ]) !!}
                     </p>
                 </div>

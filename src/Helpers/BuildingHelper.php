@@ -97,11 +97,11 @@ class BuildingHelper
             'school' => 0, // produces research points
             'lumberyard' => 2,
             'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage, reduce plat stolemn
-            'factory' => 0, // reduce construction costs and rezoning costs
+            'factory' => 2,
             'guard_tower' => 2,
             'shrine' => 0, // reduce casualties on offense, increases chance of hero level gain?, increase hero bonuses?
             'barracks' => 2,
-            'dock' => 1, // produces boats, prevents boats being sunk
+            'dock' => 1, // prevents boats being sunk
         ];
 
         switch ($buildingTypes[$buildingType]) {
