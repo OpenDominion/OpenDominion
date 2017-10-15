@@ -22,14 +22,16 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 ## Progress
 
-See the [issue tracker](https://github.com/WaveHack/OpenDominion/issues) for more details.
+Although in development, OpenDominion is already playable as an open beta. See the [links](#links) section below. 
+
+Status bars displayed here show the current state of a system or page. Pretty much everything that has some status is already present in one way or another on the open beta.
 
 ### Systems
 
 | System         | Status                                    |
 | -------------- | ----------------------------------------- |
 | Authentication | ![Progress](http://progressed.io/bar/95)  |
-| Buildings      | ![Progress](http://progressed.io/bar/40)  |
+| Buildings      | ![Progress](http://progressed.io/bar/70)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
 | Notifications  | ![Progress](http://progressed.io/bar/0)   |
