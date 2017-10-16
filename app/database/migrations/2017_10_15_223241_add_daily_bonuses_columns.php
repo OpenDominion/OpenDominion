@@ -27,8 +27,7 @@ class AddDailyBonusesColumns extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->dropColumn('daily_platinum');
-            $table->dropColumn('daily_land');
+            $table->dropColumn(['daily_platinum', 'daily_land']);
         });
     }
 }
