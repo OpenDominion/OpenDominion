@@ -2,14 +2,37 @@
 
 namespace OpenDominion\Services;
 
+use DB;
+use Illuminate\Database\Eloquent\Collection;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
 class CouncilService
 {
     use DominionGuardsTrait;
+
+    /**
+     * Returns the realm's
+     *
+     * @param Realm $realm
+     * @return Collection|Council\Thread[]
+     */
+    public function getThreads(Realm $realm): Collection
+    {
+        return $realm->councilThreads()
+            ->select([
+                'council_threads.*',
+                DB::raw('ifnull(council_posts.created_at, council_threads.created_at) as last_activity')
+            ])
+            ->with(['dominion', 'posts.dominion'])
+            ->leftJoin('council_posts', 'council_posts.council_thread_id', '=', 'council_threads.id')
+            ->groupBy('council_threads.id')
+            ->orderBy('last_activity', 'desc')
+            ->get(['council_threads.*']);
+    }
 
     /**
      * Creates a new council thread.

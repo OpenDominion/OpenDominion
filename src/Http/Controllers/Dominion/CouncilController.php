@@ -16,22 +16,15 @@ class CouncilController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
-        $realm = $dominion->realm;
-        $councilThreads = $realm->councilThreads() // todo: move to CouncilService
-            ->select([ 'council_threads.*', DB::raw('ifnull(council_posts.created_at, council_threads.created_at) as last_activity') ])
-            ->with(['dominion', 'posts.dominion'])
-            ->leftJoin('council_posts', 'council_posts.council_thread_id', '=', 'council_threads.id')
-            ->groupBy('council_threads.id')
-            ->orderBy('last_activity', 'desc')
-            ->get(['council_threads.*']); // hey it works ¯\_(ツ)_/¯
+        $councilService = app(CouncilService::class);
 
-        return view('pages.dominion.council.index', compact(
-            'councilThreads',
-            'realm'
-        ));
+        return view('pages.dominion.council.index', [
+            'councilThreads' => $councilService->getThreads($dominion->realm),
+            'realm' => $dominion->realm,
+        ]);
     }
 
-    public function getCreate() // getCreateThread
+    public function getCreate() // getCreateThread?
     {
         $dominion = $this->getSelectedDominion();
         $realm = $dominion->realm;
