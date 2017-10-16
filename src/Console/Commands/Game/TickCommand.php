@@ -382,8 +382,6 @@ class TickCommand extends Command
 
     protected function getDominionsToUpdate()
     {
-        // todo: fetch only non-locked dominions
-
         return Dominion::whereIn('id', $this->dominionsIdsToUpdate)->get();
     }
 }
