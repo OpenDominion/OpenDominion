@@ -44,7 +44,6 @@ if [[ ${IDE_HELPERS} ]]; then
     php bin/artisan ide-helper:generate
     php bin/artisan ide-helper:models -N
     php bin/artisan ide-helper:meta
-    php bin/artisan optimize
 fi
 
 # Frontend stuff, not needed during testing
@@ -52,15 +51,16 @@ if [[ ! ${env} == testing ]]; then
 
     # Npm packages
     if [[ ! -d node_modules ]]; then
-        yarn install --no-bin-links
-        npm rebuild node-sass --no-bin-links
+        npm install
+#        npm install --no-bin-links # todo: test if we can omit --no-bin-links
+#        npm rebuild node-sass --no-bin-links # todo: might not be needed anymore. needs testing
     fi
 
     # Laravel Elixir
     if [[ ${env} == production ]]; then
-        yarn run production
+        npm run prod
     else
-        yarn run dev
+        npm run dev
     fi
 
 fi

@@ -22,14 +22,16 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 ## Progress
 
-See the [issue tracker](https://github.com/WaveHack/OpenDominion/issues) for more details.
+Although in development, OpenDominion is already playable as an open beta. See the [links](#links) section below. 
+
+Status bars displayed here show the current state of a system or page. Pretty much everything that has some status is already present in one way or another on the open beta.
 
 ### Systems
 
 | System         | Status                                    |
 | -------------- | ----------------------------------------- |
 | Authentication | ![Progress](http://progressed.io/bar/95)  |
-| Buildings      | ![Progress](http://progressed.io/bar/40)  |
+| Buildings      | ![Progress](http://progressed.io/bar/70)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
 | Notifications  | ![Progress](http://progressed.io/bar/0)   |
@@ -46,7 +48,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | ------------------- | ----------------------------------------- |
 | Status              | ![Progress](http://progressed.io/bar/100) |
 | Advisors            | ![Progress](http://progressed.io/bar/90)  |
-| Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
+| Daily Bonuses       | ![Progress](http://progressed.io/bar/100) |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
 | Construction        | ![Progress](http://progressed.io/bar/100) |
 | Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
@@ -76,12 +78,13 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Links
 
-- [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
+- [Open Beta](https://beta.opendominion.net)
+  - The open beta is used for development and testing purposes. Feel free to register and participate!
+  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
+  - Do note that not every functionality has been implemented yet in OpenDominion.
 - [Discord](https://discord.gg/mFk2wZT)
-- [OpenDominion (Open Beta)](https://beta.opendominion.net)
-  - Development version used for testing purposes. Feel free to register and participate in testing!
-  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) for general gameplay information. Note that not every functionality has been implemented yet in OpenDominion.
-
+  - This will be the main place for out of game communication, developmnet talk and game announcements.
+- [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 
 ## License
 

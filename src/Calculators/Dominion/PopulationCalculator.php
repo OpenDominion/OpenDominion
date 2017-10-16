@@ -219,7 +219,7 @@ class PopulationCalculator
 
         // Values
         //$spellHarmony = 1.5;
-        //$templeBonus = 6;
+        $templeBonus = 6;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('population_growth');
@@ -228,7 +228,7 @@ class PopulationCalculator
         // todo
 
         // Temples
-        //$multiplier += (($this->dominion->building_temple * $templeBonus) / $this->landCalculator->getTotalLand());
+        $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) *  $templeBonus);
 
         return (float)$multiplier; // todo: see 1+$multiplier todo above
     }

@@ -20,10 +20,25 @@ class Application extends LaravelApplication
      */
     public function __construct($basePath = null)
     {
-        parent::__construct($basePath);
+        // We don't want to call the parent constructor, since we need to bind basePath manually, then set appPath, and
+        // then call bindPathsInContainer(), exactly in that order.
+        //
+        // Parent constructor calls setBasePath(), which calls bindPathsInContainer() before we can set our appPath.
+        // And we shouldn't set appPath before basePath, else our custom structure breaks.
+
+        if ($basePath) {
+            $this->basePath = rtrim($basePath, '\/');
+        }
 
         $this->appPath = ($this->basePath() . DIRECTORY_SEPARATOR . 'app');
+
         $this->bindPathsInContainer();
+
+        $this->registerBaseBindings();
+
+        $this->registerBaseServiceProviders();
+
+        $this->registerCoreContainerAliases();
     }
 
     /**

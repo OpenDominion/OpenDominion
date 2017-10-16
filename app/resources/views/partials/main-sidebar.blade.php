@@ -13,17 +13,30 @@
             </div>
         @endif
 
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu" data-widget="tree">
             @if (isset($selectedDominion))
 
                 <li class="header">GENERAL</li>
                 <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="fa fa-bar-chart fa-fw"></i> <span>Status</span></a></li>
                 <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-question-circle fa-fw"></i> <span>Advisors</span></a></li>
-                {{-- daily bonuses --}}
+                <li class="{{ Route::is('dominion.bonuses') ? 'active' : null }}">
+                    <a href="{{ route('dominion.bonuses') }}">
+                        <i class="fa fa-plus fa-fw"></i>
+                        <span>Daily Bonus</span>
+                        <span class="pull-right-container">
+                            @if (!$selectedDominion->daily_platinum)
+                                <span class="label label-primary pull-right">P</span>
+                            @endif
+                            @if (!$selectedDominion->daily_land)
+                                    <span class="label label-primary pull-right">L</span>
+                            @endif
+                        </span>
+                    </a>
+                </li>
 
                 <li class="header">DOMINION</li>
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="fa fa-search fa-fw"></i> <span>Explore Land</span></a></li>
-                <li class="{{ Route::is('dominion.construction') ? 'active' : null }}"><a href="{{ route('dominion.construction') }}"><i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span></a></li>
+                <li class="{{ Route::is('dominion.construct') ? 'active' : null }}"><a href="{{ route('dominion.construct') }}"><i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span></a></li>
                 <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="ra ra-cycle ra-fw"></i> <span>Re-zone Land</span></a></li>
                 {{--<li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>--}}
                 <li class="{{ Route::is('dominion.bank') ? 'active' : null }}"><a href="{{ route('dominion.bank') }}"><i class="ra ra-capitol ra-fw"></i> <span>National Bank</span></a></li>

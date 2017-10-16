@@ -7,6 +7,15 @@
 
     <title>@yield('title', 'OpenDominion')</title>
 
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="OpenDominion">
+    <meta name="application-name" content="OpenDominion">
+    <meta name="theme-color" content="#ffffff">
+
     @include('partials.styles')
 
     <!--[if lt IE 9]>
@@ -37,13 +46,13 @@
                     <ul class="nav navbar-nav">
                         <li class="{{ Route::is('home') ? 'active' : null }}"><a href="{{ route('home') }}">Home</a></li>
                         <li class="{{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}">Valhalla</a></li>
-                        @if (Auth::check())
+                        @auth
                             @if ($selectorService->hasUserSelectedDominion())
                                 <li><a href="{{ route('dominion.status') }}">Play</a></li>
                             @else
                                 <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                             @endif
-                        @endif
+                        @endauth
                     </ul>
                 </div>
 

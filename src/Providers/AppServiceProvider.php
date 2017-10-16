@@ -18,6 +18,7 @@ use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
 use OpenDominion\Services\Dominion\Actions\BankActionService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
+use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
@@ -42,7 +43,6 @@ class AppServiceProvider extends AbstractServiceProvider
     {
         if ($this->app->environment() === 'local') {
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
-            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
         $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
@@ -89,6 +89,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(TrainActionService::class);
         $this->app->singleton(BankActionService::class);
         $this->app->singleton(ConstructActionService::class);
+        $this->app->singleton(DailyBonusesActionService::class);
         $this->app->singleton(DestroyActionService::class);
         $this->app->singleton(ExploreActionService::class);
         $this->app->singleton(ReleaseActionService::class);

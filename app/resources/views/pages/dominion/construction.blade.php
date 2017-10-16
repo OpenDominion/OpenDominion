@@ -10,9 +10,9 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-home"></i> Construct Buildings</h3>
                 </div>
-                <form action="{{ route('dominion.construction') }}" method="post" role="form">
+                <form action="{{ route('dominion.construct') }}" method="post" role="form">
                     {!! csrf_field() !!}
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -29,7 +29,10 @@
 
                                 <thead>
                                     <tr>
-                                        <th colspan="3">{{ ucfirst($landType) }} <span class="small">(Barren: {{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }})</span></th>
+                                        <th colspan="4">
+                                            <span class="pull-right barren-land">Barren: <strong>{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</strong></span>
+                                            <h4>{{ ucfirst($landType) }}</h4>
+                                        </th>
                                     </tr>
                                     <tr>
                                         <th>Building</th>
@@ -44,8 +47,8 @@
                                         <tr>
                                             <td>
                                                 {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}<br>
-                                                <span class="text-muted"><i>{{ $buildingHelper->getBuildingHelpString($buildingType) }}</i></span>
+                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                                             </td>
                                             <td class="text-center">
                                                 {{ $selectedDominion->{'building_' . $buildingType} }}
@@ -68,7 +71,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Build</button>
                         <div class="pull-right">
-                            You have {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} acres of land.
+                            You have {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} {{ str_plural('acre', $landCalculator->getTotalLand($selectedDominion)) }} of land.
                         </div>
                     </div>
                 </form>
@@ -79,13 +82,13 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.advisors.construction') }}" class="pull-right">Construction Advisor</a>
+                    <a href="{{ route('dominion.advisors.construct') }}" class="pull-right">Construction Advisor</a>
                 </div>
                 <div class="box-body">
                     <p>Construction will let you construct additional buildings and will take <b>12 hours</b> to process.</p>
                     <p>Construction per building will come at a cost of 1 acre of barren land of the building type, {{ number_format($constructionCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($constructionCalculator->getLumberCost($selectedDominion)) }} lumber.</p>
-                    <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} acres of barren land, {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->resource_lumber) }} lumber.</p>
-                    <p>You can afford to construct <b>{{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} buildings</b> at that rate.</p>
+                    <p>You have {{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }} {{ str_plural('acre', $landCalculator->getTotalBarrenLand($selectedDominion)) }} of barren land, {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->resource_lumber) }} lumber.</p>
+                    <p>You can afford to construct <b>{{ number_format($constructionCalculator->getMaxAfford($selectedDominion)) }} {{ str_plural('building', $constructionCalculator->getMaxAfford($selectedDominion)) }}</b> at that rate.</p>
                     <p>You may also <a href="{{ route('dominion.destroy') }}">destroy buildings</a> if you wish.</p>
                 </div>
             </div>

@@ -28,7 +28,17 @@ class RezoningCalculator
      */
     public function getPlatinumCost(Dominion $dominion): int
     {
-        return (int)round((($this->landCalculator->getTotalLand($dominion) - 250) * 0.6) + 250);
+        $platinum = 0;
+
+        $platinum += $this->landCalculator->getTotalLand($dominion);
+
+        $platinum -= 250;
+        $platinum *= 0.6;
+        $platinum += 250;
+
+        $platinum *= $this->getCostMultiplier($dominion);
+
+        return (int)round($platinum);
     }
 
     /**
@@ -43,5 +53,28 @@ class RezoningCalculator
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             $this->landCalculator->getTotalBarrenLand($dominion)
         );
+    }
+
+    /**
+     * Returns the Dominion's rezoning cost multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1.0;
+
+        // Values (percentages)
+        $factoryReduction = 3;
+        $factoryReductionMax = 75;
+
+        // Factories
+        $multiplier -= min(
+            (($dominion->building_factory / $this->landCalculator->getTotalLand($dominion)) * $factoryReduction),
+            ($factoryReductionMax / 100)
+        );
+
+        return $multiplier;
     }
 }

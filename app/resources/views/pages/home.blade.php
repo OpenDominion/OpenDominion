@@ -4,6 +4,10 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
 
+            <div style="margin-bottom: 20px;">
+                <img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-responsive" alt="OpenDominion">
+            </div>
+
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Welcome to OpenDominion!</h3>

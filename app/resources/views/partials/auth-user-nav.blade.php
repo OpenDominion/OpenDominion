@@ -1,4 +1,4 @@
-@if (Auth::check())
+@auth
     <!-- User Account Menu -->
     <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -44,4 +44,4 @@
 @else
     <li class="{{ Route::is('auth.register') ? 'active' : null }}"><a href="{{ route('auth.register') }}">Register</a></li>
     <li class="{{ Route::is('auth.login') ? 'active' : null }}"><a href="{{ route('auth.login') }}">Login</a></li>
-@endif
+@endauth

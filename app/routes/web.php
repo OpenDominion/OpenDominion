@@ -41,8 +41,6 @@ $router->get('/test', function () {
 //            'race_id' => $race->id,
 //        ]);
 //
-//        $dominion->networth = $networthCalculator->getDominionNetworth($dominion);
-//
 //        $dominion->save();
 //    }
 });
@@ -117,18 +115,23 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('advisors/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('advisors.production');
             $router->get('advisors/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('advisors.military');
             $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
-            $router->get('advisors/construction')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construction');
+            $router->get('advisors/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construct');
             $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
+
+            // Daily
+            $router->get('bonuses')->uses('Dominion\DailyBonusesController@getBonuses')->name('bonuses');
+            $router->post('bonuses/platinum')->uses('Dominion\DailyBonusesController@postBonusesPlatinum')->name('bonuses.platinum');
+            $router->post('bonuses/land')->uses('Dominion\DailyBonusesController@postBonusesLand')->name('bonuses.land');
 
             // Exploration
             $router->get('explore')->uses('Dominion\ExplorationController@getExplore')->name('explore');
             $router->post('explore')->uses('Dominion\ExplorationController@postExplore');
 
             // Construction
-            $router->get('construction')->uses('Dominion\ConstructionController@getConstruction')->name('construction');
-            $router->post('construction')->uses('Dominion\ConstructionController@postConstruction');
+            $router->get('construct')->uses('Dominion\ConstructionController@getConstruction')->name('construct');
+            $router->post('construct')->uses('Dominion\ConstructionController@postConstruction');
             $router->get('destroy')->uses('Dominion\ConstructionController@getDestroy')->name('destroy');
             $router->post('destroy')->uses('Dominion\ConstructionController@postDestroy');
 
@@ -158,7 +161,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('realm/{realm?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
+            // Debug
             $router->get('debug')->uses('DebugController@getIndex');
+            $router->get('debug/dump')->uses('DebugController@getDump');
 
         });
 

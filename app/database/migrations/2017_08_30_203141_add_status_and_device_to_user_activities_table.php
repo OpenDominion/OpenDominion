@@ -27,8 +27,7 @@ class AddStatusAndDeviceToUserActivitiesTable extends Migration
     public function down()
     {
         Schema::table('user_activities', function (Blueprint $table) {
-            $table->dropColumn('device');
-//            $table->dropColumn('status');
+            $table->dropColumn(['status', 'device']);
         });
     }
 }

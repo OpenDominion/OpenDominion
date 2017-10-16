@@ -12,7 +12,7 @@
                 </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
                     {!! csrf_field() !!}
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -36,8 +36,8 @@
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                                     <tr>
                                         <td>
-                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}<br>
-                                            <span class="text-muted"><i>{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}</i></span>
+                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}"></i>
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
                                         <td class="text-center">{{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}</td>
@@ -81,8 +81,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Train</button>
                         <div class="pull-right">
-                            You have {{ number_format($selectedDominion->military_draftees) }} draftees available to
-                            train.
+                            You have {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }} available to train.
                         </div>
                     </div>
                 </form>
@@ -98,7 +97,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you can train your draftees into proper military units. Training units takes <b>12 hours</b> to process.</p>
-                    <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->military_draftees) }} draftees.</p>
+                    <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum, {{ number_format($selectedDominion->resource_ore) }} ore and {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }}.</p>
                     <p>You may also <a href="{{ route('dominion.military.release') }}">release your troops</a> if you wish.</p>
                 </div>
             </div>

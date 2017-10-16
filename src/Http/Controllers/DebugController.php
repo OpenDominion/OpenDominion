@@ -42,6 +42,17 @@ class DebugController extends AbstractDominionController
         ]);
     }
 
+    public function getDump()
+    {
+        echo 'When making an issue that affects your dominion in its current state, please copy and paste the following block into the issue (including the trailing ```):<br><br>';
+        echo '<div style="font-family: monospace; word-wrap: break-word; background-color: #eee;">';
+        echo "Context:<br>\n";
+        echo "```<br>\n";
+        echo encrypt($this->getSelectedDominion()->toJson()) . "<br>\n";
+        echo "```\n";
+        echo '</div>';
+    }
+
     public static function printMethodValues($class, array $methods) {
         $return = '';
 
@@ -72,7 +83,7 @@ class DebugController extends AbstractDominionController
 
                     if (substr($label, -10) === 'Multiplier') {
                         $value = number_format($value * 100 - 100, 2);
-                        $value = ((($value < 0) ? '-' : '+') . $value . '%');
+                        $value = ((($value < 0) ? '' : '+') . $value . '%');
                     } else {
                         $value = number_format($value, 2);
                     }

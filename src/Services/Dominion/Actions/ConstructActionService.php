@@ -139,6 +139,16 @@ class ConstructActionService
             throw $e;
         }
 
-        return compact('platinumCost', 'lumberCost');
+        return [
+            'message' => sprintf(
+                'Construction started at a cost of %s platinum and %s lumber.',
+                number_format($platinumCost),
+                number_format($lumberCost)
+            ),
+            'data' => [
+                'platinumCost' => $platinumCost,
+                'lumberCost' => $lumberCost,
+            ],
+        ];
     }
 }

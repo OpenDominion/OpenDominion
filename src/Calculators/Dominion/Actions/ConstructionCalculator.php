@@ -38,18 +38,16 @@ class ConstructionCalculator
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        if ($totalBuildings >= 1250) {
-            $platinum += max(
-                ($totalLand * 0.75),
-                $totalBuildings
-            );
-        } else {
-            $platinum += $totalLand;
-        }
+        $platinum += max(
+            (($totalBuildings < 250) ? 250 : $totalBuildings),
+            (3 * $totalBuildings) / 4
+        );
 
         $platinum -= 250;
         $platinum *= 1.53;
         $platinum += 850;
+
+        $platinum *= $this->getCostMultiplier($dominion);
 
         return (int)round($platinum);
     }
@@ -66,18 +64,16 @@ class ConstructionCalculator
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        if ($totalBuildings >= 1250) {
-            $lumber += max(
-                ($totalLand * 0.75),
-                $totalBuildings
-            );
-        } else {
-            $lumber += $totalLand;
-        }
+        $lumber += max(
+            (($totalBuildings < 250) ? 250 : $totalBuildings),
+            (3 * $totalBuildings) / 4
+        );
 
         $lumber -= 250;
-        $lumber *= 0.6;
-        $lumber += 88;
+        $lumber *= 0.35;
+        $lumber += 87.5;
+
+        $lumber *= $this->getCostMultiplier($dominion);
 
         return (int)round($lumber);
     }
@@ -90,11 +86,33 @@ class ConstructionCalculator
      */
     public function getMaxAfford(Dominion $dominion): int
     {
-        // todo: factor in amount of barren land?
         return (int)min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             floor($dominion->resource_lumber / $this->getLumberCost($dominion)),
             $this->landCalculator->getTotalBarrenLand($dominion)
         );
+    }
+
+    /**
+     * Returns the Dominion's construction cost multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1.0;
+
+        // Values (percentages)
+        $factoryReduction = 4;
+        $factoryReductionMax = 75;
+
+        // Factories
+        $multiplier -= min(
+            (($dominion->building_factory / $this->landCalculator->getTotalLand($dominion)) * $factoryReduction),
+            ($factoryReductionMax / 100)
+        );
+
+        return $multiplier;
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Console\Command;
 use Log;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
-use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use RuntimeException;
 
@@ -35,9 +34,6 @@ class TickCommand extends Command
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
-    /** @var NetworthCalculator */
-    protected $networthCalculator;
-
     /**
      * GameTickCommand constructor.
      */
@@ -47,7 +43,6 @@ class TickCommand extends Command
 
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
-        $this->networthCalculator = app(NetworthCalculator::class);
     }
 
     /**
@@ -77,7 +72,8 @@ class TickCommand extends Command
         $this->tickDominionMorale();
         $this->tickDominionSpyStrength();
         $this->tickDominionWizardStrength();
-        $this->tickDominionNetworth();
+
+        $this->resetDailyBonuses();
 
         DB::commit();
 
@@ -368,23 +364,24 @@ class TickCommand extends Command
     }
 
     /**
-     * Ticks dominion networth.
+     * Resets daily bonuses.
      */
-    public function tickDominionNetworth()
-    {
-        // todo: figure out what to do with dominion->networth
-        Log::debug('Tick dominion networth');
+    public function resetDailyBonuses() {
+        if (Carbon::now()->hour !== 0) {
+            return;
+        }
+
+        Log::debug('Resetting daily bonuses');
 
         foreach ($this->getDominionsToUpdate() as $dominion) {
-            $dominion->networth = $this->networthCalculator->getDominionNetworth($dominion);
+            $dominion->daily_platinum = false;
+            $dominion->daily_land = false;
             $dominion->save();
         }
     }
 
     protected function getDominionsToUpdate()
     {
-        // todo: fetch only non-locked dominions
-
         return Dominion::whereIn('id', $this->dominionsIdsToUpdate)->get();
     }
 }
