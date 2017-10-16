@@ -73,6 +73,8 @@ class TickCommand extends Command
         $this->tickDominionSpyStrength();
         $this->tickDominionWizardStrength();
 
+        $this->resetDailyBonuses();
+
         DB::commit();
 
         Log::info('Tick');
@@ -361,10 +363,25 @@ class TickCommand extends Command
         Log::debug("Ticked training queue, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 
+    /**
+     * Resets daily bonuses.
+     */
+    public function resetDailyBonuses() {
+        if (Carbon::now()->hour !== 0) {
+            return;
+        }
+
+        Log::debug('Resetting daily bonuses');
+
+        foreach ($this->getDominionsToUpdate() as $dominion) {
+            $dominion->daily_platinum = false;
+            $dominion->daily_land = false;
+            $dominion->save();
+        }
+    }
+
     protected function getDominionsToUpdate()
     {
-        // todo: fetch only non-locked dominions
-
         return Dominion::whereIn('id', $this->dominionsIdsToUpdate)->get();
     }
 }

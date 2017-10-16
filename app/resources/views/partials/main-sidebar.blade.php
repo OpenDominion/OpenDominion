@@ -19,7 +19,20 @@
                 <li class="header">GENERAL</li>
                 <li class="{{ Route::is('dominion.status') ? 'active' : null }}"><a href="{{ route('dominion.status') }}"><i class="fa fa-bar-chart fa-fw"></i> <span>Status</span></a></li>
                 <li class="{{ Route::is('dominion.advisors.*') ? 'active' : null }}"><a href="{{ route('dominion.advisors') }}"><i class="fa fa-question-circle fa-fw"></i> <span>Advisors</span></a></li>
-                {{-- daily bonuses --}}
+                <li class="{{ Route::is('dominion.bonuses') ? 'active' : null }}">
+                    <a href="{{ route('dominion.bonuses') }}">
+                        <i class="fa fa-plus fa-fw"></i>
+                        <span>Daily Bonus</span>
+                        <span class="pull-right-container">
+                            @if (!$selectedDominion->daily_platinum)
+                                <span class="label label-primary pull-right">P</span>
+                            @endif
+                            @if (!$selectedDominion->daily_land)
+                                    <span class="label label-primary pull-right">L</span>
+                            @endif
+                        </span>
+                    </a>
+                </li>
 
                 <li class="header">DOMINION</li>
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="fa fa-search fa-fw"></i> <span>Explore Land</span></a></li>
