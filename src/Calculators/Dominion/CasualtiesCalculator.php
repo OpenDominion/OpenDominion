@@ -50,7 +50,7 @@ class CasualtiesCalculator
 
         while (count($units) > 0 && $remainingCasualties > 0) {
             foreach ($units as $unit) {
-                $casualties[$unit] = min(
+                $casualties[$unit] = (int) min(
                     array_get($casualties, $unit, 0) + (int)(ceil($remainingCasualties / count($units))),
                     $dominion->{$unit}
                 );
@@ -63,6 +63,13 @@ class CasualtiesCalculator
             });
         }
 
+        if ($remainingCasualties > 0) {
+            $casualties['peasants'] = (int) min(
+                $remainingCasualties + $totalCasualties,
+                $dominion->peasants
+            );
+        }
+
         return array_filter($casualties);
     }
 
@@ -73,8 +80,12 @@ class CasualtiesCalculator
      */
     protected function getUnitTypes(): array
     {
-        return array_map(function ($unit) {
-            return 'military_' . $unit;
-        }, array_merge($this->unitHelper->getUnitTypes(), ['draftees']));
+        return array_merge(
+            array_map(
+                function ($unit) { return 'military_' . $unit; },
+                $this->unitHelper->getUnitTypes()
+            ),
+            ['military_draftees']
+        );
     }
 }
