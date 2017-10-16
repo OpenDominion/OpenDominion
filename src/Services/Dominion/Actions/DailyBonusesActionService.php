@@ -10,7 +10,7 @@ class DailyBonusesActionService
 {
     use DominionGuardsTrait;
 
-    public function platinum(Dominion $dominion): array
+    public function claimPlatinum(Dominion $dominion): array
     {
         if ($dominion->daily_platinum == true) {
             throw new RuntimeException('You already claimed your platinum bonus for today.');
@@ -29,7 +29,7 @@ class DailyBonusesActionService
         ];
     }
 
-    public function land(Dominion $dominion): array
+    public function claimLand(Dominion $dominion): array
     {
         if ($dominion->daily_land == true) {
             throw new RuntimeException('You already claimed your land bonus for today.');

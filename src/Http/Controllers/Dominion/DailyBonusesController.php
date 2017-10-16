@@ -20,7 +20,7 @@ class DailyBonusesController extends AbstractDominionController
         $dailyBonusesActionService = app(DailyBonusesActionService::class);
 
         try {
-            $result = $dailyBonusesActionService->platinum($dominion);
+            $result = $dailyBonusesActionService->claimPlatinum($dominion);
         } catch (Exception $e) {
             return redirect()
                 ->back()
@@ -38,7 +38,7 @@ class DailyBonusesController extends AbstractDominionController
         $dailyBonusesActionService = app(DailyBonusesActionService::class);
 
         try {
-            $result = $dailyBonusesActionService->land($dominion);
+            $result = $dailyBonusesActionService->claimLand($dominion);
         } catch (Exception $e) {
             return redirect()
                 ->back()
