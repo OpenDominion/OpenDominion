@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
-use OpenDominion\Models\Dominion;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Models\Dominion;
 
 class CasualtiesCalculator
 {
