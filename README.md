@@ -48,7 +48,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | ------------------- | ----------------------------------------- |
 | Status              | ![Progress](http://progressed.io/bar/100) |
 | Advisors            | ![Progress](http://progressed.io/bar/90)  |
-| Daily Bonuses       | ![Progress](http://progressed.io/bar/0)   |
+| Daily Bonuses       | ![Progress](http://progressed.io/bar/100) |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
 | Construction        | ![Progress](http://progressed.io/bar/100) |
 | Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
