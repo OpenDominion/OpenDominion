@@ -65,7 +65,7 @@ class CasualtiesCalculator
 
         if ($remainingCasualties > 0) {
             $casualties['peasants'] = (int) min(
-                $remainingCasualties + $totalCasualties,
+                $remainingCasualties + $casualties['peasants'],
                 $dominion->peasants
             );
         }
