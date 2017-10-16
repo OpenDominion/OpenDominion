@@ -15,7 +15,7 @@ class DailyBonusesActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function claimPlatinum(Dominion $dominion): array
     {
