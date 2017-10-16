@@ -30,7 +30,7 @@ class DailyBonusesActionService
 
         return [
             'message' => sprintf(
-                'You gained %s platinum.',
+                'You gain %s platinum.',
                 number_format($platinumGained)
             ),
             'data' => [
@@ -60,7 +60,7 @@ class DailyBonusesActionService
 
         return [
             'message' => sprintf(
-                'You gained %d %s.',
+                'You gain %d acres of %s.',
                 $landGained,
                 str_plural($dominion->race->home_land_type)
             ),
