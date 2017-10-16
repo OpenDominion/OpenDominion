@@ -7,6 +7,7 @@ use Config;
 use DB;
 use Illuminate\Console\Command;
 use Log;
+use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Models\Dominion;
@@ -34,6 +35,9 @@ class TickCommand extends Command
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
+    /** @var CasualtiesCalculator */
+    protected $casualtiesCalculator;
+
     /**
      * GameTickCommand constructor.
      */
@@ -43,6 +47,7 @@ class TickCommand extends Command
 
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
+        $this->casualtiesCalculator = app(CasualtiesCalculator::class);
     }
 
     /**
@@ -128,7 +133,15 @@ class TickCommand extends Command
             // Resources
             $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
             $dominion->resource_food += $this->productionCalculator->getFoodNetChange($dominion);
-            // todo: if food < 0 then food = 0?
+            if ($dominion->resource_food < 0) {
+                $casualties = $this->casualtiesCalculator->getCasualtiesByUnitType($dominion);
+
+                foreach($casualties as $unit => $unitCasualties) {
+                    $dominion->{$unit} -= $unitCasualties;
+                }
+
+                $dominion->resource_food = 0;
+            }
             $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
             // todo: if lumber < 0 then lumber = 0?
             $dominion->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
