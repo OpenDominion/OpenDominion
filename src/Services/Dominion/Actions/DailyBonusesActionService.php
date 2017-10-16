@@ -29,7 +29,10 @@ class DailyBonusesActionService
         $dominion->save();
 
         return [
-            'message' => sprintf('You gained %s platinum.', $platinumGained),
+            'message' => sprintf(
+                'You gained %s platinum.',
+                number_format($platinumGained)
+            ),
             'data' => [
                 'platinumGained' => $platinumGained,
             ],
@@ -56,7 +59,11 @@ class DailyBonusesActionService
         $dominion->save();
 
         return [
-            'message' => sprintf('You gained %d %s land.', $landGained, $dominion->race->home_land_type),
+            'message' => sprintf(
+                'You gained %d %s.',
+                $landGained,
+                str_plural($dominion->race->home_land_type)
+            ),
             'data' => [
                 'landGained' => $landGained,
             ],

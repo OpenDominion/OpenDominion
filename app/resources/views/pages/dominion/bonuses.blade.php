@@ -12,21 +12,17 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="row">
-                                <div class="form-group col-sm-3">
-                                    <form action="{{ route('dominion.bonuses.platinum') }}" method="post" role="form">
-                                        {!! csrf_field() !!}
-                                        <button type="submit" name="platinum" class="btn btn-primary" {{ $selectedDominion->isLocked() || $selectedDominion->daily_platinum ? 'disabled' : null }}>Platinum bonus</button>
-                                    </form>
-                                </div>
-                                <div class="form-group col-sm-3">
-                                    <form action="{{ route('dominion.bonuses.land') }}" method="post" role="form">
-                                        {!! csrf_field() !!}
-                                        <button type="submit" name="land" class="btn btn-primary" {{ $selectedDominion->isLocked() || $selectedDominion->daily_land ? 'disabled' : null }}>Land bonus</button>
-                                    </form>
-                                </div>
-                            </div>
+                        <div class="col-lg-6 text-center">
+                            <form action="{{ route('dominion.bonuses.platinum') }}" method="post" role="form">
+                                {!! csrf_field() !!}
+                                <button type="submit" name="platinum" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_platinum ? 'disabled' : null }}>Platinum Bonus</button>
+                            </form>
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <form action="{{ route('dominion.bonuses.land') }}" method="post" role="form">
+                                {!! csrf_field() !!}
+                                <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_land ? 'disabled' : null }}>Land Bonus</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -39,9 +35,9 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The platinum bonus <b>instantly</b> gives you platinum equal to 4 times your peasants.</p>
-                    <p>The land bonus <b>instantly</b> gives you 20 acres of your home landtype (for example: plains for humans).</p>
-                    <p>These rewards can be claimed at any time of a day, but only once that day.</p>
+                    <p>The Platinum Bonus instantly gives you {{ number_format($selectedDominion->peasants * 4) }} platinum.</p>
+                    <p>The Land Bonus instantly gives you 20 acres of {{ str_plural($selectedDominion->race->home_land_type) }}.</p>
+                    <p>Both bonuses can be claimed once per day.</p>
                 </div>
             </div>
         </div>
