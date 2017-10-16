@@ -22,7 +22,7 @@
                 <li class="{{ Route::is('dominion.bonuses') ? 'active' : null }}">
                     <a href="{{ route('dominion.bonuses') }}">
                         <i class="fa fa-plus fa-fw"></i>
-                        <span>Daily Bonuses </span>
+                        <span>Daily Bonus</span>
                         <span class="pull-right-container">
                             @if (!$selectedDominion->daily_platinum)
                                 <span class="label label-primary pull-right">P</span>
