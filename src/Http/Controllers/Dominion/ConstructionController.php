@@ -78,21 +78,16 @@ class ConstructionController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $message = sprintf(
-            'Destruction of %s buildings is complete.',
-            number_format($result['totalBuildingsDestroyed'])
-        );
-
         // todo: laravel event
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
             'destroy',
             '',
-            $result['totalBuildingsDestroyed']
+            $result['data']['totalBuildingsDestroyed']
         ));
 
-        $request->session()->flash('alert-success', $message);
+        $request->session()->flash('alert-success', $result['message']);
         return redirect()->route('dominion.destroy');
     }
 }
