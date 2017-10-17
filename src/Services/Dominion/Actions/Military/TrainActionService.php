@@ -118,8 +118,6 @@ class TrainActionService
                     continue;
                 }
 
-                dd($unitType);
-
                 $where = [
                     'dominion_id' => $dominion->id,
                     'unit_type' => $unitType,
