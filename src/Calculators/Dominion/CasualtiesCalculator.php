@@ -42,9 +42,8 @@ class CasualtiesCalculator
 
         $totalCasualties = $this->getTotalCasualties($dominion);
 
-        $casualties = [
-            'peasants' => min($totalCasualties / 2, $dominion->peasants),
-        ];
+        $casualties = ['peasants' => min($totalCasualties / 2, $dominion->peasants)];
+        $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = $totalCasualties - array_sum($casualties);
 
@@ -63,7 +62,20 @@ class CasualtiesCalculator
             });
         }
 
-        if ($remainingCasualties > 0) {
+        if ($remainingCasualties < 0) {
+            while ($remainingCasualties < 0) {
+                foreach (array_keys(array_reverse($casualties)) as $unitType) {
+                    if ($casualties[$unitType] > 0) {
+                        $casualties[$unitType]--;
+                        $remainingCasualties++;
+                    }
+
+                    if ($remainingCasualties === 0) {
+                        break 2;
+                    }
+                }
+            }
+        } elseif ($remainingCasualties > 0) {
             $casualties['peasants'] = (int) min(
                 $remainingCasualties + $casualties['peasants'],
                 $dominion->peasants
