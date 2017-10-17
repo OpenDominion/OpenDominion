@@ -169,7 +169,6 @@
                         <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive">
                     </a>
                 </div>
-
             @endif
 
             @if ($dominionProtectionService->isUnderProtection($selectedDominion))
