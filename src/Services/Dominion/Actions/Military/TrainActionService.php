@@ -107,7 +107,6 @@ class TrainActionService
             $existingQueueRows = DB::table('queue_training')
                 ->where([
                     'dominion_id' => $dominion->id,
-                    'hours' => 12,
                 ])->get(['unit_type', 'amount']);
 
             foreach ($existingQueueRows as $row) {
@@ -119,10 +118,12 @@ class TrainActionService
                     continue;
                 }
 
+                dd($unitType);
+
                 $where = [
                     'dominion_id' => $dominion->id,
                     'unit_type' => $unitType,
-                    'hours' => 12,
+                    'hours' => $unitType == 'unit1' || $unitType == 'unit2' ? 9 : 12,
                 ];
 
                 $values = [
