@@ -25,7 +25,7 @@ class Race extends AbstractModel
      * @param string $key
      * @return float
      */
-    public function getPerkMultiplier($key)
+    public function getPerkMultiplier($key): float
     {
         $perks = $this->perks->filter(function (RacePerk $racePerk) use ($key) {
             return ($racePerk->type->key === $key);
@@ -35,6 +35,6 @@ class Race extends AbstractModel
             return (float)0;
         }
 
-        return (float)((float)$perks->first()->value / 100);
+        return ((float)$perks->first()->value / 100);
     }
 }
