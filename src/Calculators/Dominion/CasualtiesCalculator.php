@@ -21,31 +21,16 @@ class CasualtiesCalculator
     }
 
     /**
-     * Returns the Dominion's casualties.
-     *
-     * @param  Dominion $dominion
-     * @return int
-     */
-    public function getTotalCasualties(Dominion $dominion): int
-    {
-        if ($dominion->resource_food >= 0) {
-            return 0;
-        }
-
-        return (int)(abs($dominion->resource_food) * 4);
-    }
-
-    /**
      * Returns the Dominion's casualties by unit type.
      *
      * @param  Dominion $dominion
      * @return array
      */
-    public function getCasualtiesByUnitType(Dominion $dominion): array
+    public function getStarvationCasualtiesByUnitType(Dominion $dominion): array
     {
-        $units = $this->getUnitTypes();
+        $units = $this->getStarvationUnitTypes();
 
-        $totalCasualties = $this->getTotalCasualties($dominion);
+        $totalCasualties = $this->getTotalStarvationCasualties($dominion);
 
         $casualties = ['peasants' => min($totalCasualties / 2, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
@@ -91,11 +76,26 @@ class CasualtiesCalculator
     }
 
     /**
+     * Returns the Dominion's number of casualties due to starvation.
+     *
+     * @param  Dominion $dominion
+     * @return int
+     */
+    protected function getTotalStarvationCasualties(Dominion $dominion): int
+    {
+        if ($dominion->resource_food >= 0) {
+            return 0;
+        }
+
+        return (int)(abs($dominion->resource_food) * 4);
+    }
+
+    /**
      * Returns the Units that can suffer casualties.
      *
      * @return array
      */
-    protected function getUnitTypes(): array
+    protected function getStarvationUnitTypes(): array
     {
         return array_merge(
             array_map(
