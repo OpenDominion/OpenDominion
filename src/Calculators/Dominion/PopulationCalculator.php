@@ -277,7 +277,11 @@ class PopulationCalculator
      */
     public function getPopulationPeasantPercentage(Dominion $dominion): float
     {
-        return (float)(($dominion->peasants / $this->getPopulation($dominion)) * 100);
+        if (($dominionPopulation = $this->getPopulation($dominion)) === 0) {
+            return (float)0;
+        }
+
+        return (float)(($dominion->peasants / $dominionPopulation) * 100);
     }
 
     /**
@@ -287,7 +291,11 @@ class PopulationCalculator
      */
     public function getPopulationMilitaryPercentage(Dominion $dominion): float
     {
-        return (float)(($this->getPopulationMilitary($dominion) / $this->getPopulation($dominion)) * 100);
+        if (($dominionPopulation = $this->getPopulation($dominion)) === 0) {
+            return (float)0;
+        }
+
+        return (float)(($this->getPopulationMilitary($dominion) / $dominionPopulation) * 100);
     }
 
     /**
