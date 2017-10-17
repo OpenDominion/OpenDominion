@@ -10,6 +10,11 @@ class CasualtiesCalculator
     /** @var UnitHelper */
     private $unitHelper;
 
+    /**
+     * CasualtiesCalculator constructor.
+     *
+     * @param UnitHelper $unitHelper
+     */
     public function __construct(UnitHelper $unitHelper)
     {
         $this->unitHelper = $unitHelper;
@@ -45,12 +50,12 @@ class CasualtiesCalculator
         $casualties = ['peasants' => min($totalCasualties / 2, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
-        $remainingCasualties = $totalCasualties - array_sum($casualties);
+        $remainingCasualties = ($totalCasualties - array_sum($casualties));
 
         while (count($units) > 0 && $remainingCasualties > 0) {
             foreach ($units as $unit) {
-                $casualties[$unit] = (int) min(
-                    array_get($casualties, $unit, 0) + (int)(ceil($remainingCasualties / count($units))),
+                $casualties[$unit] = (int)min(
+                    (array_get($casualties, $unit, 0) + (int)(ceil($remainingCasualties / count($units)))),
                     $dominion->{$unit}
                 );
             }
@@ -58,7 +63,7 @@ class CasualtiesCalculator
             $remainingCasualties = $totalCasualties - array_sum($casualties);
 
             $units = array_filter($units, function ($unit) use ($dominion, $casualties) {
-                return $casualties[$unit] < $dominion->{$unit};
+                return ($casualties[$unit] < $dominion->{$unit});
             });
         }
 
@@ -76,8 +81,8 @@ class CasualtiesCalculator
                 }
             }
         } elseif ($remainingCasualties > 0) {
-            $casualties['peasants'] = (int) min(
-                $remainingCasualties + $casualties['peasants'],
+            $casualties['peasants'] = (int)min(
+                ($remainingCasualties + $casualties['peasants']),
                 $dominion->peasants
             );
         }
@@ -94,7 +99,9 @@ class CasualtiesCalculator
     {
         return array_merge(
             array_map(
-                function ($unit) { return 'military_' . $unit; },
+                function ($unit) {
+                    return ('military_' . $unit);
+                },
                 $this->unitHelper->getUnitTypes()
             ),
             ['military_draftees']
