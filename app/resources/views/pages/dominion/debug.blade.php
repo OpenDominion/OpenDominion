@@ -153,6 +153,8 @@
                             'getGemProductionRaw',
                             'getGemProductionMultiplier',
                             'getBoatProduction',
+                            'getBoatProductionRaw',
+                            'getBoatProductionMultiplier',
                         ]) !!}
                     </p>
                 </div>
