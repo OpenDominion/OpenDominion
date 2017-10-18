@@ -6,7 +6,7 @@ use OpenDominion\Models\Race;
 
 class BuildingHelper
 {
-    public function getBuildingTypes()
+    public function getBuildingTypes(): array
     {
         return [
             'home',
@@ -31,7 +31,7 @@ class BuildingHelper
         ];
     }
 
-    public function getBuildingTypesByRace(Race $race = null)
+    public function getBuildingTypesByRace(Race $race = null): array
     {
         $return = [
             'plain' => [
@@ -76,7 +76,7 @@ class BuildingHelper
     }
 
     // temp
-    public function getBuildingImplementedString($buildingType)
+    public function getBuildingImplementedString(string $buildingType): ?string
     {
         // 0 = nyi
         // 1 = partial implemented
@@ -87,7 +87,7 @@ class BuildingHelper
             'alchemy' => 2,
             'farm' => 2,
             'smithy' => 2,
-            'masonry' => 0, // increase castle bonuses
+            'masonry' => 1, // reduce lightning bolt damage
             'ore_mine' => 2,
             'gryphon_nest' => 2,
             'tower' => 2,
@@ -120,7 +120,7 @@ class BuildingHelper
         return null;
     }
 
-    public function getBuildingHelpString($buildingType)
+    public function getBuildingHelpString(string $buildingType): ?string
     {
         $helpStrings = [
             'home' => 'Houses 30 people.',

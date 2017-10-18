@@ -6,7 +6,7 @@ use OpenDominion\Models\Race;
 
 class LandHelper
 {
-    public function getLandTypes()
+    public function getLandTypes(): array
     {
         return [
             'plain',
@@ -19,12 +19,12 @@ class LandHelper
         ];
     }
 
-    public function getLandTypeForBuildingByRace($building, Race $race)
+    public function getLandTypeForBuildingByRace(string $building, Race $race): string
     {
         return $this->getLandTypesByBuildingType($race)[$building];
     }
 
-    public function getLandTypesByBuildingType(Race $race)
+    public function getLandTypesByBuildingType(Race $race): array
     {
         $return = [
             'alchemy' => 'plain',
