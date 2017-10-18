@@ -48,7 +48,7 @@ class ImproveActionService
 
             $dominion->{'improvement_' . $improvementType} += $points;
 
-            $investmentStringParts[] = (number_format($points). ' ' . $improvementType);
+            $investmentStringParts[] = (number_format($points) . ' ' . $improvementType);
         }
 
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
