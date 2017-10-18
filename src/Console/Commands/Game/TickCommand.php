@@ -159,8 +159,6 @@ class TickCommand extends Command
             $dominion->peasants_last_hour = $populationPeasantGrowth;
             $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
 
-            dd($dominion);
-
             $dominion->save();
         }
 
