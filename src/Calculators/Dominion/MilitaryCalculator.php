@@ -6,16 +6,21 @@ use OpenDominion\Models\Dominion;
 
 class MilitaryCalculator
 {
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
     /**
      * MilitaryCalculator constructor.
      *
+     * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator)
     {
+        $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
     }
 
@@ -61,14 +66,17 @@ class MilitaryCalculator
         $opPerGryphonNest = 1.75;
         $gryphonNestMaxOp = 35;
 
-        // Racial Bonus
-        $multiplier += $dominion->race->getPerkMultiplier('offense');
-
         // Gryphon Nests
         $multiplier += min(
             (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
             ($gryphonNestMaxOp / 100)
         );
+
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('offense');
+
+        // Improvement: Forges
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'forges');
 
         // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
@@ -164,17 +172,17 @@ class MilitaryCalculator
         $dpPerGuardTower = 1.75;
         $guardTowerMaxDp = 35;
 
-        // Racial Bonus
-        $multiplier += $dominion->race->getPerkMultiplier('defense');
-
-        // Improvement: Walls
-        // todo
-
         // Guard Towers
         $multiplier += min(
             (($dpPerGuardTower * $dominion->building_guard_tower) / $this->landCalculator->getTotalLand($dominion)),
             ($guardTowerMaxDp / 100)
         );
+
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('defense');
+
+        // Improvement: Walls
+        $this->improvementCalculator->getImprovementMultiplier($dominion, 'walls');
 
         // Spell: Frenzy (Halfling) (+20%)
         // Spell: Blizzard (+15%)

@@ -11,15 +11,27 @@ class PopulationCalculator
     /** @var BuildingHelper */
     protected $buildingHelper;
 
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
     /** @var UnitHelper */
     protected $unitHelper;
 
-    public function __construct(BuildingHelper $buildingHelper, LandCalculator $landCalculator, UnitHelper $unitHelper)
+    /**
+     * PopulationCalculator constructor.
+     *
+     * @param BuildingHelper $buildingHelper
+     * @param ImprovementCalculator $improvementCalculator
+     * @param LandCalculator $landCalculator
+     * @param UnitHelper $unitHelper
+     */
+    public function __construct(BuildingHelper $buildingHelper, ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator, UnitHelper $unitHelper)
     {
         $this->buildingHelper = $buildingHelper;
+        $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->unitHelper = $unitHelper;
     }
@@ -116,7 +128,7 @@ class PopulationCalculator
      *
      * Max population multiplier is affected by:
      * - Racial Bonus
-     * - Improvement: Keep (todo)
+     * - Improvement: Keep
      * - Tech: Urban Mastery and Construction (todo)
      * - Prestige bonus
      *
@@ -134,7 +146,7 @@ class PopulationCalculator
         $multiplier += $dominion->race->getPerkMultiplier('max_population');
 
         // Improvement: Keep
-        // todo
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'keep');
 
         // Tech: Urban Mastery
         // todo

@@ -6,16 +6,21 @@ use OpenDominion\Models\Dominion;
 
 class ProductionCalculator
 {
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
+
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
     /**
      * ProductionCalculator constructor.
      *
+     * @param ImprovementCalculator $improvementCalculator
      * @param PopulationCalculator $populationCalculator
      */
-    public function __construct(PopulationCalculator $populationCalculator)
+    public function __construct(ImprovementCalculator $improvementCalculator, PopulationCalculator $populationCalculator)
     {
+        $this->improvementCalculator = $improvementCalculator;
         $this->populationCalculator = $populationCalculator;
     }
 
@@ -85,7 +90,7 @@ class ProductionCalculator
         // todo
 
         // Improvement: Science
-        // todo
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'science');
 
         // Guard Tax
         // todo
@@ -154,7 +159,7 @@ class ProductionCalculator
         // todo
 
         // Improvement: Irrigation
-        // todo
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'irrigation');
 
         // Tech: Production
         // todo
@@ -483,11 +488,22 @@ class ProductionCalculator
     // Boats
 
     /**
-     * Returns the Dominion's average boat production.
+     * Returns the Dominion's boat production per hour.
      *
      * @return float
      */
     public function getBoatProduction(Dominion $dominion): float
+    {
+        return ($this->getBoatProductionRaw($dominion) * $this->getBoatProductionMultiplier($dominion));
+    }
+
+    /**
+     * Returns the Dominion's raw boat production per hour.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getBoatProductionRaw(Dominion $dominion): float
     {
         $boats = 0;
 
@@ -497,5 +513,21 @@ class ProductionCalculator
         $boats += ($dominion->building_dock / $docksPerBoatPerTick);
 
         return (float)$boats;
+    }
+
+    /**
+     * Returns the Dominions's boat production multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getBoatProductionMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Improvement: Irrigation
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'irrigation');
+
+        return $multiplier;
     }
 }

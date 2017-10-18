@@ -27,10 +27,10 @@ class ExplorationController extends AbstractDominionController
     public function postExplore(ExploreActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
-        $explorationActionService = app(ExploreActionService::class);
+        $exploreActionService = app(ExploreActionService::class);
 
         try {
-            $result = $explorationActionService->explore($dominion, $request->get('explore'));
+            $result = $exploreActionService->explore($dominion, $request->get('explore'));
 
         } catch (Exception $e) {
             return redirect()->back()
