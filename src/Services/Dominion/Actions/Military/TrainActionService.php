@@ -105,10 +105,9 @@ class TrainActionService
 
             // Check for existing queue
             $existingQueueRows = DB::table('queue_training')
-                ->where([
-                    'dominion_id' => $dominion->id,
-                    'hours' => 12,
-                ])->get(['unit_type', 'amount']);
+                ->where('dominion_id', $dominion->id)
+                ->whereIn('hours', [9, 12])
+                ->get(['unit_type', 'amount']);
 
             foreach ($existingQueueRows as $row) {
                 $data[$row->unit_type] += $row->amount;
@@ -122,7 +121,7 @@ class TrainActionService
                 $where = [
                     'dominion_id' => $dominion->id,
                     'unit_type' => $unitType,
-                    'hours' => 12,
+                    'hours' => $unitType == 'unit1' || $unitType == 'unit2' ? 9 : 12,
                 ];
 
                 $values = [
