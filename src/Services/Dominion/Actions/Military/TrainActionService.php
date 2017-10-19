@@ -139,7 +139,11 @@ class TrainActionService
                     'updated_at' => $dateTime,
                 ];
 
-                if ($existingQueueRows->isEmpty()) {
+                $existingQueueRow = $existingQueueRows->filter(function ($unit) use ($unitType) {
+                    return ($unit->unit_type === $unitType);
+                });
+
+                if ($existingQueueRow->isEmpty()) {
                     $values['created_at'] = $dateTime;
                 }
 
