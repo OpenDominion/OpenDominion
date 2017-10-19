@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions\Military;
 use Carbon\Carbon;
 use DB;
 use Exception;
+use Illuminate\Database\Query\Builder;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
@@ -105,10 +106,18 @@ class TrainActionService
 
             // Check for existing queue
             $existingQueueRows = DB::table('queue_training')
-                ->where([
-                    'dominion_id' => $dominion->id,
-                    'hours' => 12,
-                ])->get(['unit_type', 'amount']);
+                ->where('dominion_id', $dominion->id)
+                ->where(function (Builder $query) {
+                    $query->orWhere(function (Builder $query) {
+                        // Specialist units take 9 hours to train
+                        $query->whereIn('unit_type', ['unit1', 'unit2'])
+                            ->where('hours', 9);
+                    })->orWhere(function (Builder $query) {
+                        // Non-specialist units take 12 hours to train
+                        $query->whereNotIn('unit_type', ['unit1', 'unit2'])
+                            ->where('hours', 12);
+                    });
+                })->get(['unit_type', 'amount']);
 
             foreach ($existingQueueRows as $row) {
                 $data[$row->unit_type] += $row->amount;
@@ -122,7 +131,7 @@ class TrainActionService
                 $where = [
                     'dominion_id' => $dominion->id,
                     'unit_type' => $unitType,
-                    'hours' => 12,
+                    'hours' => (in_array($unitType, ['unit1', 'unit2'], true) ? 9 : 12),
                 ];
 
                 $values = [
