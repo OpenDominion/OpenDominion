@@ -104,7 +104,11 @@ class ExploreActionService
                     'updated_at' => $dateTime,
                 ];
 
-                if ($existingQueueRows->isEmpty()) {
+                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($landType) {
+                    return ($row->land_type === $landType);
+                });
+
+                if ($existingQueueRow->isEmpty()) {
                     $values['created_at'] = $dateTime;
                 }
 

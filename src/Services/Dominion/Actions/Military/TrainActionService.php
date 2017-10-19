@@ -139,8 +139,8 @@ class TrainActionService
                     'updated_at' => $dateTime,
                 ];
 
-                $existingQueueRow = $existingQueueRows->filter(function ($unit) use ($unitType) {
-                    return ($unit->unit_type === $unitType);
+                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($unitType) {
+                    return ($row->unit_type === $unitType);
                 });
 
                 if ($existingQueueRow->isEmpty()) {

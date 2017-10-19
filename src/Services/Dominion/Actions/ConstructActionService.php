@@ -123,7 +123,11 @@ class ConstructActionService
                     'updated_at' => $dateTime,
                 ];
 
-                if ($existingQueueRows->isEmpty()) {
+                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($buildingType) {
+                    return ($row->building === $buildingType);
+                });
+
+                if ($existingQueueRow->isEmpty()) {
                     $values['created_at'] = $dateTime;
                 }
 
