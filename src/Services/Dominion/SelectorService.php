@@ -72,7 +72,14 @@ class SelectorService
         }
 
         if ($this->selectedDominion === null || ($dominionId !== $this->selectedDominion->id)) {
-            $this->selectedDominion = Dominion::with(['realm', 'race.perks', 'race.perks.type', 'race', 'race.units', 'race.units.perkType'])->findOrFail($dominionId);
+            $this->selectedDominion = Dominion::with([
+                'realm',
+                'race.perks',
+                'race.perks.type',
+                'race',
+                'race.units',
+                'race.units.perkType'
+            ])->findOrFail($dominionId);
         }
 
         return $this->selectedDominion;
@@ -112,7 +119,7 @@ class SelectorService
         /** @var Collection $activeDominions */
         $activeDominions = $user->dominions()->active()->get();
 
-        if ($activeDominions->count() !==  1) {
+        if ($activeDominions->count() !== 1) {
             return null;
         }
 
