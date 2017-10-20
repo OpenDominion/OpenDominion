@@ -5,6 +5,7 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 
 class PopulationCalculator
 {
@@ -17,6 +18,9 @@ class PopulationCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var TrainingQueueService */
+    protected $trainingQueueService;
+
     /** @var UnitHelper */
     protected $unitHelper;
 
@@ -25,13 +29,20 @@ class PopulationCalculator
      *
      * @param BuildingHelper $buildingHelper
      * @param ImprovementCalculator $improvementCalculator
+     * @param TrainingQueueService $trainingQueueService
      * @param LandCalculator $landCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(BuildingHelper $buildingHelper, ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator, UnitHelper $unitHelper)
-    {
+    public function __construct(
+        BuildingHelper $buildingHelper,
+        ImprovementCalculator $improvementCalculator,
+        TrainingQueueService $trainingQueueService,
+        LandCalculator $landCalculator,
+        UnitHelper $unitHelper
+    ) {
         $this->buildingHelper = $buildingHelper;
         $this->improvementCalculator = $improvementCalculator;
+        $this->trainingQueueService = $trainingQueueService;
         $this->landCalculator = $landCalculator;
         $this->unitHelper = $unitHelper;
     }
@@ -76,7 +87,7 @@ class PopulationCalculator
     {
         return (int)round(
             ($this->getMaxPopulationRaw($dominion) * $this->getMaxPopulationMultiplier($dominion))
-            + $this->getMaxPopulationMilitaryBonus($dominion) // todo: re-check this formula
+            + $this->getMaxPopulationMilitaryBonus($dominion)
         );
     }
 
@@ -187,7 +198,7 @@ class PopulationCalculator
         $troopsPerBarracks = 36;
 
         return (float)min(
-            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees), // todo: -training queue
+            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees - $this->trainingQueueService->getQueueTotal($dominion)),
             ($dominion->building_barracks * $troopsPerBarracks)
         );
     }
@@ -240,7 +251,7 @@ class PopulationCalculator
         // todo
 
         // Temples
-        $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) *  $templeBonus);
+        $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);
 
         return (float)$multiplier; // todo: see 1+$multiplier todo above
     }
