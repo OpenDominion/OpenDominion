@@ -3,6 +3,9 @@
 @section('page-header', 'Settings')
 
 @section('content')
+    @php
+        $user = Auth::user();
+    @endphp
     <div class="row">
         <div class="col-lg-3">
             @include('partials.settings-list-group')

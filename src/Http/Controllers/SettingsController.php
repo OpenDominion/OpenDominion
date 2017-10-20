@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
+use OpenDominion\Helpers\NotificationHelper;
 
 class SettingsController extends AbstractController
 {
@@ -14,21 +15,19 @@ class SettingsController extends AbstractController
     public function getAccount()
     {
         return view('pages.settings.account', [
-            'user' => Auth::user(),
         ]);
     }
 
     public function getNotifications()
     {
         return view('pages.settings.notifications', [
-            'user' => Auth::user(),
+            'notificationHelper' => app(NotificationHelper::class),
         ]);
     }
 
     public function getSecurity()
     {
         return view('pages.settings.security', [
-            'user' => Auth::user(),
         ]);
     }
 }
