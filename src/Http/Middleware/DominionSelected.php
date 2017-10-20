@@ -17,7 +17,7 @@ class DominionSelected
 
     public function handle($request, Closure $next)
     {
-        if (!$this->dominionSelectorService->hasUserSelectedDominion()) {
+        if (!$this->dominionSelectorService->hasUserSelectedDominion() && !$this->dominionSelectorService->tryAutoSelectDominionForAuthUser()) {
             return redirect()->guest('dashboard');
         }
 
