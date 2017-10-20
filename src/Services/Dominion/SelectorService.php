@@ -21,7 +21,7 @@ class SelectorService
      *
      * @return bool
      */
-    public function hasUserSelectedDominion()
+    public function hasUserSelectedDominion(): bool
     {
         return (session(self::SESSION_NAME) !== null);
     }
@@ -33,7 +33,7 @@ class SelectorService
      * @throws LogicException
      * @throws RuntimeException
      */
-    public function selectUserDominion(Dominion $dominion)
+    public function selectUserDominion(Dominion $dominion): void
     {
         $user = Auth::user();
 
@@ -63,7 +63,7 @@ class SelectorService
      *
      * @return Dominion|null
      */
-    public function getUserSelectedDominion()
+    public function getUserSelectedDominion(): ?Dominion
     {
         $dominionId = session(self::SESSION_NAME);
 
@@ -87,10 +87,8 @@ class SelectorService
 
     /**
      * Unsets the selected dominion for the logged in user.
-     *
-     * @return void
      */
-    public function unsetUserSelectedDominion()
+    public function unsetUserSelectedDominion(): void
     {
         Session::forget(self::SESSION_NAME);
     }
