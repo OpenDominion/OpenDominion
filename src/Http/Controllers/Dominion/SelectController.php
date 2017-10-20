@@ -29,6 +29,6 @@ class SelectController extends AbstractDominionController
             'select'
         ));
 
-        return redirect()->route('dominion.status');
+        return redirect()->intended(route('dominion.status'));
     }
 }
