@@ -3,6 +3,8 @@
 namespace OpenDominion\Services\Dominion;
 
 use Auth;
+use Illuminate\Database\Eloquent\Collection;
+use LogicException;
 use OpenDominion\Models\Dominion;
 use RuntimeException;
 use Session;
@@ -28,11 +30,16 @@ class SelectorService
      * Selects a dominion for the logged in user.
      *
      * @param Dominion $dominion
+     * @throws LogicException
      * @throws RuntimeException
      */
     public function selectUserDominion(Dominion $dominion)
     {
         $user = Auth::user();
+
+        if (!$user) {
+            throw new LogicException('Cannot select user dominion when not logged in');
+        }
 
         // Check if Dominion belongs to logged in user
         if ($dominion->user_id != $user->id) {
@@ -79,5 +86,40 @@ class SelectorService
     public function unsetUserSelectedDominion()
     {
         Session::forget(self::SESSION_NAME);
+    }
+
+    /**
+     * Tries to auto-select a dominion for the logged in user.
+     *
+     * Auto-select only works when the user currently has only one active dominion.
+     *s
+     * @return Dominion|null The auto-selected dominion
+     * @throws LogicException
+     * @throws RuntimeException
+     */
+    public function tryAutoSelectDominionForAuthUser(): ?Dominion
+    {
+        if ($this->hasUserSelectedDominion()) {
+            return null;
+        }
+
+        $user = Auth::user();
+
+        if (!$user) {
+            throw new LogicException('Cannot auto-select user dominion when not logged in');
+        }
+
+        /** @var Collection $activeDominions */
+        $activeDominions = $user->dominions()->active()->get();
+
+        if ($activeDominions->count() !==  1) {
+            return null;
+        }
+
+        $dominion = $activeDominions->first();
+
+        $this->selectUserDominion($dominion);
+
+        return $dominion;
     }
 }
