@@ -33,12 +33,25 @@ class DominionTest extends AbstractBrowserKitTestCase
         $this->markTestIncomplete();
     }
 
-    public function testUserCantSeeStatusPageIfNoDominionIsSelected()
+    public function testDominionGetsAutoSelectedIfUserHasOnlyOneActiveDominion()
     {
         $this->seed(CoreDataSeeder::class);
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
+
+        $this->visit('/dominion/status')
+            ->seePageIs('/dominion/status');
+    }
+
+    public function testNoDominionGetsAutoSelectedIfUserHasMultipleActiveDominions()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createAndImpersonateUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+        $round2 = $this->createRound();
+        $dominion2 = $this->createDominion($user, $round2);
 
         $this->visit('/dominion/status')
             ->seePageIs('/dashboard');
