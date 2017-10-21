@@ -12,55 +12,32 @@
                 </div>
                 <form action="{{ route('dominion.destroy') }}" method="post" role="form">
                     {!! csrf_field() !!}
-                    <div class="box-body table-responsive no-padding">
-                        <table class="table">
-                            <colgroup>
-                                <col>
-                                <col width="100">
-                                <col width="100">
-                            </colgroup>
+                    <div class="box-body no-padding">
+                        <div class="row">
 
-                            @foreach ($buildingHelper->getBuildingTypesByRace($selectedDominion->race) as $landType => $buildingTypes)
+                            <div class="col-md-12 col-lg-6">
+                                @php
+                                    /** @var \Illuminate\Support\Collection $buildingTypesLeft */
+                                    $landTypesBuildingTypes = collect($buildingHelper->getBuildingTypesByRace($selectedDominion->race))->filter(function ($buildingTypes, $landType) {
+                                        return in_array($landType, ['plain', 'mountain', 'swamp'], true);
+                                    });
+                                @endphp
 
-                                @if (empty($buildingTypes))
-                                    @continue
-                                @endif
+                                @include('partials.dominion.destroy.table')
+                            </div>
 
-                                <thead>
-                                    <tr>
-                                        <th colspan="3">{{ ucfirst($landType) }} <span class="small">(Barren: {{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }})</span></th>
-                                    </tr>
-                                    <tr>
-                                        <th>Building</th>
-                                        <th class="text-center">Owned</th>
-                                        <th class="text-center">Destroy</th>
-                                    </tr>
-                                </thead>
+                            <div class="col-md-12 col-lg-6">
+                                @php
+                                    /** @var \Illuminate\Support\Collection $buildingTypesLeft */
+                                    $landTypesBuildingTypes = collect($buildingHelper->getBuildingTypesByRace($selectedDominion->race))->filter(function ($buildingTypes, $landType) {
+                                        return in_array($landType, ['cavern', 'forest', 'hill', 'water'], true);
+                                    });
+                                @endphp
 
-                                <tbody>
-                                    @foreach ($buildingTypes as $buildingType)
-                                        <tr>
-                                            <td>
-                                                {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                                {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
-                                                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
-                                            </td>
-                                            <td class="text-center">
-                                                {{ $selectedDominion->{'building_' . $buildingType} }}
-                                                <small>
-                                                    ({{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
-                                                </small>
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="number" name="destroy[{{ $buildingType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $selectedDominion->{'building_' . $buildingType} }}" value="{{ old('destroy.' . $buildingType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
+                                @include('partials.dominion.destroy.table')
+                            </div>
 
-                            @endforeach
-
-                        </table>
+                        </div>
                     </div>
                     <div class="box-footer">
                         <button type="submit" class="btn btn-danger" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Destroy</button>
