@@ -158,8 +158,8 @@ class ProductionCalculator
         // Spell: Gaia's Watch
         // todo
 
-        // Improvement: Irrigation
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'irrigation');
+        // Improvement: Harbor
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'harbor');
 
         // Tech: Production
         // todo
@@ -525,8 +525,8 @@ class ProductionCalculator
     {
         $multiplier = 1;
 
-        // Improvement: Irrigation
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'irrigation');
+        // Improvement: Harbor
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'harbor');
 
         return $multiplier;
     }

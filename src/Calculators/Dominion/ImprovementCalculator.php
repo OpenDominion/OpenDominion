@@ -58,7 +58,7 @@ class ImprovementCalculator
             'towers' => 0.4,
             'forges' => 0.3,
             'walls' => 0.3,
-            'irrigation' => 0.4,
+            'harbor' => 0.4,
         ];
 
         return $maxima[$improvementType] ?: null;
@@ -80,7 +80,7 @@ class ImprovementCalculator
             'towers' => 5000,
             'forges' => 7500,
             'walls' => 7500,
-            'irrigation' => 5000,
+            'harbor' => 5000,
         ];
 
         return $modifiers[$improvementType] ?: null;
