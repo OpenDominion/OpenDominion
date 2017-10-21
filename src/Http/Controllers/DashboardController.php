@@ -5,11 +5,15 @@ namespace OpenDominion\Http\Controllers;
 use Auth;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class DashboardController extends AbstractController
 {
     public function getIndex()
     {
+        $selectorService = app(SelectorService::class);
+        $selectorService->tryAutoSelectDominionForAuthUser();
+
         $dominions = Dominion::with(['round', 'realm', 'race'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
