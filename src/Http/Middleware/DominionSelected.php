@@ -30,8 +30,6 @@ class DominionSelected
         }
 
         // Manually call ShareSelectedDominion middleware again
-        return app(ShareSelectedDominion::class)->handle($request, function ($request) use ($next) {
-            return $next($request);
-        });
+        return app(ShareSelectedDominion::class)->handle($request, $next);
     }
 }
