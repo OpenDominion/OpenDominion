@@ -13,7 +13,10 @@
 
         <thead>
             <tr>
-                <th colspan="3">{{ ucfirst($landType) }} <span class="small">(Barren: {{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }})</span></th>
+                <th colspan="3">
+                    <span class="pull-right barren-land">Barren: <strong>{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</strong></span>
+                    <h4>{{ ucfirst($landType) }}</h4>
+                </th>
             </tr>
             <tr>
                 <th>Building</th>
