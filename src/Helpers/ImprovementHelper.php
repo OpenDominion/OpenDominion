@@ -48,7 +48,7 @@ class ImprovementHelper
     public function getImprovementImplementedString(string $improvementType): ?string
     {
         if ($improvementType === 'towers') {
-            return '<abbr title="Not yet implemented" class="label label-danger">NYI</abbr>';
+            return '<abbr title="Partially implemented" class="label label-warning">PI</abbr>';
         }
 
         return null;

@@ -255,19 +255,18 @@ class MilitaryCalculator
     }
 
     /**
-     * Returns the Dominion's wizard ratio per acre of land.
+     * Returns the Dominion's wizard ratio.
      *
      * @param Dominion $dominion
      * @return float
      */
     public function getWizardRatio(Dominion $dominion): float
     {
-        return $this->getWizardRatioRaw($dominion);
-        // todo: racial multiplier + Magical Weaponry tech (+15%)
+        return ($this->getWizardRatioRaw($dominion) * $this->getWizardRatioMultiplier($dominion));
     }
 
     /**
-     * Returns the Dominion's raw wizard ratio per acre of land.
+     * Returns the Dominion's raw wizard ratio.
      *
      * @param Dominion $dominion
      * @return float
@@ -275,6 +274,28 @@ class MilitaryCalculator
     public function getWizardRatioRaw(Dominion $dominion): float
     {
         return (float)(($dominion->military_wizards + ($dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand($dominion));
+    }
+
+    /**
+     * Returns the Dominion's wizard ratio multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getWizardRatioMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Racial bonus
+        $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
+
+        // Improvement: Towers
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'towers');
+
+        // Tech: Magical Weaponry  (+15%)
+        // todo
+
+        return (float)$multiplier;
     }
 
     /**
