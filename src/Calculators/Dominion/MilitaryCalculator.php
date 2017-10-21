@@ -216,19 +216,18 @@ class MilitaryCalculator
     }
 
     /**
-     * Returns the Dominion's spy ratio per acre of land.
+     * Returns the Dominion's spy ratio.
      *
      * @param Dominion $dominion
      * @return float
      */
     public function getSpyRatio(Dominion $dominion): float
     {
-        return $this->getSpyRatioRaw($dominion);
-        // todo: racial spy strength multiplier
+        return ($this->getSpyRatioRaw($dominion) * $this->getSpyRatioMultiplier($dominion));
     }
 
     /**
-     * Returns the Dominion's raw spy ratio per acre of land.
+     * Returns the Dominion's raw spy ratio.
      *
      * @param Dominion $dominion
      * @return float
@@ -236,6 +235,25 @@ class MilitaryCalculator
     public function getSpyRatioRaw(Dominion $dominion): float
     {
         return (float)($dominion->military_spies / $this->landCalculator->getTotalLand($dominion));
+    }
+
+    /**
+     * Returns the Dominion's spy ratio multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getSpyRatioMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Racial bonus
+        $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
+
+        // Wonder: Great Oracle (+30%)
+        // todo
+
+        return (float)$multiplier;
     }
 
     /**
@@ -249,7 +267,6 @@ class MilitaryCalculator
         $regen = 4;
 
         // todo: Spy Master / Dark Artistry tech
-        // todo: check if this needs to be a float
 
         return (float)$regen;
     }
