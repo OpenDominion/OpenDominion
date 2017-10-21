@@ -17,10 +17,21 @@ class DominionSelected
 
     public function handle($request, Closure $next)
     {
-        if (!$this->dominionSelectorService->hasUserSelectedDominion() && !$this->dominionSelectorService->tryAutoSelectDominionForAuthUser()) {
+        // Nothing to do
+        if ($this->dominionSelectorService->hasUserSelectedDominion()) {
+            return $next($request);
+        }
+
+
+        $dominion = $this->dominionSelectorService->tryAutoSelectDominionForAuthUser();
+
+        if (!$dominion) {
             return redirect()->guest('dashboard');
         }
 
-        return $next($request);
+        // Manually call ShareSelectedDominion middleware again
+        return app(ShareSelectedDominion::class)->handle($request, function ($request) use ($next) {
+            return $next($request);
+        });
     }
 }
