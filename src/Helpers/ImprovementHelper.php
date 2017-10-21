@@ -38,7 +38,7 @@ class ImprovementHelper
             'towers' => 'Improvements to your towers increase your wizard strength and reduce damage from harmful spells.<br><br>Max +40% base towers.',
             'forges' => 'Improvements to your forges increase your offensive power.<br><br>Max +30% base forges.',
             'walls' => 'Improvements to your walls increase your defensive power.<br><br>Max +30% base walls.',
-            'harbor' => 'Improvements to your harbors improve your food production, boat production and boat protection.<br><br>Max +40% base harbor.',
+            'harbor' => 'Improvements to your harbor improve your food production, boat production and boat protection.<br><br>Max +40% base harbor.',
         ];
 
         return $helpStrings[$improvementType] ?: null;
