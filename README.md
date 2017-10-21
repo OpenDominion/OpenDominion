@@ -53,7 +53,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Construction        | ![Progress](http://progressed.io/bar/100) |
 | Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
 | Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
-| Castle Improvements | ![Progress](http://progressed.io/bar/85)  |
+| Castle Improvements | ![Progress](http://progressed.io/bar/95)  |
 | National Bank       | ![Progress](http://progressed.io/bar/100) |
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
