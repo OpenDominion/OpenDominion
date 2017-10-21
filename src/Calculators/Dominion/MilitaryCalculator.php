@@ -182,7 +182,7 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('defense');
 
         // Improvement: Walls
-        $this->improvementCalculator->getImprovementMultiplier($dominion, 'walls');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'walls');
 
         // Spell: Frenzy (Halfling) (+20%)
         // Spell: Blizzard (+15%)
