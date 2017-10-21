@@ -21,7 +21,7 @@ class DominionSelected
         if ($this->dominionSelectorService->hasUserSelectedDominion()) {
             return $next($request);
         }
-        
+
         $dominion = $this->dominionSelectorService->tryAutoSelectDominionForAuthUser();
 
         if (!$dominion) {
