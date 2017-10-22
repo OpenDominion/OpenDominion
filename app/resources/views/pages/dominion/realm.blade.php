@@ -10,11 +10,14 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
 
                     <table class="table">
                         <colgroup>
                             <col>
+                            @if ($showPlayerNames)
+                                <col width="200">
+                            @endif
                             <col width="100">
                             <col width="100">
                             <col width="100">
@@ -22,6 +25,9 @@
                         <thead>
                             <tr>
                                 <th>Dominion</th>
+                                @if ($showPlayerNames)
+                                    <th class="text-center">Player</th>
+                                @endif
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>
                                 <th class="text-center">Networth</th>
@@ -60,6 +66,9 @@
                                                 <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
                                             @endif--}}
                                         </td>
+                                        @if ($showPlayerNames)
+                                            <td class="text-center">{{ $dominion->user->display_name }}</td>
+                                        @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}
                                             {{--
@@ -88,6 +97,7 @@
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
                     <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }} and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
                     {{-- todo: change this to a table? --}}
+                    <p><a href="{{ route('dominion.realm') }}">My Realm</a></p>
                 </div>
                 @if (($prevRealm !== null) || ($nextRealm !== null))
                     <div class="box-footer">

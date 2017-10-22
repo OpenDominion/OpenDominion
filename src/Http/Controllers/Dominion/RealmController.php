@@ -23,12 +23,23 @@ class RealmController extends AbstractDominionController
         $round = $dominion->round;
 
         if ($realmNumber === null) {
-            $realmNumber = $dominion->realm->number;
+            $realmNumber = (int)$dominion->realm->number;
         }
+
+        $showPlayerNames = ($realmNumber === (int)$dominion->realm->number);
 
         // Eager load some relational data to save on SQL queries down the road in NetworthCalculator and
         // ProtectionService
-        $realm = Realm::with(['dominions.race.units', 'dominions.round'])
+        $with = [
+            'dominions.race.units',
+            'dominions.round',
+        ];
+
+        if ($showPlayerNames) {
+            $with[] = 'dominions.user';
+        }
+
+        $realm = Realm::with($with)
             ->where([
                 'round_id' => $round->id,
                 'number' => $realmNumber,
@@ -63,7 +74,8 @@ class RealmController extends AbstractDominionController
             'dominions',
             'prevRealm',
             'protectionService',
-            'nextRealm'
+            'nextRealm',
+            'showPlayerNames'
         ));
     }
 
