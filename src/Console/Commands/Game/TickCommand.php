@@ -415,7 +415,7 @@ class TickCommand extends Command
     public function updateDailyRankings()
     {
         if (Carbon::now()->hour !== 0) {
-//            return;
+            return;
         }
 
         Log::debug('Updating daily rankings');
