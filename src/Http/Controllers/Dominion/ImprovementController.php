@@ -17,6 +17,7 @@ class ImprovementController extends AbstractDominionController
         return view('pages.dominion.improvements', [
             'improvementCalculator' => app(ImprovementCalculator::class),
             'improvementHelper' => app(ImprovementHelper::class),
+            'selectedResource' => app('request')->input('resource'),
         ]);
     }
 
@@ -48,6 +49,13 @@ class ImprovementController extends AbstractDominionController
         ));
 
         $request->session()->flash('alert-success', $result['message']);
-        return redirect()->route('dominion.improvements');
+
+        $parameters = [];
+        if ($request->get('resource') != 'gems') {
+            $parameters = [
+                'resource' => $request->get('resource')
+            ];
+        }
+        return redirect()->route('dominion.improvements', $parameters);
     }
 }
