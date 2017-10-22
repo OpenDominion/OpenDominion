@@ -11,7 +11,7 @@
             {!! Markdown::convertToHtml($thread->body) !!}
         </div>
         <div class="box-footer">
-            <small><i>Posted {{ $thread->created_at->diffForHumans() }} by {{ $thread->dominion->name }}</i></small>
+            <small><i>Posted {{ $thread->created_at->diffForHumans() }} by <b>{{ $thread->dominion->user->display_name }}</b> ({{ $thread->dominion->name }})</i></small>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
                     {!! Markdown::convertToHtml($post->body) !!}
                 </div>
                 <div class="box-footer">
-                    <small><i>Posted {{ $post->created_at->diffForHumans() }} by {{ $post->dominion->name }}</i></small>
+                    <small><i>Posted {{ $post->created_at->diffForHumans() }} by <b>{{ $post->dominion->user->display_name }}</b> ({{ $post->dominion->name }})</i></small>
                 </div>
             </div>
         @endforeach

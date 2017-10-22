@@ -69,7 +69,7 @@ class CouncilController extends AbstractDominionController
     {
         $this->guardAgainstCrossRealm($thread);
 
-        $thread->load(['dominion', 'posts.dominion']);
+        $thread->load(['dominion.user', 'posts.dominion.user']);
 
         return view('pages.dominion.council.thread', compact(
             'thread'
