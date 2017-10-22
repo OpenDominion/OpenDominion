@@ -472,7 +472,7 @@ class TickCommand extends Command
                 ->where('id', $row->id)
                 ->update([
                     'land_rank' => $rank,
-                    'land_rank_change' => (($row->land_rank !== null) ? ($row->rank_land - $rank) : 0),
+                    'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
                 ]);
 
             $rank++;
@@ -491,7 +491,7 @@ class TickCommand extends Command
                 ->where('id', $row->id)
                 ->update([
                     'networth_rank' => $rank,
-                    'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_land - $rank) : 0),
+                    'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_rank - $rank) : 0),
                 ]);
 
             $rank++;
