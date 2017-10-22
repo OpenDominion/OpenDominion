@@ -14,6 +14,7 @@
 
                     <table class="table">
                         <colgroup>
+                            <col width="50">
                             <col>
                             @if ($showPlayerNames)
                                 <col width="200">
@@ -24,6 +25,7 @@
                         </colgroup>
                         <thead>
                             <tr>
+                                <th class="text-center">#</th>
                                 <th>Dominion</th>
                                 @if ($showPlayerNames)
                                     <th class="text-center">Player</th>
@@ -41,10 +43,12 @@
 
                                 @if ($dominion === null)
                                     <tr>
+                                        <td>&nbsp;</td>
                                         <td colspan="4"><i>Vacant</i></td>
                                     </tr>
                                 @else
                                     <tr>
+                                        <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
