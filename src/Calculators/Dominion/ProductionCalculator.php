@@ -12,16 +12,20 @@ class ProductionCalculator
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * ProductionCalculator constructor.
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param PopulationCalculator $populationCalculator
      */
-    public function __construct(ImprovementCalculator $improvementCalculator, PopulationCalculator $populationCalculator)
+    public function __construct(ImprovementCalculator $improvementCalculator, PopulationCalculator $populationCalculator, SpellCalculator $spellCalculator)
     {
         $this->improvementCalculator = $improvementCalculator;
         $this->populationCalculator = $populationCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     // Platinum
@@ -87,7 +91,7 @@ class ProductionCalculator
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
 
         // Spell: Midas Touch
-        // todo
+        $multiplier += ($this->spellCalculator->isSpellActive($dominion, 'midas_touch') ? ($spellMidasTouch / 100) : 0);
 
         // Improvement: Science
         $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'science');
