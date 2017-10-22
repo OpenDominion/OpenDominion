@@ -94,7 +94,7 @@
                         <div class="row">
                             <div class="col-xs-4">
                                 @if ($prevRealm !== null)
-                                    <a href="{{ route('dominion.realm', $prevRealm->id) }}">&lt; Previous</a><br>
+                                    <a href="{{ route('dominion.realm', $prevRealm->number) }}">&lt; Previous</a><br>
                                     <small class="text-muted">{{ $prevRealm->name }} (# {{  $prevRealm->number }})</small>
                                 @endif
                             </div>
@@ -106,7 +106,7 @@
                             </div>
                             <div class="col-xs-4 text-right">
                                 @if ($nextRealm !== null)
-                                    <a href="{{ route('dominion.realm', $nextRealm->id) }}">Next &gt;</a><br>
+                                    <a href="{{ route('dominion.realm', $nextRealm->number) }}">Next &gt;</a><br>
                                     <small class="text-muted">{{ $nextRealm->name }} (# {{  $nextRealm->number }})</small>
                                 @endif
                             </div>

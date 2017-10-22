@@ -148,7 +148,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
 
             // Realm
-            $router->get('realm/{realm?}')->uses('Dominion\RealmController@getRealm')->name('realm');
+            $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
             // Debug
