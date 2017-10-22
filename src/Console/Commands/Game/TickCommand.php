@@ -85,13 +85,14 @@ class TickCommand extends Command
         $this->tickConstructionQueue();
         $this->tickTrainingQueue();
         // todo: Military returning queue
-        // todo: Magic queue
 
         $this->tickDominionResources();
         // todo: Population (peasants & draftees)
         $this->tickDominionMorale();
         $this->tickDominionSpyStrength();
         $this->tickDominionWizardStrength();
+
+        $this->tickActiveSpells();
 
         $this->resetDailyBonuses();
         $this->updateDailyRankings();
@@ -392,6 +393,32 @@ class TickCommand extends Command
         $affectedUpdated -= $affectedFinished;
 
         Log::debug("Ticked training queue, {$affectedUpdated} updated, {$affectedFinished} finished");
+    }
+
+    public function tickActiveSpells()
+    {
+        Log::debug('Ticking active spells');
+
+        // Two-step process to avoid getting UNIQUE constraint integrity errors since we can't reliably use deferred
+        // transactions, deferred update queries or update+orderby cross-database
+        DB::table('active_spells')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('duration', '>', 0)
+            ->update([
+                'duration' => DB::raw('-(`duration` - 1)'),
+            ]);
+
+        $affectedUpdated = DB::table('active_spells')
+            ->whereIn('dominion_id', $this->dominionsIdsToUpdate)
+            ->where('duration', '<', 0)
+            ->update([
+                'duration' => DB::raw('-`duration`'),
+                'updated_at' => new Carbon(),
+            ]);
+
+        $affectedFinished = DB::table('active_spells')->where('duration', 0)->delete();
+
+        Log::debug("Ticked active spells, {$affectedUpdated} updated, {$affectedFinished} finished");
     }
 
     /**

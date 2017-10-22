@@ -16,7 +16,7 @@ class CreateActiveSpellsTable extends Migration
         Schema::create('active_spells', function (Blueprint $table) {
             $table->unsignedInteger('dominion_id');
             $table->string('spell');
-            $table->unsignedInteger('duration');
+            $table->integer('duration');
             $table->unsignedInteger('cast_by_dominion_id')->nullable();
             $table->timestamps();
 
