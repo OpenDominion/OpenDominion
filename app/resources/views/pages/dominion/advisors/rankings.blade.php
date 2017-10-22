@@ -24,8 +24,8 @@
                         <colgroup>
                             <col width="50">
                             <col>
-                            <col width="100">
                             <col width="150">
+                            <col width="100">
                             <col width="100">
                             <col width="50">
                         </colgroup>
@@ -33,8 +33,8 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
-                                <th class="text-center">Race</th>
                                 <th class="text-center">Realm</th>
+                                <th class="text-center">Race</th>
                                 <th class="text-center">{{ ucfirst($type) }}</th>
                                 <th class="text-center hidden-xs">Change</th>
                             </tr>
@@ -51,10 +51,10 @@
                                         @endif
 
                                     </td>
-                                    <td class="text-center">{{ $row->race_name }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('dominion.realm', $row->realm_number) }}">{{ $row->realm_name }} (#{{ $row->realm_number }})</a>
                                     </td>
+                                    <td class="text-center">{{ $row->race_name }}</td>
                                     <td class="text-center">{{ number_format($row->$type) }}</td>
                                     <td class="text-center hidden-xs">
                                         @php
