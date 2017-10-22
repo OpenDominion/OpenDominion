@@ -21,6 +21,7 @@ class CreateActiveSpellsTable extends Migration
             $table->timestamps();
 
             $table->foreign('dominion_id')->references('id')->on('dominions');
+            $table->foreign('cast_by_dominion_id')->references('id')->on('dominions');
 
             $table->primary(['dominion_id', 'spell']);
         });
