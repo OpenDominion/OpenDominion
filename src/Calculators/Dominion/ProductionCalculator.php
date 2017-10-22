@@ -273,7 +273,7 @@ class ProductionCalculator
         $multiplier += $dominion->race->getPerkMultiplier('lumber_production');
 
         // Spell: Gaia's Blessing
-        // todo
+        $multiplier += ($this->spellCalculator->isSpellActive($dominion, 'gaias_blessing') ? ($spellGaiasBlessing / 100) : 0);
 
         // Tech: Production
         // todo
