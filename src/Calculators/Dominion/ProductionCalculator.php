@@ -427,12 +427,21 @@ class ProductionCalculator
     {
         $multiplier = 0.0;
 
+        // Values (percentages)
+        $spellMinersSight = 20;
+        $spellMiningStrength = 10;
+
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');
 
-        // Magic: Miner's Sight (Dwarf) (+20%)
-        // Magic: Mining Strength (+10%)
-        // todo
+        if ($this->spellCalculator->isSpellActive($dominion, 'miners_sight')) {
+            // Spell: Miner's Sight
+            $multiplier += ($spellMinersSight / 100);
+
+        } elseif ($this->spellCalculator->isSpellActive($dominion, 'mining_strength')) {
+            // Spell: Mining Strength
+            $multiplier += ($spellMiningStrength / 100);
+        }
 
         // Tech: Fruits of Labor (+20%)
         // todo
