@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
@@ -63,9 +64,23 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    public function getAdvisorsRankings()
+    public function getAdvisorsRankings(string $type = null)
     {
-        //
+        if (($type === null) || !in_array($type, ['land', 'networth'], true)) {
+            return redirect()->route('dominion.advisors.rankings', 'land');
+        }
+
+        $selectedDominion = $this->getSelectedDominion();
+
+        $rankings = \DB::table('daily_rankings')
+            ->where('round_id', $selectedDominion->round_id)
+            ->orderBy($type . '_rank')
+            ->paginate(10);
+
+        return view('pages.dominion.advisors.rankings', [
+            'type' => $type,
+            'rankings' => $rankings,
+        ]);
     }
 
     public function getAdvisorsStatistics()

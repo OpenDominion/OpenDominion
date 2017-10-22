@@ -8,8 +8,10 @@ use DB;
 use Illuminate\Console\Command;
 use Log;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use RuntimeException;
 
@@ -29,14 +31,23 @@ class TickCommand extends Command
     /** @var int[] */
     protected $dominionsIdsToUpdate = [];
 
+    /** @var CasualtiesCalculator */
+    protected $casualtiesCalculator;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    /** @var NetworthCalculator */
+    protected $networthCalculator;
+
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
-    /** @var CasualtiesCalculator */
-    protected $casualtiesCalculator;
+    /** @var Carbon */
+    protected $now;
 
     /**
      * GameTickCommand constructor.
@@ -45,9 +56,13 @@ class TickCommand extends Command
     {
         parent::__construct();
 
+        $this->casualtiesCalculator = app(CasualtiesCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
+        $this->networthCalculator = app(NetworthCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
-        $this->casualtiesCalculator = app(CasualtiesCalculator::class);
+
+        $this->now = Carbon::now();
     }
 
     /**
@@ -79,6 +94,7 @@ class TickCommand extends Command
         $this->tickDominionWizardStrength();
 
         $this->resetDailyBonuses();
+        $this->updateDailyRankings();
 
         DB::commit();
 
@@ -381,7 +397,8 @@ class TickCommand extends Command
     /**
      * Resets daily bonuses.
      */
-    public function resetDailyBonuses() {
+    public function resetDailyBonuses()
+    {
         if (Carbon::now()->hour !== 0) {
             return;
         }
@@ -395,8 +412,99 @@ class TickCommand extends Command
         }
     }
 
+    public function updateDailyRankings()
+    {
+        if (Carbon::now()->hour !== 0) {
+//            return;
+        }
+
+        Log::debug('Updating daily rankings');
+
+        // todo: needs updating per round. make GameTickService and tick each round individually. at least for rankings
+
+        // First pass: Saving land and networth
+        Dominion::with(['race', 'realm'])->whereIn('id', $this->dominionsIdsToUpdate)->chunk(50, function ($dominions) {
+            foreach ($dominions as $dominion) {
+                $where = [
+                    'round_id' => (int)$dominion->round_id,
+                    'dominion_id' => $dominion->id,
+                ];
+
+                $data = [
+                    'dominion_name' => $dominion->name,
+                    'race_name' => $dominion->race->name,
+                    'realm_number' => $dominion->realm->number,
+                    'realm_name' => $dominion->realm->name,
+                    'land' => $this->landCalculator->getTotalLand($dominion),
+                    'networth' => $this->networthCalculator->getDominionNetworth($dominion),
+                ];
+
+                $result = DB::table('daily_rankings')->where($where)->get();
+
+                if ($result->isEmpty()) {
+                    $row = $where + $data + [
+                        'created_at' => $dominion->created_at,
+                        'updated_at' => $this->now,
+                    ];
+
+                    DB::table('daily_rankings')->insert($row);
+                } else {
+                    $row = $data + [
+                        'updated_at' => $this->now,
+                    ];
+
+                    DB::table('daily_rankings')->where($where)->update($row);
+                }
+            }
+        });
+
+        // Second pass: Calculating ranks
+        $result = DB::table('daily_rankings')
+            ->orderBy('land', 'desc')
+            ->orderBy('land_rank', 'desc')
+            ->orderBy('created_at')
+            ->get();
+
+        $rank = 1;
+
+        foreach ($result as $row) {
+            DB::table('daily_rankings')
+                ->where('id', $row->id)
+                ->update([
+                    'land_rank' => $rank,
+                    'land_rank_change' => (($row->land_rank !== null) ? ($row->rank_land - $rank) : 0),
+                ]);
+
+            $rank++;
+        }
+
+        $result = DB::table('daily_rankings')
+            ->orderBy('networth', 'desc')
+            ->orderBy('networth_rank', 'desc')
+            ->orderBy('created_at')
+            ->get();
+
+        $rank = 1;
+
+        foreach ($result as $row) {
+            DB::table('daily_rankings')
+                ->where('id', $row->id)
+                ->update([
+                    'networth_rank' => $rank,
+                    'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_land - $rank) : 0),
+                ]);
+
+            $rank++;
+        }
+    }
+
     protected function getDominionsToUpdate()
     {
         return Dominion::whereIn('id', $this->dominionsIdsToUpdate)->get();
+    }
+
+    protected function getActiveRoundIds()
+    {
+        //
     }
 }
