@@ -87,6 +87,7 @@
                 </div>
                 <div class="box-body">
                     <p>The rankings advisor tells you how well all the dominions are doing in the world.</p>
+                    <p>Rankings are updated every day. Current displayed rankings are from {{ (new Carbon\Carbon('today midnight'))->diffForHumans() }}.</p>
                     <p><a href="{{ route('dominion.advisors.rankings', request('type')) }}">My Ranking</a></p>
                 </div>
             </div>
