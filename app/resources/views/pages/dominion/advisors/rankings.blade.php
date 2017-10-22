@@ -27,6 +27,7 @@
                             <col width="100">
                             <col width="150">
                             <col width="100">
+                            <col width="50">
                         </colgroup>
                         <thead>
                             <tr>
@@ -35,6 +36,7 @@
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Realm</th>
                                 <th class="text-center">{{ ucfirst($type) }}</th>
+                                <th class="text-center hidden-xs">Change</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +56,18 @@
                                         <a href="{{ route('dominion.realm', $row->realm_number) }}">{{ $row->realm_name }} (#{{ $row->realm_number }})</a>
                                     </td>
                                     <td class="text-center">{{ number_format($row->$type) }}</td>
+                                    <td class="text-center hidden-xs">
+                                        @php
+                                            $rankChange = (int)$row->{$type . '_rank_change'};
+                                        @endphp
+                                        @if ($rankChange > 0)
+                                            <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
+                                        @elseif ($rankChange === 0)
+                                            <span class="text-warning">-</span>
+                                        @else
+                                            <span class="text-danger"><i class="fa fa-caret-down"></i> {{ abs($rankChange) }}</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -74,7 +88,7 @@
                 </div>
                 <div class="box-body">
                     <p>The rankings advisor tells you how well all the dominions are doing in the world.</p>
-                    {{--<p><a href="#">My ranking</a></p>--}}
+                    <p><a href="{{ route('dominion.advisors.rankings', request('type')) }}">My Ranking</a></p>
                 </div>
             </div>
         </div>
