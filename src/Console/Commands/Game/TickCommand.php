@@ -461,7 +461,7 @@ class TickCommand extends Command
         // Second pass: Calculating ranks
         $result = DB::table('daily_rankings')
             ->orderBy('land', 'desc')
-            ->orderBy('land_rank', 'desc')
+            ->orderBy('land_rank')
             ->orderBy('created_at')
             ->get();
 
@@ -480,7 +480,7 @@ class TickCommand extends Command
 
         $result = DB::table('daily_rankings')
             ->orderBy('networth', 'desc')
-            ->orderBy('networth_rank', 'desc')
+            ->orderBy('networth_rank')
             ->orderBy('created_at')
             ->get();
 
