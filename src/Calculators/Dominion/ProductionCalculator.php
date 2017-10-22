@@ -156,11 +156,14 @@ class ProductionCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('food_production');
 
-        // Spell: Gaia's Blessing
-        // todo
+        if ($this->spellCalculator->isSpellActive($dominion, 'gaias_blessing')) {
+            // Spell: Gaia's Blessing
+            $multiplier += ($spellGaiasBlessing / 100);
 
-        // Spell: Gaia's Watch
-        // todo
+        } elseif ($this->spellCalculator->isSpellActive($dominion, 'gaias_watch')) {
+            // Spell: Gaia's Watch
+            $multiplier += ($spellGaiasWatch / 100);
+        }
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'harbor');
