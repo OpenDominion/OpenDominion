@@ -8,8 +8,10 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
@@ -61,7 +63,8 @@ class AdvisorsController extends AbstractDominionController
     public function getAdvisorsMagic()
     {
         return view('pages.dominion.advisors.magic', [
-            //
+            'spellCalculator' => app(SpellCalculator::class),
+            'spellHelper' => app(SpellHelper::class),
         ]);
     }
 

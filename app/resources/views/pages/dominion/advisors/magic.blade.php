@@ -15,16 +15,37 @@
                 <div class="box-body no-padding">
                     <table class="table table-hover">
                         <colgroup>
+                            <col width="150">
                             <col>
                             <col width="100">
+                            <col width="200">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th>Spell</th>
+                                <th>Effect</th>
                                 <th class="text-center">Duration</th>
+                                <th class="text-center">Cast By</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($spellCalculator->getActiveSpells($selectedDominion) as $spell)
+                                @php
+                                    $spellInfo = $spellHelper->getSpellInfo($spell->spell);
+                                @endphp
+                                <tr>
+                                    <td>{{ $spellInfo['name'] }}</td>
+                                    <td>{{ $spellInfo['description'] }}</td>
+                                    <td class="text-center">{{ $spell->duration }}</td>
+                                    <td class="text-center">
+                                        @if ($spell->cast_by_dominion_id !== null)
+                                            <a href="{{ route('dominion.realm', $spell->cast_by_dominion_realm_number) }}">{{ $spell->cast_by_dominion_name }} (#{{ $spell->cast_by_dominion_realm_number }})</a>
+                                        @else
+                                            <em>Unknown</em>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                             {{-- todo: self-cast magic system --}}
                         </tbody>
                     </table>

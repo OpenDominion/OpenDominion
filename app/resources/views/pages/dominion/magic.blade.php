@@ -11,7 +11,7 @@
                 <div class="col-md-6">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
+                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells <span class="label label-success">new</span></h3>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
                             <div class="box-body table-responsive no-padding">
@@ -24,7 +24,7 @@
                                     </colgroup>
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Cast</th>
+                                            <th class="text-center">Cast Spell</th>
                                             <th>Effect</th>
                                             <th class="text-center">Active</th>
                                             <th class="text-center">Mana Cost</th>
@@ -36,22 +36,28 @@
                                                 $manaCost = ($spell['mana_cost'] * $landCalculator->getTotalLand($selectedDominion));
                                                 $canCast = ($selectedDominion->resource_mana >= $manaCost);
 
-                                                $isActive = false;
+                                                $isActive = $spellCalculator->isSpellActive($selectedDominion, $spell['key']);
 
                                                 if ($isActive) {
-                                                    $buttonStyle = 'btn-warning';
+                                                    $buttonStyle = 'btn-success';
                                                 } elseif ($canCast) {
                                                     $buttonStyle = 'btn-primary';
                                                 } else {
-                                                    $buttonStyle = 'btn-default';
+                                                    $buttonStyle = 'btn-danger';
                                                 }
                                             @endphp
                                             <tr>
                                                 <td class="text-center">
-                                                    <button type="submit" name="{{ $spell['key'] }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>{{ $spell['name'] }}</button>
+                                                    <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>{{ $spell['name'] }}</button>
                                                 </td>
                                                 <td class="align-middle">{{ $spell['description'] }}</td>
-                                                <td class="text-center align-middle">-</td>
+                                                <td class="text-center align-middle">
+                                                    @if ($isActive)
+                                                        {{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hr
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td class="text-center align-middle">
                                                     @if ($canCast)
                                                         <span class="text-success">{{ number_format($manaCost) }}</span>

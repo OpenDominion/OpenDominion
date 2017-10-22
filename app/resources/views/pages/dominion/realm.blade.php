@@ -44,7 +44,11 @@
                                 @if ($dominion === null)
                                     <tr>
                                         <td>&nbsp;</td>
-                                        <td colspan="4"><i>Vacant</i></td>
+                                        @if ($showPlayerNames)
+                                            <td colspan="5"><i>Vacant</i></td>
+                                        @else
+                                            <td colspan="4"><i>Vacant</i></td>
+                                        @endif
                                     </tr>
                                 @else
                                     <tr>
