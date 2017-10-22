@@ -10,6 +10,13 @@
         <div class="col-md-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
+                    <span class="pull-right">
+                        @if ($type === 'land')
+                            <b>Land</b> - <a href="{{ route('dominion.advisors.rankings', ['networth'] + Request::query()) }}">Networth</a>
+                        @else
+                            <a href="{{ route('dominion.advisors.rankings', ['land'] + Request::query()) }}">Land</a> - <b>Networth</b>
+                        @endif
+                    </span>
                     <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings Advisor</h3>
                 </div>
                 <div class="box-body no-padding">
