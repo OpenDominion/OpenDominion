@@ -502,9 +502,4 @@ class TickCommand extends Command
     {
         return Dominion::whereIn('id', $this->dominionsIdsToUpdate)->get();
     }
-
-    protected function getActiveRoundIds()
-    {
-        //
-    }
 }

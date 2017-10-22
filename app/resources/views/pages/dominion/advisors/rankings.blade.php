@@ -49,7 +49,6 @@
                                         @else
                                             {{ $row->dominion_name }}
                                         @endif
-
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ route('dominion.realm', $row->realm_number) }}">{{ $row->realm_name }} (#{{ $row->realm_number }})</a>
