@@ -17,6 +17,7 @@ class TrainingCalculator
     /**
      * TrainingCalculator constructor.
      *
+     * @param LandCalculator $landCalculator
      * @param UnitHelper $unitHelper
      */
     public function __construct(LandCalculator $landCalculator, UnitHelper $unitHelper)
@@ -126,7 +127,7 @@ class TrainingCalculator
      */
     public function getSpecialistEliteCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $smithiesReduction = 2;
@@ -140,6 +141,6 @@ class TrainingCalculator
 
         // todo: Master of Resources Tech (note: no ore reduction for gnomes)
 
-        return $multiplier;
+        return (1 + $multiplier);
     }
 }
