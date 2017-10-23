@@ -12,16 +12,20 @@ class MilitaryCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * MilitaryCalculator constructor.
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      */
-    public function __construct(ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator)
+    public function __construct(ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator, SpellCalculator $spellCalculator)
     {
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     /**
@@ -171,6 +175,7 @@ class MilitaryCalculator
         // Values (percentages)
         $dpPerGuardTower = 1.75;
         $guardTowerMaxDp = 35;
+        $spellAresCall = 10;
 
         // Guard Towers
         $multiplier += min(
@@ -187,8 +192,10 @@ class MilitaryCalculator
         // Spell: Frenzy (Halfling) (+20%)
         // Spell: Blizzard (+15%)
         // Spell: Howling (+10%)
-        // Spell: Ares' Call (+10%)
         // todo
+
+        // Spell: Ares' Call (+10%)
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
 
         return (float)(1 + $multiplier);
     }
