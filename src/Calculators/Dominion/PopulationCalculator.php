@@ -110,6 +110,7 @@ class PopulationCalculator
 
         // todo: race bonus for barren land
 
+        // Constructed buildings
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
             switch ($buildingType) {
                 case 'home':
@@ -128,7 +129,10 @@ class PopulationCalculator
             $population += ($dominion->{'building_' . $buildingType} * $housing);
         }
 
-        // Housing per barren land
+        // Constructing buildings
+        // todo
+
+        // Barren land
         $population += ($this->landCalculator->getTotalBarrenLand($dominion) * $housingPerBarrenLand);
 
         return (float)$population;
@@ -141,7 +145,7 @@ class PopulationCalculator
      * - Racial Bonus
      * - Improvement: Keep
      * - Tech: Urban Mastery and Construction (todo)
-     * - Prestige bonus
+     * - Prestige bonus (multiplicative)
      *
      * @return float
      */
@@ -150,22 +154,19 @@ class PopulationCalculator
         $multiplier = 0;
 
         // Values (percentages)
-//        $techUrbanMasteryMultiplier = 7.5;
-//        $techConstructionMultiplier = 2;
+        $techUrbanMasteryMultiplier = 7.5;
+        $techConstructionMultiplier = 2;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('max_population');
 
         // Improvement: Keep
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'keep');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
 
-        // Tech: Urban Mastery
+        // Tech: Urban Mastery or Construction
         // todo
 
-        // Tech: Construction
-        // todo
-
-        // Prestige bonus
+        // Prestige Bonus
         // todo: $prestige / 10000?
         $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
         $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);

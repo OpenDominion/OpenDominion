@@ -106,7 +106,7 @@ class ProductionCalculator
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'midas_touch', $spellMidasTouch);
 
         // Improvement: Science
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'science');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
 
         // Guard Tax
         // todo
@@ -189,7 +189,7 @@ class ProductionCalculator
         ]);
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'harbor');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
         // Tech: Farmer's Growth
         // todo
@@ -630,7 +630,7 @@ class ProductionCalculator
         $multiplier = 1;
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'harbor');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
         return $multiplier;
     }

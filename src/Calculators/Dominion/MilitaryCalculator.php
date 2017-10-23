@@ -76,7 +76,7 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
         // Improvement: Forges
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'forges');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
         // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
@@ -182,7 +182,7 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('defense');
 
         // Improvement: Walls
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'walls');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
 
         // Spell: Frenzy (Halfling) (+20%)
         // Spell: Blizzard (+15%)
@@ -307,7 +307,7 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
 
         // Improvement: Towers
-        $multiplier += $this->improvementCalculator->getImprovementMultiplier($dominion, 'towers');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
 
         // Tech: Magical Weaponry  (+15%)
         // todo

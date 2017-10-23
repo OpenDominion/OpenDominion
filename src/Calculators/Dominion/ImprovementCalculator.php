@@ -26,7 +26,7 @@ class ImprovementCalculator
      * @param string $improvementType
      * @return float
      */
-    public function getImprovementMultiplier(Dominion $dominion, string $improvementType): float
+    public function getImprovementMultiplierBonus(Dominion $dominion, string $improvementType): float
     {
         $efficiencyPerMasonry = 2.75;
 
