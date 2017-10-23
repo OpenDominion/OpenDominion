@@ -44,7 +44,11 @@ class SpellActionService
         $this->guardLockedDominion($dominion);
 
         if ($dominion->wizard_strength < 30) {
-            throw new RuntimeException("Not enough wizard strength to cast {$spell}");
+            throw new RuntimeException("Not enough wizard strength to cast {$spell}.");
+        }
+
+        if (($dominion->military_wizards + $dominion->military_archmages) === 0) {
+            throw new RuntimeException("You need at least 1 wizard or archmage to cast {$spell}.");
         }
 
         $spellInfo = $this->spellHelper->getSpellInfo($spell);
@@ -56,7 +60,7 @@ class SpellActionService
         $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
 
         if ($dominion->resource_mana < $manaCost) {
-            throw new RuntimeException("Not enough mana to cast {$spellInfo['name']}");
+            throw new RuntimeException("Not enough mana to cast {$spellInfo['name']}.");
         }
 
         try {
