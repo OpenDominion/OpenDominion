@@ -127,7 +127,7 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
             }
         }
 
-        $this->assertEquals($expected, $this->sut->getBarrenLand($this->dominionMock));
+        $this->assertEquals($expected, $this->sut->getBarrenLandByLandType($this->dominionMock));
     }
 
     public function testGetExplorationPlatinumCost()

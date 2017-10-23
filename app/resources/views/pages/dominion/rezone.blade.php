@@ -30,7 +30,7 @@
                                     <th class="text-center">Amount</th>
                                 </tr>
                             </thead>
-                            @foreach ($landCalculator->getBarrenLand($selectedDominion) as $landType => $amount)
+                            @foreach ($landCalculator->getBarrenLandByLandType($selectedDominion) as $landType => $amount)
                                 <tr>
                                     <td>
                                         {{ ucfirst($landType) }}
