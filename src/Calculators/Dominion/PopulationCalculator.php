@@ -63,6 +63,7 @@ class PopulationCalculator
     /**
      * Returns the Dominion's total population, both peasants and military.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getPopulation(Dominion $dominion): int
@@ -75,6 +76,7 @@ class PopulationCalculator
      *
      * The military consists of draftees, combat units, spies, wizards and archmages.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getPopulationMilitary(Dominion $dominion): int
@@ -94,11 +96,12 @@ class PopulationCalculator
     /**
      * Returns the Dominion's max population.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getMaxPopulation(Dominion $dominion): int
     {
-        return (int)round(
+        return round(
             ($this->getMaxPopulationRaw($dominion) * $this->getMaxPopulationMultiplier($dominion))
             + $this->getMaxPopulationMilitaryBonus($dominion)
         );
@@ -109,9 +112,10 @@ class PopulationCalculator
      *
      * Maximum population is determined by housing in homes, other buildings (sans barracks) and barren land.
      *
-     * @return float
+     * @param Dominion $dominion
+     * @return int
      */
-    public function getMaxPopulationRaw(Dominion $dominion): float
+    public function getMaxPopulationRaw(Dominion $dominion): int
     {
         $population = 0;
 
@@ -123,6 +127,7 @@ class PopulationCalculator
         $housingPerConstructingBuilding = 15;
 
         // todo: race bonus for barren land
+        // todo: ^ think about what I meant to say here. note to self: be more clear in the future
 
         // Constructed buildings
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
@@ -149,7 +154,7 @@ class PopulationCalculator
         // Barren land
         $population += ($this->landCalculator->getTotalBarrenLand($dominion) * $housingPerBarrenLand);
 
-        return (float)$population;
+        return $population;
     }
 
     /**
@@ -161,6 +166,7 @@ class PopulationCalculator
      * - Tech: Urban Mastery and Construction (todo)
      * - Prestige bonus (multiplicative)
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getMaxPopulationMultiplier(Dominion $dominion): float
@@ -199,12 +205,13 @@ class PopulationCalculator
         + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
         */
 
-        return (float)(1 + $multiplier); // todo: 1+$multiplier? check for refactoring
+        return (1 + $multiplier);
     }
 
     /**
      * Returns the Dominion's max population military bonus.
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getMaxPopulationMilitaryBonus(Dominion $dominion): float
@@ -212,7 +219,7 @@ class PopulationCalculator
         // Values
         $troopsPerBarracks = 36;
 
-        return (float)min(
+        return min(
             ($this->getPopulationMilitary($dominion) - $dominion->military_draftees - $this->trainingQueueService->getQueueTotal($dominion)),
             ($dominion->building_barracks * $troopsPerBarracks)
         );
@@ -221,16 +228,18 @@ class PopulationCalculator
     /**
      * Returns the Dominion's population birth.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getPopulationBirth(Dominion $dominion): int
     {
-        return (int)round($this->getPopulationBirthRaw($dominion) * $this->getPopulationBirthMultiplier($dominion));
+        return round($this->getPopulationBirthRaw($dominion) * $this->getPopulationBirthMultiplier($dominion));
     }
 
     /**
      * Returns the Dominions raw population birth.
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getPopulationBirthRaw(Dominion $dominion): float
@@ -243,17 +252,18 @@ class PopulationCalculator
         // Growth
         $birth += (($dominion->peasants - $this->getPopulationDrafteeGrowth($dominion)) * ($growthFactor / 100));
 
-        return (float)$birth;
+        return $birth;
     }
 
     /**
      * Returns the Dominion's population birth multiplier.
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getPopulationBirthMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = 0;
 
         // Values (percentages)
         $spellHarmony = 50;
@@ -268,17 +278,18 @@ class PopulationCalculator
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);
 
-        return (float)$multiplier; // todo: see 1+$multiplier todo above
+        return (1 + $multiplier);
     }
 
     /**
      * Returns the Dominion's population peasant growth.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getPopulationPeasantGrowth(Dominion $dominion): int
     {
-        return (int)max(
+        return max(
             ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
             min(
                 ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
@@ -292,6 +303,7 @@ class PopulationCalculator
      *
      * Draftee growth is influenced by draft rate.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getPopulationDrafteeGrowth(Dominion $dominion): int
@@ -305,12 +317,13 @@ class PopulationCalculator
             $draftees += ($dominion->peasants * ($growthFactor / 100));
         }
 
-        return (int)$draftees;
+        return $draftees;
     }
 
     /**
      * Returns the Dominion's population peasant percentage.
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getPopulationPeasantPercentage(Dominion $dominion): float
@@ -319,21 +332,22 @@ class PopulationCalculator
             return (float)0;
         }
 
-        return (float)(($dominion->peasants / $dominionPopulation) * 100);
+        return (($dominion->peasants / $dominionPopulation) * 100);
     }
 
     /**
      * Returns the Dominion's population military percentage.
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getPopulationMilitaryPercentage(Dominion $dominion): float
     {
         if (($dominionPopulation = $this->getPopulation($dominion)) === 0) {
-            return (float)0;
+            return 0;
         }
 
-        return (float)(($this->getPopulationMilitary($dominion) / $dominionPopulation) * 100);
+        return (($this->getPopulationMilitary($dominion) / $dominionPopulation) * 100);
     }
 
     /**
@@ -341,6 +355,7 @@ class PopulationCalculator
      *
      * Each building (sans home and barracks) employs 20 peasants.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getEmploymentJobs(Dominion $dominion): int
@@ -372,11 +387,12 @@ class PopulationCalculator
      *
      * The employed population consists of the Dominion's peasant count, up to the number of max available jobs.
      *
+     * @param Dominion $dominion
      * @return int
      */
     public function getPopulationEmployed(Dominion $dominion): int
     {
-        return (int)min($this->getEmploymentJobs($dominion), $dominion->peasants);
+        return min($this->getEmploymentJobs($dominion), $dominion->peasants);
     }
 
     /**
@@ -385,10 +401,11 @@ class PopulationCalculator
      * If employment is at or above 100%, then one should strive to build more homes to get more peasants to the working
      * force. If employment is below 100%, then one should construct more buildings to employ idle peasants.
      *
+     * @param Dominion $dominion
      * @return float
      */
     public function getEmploymentPercentage(Dominion $dominion): float
     {
-        return (float)(min(1, ($this->getPopulationEmployed($dominion) / $dominion->peasants)) * 100);
+        return (min(1, ($this->getPopulationEmployed($dominion) / $dominion->peasants)) * 100);
     }
 }

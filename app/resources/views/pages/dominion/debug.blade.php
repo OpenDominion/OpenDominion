@@ -60,7 +60,7 @@
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($landCalculator, [
                             'getTotalLand',
                             'getTotalBarrenLand',
-                            'getBarrenLand',
+                            'getBarrenLandByLandType',
                         ]) !!}
                     </p>
                 </div>
