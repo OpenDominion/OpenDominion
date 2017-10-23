@@ -53,7 +53,7 @@ class MilitaryCalculator
             $op += ($dominion->{'military_unit' . $unit->slot} * $unit->power_offense);
         }
 
-        return (float)$op;
+        return $op;
     }
 
     /**
@@ -66,7 +66,7 @@ class MilitaryCalculator
     {
         $multiplier = 0;
 
-        // Values (percentage)
+        // Values (percentages)
         $opPerGryphonNest = 1.75;
         $gryphonNestMaxOp = 35;
 
@@ -94,7 +94,7 @@ class MilitaryCalculator
         // Tech: Magical Weaponry (+10%)
         // todo
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     /**
@@ -157,9 +157,9 @@ class MilitaryCalculator
         $dp += min(
             ($dominion->peasants * $forestHavenDpPerPeasant),
             ($dominion->building_forest_haven * $forestHavenDpPerPeasant * $peasantsPerForestHaven)
-        );
+        ); // todo: recheck this
 
-        return (float)$dp;
+        return $dp;
     }
 
     /**
@@ -197,7 +197,7 @@ class MilitaryCalculator
         // Spell: Ares' Call (+10%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     /**
@@ -241,7 +241,7 @@ class MilitaryCalculator
      */
     public function getSpyRatioRaw(Dominion $dominion): float
     {
-        return (float)($dominion->military_spies / $this->landCalculator->getTotalLand($dominion));
+        return ($dominion->military_spies / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
@@ -252,7 +252,7 @@ class MilitaryCalculator
      */
     public function getSpyRatioMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = 0;
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
@@ -260,7 +260,7 @@ class MilitaryCalculator
         // Wonder: Great Oracle (+30%)
         // todo
 
-        return (float)$multiplier;
+        return (1 + $multiplier);
     }
 
     /**
@@ -297,7 +297,7 @@ class MilitaryCalculator
      */
     public function getWizardRatioRaw(Dominion $dominion): float
     {
-        return (float)(($dominion->military_wizards + ($dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand($dominion));
+        return (($dominion->military_wizards + ($dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
@@ -308,7 +308,7 @@ class MilitaryCalculator
      */
     public function getWizardRatioMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = 0;
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
@@ -319,7 +319,7 @@ class MilitaryCalculator
         // Tech: Magical Weaponry  (+15%)
         // todo
 
-        return (float)$multiplier;
+        return (1 + $multiplier);
     }
 
     /**
