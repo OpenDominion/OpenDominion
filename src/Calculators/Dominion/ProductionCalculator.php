@@ -30,6 +30,7 @@ class ProductionCalculator
     }
 
     //<editor-fold desc="Platinum">
+
     /**
      * Returns the Dominion's platinum production.
      *
@@ -116,9 +117,11 @@ class ProductionCalculator
 
         return (float)min(1.5, (1 + $multiplier));
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Food">
+
     /**
      * Returns the Dominion's food production.
      *
@@ -258,9 +261,11 @@ class ProductionCalculator
     {
         return (int)round($this->getFoodProduction($dominion) - $this->getFoodConsumption($dominion) - $this->getFoodDecay($dominion));
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Lumber">
+
     /**
      * Returns the Dominion's lumber production.
      *
@@ -355,9 +360,11 @@ class ProductionCalculator
     {
         return (int)round($this->getLumberProduction($dominion) - $this->getLumberDecay($dominion));
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Mana">
+
     /**
      * Returns the Dominion's mana production.
      *
@@ -446,9 +453,11 @@ class ProductionCalculator
     {
         return (int)round($this->getManaProduction($dominion) - $this->getManaDecay($dominion));
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Ore">
+
     /**
      * Returns the Dominion's ore production.
      *
@@ -520,9 +529,11 @@ class ProductionCalculator
 
         return (float)(1 + $multiplier);
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Gems">
+
     /**
      * Returns the Dominion's gem production.
      *
@@ -578,12 +589,14 @@ class ProductionCalculator
 
         return (float)(1 + $multiplier);
     }
+
     //</editor-fold>
 
     // Tech
     // todo
 
     //<editor-fold desc="Boats">
+
     /**
      * Returns the Dominion's boat production per hour.
      *
@@ -634,5 +647,6 @@ class ProductionCalculator
 
         return $multiplier;
     }
+
     //</editor-fold>
 }

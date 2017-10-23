@@ -70,7 +70,7 @@ class SpellCalculator
         foreach ($spell as $spellName => $bonusPercentage) {
             if ($this->isSpellActive($dominion, $spellName)) {
                 return ($bonusPercentage / 100);
-            };
+            }
         }
 
         return 0;

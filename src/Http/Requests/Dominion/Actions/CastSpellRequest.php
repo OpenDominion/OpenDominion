@@ -16,5 +16,4 @@ class CastSpellRequest extends AbstractDominionRequest
             'target' => 'integer|exists:dominions',
         ];
     }
-
 }
