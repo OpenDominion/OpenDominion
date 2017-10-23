@@ -5,12 +5,16 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 
 class PopulationCalculator
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
+
+    /** @var ConstructionQueueService */
+    protected $constructionQueueService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -31,6 +35,7 @@ class PopulationCalculator
      * PopulationCalculator constructor.
      *
      * @param BuildingHelper $buildingHelper
+     * @param ConstructionQueueService $constructionQueueService
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param SpellCalculator $spellCalculator
@@ -39,6 +44,7 @@ class PopulationCalculator
      */
     public function __construct(
         BuildingHelper $buildingHelper,
+        ConstructionQueueService $constructionQueueService,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         SpellCalculator $spellCalculator,
@@ -46,6 +52,7 @@ class PopulationCalculator
         UnitHelper $unitHelper
     ) {
         $this->buildingHelper = $buildingHelper;
+        $this->constructionQueueService = $constructionQueueService;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->spellCalculator = $spellCalculator;
@@ -113,6 +120,7 @@ class PopulationCalculator
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
         $housingPerBarrenLand = 5;
+        $housingPerConstructingBuilding = 15;
 
         // todo: race bonus for barren land
 
@@ -136,7 +144,7 @@ class PopulationCalculator
         }
 
         // Constructing buildings
-        // todo
+        $population += ($this->constructionQueueService->getQueueTotal($dominion) * $housingPerConstructingBuilding);
 
         // Barren land
         $population += ($this->landCalculator->getTotalBarrenLand($dominion) * $housingPerBarrenLand);
