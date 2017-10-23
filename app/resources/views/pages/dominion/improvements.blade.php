@@ -54,10 +54,10 @@
                     <div class="box-footer">
                         <div class="pull-right">
                             <select name="resource" class="form-control">
-                                <option value="platinum" {{ $selectedResource == 'platinum' ? 'selected' : ''}}>Platinum</option>
-                                <option value="lumber" {{ $selectedResource  == 'lumber' ? 'selected' : ''}}>Lumber</option>
-                                <option value="ore" {{ $selectedResource  == 'ore' ? 'selected' : ''}}>Ore</option>
-                                <option value="gems" {{ $selectedResource  == '' ? 'selected' : ''}}>Gems</option>
+                                <option value="platinum" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
+                                <option value="lumber" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
+                                <option value="ore" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
+                                <option value="gems" {{ $selectedResource  === 'gems' ? 'selected' : ''}}>Gems</option>
                             </select>
                         </div>
 

@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ImproveActionRequest;
@@ -12,12 +13,12 @@ use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 
 class ImprovementController extends AbstractDominionController
 {
-    public function getImprovements()
+    public function getImprovements(Request $request)
     {
         return view('pages.dominion.improvements', [
             'improvementCalculator' => app(ImprovementCalculator::class),
             'improvementHelper' => app(ImprovementHelper::class),
-            'selectedResource' => app('request')->input('resource'),
+            'selectedResource' => $request->query('resource', 'gems'),
         ]);
     }
 
@@ -49,13 +50,8 @@ class ImprovementController extends AbstractDominionController
         ));
 
         $request->session()->flash('alert-success', $result['message']);
-
-        $parameters = [];
-        if ($request->get('resource') != 'gems') {
-            $parameters = [
-                'resource' => $request->get('resource')
-            ];
-        }
-        return redirect()->route('dominion.improvements', $parameters);
+        return redirect()->route('dominion.improvements', [
+            'resource' => $request->get('resource'),
+        ]);
     }
 }
