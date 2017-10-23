@@ -48,4 +48,31 @@ class SpellCalculator
 
         return $spell->duration;
     }
+
+    /**
+     * Returns the multiplier bonus when one or more spells are active for a
+     * Dominion.
+     *
+     * Returns the first active spell it finds. Multiple active spells do not
+     * stack.
+     *
+     * @param Dominion $dominion
+     * @param string|array $spell
+     * @param float|null $bonusPercentage
+     * @return float
+     */
+    public function getActiveSpellMultiplierBonus(Dominion $dominion, $spell, float $bonusPercentage = null): float
+    {
+        if (!is_array($spell)) {
+            $spell = [$spell => $bonusPercentage];
+        }
+
+        foreach ($spell as $spellName => $bonusPercentage) {
+            if ($this->isSpellActive($dominion, $spellName)) {
+                return ($bonusPercentage / 100);
+            };
+        }
+
+        return 0;
+    }
 }
