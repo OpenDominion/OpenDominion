@@ -39,7 +39,7 @@
                                         <td>
                                             {{ sprintf(
                                                 $improvementHelper->getImprovementRatingString($improvementType),
-                                                number_format($improvementCalculator->getImprovementMultiplier($selectedDominion, $improvementType) * 100, 2)
+                                                number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100, 2)
                                             ) }}
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}</td>
@@ -54,10 +54,10 @@
                     <div class="box-footer">
                         <div class="pull-right">
                             <select name="resource" class="form-control">
-                                <option value="platinum">Platinum</option>
-                                <option value="lumber">Lumber</option>
-                                <option value="ore">Ore</option>
-                                <option value="gems" selected>Gems</option>
+                                <option value="platinum" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
+                                <option value="lumber" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
+                                <option value="ore" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
+                                <option value="gems" {{ $selectedResource  === 'gems' ? 'selected' : ''}}>Gems</option>
                             </select>
                         </div>
 
