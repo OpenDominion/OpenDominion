@@ -43,6 +43,10 @@ class SpellActionService
     {
         $this->guardLockedDominion($dominion);
 
+        if ($dominion->wizard_strength < 30) {
+            throw new RuntimeException("Not enough wizard strength to cast {$spell}");
+        }
+
         $spellInfo = $this->spellHelper->getSpellInfo($spell);
 
         if (!$spellInfo) {
@@ -94,6 +98,7 @@ class SpellActionService
             }
 
             $dominion->resource_mana -= $manaCost;
+            $dominion->wizard_strength -= 5;
             $dominion->save();
 
             DB::commit();

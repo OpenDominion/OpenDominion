@@ -34,7 +34,7 @@
                                         @foreach ($spellHelper->getSelfSpells() as $spell)
                                             @php
                                                 $manaCost = ($spell['mana_cost'] * $landCalculator->getTotalLand($selectedDominion));
-                                                $canCast = ($selectedDominion->resource_mana >= $manaCost);
+                                                $canCast = (($selectedDominion->resource_mana >= $manaCost) && ($selectedDominion->wizard_strength >= 30));
 
                                                 $isActive = $spellCalculator->isSpellActive($selectedDominion, $spell['key']);
 

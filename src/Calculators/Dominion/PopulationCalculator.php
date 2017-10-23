@@ -251,8 +251,6 @@ class PopulationCalculator
         $spellHarmony = 50;
         $templeBonus = 6;
 
-        // Values (percenta
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('population_growth');
 
