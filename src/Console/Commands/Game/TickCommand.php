@@ -249,7 +249,7 @@ class TickCommand extends Command
 
         $sql = null;
         $bindings = [
-            'wizardStrengthAdded' => 5, // todo: get values from SpellCalculator for Master of Magi and Dark Artistry techs
+            'wizardStrengthAdded' => 4, // todo: get values from SpellCalculator for Master of Magi and Dark Artistry techs
         ];
 
         switch ($this->databaseDriver) {
