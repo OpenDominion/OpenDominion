@@ -52,16 +52,16 @@ class ImprovementCalculator
      */
     protected function getImprovementMaximum(string $improvementType): float
     {
-        $maxima = [
-            'science' => 0.2,
-            'keep' => 0.3,
-            'towers' => 0.4,
-            'forges' => 0.3,
-            'walls' => 0.3,
-            'harbor' => 0.4,
+        $maximalPercentages = [
+            'science' => 20,
+            'keep' => 30,
+            'towers' => 40,
+            'forges' => 30,
+            'walls' => 30,
+            'harbor' => 40,
         ];
 
-        return $maxima[$improvementType] ?: null;
+        return (($maximalPercentages[$improvementType] / 100) ?: null);
     }
 
     /**
@@ -83,6 +83,6 @@ class ImprovementCalculator
             'harbor' => 5000,
         ];
 
-        return $modifiers[$improvementType] ?: null;
+        return ($modifiers[$improvementType] ?: null);
     }
 }
