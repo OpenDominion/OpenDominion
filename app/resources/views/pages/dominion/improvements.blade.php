@@ -39,7 +39,7 @@
                                         <td>
                                             {{ sprintf(
                                                 $improvementHelper->getImprovementRatingString($improvementType),
-                                                number_format($improvementCalculator->getImprovementMultiplier($selectedDominion, $improvementType) * 100, 2)
+                                                number_format($improvementCalculator->getImprovementMultiplierBonus($selectedDominion, $improvementType) * 100, 2)
                                             ) }}
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}</td>
