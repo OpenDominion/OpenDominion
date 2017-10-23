@@ -36,7 +36,6 @@ class ConstructionCalculator
     {
         $platinum = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
-        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $platinum += max(
             (($totalBuildings < 250) ? 250 : $totalBuildings),
@@ -49,7 +48,7 @@ class ConstructionCalculator
 
         $platinum *= $this->getCostMultiplier($dominion);
 
-        return (int)round($platinum);
+        return round($platinum);
     }
 
     /**
@@ -62,7 +61,6 @@ class ConstructionCalculator
     {
         $lumber = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
-        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $lumber += max(
             (($totalBuildings < 250) ? 250 : $totalBuildings),
@@ -75,7 +73,7 @@ class ConstructionCalculator
 
         $lumber *= $this->getCostMultiplier($dominion);
 
-        return (int)round($lumber);
+        return round($lumber);
     }
 
     /**
@@ -86,7 +84,7 @@ class ConstructionCalculator
      */
     public function getMaxAfford(Dominion $dominion): int
     {
-        return (int)min(
+        return min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             floor($dominion->resource_lumber / $this->getLumberCost($dominion)),
             $this->landCalculator->getTotalBarrenLand($dominion)
@@ -101,7 +99,7 @@ class ConstructionCalculator
      */
     public function getCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $factoryReduction = 4;
@@ -113,6 +111,6 @@ class ConstructionCalculator
             ($factoryReductionMax / 100)
         );
 
-        return $multiplier;
+        return (1 + $multiplier);
     }
 }
