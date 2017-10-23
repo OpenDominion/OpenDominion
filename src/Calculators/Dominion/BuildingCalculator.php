@@ -36,6 +36,4 @@ class BuildingCalculator
 
         return $totalBuildings;
     }
-
-    // todo: buildings under construction?
 }
