@@ -18,6 +18,9 @@ class PopulationCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /** @var TrainingQueueService */
     protected $trainingQueueService;
 
@@ -29,21 +32,24 @@ class PopulationCalculator
      *
      * @param BuildingHelper $buildingHelper
      * @param ImprovementCalculator $improvementCalculator
-     * @param TrainingQueueService $trainingQueueService
      * @param LandCalculator $landCalculator
+     * @param SpellCalculator $spellCalculator
+     * @param TrainingQueueService $trainingQueueService
      * @param UnitHelper $unitHelper
      */
     public function __construct(
         BuildingHelper $buildingHelper,
         ImprovementCalculator $improvementCalculator,
-        TrainingQueueService $trainingQueueService,
         LandCalculator $landCalculator,
+        SpellCalculator $spellCalculator,
+        TrainingQueueService $trainingQueueService,
         UnitHelper $unitHelper
     ) {
         $this->buildingHelper = $buildingHelper;
         $this->improvementCalculator = $improvementCalculator;
-        $this->trainingQueueService = $trainingQueueService;
         $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
+        $this->trainingQueueService = $trainingQueueService;
         $this->unitHelper = $unitHelper;
     }
 
@@ -241,15 +247,17 @@ class PopulationCalculator
     {
         $multiplier = 1;
 
-        // Values
-        //$spellHarmony = 1.5;
+        // Values (percentages)
+        $spellHarmony = 50;
         $templeBonus = 6;
+
+        // Values (percenta
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('population_growth');
 
         // Spell: Harmony
-        // todo
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'harmony', $spellHarmony);
 
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);
