@@ -91,7 +91,7 @@ class CasualtiesCalculator
     }
 
     /**
-     * Returns the Units that can suffer casualties.
+     * Returns the unit types that can suffer casualties.
      *
      * @return array
      */
