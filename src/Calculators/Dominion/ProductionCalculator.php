@@ -39,7 +39,7 @@ class ProductionCalculator
      */
     public function getPlatinumProduction(Dominion $dominion): int
     {
-        return (int)floor($this->getPlatinumProductionRaw($dominion) * $this->getPlatinumProductionMultiplier($dominion));
+        return floor($this->getPlatinumProductionRaw($dominion) * $this->getPlatinumProductionMultiplier($dominion));
     }
 
     /**
@@ -72,7 +72,7 @@ class ProductionCalculator
         // Building: Alchemy
         $platinum += ($dominion->building_alchemy * $platinumPerAlchemy);
 
-        return (float)$platinum;
+        return $platinum;
     }
 
     /**
@@ -92,7 +92,7 @@ class ProductionCalculator
      */
     public function getPlatinumProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $spellMidasTouch = 10;
@@ -115,7 +115,7 @@ class ProductionCalculator
         // Tech: Treasure Hunt or Banker's Foresight
         // todo
 
-        return (float)min(1.5, (1 + $multiplier));
+        return min(1.5, (1 + $multiplier));
     }
 
     //</editor-fold>
@@ -130,7 +130,7 @@ class ProductionCalculator
      */
     public function getFoodProduction(Dominion $dominion): int
     {
-        return (int)floor($this->getFoodProductionRaw($dominion) * $this->getFoodProductionMultiplier($dominion));
+        return floor($this->getFoodProductionRaw($dominion) * $this->getFoodProductionMultiplier($dominion));
     }
 
     /**
@@ -157,7 +157,7 @@ class ProductionCalculator
         // Building: Dock
         $food += ($dominion->building_dock * $foodPerDock);
 
-        return (float)$food;
+        return $food;
     }
 
     /**
@@ -175,7 +175,7 @@ class ProductionCalculator
      */
     public function getFoodProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $spellGaiasBlessing = 20;
@@ -201,7 +201,7 @@ class ProductionCalculator
         $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
         $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     /**
@@ -228,7 +228,7 @@ class ProductionCalculator
         // todo: getFoodConsumptionRaw & getFoodConsumptionMultiplier?
         $consumption *= (1 + $dominion->race->getPerkMultiplier('food_consumption'));
 
-        return (float)$consumption;
+        return $consumption;
     }
 
     /**
@@ -248,7 +248,7 @@ class ProductionCalculator
 
         $decay += ($dominion->resource_food * ($foodDecay / 100));
 
-        return (float)$decay;
+        return $decay;
     }
 
     /**
@@ -259,7 +259,7 @@ class ProductionCalculator
      */
     public function getFoodNetChange(Dominion $dominion): int
     {
-        return (int)round($this->getFoodProduction($dominion) - $this->getFoodConsumption($dominion) - $this->getFoodDecay($dominion));
+        return round($this->getFoodProduction($dominion) - $this->getFoodConsumption($dominion) - $this->getFoodDecay($dominion));
     }
 
     //</editor-fold>
@@ -274,7 +274,7 @@ class ProductionCalculator
      */
     public function getLumberProduction(Dominion $dominion): int
     {
-        return (int)floor($this->getLumberProductionRaw($dominion) * $this->getLumberProductionMultiplier($dominion));
+        return floor($this->getLumberProductionRaw($dominion) * $this->getLumberProductionMultiplier($dominion));
     }
 
     /**
@@ -296,7 +296,7 @@ class ProductionCalculator
         // Building: Lumberyard
         $lumber += ($dominion->building_lumberyard * $lumberPerLumberyard);
 
-        return (float)$lumber;
+        return $lumber;
     }
 
     /**
@@ -312,7 +312,7 @@ class ProductionCalculator
      */
     public function getLumberProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $spellGaiasBlessing = 10;
@@ -327,7 +327,7 @@ class ProductionCalculator
         // Tech: Fruits of Labor
         // todo
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     /**
@@ -347,7 +347,7 @@ class ProductionCalculator
 
         $decay += ($dominion->resource_lumber * ($lumberDecay / 100));
 
-        return (float)$decay;
+        return $decay;
     }
 
     /**
@@ -358,7 +358,7 @@ class ProductionCalculator
      */
     public function getLumberNetChange(Dominion $dominion): int
     {
-        return (int)round($this->getLumberProduction($dominion) - $this->getLumberDecay($dominion));
+        return round($this->getLumberProduction($dominion) - $this->getLumberDecay($dominion));
     }
 
     //</editor-fold>
@@ -373,7 +373,7 @@ class ProductionCalculator
      */
     public function getManaProduction(Dominion $dominion): int
     {
-        return (int)floor($this->getManaProductionRaw($dominion) * $this->getManaProductionMultiplier($dominion));
+        return floor($this->getManaProductionRaw($dominion) * $this->getManaProductionMultiplier($dominion));
     }
 
     /**
@@ -395,7 +395,7 @@ class ProductionCalculator
         // Building: Tower
         $mana += ($dominion->building_tower * $manaPerTower);
 
-        return (float)$mana;
+        return $mana;
     }
 
     /**
@@ -410,7 +410,7 @@ class ProductionCalculator
      */
     public function getManaProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0.0;
+        $multiplier = 0;
 
         // Values (percentages)
 
@@ -420,7 +420,7 @@ class ProductionCalculator
         // Tech: Enchanted Lands
         // todo
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     /**
@@ -440,7 +440,7 @@ class ProductionCalculator
 
         $decay += ($dominion->resource_mana * ($manaDecay / 100));
 
-        return (float)$decay;
+        return $decay;
     }
 
     /**
@@ -451,7 +451,7 @@ class ProductionCalculator
      */
     public function getManaNetChange(Dominion $dominion): int
     {
-        return (int)round($this->getManaProduction($dominion) - $this->getManaDecay($dominion));
+        return round($this->getManaProduction($dominion) - $this->getManaDecay($dominion));
     }
 
     //</editor-fold>
@@ -466,7 +466,7 @@ class ProductionCalculator
      */
     public function getOreProduction(Dominion $dominion): int
     {
-        return (int)floor($this->getOreProductionRaw($dominion) * $this->getOreProductionMultiplier($dominion));
+        return floor($this->getOreProductionRaw($dominion) * $this->getOreProductionMultiplier($dominion));
     }
 
     /**
@@ -492,7 +492,7 @@ class ProductionCalculator
         // Dwarf Unit: Miner
         // todo
 
-        return (float)$ore;
+        return $ore;
     }
 
     /**
@@ -508,7 +508,7 @@ class ProductionCalculator
      */
     public function getOreProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $spellMinersSight = 20;
@@ -527,7 +527,7 @@ class ProductionCalculator
         // Tech: Fruits of Labor
         // todo
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     //</editor-fold>
@@ -542,7 +542,7 @@ class ProductionCalculator
      */
     public function getGemProduction(Dominion $dominion): int
     {
-        return (int)floor($this->getGemProductionRaw($dominion) * $this->getGemProductionMultiplier($dominion));
+        return floor($this->getGemProductionRaw($dominion) * $this->getGemProductionMultiplier($dominion));
     }
 
     /**
@@ -564,7 +564,7 @@ class ProductionCalculator
         // Building: Diamond Mine
         $gems += ($dominion->building_diamond_mine * $gemsPerDiamondMine);
 
-        return (float)$gems;
+        return $gems;
     }
 
     /**
@@ -579,7 +579,7 @@ class ProductionCalculator
      */
     public function getGemProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0.0;
+        $multiplier = 0;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
@@ -587,7 +587,7 @@ class ProductionCalculator
         // Tech: Fruits of Labor and Miner's Refining
         // todo
 
-        return (float)(1 + $multiplier);
+        return (1 + $multiplier);
     }
 
     //</editor-fold>
@@ -626,7 +626,7 @@ class ProductionCalculator
 
         $boats += ($dominion->building_dock / $docksPerBoatPerTick);
 
-        return (float)$boats;
+        return $boats;
     }
 
     /**
@@ -640,12 +640,12 @@ class ProductionCalculator
      */
     public function getBoatProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1;
+        $multiplier = 0;
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
-        return $multiplier;
+        return (1 + $multiplier);
     }
 
     //</editor-fold>
