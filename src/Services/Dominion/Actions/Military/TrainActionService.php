@@ -195,7 +195,7 @@ class TrainActionService
                 continue;
            }
            $costType = str_singular($costType);
-           if(!in_array($costType, ['platinum', 'ore'], true) {
+           if(!in_array($costType, ['platinum', 'ore'], true)) {
                 $costType = str_plural($costType, $cost);
            }
            $trainingCostsStringParts[] = number_format($cost) . ' ' . $costType;
