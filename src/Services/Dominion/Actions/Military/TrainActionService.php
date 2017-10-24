@@ -187,7 +187,7 @@ class TrainActionService
             }
        }
         
-       $unitsToTrainString = $this->generateOxfordCommaStringFromArray($unitsToTrainStringParts);
+       $unitsToTrainString = $this->generateSentenceFromArray($unitsToTrainStringParts);
 
        $trainingCostsStringParts = [];
        foreach($totalCosts as $costType => $cost) {
@@ -196,7 +196,7 @@ class TrainActionService
            }
        }
                                
-       $trainingCostsString = $this->generateOxfordCommaStringFromArray($trainingCostsStringParts);
+       $trainingCostsString = $this->generateSentenceFromArray($trainingCostsStringParts);
     
         $message = sprintf(
             'Training of %s begun at a cost of %s',
@@ -207,12 +207,12 @@ class TrainActionService
         return $message;
     }
     /**
-     * Generates an oxford comma string from an array of strings
+     * Generates a string with conjuction from an array of strings
      *
      * @param array $stringParts
      * @return string
      */
-    private function generateOxfordCommaStringFromArray($stringParts) {
+    private function generateSentenceFromArray($stringParts) {
         $string = implode(', ', $stringParts);
         $string = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($string), 2)));
     }
