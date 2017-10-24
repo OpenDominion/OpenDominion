@@ -31,6 +31,9 @@
       "app/database/factories",
       "app/database/seeds"
     ],
+    "files": [
+      "src/helpers.php"
+    ],
     "psr-4": {
       "OpenDominion\\": "src/"
     }
