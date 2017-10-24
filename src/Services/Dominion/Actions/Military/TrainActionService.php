@@ -159,26 +159,7 @@ class TrainActionService
             throw $e;
         }
 
-        // todo: refactor this slightly less shit
-        $unitsToTrainStringParts = [];
-
-        foreach ($unitsToTrain as $unitType => $amount) {
-            $unitsToTrainStringParts[] = (number_format($amount) . ' ' . strtolower($this->unitHelper->getUnitName($unitType, $dominion->race)));
-        }
-
-        $unitsToTrainString = implode(', ', $unitsToTrainStringParts);
-        $unitsToTrainString = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($unitsToTrainString), 2)));
-
-        $message = sprintf(
-            'Training of %s begun at a cost of %s platinum, %s ore, %s %s and %s %s.',
-            $unitsToTrainString,
-            number_format($totalCosts['platinum']),
-            number_format($totalCosts['ore']),
-            number_format($totalCosts['draftees']),
-            str_plural('draftee', $totalCosts['draftees']),
-            number_format($totalCosts['wizards']),
-            str_plural('wizard', $totalCosts['wizards'])
-        );
+        $message = $this->getTrainingMessage($dominion, $unitsToTrain, $totalCosts);
 
         return [
             'message' => $message,
@@ -186,5 +167,53 @@ class TrainActionService
                 'totalCosts' => $totalCosts,
             ],
         ];
+    }
+    
+    /**
+     * Does a military train action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $unitsToTrain
+     * @param array $totalCosts
+     * @return string
+     */
+    private function getTrainingMessage(Dominion $dominion, $totalCosts) {
+        $unitsToTrainStringParts = [];
+
+        foreach ($unitsToTrain as $unitType => $amount) {
+            if($amount > 0) {
+                $race = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
+                $unitsToTrainStringParts[] = number_format($amount)." ".str_plural($race, $amount);
+            }
+        }
+        
+        $unitsToTrainString = $this->generateOxfordCommaStringFromArray($unitsToTrainStringParts);
+
+       $trainingCostsStringParts = [];
+       foreach($totalCosts as $costType => $cost) {
+           if($cost > 0){
+             $trainingCostsStringParts[] = number_format($cost)." ".str_plural($costType, $cost);
+           }
+       }
+                               
+       $trainingCostsString = $this->generateOxfordCommaStringFromArray($trainingCostsStringParts);
+    
+        $message = sprintf(
+            'Training of %s begun at a cost of %s',
+            $unitsToTrainString,
+            $trainingCostsString
+        );
+        
+        return $message;
+    }
+    /**
+     * Generates an oxford comma string from an array of strings
+     *
+     * @param array $stringParts
+     * @return string
+     */
+    private function generateOxfordCommaStringFromArray($stringParts) {
+        $string = implode(', ', $stringParts);
+        $string = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($string), 2)));
     }
 }
