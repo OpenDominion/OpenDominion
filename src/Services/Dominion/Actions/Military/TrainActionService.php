@@ -187,16 +187,22 @@ class TrainActionService
             }
        }
         
-       $unitsToTrainString = $this->generateSentenceFromArray($unitsToTrainStringParts);
+       $unitsToTrainString = generate_sentence_from_array($unitsToTrainStringParts);
 
        $trainingCostsStringParts = [];
        foreach($totalCosts as $costType => $cost) {
-           if($cost > 0){
-             $trainingCostsStringParts[] = number_format($cost) . ' ' . str_plural($costType, $cost);
+           if($cost === 0){
+                continue;
            }
+           $costType = str_singular($costType);
+           if(!in_array($costType, ['platinum', 'ore'], true) {
+                $costType = str_plural($costType, $cost);
+           }
+           $trainingCostsStringParts[] = number_format($cost) . ' ' . $costType;
+           
        }
                                
-       $trainingCostsString = $this->generateSentenceFromArray($trainingCostsStringParts);
+       $trainingCostsString = generate_sentence_from_array($trainingCostsStringParts);
     
         $message = sprintf(
             'Training of %s begun at a cost of %s',
@@ -205,15 +211,5 @@ class TrainActionService
         );
         
         return $message;
-    }
-    /**
-     * Generates a string with conjuction from an array of strings
-     *
-     * @param array $stringParts
-     * @return string
-     */
-    private function generateSentenceFromArray($stringParts) {
-        $string = implode(', ', $stringParts);
-        $string = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($string), 2)));
     }
 }
