@@ -170,7 +170,7 @@ class TrainActionService
     }
     
     /**
-     * Does a military train action for a Dominion.
+     * Returns training message for a train action.
      *
      * @param Dominion $dominion
      * @param array $unitsToTrain
@@ -180,19 +180,19 @@ class TrainActionService
     private function getTrainingMessage(Dominion $dominion, $totalCosts) {
         $unitsToTrainStringParts = [];
 
-        foreach ($unitsToTrain as $unitType => $amount) {
+       foreach ($unitsToTrain as $unitType => $amount) {
             if($amount > 0) {
                 $race = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
-                $unitsToTrainStringParts[] = number_format($amount)." ".str_plural($race, $amount);
+                $unitsToTrainStringParts[] = number_format($amount) . ' ' . str_plural($race, $amount);
             }
-        }
+       }
         
-        $unitsToTrainString = $this->generateOxfordCommaStringFromArray($unitsToTrainStringParts);
+       $unitsToTrainString = $this->generateOxfordCommaStringFromArray($unitsToTrainStringParts);
 
        $trainingCostsStringParts = [];
        foreach($totalCosts as $costType => $cost) {
            if($cost > 0){
-             $trainingCostsStringParts[] = number_format($cost)." ".str_plural($costType, $cost);
+             $trainingCostsStringParts[] = number_format($cost) . ' ' . str_plural($costType, $cost);
            }
        }
                                
