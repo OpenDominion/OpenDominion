@@ -153,6 +153,7 @@ class SpellActionService
             $thoughts = [
                 'mumbles something about being the most powerful sorcerer in the dominion is a lonely job, "but somebody\'s got to do it"',
                 'mumbles something about the food being quite delicious',
+                'feels like a higher spiritual entity is watching her',
                 'winks at you',
             ];
 
@@ -169,7 +170,7 @@ class SpellActionService
                 $thoughts[] = 'mumbles something about not having enough peers to properly conduct her studies';
             }
 
-            return ('Your single archmage successfully casts %s at a cost of %s mana. In addition, she ' . array_rand($thoughts) . '.');
+            return ('Your archmage successfully casts %s at a cost of %s mana. In addition, she ' . array_rand($thoughts) . '.');
         }
 
         if ($dominion->military_archmages === 0) {
@@ -178,7 +179,8 @@ class SpellActionService
             }
 
             $thoughts = [
-                'he mumbles something about the food being very delicious',
+                'mumbles something about the food being very tasty',
+                'has the feeling that an omnipotent being is watching him',
             ];
 
             if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_wizards') > 0) {
@@ -200,15 +202,15 @@ class SpellActionService
                 $thoughts[] = 'mumbles something about thinking your spies are complotting against him';
             }
 
-            return ('Your single wizard successfully casts %s at a cost of %s mana. In addition, he ' . array_rand($thoughts) . '.');
+            return ('Your wizard successfully casts %s at a cost of %s mana. In addition, he ' . array_rand($thoughts) . '.');
         }
 
         if (($dominion->military_wizards === 1) && ($dominion->military_archmages === 1)) {
             $strings = [
-                'Your single wizard and your single archmage successfully cast %s together in harmony at a cost of %s mana. It was glorious to behold.',
+                'Your wizard and archmage successfully cast %s together in harmony at a cost of %s mana. It was glorious to behold.',
                 'Your wizard watches in awe while his teacher archmage blissfully casts %s at a cost of %s mana.',
                 'Your archmage facepalms as he observes his wizard student almost failing to cast %s at a cost of %s mana.',
-                'Your single wizard successfully casts %s at a cost of %s mana, while his teacher archmage watches him with pride.',
+                'Your wizard successfully casts %s at a cost of %s mana, while his teacher archmage watches him with pride.',
             ];
 
             return array_rand($strings);
