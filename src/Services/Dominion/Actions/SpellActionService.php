@@ -89,7 +89,7 @@ class SpellActionService
 
                 /** @noinspection NullPointerExceptionInspection */
                 if ((int)$activeSpell->duration === $spellInfo['duration']) {
-//                    throw new RuntimeException("Spell {$spellInfo['name']} is already at maximum duration.");
+                    throw new RuntimeException("Spell {$spellInfo['name']} is already at maximum duration.");
                 }
 
                 DB::table('active_spells')
