@@ -43,18 +43,18 @@ class SpellActionService
     {
         $this->guardLockedDominion($dominion);
 
-        if ($dominion->wizard_strength < 30) {
-            throw new RuntimeException("Not enough wizard strength to cast {$spell}.");
-        }
-
-        if (($dominion->military_wizards + $dominion->military_archmages) === 0) {
-            throw new RuntimeException("You need at least 1 wizard or archmage to cast {$spell}.");
-        }
-
         $spellInfo = $this->spellHelper->getSpellInfo($spell);
 
         if (!$spellInfo) {
             throw new RuntimeException("Unable to cast spell {$spell}");
+        }
+
+        if ($dominion->wizard_strength < 30) {
+            throw new RuntimeException("Not enough wizard strength to cast {$spellInfo['name']}.");
+        }
+
+        if (($dominion->military_wizards + $dominion->military_archmages) === 0) {
+            throw new RuntimeException("You need at least 1 wizard or archmage to cast {$spellInfo['name']}.");
         }
 
         $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
@@ -112,9 +112,21 @@ class SpellActionService
             throw $e;
         }
 
+        if (($dominion->military_wizards === 1) && ($dominion->military_archmages === 0)) {
+            $castString = 'Your single wizard successfully casts %s at a cost of %s mana.';
+        } elseif ($dominion->military_wizards === 0) {
+            if ($dominion->military_archmages === 1) {
+                $castString = 'Your single archmage successfully casts %s at a cost of %s mana.';
+            } else {
+                $castString = 'Your archmages successfully cast %s at a cost of %s mana.';
+            }
+        } else {
+            $castString = 'Your wizards successfully cast %s at a cost of %s mana.';
+        }
+
         return [
             'message' => sprintf(
-                'Your wizards successfully cast %s at a cost of %s mana.',
+                $castString,
                 $spellInfo['name'],
                 number_format($manaCost)
             ),
