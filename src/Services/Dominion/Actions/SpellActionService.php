@@ -89,7 +89,7 @@ class SpellActionService
 
                 /** @noinspection NullPointerExceptionInspection */
                 if ((int)$activeSpell->duration === $spellInfo['duration']) {
-                    throw new RuntimeException("Spell {$spellInfo['name']} is already at maximum duration.");
+//                    throw new RuntimeException("Spell {$spellInfo['name']} is already at maximum duration.");
                 }
 
                 DB::table('active_spells')
@@ -145,8 +145,12 @@ class SpellActionService
      */
     protected function getReturnMessageString(Dominion $dominion): string
     {
-        if ($dominion->military_wizards === 0) {
-            if ($dominion->military_archmages > 1) {
+        $wizards = (int)$dominion->military_wizards;
+        $archmages = (int)$dominion->military_archmages;
+        $spies = (int)$dominion->military_spies;
+
+        if ($wizards === 0) {
+            if ($archmages > 1) {
                 return 'Your archmages successfully cast %s at a cost of %s mana.';
             }
 
@@ -168,13 +172,14 @@ class SpellActionService
                 $thoughts[] = 'mumbles something about looking forward to discuss the secrets of arcane knowledge with her future peers';
             } else {
                 $thoughts[] = 'mumbles something about not having enough peers to properly conduct her studies';
+                $thoughts[] = 'mumbles something about feeling a bit lonely';
             }
 
-            return ('Your archmage successfully casts %s at a cost of %s mana. In addition, she ' . array_rand($thoughts) . '.');
+            return ('Your archmage successfully casts %s at a cost of %s mana. In addition, she ' . $thoughts[array_rand($thoughts)] . '.');
         }
 
-        if ($dominion->military_archmages === 0) {
-            if ($dominion->military_wizards > 1) {
+        if ($archmages === 0) {
+            if ($wizards > 1) {
                 return 'Your wizards successfully cast %s at a cost of %s mana.';
             }
 
@@ -183,29 +188,29 @@ class SpellActionService
                 'has the feeling that an omnipotent being is watching him',
             ];
 
-            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_wizards') > 0) {
+            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'wizards') > 0) {
                 $thoughts[] = 'mumbles something about being delighted by the new wizard trainees so he won\'t be lonely anymore';
             } else {
                 $thoughts[] = 'mumbles something about not having enough peers to properly conduct his studies';
-                $thoughts[] = 'mumbles something about being a bit lonely';
+                $thoughts[] = 'mumbles something about feeling a bit lonely';
             }
 
-            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_archmages') > 0) {
+            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'archmages') > 0) {
                 $thoughts[] = 'mumbles something about looking forward to his future teacher';
             } else {
                 $thoughts[] = 'mumbles something about not having an archmage master to study under';
             }
 
-            if ($dominion->military_spies === 1) {
+            if ($spies === 1) {
                 $thoughts[] = 'mumbles something about fancying that spy lady';
-            } elseif ($dominion->military_spies > 1) {
+            } elseif ($spies > 1) {
                 $thoughts[] = 'mumbles something about thinking your spies are complotting against him';
             }
 
-            return ('Your wizard successfully casts %s at a cost of %s mana. In addition, he ' . array_rand($thoughts) . '.');
+            return ('Your wizard successfully casts %s at a cost of %s mana. In addition, he ' . $thoughts[array_rand($thoughts)] . '.');
         }
 
-        if (($dominion->military_wizards === 1) && ($dominion->military_archmages === 1)) {
+        if (($wizards === 1) && ($archmages === 1)) {
             $strings = [
                 'Your wizard and archmage successfully cast %s together in harmony at a cost of %s mana. It was glorious to behold.',
                 'Your wizard watches in awe while his teacher archmage blissfully casts %s at a cost of %s mana.',
@@ -213,26 +218,26 @@ class SpellActionService
                 'Your wizard successfully casts %s at a cost of %s mana, while his teacher archmage watches him with pride.',
             ];
 
-            return array_rand($strings);
+            return $strings[array_rand($strings)];
         }
 
-        if (($dominion->military_wizards === 1) && ($dominion->military_archmages > 1)) {
+        if (($wizards === 1) && ($archmages > 1)) {
             $strings = [
                 'Your wizards successfully cast %s at a cost of %s mana.',
                 'Your wizard was sleeping, so your archmages successfully cast %s at a cost of %s mana.',
                 'Your wizard watches carefully while your archmages successfully cast %s at a cost of %s mana.',
             ];
 
-            return array_rand($strings);
+            return $strings[array_rand($strings)];
         }
 
-        if (($dominion->military_wizards > 1) && ($dominion->military_archmages === 1)) {
+        if (($wizards > 1) && ($archmages === 1)) {
             $strings = [
                 'Your wizards successfully cast %s at a cost of %s mana.',
                 'Your archmage found herself lost in her study books, so your wizards successfully cast %s at a cost of %s mana.',
             ];
 
-            return array_rand($strings);
+            return $strings[array_rand($strings)];
         }
 
         return 'Your wizards successfully cast %s at a cost of %s mana.';
