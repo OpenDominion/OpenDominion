@@ -488,7 +488,7 @@ class TickCommand extends Command
         // Second pass: Calculating ranks
         $result = DB::table('daily_rankings')
             ->orderBy('land', 'desc')
-            ->orderBy('land_rank')
+            ->orderBy(DB::raw('ISNULL(land_rank), land_rank'))
             ->orderBy('created_at')
             ->get();
 
