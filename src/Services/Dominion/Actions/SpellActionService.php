@@ -212,11 +212,13 @@ class SpellActionService
 
         if (($wizards === 1) && ($archmages === 1)) {
             $strings = [
+                'Your wizards successfully cast %s at a cost of %s mana.',
                 'Your wizard and archmage successfully cast %s together in harmony at a cost of %s mana. It was glorious to behold.',
                 'Your wizard watches in awe while his teacher archmage blissfully casts %s at a cost of %s mana.',
                 'Your archmage facepalms as he observes his wizard student almost failing to cast %s at a cost of %s mana.',
                 'Your wizard successfully casts %s at a cost of %s mana, while his teacher archmage watches him with pride.',
             ];
+
 
             return $strings[array_rand($strings)];
         }
