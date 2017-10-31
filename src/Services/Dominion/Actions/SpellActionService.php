@@ -219,7 +219,6 @@ class SpellActionService
                 'Your wizard successfully casts %s at a cost of %s mana, while his teacher archmage watches him with pride.',
             ];
 
-
             return $strings[array_rand($strings)];
         }
 
