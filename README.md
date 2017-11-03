@@ -58,7 +58,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
-| Magic               | ![Progress](http://progressed.io/bar/0)   |
+| Magic               | ![Progress](http://progressed.io/bar/20)  |
 | Espionage           | ![Progress](http://progressed.io/bar/0)   |
 | Messages            | ![Progress](http://progressed.io/bar/0)   |
 | Realm Council       | ![Progress](http://progressed.io/bar/50)  |
