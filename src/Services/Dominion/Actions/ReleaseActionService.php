@@ -89,7 +89,7 @@ class ReleaseActionService
      * @param array $troopsReleased
      * @return string
      */
-    public function getReturnMessageString(Dominion $dominion, array $troopsReleased): string
+    protected function getReturnMessageString(Dominion $dominion, array $troopsReleased): string
     {
         $stringParts = ['You successfully released'];
 
