@@ -52,7 +52,7 @@ class ConstructActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $totalBuildingsToConstruct = array_sum($data);
 

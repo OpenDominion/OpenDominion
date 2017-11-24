@@ -168,14 +168,14 @@ class TrainActionService
     }
 
     /**
-     * Returns training message for a train action.
+     * Returns the message for a train action.
      *
      * @param Dominion $dominion
      * @param array $unitsToTrain
      * @param array $totalCosts
      * @return string
      */
-    private function getReturnMessageString(Dominion $dominion, array $unitsToTrain, array $totalCosts): string
+    protected function getReturnMessageString(Dominion $dominion, array $unitsToTrain, array $totalCosts): string
     {
         $unitsToTrainStringParts = [];
 

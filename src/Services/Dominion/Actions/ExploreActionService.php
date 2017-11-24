@@ -40,7 +40,7 @@ class ExploreActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $totalLandToExplore = array_sum($data);
 

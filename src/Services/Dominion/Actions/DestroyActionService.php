@@ -22,7 +22,7 @@ class DestroyActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $totalBuildingsToDestroy = array_sum($data);
 
