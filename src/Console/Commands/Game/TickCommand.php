@@ -87,7 +87,7 @@ class TickCommand extends Command
         // todo: Military returning queue
 
         $this->tickDominionResources();
-        // todo: Population (peasants & draftees)
+        $this->tickDominionPopulation();
         $this->tickDominionMorale();
         $this->tickDominionSpyStrength();
         $this->tickDominionWizardStrength();
@@ -148,7 +148,6 @@ class TickCommand extends Command
 
         foreach ($dominions as $dominion) {
 
-            // Resources
             $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
             $dominion->resource_food += $this->productionCalculator->getFoodNetChange($dominion);
             $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
@@ -169,7 +168,22 @@ class TickCommand extends Command
                 $dominion->resource_food = 0;
             }
 
-            // Population
+            $dominion->save();
+        }
+
+        $affected = $dominions->count();
+
+        Log::debug("Ticked resources, {$affected} dominion(s) affected");
+    }
+
+    public function tickDominionPopulation()
+    {
+        Log::debug('Tick population started');
+
+        $dominions = $this->getDominionsToUpdate();
+
+        foreach ($dominions as $dominion) {
+
             $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
             $dominion->peasants += $populationPeasantGrowth;
@@ -181,7 +195,7 @@ class TickCommand extends Command
 
         $affected = $dominions->count();
 
-        Log::debug("Ticked resources, {$affected} dominion(s) affected");
+        Log::debug("Ticked population, {$affected} dominion(s) affected");
     }
 
     /**
