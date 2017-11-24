@@ -128,8 +128,8 @@ class TickCommand extends Command
             ->join('rounds', function ($join) {
                 $join->on('rounds.id', '=', 'dominions.round_id');
             })
-            ->where('rounds.start_date', '<=', Carbon::now())
-            ->where('rounds.end_date', '>', Carbon::now())
+            ->where('rounds.start_date', '<=', $this->now)
+            ->where('rounds.end_date', '>', $this->now)
             ->get()
             ->map(function ($dominion) {
                 return $dominion->id;
