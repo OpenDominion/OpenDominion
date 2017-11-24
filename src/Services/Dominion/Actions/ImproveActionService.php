@@ -22,7 +22,7 @@ class ImproveActionService
             throw new RuntimeException('Investment aborted due to bad input.');
         }
 
-        if (!in_array($resource, ['platinum', 'lumber', 'ore', 'gems'], true)) {
+        if (!\in_array($resource, ['platinum', 'lumber', 'ore', 'gems'], true)) {
             throw new RuntimeException('Investment aborted due to bad resource type.');
         }
 
@@ -54,8 +54,7 @@ class ImproveActionService
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
         $dominion->save();
 
-        $investmentString = implode(', ', $investmentStringParts);
-        $investmentString = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($investmentString), 2)));
+        $investmentString = generate_sentence_from_array($investmentStringParts);
 
         return [
             'message' => sprintf(
