@@ -52,7 +52,7 @@ class ConstructActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $totalBuildingsToConstruct = array_sum($data);
 
@@ -123,7 +123,11 @@ class ConstructActionService
                     'updated_at' => $dateTime,
                 ];
 
-                if ($existingQueueRows->isEmpty()) {
+                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($buildingType) {
+                    return ($row->building === $buildingType);
+                });
+
+                if ($existingQueueRow->isEmpty()) {
                     $values['created_at'] = $dateTime;
                 }
 

@@ -8,10 +8,13 @@ use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
+use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsService;
@@ -25,6 +28,7 @@ use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
+use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
@@ -59,10 +63,13 @@ class AppServiceProvider extends AbstractServiceProvider
 
         // Dominion Calculators
         $this->app->singleton(BuildingCalculator::class);
+        $this->app->singleton(CasualtiesCalculator::class);
+        $this->app->singleton(ImprovementCalculator::class);
         $this->app->singleton(LandCalculator::class);
         $this->app->singleton(MilitaryCalculator::class);
         $this->app->singleton(PopulationCalculator::class);
         $this->app->singleton(ProductionCalculator::class);
+        $this->app->singleton(SpellCalculator::class);
 
         // Dominion Action Calculators
         $this->app->singleton(BankingCalculator::class);
@@ -94,6 +101,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ExploreActionService::class);
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
+        $this->app->singleton(SpellActionService::class);
 
         // Dominion Queue Services
         $this->app->singleton(ConstructionQueueService::class);

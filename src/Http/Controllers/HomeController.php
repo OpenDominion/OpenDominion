@@ -13,7 +13,7 @@ class HomeController extends AbstractController
         if (Auth::check() && (request()->server('HTTP_REFERER') !== '') && (url()->previous() === url()->current())) {
             $dominionSelectorService = app(SelectorService::class);
 
-            if ($dominionSelectorService->hasUserSelectedDominion()) {
+            if ($dominionSelectorService->tryAutoSelectDominionForAuthUser()) {
                 return redirect()->route('dominion.status');
             }
 

@@ -40,7 +40,7 @@ class ExploreActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $totalLandToExplore = array_sum($data);
 
@@ -104,7 +104,11 @@ class ExploreActionService
                     'updated_at' => $dateTime,
                 ];
 
-                if ($existingQueueRows->isEmpty()) {
+                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($landType) {
+                    return ($row->land_type === $landType);
+                });
+
+                if ($existingQueueRow->isEmpty()) {
                     $values['created_at'] = $dateTime;
                 }
 

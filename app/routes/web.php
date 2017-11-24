@@ -117,7 +117,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
             $router->get('advisors/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construct');
             $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
-            $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
+            $router->get('advisors/rankings/{type?}')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
             // Daily
@@ -139,6 +139,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('rezone')->uses('Dominion\RezoneController@getRezone')->name('rezone');
             $router->post('rezone')->uses('Dominion\RezoneController@postRezone');
 
+            // Improvements
+            $router->get('improvements')->uses('Dominion\ImprovementController@getImprovements')->name('improvements');
+            $router->post('improvements')->uses('Dominion\ImprovementController@postImprovements');
+
             // National Bank
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
             $router->post('bank')->uses('Dominion\BankController@postBank');
@@ -150,6 +154,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military/release')->uses('Dominion\MilitaryController@getRelease')->name('military.release');
             $router->post('military/release')->uses('Dominion\MilitaryController@postRelease');
 
+            // Magic
+            $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
+            $router->post('magic')->uses('Dominion\MagicController@postMagic');
+
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
             $router->get('council/create')->uses('Dominion\CouncilController@getCreate')->name('council.create');
@@ -158,7 +166,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
 
             // Realm
-            $router->get('realm/{realm?}')->uses('Dominion\RealmController@getRealm')->name('realm');
+            $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
             // Debug

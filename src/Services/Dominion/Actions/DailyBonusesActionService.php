@@ -53,7 +53,7 @@ class DailyBonusesActionService
         }
 
         $landGained = 20;
-        $attribute = 'land_' . $dominion->race->home_land_type;
+        $attribute = ('land_' . $dominion->race->home_land_type);
         $dominion->{$attribute} += $landGained;
         $dominion->daily_land = true;
         $dominion->save();

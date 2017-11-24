@@ -75,9 +75,10 @@ class NetworthCalculator
         $networth += ($this->landCalculator->getTotalLand($dominion) * $networthPerLand);
         $networth += ($this->buildingCalculator->getTotalBuildings($dominion) * $networthPerBuilding);
 
-        // todo: racial networth bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
+        // todo: Certain units have conditional bonus DP/OP. Do we need to calculate those too?
+        // racial networth bonuses (wood elf, dryad, sylvan, rockapult, gnome, adept, dark elf, frost mage, ice elemental, icekin)
 
-        return (int)round($networth);
+        return round($networth);
     }
 
     /**
@@ -88,11 +89,11 @@ class NetworthCalculator
      */
     public function getUnitNetworth(Unit $unit): float
     {
-        if (in_array($unit->slot, [1, 2])) {
+        if (in_array($unit->slot, [1, 2], false)) {
             return 5;
         }
 
-        return (float)(
+        return (
             (1.8 * min(6, max($unit->power_offense, $unit->power_defense)))
             + (0.45 * min(6, min($unit->power_offense, $unit->power_defense)))
             + (0.2 * (max(($unit->power_offense - 6), 0) + max(($unit->power_defense - 6), 0)))

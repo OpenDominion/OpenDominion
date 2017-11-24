@@ -6,7 +6,7 @@ use OpenDominion\Models\Race;
 
 class UnitHelper
 {
-    public function getUnitTypes()
+    public function getUnitTypes(): array
     {
         return [
             'unit1',
@@ -19,7 +19,7 @@ class UnitHelper
         ];
     }
 
-    public function getUnitName($unitType, Race $race)
+    public function getUnitName(string $unitType, Race $race): string
     {
         if (in_array($unitType, ['spies', 'wizards', 'archmages'], true)) {
             return ucfirst($unitType);
@@ -30,7 +30,7 @@ class UnitHelper
         return $race->units[$unitSlot]->name;
     }
 
-    public function getUnitHelpString($unitType, Race $race)
+    public function getUnitHelpString(string $unitType, Race $race): ?string
     {
         $helpStrings = [
             'draftees' => 'Basic military unit.<br><br>Used for exploring and training other units.',

@@ -36,7 +36,7 @@ class ReleaseActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $troopsReleased = [];
 
@@ -74,35 +74,51 @@ class ReleaseActionService
 
         $dominion->save();
 
-        $troopsReleasedStringParts = ['You successfully released'];
+        return [
+            'message' => $this->getReturnMessageString($dominion, $troopsReleased),
+            'data' => [
+                'totalTroopsReleased' => $totalTroopsToRelease,
+            ],
+        ];
+    }
 
+    /**
+     * Returns the message for a release action.
+     *
+     * @param Dominion $dominion
+     * @param array $troopsReleased
+     * @return string
+     */
+    protected function getReturnMessageString(Dominion $dominion, array $troopsReleased): string
+    {
+        $stringParts = ['You successfully released'];
+
+        // Draftees into peasants
         if (isset($troopsReleased['draftees'])) {
             $amount = $troopsReleased['draftees'];
-            $troopsReleasedStringParts[] = sprintf('%s %s into the peasantry', number_format($amount), str_plural('draftee', $amount));
+            $stringParts[] = sprintf('%s %s into the peasantry', number_format($amount), str_plural('draftee', $amount));
         }
 
-        $troopsCreated = false;
+        // Troops into draftees
+        $troopsParts = [];
         foreach ($troopsReleased as $unitType => $amount) {
             if ($unitType === 'draftees') {
                 continue;
             }
 
-            $troopsCreated = true;
-            $conjunction = count($troopsReleasedStringParts) === 1 ? '' : 'and ';
-            $troopsReleasedStringParts[] = $conjunction . (number_format($amount) . ' ' . str_plural(str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race))), $amount));
+            $unitName = str_singular(strtolower($this->unitHelper->getUnitName($unitType, $dominion->race)));
+            $troopsParts[] = (number_format($amount) . ' ' . str_plural($unitName, $amount));
         }
 
-        if ($troopsCreated) {
-            $troopsReleasedStringParts[] = 'into draftees';
+        if (!empty($troopsParts)) {
+            if (\count($stringParts) === 2) {
+                $stringParts[] = 'and';
+            }
+
+            $stringParts[] = generate_sentence_from_array($troopsParts);
+            $stringParts[] = 'into draftees';
         }
 
-        $troopsReleasedString = (implode(' ', $troopsReleasedStringParts) . '.');
-
-        return [
-            'message' => $troopsReleasedString,
-            'data' => [
-                'totalTroopsReleased' => $totalTroopsToRelease,
-            ],
-        ];
+        return (implode(' ', $stringParts) . '.');
     }
 }

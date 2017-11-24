@@ -29,11 +29,21 @@
                                 <tbody>
                                     <tr>
                                         <td>Offensive Power:</td>
-                                        <td>{{ number_format($militaryCalculator->getOffensivePowerRaw($selectedDominion)) }}</td>
+                                        <td>
+                                            {{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}
+                                            @if ($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getOffensivePowerRaw($selectedDominion)) }})</small>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Defensive Power:</td>
-                                        <td>{{ number_format($militaryCalculator->getDefensivePowerRaw($selectedDominion)) }}</td>
+                                        <td>
+                                            {{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}
+                                            @if ($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getDefensivePowerRaw($selectedDominion)) }})</small>
+                                            @endif
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -53,15 +63,30 @@
                                 <tbody>
                                     <tr>
                                         <td>Spy Ratio:</td>
-                                        <td>{{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion), 2) }}</td>
+                                        <td>
+                                            {{ number_format($militaryCalculator->getSpyRatio($selectedDominion), 3) }}
+                                            @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion), 3) }})</small>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Wizard Ratio:</td>
-                                        <td>{{ number_format($militaryCalculator->getWizardRatioRaw($selectedDominion), 2) }}</td>
+                                        <td>
+                                            {{ number_format($militaryCalculator->getWizardRatio($selectedDominion), 3) }}
+                                            @if ($militaryCalculator->getWizardRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getWizardRatioRaw($selectedDominion), 3) }})</small>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Defense Ratio:</td>
-                                        <td>{{ number_format(($militaryCalculator->getDefensivePowerRaw($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 2) }}</td>
+                                        <td>
+                                            {{ number_format(($militaryCalculator->getDefensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }}
+                                            @if ($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }})</small>
+                                            @endif
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

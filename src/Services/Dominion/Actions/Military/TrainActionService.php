@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions\Military;
 use Carbon\Carbon;
 use DB;
 use Exception;
+use Illuminate\Database\Query\Builder;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
@@ -105,10 +106,18 @@ class TrainActionService
 
             // Check for existing queue
             $existingQueueRows = DB::table('queue_training')
-                ->where([
-                    'dominion_id' => $dominion->id,
-                    'hours' => 12,
-                ])->get(['unit_type', 'amount']);
+                ->where('dominion_id', $dominion->id)
+                ->where(function (Builder $query) {
+                    $query->orWhere(function (Builder $query) {
+                        // Specialist units take 9 hours to train
+                        $query->whereIn('unit_type', ['unit1', 'unit2'])
+                            ->where('hours', 9);
+                    })->orWhere(function (Builder $query) {
+                        // Non-specialist units take 12 hours to train
+                        $query->whereNotIn('unit_type', ['unit1', 'unit2'])
+                            ->where('hours', 12);
+                    });
+                })->get(['unit_type', 'amount']);
 
             foreach ($existingQueueRows as $row) {
                 $data[$row->unit_type] += $row->amount;
@@ -122,7 +131,7 @@ class TrainActionService
                 $where = [
                     'dominion_id' => $dominion->id,
                     'unit_type' => $unitType,
-                    'hours' => 12,
+                    'hours' => (in_array($unitType, ['unit1', 'unit2'], true) ? 9 : 12),
                 ];
 
                 $values = [
@@ -130,7 +139,11 @@ class TrainActionService
                     'updated_at' => $dateTime,
                 ];
 
-                if ($existingQueueRows->isEmpty()) {
+                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($unitType) {
+                    return ($row->unit_type === $unitType);
+                });
+
+                if ($existingQueueRow->isEmpty()) {
                     $values['created_at'] = $dateTime;
                 }
 
@@ -146,32 +159,57 @@ class TrainActionService
             throw $e;
         }
 
-        // todo: refactor this slightly less shit
-        $unitsToTrainStringParts = [];
-
-        foreach ($unitsToTrain as $unitType => $amount) {
-            $unitsToTrainStringParts[] = (number_format($amount) . ' ' . strtolower($this->unitHelper->getUnitName($unitType, $dominion->race)));
-        }
-
-        $unitsToTrainString = implode(', ', $unitsToTrainStringParts);
-        $unitsToTrainString = strrev(implode(strrev(' and '), explode(strrev(', '), strrev($unitsToTrainString), 2)));
-
-        $message = sprintf(
-            'Training of %s begun at a cost of %s platinum, %s ore, %s %s and %s %s.',
-            $unitsToTrainString,
-            number_format($totalCosts['platinum']),
-            number_format($totalCosts['ore']),
-            number_format($totalCosts['draftees']),
-            str_plural('draftee', $totalCosts['draftees']),
-            number_format($totalCosts['wizards']),
-            str_plural('wizard', $totalCosts['wizards'])
-        );
-
         return [
-            'message' => $message,
+            'message' => $this->getReturnMessageString($dominion, $unitsToTrain, $totalCosts),
             'data' => [
                 'totalCosts' => $totalCosts,
             ],
         ];
+    }
+
+    /**
+     * Returns the message for a train action.
+     *
+     * @param Dominion $dominion
+     * @param array $unitsToTrain
+     * @param array $totalCosts
+     * @return string
+     */
+    protected function getReturnMessageString(Dominion $dominion, array $unitsToTrain, array $totalCosts): string
+    {
+        $unitsToTrainStringParts = [];
+
+        foreach ($unitsToTrain as $unitType => $amount) {
+            if ($amount > 0) {
+                $unitName = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
+                $unitsToTrainStringParts[] = (number_format($amount) . ' ' . str_plural(str_singular($unitName), $amount));
+            }
+        }
+
+        $unitsToTrainString = generate_sentence_from_array($unitsToTrainStringParts);
+
+        $trainingCostsStringParts = [];
+        foreach ($totalCosts as $costType => $cost) {
+            if ($cost === 0) {
+                continue;
+            }
+
+            $costType = str_singular($costType);
+            if (!\in_array($costType, ['platinum', 'ore'], true)) {
+                $costType = str_plural($costType, $cost);
+            }
+            $trainingCostsStringParts[] = (number_format($cost) . ' ' . $costType);
+
+        }
+
+        $trainingCostsString = generate_sentence_from_array($trainingCostsStringParts);
+
+        $message = sprintf(
+            'Training of %s begun at a cost of %s.',
+            $unitsToTrainString,
+            $trainingCostsString
+        );
+
+        return $message;
     }
 }

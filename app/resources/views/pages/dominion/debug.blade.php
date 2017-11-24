@@ -60,7 +60,7 @@
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($landCalculator, [
                             'getTotalLand',
                             'getTotalBarrenLand',
-                            'getBarrenLand',
+                            'getBarrenLandByLandType',
                         ]) !!}
                     </p>
                 </div>
@@ -153,6 +153,8 @@
                             'getGemProductionRaw',
                             'getGemProductionMultiplier',
                             'getBoatProduction',
+                            'getBoatProductionRaw',
+                            'getBoatProductionMultiplier',
                         ]) !!}
                     </p>
                 </div>

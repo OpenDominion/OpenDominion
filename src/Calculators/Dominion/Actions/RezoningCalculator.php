@@ -38,7 +38,7 @@ class RezoningCalculator
 
         $platinum *= $this->getCostMultiplier($dominion);
 
-        return (int)round($platinum);
+        return round($platinum);
     }
 
     /**
@@ -49,7 +49,7 @@ class RezoningCalculator
      */
     public function getMaxAfford(Dominion $dominion): int
     {
-        return (int)min(
+        return min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             $this->landCalculator->getTotalBarrenLand($dominion)
         );
@@ -63,7 +63,7 @@ class RezoningCalculator
      */
     public function getCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 1.0;
+        $multiplier = 0;
 
         // Values (percentages)
         $factoryReduction = 3;
@@ -75,6 +75,6 @@ class RezoningCalculator
             ($factoryReductionMax / 100)
         );
 
-        return $multiplier;
+        return (1 + $multiplier);
     }
 }

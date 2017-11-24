@@ -31,7 +31,7 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | System         | Status                                    |
 | -------------- | ----------------------------------------- |
 | Authentication | ![Progress](http://progressed.io/bar/95)  |
-| Buildings      | ![Progress](http://progressed.io/bar/70)  |
+| Buildings      | ![Progress](http://progressed.io/bar/75)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
 | Notifications  | ![Progress](http://progressed.io/bar/0)   |
@@ -53,12 +53,12 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Construction        | ![Progress](http://progressed.io/bar/100) |
 | Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
 | Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
-| Castle Improvements | ![Progress](http://progressed.io/bar/0)   |
+| Castle Improvements | ![Progress](http://progressed.io/bar/95)  |
 | National Bank       | ![Progress](http://progressed.io/bar/100) |
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
-| Magic               | ![Progress](http://progressed.io/bar/0)   |
+| Magic               | ![Progress](http://progressed.io/bar/20)  |
 | Espionage           | ![Progress](http://progressed.io/bar/0)   |
 | Messages            | ![Progress](http://progressed.io/bar/0)   |
 | Realm Council       | ![Progress](http://progressed.io/bar/50)  |

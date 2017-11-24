@@ -40,7 +40,7 @@ class ExplorationCalculator
         $platinum += 1000;
         $platinum *= 1.1;
 
-        return (int)round($platinum);
+        return round($platinum);
     }
 
     /**
@@ -63,7 +63,7 @@ class ExplorationCalculator
         $draftees += 5;
         $draftees *= 1.1;
 
-        return (int)round($draftees);
+        return round($draftees);
     }
 
     /**
@@ -75,7 +75,7 @@ class ExplorationCalculator
      */
     public function getMaxAfford(Dominion $dominion): int
     {
-        return (int)min(
+        return min(
             floor($dominion->resource_platinum / $this->getPlatinumCost($dominion)),
             floor($dominion->military_draftees / $this->getDrafteeCost($dominion))
         );
@@ -90,6 +90,6 @@ class ExplorationCalculator
      */
     public function getMoraleDrop($amount): int
     {
-        return (int)round(($amount + 2) / 3);
+        return round(($amount + 2) / 3);
     }
 }

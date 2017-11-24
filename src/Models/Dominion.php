@@ -3,12 +3,15 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
 {
     use Notifiable;
+
+    // Relations
 
     public function councilThreads()
     {
@@ -34,6 +37,18 @@ class Dominion extends AbstractModel
     {
         return $this->belongsTo(User::class);
     }
+
+    // Scopes
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereHas('round', function (Builder $query) {
+            $query->where('start_date', '<=', Carbon::now())
+                ->where('end_date', '>', Carbon::now());
+        });
+    }
+
+    // Methods
 
     /**
      * Route notifications for the mail channel.

@@ -10,18 +10,26 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-circle-of-circles"></i> {{ $realm->name }} (#{{ $realm->number }})</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
 
                     <table class="table">
                         <colgroup>
+                            <col width="50">
                             <col>
+                            @if ($showPlayerNames)
+                                <col width="200">
+                            @endif
                             <col width="100">
                             <col width="100">
                             <col width="100">
                         </colgroup>
                         <thead>
                             <tr>
+                                <th class="text-center">#</th>
                                 <th>Dominion</th>
+                                @if ($showPlayerNames)
+                                    <th class="text-center">Player</th>
+                                @endif
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>
                                 <th class="text-center">Networth</th>
@@ -35,10 +43,16 @@
 
                                 @if ($dominion === null)
                                     <tr>
-                                        <td colspan="4"><i>Vacant</i></td>
+                                        <td>&nbsp;</td>
+                                        @if ($showPlayerNames)
+                                            <td colspan="5"><i>Vacant</i></td>
+                                        @else
+                                            <td colspan="4"><i>Vacant</i></td>
+                                        @endif
                                     </tr>
                                 @else
                                     <tr>
+                                        <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
@@ -60,6 +74,9 @@
                                                 <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
                                             @endif--}}
                                         </td>
+                                        @if ($showPlayerNames)
+                                            <td class="text-center">{{ $dominion->user->display_name }}</td>
+                                        @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}
                                             {{--
@@ -88,13 +105,14 @@
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
                     <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }} and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
                     {{-- todo: change this to a table? --}}
+                    <p><a href="{{ route('dominion.realm') }}">My Realm</a></p>
                 </div>
                 @if (($prevRealm !== null) || ($nextRealm !== null))
                     <div class="box-footer">
                         <div class="row">
                             <div class="col-xs-4">
                                 @if ($prevRealm !== null)
-                                    <a href="{{ route('dominion.realm', $prevRealm->id) }}">&lt; Previous</a><br>
+                                    <a href="{{ route('dominion.realm', $prevRealm->number) }}">&lt; Previous</a><br>
                                     <small class="text-muted">{{ $prevRealm->name }} (# {{  $prevRealm->number }})</small>
                                 @endif
                             </div>
@@ -106,7 +124,7 @@
                             </div>
                             <div class="col-xs-4 text-right">
                                 @if ($nextRealm !== null)
-                                    <a href="{{ route('dominion.realm', $nextRealm->id) }}">Next &gt;</a><br>
+                                    <a href="{{ route('dominion.realm', $nextRealm->number) }}">Next &gt;</a><br>
                                     <small class="text-muted">{{ $nextRealm->name }} (# {{  $nextRealm->number }})</small>
                                 @endif
                             </div>

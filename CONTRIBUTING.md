@@ -270,6 +270,12 @@ OpenDominion uses a SQLite database by default for development, so there's no ne
 
 Make sure the directories `app/bootstrap/cache` and `app/storage` (and every directory under `app/storage`) are writable.
 
+If you run into an 'application encryption error', run the following:
+
+```bash
+$ php bin/artisan key:generate
+```
+
 
 ### How to run tests
 

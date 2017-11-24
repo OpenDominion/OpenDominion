@@ -35,19 +35,8 @@ class LoginController extends AbstractController
     {
         event(new UserLoggedInEvent($user));
 
-        // todo: refactorme
-        // Makeshift fix to redirect user to active dominion status if user has only one active dominion, instead of
-        // dashboard
-        $activeDominions = $user->dominions()
-            ->join('rounds', 'rounds.id', 'dominions.round_id')
-            ->where('rounds.start_date', '<=', Carbon::now())
-            ->where('rounds.end_date', '>', Carbon::now())
-            ->get(['dominions.*']);
-
-        if ($activeDominions->count() === 1) {
-            $selectorService = app(SelectorService::class);
-            $selectorService->selectUserDominion($activeDominions->first());
-        }
+        $selectorService = app(SelectorService::class);
+        $selectorService->tryAutoSelectDominionForAuthUser();
     }
 
     public function postLogout(Request $request)
