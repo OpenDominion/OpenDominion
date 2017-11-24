@@ -159,16 +159,14 @@ class TrainActionService
             throw $e;
         }
 
-        $message = $this->getTrainingMessage($dominion, $unitsToTrain, $totalCosts);
-
         return [
-            'message' => $message,
+            'message' => $this->getReturnMessageString($dominion, $unitsToTrain, $totalCosts),
             'data' => [
                 'totalCosts' => $totalCosts,
             ],
         ];
     }
-    
+
     /**
      * Returns training message for a train action.
      *
@@ -177,16 +175,16 @@ class TrainActionService
      * @param array $totalCosts
      * @return string
      */
-    private function getTrainingMessage(Dominion $dominion, $totalCosts) {
+    private function getReturnMessageString(Dominion $dominion, array $unitsToTrain, array $totalCosts): string {
         $unitsToTrainStringParts = [];
 
        foreach ($unitsToTrain as $unitType => $amount) {
             if($amount > 0) {
-                $race = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
-                $unitsToTrainStringParts[] = number_format($amount) . ' ' . str_plural($race, $amount);
+                $unitName = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
+                $unitsToTrainStringParts[] = (number_format($amount) . ' ' . str_plural(str_singular($unitName), $amount));
             }
        }
-        
+
        $unitsToTrainString = generate_sentence_from_array($unitsToTrainStringParts);
 
        $trainingCostsStringParts = [];
@@ -194,22 +192,23 @@ class TrainActionService
            if($cost === 0){
                 continue;
            }
+
            $costType = str_singular($costType);
-           if(!in_array($costType, ['platinum', 'ore'], true)) {
+           if(!\in_array($costType, ['platinum', 'ore'], true)) {
                 $costType = str_plural($costType, $cost);
            }
-           $trainingCostsStringParts[] = number_format($cost) . ' ' . $costType;
-           
+           $trainingCostsStringParts[] = (number_format($cost) . ' ' . $costType);
+
        }
-                               
+
        $trainingCostsString = generate_sentence_from_array($trainingCostsStringParts);
-    
+
         $message = sprintf(
-            'Training of %s begun at a cost of %s',
+            'Training of %s begun at a cost of %s.',
             $unitsToTrainString,
             $trainingCostsString
         );
-        
+
         return $message;
     }
 }
