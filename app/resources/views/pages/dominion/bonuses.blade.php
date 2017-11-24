@@ -13,15 +13,15 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-6 text-center">
-                            <form action="{{ route('dominion.bonuses.platinum') }}" method="post" role="form">
-                                {!! csrf_field() !!}
-                                <button type="submit" name="platinum" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_platinum ? 'disabled' : null }}>Platinum Bonus</button>
-                            </form>
-                        </div>
-                        <div class="col-xs-6 text-center">
                             <form action="{{ route('dominion.bonuses.land') }}" method="post" role="form">
                                 {!! csrf_field() !!}
                                 <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_land ? 'disabled' : null }}>Land Bonus</button>
+                            </form>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <form action="{{ route('dominion.bonuses.platinum') }}" method="post" role="form">
+                                {!! csrf_field() !!}
+                                <button type="submit" name="platinum" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || $selectedDominion->daily_platinum ? 'disabled' : null }}>Platinum Bonus</button>
                             </form>
                         </div>
                     </div>
