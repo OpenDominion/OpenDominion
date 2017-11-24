@@ -88,6 +88,7 @@ class SpellActionService
                     ->first();
 
                 /** @noinspection NullPointerExceptionInspection */
+                /** @noinspection PhpUndefinedFieldInspection */
                 if ((int)$activeSpell->duration === $spellInfo['duration']) {
                     throw new RuntimeException("Spell {$spellInfo['name']} is already at maximum duration.");
                 }
