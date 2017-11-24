@@ -426,7 +426,7 @@ class TickCommand extends Command
      */
     public function resetDailyBonuses()
     {
-        if (Carbon::now()->hour !== 0) {
+        if ($this->now->hour !== 0) {
             return;
         }
 
@@ -441,7 +441,7 @@ class TickCommand extends Command
 
     public function updateDailyRankings()
     {
-        if (Carbon::now()->hour !== 0) {
+        if ($this->now->hour !== 0) {
             return;
         }
 
@@ -488,8 +488,7 @@ class TickCommand extends Command
         // Second pass: Calculating ranks
         $result = DB::table('daily_rankings')
             ->orderBy('land', 'desc')
-            ->orderBy(DB::raw('ISNULL(land_rank), land_rank'))
-            ->orderBy('created_at')
+            ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
             ->get();
 
         $rank = 1;
@@ -507,8 +506,7 @@ class TickCommand extends Command
 
         $result = DB::table('daily_rankings')
             ->orderBy('networth', 'desc')
-            ->orderBy('networth_rank')
-            ->orderBy('created_at')
+            ->orderBy(DB::raw('COALESCE(networth_rank, created_at)'))
             ->get();
 
         $rank = 1;
