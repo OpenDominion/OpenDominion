@@ -38,13 +38,13 @@
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="fa fa-search fa-fw"></i> <span>Explore Land</span></a></li>
                 <li class="{{ Route::is('dominion.construct') ? 'active' : null }}"><a href="{{ route('dominion.construct') }}"><i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span></a></li>
                 <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="ra ra-cycle ra-fw"></i> <span>Re-zone Land</span></a></li>
-                <li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>
                 <li class="{{ Route::is('dominion.bank') ? 'active' : null }}"><a href="{{ route('dominion.bank') }}"><i class="ra ra-capitol ra-fw"></i> <span>National Bank</span></a></li>
 
                 <li class="header">BLACK OPS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
                 {{-- invade --}}
-                <li class="{{ Route::is('dominion.magic') ? 'active' : null }}"><a href="{{ route('dominion.magic') }}"><i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.magic') ? 'active' : null }}"><a href="{{ route('dominion.magic') }}"><i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span></a></li>
                 {{-- espionage --}}
 
                 <li class="header">COMMS</li>
@@ -52,7 +52,7 @@
 
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>
-                <li class="{{ Route::is('dominion.advisors.rankings') ? 'active' : null }}"><a href="{{ route('dominion.advisors.rankings', ['land', 'page' => 1]) }}"><i class="fa fa-trophy ra-fw"></i> <span>Rankings</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.advisors.rankings') ? 'active' : null }}"><a href="{{ route('dominion.advisors.rankings', ['land', 'page' => 1]) }}"><i class="fa fa-trophy ra-fw"></i> <span>Rankings</span></a></li>
 
                 {{--<li class="header">MISC</li>--}}
 

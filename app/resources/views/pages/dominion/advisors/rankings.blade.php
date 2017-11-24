@@ -17,7 +17,7 @@
                             <a href="{{ route('dominion.advisors.rankings', ['land'] + Request::query()) }}">Land</a> - <b>Networth</b>
                         @endif
                     </span>
-                    <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings Advisor <span class="label label-success">new</span></h3>
+                    <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings Advisor</h3>
                 </div>
                 <div class="box-body no-padding">
                     <table class="table">

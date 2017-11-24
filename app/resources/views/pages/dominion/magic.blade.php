@@ -11,7 +11,7 @@
                 <div class="col-md-6">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells <span class="label label-success">new</span></h3>
+                            <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
                             {!! csrf_field() !!}
