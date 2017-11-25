@@ -30,4 +30,14 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     {
         return $this->hasMany(Dominion::class);
     }
+
+    public function getAvatarUrl()
+    {
+        if ($this->avatar !== null) {
+            return asset("storage/uploads/avatars/{$this->avatar}");
+        }
+
+        return \Gravatar::src($this->email, 200);
+    }
+
 }

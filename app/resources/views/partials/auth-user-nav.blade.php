@@ -2,12 +2,12 @@
     <!-- User Account Menu -->
     <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="{{ Gravatar::src(Auth::user()->email, 160) }}" class="user-image" alt="{{ Auth::user()->display_name }}">
+            <img src="{{ Auth::user()->getAvatarUrl() }}" class="user-image" alt="{{ Auth::user()->display_name }}">
             <span class="hidden-xs">{{ Auth::user()->display_name }}</span>
         </a>
         <ul class="dropdown-menu">
             <li class="user-header">
-                <img src="{{ Gravatar::src(Auth::user()->email, 160) }}" class="img-circle" alt="{{ Auth::user()->display_name }}">
+                <img src="{{ Auth::user()->getAvatarUrl() }}" class="img-circle" alt="{{ Auth::user()->display_name }}">
                 <p>
                     {{ Auth::user()->display_name }}
                     <small>Playing since {{ Auth::user()->created_at->toFormattedDateString() }}</small>

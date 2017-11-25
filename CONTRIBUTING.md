@@ -118,7 +118,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 ##### Assumptions:
 
 - You have [PHP](http://www.php.net/) 7.1 or higher installed and in your path.
-- Your PHP has the extensions: curl, mbstring, openssl, pdo_sqlite and optionally [xdebug](https://xdebug.org/).
+- Your PHP has the extensions: curl, fileinfo, gd OR imagick, mbstring, openssl, pdo_sqlite and optionally [xdebug](https://xdebug.org/).
 - You have [Composer](https://getcomposer.org/) installed and in your path.
 - You have [NPM](https://nodejs.org/en/) 5 or higher installed and in your path.
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
