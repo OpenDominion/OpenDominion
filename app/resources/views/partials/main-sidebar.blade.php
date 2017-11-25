@@ -28,7 +28,7 @@
                                 <span class="label label-primary pull-right">P</span>
                             @endif
                             @if (!$selectedDominion->daily_land)
-                                    <span class="label label-primary pull-right">L</span>
+                                <span class="label label-primary pull-right">L</span>
                             @endif
                         </span>
                     </a>
