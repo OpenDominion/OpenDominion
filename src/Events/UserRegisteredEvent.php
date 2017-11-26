@@ -14,7 +14,6 @@ class UserRegisteredEvent extends AbstractUserEvent implements HasActivityEvent,
      */
     public function getActivityEvent(): ActivityEvent
     {
-        // todo: ioc
         return new ActivityEvent('user.register', ActivityEvent::STATUS_SUCCESS);
     }
 
@@ -23,7 +22,6 @@ class UserRegisteredEvent extends AbstractUserEvent implements HasActivityEvent,
      */
     public function getAnalyticsEvent(): AnalyticsEvent
     {
-        // todo: ioc
         return new AnalyticsEvent('user', 'register');
     }
 }

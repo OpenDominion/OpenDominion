@@ -21,31 +21,31 @@ class NotificationHelper
         return [
             'exploration_completed' => [
                 'label' => 'Land exploration completed',
-                'defaults' => ['web' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => true],
             ],
             'construction_completed' => [
                 'label' => 'Building construction completed',
-                'defaults' => ['web' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => true],
             ],
             'training_completed' => [
                 'label' => 'Military training completed',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'returning_completed' => [
                 'label' => 'Units returned from battle',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'beneficial_magic_dissipated' => [
                 'label' => 'Beneficial magic effect dissipated',
-                'defaults' => ['web' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => true],
             ],
             'harmful_magic_dissipated' => [
                 'label' => 'Harmful magic effect dissipated',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'starvation' => [
                 'label' => 'Starvation occurred',
-                'defaults' => ['web' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => true],
             ],
         ];
     }
@@ -55,27 +55,27 @@ class NotificationHelper
         return [
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
-                'defaults' => ['web' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => true],
             ],
             'repelled_invasion' => [
                 'label' => 'Your dominion repelled an invasion',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'received_spy_op' => [
                 'label' => 'Hostile spy operation received',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'repelled_spy_op' => [
                 'label' => 'Hostile spy operation repelled',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'received_hostile_spell' => [
                 'label' => 'Hostile spell received',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'repelled_hostile_spell' => [
                 'label' => 'Hostile spell deflected',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
         ];
     }
