@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Gravatar;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -15,6 +16,10 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     use Authenticatable, Authorizable, CanResetPassword, Notifiable;
 
     protected $hidden = ['password', 'remember_token', 'activation_code'];
+
+    protected $casts = [
+        'settings' => 'array',
+    ];
 
 //    public function dominion(Round $round)
 //    {
@@ -37,7 +42,16 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
             return asset("storage/uploads/avatars/{$this->avatar}");
         }
 
-        return \Gravatar::src($this->email, 200);
+        return Gravatar::src($this->email, 200);
+    }
+
+    public function getSetting(string $key)
+    {
+        if (!array_has($this->settings, $key)) {
+            return null;
+        }
+
+        return array_get($this->settings, $key);
     }
 
 }

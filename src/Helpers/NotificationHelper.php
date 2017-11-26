@@ -4,7 +4,19 @@ namespace OpenDominion\Helpers;
 
 class NotificationHelper
 {
-    public function getHourlyTypes(): array
+    public function getGeneralTypes(): array
+    {
+        return [
+            // updates
+            // anouncements
+            'generic' => [
+                'label' => 'Generic emails sent by the administrators',
+                'defaults' => ['email' => true],
+            ]
+        ];
+    }
+
+    public function getHourlyDominionTypes(): array
     {
         return [
             'exploration_completed' => [
@@ -42,27 +54,27 @@ class NotificationHelper
     {
         return [
             'received_invasion' => [
-                'label' => '',
+                'label' => 'Your dominion got invaded',
                 'defaults' => ['web' => true, 'email' => false],
             ],
             'repelled_invasion' => [
-                'label' => '',
+                'label' => 'Your dominion repelled an invasion',
                 'defaults' => ['web' => true, 'email' => false],
             ],
             'received_spy_op' => [
-                'label' => '',
+                'label' => 'Hostile spy operation received',
                 'defaults' => ['web' => true, 'email' => false],
             ],
             'repelled_spy_op' => [
-                'label' => '',
+                'label' => 'Hostile spy operation repelled',
                 'defaults' => ['web' => true, 'email' => false],
             ],
             'received_hostile_spell' => [
-                'label' => '',
+                'label' => 'Hostile spell received',
                 'defaults' => ['web' => true, 'email' => false],
             ],
             'repelled_hostile_spell' => [
-                'label' => '',
+                'label' => 'Hostile spell deflected',
                 'defaults' => ['web' => true, 'email' => false],
             ],
         ];
