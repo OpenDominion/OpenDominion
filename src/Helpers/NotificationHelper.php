@@ -21,11 +21,11 @@ class NotificationHelper
         return [
             'exploration_completed' => [
                 'label' => 'Land exploration completed',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['web' => true, 'email' => true],
             ],
             'construction_completed' => [
                 'label' => 'Building construction completed',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['web' => true, 'email' => true],
             ],
             'training_completed' => [
                 'label' => 'Military training completed',
@@ -37,7 +37,7 @@ class NotificationHelper
             ],
             'beneficial_magic_dissipated' => [
                 'label' => 'Beneficial magic effect dissipated',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['web' => true, 'email' => true],
             ],
             'harmful_magic_dissipated' => [
                 'label' => 'Harmful magic effect dissipated',
@@ -45,7 +45,7 @@ class NotificationHelper
             ],
             'starvation' => [
                 'label' => 'Starvation occurred',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['web' => true, 'email' => true],
             ],
         ];
     }
@@ -55,7 +55,7 @@ class NotificationHelper
         return [
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
-                'defaults' => ['web' => true, 'email' => false],
+                'defaults' => ['web' => true, 'email' => true],
             ],
             'repelled_invasion' => [
                 'label' => 'Your dominion repelled an invasion',
@@ -82,6 +82,7 @@ class NotificationHelper
 
     public function getIrregularRealmTypes(): array
     {
+        // todo
         return [
             'realmie_invaded_enemy_success' => [],
             'realmie_invaded_enemy_fail' => [],
