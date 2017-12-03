@@ -5,9 +5,6 @@
       <value>
         <option name="LINE_SEPARATOR" value="&#10;" />
         <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="html,body" />
-        <MarkdownNavigatorCodeStyleSettings>
-          <option name="RIGHT_MARGIN" value="72" />
-        </MarkdownNavigatorCodeStyleSettings>
         <PHPCodeStyleSettings>
           <option name="LOWER_CASE_BOOLEAN_CONST" value="true" />
           <option name="LOWER_CASE_NULL_CONST" value="true" />
