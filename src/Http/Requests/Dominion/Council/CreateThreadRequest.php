@@ -13,7 +13,7 @@ class CreateThreadRequest extends AbstractDominionRequest
     {
         return [
             'title' => 'required|string|max:80',
-            'body' => 'required|string|max:3000',
+            'body' => 'required|string|max:20000',
         ];
     }
 }
