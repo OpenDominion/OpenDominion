@@ -124,7 +124,7 @@ class PopulationCalculator
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
         $housingPerBarrenLand = 5;
-        $housingPerConstructingBuilding = 15;
+        $housingPerConstructingBuilding = 15; // todo: check how many constructing home/barracks houses
 
         // todo: race bonus for barren land
         // todo: ^ think about what I meant to say here. note to self: be more clear in the future
