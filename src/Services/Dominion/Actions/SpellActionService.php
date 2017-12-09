@@ -63,8 +63,6 @@ class SpellActionService
             throw new RuntimeException("Not enough wizard strength to cast {$spellInfo['name']}.");
         }
 
-       
-
         $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
 
         if ($dominion->resource_mana < $manaCost) {
@@ -148,9 +146,10 @@ class SpellActionService
         $archmages = (int)$dominion->military_archmages;
         $spies = (int)$dominion->military_spies;
 
-        if(($wizards === 0 )&&($archmages === 0)){
+        if (($wizards === 0) && ($archmages === 0)) {
             return 'You cast %s at a cost of %s mana.';
         }
+
         if ($wizards === 0) {
             if ($archmages > 1) {
                 return 'Your archmages successfully cast %s at a cost of %s mana.';
