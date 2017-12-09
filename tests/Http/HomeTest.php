@@ -54,6 +54,10 @@ class HomeTest extends AbstractTestCase
 
         $this->selectDominion($dominion);
 
+        $response = $this->get('/', [
+            'HTTP_REFERER' => 'foo',
+        ]);
+
         $response
             ->assertStatus(200)
             ->assertSee('Play');
