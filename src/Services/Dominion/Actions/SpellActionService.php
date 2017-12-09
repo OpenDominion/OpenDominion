@@ -63,9 +63,7 @@ class SpellActionService
             throw new RuntimeException("Not enough wizard strength to cast {$spellInfo['name']}.");
         }
 
-        if (($dominion->military_wizards + $dominion->military_archmages) === 0) {
-            throw new RuntimeException("You need at least 1 wizard or archmage to cast {$spellInfo['name']}.");
-        }
+       
 
         $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
 
@@ -150,11 +148,14 @@ class SpellActionService
         $archmages = (int)$dominion->military_archmages;
         $spies = (int)$dominion->military_spies;
 
+        if(($wizards === 0 )&&($archmages === 0)){
+            return 'You cast %s at a cost of %s mana.';
+        }
         if ($wizards === 0) {
             if ($archmages > 1) {
                 return 'Your archmages successfully cast %s at a cost of %s mana.';
             }
-
+            
             $thoughts = [
                 'mumbles something about being the most powerful sorcerer in the dominion is a lonely job, "but somebody\'s got to do it"',
                 'mumbles something about the food being quite delicious',
@@ -183,7 +184,7 @@ class SpellActionService
             if ($wizards > 1) {
                 return 'Your wizards successfully cast %s at a cost of %s mana.';
             }
-
+            
             $thoughts = [
                 'mumbles something about the food being very tasty',
                 'has the feeling that an omnipotent being is watching him',
