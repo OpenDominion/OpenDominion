@@ -3,24 +3,26 @@
 namespace OpenDominion\Tests\Http;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use OpenDominion\Tests\AbstractTestCase;
 
-class HomeTest extends AbstractBrowserKitTestCase
+class HomeTest extends AbstractTestCase
 {
     use DatabaseMigrations;
 
     public function testHomePage()
     {
-        $this->visitRoute('home')
-            ->seeStatusCode(200);
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
     }
 
     public function testRedirectLoggedInUserWithoutSelectedDominionToDashboard()
     {
         $this->createAndImpersonateUser();
 
-        $this->visitRoute('home')
-            ->seeRouteIs('dashboard');
+        $response = $this->get('/');
+
+        $response->assertRedirect('/dashboard');
     }
 
     public function testRedirectLoggedInUserWithSelectedDominionToStatus()
@@ -30,8 +32,9 @@ class HomeTest extends AbstractBrowserKitTestCase
         $round = $this->createRound();
         $this->createAndSelectDominion($user, $round);
 
-        $this->visitRoute('home')
-            ->seeRouteIs('dominion.status');
+        $response = $this->get('/');
+
+        $response->assertRedirect('/dominion/status');
     }
 
     public function testUserShouldNotGetRedirectedOnReferredRequests()
@@ -41,16 +44,18 @@ class HomeTest extends AbstractBrowserKitTestCase
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
 
-        $route = route('home');
+        $response = $this->get('/', [
+            'HTTP_REFERER' => 'foo',
+        ]);
 
-        $this->get($route, ['HTTP_REFERER' => 'foo'])
-            ->seeStatusCode(200)
-            ->see('Dashboard');
+        $response
+            ->assertStatus(200)
+            ->assertSee('Dashboard');
 
         $this->selectDominion($dominion);
 
-        $this->get($route, ['HTTP_REFERER' => 'foo'])
-            ->seeStatusCode(200)
-            ->see('Play');
+        $response
+            ->assertStatus(200)
+            ->assertSee('Play');
     }
 }
