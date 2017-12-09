@@ -154,7 +154,7 @@ class SpellActionService
             if ($archmages > 1) {
                 return 'Your archmages successfully cast %s at a cost of %s mana.';
             }
-            
+
             $thoughts = [
                 'mumbles something about being the most powerful sorcerer in the dominion is a lonely job, "but somebody\'s got to do it"',
                 'mumbles something about the food being quite delicious',
@@ -183,7 +183,7 @@ class SpellActionService
             if ($wizards > 1) {
                 return 'Your wizards successfully cast %s at a cost of %s mana.';
             }
-            
+
             $thoughts = [
                 'mumbles something about the food being very tasty',
                 'has the feeling that an omnipotent being is watching him',
