@@ -42,6 +42,7 @@ class ImproveActionService
             $dominion->{'improvement_' . $improvementType} += $points;
         }
 
+        $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
         $dominion->save();
 
         return [
