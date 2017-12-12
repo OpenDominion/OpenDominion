@@ -507,6 +507,8 @@ class TickCommand extends Command
 
         //Getting all rounds
         $rounds = DB::table('rounds')
+            ->where('start_date', '<=', $this->now)
+            ->where('end_date', '>', $this->now)
             ->get();
         
         foreach($rounds as $round){
