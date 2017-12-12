@@ -516,6 +516,7 @@ class TickCommand extends Command
         foreach ($result as $row) {
             DB::table('daily_rankings')
                 ->where('id', $row->id)
+                ->where('round_id', $round->id)
                 ->update([
                     'land_rank' => $rank,
                     'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
