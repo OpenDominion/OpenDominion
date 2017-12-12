@@ -440,9 +440,9 @@ class TickCommand extends Command
      */
     public function resetDailyBonuses()
     {
-        /*if ($this->now->hour !== 0) {
+        if ($this->now->hour !== 0) {
             return;
-        }*/
+        }
 
         Log::debug('Resetting daily bonuses');
 
@@ -455,10 +455,10 @@ class TickCommand extends Command
 
     public function updateDailyRankings()
     {
-        /*if ($this->now->hour !== 0) {
+        if ($this->now->hour !== 0) {
             return;
         }
-        */
+        
         Log::debug('Updating daily rankings');
 
         // todo: needs updating per round. make GameTickService and tick each round individually. at least for rankings
