@@ -7,7 +7,7 @@ use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
-
+use DB;
 class PopulationCalculator
 {
     /** @var BuildingHelper */
@@ -81,15 +81,16 @@ class PopulationCalculator
      */
     public function getPopulationMilitary(Dominion $dominion): int
     {
-        $training = DB:table('queue_training')
-                    ->where('dominion_id',$dominion->id)
-                    ->get()
-        
-        int $unitsTraining = 0;
+        //Query training table to count units in training towards population
+       $training = DB::table('queue_training')
+                ->where('dominion_id',$dominion->id)
+                ->get();
 
+        $unitsTraining = 0;
         foreach($training as $unit){
             $unitsTraining = $unitsTraining + (int)$unit->amount;
         }
+       
         return (
             $dominion->military_draftees
             + $dominion->military_unit1
@@ -100,6 +101,7 @@ class PopulationCalculator
             + $dominion->military_wizards
             + $dominion->military_archmages
             + $unitsTraining
+           
         );
     }
 
