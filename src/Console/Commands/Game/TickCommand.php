@@ -514,6 +514,7 @@ class TickCommand extends Command
         $rank = 1;
 
         foreach ($result as $row) {
+            if($row->round_id == (int)$round->id){
             DB::table('daily_rankings')
                 ->where('id', $row->id)
                 ->where('round_id', $round->id)
@@ -521,7 +522,7 @@ class TickCommand extends Command
                     'land_rank' => $rank,
                     'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
                 ]);
-            if($row->round_id == (int)$round->id){
+            
             $rank++;
             }
         }
@@ -534,6 +535,7 @@ class TickCommand extends Command
         $rank = 1;
 
         foreach ($result as $row) {
+            if($row->round_id == (int)$round->id){
             DB::table('daily_rankings')
                 ->where('id', $row->id)
                 ->update([
@@ -543,6 +545,7 @@ class TickCommand extends Command
 
             $rank++;
         }
+    }
     }
     }
 
