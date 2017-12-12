@@ -81,6 +81,15 @@ class PopulationCalculator
      */
     public function getPopulationMilitary(Dominion $dominion): int
     {
+        $training = DB:table('queue_training')
+                    ->where('dominion_id',$dominion->id)
+                    ->get()
+        
+        int $unitsTraining = 0;
+
+        foreach($training as $unit){
+            $unitsTraining = $unitsTraining + (int)$unit->amount;
+        }
         return (
             $dominion->military_draftees
             + $dominion->military_unit1
@@ -90,6 +99,7 @@ class PopulationCalculator
             + $dominion->military_spies
             + $dominion->military_wizards
             + $dominion->military_archmages
+            + $unitsTraining
         );
     }
 
