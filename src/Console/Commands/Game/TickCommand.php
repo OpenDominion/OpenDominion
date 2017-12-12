@@ -440,9 +440,9 @@ class TickCommand extends Command
      */
     public function resetDailyBonuses()
     {
-        if ($this->now->hour !== 0) {
+        /*if ($this->now->hour !== 0) {
             return;
-        }
+        }*/
 
         Log::debug('Resetting daily bonuses');
 
@@ -455,10 +455,10 @@ class TickCommand extends Command
 
     public function updateDailyRankings()
     {
-        if ($this->now->hour !== 0) {
+        /*if ($this->now->hour !== 0) {
             return;
         }
-
+        */
         Log::debug('Updating daily rankings');
 
         // todo: needs updating per round. make GameTickService and tick each round individually. at least for rankings
@@ -505,6 +505,12 @@ class TickCommand extends Command
             ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
             ->get();
 
+        //Getting all rounds
+        $rounds = DB::table('rounds')
+            ->get();
+        
+
+        foreach($rounds as $round){
         $rank = 1;
 
         foreach ($result as $row) {
@@ -514,8 +520,9 @@ class TickCommand extends Command
                     'land_rank' => $rank,
                     'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
                 ]);
-
+            if($row->round_id == (int)$round->id){
             $rank++;
+            }
         }
 
         $result = DB::table('daily_rankings')
@@ -535,6 +542,7 @@ class TickCommand extends Command
 
             $rank++;
         }
+    }
     }
 
     protected function getDominionsToUpdate()
