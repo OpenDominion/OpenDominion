@@ -458,7 +458,7 @@ class TickCommand extends Command
         if ($this->now->hour !== 0) {
             return;
         }
-        
+
         Log::debug('Updating daily rankings');
 
         // todo: needs updating per round. make GameTickService and tick each round individually. at least for rankings
@@ -510,7 +510,7 @@ class TickCommand extends Command
             ->where('start_date', '<=', $this->now)
             ->where('end_date', '>', $this->now)
             ->get();
-        
+
         foreach($rounds as $round){
             $rank = 1;
 
@@ -523,8 +523,7 @@ class TickCommand extends Command
                             'land_rank' => $rank,
                             'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
                         ]);
-                
-            
+
                     $rank++;
                 }
             }
