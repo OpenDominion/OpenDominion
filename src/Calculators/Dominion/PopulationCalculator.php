@@ -82,9 +82,6 @@ class PopulationCalculator
      */
     public function getPopulationMilitary(Dominion $dominion): int
     {
-        //Use training queue service to get total units in training for domain
-        $unitsTraining = $this->trainingQueueService->getQueueTotal($dominion);
-       
         return (
             $dominion->military_draftees
             + $dominion->military_unit1
@@ -94,8 +91,7 @@ class PopulationCalculator
             + $dominion->military_spies
             + $dominion->military_wizards
             + $dominion->military_archmages
-            + $unitsTraining
-           
+            + $this->trainingQueueService->getQueueTotal($dominion)
         );
     }
 
