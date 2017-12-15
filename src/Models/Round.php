@@ -4,10 +4,13 @@ namespace OpenDominion\Models;
 
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class Round extends AbstractModel
 {
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+
+    // Eloquent Relations
 
     public function dominions()
     {
@@ -22,6 +25,22 @@ class Round extends AbstractModel
     public function realms()
     {
         return $this->hasMany(Realm::class);
+    }
+
+    // Query Scopes
+
+    /**
+     * Scope a query to include only active rounds.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        $now = new Carbon();
+
+        return $query->where('start_date', '<=', $now)
+            ->where('end_date', '>', $now);
     }
 
     /**

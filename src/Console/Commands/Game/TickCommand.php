@@ -505,35 +505,48 @@ class TickCommand extends Command
             ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
             ->get();
 
-        $rank = 1;
-
-        foreach ($result as $row) {
-            DB::table('daily_rankings')
-                ->where('id', $row->id)
-                ->update([
-                    'land_rank' => $rank,
-                    'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
-                ]);
-
-            $rank++;
-        }
-
-        $result = DB::table('daily_rankings')
-            ->orderBy('networth', 'desc')
-            ->orderBy(DB::raw('COALESCE(networth_rank, created_at)'))
+        //Getting all rounds
+        $rounds = DB::table('rounds')
+            ->where('start_date', '<=', $this->now)
+            ->where('end_date', '>', $this->now)
             ->get();
 
-        $rank = 1;
+        foreach($rounds as $round){
+            $rank = 1;
 
-        foreach ($result as $row) {
-            DB::table('daily_rankings')
-                ->where('id', $row->id)
-                ->update([
-                    'networth_rank' => $rank,
-                    'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_rank - $rank) : 0),
-                ]);
+            foreach ($result as $row) {
+                if($row->round_id == (int)$round->id){
+                    DB::table('daily_rankings')
+                        ->where('id', $row->id)
+                        ->where('round_id', $round->id)
+                        ->update([
+                            'land_rank' => $rank,
+                            'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
+                        ]);
 
-            $rank++;
+                    $rank++;
+                }
+            }
+
+            $result = DB::table('daily_rankings')
+                ->orderBy('networth', 'desc')
+                ->orderBy(DB::raw('COALESCE(networth_rank, created_at)'))
+                ->get();
+
+            $rank = 1;
+
+            foreach ($result as $row) {
+                if($row->round_id == (int)$round->id){
+                    DB::table('daily_rankings')
+                        ->where('id', $row->id)
+                        ->update([
+                            'networth_rank' => $rank,
+                            'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_rank - $rank) : 0),
+                        ]);
+
+                    $rank++;
+                }
+            }
         }
     }
 
