@@ -6,6 +6,17 @@ use Illuminate\Routing\Router;
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 
 $router->get('/test', function () {
+    $user = auth()->user();
+    $dominion = $user->dominions->first();
+
+    $dominion->resource_platinum += 1;
+
+    $dominion->save();
+
+//    dd($dominion);
+
+
+
 //    $user = \OpenDominion\Models\User::first();
 //    event(new \OpenDominion\Events\UserRegisteredEvent($user));
 

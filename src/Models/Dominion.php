@@ -5,6 +5,8 @@ namespace OpenDominion\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
+use OpenDominion\Events\DominionCreated;
+use OpenDominion\Events\DominionSaved;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
@@ -16,6 +18,11 @@ class Dominion extends AbstractModel
     public function councilThreads()
     {
         return $this->hasMany(Council\Thread::class);
+    }
+
+    public function history()
+    {
+        return $this->hasMany(Dominion\History::class);
     }
 
     public function race()
@@ -38,7 +45,7 @@ class Dominion extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
-    // Scopes
+    // Eloquent Query Scopes
 
     public function scopeActive(Builder $query)
     {

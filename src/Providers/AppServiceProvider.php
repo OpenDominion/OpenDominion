@@ -16,6 +16,8 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Models\Dominion;
+use OpenDominion\Observers\DominionObserver;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
@@ -38,6 +40,16 @@ use OpenDominion\Services\RealmFinderService;
 
 class AppServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Dominion::observe(DominionObserver::class);
+    }
+
     /**
      * Register any application services.
      *
