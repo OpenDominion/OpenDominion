@@ -83,7 +83,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
   - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
   - Do note that not every functionality has been implemented yet in OpenDominion.
 - [Discord](https://discord.gg/mFk2wZT)
-  - This will be the main place for out of game communication, developmnet talk and game announcements.
+  - This will be the main place for out of game communication, development talk and game announcements.
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 
 ## License
