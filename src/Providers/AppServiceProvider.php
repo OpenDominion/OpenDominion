@@ -31,6 +31,7 @@ use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
@@ -40,16 +41,6 @@ use OpenDominion\Services\RealmFinderService;
 
 class AppServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        Dominion::observe(DominionObserver::class);
-    }
-
     /**
      * Register any application services.
      *
@@ -100,6 +91,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(RealmFinderService::class);
 
         // Dominion Services
+        $this->app->singleton(HistoryService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(SelectorService::class);
 

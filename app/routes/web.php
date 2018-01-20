@@ -11,7 +11,7 @@ $router->get('/test', function () {
 
     $dominion->resource_platinum += 1;
 
-    $dominion->save();
+    $dominion->save(['event' => 'test page']);
 
 //    dd($dominion);
 

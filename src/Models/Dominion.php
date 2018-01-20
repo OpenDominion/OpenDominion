@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use OpenDominion\Events\DominionCreated;
 use OpenDominion\Events\DominionSaved;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class Dominion extends AbstractModel
@@ -56,6 +57,25 @@ class Dominion extends AbstractModel
     }
 
     // Methods
+
+    public function save(array $options = [])
+    {
+        $dominionHistoryService = app(HistoryService::class);
+        $recordChanges = isset($options['event']);
+
+        if ($recordChanges) {
+            $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+        }
+
+        $saved = parent::save($options);
+
+        if ($saved && $recordChanges) {
+            /** @noinspection PhpUndefinedVariableInspection */
+            $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
+        }
+
+        return $saved;
+    }
 
     /**
      * Route notifications for the mail channel.

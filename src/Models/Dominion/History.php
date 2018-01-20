@@ -15,4 +15,6 @@ class History extends AbstractModel
     protected $guarded = ['id', 'created_at'];
 
     protected $dates = ['created_at'];
+
+    const UPDATED_AT = null;
 }
