@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
@@ -49,6 +50,15 @@ class SpellActionService
         $this->trainingQueueService = $trainingQueueService;
     }
 
+    /**
+     * Does a cast self spell action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return array
+     * @throws Exception
+     * @throws RuntimeException
+     */
     public function castSelfSpell(Dominion $dominion, string $spell): array
     {
         $this->guardLockedDominion($dominion);
@@ -110,9 +120,10 @@ class SpellActionService
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= 5;
-            $dominion->save();
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
 
             DB::commit();
+
         } catch (Exception $e) {
             DB::rollBack();
 

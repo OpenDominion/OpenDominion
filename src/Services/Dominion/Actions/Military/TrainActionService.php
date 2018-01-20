@@ -9,6 +9,7 @@ use Illuminate\Database\Query\Builder;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -92,17 +93,22 @@ class TrainActionService
             throw new RuntimeException('Training aborted due to lack of wizards');
         }
 
+        $newPlatinum = ($dominion->resource_platinum - $totalCosts['platinum']);
+        $newOre = ($dominion->resource_ore - $totalCosts['ore']);
+        $newDraftees = ($dominion->military_draftees - $totalCosts['draftees']);
+        $newWizards = ($dominion->military_wizards - $totalCosts['wizards']);
+
         $dateTime = new Carbon;
 
         DB::beginTransaction();
 
         try {
             $dominion->fill([
-                'resource_platinum' => ($dominion->resource_platinum - $totalCosts['platinum']),
-                'resource_ore' => ($dominion->resource_ore - $totalCosts['ore']),
-                'military_draftees' => ($dominion->military_draftees - $totalCosts['draftees']),
-                'military_wizards' => ($dominion->military_wizards - $totalCosts['wizards']),
-            ])->save();
+                'resource_platinum' => $newPlatinum,
+                'resource_ore' => $newOre,
+                'military_draftees' => $newDraftees,
+                'military_wizards' => $newWizards,
+            ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
 
             // Check for existing queue
             $existingQueueRows = DB::table('queue_training')

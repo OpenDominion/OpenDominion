@@ -7,6 +7,7 @@ use DB;
 use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -62,21 +63,20 @@ class ExploreActionService
         $newPlatinum = ($dominion->resource_platinum - $platinumCost);
 
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
-        $newDraftee = ($dominion->military_draftees - $drafteeCost);
+        $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
         $dateTime = new Carbon;
 
         DB::beginTransaction();
 
         try {
-            DB::table('dominions')
-                ->where('id', $dominion->id)
-                ->update([
-                    'morale' => $newMorale,
-                    'resource_platinum' => $newPlatinum,
-                    'military_draftees' => $newDraftee,
-                ]); // todo: use Eloquent
+            $dominion->fill([
+                'morale' => $newMorale,
+                'resource_platinum' => $newPlatinum,
+                'military_draftees' => $newDraftees,
+            ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
 
+            // todo: move to ExplorationQueueService->queue($dominion, $data)
             // Check for existing queue
             $existingQueueRows = DB::table('queue_exploration')
                 ->where([

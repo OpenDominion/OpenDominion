@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -58,7 +59,7 @@ class BankActionService
         $dominion->{$source} -= $amount;
         $dominion->{$target} += $targetAmount;
 
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_BANK]);
 
         return [
             'message' => 'Your resources have been exchanged.',

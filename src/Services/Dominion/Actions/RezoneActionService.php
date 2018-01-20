@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -85,7 +86,7 @@ class RezoneActionService
             $dominion->{'land_' . $landType} += $amount;
         }
 
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_REZONE]);
 
         return [
             'message' => sprintf(
