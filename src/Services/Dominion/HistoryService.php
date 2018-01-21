@@ -55,8 +55,9 @@ class HistoryService
         $newAttributes = collect($dominion->getAttributes())
             ->intersectByKeys(array_flip($attributeKeys));
 
-        return $newAttributes->map(function ($value, $key) use ($oldAttributes) {
-            return ($value - $oldAttributes->get($key));
+        return $newAttributes->map(function ($value, $key) use ($dominion, $oldAttributes) {
+            // $dominion->getAttribute($key) instead of $value so it casts attributes to integer, float and boolean
+            return ($dominion->getAttribute($key) - $oldAttributes->get($key));
         })->toArray();
     }
 
@@ -68,7 +69,8 @@ class HistoryService
      */
     protected function getChangedAttributeKeys(Dominion $dominion): array
     {
-        return collect(array_diff($dominion->getAttributes(), $dominion->getOriginal()))
+        return collect($dominion->getAttributes())
+            ->diffAssoc(collect($dominion->getOriginal()))
             ->except([
                 'id',
                 'user_id',
