@@ -28,8 +28,8 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
             'players' => [
                 'registered' => \OpenDominion\Models\User::count(),
                 'active' => \OpenDominion\Models\Dominion::whereHas('round', function ($q) {
-                    $q->where('start_date', '<=', \Carbon\Carbon::now())
-                        ->where('end_date', '>', \Carbon\Carbon::now());
+                    $q->where('start_date', '<=', now())
+                        ->where('end_date', '>', now());
                 })->count(),
             ],
             'links' => [

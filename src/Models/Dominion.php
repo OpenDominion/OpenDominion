@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use OpenDominion\Services\Dominion\SelectorService;
@@ -43,8 +42,8 @@ class Dominion extends AbstractModel
     public function scopeActive(Builder $query)
     {
         return $query->whereHas('round', function (Builder $query) {
-            $query->where('start_date', '<=', Carbon::now())
-                ->where('end_date', '>', Carbon::now());
+            $query->where('start_date', '<=', now())
+                ->where('end_date', '>', now());
         });
     }
 
@@ -90,6 +89,6 @@ class Dominion extends AbstractModel
      */
     public function isLocked()
     {
-        return (Carbon::now() >= $this->round->end_date);
+        return (now() >= $this->round->end_date);
     }
 }

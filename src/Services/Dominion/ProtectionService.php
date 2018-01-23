@@ -44,7 +44,7 @@ class ProtectionService
      */
     public function isUnderProtection(Dominion $dominion): bool
     {
-        return ($this->getProtectionEndDate($dominion) >= Carbon::now());
+        return ($this->getProtectionEndDate($dominion) >= now());
     }
 
     /**
@@ -59,11 +59,11 @@ class ProtectionService
             return 0;
         }
 
-        $minutes = (int)Carbon::now()->format('i');
-        $seconds = (int)Carbon::now()->format('s');
+        $minutes = (int)now()->format('i');
+        $seconds = (int)now()->format('s');
 
         $fraction = (1 - ((($minutes * 60) + $seconds) / 3600));
 
-        return ($this->getProtectionEndDate($dominion)->diffInHours(Carbon::now()) + $fraction);
+        return ($this->getProtectionEndDate($dominion)->diffInHours(now()) + $fraction);
     }
 }

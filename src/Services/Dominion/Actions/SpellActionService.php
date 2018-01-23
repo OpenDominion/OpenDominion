@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use Carbon\Carbon;
 use DB;
 use Exception;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -93,7 +92,7 @@ class SpellActionService
                     ->where($where)
                     ->update([
                         'duration' => $spellInfo['duration'],
-                        'updated_at' => Carbon::now(),
+                        'updated_at' => now(),
                     ]);
 
             } else {
@@ -103,8 +102,8 @@ class SpellActionService
                         'spell' => $spell,
                         'duration' => $spellInfo['duration'],
                         'cast_by_dominion_id' => $dominion->id, // todo
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ]);
             }
 

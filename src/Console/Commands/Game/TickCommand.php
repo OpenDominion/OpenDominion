@@ -62,7 +62,7 @@ class TickCommand extends Command
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
 
-        $this->now = Carbon::now();
+        $this->now = now();
     }
 
     /**
