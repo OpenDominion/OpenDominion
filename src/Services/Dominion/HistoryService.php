@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use LogicException;
 use OpenDominion\Models\Dominion;
 
 class HistoryService
@@ -56,8 +57,24 @@ class HistoryService
             ->intersectByKeys(array_flip($attributeKeys));
 
         return $newAttributes->map(function ($value, $key) use ($dominion, $oldAttributes) {
-            // $dominion->getAttribute($key) instead of $value so it casts attributes to integer, float and boolean
-            return ($dominion->getAttribute($key) - $oldAttributes->get($key));
+            $attributeType = gettype($dominion->getAttribute($key));
+
+            switch ($attributeType) {
+                case 'boolean':
+                    return (bool)$value;
+                    break;
+
+                case 'float':
+                    return ((float)$value - (float)$oldAttributes->get($key));
+                    break;
+
+                case 'integer':
+                    return ((int)$value - (int)$oldAttributes->get($key));
+                    break;
+
+                default:
+                    throw new LogicException("Unable to typecast attribute {$key} to type {$attributeType}");
+            }
         })->toArray();
     }
 
@@ -81,5 +98,20 @@ class HistoryService
                 'created_at',
                 'updated_at',
             ])->keys()->toArray();
+    }
+
+    protected function getOriginalAttributes(Dominion $dominion)
+    {
+        //
+    }
+
+    protected function getChangedAttributes(Dominion $dominion)
+    {
+        //
+    }
+
+    protected function getAttributeType(Dominion $dominion, string $attribute): string
+    {
+        return '';
     }
 }
