@@ -167,7 +167,7 @@ class SpellActionService
             }
 
             $thoughts = [
-                'mumbles something about being the most powerful sorcerer in the dominion is a lonely job, "but somebody\'s got to do it"',
+                'mumbles something about being the most powerful sorceress in the dominion is a lonely job, "but somebody\'s got to do it"',
                 'mumbles something about the food being quite delicious',
                 'feels like a higher spiritual entity is watching her',
                 'winks at you',
@@ -180,7 +180,7 @@ class SpellActionService
             }
 
             if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_archmages') > 0) {
-                $thoughts[] = 'mumbles something about being a bit sad because she probably won\'t be the single most powerful sorcerer in the dominion anymore';
+                $thoughts[] = 'mumbles something about being a bit sad because she probably won\'t be the single most powerful sorceress in the dominion anymore';
                 $thoughts[] = 'mumbles something about looking forward to discuss the secrets of arcane knowledge with her future peers';
             } else {
                 $thoughts[] = 'mumbles something about not having enough peers to properly conduct her studies';
