@@ -32,6 +32,10 @@ class HistoryService
     {
         $clone = clone $dominion;
 
+        // todo: add support for future state
+        // if $at < now(), vvv
+        // elseif $at > now(), where created_at <= $at && $clone->$attribute += $deltaValue;
+
         $history = $dominion->history()
             ->where('created_at', '>', $at)
             ->orderBy('created_at', 'desc')
