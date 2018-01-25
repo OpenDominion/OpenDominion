@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use DateTime;
 use LogicException;
 use OpenDominion\Models\Dominion;
 
@@ -24,10 +25,10 @@ class HistoryService
      * Returns a cloned dominion instance with state at a certain time.
      *
      * @param Dominion $dominion
-     * @param \DateTime $at
+     * @param DateTime $at
      * @return Dominion
      */
-    public function getDominionStateAtTime(Dominion $dominion, \DateTime $at): Dominion
+    public function getDominionStateAtTime(Dominion $dominion, DateTime $at): Dominion
     {
         $clone = clone $dominion;
 
