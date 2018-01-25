@@ -120,16 +120,15 @@ class Dominion extends AbstractModel
     {
         $recordChanges = isset($options['event']);
 
-        if (!$recordChanges) {
-            throw new LogicException('Please add [\'event\' => HistoryService::EVENT_*] to $dominion->save()');
+        if ($recordChanges) {
+            $dominionHistoryService = app(HistoryService::class);
+            $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
         }
-
-        $dominionHistoryService = app(HistoryService::class);
-        $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
 
         $saved = parent::save($options);
 
-        if ($saved) {
+        if ($saved && $recordChanges) {
+            /** @noinspection PhpUndefinedVariableInspection */
             $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
         }
 
