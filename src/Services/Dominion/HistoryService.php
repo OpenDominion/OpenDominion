@@ -21,6 +21,41 @@ class HistoryService
     public const EVENT_ACTION_CAST_SPELL = 'cast spell';
 
     /**
+     * Returns a cloned dominion instance with state at a certain time.
+     *
+     * @param Dominion $dominion
+     * @param \DateTime $at
+     * @return Dominion
+     */
+    public function getDominionStateAtTime(Dominion $dominion, \DateTime $at): Dominion
+    {
+        $clone = clone $dominion;
+
+        $history = $dominion->history()
+            ->where('created_at', '>', $at)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($history->isEmpty()) {
+            return $clone;
+        }
+
+        $history->each(function ($item, $key) use ($clone) {
+            foreach ($item->delta as $attribute => $deltaValue) {
+                $type = gettype($deltaValue);
+
+                if ($type === 'bool') {
+                    $clone->$attribute = !$deltaValue;
+                } else {
+                    $clone->$attribute -= $deltaValue;
+                }
+            }
+        });
+
+        return $clone;
+    }
+
+    /**
      * Records history changes in delta of a dominion.
      *
      * @param Dominion $dominion
@@ -65,6 +100,7 @@ class HistoryService
                     break;
 
                 case 'float':
+                case 'double':
                     return ((float)$value - (float)$oldAttributes->get($key));
                     break;
 
@@ -98,20 +134,5 @@ class HistoryService
                 'created_at',
                 'updated_at',
             ])->keys()->toArray();
-    }
-
-    protected function getOriginalAttributes(Dominion $dominion)
-    {
-        //
-    }
-
-    protected function getChangedAttributes(Dominion $dominion)
-    {
-        //
-    }
-
-    protected function getAttributeType(Dominion $dominion, string $attribute): string
-    {
-        return '';
     }
 }
