@@ -5,6 +5,7 @@ namespace OpenDominion\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
+use LogicException;
 use OpenDominion\Events\DominionCreated;
 use OpenDominion\Events\DominionSaved;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -122,15 +123,16 @@ class Dominion extends AbstractModel
     {
         $recordChanges = isset($options['event']);
 
-        if ($recordChanges) {
-            $dominionHistoryService = app(HistoryService::class);
-            $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+        if (!$recordChanges) {
+            throw new LogicException('Please add [\'event\' => HistoryService::EVENT_*] to $dominion->save()');
         }
+
+        $dominionHistoryService = app(HistoryService::class);
+        $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
 
         $saved = parent::save($options);
 
-        if ($saved && $recordChanges) {
-            /** @noinspection PhpUndefinedVariableInspection */
+        if ($saved) {
             $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
         }
 
