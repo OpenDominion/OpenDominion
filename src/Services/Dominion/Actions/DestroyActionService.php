@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -44,7 +45,7 @@ class DestroyActionService
             $dominion->{'building_' . $buildingType} -= $amount;
         }
 
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_DESTROY]);
 
         return [
             'message' => sprintf(

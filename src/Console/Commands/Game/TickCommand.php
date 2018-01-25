@@ -13,6 +13,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use RuntimeException;
 
 // todo: refactor this class
@@ -168,7 +169,7 @@ class TickCommand extends Command
                 $dominion->resource_food = 0;
             }
 
-            $dominion->save();
+            $dominion->save(['event' => HistoryService::EVENT_TICK]);
         }
 
         $affected = $dominions->count();
@@ -190,7 +191,7 @@ class TickCommand extends Command
             $dominion->peasants_last_hour = $populationPeasantGrowth;
             $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
 
-            $dominion->save();
+            $dominion->save(['event' => HistoryService::EVENT_TICK]);
         }
 
         $affected = $dominions->count();
@@ -449,7 +450,7 @@ class TickCommand extends Command
         foreach ($this->getDominionsToUpdate() as $dominion) {
             $dominion->daily_platinum = false;
             $dominion->daily_land = false;
-            $dominion->save();
+            $dominion->save(['event' => HistoryService::EVENT_TICK]);
         }
     }
 

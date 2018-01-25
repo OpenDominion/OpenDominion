@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -26,7 +27,7 @@ class DailyBonusesActionService
         $platinumGained = $dominion->peasants * 4;
         $dominion->resource_platinum += $platinumGained;
         $dominion->daily_platinum = true;
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
         return [
             'message' => sprintf(
@@ -56,7 +57,7 @@ class DailyBonusesActionService
         $attribute = ('land_' . $dominion->race->home_land_type);
         $dominion->{$attribute} += $landGained;
         $dominion->daily_land = true;
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
         return [
             'message' => sprintf(
