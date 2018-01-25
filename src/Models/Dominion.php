@@ -120,10 +120,10 @@ class Dominion extends AbstractModel
 
     public function save(array $options = [])
     {
-        $dominionHistoryService = app(HistoryService::class);
         $recordChanges = isset($options['event']);
 
         if ($recordChanges) {
+            $dominionHistoryService = app(HistoryService::class);
             $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
         }
 
