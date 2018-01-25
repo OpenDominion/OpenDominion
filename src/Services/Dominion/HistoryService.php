@@ -33,7 +33,7 @@ class HistoryService
         $clone = clone $dominion;
 
         $history = $dominion->history()
-            ->where('created_at', '>=', $at)
+            ->where('created_at', '>', $at)
             ->orderBy('created_at', 'desc')
             ->get();
 
