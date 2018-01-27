@@ -12,4 +12,5 @@ $router->get('/test', function () {
     $dominion = $user->dominions->first();
 
     // ...
+
 });
