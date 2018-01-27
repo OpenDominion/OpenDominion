@@ -18,13 +18,13 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
  */
 class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 {
-    /** @var BuildingCalculator|Mock */
+    /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
 
-    /** @var LandCalculator|Mock */
+    /** @var Mock|LandCalculator */
     protected $landCalculator;
 
-    /** @var NetworthCalculator|Mock */
+    /** @var Mock|NetworthCalculator */
     protected $sut;
 
     /**
@@ -44,11 +44,19 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     }
 
     /**
+     * @covers ::__construct
+     */
+    public function testConstructor()
+    {
+        $this->assertInstanceOf(NetworthCalculator::class, app(NetworthCalculator::class));
+    }
+
+    /**
      * @covers ::getRealmNetworth
      */
     public function testGetRealmNetworth()
     {
-        /** @var Realm|Mock $realmMock */
+        /** @var Mock|Realm $realmMock */
         $realmMock = m::mock(Realm::class);
 
         $dominions = [];
@@ -71,7 +79,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testGetDominionNetworth()
     {
-        /** @var Dominion|Mock $dominionMock */
+        /** @var Mock|Dominion $dominionMock */
         $dominionMock = m::mock(Dominion::class);
 
         $this->buildingCalculator->shouldReceive('setDominion')->with($dominionMock);
@@ -81,7 +89,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         for ($slot = 1; $slot <= 4; $slot++) {
             $dominionMock->shouldReceive('getAttribute')->with("military_unit{$slot}")->andReturn(100);
 
-            /** @var Unit|Mock $unit */
+            /** @var Mock|Unit $unit */
             $unit = m::mock(Unit::class);
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($slot);
             $unit->shouldReceive('getAttribute')->with('power_offense')->andReturn(5);
@@ -90,7 +98,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
             $units[] = $unit;
         }
 
-        /** @var Race|Mock $race */
+        /** @var Mock|Race $race */
         $race = m::mock(Race::class);
         $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
 
@@ -110,21 +118,21 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testGetUnitNetworth()
     {
-        /** @var Unit|Mock $unit1 */
+        /** @var Mock|Unit $unit1 */
         $unit1 = m::mock(Unit::class);
         $unit1->shouldReceive('getAttribute')->with('slot')->andReturn(1);
 
-        /** @var Unit|Mock $unit2 */
+        /** @var Mock|Unit $unit2 */
         $unit2 = m::mock(Unit::class);
         $unit2->shouldReceive('getAttribute')->with('slot')->andReturn(2);
 
-        /** @var Unit|Mock $unit3 */
+        /** @var Mock|Unit $unit3 */
         $unit3 = m::mock(Unit::class);
         $unit3->shouldReceive('getAttribute')->with('slot')->andReturn(3);
         $unit3->shouldReceive('getAttribute')->with('power_offense')->andReturn(2);
         $unit3->shouldReceive('getAttribute')->with('power_defense')->andReturn(6);
 
-        /** @var Unit|Mock $unit4 */
+        /** @var Mock|Unit $unit4 */
         $unit4 = m::mock(Unit::class);
         $unit4->shouldReceive('getAttribute')->with('slot')->andReturn(4);
         $unit4->shouldReceive('getAttribute')->with('power_offense')->andReturn(6);
