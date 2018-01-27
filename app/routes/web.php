@@ -145,8 +145,3 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $
 // Links
 
 // Misc
-
-// Include web.test.php on local for development purposes
-if ((app()->environment() === 'local') && file_exists(base_path('app/routes/web.local.php'))) {
-    require_once(base_path('app/routes/web.local.php'));
-}
