@@ -148,8 +148,8 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
                     number_format($test['attributes']['improvement_points']),
                     number_format($test['attributes']['land']),
                     isset($test['attributes']['building_masonry'])
-                        ? ("Masonries: " . number_format($test['attributes']['building_masonry']) . "\n")
-                        : ""
+                        ? ('Masonries: ' . number_format($test['attributes']['building_masonry']) . "\n")
+                        : ''
                 )
             );
         }
