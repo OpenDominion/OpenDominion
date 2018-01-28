@@ -34,7 +34,7 @@ class ImprovementCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $multiplier = $this->getImprovementMaximum($improvementType)
-            * (1 - exp(-$improvementPoints / ($this->getImprovementConstant($improvementType) * $totalLand + 15000)))
+            * (1 - exp(-$improvementPoints / ($this->getImprovementCoefficient($improvementType) * $totalLand + 15000)))
             * (1 + (($dominion->building_masonry * $efficiencyPerMasonry) / $totalLand));
 
         $multiplier *= 10000;
@@ -52,7 +52,7 @@ class ImprovementCalculator
      */
     protected function getImprovementMaximum(string $improvementType): float
     {
-        $maximalPercentages = [
+        $maximumPercentages = [
             'science' => 20,
             'keep' => 30,
             'towers' => 40,
@@ -61,20 +61,20 @@ class ImprovementCalculator
             'harbor' => 40,
         ];
 
-        return (($maximalPercentages[$improvementType] / 100) ?: null);
+        return (($maximumPercentages[$improvementType] / 100) ?: null);
     }
 
     /**
-     * Returns the improvement calculation constant.
+     * Returns the improvement calculation coefficient.
      *
      * A higher number makes it harder to reach higher improvement percentages.
      *
      * @param string $improvementType
      * @return int
      */
-    protected function getImprovementConstant(string $improvementType): int
+    protected function getImprovementCoefficient(string $improvementType): int
     {
-        $modifiers = [
+        $coefficients = [
             'science' => 4000,
             'keep' => 4000,
             'towers' => 5000,
@@ -83,6 +83,6 @@ class ImprovementCalculator
             'harbor' => 5000,
         ];
 
-        return ($modifiers[$improvementType] ?: null);
+        return ($coefficients[$improvementType] ?: null);
     }
 }
