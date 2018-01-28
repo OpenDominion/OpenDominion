@@ -55,6 +55,9 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertInstanceOf(LandCalculator::class, $this->app->make(LandCalculator::class));
     }
 
+    /**
+     * @covers ::getTotalLand
+     */
     public function testGetTotalLand()
     {
         $expected = 0;
@@ -67,6 +70,9 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expected, $this->sut->getTotalLand($this->dominion));
     }
 
+    /**
+     * @covers ::getTotalBarrenLand
+     */
     public function testGetTotalBarrenLand()
     {
         foreach ($this->getLandTypes() as $landType) {
@@ -79,13 +85,20 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals(67, $this->sut->getTotalBarrenLand($this->dominion));
     }
 
+    /**
+     * @covers ::getTotalBarrenLandByLandType
+     */
     public function testGetTotalBarrenLandByLandType()
     {
         $this->markTestIncomplete();
     }
 
+    /**
+     * @covers ::getBarrenLandByLandType
+     */
     public function testGetBarrenLandByLandType()
     {
+        /** @var Mock|Race $raceMock */
         $raceMock = m::mock(Race::class);
         $raceMock->shouldReceive('getAttribute')->with('home_land_type')->andReturn('plain');
 
@@ -127,7 +140,10 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
             ],
         ];
 
-        $expected = array_combine(array_keys($buildingTypesByLandType), array_fill(0, count($buildingTypesByLandType), 0));
+        $expected = array_combine(
+            array_keys($buildingTypesByLandType),
+            array_fill(0, count($buildingTypesByLandType), 0)
+        );
 
         foreach ($buildingTypesByLandType as $landType => $buildingTypes) {
             $this->dominion->shouldReceive('getAttribute')->with('land_' . $landType)->andReturn(100);
@@ -143,7 +159,14 @@ class LandCalculatorTest extends AbstractBrowserKitTestCase
         $this->assertEquals($expected, $this->sut->getBarrenLandByLandType($this->dominion));
     }
 
-    private function getLandTypes()
+    /**
+     * Returns all the land types.
+     *
+     * todo: Maybe refactor to $this->landHelper->getLandTypes()?
+     *
+     * @return array
+     */
+    private function getLandTypes(): array
     {
         return [
             'plain',

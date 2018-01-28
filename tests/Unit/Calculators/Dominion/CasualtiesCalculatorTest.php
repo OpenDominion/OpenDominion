@@ -14,6 +14,9 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
  */
 class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
 {
+    /** @var Mock|Dominion */
+    protected $dominion;
+
     /** @var Mock|CasualtiesCalculator */
     protected $sut;
 
@@ -23,6 +26,8 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        $this->dominion = m::mock(Dominion::class);
 
         $this->sut = m::mock(CasualtiesCalculator::class, [
             $this->app->make(UnitHelper::class),
@@ -54,7 +59,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
             ],
 
             // -100 food on starter military: Split 50:50 between peasants and other
-            // military. Military is further split evenly
+            // military. Military is further split evenly, where possible
             [
                 'attributes' => [
                     'resource_food' => -100,
@@ -73,7 +78,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
                 ],
             ],
 
-            // Negative remaining casualties
+            // Negative remaining casualties, mostly due to rounding errors. Not very common scenario
             [
                 'attributes' => [
                     'resource_food' => -3,
@@ -108,9 +113,6 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
         ];
 
         foreach ($tests as $test) {
-            /** @var Mock|Dominion $dominion */
-            $dominion = m::mock(Dominion::class);
-
             // Set attribute default to 0
             $attributes = [
                 'resource_food',
@@ -126,14 +128,14 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
             ];
 
             foreach ($attributes as $attribute) {
-                $dominion->shouldReceive('getAttribute')->with($attribute)->andReturn(0)->byDefault();
+                $this->dominion->shouldReceive('getAttribute')->with($attribute)->andReturn(0)->byDefault();
             }
 
             foreach ($test['attributes'] as $attribute => $value) {
-                $dominion->shouldReceive('getAttribute')->with($attribute)->andReturn($value)->byDefault();
+                $this->dominion->shouldReceive('getAttribute')->with($attribute)->andReturn($value)->byDefault();
             }
 
-            $this->assertEquals($test['expected'], $this->sut->getStarvationCasualtiesByUnitType($dominion));
+            $this->assertEquals($test['expected'], $this->sut->getStarvationCasualtiesByUnitType($this->dominion));
         }
     }
 
@@ -142,16 +144,13 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testGetTotalStarvationCasualties()
     {
-        /** @var Mock|Dominion $dominion */
-        $dominion = m::mock(Dominion::class);
+        $this->dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(100)->byDefault();
+        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion));
 
-        $dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(100)->byDefault();
-        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($dominion));
+        $this->dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(0)->byDefault();
+        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion));
 
-        $dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(0)->byDefault();
-        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($dominion));
-
-        $dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(-100)->byDefault();
-        $this->assertEquals(400, $this->sut->getTotalStarvationCasualties($dominion));
+        $this->dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(-100)->byDefault();
+        $this->assertEquals(400, $this->sut->getTotalStarvationCasualties($this->dominion));
     }
 }
