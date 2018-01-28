@@ -30,7 +30,7 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
         $this->dominion = m::mock(Dominion::class);
 
         $this->sut = m::mock(BuildingCalculator::class, [
-            m::mock(BuildingHelper::class)->makePartial(),
+            $this->app->make(BuildingHelper::class),
         ])->makePartial();
     }
 
@@ -39,7 +39,7 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testConstructor()
     {
-        $this->assertInstanceOf(BuildingCalculator::class, app(BuildingCalculator::class));
+        $this->assertInstanceOf(BuildingCalculator::class, $this->app->make(BuildingCalculator::class));
     }
 
     /**

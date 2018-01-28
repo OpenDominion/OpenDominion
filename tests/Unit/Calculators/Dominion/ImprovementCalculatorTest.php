@@ -27,10 +27,8 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->landCalculator = m::mock(LandCalculator::class);
-
         $this->sut = m::mock(ImprovementCalculator::class, [
-            $this->landCalculator,
+            $this->landCalculator = m::mock(LandCalculator::class),
         ])->makePartial();
     }
 
@@ -39,7 +37,7 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testConstructor()
     {
-        $this->assertInstanceOf(ImprovementCalculator::class, app(ImprovementCalculator::class));
+        $this->assertInstanceOf(ImprovementCalculator::class, $this->app->make(ImprovementCalculator::class));
     }
 
     /**

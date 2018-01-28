@@ -25,7 +25,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->sut = m::mock(CasualtiesCalculator::class, [
-            app(UnitHelper::class),
+            $this->app->make(UnitHelper::class),
         ])->makePartial();
     }
 
@@ -34,7 +34,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testConstructor()
     {
-        $this->assertInstanceOf(CasualtiesCalculator::class, app(CasualtiesCalculator::class));
+        $this->assertInstanceOf(CasualtiesCalculator::class, $this->app->make(CasualtiesCalculator::class));
     }
 
     /**
