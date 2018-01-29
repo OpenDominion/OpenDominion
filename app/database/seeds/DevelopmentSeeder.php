@@ -7,12 +7,14 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
 use OpenDominion\Models\User;
-use Spatie\Permission\Models\Role;
 
 class DevelopmentSeeder extends Seeder
 {
     /** @var DominionFactory */
     protected $dominionFactory;
+
+    /** @var string */
+    protected $userPassword = 'test';
 
     /**
      * DevelopmentSeeder constructor.
@@ -26,19 +28,18 @@ class DevelopmentSeeder extends Seeder
 
     public function run()
     {
-        $this->createRoles();
         $user = $this->createUser();
         $round = $this->createRound();
         $this->createRealmAndDominion($user, $round);
-    }
 
-    protected function createRoles()
-    {
-        $this->command->info('Creating user roles');
+        $this->command->info(<<<INFO
 
-        Role::create(['name' => 'Developer']);
-        Role::create(['name' => 'Administrator']);
-        Role::create(['name' => 'Moderator']);
+Done seeding data.
+A round, user and dominion have been created for your convenience.
+You may login with email '{$user->email}' and password '{$this->userPassword}'.
+
+INFO
+        );
     }
 
     protected function createUser(): User
@@ -47,15 +48,13 @@ class DevelopmentSeeder extends Seeder
 
         $user = User::create([
             'email' => 'email@example.com',
-            'password' => bcrypt('test'),
+            'password' => bcrypt($this->userPassword),
             'display_name' => 'Dev User',
             'activated' => true,
             'activation_code' => str_random(),
         ]);
 
         $user->assignRole(['Developer', 'Administrator', 'Moderator']);
-
-        $this->command->info("User created. You may login with with email {$user->email} and password 'test'");
 
         return $user;
     }
