@@ -9,10 +9,11 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends AbstractModel implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Notifiable;
+    use Authenticatable, Authorizable, CanResetPassword, HasRoles, Notifiable;
 
     protected $hidden = ['password', 'remember_token', 'activation_code'];
 
