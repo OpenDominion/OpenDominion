@@ -44,7 +44,7 @@ INFO
 
     protected function createUser(): User
     {
-        $this->command->info('Creating test user');
+        $this->command->info('Creating dev user');
 
         $user = User::create([
             'email' => 'email@example.com',
