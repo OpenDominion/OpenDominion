@@ -12,6 +12,7 @@
     "laravel/framework": "5.5.*",
     "laravel/tinker": "^1.0",
     "roave/security-advisories": "dev-master",
+    "spatie/laravel-permission": "^2.8",
     "thomaswelton/laravel-gravatar": "~1.0"
   },
   "require-dev": {
