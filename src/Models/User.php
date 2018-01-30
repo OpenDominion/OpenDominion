@@ -22,6 +22,8 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 //        return $this->dominions()->where('round_id', $round->id)->get();
 //    }
 
+    // Relations
+
     public function activities()
     {
         return $this->hasMany(UserActivity::class);
@@ -30,5 +32,27 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     public function dominions()
     {
         return $this->hasMany(Dominion::class);
+    }
+
+    // Methods
+
+    public function isStaff(): bool
+    {
+        return $this->hasRole(['Developer', 'Administrator', 'Moderator']);
+    }
+
+    public function isDeveloper(): bool
+    {
+        return $this->hasRole('Developer');
+    }
+
+    public function isAdministrator(): bool
+    {
+        return $this->hasRole('Administrator');
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->hasRole('Moderator');
     }
 }
