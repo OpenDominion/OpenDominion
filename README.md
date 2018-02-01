@@ -16,6 +16,7 @@
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
 
+
 ## Introduction
 
 OpenDominion is a free and open-source clone of Dominion, an online text-based and persistent browser-based (PBBG) fantasy war game. OpenDominion is written in PHP on the [Laravel](https://laravel.com) framework.
@@ -25,6 +26,7 @@ The original Dominion, now defunct, was a game from Kamikaze Games which ran fro
 Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 > You have reached the online game Dominion. What is Dominion? It's a TOTALLY FREE online fantasy war game. You take control of a plot of land in a realm consisting of a group of other players. With your dominion and allied players, you combat the forces of good or evil using military, magic, or espionage. The goal? To finish at the top of the heap. To make your dominion and your realm the most powerful in the land, and to crush your enemies.
+
 
 ## Progress
 
@@ -82,6 +84,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+
 ## Links
 
 - [Open Beta](https://beta.opendominion.net)
@@ -92,9 +95,11 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
   - This will be the main place for out of game communication, development talk and game announcements.
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 
+
 ## License
 
 OpenDominion is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
 
 ## Acknowledgments
 
