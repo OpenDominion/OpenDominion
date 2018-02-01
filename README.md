@@ -7,6 +7,7 @@
 [![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
 [![Patreon](https://img.shields.io/badge/donate-patreon-ff69b4.svg)](https://www.patreon.com/OpenDominion)
 [![Discord](https://img.shields.io/discord/325315157335212032.svg?label=chat%20&#40;discord&#41;)](https://discord.gg/mFk2wZT)
+[![Say Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/WaveHack)
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
 
