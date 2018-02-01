@@ -1,6 +1,6 @@
 <p align="center">
 
-![OpenDominion](https://raw.githubusercontent.com/WaveHack/OpenDominion/resources/logos/opendominion.png)
+![OpenDominion](https://raw.githubusercontent.com/WaveHack/OpenDominion/resources/logos/opendominion.png "OpenDominion")
 
 [![Build Status](https://travis-ci.org/WaveHack/OpenDominion.svg?branch=master)](https://travis-ci.org/WaveHack/OpenDominion)
 [![StyleCI](https://styleci.io/repos/29497480/shield?branch=master&style=flat)](https://styleci.io/repos/29497480)
