@@ -102,7 +102,7 @@ OpenDominion is open-sourced software licensed under the [MIT License](https://o
 
 Dominion and most of its game-related content (concept, mechanics, buildings, races etc) is/was a product of Kamikaze Games, Inc.
 
-OpenDominion aims to be a free and open source clone based on the original Dominion from Kamikaze Games, Inc. No copyright infringement intended.
+OpenDominion aims to be a free and open source remake, closely based on the original Dominion from Kamikaze Games, Inc. No copyright infringement intended.
 
 All rights belong to their respective owners.
 
