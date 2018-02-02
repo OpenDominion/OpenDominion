@@ -12,6 +12,11 @@ const vendorDirs = {
     // Bootstrap
     'node_modules/bootstrap/dist': 'public/assets/vendor/bootstrap',
 
+    // DataTables
+    'node_modules/datatables.net/js': 'public/assets/vendor/datatables/js',
+    'node_modules/datatables.net-bs/css': 'public/assets/vendor/datatables/css',
+    'node_modules/datatables.net-bs/js': 'public/assets/vendor/datatables/js',
+
     // Font Awesome
     'node_modules/font-awesome/css': 'public/assets/vendor/font-awesome/css',
     'node_modules/font-awesome/fonts': 'public/assets/vendor/font-awesome/fonts',

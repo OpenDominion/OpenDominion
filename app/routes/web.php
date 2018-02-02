@@ -166,7 +166,7 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], function (Router $router) {
 
-        $router->get('/users')->uses('Staff\AdministratorController@getUsers')->name('users');
+        $router->resource('users', 'Staff\Administrator\UserController');
 
         // view all users
         // view all council boards

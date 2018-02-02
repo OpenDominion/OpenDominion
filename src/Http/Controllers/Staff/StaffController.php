@@ -8,6 +8,8 @@ class StaffController extends AbstractController
 {
     public function getIndex()
     {
-        return 'staff index';
+        return view('pages.staff.index', [
+            //
+        ]);
     }
 }
