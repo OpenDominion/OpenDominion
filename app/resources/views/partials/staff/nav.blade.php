@@ -13,7 +13,7 @@
     @if ($user->hasRole('Administrator'))
         <li class="header">Administrator</li>
         {{--<li><a href="#">Council</a></li>--}}
-        {{--<li><a href="#">Dominions</a></li>--}}
+        <li class="{{ Route::is('staff.administrator.dominions.*') ? 'active' : null }}"><a href="{{ route('staff.administrator.dominions.index') }}">Dominions</a></li>
         {{--<li><a href="#">Realms</a></li>--}}
         {{--<li><a href="#">Rounds</a></li>--}}
         <li class="{{ Route::is('staff.administrator.users.*') ? 'active' : null }}"><a href="{{ route('staff.administrator.users.index') }}">Users</a></li>

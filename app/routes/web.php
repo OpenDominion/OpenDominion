@@ -166,6 +166,7 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], function (Router $router) {
 
+        $router->resource('dominions', 'Staff\Administrator\DominionController');
         $router->resource('users', 'Staff\Administrator\UserController');
 
         // view all users
