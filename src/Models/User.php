@@ -39,6 +39,13 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     // Methods
 
+    /**
+     * Returns whether the user is online.
+     *
+     * A user is considered online if any last activity (like a pageview) occurred within the last 5 minutes.
+     *
+     * @return bool
+     */
     public function isOnline(): bool
     {
         return (
@@ -47,21 +54,41 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         );
     }
 
+    /**
+     * Returns whether the user has any staff roll associated with it.
+     *
+     * @return bool
+     */
     public function isStaff(): bool
     {
         return $this->hasRole(['Developer', 'Administrator', 'Moderator']);
     }
 
+    /**
+     * Returns whether the user has a developer staff role.
+     *
+     * @return bool
+     */
     public function isDeveloper(): bool
     {
         return $this->hasRole('Developer');
     }
 
+    /**
+     * Returns whether the user has an administrator staff role.
+     *
+     * @return bool
+     */
     public function isAdministrator(): bool
     {
         return $this->hasRole('Administrator');
     }
 
+    /**
+     * Returns whether the user has a moderator staff role.
+     *
+     * @return bool
+     */
     public function isModerator(): bool
     {
         return $this->hasRole('Moderator');
