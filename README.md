@@ -1,14 +1,21 @@
-# OpenDominion
+<p align="center">
+  <img src="https://raw.githubusercontent.com/WaveHack/OpenDominion/resources/logos/opendominion.png" alt="OpenDominion">
+</p>
 
-[![Build Status](https://travis-ci.org/WaveHack/OpenDominion.svg?branch=master)](https://travis-ci.org/WaveHack/OpenDominion)
-[![StyleCI](https://styleci.io/repos/29497480/shield?branch=master&style=flat)](https://styleci.io/repos/29497480)
-[![Dependency Status](https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg)](https://gemnasium.com/github.com/WaveHack/OpenDominion)
-[![Coverage Status](https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop)](https://coveralls.io/github/WaveHack/OpenDominion?branch=develop)
-[![MIT licensed](https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
-[![Patreon](https://img.shields.io/badge/donate-patreon-ff69b4.svg)](https://www.patreon.com/OpenDominion)
-[![Discord](https://img.shields.io/discord/325315157335212032.svg?label=chat%20&#40;discord&#41;)](https://discord.gg/mFk2wZT)
+<p align="center">
+  <a href="https://travis-ci.org/WaveHack/OpenDominion"><img src="https://travis-ci.org/WaveHack/OpenDominion.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://styleci.io/repos/29497480"><img src="https://styleci.io/repos/29497480/shield?branch=develop&style=flat" alt="StyleCI"></a>
+  <a href="https://gemnasium.com/github.com/WaveHack/OpenDominion"><img src="https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg" alt="Dependency Status"></a>
+  <a href="https://coveralls.io/github/WaveHack/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="MIT licensed"></a>
+  <br>
+  <a href="https://www.patreon.com/OpenDominion"><img src="https://img.shields.io/badge/donate-patreon-ff69b4.svg" alt="Donate on Patreon"></a>
+  <a href="https://discord.gg/mFk2wZT"><img src="https://img.shields.io/discord/325315157335212032.svg?label=chat%20&#40;discord&#41;" alt="Chat on Discord"></a>
+  <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
+</p>
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
+
 
 ## Introduction
 
@@ -19,6 +26,7 @@ The original Dominion, now defunct, was a game from Kamikaze Games which ran fro
 Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 > You have reached the online game Dominion. What is Dominion? It's a TOTALLY FREE online fantasy war game. You take control of a plot of land in a realm consisting of a group of other players. With your dominion and allied players, you combat the forces of good or evil using military, magic, or espionage. The goal? To finish at the top of the heap. To make your dominion and your realm the most powerful in the land, and to crush your enemies.
+
 
 ## Progress
 
@@ -76,6 +84,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+
 ## Links
 
 - [Open Beta](https://beta.opendominion.net)
@@ -86,9 +95,11 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
   - This will be the main place for out of game communication, development talk and game announcements.
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
 
+
 ## License
 
 OpenDominion is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
 
 ## Acknowledgments
 
@@ -96,7 +107,7 @@ OpenDominion is open-sourced software licensed under the [MIT License](https://o
 
 Dominion and most of its game-related content (concept, mechanics, buildings, races etc) is/was a product of Kamikaze Games, Inc.
 
-OpenDominion aims to be a free and open source clone based on the original Dominion from Kamikaze Games, Inc. No copyright infringement intended.
+OpenDominion aims to be a free and open source remake, closely based on the original Dominion from Kamikaze Games, Inc. No copyright infringement intended.
 
 All rights belong to their respective owners.
 
@@ -106,7 +117,7 @@ All rights belong to their respective owners.
 - RedFox for creating [DomSim](https://dominion.lykanthropos.com/DomSim/)
 - BlackReign for his OOP sim
 - All the people who contributed to the [Dominion Encyclopedia](http://web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
-- Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala from Lala's Crypt and Mickles from DomHQ
+- Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala's Crypt and Mickles from DomHQ
 - All the contributors to the OpenDominion project
 - All the people who are participating in the open beta or otherwise being involved with the OpenDominion project
 
