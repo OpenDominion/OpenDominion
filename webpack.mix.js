@@ -12,6 +12,9 @@ const vendorDirs = {
     // Bootstrap
     'node_modules/bootstrap/dist': 'public/assets/vendor/bootstrap',
 
+    // Chart.js
+    'node_modules/chart.js/dist/Chart.bundle.min.js': 'public/assets/vendor/chart.js/Chart.bundle.min.js',
+
     // DataTables
     'node_modules/datatables.net/js': 'public/assets/vendor/datatables/js',
     'node_modules/datatables.net-bs/css': 'public/assets/vendor/datatables/css',
