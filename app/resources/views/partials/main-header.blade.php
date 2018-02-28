@@ -17,6 +17,7 @@
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                @include('partials.staff-nav')
                 @include('partials.auth-user-nav')
             </ul>
         </div>

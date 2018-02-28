@@ -138,6 +138,8 @@ class HistoryService
                 'name',
                 'created_at',
                 'updated_at',
+                'daily_platinum',
+                'daily_land',
             ])->keys()->toArray();
     }
 }

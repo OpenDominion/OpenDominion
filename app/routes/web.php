@@ -144,4 +144,41 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $
 
 // Links
 
+// Staff
+
+$router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator'], 'prefix' => 'staff', 'as' => 'staff.'], function (Router $router) {
+
+    $router->get('/')->uses('Staff\StaffController@getIndex')->name('index');
+
+    // Developer
+
+    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
+
+        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
+
+        // simulate dominion by state string
+        // take over dominion & traverse state history
+        // set dominion state/attributes?
+
+    });
+
+    // Administrator
+
+    $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], function (Router $router) {
+
+        $router->resource('dominions', 'Staff\Administrator\DominionController');
+        $router->resource('users', 'Staff\Administrator\UserController');
+
+        // view all users
+        // view all council boards
+
+    });
+
+    // Moderator
+
+    // todo
+    // view flagged posts
+
+});
+
 // Misc
