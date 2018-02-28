@@ -368,11 +368,11 @@ class TickService
             ->where('end_date', '>', $this->now)
             ->get();
 
-        foreach($rounds as $round){
+        foreach ($rounds as $round) {
             $rank = 1;
 
             foreach ($result as $row) {
-                if($row->round_id == (int)$round->id){
+                if ($row->round_id == (int)$round->id) {
                     DB::table('daily_rankings')
                         ->where('id', $row->id)
                         ->where('round_id', $round->id)
@@ -393,7 +393,7 @@ class TickService
             $rank = 1;
 
             foreach ($result as $row) {
-                if($row->round_id == (int)$round->id){
+                if ($row->round_id == (int)$round->id) {
                     DB::table('daily_rankings')
                         ->where('id', $row->id)
                         ->update([
