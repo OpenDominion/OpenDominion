@@ -3,11 +3,7 @@
 use Illuminate\Routing\Router;
 
 /** @var Router $router */
-
-
-
 $router->get('/')->uses('HomeController@getIndex')->name('home');
-
 
 // Authentication
 
@@ -15,29 +11,31 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
     $router->group(['middleware' => 'guest'], function (Router $router) {
 
-        $router->get('login')->uses('Auth\LoginController@getLogin')->name('login');
-        $router->post('login')->uses('Auth\LoginController@postLogin');
+        // Authentication
+        $router->get('login')->uses('Auth\LoginController@showLoginForm')->name('login');
+        $router->post('login')->uses('Auth\LoginController@login');
+
+        // Registration
         $router->get('register')->uses('Auth\RegisterController@getRegister')->name('register');
         $router->post('register')->uses('Auth\RegisterController@postRegister');
         $router->get('activate/{activation_code}')->uses('Auth\RegisterController@getActivate')->name('activate');
+
+        // Password Reset
+        $router->get('password/reset', 'Auth\ForgotPasswordController@getReset')->name('password.request');
+        $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        $router->post('password/reset', 'Auth\ResetPasswordController@reset');
+
     });
 
-    //Password
     $router->group(['middleware' => 'auth'], function (Router $router) {
 
-        $router->post('logout')->uses('Auth\LoginController@postLogout')->name('logout');
+        // Logout
+        $router->post('logout')->uses('Auth\LoginController@logout')->name('logout');
 
     });
 
 });
-
- //Reseting Password
-
- $router->get('password/reset', 'Auth\ForgotPasswordController@getReset')->name('password.request');
- $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
- $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
- $router->post('password/reset', 'Auth\ResetPasswordController@reset');
-
 
 // Gameplay
 

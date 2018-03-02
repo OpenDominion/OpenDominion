@@ -16,21 +16,23 @@ use OpenDominion\Services\Dominion\SelectorService;
 class LoginController extends AbstractController
 {
     use AuthenticatesUsers {
+        logout as traitLogout;
         sendFailedLoginResponse as protected traitSendFailedLoginResponse;
     }
 
     protected $redirectTo = '/dominion/status';
 
-    public function getLogin()
+    /**
+     * {@inheritdoc}
+     */
+    public function showLoginForm()
     {
         return view('pages.auth.login');
     }
 
-    public function postLogin(Request $request)
-    {
-        return $this->login($request);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     protected function authenticated(Request $request, User $user)
     {
         event(new UserLoggedInEvent($user));
@@ -39,11 +41,14 @@ class LoginController extends AbstractController
         $selectorService->tryAutoSelectDominionForAuthUser();
     }
 
-    public function postLogout(Request $request)
+    /**
+     * {@inheritdoc}
+     */
+    public function logout(Request $request)
     {
 //        event(new UserLogoutEvent(auth()->user()));
 
-        $response = $this->logout($request);
+        $response = $this->traitLogout($request);
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);
