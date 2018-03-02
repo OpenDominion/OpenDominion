@@ -3,6 +3,9 @@
 use Illuminate\Routing\Router;
 
 /** @var Router $router */
+
+
+
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 
 
@@ -17,13 +20,6 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
         $router->get('register')->uses('Auth\RegisterController@getRegister')->name('register');
         $router->post('register')->uses('Auth\RegisterController@postRegister');
         $router->get('activate/{activation_code}')->uses('Auth\RegisterController@getActivate')->name('activate');
-        
-        $router->get('reset')->uses('Auth\ForgotPasswordController@getReset')->name('password.request');
-        $router->post('email')->uses('Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-        $router->get('reset/{token}')->uses('Auth\ResetPasswordController@showResetForm')->name('password.reset');
-        $router->get('reset')->uses('Auth\ResetPasswordController@reset');
-
-
     });
 
     //Password
@@ -34,6 +30,13 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
     });
 
 });
+
+ //Reseting Password
+
+ $router->get('password/reset', 'Auth\ForgotPasswordController@getReset')->name('password.request');
+ $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+ $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+ $router->post('password/reset', 'Auth\ResetPasswordController@reset');
 
 
 // Gameplay
