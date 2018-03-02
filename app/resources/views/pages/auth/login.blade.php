@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-6 col-sm-offset-3">
 
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -26,6 +26,9 @@
                             <label for="password" class="col-sm-3 control-label">Password</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                                <span class="help-block" style="margin-bottom: 0">
+                                    Forgot your password? <a href="{{ route('auth.password.request') }}">Reset Password</a>
+                                </span>
                             </div>
                         </div>
 
@@ -45,7 +48,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Login</button>
                         <div class="pull-right">
-                            Don't have an account? <a href="{{ route('auth.register') }}">Register</a> Forgot Your Password? <a href="{{ route('password.request') }}">Reset Password</a>
+                            Don't have an account? <a href="{{ route('auth.register') }}">Register</a>
                         </div>
                     </div>
 
