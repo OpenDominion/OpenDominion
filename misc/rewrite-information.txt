@@ -1,0 +1,70 @@
+http://web.archive.org/web/20110803155736/http://www.kamikazegames.com:80/dominion/annboard.asp?Subject=294
+
+Discussion:  Rewrite Information
+Posted at: 4/10/2010 11:45:00 AM 
+
+I'm going to use this thread to give out updates for the rewrite. I don't know how often I'll post updates, but they'll be sporadic until the rewrite is completed. Sometimes I may discuss new features, or sometimes progress updates or changes, or anything else related. Not all the updates are going to be groundbreaking, and I'll probably hold off on announcing some more of the major innovations until the rewrite is on the cusp of completion. 
+
+To start, let me give you a short progress update. A ton of work has been done, but there are still critical features that remain to be completed. If I had to give an estimate, I'd say I'm about 80% complete. And by complete, I am speaking in terms of readiness for beta testing. I expect a number of improvements to follow during and post-beta. That being said, there are a number of time consuming features left in the remaining 20%. 
+
+The great part about the rewrite, though, is that subsequent features all take less time than the initial features. The first 20% took absolutely forever, while the last 20% of the work I've completed took significantly less time. For the technical sorts among you, this is the basically the difference between going from a scripting language to an object oriented language. One of the big benefits of the rewrite is that new features and changes can be done in a quicker and more efficient manner than presently, both in development and testing time. This is good news for future enhancements and changes between rounds.
+
+-Ross
+
+Posted at: 4/17/2010 12:02:00 PM 
+
+Time for another brief post. This time I'm going to discuss a some changes you'll notice pretty much right away. 
+
+First, the website design. The rewrite has a new interface, which shouldn't be particularly surprising. It's not very graphic heavy, but it looks a lot nicer. At the very least, it doesn't look like the game is 10 years old. I also plan to remove the current character graphics and have them replaced with something nicer, but I have yet to get that artwork completed. 
+
+Registration is also going to be different. No longer will you be forced to re-register for every round. After you register for the rewrite, that'll be it. You'll verify your email once, and then only again if you change your account's email address. Then that will be your account as long as you continue to play Dominion. 
+
+Because of the prior change, you will no longer have to associate lifetime accounts with your dominion every round. This will now be done automatically, for everyone. 
+
+Speaking of lifetime accounts, in the rewrite these will be a bit more prominent. Messageboard aliases will be linked directly to your lifetime ranks. In fact, any place on the website where a player's alias is listed will link to these results. 
+
+On launch, the lifetime ranks may not be carried over from the current system, but I plan to add a way for players to associate their old finishes with the new ones for the rewrite at some point so that your records are not lost.
+
+-Ross
+
+Posted at: 4/26/2010 10:31:00 PM 
+
+Time for another update. I'm going to try to keep doing this pretty regularly, but as we get further along I might have to stop announcing new stuff and just starting giving progress updates because I'd like to hold off with some of the bigger announcements until we're about ready for beta. So you're more likely to hear about small new stuff than big new stuff for a while yet. 
+
+Quick progress report: Not getting a ton of time to work on things but making progress. My task list is now down to 37 items. This is kind of misleading, because some are much bigger items than others. And usually while working on one task I'll remember something I've missed and/or think of something I'd like to do to make an improvement somewhere, or I'll find a bug that needs to be fixed. It seems that for every 3 items I knock off the list I wind up adding 2. So my 37 tasks remaining might well be closer to 60. 
+
+More on lifetime accounts - the new lifetime ranks will be more extensive. Rather than just recording networth/land as is done now, you'll be able to drill into more detail with things like Status Screens and Advisors, so you can get a lot more detail for player finishes.
+
+-Ross
+
+Posted at: 5/9/2010 11:26:00 AM 
+
+It's been a few weeks, so thought I'd give you an update. Let's discuss a few new things: 
+
+First, advisors. There's more information available in the advisors now. I'm trying to give a bit more detail within each advisor for relevant information. For example, the Production Advisor now shows, in addition to your production, where all that production is coming from. So you have a full breakdown of the sources of all your resources, as well as all the bonuses that you have (positive and negative) that are contributing towards resource production. There are other advisor changes that I'll discuss in a later post. 
+
+Second, the hourly update system is probably changing. While I haven't made a final decision on this and could still change it back to the current system, I've built the game to handle events in real time increments instead of at the hour change. Resource production would still be handled on the hour, but things like construction, returning military, exploration, training, etc, would complete in exactly the time it should be taking. For example, if exploration is 12 hours, and you start it at 3:48:22AM, then it will finish at 3:48:22PM (not at 3:00:00PM as it would be now), and your dominion will be updated at exactly that time. The same is true for every timed event except resource production.
+
+-Ross
+
+Posted at: 6/6/2010 1:13:00 PM 
+
+Been a while since I've posted, so here's a quick update. Things are going well, and a lot of stuff is coming together quickly. I'd like to give you an estimated completion date but I'd probably be wrong. :) The good news is that very few major features still need to be completed. Most of my task list is small stuff at this point. 
+
+More on Advisors: I've previously mentioned that the Advisors are going to show additional information. In addition to the extra information, there will also be a new Advisor, the Bonus Advisor, which will detail all the bonuses you are getting for your Dominion. 
+
+More Information: Other pages besides the Advisors will carry additional information. The Diplomacy page, for example, will be more clear on when bonuses are active and what they are. The Government page will show more information on the Guards: range, bonuses, etc. The Realm page will display Wonders for the controlling realms and what they do. One of the goals for the rewrite is to give you as much helpful information as possible on every page. This will also hopefully make it easier for new players to learn the game.
+
+-Ross
+
+Posted at: 7/5/2010 1:38:00 PM 
+
+I've not been doing a great job keeping up with this thread. Going to just drop a few new items for now: 
+
+Extended battle reports - Invasions will now have extended battle reports, giving you more detail on exactly what happened during the battle. You'll also be able to view this report as the defender from your news. Much abbreviated versions of these battle reports will be available to your realmmates as well. I am considering allowing players the option to show their full report to realmmates if they want, but haven't added this option yet. 
+
+News Summary - The Crier now shows a daily summary, kind of like how Liege Lord used to do it, but with more information. 
+
+News in General - You can now go back further in the news than just today/yesterday. You'll be able to view 10 days worth of news if you want to.
+
+-Ross
