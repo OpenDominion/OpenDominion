@@ -4,6 +4,18 @@ use Illuminate\Routing\Router;
 
 /** @var Router $router */
 $router->get('/')->uses('HomeController@getIndex')->name('home');
+/**
+Route::get('password/reset1', 'Auth\ForgotPasswordController@getReset');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+**/
+
+ Route::get('password/reset', 'Auth\ForgotPasswordController@getReset')->name('password.request');
+ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+ Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
 
 // Authentication
 
@@ -13,14 +25,19 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
         $router->get('login')->uses('Auth\LoginController@getLogin')->name('login');
         $router->post('login')->uses('Auth\LoginController@postLogin');
-
         $router->get('register')->uses('Auth\RegisterController@getRegister')->name('register');
         $router->post('register')->uses('Auth\RegisterController@postRegister');
-
         $router->get('activate/{activation_code}')->uses('Auth\RegisterController@getActivate')->name('activate');
+        
+        $router->get('reset')->uses('Auth\ForgotPasswordController@getReset')->name('password.request');
+        $router->post('email')->uses('Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        $router->get('reset/{token}')->uses('Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        $router->get('reset')->uses('Auth\ResetPasswordController@reset');
+
 
     });
 
+    //Password
     $router->group(['middleware' => 'auth'], function (Router $router) {
 
         $router->post('logout')->uses('Auth\LoginController@postLogout')->name('logout');
@@ -28,6 +45,7 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
     });
 
 });
+
 
 // Gameplay
 

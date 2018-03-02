@@ -45,7 +45,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Login</button>
                         <div class="pull-right">
-                            Don't have an account? <a href="{{ route('auth.register') }}">Register</a>
+                            Don't have an account? <a href="{{ route('auth.register') }}">Register</a> Forgot Your Password? <a href="{{ route('password.request') }}">Reset Password</a>
                         </div>
                     </div>
 
