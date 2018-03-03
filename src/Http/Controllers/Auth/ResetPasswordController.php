@@ -22,4 +22,17 @@ class ResetPasswordController extends AbstractController
             'email' => $request->email,
         ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function sendResetResponse($response)
+    {
+        return redirect()
+            ->route('home')
+            ->with(
+                'alert-success',
+                'Your password has been reset and you are now logged in.'
+            );
+    }
 }
