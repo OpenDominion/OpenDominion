@@ -14,7 +14,7 @@ class DevelopmentSeeder extends Seeder
     protected $dominionFactory;
 
     /** @var string */
-    protected $userPassword = 'test';
+    protected $userPassword = 'secret';
 
     /**
      * DevelopmentSeeder constructor.
