@@ -1,45 +1,35 @@
 <?php
+
 namespace OpenDominion\Http\Controllers\Auth;
-use OpenDominion\Http\Controllers\AbstractController;
+
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use OpenDominion\Http\Controllers\AbstractController;
+
 class ForgotPasswordController extends AbstractController
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset emails and
-    | includes a trait which assists in sending these notifications from
-    | your application to your users. Feel free to explore this trait.
-    |
-    */
     use SendsPasswordResetEmails;
+
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-
-    /*
-    *   Overrride one of the traits
-    *
-    */
-
     public function showLinkRequestForm()
     {
-        return view('pages.auth.email');
+        return view('pages.auth.passwords.email'); // current view: pages.auth.reset
     }
 
+    // sendResetLinkEmail
 
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
 
-    public function getReset()
-    {
-        return view('pages.auth.reset');
-    }
+
+
+//    public function showResetForm(Request $request, string $token = null)
+//    {
+//        return view('pages.auth.passwords.reset')->with([
+//            'token' => $token,
+//            'email' => $request->email,
+//        ]);
+//    }
+
+    // reset
 }
 

@@ -21,7 +21,7 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
         $router->get('activate/{activation_code}')->uses('Auth\RegisterController@activate')->name('activate');
 
         // Password Reset
-        $router->get('password/reset', 'Auth\ForgotPasswordController@getReset')->name('password.request');
+        $router->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
         $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
         $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
         $router->post('password/reset', 'Auth\ResetPasswordController@reset');
