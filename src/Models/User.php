@@ -10,7 +10,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
-use OpenDominion\Notifications\User\ResetPassword;
+use OpenDominion\Notifications\User\ResetPasswordNotification;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends AbstractModel implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
@@ -43,7 +43,7 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPassword($token));
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     // Methods

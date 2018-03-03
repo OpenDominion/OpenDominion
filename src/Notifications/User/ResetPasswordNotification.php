@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use OpenDominion\Models\User;
 
-class ResetPassword extends Notification implements ShouldQueue
+class ResetPasswordNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
