@@ -152,9 +152,9 @@ class SpellActionService
      */
     protected function getReturnMessageString(Dominion $dominion): string
     {
-        $wizards = (int)$dominion->military_wizards;
-        $archmages = (int)$dominion->military_archmages;
-        $spies = (int)$dominion->military_spies;
+        $wizards = $dominion->military_wizards;
+        $archmages = $dominion->military_archmages;
+        $spies = $dominion->military_spies;
 
         if (($wizards === 0) && ($archmages === 0)) {
             return 'You cast %s at a cost of %s mana.';
