@@ -5,7 +5,7 @@ namespace OpenDominion\Tests\Http\Auth;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Notification;
 use OpenDominion\Models\User;
-use OpenDominion\Notifications\UserRegisteredNotification;
+use OpenDominion\Notifications\User\RegisteredNotification;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RegisterTest extends AbstractBrowserKitTestCase
@@ -33,7 +33,7 @@ class RegisterTest extends AbstractBrowserKitTestCase
 
         $user = User::where('email', 'johndoe@example.com')->firstOrFail();
 
-        Notification::assertSentTo($user, UserRegisteredNotification::class);
+        Notification::assertSentTo($user, RegisteredNotification::class);
     }
 
     public function testNewlyRegisteredUserCanActivateAccount()
