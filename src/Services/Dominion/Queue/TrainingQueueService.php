@@ -78,6 +78,12 @@ class TrainingQueueService
      */
     public function getQueueTotalByUnitType(Dominion $dominion, string $unitType): int
     {
-        return array_sum($this->getQueue($dominion)[$unitType]);
+        $queue = $this->getQueue($dominion);
+
+        if (!isset($queue[$unitType])) {
+            return 0;
+        }
+
+        return array_sum($queue[$unitType]);
     }
 }
