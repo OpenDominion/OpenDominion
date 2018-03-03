@@ -14,22 +14,6 @@ class ForgotPasswordController extends AbstractController
      */
     public function showLinkRequestForm()
     {
-        return view('pages.auth.passwords.email'); // current view: pages.auth.reset
+        return view('pages.auth.passwords.email');
     }
-
-    // sendResetLinkEmail
-
-
-
-
-//    public function showResetForm(Request $request, string $token = null)
-//    {
-//        return view('pages.auth.passwords.reset')->with([
-//            'token' => $token,
-//            'email' => $request->email,
-//        ]);
-//    }
-
-    // reset
 }
-
