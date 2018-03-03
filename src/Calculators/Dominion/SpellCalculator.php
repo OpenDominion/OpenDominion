@@ -16,7 +16,7 @@ class SpellCalculator
         if ($this->activeSpells === null) {
             $this->activeSpells = DB::table('active_spells')
                 ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
-                ->join('realms', 'realms.id', '=', 'dominions.id')
+                ->join('realms', 'realms.id', '=', 'dominions.realm_id')a
                 ->where('dominion_id', $dominion->id)
                 ->orderBy('duration', 'desc')
                 ->orderBy('created_at')
