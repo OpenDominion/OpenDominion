@@ -12,6 +12,12 @@ class RegisterTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
+    public function testRegistrationPage()
+    {
+        $this->visitRoute('auth.register')
+            ->seeStatusCode(200);
+    }
+
     public function testUserCanRegister()
     {
         $this->visitRoute('auth.register')
