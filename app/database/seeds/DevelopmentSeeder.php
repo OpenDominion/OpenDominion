@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
@@ -35,7 +36,7 @@ class DevelopmentSeeder extends Seeder
         $this->command->info(<<<INFO
 
 Done seeding data.
-A round, user and dominion have been created for your convenience.
+A development round, user and dominion have been created for your convenience.
 You may login with email '{$user->email}' and password '{$this->userPassword}'.
 
 INFO
@@ -63,12 +64,14 @@ INFO
     {
         $this->command->info('Creating development round');
 
+        $startDate = new Carbon('today midnight');
+
         return Round::create([
             'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,
             'number' => 1,
             'name' => 'Dev Round',
-            'start_date' => new DateTime('today midnight'),
-            'end_date' => new DateTime('+50 days midnight'),
+            'start_date' => $startDate,
+            'end_date' => (clone $startDate)->addDays(49), // 50 minus today
         ]);
     }
 
