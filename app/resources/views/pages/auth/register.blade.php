@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-6 col-sm-offset-3">
 
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -18,6 +18,9 @@
                             <label for="display_name" class="col-sm-3 control-label">Display Name</label>
                             <div class="col-sm-9">
                                 <input type="text" name="display_name" id="display_name" class="form-control" placeholder="Display Name" value="{{ old('display_name') }}" required autofocus>
+                                <span class="help-block">
+                                    Your display name will be shown to your allies in your realm.
+                                </span>
                             </div>
                         </div>
 
@@ -26,6 +29,9 @@
                             <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
+                                <span class="help-block">
+                                    Please use a valid email address, since you need to validate your account before you can start playing.
+                                </span>
                             </div>
                         </div>
 
@@ -56,10 +62,9 @@
                                 <div class="help-block">
                                     <p>TL;DR version:</p>
                                     <ul>
-                                        <li>Don't be an ass.</li>
                                         <li>One account per player.</li>
-                                        <li>No cheating, botting or scripting. More on this later.</li>
-                                        <li>Anonimized analytical data will be collected for development and improvement purposes. You're free to install an adblocker or Ghostery to exempt yourself, although I prefer if you wouldn't.</li>
+                                        <li>No cheating, botting or scripting.</li>
+                                        <li>Anonymized analytical data will be collected through Google Analytics the sole purpose of improving the game. Feel free to exempt yourself by using something like adblock or Ghostery.</li>
                                         <li>We will not share your data to anyone.</li>
                                         <li>We will only send you game-related emails on your email address.</li>
                                     </ul>
@@ -67,7 +72,8 @@
                             </div>
                         </div>
 
-                        <p>Note that unlike vanilla Dominion, you will register for a round with dominion details later. Your user account will be persistent across rounds and Dominions.</p>
+                        <p>Unlike vanilla Dominion, you only need to register for a user account once.</p>
+                        <p>Once you activate your user account, you can sign up for an active round and start playing. Your user account will be persistent across rounds and dominions.</p>
 
                     </div>
 
