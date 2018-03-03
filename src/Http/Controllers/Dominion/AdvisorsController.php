@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -13,7 +15,6 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
-use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
@@ -79,7 +80,7 @@ class AdvisorsController extends AbstractDominionController
 
         // If no page is set, then navigate to our dominion's page
         if (empty($request->query())) {
-            $myRankings = \DB::table('daily_rankings')
+            $myRankings = DB::table('daily_rankings')
                 ->where('dominion_id', $selectedDominion->id)
                 ->get();
 
@@ -88,13 +89,13 @@ class AdvisorsController extends AbstractDominionController
 
                 $myPage = ceil($myRankings->{$type . '_rank'} / $resultsPerPage);
 
-                \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($myPage) {
+                Paginator::currentPageResolver(function () use ($myPage) {
                     return $myPage;
                 });
             }
         }
 
-        $rankings = \DB::table('daily_rankings')
+        $rankings = DB::table('daily_rankings')
             ->where('round_id', $selectedDominion->round_id)
             ->orderBy($type . '_rank')
             ->paginate($resultsPerPage);
