@@ -24,8 +24,8 @@ class LoginTest extends AbstractBrowserKitTestCase
             ->type($user->email, 'email')
             ->type('secret', 'password')
             ->press('Login')
-            ->seeRouteIs('dashboard');
-        // todo: see logged in user == $user
+            ->seeRouteIs('dashboard')
+            ->seeIsAuthenticatedAs($user);
     }
 
     public function testUserCanLogout()
