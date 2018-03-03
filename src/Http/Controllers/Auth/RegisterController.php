@@ -51,7 +51,10 @@ class RegisterController extends AbstractController
 
         event(new UserRegisteredEvent($user));
 
-        $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
+        $request->session()->flash(
+            'alert-success',
+            'You have been successfully registered. An activation email has been dispatched to your address.'
+        );
 
         return redirect($this->redirectPath());
     }
@@ -66,10 +69,12 @@ class RegisterController extends AbstractController
     public function activate(Request $request, string $activation_code)
     {
         try {
-            $user = User::where(['activated' => false, 'activation_code' => $activation_code])->firstOrFail();
+            $user = User::where(['activated' => false, 'activation_code' => $activation_code])
+                ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('home')
+            return redirect()
+                ->route('home')
                 ->withErrors(['Invalid activation code']);
         }
 
@@ -80,7 +85,10 @@ class RegisterController extends AbstractController
 
         event(new UserActivatedEvent($user));
 
-        $request->session()->flash('alert-success', 'Your account has been activated and you are now logged in.');
+        $request->session()->flash(
+            'alert-success',
+            'Your account has been activated and you are now logged in.'
+        );
 
         return redirect()->route('dashboard');
     }
