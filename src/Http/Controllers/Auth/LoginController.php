@@ -62,6 +62,9 @@ class LoginController extends AbstractController
         return $response;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function sendFailedLoginResponse(Request $request)
     {
         // Register user activity if a user with supplied email exists
