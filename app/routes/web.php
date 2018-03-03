@@ -16,9 +16,9 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
         $router->post('login')->uses('Auth\LoginController@login');
 
         // Registration
-        $router->get('register')->uses('Auth\RegisterController@getRegister')->name('register');
-        $router->post('register')->uses('Auth\RegisterController@postRegister');
-        $router->get('activate/{activation_code}')->uses('Auth\RegisterController@getActivate')->name('activate');
+        $router->get('register')->uses('Auth\RegisterController@showRegistrationForm')->name('register');
+        $router->post('register')->uses('Auth\RegisterController@register');
+        $router->get('activate/{activation_code}')->uses('Auth\RegisterController@activate')->name('activate');
 
         // Password Reset
         $router->get('password/reset', 'Auth\ForgotPasswordController@getReset')->name('password.request');
