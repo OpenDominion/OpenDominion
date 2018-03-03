@@ -5,7 +5,7 @@
             @php
             $diff = $selectedDominion->round->start_date->subDays(1)->diff(now());
             $roundDay = $selectedDominion->round->start_date->subDays(1)->diffInDays(now());
-            $roundDurationInDays = $selectedDominion->round->start_date->diffInDays($selectedDominion->round->end_date);
+            $roundDurationInDays = $selectedDominion->round->durationInDays();
 
             echo "Day <strong>{$roundDay}</strong>/{$roundDurationInDays}, hour <strong>{$diff->h}</strong>.";
 
