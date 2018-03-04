@@ -195,7 +195,7 @@
                 <div class="box-body">
                     <p>This section gives you a quick overview of your dominion.</p>
                     <p>Your total land size is {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} and networth is {{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}.</p>
-                    <p><a href="{{ route('dominion.advisors.rankings', 'land') }}">My Rankings</a></p>
+                    <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
                 </div>
             </div>
         </div>
