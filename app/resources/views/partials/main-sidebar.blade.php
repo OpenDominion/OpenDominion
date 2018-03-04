@@ -52,7 +52,7 @@
 
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>
-                <li class="{{ Route::is('dominion.advisors.rankings') ? 'active' : null }}"><a href="{{ route('dominion.advisors.rankings', ['land', 'page' => 1]) }}"><i class="fa fa-trophy ra-fw"></i> <span>Rankings</span></a></li>
+                <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings', ['land', 'page' => 1]) }}"><i class="fa fa-trophy ra-fw"></i> <span>Rankings</span></a></li>
 
                 {{--<li class="header">MISC</li>--}}
 

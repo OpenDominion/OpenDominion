@@ -2,9 +2,6 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use DB;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\Paginator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -69,41 +66,9 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    public function getAdvisorsRankings(Request $request, string $type = null)
+    public function getAdvisorsRankings()
     {
-        if (($type === null) || !in_array($type, ['land', 'networth'], true)) {
-            return redirect()->route('dominion.advisors.rankings', 'land');
-        }
-
-        $resultsPerPage = 10;
-        $selectedDominion = $this->getSelectedDominion();
-
-        // If no page is set, then navigate to our dominion's page
-        if (empty($request->query())) {
-            $myRankings = DB::table('daily_rankings')
-                ->where('dominion_id', $selectedDominion->id)
-                ->get();
-
-            if (!$myRankings->isEmpty()) {
-                $myRankings = $myRankings->first();
-
-                $myPage = ceil($myRankings->{$type . '_rank'} / $resultsPerPage);
-
-                Paginator::currentPageResolver(function () use ($myPage) {
-                    return $myPage;
-                });
-            }
-        }
-
-        $rankings = DB::table('daily_rankings')
-            ->where('round_id', $selectedDominion->round_id)
-            ->orderBy($type . '_rank')
-            ->paginate($resultsPerPage);
-
-        return view('pages.dominion.advisors.rankings', [
-            'type' => $type,
-            'rankings' => $rankings,
-        ]);
+        // todo
     }
 
     public function getAdvisorsStatistics()
