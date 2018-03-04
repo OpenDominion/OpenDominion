@@ -16,7 +16,7 @@
                         <colgroup>
                             <col width="50">
                             <col>
-                            @if ($showPlayerNames)
+                            @if ($isOwnRealm)
                                 <col width="200">
                             @endif
                             <col width="100">
@@ -27,7 +27,7 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
-                                @if ($showPlayerNames)
+                                @if ($isOwnRealm)
                                     <th class="text-center">Player</th>
                                 @endif
                                 <th class="text-center">Race</th>
@@ -44,7 +44,7 @@
                                 @if ($dominion === null)
                                     <tr>
                                         <td>&nbsp;</td>
-                                        @if ($showPlayerNames)
+                                        @if ($isOwnRealm)
                                             <td colspan="5"><i>Vacant</i></td>
                                         @else
                                             <td colspan="4"><i>Vacant</i></td>
@@ -64,6 +64,10 @@
                                                 <span class="label label-info">Protection</span>
                                             @endif
 
+                                            @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
+                                                <span class="label label-success">Online</span>
+                                            @endif
+
                                             {{--<span class="label label-success">Royal Guard</span>--}}
                                             {{--<span class="label label-warning">Elite Guard</span>--}}
                                             {{--<span class="label label-danger">Monarch</span>--}}
@@ -74,7 +78,7 @@
                                                 <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
                                             @endif--}}
                                         </td>
-                                        @if ($showPlayerNames)
+                                        @if ($isOwnRealm)
                                             <td class="text-center">{{ $dominion->user->display_name }}</td>
                                         @endif
                                         <td class="text-center">

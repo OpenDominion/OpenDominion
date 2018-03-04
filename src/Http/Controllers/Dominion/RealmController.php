@@ -26,7 +26,7 @@ class RealmController extends AbstractDominionController
             $realmNumber = (int)$dominion->realm->number;
         }
 
-        $showPlayerNames = ($realmNumber === (int)$dominion->realm->number);
+        $isOwnRealm = ($realmNumber === (int)$dominion->realm->number);
 
         // Eager load some relational data to save on SQL queries down the road in NetworthCalculator and
         // ProtectionService
@@ -35,7 +35,7 @@ class RealmController extends AbstractDominionController
             'dominions.round',
         ];
 
-        if ($showPlayerNames) {
+        if ($isOwnRealm) {
             $with[] = 'dominions.user';
         }
 
@@ -75,7 +75,7 @@ class RealmController extends AbstractDominionController
             'prevRealm',
             'protectionService',
             'nextRealm',
-            'showPlayerNames'
+            'isOwnRealm'
         ));
     }
 
