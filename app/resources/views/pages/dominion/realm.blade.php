@@ -55,7 +55,7 @@
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($protectionService->isUnderProtection($dominion))
-                                                <i class="ra ra-shield ra-lg text-aqua"></i>
+                                                <i class="ra ra-shield ra-lg text-aqua" title="Under protection"></i>
                                             @endif
 
                                             {{--
