@@ -235,7 +235,7 @@
                         @php($jobsNeeded = ($selectedDominion->peasants - $populationCalculator->getEmploymentJobs($selectedDominion)))
                         @if ($jobsNeeded < 0)
                             Available: {{ number_format(abs($jobsNeeded)) }}<br>
-                            Opportunity cost of job overrun: <b>{{ number_format(2.7 * abs($jobsNeeded)) }} platinum</b><br>
+                            Opportunity cost of job overrun: <b>{{ number_format(2.7 * abs($jobsNeeded) * $productionCalculator->getPlatinumProductionMultiplier($selectedDominion)) }} platinum</b><br>
                             <br>
                             <i>"You should construct additional housing and acquire more peasants, since you have idle jobs.<br><br>Employed peasants pay their income tax in platinum to the dominion." -Advisor</i>
                         @elseif ($jobsNeeded === 0)
@@ -243,7 +243,7 @@
                             No opportunity cost
                         @else
                             Needed: {{ number_format($jobsNeeded) }}<br>
-                            Opportunity cost of job underrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b><br>
+                            Opportunity cost of job underrun: <b>{{ number_format(2.7 * $jobsNeeded * $productionCalculator->getPlatinumProductionMultiplier($selectedDominion)) }} platinum</b><br>
                             <br>
                             <i>"You should construct additional job buildings, since you have idle peasants.<br><br>Only employed peasants pay their income tax in platinum to the dominion." -Advisor</i>
                         @endif
