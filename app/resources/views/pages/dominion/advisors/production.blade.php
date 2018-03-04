@@ -221,26 +221,28 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The production advisor tells you about your resource production, general population and jobs.</p>
+                    <p>The production advisor tells you about your resource production, population and jobs.</p>
                     <p>
-                        Total population: {{ number_format($populationCalculator->getPopulation($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
-                        Peasant population: {{ number_format($populationCalculator->getPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
-                        Military population: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
+                        <b>Population</b><br>
+                        Total: {{ number_format($populationCalculator->getPopulation($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
+                        Peasants: {{ number_format($populationCalculator->getPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
+                        Military: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
                         Peasant change last hour: <b>{{ ((($selectedDominion->peasants_last_hour > 0) ? '+' : null) . number_format($selectedDominion->peasants_last_hour)) }}</b><br>
                         <br>
-                        Jobs total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
-                        Jobs fulfilled: {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }}<br>
+                        <b>Jobs</b><br>
+                        Total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
+                        Fulfilled: {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }}<br>
                         @php($jobsNeeded = ($selectedDominion->peasants - $populationCalculator->getEmploymentJobs($selectedDominion)))
                         @if ($jobsNeeded < 0)
-                            Jobs available: {{ number_format(abs($jobsNeeded)) }}<br>
+                            Available: {{ number_format(abs($jobsNeeded)) }}<br>
                             Opportunity cost of job overrun: <b>{{ number_format(2.7 * abs($jobsNeeded)) }} platinum</b><br>
                             <br>
                             <i>"You should construct additional housing and acquire more peasants, since you have idle jobs.<br><br>Employed peasants pay their income tax in platinum to the dominion." -Advisor</i>
                         @elseif ($jobsNeeded === 0)
-                            Jobs available: 0<br>
+                            Available: 0<br>
                             No opportunity cost
                         @else
-                            Jobs needed: {{ number_format($jobsNeeded) }}<br>
+                            Needed: {{ number_format($jobsNeeded) }}<br>
                             Opportunity cost of job underrun: <b>{{ number_format(2.7 * $jobsNeeded) }} platinum</b><br>
                             <br>
                             <i>"You should construct additional job buildings, since you have idle peasants.<br><br>Only employed peasants pay their income tax in platinum to the dominion." -Advisor</i>
