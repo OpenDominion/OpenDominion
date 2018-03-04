@@ -54,29 +54,29 @@
                                     <tr>
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
+                                            @if ($protectionService->isUnderProtection($dominion))
+                                                <i class="ra ra-shield ra-lg text-aqua"></i>
+                                            @endif
+
+                                            {{--
+
+                                            RG: <i class="ra ra-crossed-swords ra-lg text-green"></i>
+                                            EG: <i class="ra ra-crossed-swords ra-lg text-yellow"></i>
+                                            Monarch: <i class="ra ra-queen-crown ra-lg"></i>
+                                                RG: text-green
+                                                EG: text-yellow
+
+                                            --}}
+
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
                                             @else
                                                 {{ $dominion->name }}
                                             @endif
 
-                                            @if ($protectionService->isUnderProtection($dominion))
-                                                <span class="label label-info">Protection</span>
-                                            @endif
-
                                             @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
                                                 <span class="label label-success">Online</span>
                                             @endif
-
-                                            {{--<span class="label label-success">Royal Guard</span>--}}
-                                            {{--<span class="label label-warning">Elite Guard</span>--}}
-                                            {{--<span class="label label-danger">Monarch</span>--}}
-
-                                            {{--@if ($dominion->id !== $selectedDominion->id)
-                                                <a href="{{ route('dominion.other.status', $dominion->id) }}">{{ $dominion->name }}</a>
-                                            @else
-                                                <b><a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a></b> (you)
-                                            @endif--}}
                                         </td>
                                         @if ($isOwnRealm)
                                             <td class="text-center">{{ $dominion->user->display_name }}</td>
