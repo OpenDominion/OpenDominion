@@ -36,7 +36,12 @@
                                         </td>--}}
                                         <td>
                                             <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
-                                            <small class="text-muted">Created {{ $thread->created_at->diffForHumans() }} by <b>{{ $thread->dominion->user->display_name }}</b> ({{ $thread->dominion->name }})</small>
+                                            <small class="text-muted">
+                                                Created {{ $thread->created_at->diffForHumans() }} by <b>{{ $thread->dominion->name }}</b>
+                                                @if ($thread->dominion->name !== $thread->dominion->user->display_name)
+                                                    ({{ $thread->dominion->user->display_name }})
+                                                @endif
+                                            </small>
                                         </td>
                                         <td class="text-center align-middle">
                                             {{ number_format($thread->posts->count()) }}
@@ -47,7 +52,12 @@
                                         <td class="text-center align-middle">
                                             @if (!$thread->posts->isEmpty())
                                                 {{ $thread->posts->last()->created_at->diffForHumans() }}<br>
-                                                <small class="text-muted">by <b>{{ $thread->posts->last()->dominion->user->display_name }}</b> ({{ $thread->posts->last()->dominion->name }})</small>
+                                                <small class="text-muted">
+                                                    by <b>{{ $thread->posts->last()->dominion->name }}</b>
+                                                    @if ($thread->posts->last()->dominion->name !== $thread->posts->last()->dominion->user->display_name)
+                                                        ({{ $thread->posts->last()->dominion->user->display_name }})
+                                                    @endif
+                                                </small>
                                             @else
                                                 None
                                             @endif
