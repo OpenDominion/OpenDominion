@@ -57,9 +57,6 @@ class AppServiceProvider extends AbstractServiceProvider
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
 
-        $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
-        $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
-
         $this->registerCalculators();
         $this->registerServices();
     }
