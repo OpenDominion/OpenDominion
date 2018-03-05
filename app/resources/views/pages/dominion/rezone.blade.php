@@ -11,7 +11,7 @@
                     <h3 class="box-title"><i class="ra ra-cycle"></i> Re-zone Land</h3>
                 </div>
                 <form action="{{ route('dominion.rezone') }}" method="post" role="form">
-                    {!! csrf_field() !!}
+                    {{ csrf_field() }}
                     <div class="box-body no-padding">
                         <table class="table">
                             <colgroup>

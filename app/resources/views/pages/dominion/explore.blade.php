@@ -11,7 +11,7 @@
                     <h3 class="box-title"><i class="fa fa-search"></i> Explore Land</h3>
                 </div>
                 <form action="{{ route('dominion.explore') }}" method="post" role="form">
-                    {!! csrf_field() !!}
+                    {{ csrf_field() }}
                     <div class="box-body no-padding">
                         <table class="table">
                             <colgroup>
