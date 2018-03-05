@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Providers;
 
+use Illuminate\Pagination\Paginator;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -16,7 +17,6 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
-use OpenDominion\Models\Dominion;
 use OpenDominion\Observers\DominionObserver;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsService;
@@ -42,9 +42,15 @@ use OpenDominion\Services\RealmFinderService;
 class AppServiceProvider extends AbstractServiceProvider
 {
     /**
-     * Register any application services.
-     *
-     * @return void
+     * {@inheritdoc}
+     */
+    public function boot()
+    {
+        Paginator::useBootstrapThree();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function register()
     {
