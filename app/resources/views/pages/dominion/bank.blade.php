@@ -13,7 +13,7 @@
                     <h3 class="box-title"><i class="ra ra-capitol"></i> National Bank</h3>
                 </div>
                 <form action="{{ route('dominion.bank') }}" method="post" {{--class="form-inline" --}}role="form">
-                    {!! csrf_field() !!}
+                    {{ csrf_field() }}
                     <div class="box-body">
                         <div class="row">
                             <div class="col-lg-6">

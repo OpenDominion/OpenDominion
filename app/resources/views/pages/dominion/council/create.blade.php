@@ -8,7 +8,7 @@
             <h3 class="box-title"><i class="fa fa-group"></i> Create Thread</h3>
         </div>
         <form action="{{ route('dominion.council.create') }}" method="post" class="form-horizontal" role="form">
-            {!! csrf_field() !!}
+            {{ csrf_field() }}
             <div class="box-body">
 
                 {{-- Title --}}

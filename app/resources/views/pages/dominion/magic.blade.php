@@ -14,7 +14,7 @@
                             <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            {!! csrf_field() !!}
+                            {{ csrf_field() }}
                             <div class="box-body table-responsive no-padding">
                                 <table class="table">
                                     <colgroup>
