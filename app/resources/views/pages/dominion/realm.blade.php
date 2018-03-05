@@ -122,7 +122,7 @@
                             </div>
                             <div class="col-xs-4">
                                 <form action="{{ route('dominion.realm.change-realm') }}" method="post" role="form">
-                                    {!! csrf_field() !!}
+                                    {{ csrf_field() }}
                                     <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}">
                                 </form>
                             </div>
