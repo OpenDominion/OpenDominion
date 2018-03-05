@@ -17,7 +17,6 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
-use OpenDominion\Observers\DominionObserver;
 use OpenDominion\Services\Activity\ActivityService;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\CouncilService;
