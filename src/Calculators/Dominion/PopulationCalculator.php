@@ -294,10 +294,21 @@ class PopulationCalculator
         return max(
             ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
             min(
+                // todo: getMaxPopulation should be next hour. this method needs refactoring
                 ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
                 ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion))
             )
         );
+
+        /*
+        =MAX(
+            -5% * peasants - drafteegrowth,
+            MIN(
+                maxpop(nexthour) - (peasants - military) - drafteesgrowth,
+                moddedbirth - drafteegrowth
+            )
+        )
+        */
     }
 
     /**
