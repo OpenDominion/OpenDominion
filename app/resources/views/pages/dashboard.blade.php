@@ -64,7 +64,7 @@
                                                 @endif
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
-                                                    {{ csrf_field() }}
+                                                    @csrf
                                                     <button type="submit" class="btn btn-link" style="padding: 0;">{{ $dominion->name }}</button>
 
                                                     @if ($dominion->isLocked())

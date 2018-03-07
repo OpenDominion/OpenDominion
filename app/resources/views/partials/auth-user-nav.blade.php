@@ -19,7 +19,7 @@
                 </div>
                 <div class="pull-right">
                     <form action="{{ route('auth.logout') }}" method="post">
-                        {{ csrf_field() }}
+                        @csrf
                         <button type="submit" class="btn btn-danger">
                             <i class="fa fa-sign-out fa-fw"></i> Logout
                         </button>
