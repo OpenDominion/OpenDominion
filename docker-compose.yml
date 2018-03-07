@@ -1,0 +1,33 @@
+version: '2'
+services:
+    web:
+        build: docker/web
+        environment:
+            - VIRTUAL_HOST=open-dominion.docker
+            - VIRTUAL_PORT=80
+            - HTTPS_METHOD=noredirect
+        links:
+            - php-fpm
+        volumes:
+            - .:/srv
+
+    php-fpm:
+        build: docker/php-fpm
+        links:
+            - mysql
+        volumes:
+            - .:/srv
+
+    mysql:
+        image: mysql:latest
+        environment:
+          - MYSQL_ROOT_PASSWORD=supersecurepassword
+          - MYSQL_DATABASE=open_dom
+          - MYSQL_USER=open_dom
+          - MYSQL_PASSWORD=open_dom
+        ports:
+          - 3306:3306
+        volumes:
+          - mysql_data:/var/lib/mysql
+volumes:
+    mysql_data:
