@@ -15,14 +15,14 @@
                 <div class="box-body">
                     <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with up to 11 other dominions and you must work together to make your realm the wealthiest and most powerful in the current round!</p>
 
-                    <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
+                    <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="https://dominion.opendominion.net/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
 
                     <p>To start playing, <a href="{{ route('auth.register') }}">register</a> an account and sign up for a round after registration. If you already have an account, <a href="{{ route('auth.login') }}">login</a> instead.</p>
 
                     <p>To help you get started, please consult the following resources:</p>
 
                     <ul>
-                        <li>A mirror of Dominion's manual: <a href="https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm" target="_blank">The Scribes <i class="fa fa-external-link"></i></a></li>
+                        <li>A mirror of Dominion's manual: <a href="https://dominion.opendominion.net/scribes.html" target="_blank">The Scribes <i class="fa fa-external-link"></i></a></li>
                         <li><a href="http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide" target="_blank">The Complete Newbie Guide <i class="fa fa-external-link"></i></a> on the Web Archive</li>
                     </ul>
 
