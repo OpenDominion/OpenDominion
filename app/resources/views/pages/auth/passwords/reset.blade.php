@@ -9,7 +9,7 @@
                     <h3 class="box-title">Reset Password</h3>
                 </div>
                 <form action="{{ route('auth.password.request') }}" method="post" class="form-horizontal" role="form">
-                    {{ csrf_field() }}
+                    @csrf
 
                     <input type="hidden" name="token" value="{{ $token }}">
 

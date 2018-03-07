@@ -11,7 +11,7 @@
                     <h3 class="box-title"><i class="ra ra-demolish"></i> Destroy Buildings</h3>
                 </div>
                 <form action="{{ route('dominion.destroy') }}" method="post" role="form">
-                    {{ csrf_field() }}
+                    @csrf
                     <div class="box-body no-padding">
                         <div class="row">
 
