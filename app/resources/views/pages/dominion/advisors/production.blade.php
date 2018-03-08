@@ -235,8 +235,7 @@
                         Military: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
                         <br>
                         <b>Jobs</b><br>
-                        Total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
-                        Fulfilled: {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }}<br>
+                        Fulfilled: {{ number_format($populationCalculator->getPopulationEmployed($selectedDominion)) }} / {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
                         @php($jobsNeeded = ($selectedDominion->peasants - $populationCalculator->getEmploymentJobs($selectedDominion)))
                         @if ($jobsNeeded < 0)
                             Available: {{ number_format(abs($jobsNeeded)) }}<br>
