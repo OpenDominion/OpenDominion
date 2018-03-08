@@ -225,9 +225,8 @@
                     <p>
                         <b>Population</b><br>
                         Total: {{ number_format($populationCalculator->getPopulation($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
-                        Peasants: {{ number_format($populationCalculator->getPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
+                        Peasants: {{ number_format($populationCalculator->getPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }} ({{ ((($selectedDominion->peasants_last_hour > 0) ? '+' : null) . number_format($selectedDominion->peasants_last_hour)) }} last hour)<br>
                         Military: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
-                        Peasant change last hour: <b>{{ ((($selectedDominion->peasants_last_hour > 0) ? '+' : null) . number_format($selectedDominion->peasants_last_hour)) }}</b><br>
                         <br>
                         <b>Jobs</b><br>
                         Total: {{ number_format($populationCalculator->getEmploymentJobs($selectedDominion)) }}<br>
