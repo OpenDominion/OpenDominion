@@ -208,4 +208,56 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $this->assertEquals(1000 + $platToBeAdded * 1.1, $dominion->resource_platinum);
     }
+
+    // https://github.com/WaveHack/OpenDominion/issues/227
+    public function testTheProperAmountOfFoodGetsAddedOnTick()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+
+        $productionCalculator = $this->app->make(ProductionCalculator::class);
+        $spellActionService = $this->app->make(SpellActionService::class);
+        $spellCalculator = $this->app->make(SpellCalculator::class);
+
+        $dominion->fill([
+            'peasants' => 7553 * 4, // each person eats 0.25 food /hr
+            'resource_food' => 27487,
+            'resource_mana' => 9999999,
+            'building_farm' => 80,
+            'military_draftees' => 0,
+            'military_unit2' => 0,
+            'military_spies' => 0,
+            'military_wizards' => 0,
+        ])->save();
+
+        // 80 farms * 80 food * 1.05 human * 1.025 prestige = 6888 food
+        $this->assertEquals(6888, $productionCalculator->getFoodProduction($dominion));
+        $this->assertEquals(7553, $productionCalculator->getFoodConsumption($dominion));
+        $this->assertEquals(275, round($productionCalculator->getFoodDecay($dominion)));
+
+        // 6888 - 7553 - 275 = -940 food
+        $this->assertEquals(-940, $productionCalculator->getFoodNetChange($dominion));
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $spellActionService->castSelfSpell($dominion, 'gaias_watch');
+
+        // Refresh active spells
+        $spellCalculator->getActiveSpells($dominion, true);
+
+        // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7544 food
+        $this->assertEquals(7544, $productionCalculator->getFoodProduction($dominion));
+        $this->assertEquals(7553, $productionCalculator->getFoodConsumption($dominion));
+        $this->assertEquals(275, round($productionCalculator->getFoodDecay($dominion)));
+
+        // 7544 - 7553 - 275 = -284
+        $this->assertEquals(-284, $productionCalculator->getFoodNetChange($dominion));
+
+        Artisan::call('game:tick');
+        $dominion->refresh();
+
+        // 27487 food - 284 net change = 27203 food
+        $this->assertEquals(27203, $dominion->resource_food);
+    }
 }
