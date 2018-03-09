@@ -11,9 +11,9 @@ class SpellCalculator
     /** @var Collection */
     protected $activeSpells;
 
-    public function getActiveSpells(Dominion $dominion): Collection
+    public function getActiveSpells(Dominion $dominion, bool $forceRefresh = false): Collection
     {
-        if ($this->activeSpells === null) {
+        if ($this->activeSpells === null || $forceRefresh) {
             $this->activeSpells = DB::table('active_spells')
                 ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
                 ->join('realms', 'realms.id', '=', 'dominions.realm_id')
