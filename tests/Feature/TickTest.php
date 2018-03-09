@@ -6,6 +6,10 @@ use Artisan;
 use CoreDataSeeder;
 use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class TickTest extends AbstractBrowserKitTestCase
@@ -158,5 +162,50 @@ class TickTest extends AbstractBrowserKitTestCase
             'resource_gems' => 300,
             'resource_mana' => 500,
         ]);
+    }
+
+    // it works! not what I was looking for when writing this, but eh
+    // https://github.com/WaveHack/OpenDominion/issues/217
+    public function testTheProperAmountOfResourcesGetAddedOnTick()
+    {
+        $this->seed(CoreDataSeeder::class);
+        $user = $this->createUser();
+        $round = $this->createRound();
+        $dominion = $this->createDominion($user, $round);
+
+        $populationCalculator = $this->app->make(PopulationCalculator::class);
+        $productionCalculator = $this->app->make(ProductionCalculator::class);
+        $spellActionService = $this->app->make(SpellActionService::class);
+        $spellCalculator = $this->app->make(SpellCalculator::class);
+
+        $dominion->fill([
+            'peasants' => 30000,
+            'resource_platinum' => 1000,
+            'resource_mana' => 9999999,
+            'building_alchemy' => 850,
+        ])->save();
+
+        // 850 alch * 45 plat = 38,250 plat
+        // 18k jobs * 2.7 plat = 48,600 plat
+
+        $platToBeAdded = 86850;
+
+        $this->assertEquals(18000, $populationCalculator->getPopulationEmployed($dominion));
+        $this->assertEquals($platToBeAdded, $productionCalculator->getPlatinumProduction($dominion));
+        $this->assertFalse($spellCalculator->isSpellActive($dominion, 'midas_touch'));
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $spellActionService->castSelfSpell($dominion, 'midas_touch');
+
+        // Refresh active spells
+        $spellCalculator->getActiveSpells($dominion, true);
+
+        $this->assertTrue($spellCalculator->isSpellActive($dominion, 'midas_touch'));
+        $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion));
+
+        Artisan::call('game:tick');
+        $dominion->refresh();
+
+        $this->assertEquals(1000 + $platToBeAdded * 1.1, $dominion->resource_platinum);
     }
 }
