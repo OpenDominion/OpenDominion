@@ -227,9 +227,9 @@
                         Total: {{ number_format($populationCalculator->getPopulation($selectedDominion)) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}<br>
                         Peasants: {{ number_format($selectedDominion->peasants) }} / {{ number_format($populationCalculator->getMaxPopulation($selectedDominion) - $populationCalculator->getPopulationMilitary($selectedDominion)) }}
                         @if ($selectedDominion->peasants_last_hour < 0)
-                            <small class="text-red">(<b>{{ number_format($selectedDominion->peasants_last_hour) }}</b> last hour)</small>
+                            <span class="text-red">(<b>{{ number_format($selectedDominion->peasants_last_hour) }}</b> last hour)</span>
                         @elseif ($selectedDominion->peasants_last_hour > 0)
-                            <small class="text-green">(<b>+{{ number_format($selectedDominion->peasants_last_hour) }}</b> last hour)</small>
+                            <span class="text-green">(<b>+{{ number_format($selectedDominion->peasants_last_hour) }}</b> last hour)</span>
                         @endif
                         <br>
                         Military: {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}<br>
