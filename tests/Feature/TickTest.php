@@ -164,21 +164,30 @@ class TickTest extends AbstractBrowserKitTestCase
         ]);
     }
 
-    // it works! not what I was looking for when writing this, but eh
     // https://github.com/WaveHack/OpenDominion/issues/217
     public function testTheProperAmountOfPlatinumGetsAddedOnTick()
     {
         $this->seed(CoreDataSeeder::class);
-        $user = $this->createUser();
+        $user1 = $this->createUser();
+        $user2 = $this->createUser();
         $round = $this->createRound();
-        $dominion = $this->createDominion($user, $round);
+        $dominion1 = $this->createDominion($user1, $round);
+        $dominion2 = $this->createDominion($user2, $round);
 
         $populationCalculator = $this->app->make(PopulationCalculator::class);
         $productionCalculator = $this->app->make(ProductionCalculator::class);
         $spellActionService = $this->app->make(SpellActionService::class);
         $spellCalculator = $this->app->make(SpellCalculator::class);
 
-        $dominion->fill([
+        $dominion1->fill([
+            'peasants' => 30000,
+            'resource_platinum' => 1000,
+            'resource_mana' => 9999999,
+            'building_alchemy' => 850,
+        ])->save();
+
+        // just duplicate values, yolo
+        $dominion2->fill([
             'peasants' => 30000,
             'resource_platinum' => 1000,
             'resource_mana' => 9999999,
@@ -190,23 +199,34 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $platToBeAdded = 86850;
 
-        $this->assertEquals(18000, $populationCalculator->getPopulationEmployed($dominion));
-        $this->assertEquals($platToBeAdded, $productionCalculator->getPlatinumProduction($dominion));
-        $this->assertFalse($spellCalculator->isSpellActive($dominion, 'midas_touch'));
+        $this->assertEquals(18000, $populationCalculator->getPopulationEmployed($dominion1));
+        $this->assertEquals($platToBeAdded, $productionCalculator->getPlatinumProduction($dominion1));
+        $this->assertFalse($spellCalculator->isSpellActive($dominion1, 'midas_touch'));
+
+        $this->assertEquals(18000, $populationCalculator->getPopulationEmployed($dominion2));
+        $this->assertEquals($platToBeAdded, $productionCalculator->getPlatinumProduction($dominion2));
+        $this->assertFalse($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
+
+        // cast self spell for dominion 2 ONLY
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $spellActionService->castSelfSpell($dominion, 'midas_touch');
+        $spellActionService->castSelfSpell($dominion2, 'midas_touch');
 
         // Refresh active spells
-        $spellCalculator->getActiveSpells($dominion, true);
+        $spellCalculator->getActiveSpells($dominion1, true);
+        $this->assertFalse($spellCalculator->isSpellActive($dominion1, 'midas_touch'));
+        $this->assertEquals($platToBeAdded * 1.0, $productionCalculator->getPlatinumProduction($dominion1));
 
-        $this->assertTrue($spellCalculator->isSpellActive($dominion, 'midas_touch'));
-        $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion));
+        $spellCalculator->getActiveSpells($dominion2, true);
+        $this->assertTrue($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
+        $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion2));
 
         Artisan::call('game:tick');
-        $dominion->refresh();
+        $dominion1->refresh();
+        $dominion2->refresh();
 
-        $this->assertEquals(1000 + $platToBeAdded * 1.1, $dominion->resource_platinum);
+        $this->assertEquals(1000 + $platToBeAdded * 1.0, $dominion1->resource_platinum);
+        $this->assertEquals(1000 + $platToBeAdded * 1.1, $dominion2->resource_platinum);
     }
 
     // https://github.com/WaveHack/OpenDominion/issues/227
