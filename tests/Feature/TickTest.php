@@ -166,7 +166,7 @@ class TickTest extends AbstractBrowserKitTestCase
 
     // it works! not what I was looking for when writing this, but eh
     // https://github.com/WaveHack/OpenDominion/issues/217
-    public function testTheProperAmountOfResourcesGetAddedOnTick()
+    public function testTheProperAmountOfPlatinumGetsAddedOnTick()
     {
         $this->seed(CoreDataSeeder::class);
         $user = $this->createUser();
