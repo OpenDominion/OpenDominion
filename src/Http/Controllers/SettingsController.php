@@ -74,10 +74,12 @@ class SettingsController extends AbstractController
         $newNotifications = [];
 
         foreach ($data['notifications'] as $key => $types) {
-            $newNotifications[$key] = [];
-
-            foreach ($types as $type => $on) {
-                $newNotifications[$key][$type] = true;
+            foreach ($types as $type => $channels) {
+                foreach ($channels as $channel => $enabled) {
+                    if ($enabled == 'on') {
+                        array_set($newNotifications, "{$key}.{$type}.{$channel}", true);
+                    }
+                }
             }
         }
 
