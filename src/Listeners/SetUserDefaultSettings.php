@@ -33,21 +33,7 @@ class SetUserDefaultSettings
         $settings = [];
 
         // Notifications
-        $settings['notifications'] = [];
-
-        foreach (collect([
-            $this->notificationHelper->getGeneralTypes(),
-            $this->notificationHelper->getHourlyDominionTypes(),
-            $this->notificationHelper->getIrregularDominionTypes()
-        ]) as $notifications) {
-            foreach ($notifications as $notificationKey => $notification) {
-                $settings['notifications'][$notificationKey] = collect($notification['defaults'])->filter(function ($value) {
-                    return $value === true;
-                });
-            }
-        }
-
-        // Notification Settings
+        $settings['notifications'] = $this->notificationHelper->getDefaultUserNotificationSettings();
         $settings['notification_digest'] = 'hourly';
 
         $user->settings = $settings;
