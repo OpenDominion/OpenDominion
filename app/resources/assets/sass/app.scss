@@ -38,3 +38,14 @@
   margin-top: 10px;
   font-weight: normal;
 }
+
+// Notifications dropdown
+.notifications-menu .menu > li > a {
+  overflow: auto !important;
+  text-overflow: unset !important;
+  white-space: normal !important;
+
+  .fa {
+    width: 15px !important;
+  }
+}
