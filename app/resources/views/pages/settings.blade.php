@@ -76,44 +76,9 @@
                     <div class="row">
                         <div class="col-sm-6">
 
-                            <h2 class="page-header">General Notifications</h2>
+                            <h2 class="page-header">Notifications</h2>
 
-                            <table class="table table-striped table-hover">
-                                <colgroup>
-                                    <col>
-                                    <col width="100">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>Event</th>
-                                        <th class="text-center">Email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><em>All General Notifications</em></td>
-                                        <td class="text-center">
-                                            <input type="checkbox" data-check-all data-check-all-type="email">
-                                        </td>
-                                    </tr>
-                                    @foreach ($notificationHelper->getGeneralTypes() as $notificationKey => $notification)
-                                        <tr>
-                                            <td>{{ $notification['label'] }}</td>
-                                            <td class="text-center">
-                                                <input type="checkbox" name="notifications[{{ $notificationKey }}][email]" {{ $user->getSetting("notifications.{$notificationKey}.email") ? 'checked' : null }} data-check-all-type="email">
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-
-                            <h2 class="page-header">Game Notifications</h2>
-
-                            @foreach (collect([
-                                'Hourly Dominion Events' => $notificationHelper->getHourlyDominionTypes(),
-                                'Irregular Dominion Events' => $notificationHelper->getIrregularDominionTypes(),
-                                /*'Irregular Realm Events' => $notificationHelper->getIrregularRealmTypes(),*/
-                            ]) as $notificationType => $notifications)
+                            @foreach ($notificationHelper->getNotificationTypes() as $type => $notifications)
                                 <table class="table table-striped table-hover">
                                     <colgroup>
                                         <col>
@@ -122,29 +87,33 @@
                                     </colgroup>
                                     <thead>
                                         <tr>
-                                            <th>{{ $notificationType }}</th>
-                                            <th class="text-center">In-game</th>
+                                            <th>{{ $notificationHelper->getNotificationTypeLabel($type) }}</th>
                                             <th class="text-center">Email</th>
+                                            <th class="text-center">Ingame</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><em>All {{ $notificationType }}</em></td>
+                                            <td><em>All {{ $notificationHelper->getNotificationTypeLabel($type) }}</em></td>
                                             <td class="text-center">
-                                                <input type="checkbox" data-check-all data-check-all-type="ingame">
+                                                <input type="checkbox" data-check-all data-check-all-type="email" {{ collect($notificationSettings[$type])->map(function ($notification) { return $notification['email'] ?? false; })->reduce(function ($carry, $item) { return $carry && $item; }, true) ? 'checked' : null }}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" data-check-all data-check-all-type="email">
+                                                <input type="checkbox" data-check-all data-check-all-type="ingame" {{ collect($notificationSettings[$type])->map(function ($notification) { return $notification['ingame'] ?? false; })->reduce(function ($carry, $item) { return $carry && $item; }, true) ? 'checked' : null }}>
                                             </td>
                                         </tr>
-                                        @foreach ($notifications as $notificationKey => $notification)
+                                        @foreach ($notifications as $key => $notification)
                                             <tr>
                                                 <td>{{ $notification['label'] }}</td>
                                                 <td class="text-center">
-                                                    <input type="checkbox" name="notifications[{{ $notificationKey }}][ingame]" {{ $user->getSetting("notifications.{$notificationKey}.ingame") ? 'checked' : null }} data-check-all-type="ingame">
+                                                    <input type="checkbox" name="notifications[{{ $type }}][{{ $key }}][email]" {{ array_get($notificationSettings, "{$type}.{$key}.email") ? 'checked' : null }} data-check-all-type="email">
                                                 </td>
                                                 <td class="text-center">
-                                                    <input type="checkbox" name="notifications[{{ $notificationKey }}][email]" {{ $user->getSetting("notifications.{$notificationKey}.email") ? 'checked' : null }} data-check-all-type="email">
+                                                    @if ($notification['onlyemail'] ?? false)
+                                                        &nbsp;
+                                                    @else
+                                                        <input type="checkbox" name="notifications[{{ $type }}][{{ $key }}][ingame]" {{ array_get($notificationSettings, "{$type}.{$key}.ingame") ? 'checked' : null }} data-check-all-type="ingame">
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -213,7 +182,7 @@
     <script type="text/javascript">
         (function ($) {
 
-            // Set filesize on file upload
+            // Display filename and filesize on avatar upload
             $(document).on('change', ':file', function () {
                 var input = $(this);
                 var file = input.get(0).files[0];
@@ -232,7 +201,6 @@
 
                 if (inputIsAllCheckbox) {
                     allCheckboxes.each(function () {
-                        // todo: also do this on page load
                         $(this).prop('checked', allCheckbox.prop('checked'));
                     });
                 } else {

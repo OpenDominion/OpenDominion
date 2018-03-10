@@ -4,13 +4,34 @@ namespace OpenDominion\Helpers;
 
 class NotificationHelper
 {
+    public function getNotificationTypes(): array
+    {
+        return [
+            'general' => $this->getGeneralTypes(),
+            'hourly_dominion' => $this->getHourlyDominionTypes(),
+            'irregular_dominion' => $this->getIrregularDominionTypes(),
+//            'irregular_realm' => $this->getIrregularRealmTypes(),
+        ];
+    }
+
+    public function getNotificationTypeLabel(string $key): string
+    {
+        return [
+            'general' => 'General Notifications',
+            'hourly_dominion' => 'Hourly Dominion Notifications',
+            'irregular_dominion' => 'Irregular Dominion Notifications',
+            'irregular_realm' => 'Irregular Realm Notifications',
+        ][$key];
+    }
+
     public function getGeneralTypes(): array
     {
         return [
             // updates
             // anouncements
             'generic' => [
-                'label' => 'Generic emails sent by the administrators',
+                'label' => 'Generic emails manually sent by the administrators',
+                'onlyemail' => true,
                 'defaults' => ['email' => true],
             ]
         ];
@@ -21,11 +42,11 @@ class NotificationHelper
         return [
             'exploration_completed' => [
                 'label' => 'Land exploration completed',
-                'defaults' => ['ingame' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'construction_completed' => [
                 'label' => 'Building construction completed',
-                'defaults' => ['ingame' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'training_completed' => [
                 'label' => 'Military training completed',
@@ -37,7 +58,7 @@ class NotificationHelper
             ],
             'beneficial_magic_dissipated' => [
                 'label' => 'Beneficial magic effect dissipated',
-                'defaults' => ['ingame' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'harmful_magic_dissipated' => [
                 'label' => 'Harmful magic effect dissipated',
@@ -45,7 +66,7 @@ class NotificationHelper
             ],
             'starvation' => [
                 'label' => 'Starvation occurred',
-                'defaults' => ['ingame' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
         ];
     }
@@ -55,7 +76,7 @@ class NotificationHelper
         return [
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
-                'defaults' => ['ingame' => true, 'email' => true],
+                'defaults' => ['ingame' => true, 'email' => false],
             ],
             'repelled_invasion' => [
                 'label' => 'Your dominion repelled an invasion',
@@ -93,6 +114,19 @@ class NotificationHelper
             'wonder_destroyed' => [],
             'realmie_death' => [],
         ];
+    }
+
+    public function getDefaultUserNotificationSettings(): array
+    {
+        return collect($this->getNotificationTypes())->map(function ($notifications) {
+            $return = [];
+
+            foreach ($notifications as $key => $notification) {
+                $return[$key] = $notification['defaults'] ?? 'nyi';
+            }
+
+            return $return;
+        })->toArray();
     }
 
     public function getIrregularTypes(): array

@@ -14,8 +14,16 @@ class SettingsController extends AbstractController
 {
     public function getIndex()
     {
+        $user = Auth::user();
+
+        /** @var NotificationHelper $notificationHelper */
+        $notificationHelper = app(NotificationHelper::class);
+
+        $notificationSettings = $user->settings['notifications'] ?? $notificationHelper->getDefaultUserNotificationSettings();
+
         return view('pages.settings', [
-            'notificationHelper' => app(NotificationHelper::class),
+            'notificationHelper' => $notificationHelper,
+            'notificationSettings' => $notificationSettings,
         ]);
     }
 
