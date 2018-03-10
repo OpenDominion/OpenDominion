@@ -6,8 +6,8 @@
 /.idea/vcs.xml
 /.idea/workspace.xml
 /.vagrant/
+/app/routes/web.local.php
 /app/storage/*.key
-/app/storage/local.sqlite
 /node_modules/
 /public/assets/
 /public/hot/

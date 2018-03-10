@@ -16,6 +16,9 @@ abstract class AbstractBrowserKitTestCase extends TestCase
      */
     protected $baseUrl = 'http://localhost';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         parent::setUp();

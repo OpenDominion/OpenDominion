@@ -5,65 +5,33 @@ use Illuminate\Routing\Router;
 /** @var Router $router */
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 
-$router->get('/test', function () {
-//    $user = \OpenDominion\Models\User::first();
-//    event(new \OpenDominion\Events\UserRegisteredEvent($user));
-
-//    $analyticsService = app(\OpenDominion\Contracts\Services\Analytics\AnalyticsService::class);
-//    return $analyticsService->getFlashEvents();
-
-//    $networthCalculator = app(\OpenDominion\Contracts\Calculators\NetworthCalculator::class);
-//    $realmFactory = app(\OpenDominion\Factories\RealmFactory::class);
-//    $realmFinderService = app(\OpenDominion\Contracts\Services\RealmFinderService::class);
-//
-//    $round = \OpenDominion\Models\Round::find(2);
-//
-//    $races = [
-//        'good' => \OpenDominion\Models\Race::whereAlignment('good')->first(),
-//        'evil' => \OpenDominion\Models\Race::whereAlignment('evil')->first(),
-//    ];
-//
-//    for ($i = 0; $i < 500; $i++) {
-//        $raceAlignment = (($i % 2 === 0) ? 'good' : 'evil');
-//
-//        $race = $races[$raceAlignment];
-//
-//        $user = factory(\OpenDominion\Models\User::class)->create();
-//        $realm = $realmFinderService->findRandomRealm($round, $race);
-//        if (!$realm) {
-//            $realm = $realmFactory->create($round, $raceAlignment);
-//        }
-//
-//        $dominion = factory(\OpenDominion\Models\Dominion::class)->make([
-//            'user_id' => $user->id,
-//            'round_id' => $round->id,
-//            'realm_id' => $realm->id,
-//            'race_id' => $race->id,
-//        ]);
-//
-//        $dominion->save();
-//    }
-});
-
 // Authentication
 
 $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) {
 
     $router->group(['middleware' => 'guest'], function (Router $router) {
 
-        $router->get('login')->uses('Auth\LoginController@getLogin')->name('login');
-        $router->post('login')->uses('Auth\LoginController@postLogin');
+        // Authentication
+        $router->get('login')->uses('Auth\LoginController@showLoginForm')->name('login');
+        $router->post('login')->uses('Auth\LoginController@login');
 
-        $router->get('register')->uses('Auth\RegisterController@getRegister')->name('register');
-        $router->post('register')->uses('Auth\RegisterController@postRegister');
+        // Registration
+        $router->get('register')->uses('Auth\RegisterController@showRegistrationForm')->name('register');
+        $router->post('register')->uses('Auth\RegisterController@register');
+        $router->get('activate/{activation_code}')->uses('Auth\RegisterController@activate')->name('activate');
 
-        $router->get('activate/{activation_code}')->uses('Auth\RegisterController@getActivate')->name('activate');
+        // Password Reset
+        $router->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+        $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        $router->post('password/reset', 'Auth\ResetPasswordController@reset');
 
     });
 
     $router->group(['middleware' => 'auth'], function (Router $router) {
 
-        $router->post('logout')->uses('Auth\LoginController@postLogout')->name('logout');
+        // Logout
+        $router->post('logout')->uses('Auth\LoginController@logout')->name('logout');
 
     });
 
@@ -110,7 +78,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
             $router->get('advisors/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construct');
             $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
-            $router->get('advisors/rankings/{type?}')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
+//            $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
             // Daily
@@ -158,6 +126,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('council/{thread}')->uses('Dominion\CouncilController@getThread')->name('council.thread');
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
 
+            // Rankings
+            $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
+
             // Realm
             $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
@@ -190,3 +161,42 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $
 // Contact
 
 // Links
+
+// Staff
+
+$router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator'], 'prefix' => 'staff', 'as' => 'staff.'], function (Router $router) {
+
+    $router->get('/')->uses('Staff\StaffController@getIndex')->name('index');
+
+    // Developer
+
+    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
+
+        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
+
+        // simulate dominion by state string
+        // take over dominion & traverse state history
+        // set dominion state/attributes?
+
+    });
+
+    // Administrator
+
+    $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], function (Router $router) {
+
+        $router->resource('dominions', 'Staff\Administrator\DominionController');
+        $router->resource('users', 'Staff\Administrator\UserController');
+
+        // view all users
+        // view all council boards
+
+    });
+
+    // Moderator
+
+    // todo
+    // view flagged posts
+
+});
+
+// Misc

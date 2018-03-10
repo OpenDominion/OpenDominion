@@ -5,21 +5,13 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/app/storage/local.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/app/storage/databases/local.sqlite</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="MySQL (localhost)" uuid="9f74997e-7279-45da-b82b-4ba1ff1e1582">
-      <driver-ref>mysql</driver-ref>
+    <data-source source="LOCAL" name="prod.sqlite" uuid="fb3f430b-5d14-400c-aeb6-5c0883cbade9">
+      <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://127.0.0.1:3306/opendominion</jdbc-url>
-      <driver-properties>
-        <property name="autoReconnect" value="true" />
-        <property name="zeroDateTimeBehavior" value="convertToNull" />
-        <property name="tinyInt1isBit" value="false" />
-        <property name="characterEncoding" value="utf8" />
-        <property name="characterSetResults" value="utf8" />
-        <property name="yearIsDateType" value="false" />
-      </driver-properties>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/app/storage/databases/prod.sqlite</jdbc-url>
     </data-source>
   </component>
 </project>

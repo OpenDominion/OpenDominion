@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Notifications;
+namespace OpenDominion\Notifications\User;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use OpenDominion\Models\User;
 
-class UserRegisteredNotification extends Notification implements ShouldQueue
+class RegisteredNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -42,18 +42,5 @@ class UserRegisteredNotification extends Notification implements ShouldQueue
             ->line('You can find OpenDominion at: ' . route('home'))
             ->line('Thank you for playing, and have fun!')
             ->salutation('-OpenDominion');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param User $user
-     * @return array
-     */
-    public function toArray(User $user): array
-    {
-        return [
-            //
-        ];
     }
 }

@@ -14,7 +14,7 @@
                             <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            {!! csrf_field() !!}
+                            @csrf
                             <div class="box-body table-responsive no-padding">
                                 <table class="table">
                                     <colgroup>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you may cast spells which temporarily benefit your dominion or hinder opposing dominions.</p>
-                    <p>Casting spells spends some wizard strength, but it regenerates a bit every hour. You may only cast spells above 30% strength..</p>
+                    <p>Casting spells spends some wizard strength, but it regenerates a bit every hour. You may only cast spells above 30% strength.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
             </div>

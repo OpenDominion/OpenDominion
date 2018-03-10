@@ -38,7 +38,11 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
     php bin/artisan version:update
 
     # Npm packages
-    npm install
+    if [[ ${env} == production ]]; then
+        npm install --unsafe-perm --production
+    else
+        npm install --unsafe-perm
+    fi
 
     # Frontend
     if [[ ${env} == production ]]; then

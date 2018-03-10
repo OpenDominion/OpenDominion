@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use DB;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
 
@@ -10,12 +11,12 @@ class SpellCalculator
     /** @var Collection */
     protected $activeSpells;
 
-    public function getActiveSpells(Dominion $dominion): Collection
+    public function getActiveSpells(Dominion $dominion, bool $forceRefresh = false): Collection
     {
-        if ($this->activeSpells === null) {
-            $this->activeSpells = \DB::table('active_spells')
-                ->leftJoin('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
-                ->leftJoin('realms', 'realms.id', '=', 'dominions.id')
+        if ($this->activeSpells === null || $forceRefresh) {
+            $this->activeSpells = DB::table('active_spells')
+                ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
+                ->join('realms', 'realms.id', '=', 'dominions.realm_id')
                 ->where('dominion_id', $dominion->id)
                 ->orderBy('duration', 'desc')
                 ->orderBy('created_at')

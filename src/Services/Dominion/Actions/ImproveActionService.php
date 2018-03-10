@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -42,7 +43,8 @@ class ImproveActionService
             $dominion->{'improvement_' . $improvementType} += $points;
         }
 
-        $dominion->save();
+        $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
 
         return [
             'message' => $this->getReturnMessageString($resource, $data, $totalResourcesToInvest),

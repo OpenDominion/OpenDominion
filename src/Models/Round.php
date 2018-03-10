@@ -4,10 +4,13 @@ namespace OpenDominion\Models;
 
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class Round extends AbstractModel
 {
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+
+    // Eloquent Relations
 
     public function dominions()
     {
@@ -22,6 +25,22 @@ class Round extends AbstractModel
     public function realms()
     {
         return $this->hasMany(Realm::class);
+    }
+
+    // Query Scopes
+
+    /**
+     * Scope a query to include only active rounds.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        $now = new Carbon();
+
+        return $query->where('start_date', '<=', $now)
+            ->where('end_date', '>', $now);
     }
 
     /**
@@ -62,7 +81,7 @@ class Round extends AbstractModel
      */
     public function hasStarted()
     {
-        return ($this->start_date <= Carbon::now());
+        return ($this->start_date <= now());
     }
 
     /**
@@ -72,7 +91,7 @@ class Round extends AbstractModel
      */
     public function hasEnded()
     {
-        return ($this->end_date <= Carbon::now());
+        return ($this->end_date <= now());
     }
 
     /**
@@ -92,7 +111,7 @@ class Round extends AbstractModel
      */
     public function daysUntilStart()
     {
-        return $this->start_date->diffInDays(Carbon::now()) + 1;
+        return $this->start_date->diffInDays(now()) + 1;
     }
 
     /**
@@ -102,7 +121,7 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return $this->end_date->diffInDays(Carbon::now()) + 1;
+        return $this->end_date->diffInDays(now()) + 1;
     }
 
     /**

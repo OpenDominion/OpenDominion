@@ -11,7 +11,7 @@ use Session;
 
 class SelectorService
 {
-    const SESSION_NAME = 'selected_dominion_id';
+    public const SESSION_NAME = 'selected_dominion_id';
 
     /** @var Dominion */
     protected $selectedDominion;
@@ -97,7 +97,7 @@ class SelectorService
      * Tries to auto-select a dominion for the logged in user.
      *
      * Auto-select only works when the user currently has only one active dominion.
-     *s
+     *
      * @return Dominion|null The auto-selected dominion
      * @throws LogicException
      * @throws RuntimeException
@@ -105,7 +105,7 @@ class SelectorService
     public function tryAutoSelectDominionForAuthUser(): ?Dominion
     {
         if ($this->hasUserSelectedDominion()) {
-            return null;
+            return $this->getUserSelectedDominion();
         }
 
         $user = Auth::user();

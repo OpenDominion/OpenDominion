@@ -74,7 +74,8 @@ class PopulationCalculator
     /**
      * Returns the Dominion's military population.
      *
-     * The military consists of draftees, combat units, spies, wizards and archmages.
+     * The military consists of draftees, combat units, spies, wizards, archmages and
+     * units currently in training .
      *
      * @param Dominion $dominion
      * @return int
@@ -90,6 +91,7 @@ class PopulationCalculator
             + $dominion->military_spies
             + $dominion->military_wizards
             + $dominion->military_archmages
+            + $this->trainingQueueService->getQueueTotal($dominion)
         );
     }
 
@@ -124,7 +126,7 @@ class PopulationCalculator
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
         $housingPerBarrenLand = 5;
-        $housingPerConstructingBuilding = 15;
+        $housingPerConstructingBuilding = 15; // todo: check how many constructing home/barracks houses
 
         // todo: race bonus for barren land
         // todo: ^ think about what I meant to say here. note to self: be more clear in the future
@@ -292,10 +294,21 @@ class PopulationCalculator
         return max(
             ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
             min(
+                // todo: getMaxPopulation should be next hour. this method needs refactoring
                 ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
                 ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion))
             )
         );
+
+        /*
+        =MAX(
+            -5% * peasants - drafteegrowth,
+            MIN(
+                maxpop(nexthour) - (peasants - military) - drafteesgrowth,
+                moddedbirth - drafteegrowth
+            )
+        )
+        */
     }
 
     /**

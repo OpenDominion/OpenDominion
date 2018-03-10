@@ -11,7 +11,7 @@
                     <h3 class="box-title"><i class="ra ra-cycle"></i> Release Troops</h3>
                 </div>
                 <form action="{{ route('dominion.military.release') }}" method="post" role="form">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>

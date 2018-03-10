@@ -18,21 +18,6 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * A list of the internal exception types that should not be reported.
-     *
-     * @var array
-     */
-    protected $internalDontReport = [
-//        \Illuminate\Auth\AuthenticationException::class,
-//        \Illuminate\Auth\Access\AuthorizationException::class,
-//        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-//        \Illuminate\Http\Exceptions\HttpResponseException::class,
-//        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-//        \Illuminate\Session\TokenMismatchException::class,
-        \Illuminate\Validation\ValidationException::class,
-    ];
-
-    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -43,12 +28,7 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception $exception
-     * @return void
+     * {@inheritdoc}
      */
     public function report(Exception $exception)
     {
@@ -56,14 +36,20 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Exception $exception
-     * @return \Illuminate\Http\Response
+     * {@inheritdoc}
      */
     public function render($request, Exception $exception)
     {
         return parent::render($request, $exception);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return $request->expectsJson()
+            ? response()->json(['message' => 'Unauthenticated.'], 401)
+            : redirect()->guest(route('auth.login'));
     }
 }

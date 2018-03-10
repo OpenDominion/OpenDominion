@@ -2,16 +2,15 @@
 
 namespace OpenDominion\Http\Controllers\Auth;
 
-use Illuminate\Contracts\View\View;
+use Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\RedirectsUsers;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use OpenDominion\Events\UserActivatedEvent;
 use OpenDominion\Events\UserRegisteredEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
-use Validator;
 
 class RegisterController extends AbstractController
 {
@@ -24,31 +23,59 @@ class RegisterController extends AbstractController
      */
     protected $redirectTo = '/';
 
-    public function getRegister(): View
+    /**
+     * Show the application registration form.
+     *
+     * @return Response
+     */
+    public function showRegistrationForm()
     {
         return view('pages.auth.register');
     }
 
-    public function postRegister(Request $request): RedirectResponse
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        $this->validate($request, [
+            'display_name' => 'required|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed|min:6',
+            'terms' => 'required',
+        ]);
 
         $user = $this->create($request->all());
 
         event(new UserRegisteredEvent($user));
 
-        $request->session()->flash('alert-success', 'You have been successfully registered. An activation email has been dispatched to your address.');
+        $request->session()->flash(
+            'alert-success',
+            'You have been successfully registered. An activation email has been dispatched to your address.'
+        );
 
         return redirect($this->redirectPath());
     }
 
-    public function getActivate(Request $request, string $activation_code): RedirectResponse
+    /**
+     * Handle an activation request for the application.
+     *
+     * @param Request $request
+     * @param string $activation_code
+     * @return Response
+     */
+    public function activate(Request $request, string $activation_code)
     {
         try {
-            $user = User::where(['activated' => false, 'activation_code' => $activation_code])->firstOrFail();
+            $user = User::where(['activated' => false, 'activation_code' => $activation_code])
+                ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('home')
+            return redirect()
+                ->route('home')
                 ->withErrors(['Invalid activation code']);
         }
 
@@ -59,25 +86,12 @@ class RegisterController extends AbstractController
 
         event(new UserActivatedEvent($user));
 
-        $request->session()->flash('alert-success', 'Your account has been activated and you are now logged in.');
+        $request->session()->flash(
+            'alert-success',
+            'Your account has been activated and you are now logged in.'
+        );
 
         return redirect()->route('dashboard');
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param array $data
-     * @return \Illuminate\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'display_name' => 'required|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
-            'terms' => 'required',
-        ]);
     }
 
     /**
@@ -90,7 +104,7 @@ class RegisterController extends AbstractController
     {
         return User::create([
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => Hash::make($data['password']),
             'display_name' => $data['display_name'],
             'activation_code' => str_random(),
         ]);

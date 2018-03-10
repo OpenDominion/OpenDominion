@@ -3,10 +3,11 @@
     <div class="pull-right">
         @if (isset($selectedDominion) && ($selectedDominion->round->isActive()))
             @php
-            $diff = $selectedDominion->round->start_date->diff(Carbon\Carbon::now());
-            $roundDurationInDays = $selectedDominion->round->start_date->diffInDays($selectedDominion->round->end_date);
+            $diff = $selectedDominion->round->start_date->subDays(1)->diff(now());
+            $roundDay = $selectedDominion->round->start_date->subDays(1)->diffInDays(now());
+            $roundDurationInDays = $selectedDominion->round->durationInDays();
 
-            echo "Day <strong>{$diff->days}</strong>/{$roundDurationInDays}, hour <strong>{$diff->h}</strong>.";
+            echo "Day <strong>{$roundDay}</strong>/{$roundDurationInDays}, hour <strong>{$diff->h}</strong>.";
 
             @endphp
         @endif

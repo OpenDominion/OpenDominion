@@ -72,15 +72,15 @@
                                             <dt>Went down:</dt>
                                             <dd>
                                                 <abbr title="Went down at {{ $exception->wentDownAt }}">
-                                                    {{ $exception->wentDownAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s) ago
+                                                    {{ $exception->wentDownAt->diffInMinutes(now()) + 1 }} minute(s) ago
                                                 </abbr>
                                             </dd>
                                             <dt>Estimated back:</dt>
                                             <dd>
-                                                @if (\Carbon\Carbon::now() >= $exception->willBeAvailableAt)
+                                                @if (now() >= $exception->willBeAvailableAt)
                                                     Any second now!
                                                 @else
-                                                    In {{ $exception->willBeAvailableAt->diffInMinutes(\Carbon\Carbon::now()) + 1 }} minute(s)
+                                                    In {{ $exception->willBeAvailableAt->diffInMinutes(now()) + 1 }} minute(s)
                                                 @endif
                                             </dd>
                                         @endif

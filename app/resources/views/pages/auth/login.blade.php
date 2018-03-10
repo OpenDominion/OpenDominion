@@ -2,14 +2,14 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-6 col-sm-offset-3">
 
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Login</h3>
                 </div>
                 <form action="{{ route('auth.login') }}" method="post" class="form-horizontal" role="form">
-                    {{ csrf_field() }}
+                    @csrf
 
                     <div class="box-body">
 
@@ -26,6 +26,9 @@
                             <label for="password" class="col-sm-3 control-label">Password</label>
                             <div class="col-sm-9">
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                                <span class="help-block" style="margin-bottom: 0">
+                                    Forgot your password? <a href="{{ route('auth.password.request') }}">Reset Password</a>
+                                </span>
                             </div>
                         </div>
 

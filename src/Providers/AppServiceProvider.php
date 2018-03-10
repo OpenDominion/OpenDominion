@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Providers;
 
+use Illuminate\Pagination\Paginator;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -29,6 +30,7 @@ use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
@@ -39,18 +41,21 @@ use OpenDominion\Services\RealmFinderService;
 class AppServiceProvider extends AbstractServiceProvider
 {
     /**
-     * Register any application services.
-     *
-     * @return void
+     * {@inheritdoc}
+     */
+    public function boot()
+    {
+        Paginator::useBootstrapThree();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function register()
     {
         if ($this->app->environment() === 'local') {
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
-
-        $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
-        $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
 
         $this->registerCalculators();
         $this->registerServices();
@@ -88,6 +93,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(RealmFinderService::class);
 
         // Dominion Services
+        $this->app->singleton(HistoryService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(SelectorService::class);
 

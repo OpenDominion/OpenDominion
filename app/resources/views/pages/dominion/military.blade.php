@@ -11,7 +11,7 @@
                     <h3 class="box-title"><i class="ra ra-sword"></i> Military</h3>
                 </div>
                 <form action="{{ route('dominion.military.train') }}" method="post" role="form">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
@@ -143,7 +143,7 @@
                     <h3 class="box-title">Draftees</h3>
                 </div>
                 <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="box-body no-padding">
                         <table class="table">
                             <colgroup>

@@ -3,30 +3,48 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion;
 
 use Mockery as m;
+use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
+/**
+ * @coversDefaultClass \OpenDominion\Calculators\Dominion\BuildingCalculator
+ */
 class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 {
-    /** @var Dominion */
-    protected $dominionMock;
+    /** @var Mock|Dominion */
+    protected $dominion;
 
-    /** @var BuildingCalculator */
+    /** @var Mock|BuildingCalculator */
     protected $sut;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         parent::setUp();
 
-        $this->dominionMock = m::mock(Dominion::class);
+        $this->dominion = m::mock(Dominion::class);
 
         $this->sut = m::mock(BuildingCalculator::class, [
-            m::mock(BuildingHelper::class)->makePartial(),
+            $this->app->make(BuildingHelper::class),
         ])->makePartial();
     }
 
+    /**
+     * @covers ::__construct
+     */
+    public function testConstructor()
+    {
+        $this->assertInstanceOf(BuildingCalculator::class, $this->app->make(BuildingCalculator::class));
+    }
+
+    /**
+     * @covers ::getTotalBuildings
+     */
     public function testGetTotalBuildings()
     {
         $buildingTypes = [
@@ -54,10 +72,10 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
         $expected = 0;
 
         foreach ($buildingTypes as $buildingType) {
-            $this->dominionMock->shouldReceive('getAttribute')->with('building_' . $buildingType)->andReturn(1);
+            $this->dominion->shouldReceive('getAttribute')->with('building_' . $buildingType)->andReturn(1);
             $expected++;
         }
 
-        $this->assertEquals($expected, $this->sut->getTotalBuildings($this->dominionMock));
+        $this->assertEquals($expected, $this->sut->getTotalBuildings($this->dominion));
     }
 }

@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use Carbon\Carbon;
 use DB;
 use Exception;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
@@ -49,6 +49,15 @@ class SpellActionService
         $this->trainingQueueService = $trainingQueueService;
     }
 
+    /**
+     * Does a cast self spell action for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return array
+     * @throws Exception
+     * @throws RuntimeException
+     */
     public function castSelfSpell(Dominion $dominion, string $spell): array
     {
         $this->guardLockedDominion($dominion);
@@ -61,10 +70,6 @@ class SpellActionService
 
         if ($dominion->wizard_strength < 30) {
             throw new RuntimeException("Not enough wizard strength to cast {$spellInfo['name']}.");
-        }
-
-        if (($dominion->military_wizards + $dominion->military_archmages) === 0) {
-            throw new RuntimeException("You need at least 1 wizard or archmage to cast {$spellInfo['name']}.");
         }
 
         $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
@@ -97,7 +102,7 @@ class SpellActionService
                     ->where($where)
                     ->update([
                         'duration' => $spellInfo['duration'],
-                        'updated_at' => Carbon::now(),
+                        'updated_at' => now(),
                     ]);
 
             } else {
@@ -107,16 +112,17 @@ class SpellActionService
                         'spell' => $spell,
                         'duration' => $spellInfo['duration'],
                         'cast_by_dominion_id' => $dominion->id, // todo
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ]);
             }
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= 5;
-            $dominion->save();
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
 
             DB::commit();
+
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -146,9 +152,13 @@ class SpellActionService
      */
     protected function getReturnMessageString(Dominion $dominion): string
     {
-        $wizards = (int)$dominion->military_wizards;
-        $archmages = (int)$dominion->military_archmages;
-        $spies = (int)$dominion->military_spies;
+        $wizards = $dominion->military_wizards;
+        $archmages = $dominion->military_archmages;
+        $spies = $dominion->military_spies;
+
+        if (($wizards === 0) && ($archmages === 0)) {
+            return 'You cast %s at a cost of %s mana.';
+        }
 
         if ($wizards === 0) {
             if ($archmages > 1) {
@@ -156,7 +166,7 @@ class SpellActionService
             }
 
             $thoughts = [
-                'mumbles something about being the most powerful sorcerer in the dominion is a lonely job, "but somebody\'s got to do it"',
+                'mumbles something about being the most powerful sorceress in the dominion is a lonely job, "but somebody\'s got to do it"',
                 'mumbles something about the food being quite delicious',
                 'feels like a higher spiritual entity is watching her',
                 'winks at you',
@@ -169,7 +179,7 @@ class SpellActionService
             }
 
             if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_archmages') > 0) {
-                $thoughts[] = 'mumbles something about being a bit sad because she probably won\'t be the single most powerful sorcerer in the dominion anymore';
+                $thoughts[] = 'mumbles something about being a bit sad because she probably won\'t be the single most powerful sorceress in the dominion anymore';
                 $thoughts[] = 'mumbles something about looking forward to discuss the secrets of arcane knowledge with her future peers';
             } else {
                 $thoughts[] = 'mumbles something about not having enough peers to properly conduct her studies';
@@ -216,7 +226,7 @@ class SpellActionService
                 'Your wizards successfully cast %s at a cost of %s mana.',
                 'Your wizard and archmage successfully cast %s together in harmony at a cost of %s mana. It was glorious to behold.',
                 'Your wizard watches in awe while his teacher archmage blissfully casts %s at a cost of %s mana.',
-                'Your archmage facepalms as he observes his wizard student almost failing to cast %s at a cost of %s mana.',
+                'Your archmage facepalms as she observes her wizard student almost failing to cast %s at a cost of %s mana.',
                 'Your wizard successfully casts %s at a cost of %s mana, while his teacher archmage watches him with pride.',
             ];
 

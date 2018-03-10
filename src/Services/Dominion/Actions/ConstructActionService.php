@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -89,13 +90,12 @@ class ConstructActionService
         DB::beginTransaction();
 
         try {
-            DB::table('dominions')
-                ->where('id', $dominion->id)
-                ->update([
-                    'resource_platinum' => $newPlatinum,
-                    'resource_lumber' => $newLumber,
-                ]);
+            $dominion->fill([
+                'resource_platinum' => $newPlatinum,
+                'resource_lumber' => $newLumber,
+            ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
 
+            // todo: move to ConstructionQueueService->queue($dominion, $data)
             // Check for existing queue
             $existingQueueRows = DB::table('queue_construction')
                 ->where([

@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -72,7 +73,7 @@ class ReleaseActionService
             $troopsReleased[$unitType] = $amount;
         }
 
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_RELEASE]);
 
         return [
             'message' => $this->getReturnMessageString($dominion, $troopsReleased),

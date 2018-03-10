@@ -32,6 +32,10 @@ class CasualtiesCalculator
 
         $totalCasualties = $this->getTotalStarvationCasualties($dominion);
 
+        if ($totalCasualties === 0) {
+            return [];
+        }
+
         $casualties = ['peasants' => min($totalCasualties / 2, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
@@ -81,7 +85,7 @@ class CasualtiesCalculator
      * @param  Dominion $dominion
      * @return int
      */
-    protected function getTotalStarvationCasualties(Dominion $dominion): int
+    public function getTotalStarvationCasualties(Dominion $dominion): int
     {
         if ($dominion->resource_food >= 0) {
             return 0;

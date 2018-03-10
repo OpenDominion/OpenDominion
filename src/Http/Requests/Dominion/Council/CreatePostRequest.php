@@ -12,7 +12,7 @@ class CreatePostRequest extends AbstractDominionRequest
     public function rules()
     {
         return [
-            'body' => 'required|string|max:3000',
+            'body' => 'required|string|max:20000',
         ];
     }
 }

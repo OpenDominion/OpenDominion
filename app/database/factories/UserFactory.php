@@ -12,7 +12,7 @@ $factory->define(\OpenDominion\Models\User::class, function (Faker $faker) {
         'display_name' => $faker->unique()->name,
         'remember_token' => str_random(10),
         'activated' => true,
-        'activation_code' => str_random(60),
+        'activation_code' => str_random(),
         'last_online' => null,
     ];
 });
