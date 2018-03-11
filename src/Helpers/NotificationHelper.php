@@ -107,7 +107,6 @@ class NotificationHelper
 
     public function getIrregularRealmTypes(): array
     {
-        // todo
         return [
             'realmie_performed_info_ops' => [
                 'label' => 'A realmie performed info ops',
