@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', 'Super Secret Debug Page&trade;')
+@section('page-header', 'Super Secret Debug Page™')
 
 @section('content')
     <div class="alert alert-danger">
