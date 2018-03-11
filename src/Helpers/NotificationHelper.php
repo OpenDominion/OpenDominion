@@ -42,31 +42,31 @@ class NotificationHelper
         return [
             'exploration_completed' => [
                 'label' => 'Land exploration completed',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'construction_completed' => [
                 'label' => 'Building construction completed',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'training_completed' => [
                 'label' => 'Military training completed',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'returning_completed' => [
                 'label' => 'Units returned from battle',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'beneficial_magic_dissipated' => [
                 'label' => 'Beneficial magic effect dissipated',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'harmful_magic_dissipated' => [
                 'label' => 'Harmful magic effect dissipated',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'starvation' => [
                 'label' => 'Starvation occurred',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
         ];
     }
@@ -76,31 +76,31 @@ class NotificationHelper
         return [
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'repelled_invasion' => [
                 'label' => 'Your dominion repelled an invasion',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'received_spy_op' => [
                 'label' => 'Hostile spy operation received',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'repelled_spy_op' => [
                 'label' => 'Hostile spy operation repelled',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'received_hostile_spell' => [
                 'label' => 'Hostile spell received',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'repelled_hostile_spell' => [
                 'label' => 'Hostile spell deflected',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'scripted' => [
                 'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
         ];
     }
@@ -110,43 +110,43 @@ class NotificationHelper
         return [
             'realmie_performed_info_ops' => [
                 'label' => 'A realmie performed info ops',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'realmie_performed_black_ops' => [
                 'label' => 'A realmie performed black ops',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'realmie_invaded_enemy_success' => [
                 'label' => 'A realmie successfuly invaded an enemy',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'realmie_invaded_enemy_fail' => [
                 'label' => 'A realmie failed to invade an enemy',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'enemy_invaded_realmie' => [
                 'label' => 'An enemy invaded a realmie',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'enemy_realm_declared_war' => [
                 'label' => 'An enemy realm declared war upon our realm',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'declared_war_upon_enemy_realm' => [
                 'label' => 'Our realm declared war upon an enemy realm',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'wonder_attacked' => [
                 'label' => 'A wonder our realm controls was attacked',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'wonder_destroyed' => [
                 'label' => 'A wonder our realm controls was destroyed',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
             'realmie_death' => [
                 'label' => 'A realmie has died',
-                'defaults' => ['ingame' => true, 'email' => false],
+                'defaults' => ['email' => false, 'ingame' => true],
             ],
         ];
     }
