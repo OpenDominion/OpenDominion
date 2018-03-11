@@ -14,6 +14,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
+use OpenDominion\Notifications\Dominion\LandExploredNotification;
 use Throwable;
 
 class TickService
@@ -107,9 +108,16 @@ class TickService
         // todo: split up in their own methods
 
         // Queues
-        foreach ($this->tickExplorationQueue($dominion) as $land => $amount) {
-            $dominion->{'land_' . $land} += $amount;
+        $explorationQueueResult = $this->tickExplorationQueue($dominion);
+
+        if (!empty($explorationQueueResult)) {
+            foreach ($explorationQueueResult as $land => $amount) {
+                $dominion->{'land_' . $land} += $amount;
+            }
+
+            $dominion->notify(new LandExploredNotification($explorationQueueResult));
         }
+
 
         foreach ($this->tickConstructionQueue($dominion) as $building => $amount) {
             $dominion->{'building_' . $building} += $amount;

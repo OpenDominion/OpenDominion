@@ -51,6 +51,12 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('settings')->uses('SettingsController@getIndex')->name('settings');
     $router->post('settings')->uses('SettingsController@postIndex');
 
+    // todo: refactor this to an api route with laravel passport
+    $router->post('tmp/clear-notifications', function () {
+        auth()->user()->dominions()->active()->first()->notifications()->delete();
+        return redirect()->back();
+    });
+
     // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');
