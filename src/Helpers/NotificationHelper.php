@@ -99,7 +99,7 @@ class NotificationHelper
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
             'scripted' => [
-                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripting)',
+                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
         ];
