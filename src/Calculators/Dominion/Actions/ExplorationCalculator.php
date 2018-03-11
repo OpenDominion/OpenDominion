@@ -90,6 +90,6 @@ class ExplorationCalculator
      */
     public function getMoraleDrop($amount): int
     {
-        return round(($amount + 2) / 3);
+        return floor(($amount + 2) / 3);
     }
 }
