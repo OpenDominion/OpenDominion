@@ -98,6 +98,10 @@ class NotificationHelper
                 'label' => 'Hostile spell deflected',
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
+            'scripted' => [
+                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripting)',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
         ];
     }
 
@@ -105,8 +109,12 @@ class NotificationHelper
     {
         // todo
         return [
-            'realmie_performed_spyops' => [
-                'label' => 'A realmie performed spy ops',
+            'realmie_performed_info_ops' => [
+                'label' => 'A realmie performed info ops',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'realmie_performed_black_ops' => [
+                'label' => 'A realmie performed black ops',
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
             'realmie_invaded_enemy_success' => [
@@ -139,10 +147,6 @@ class NotificationHelper
             ],
             'realmie_death' => [
                 'label' => 'A realmie has died',
-                'defaults' => ['ingame' => true, 'email' => false],
-            ],
-            'scripted' => [
-                'label' => 'Land you conquered got removed due to anti-cheating mechanic (scripting)',
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
         ];
