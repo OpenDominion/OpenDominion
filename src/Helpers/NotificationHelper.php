@@ -52,18 +52,18 @@ class NotificationHelper
                 'label' => 'Military training completed',
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
-            'returning_completed' => [
-                'label' => 'Units returned from battle',
-                'defaults' => ['ingame' => true, 'email' => false],
-            ],
+//            'returning_completed' => [
+//                'label' => 'Units returned from battle',
+//                'defaults' => ['ingame' => true, 'email' => false],
+//            ],
             'beneficial_magic_dissipated' => [
                 'label' => 'Beneficial magic effect dissipated',
                 'defaults' => ['ingame' => true, 'email' => false],
             ],
-            'harmful_magic_dissipated' => [
-                'label' => 'Harmful magic effect dissipated',
-                'defaults' => ['ingame' => true, 'email' => false],
-            ],
+//            'harmful_magic_dissipated' => [
+//                'label' => 'Harmful magic effect dissipated',
+//                'defaults' => ['ingame' => true, 'email' => false],
+//            ],
             'starvation' => [
                 'label' => 'Starvation occurred',
                 'defaults' => ['ingame' => true, 'email' => false],
