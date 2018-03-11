@@ -96,10 +96,10 @@
                                         <tr>
                                             <td><em>All {{ $notificationHelper->getNotificationTypeLabel($type) }}</em></td>
                                             <td class="text-center">
-                                                <input type="checkbox" data-check-all data-check-all-type="email" {{ collect($notificationSettings[$type] ?? [])->map(function ($notification) { return $notification['email'] ?? false; })->reduce(function ($carry, $item) { return ($carry || ($carry === null) && $item); }) ? 'checked' : null }}>
+                                                <input type="checkbox" data-check-all data-check-all-type="email" {{ collect($notificationSettings[$type] ?? [])->map(function ($notification) { return $notification['email'] ?? false; })->reduce(function ($carry, $item) { return (($carry || ($carry === null)) && $item); }) ? 'checked' : null }}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" data-check-all data-check-all-type="ingame" {{ collect($notificationSettings[$type] ?? [])->map(function ($notification) { return $notification['ingame'] ?? false; })->reduce(function ($carry, $item) { return ($carry || ($carry === null) && $item); }) ? 'checked' : null }}>
+                                                <input type="checkbox" data-check-all data-check-all-type="ingame" {{ collect($notificationSettings[$type] ?? [])->map(function ($notification) { return $notification['ingame'] ?? false; })->reduce(function ($carry, $item) { return (($carry || ($carry === null)) && $item); }) ? 'checked' : null }}>
                                             </td>
                                         </tr>
                                         @foreach ($notifications as $key => $notification)
