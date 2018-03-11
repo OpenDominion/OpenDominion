@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "admin-lte": "^2.4.2",
+    "axios": "^0.18.0",
     "chart.js": "^2.7.2",
     "cross-env": "^5.1",
     "font-awesome": "^4.7.0",
