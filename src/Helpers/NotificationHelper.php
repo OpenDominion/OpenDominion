@@ -10,7 +10,7 @@ class NotificationHelper
             'general' => $this->getGeneralTypes(),
             'hourly_dominion' => $this->getHourlyDominionTypes(),
             'irregular_dominion' => $this->getIrregularDominionTypes(),
-//            'irregular_realm' => $this->getIrregularRealmTypes(),
+            'irregular_realm' => $this->getIrregularRealmTypes(),
         ];
     }
 
@@ -105,14 +105,46 @@ class NotificationHelper
     {
         // todo
         return [
-            'realmie_invaded_enemy_success' => [],
-            'realmie_invaded_enemy_fail' => [],
-            'enemy_invaded_realmie' => [],
-            'enemy_realm_declared_war' => [],
-            'declared_war_upon_enemy_realm' => [],
-            'wonder_attacked' => [],
-            'wonder_destroyed' => [],
-            'realmie_death' => [],
+            'realmie_performed_spyops' => [
+                'label' => 'A realmie performed spy ops',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'realmie_invaded_enemy_success' => [
+                'label' => 'A realmie successfuly invaded an enemy',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'realmie_invaded_enemy_fail' => [
+                'label' => 'A realmie failed to invade an enemy',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'enemy_invaded_realmie' => [
+                'label' => 'An enemy invaded a realmie',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'enemy_realm_declared_war' => [
+                'label' => 'An enemy realm declared war upon our realm',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'declared_war_upon_enemy_realm' => [
+                'label' => 'Our realm declared war upon an enemy realm',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'wonder_attacked' => [
+                'label' => 'A wonder our realm controls was attacked',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'wonder_destroyed' => [
+                'label' => 'A wonder our realm controls was destroyed',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'realmie_death' => [
+                'label' => 'A realmie has died',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
+            'scripted' => [
+                'label' => 'Land you conquered got removed due to anti-cheating mechanic (scripting)',
+                'defaults' => ['ingame' => true, 'email' => false],
+            ],
         ];
     }
 
@@ -129,6 +161,7 @@ class NotificationHelper
         })->toArray();
     }
 
+    // todo: remove
     public function getIrregularTypes(): array
     {
         return [ // todo
