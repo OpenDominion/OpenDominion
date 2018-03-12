@@ -22,7 +22,7 @@ class CreateCouncilThreadsTable extends Migration
             $table->timestamps();
 
             $table->foreign('realm_id')->references('id')->on('realms');
-            $table->foreign('dominion_id')->references('id')->on('dominion');
+            $table->foreign('dominion_id')->references('id')->on('dominions');
         });
     }
 

@@ -21,7 +21,7 @@ class CreateCouncilPostsTable extends Migration
             $table->timestamps();
 
             $table->foreign('council_thread_id')->references('id')->on('council_threads');
-            $table->foreign('dominion_id')->references('id')->on('dominion');
+            $table->foreign('dominion_id')->references('id')->on('dominions');
         });
     }
 
