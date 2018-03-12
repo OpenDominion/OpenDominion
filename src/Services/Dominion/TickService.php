@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
@@ -35,6 +36,9 @@ class TickService
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * TickService constructor.
      */
@@ -46,6 +50,7 @@ class TickService
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
+        $this->spellCalculator = app(SpellCalculator::class);
     }
 
     /**
@@ -115,6 +120,9 @@ class TickService
         }
 
         // todo: tickReturningQueue
+
+        // Hacky refresh active spells for dominion
+        $this->spellCalculator->getActiveSpells($dominion, true);
 
         // Resources
         $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);

@@ -21,7 +21,7 @@
 
 OpenDominion is a free and open-source clone of Dominion, an online text-based and persistent browser-based (PBBG) fantasy war game. OpenDominion is written in PHP on the [Laravel](https://laravel.com) framework.
 
-The original Dominion, now defunct, was a game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](http://dominion.lykanthropos.com/www.kamikazegames.com/dominion/GameOver.htm).
+The original Dominion, now defunct, was a game from Kamikaze Games which ran from about 2000 to 2012 until [stopping indefinitely](https://dominion.opendominion.net/GameOver.htm).
 
 Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
@@ -89,7 +89,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 - [Open Beta](https://beta.opendominion.net)
   - The open beta is used for development and testing purposes. Feel free to register and participate!
-  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/scribes.htm) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
+  - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.opendominion.net/scribes.html) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
   - Do note that not every functionality has been implemented yet in OpenDominion.
 - [Discord](https://discord.gg/mFk2wZT)
   - This will be the main place for out of game communication, development talk and game announcements.
@@ -114,7 +114,7 @@ All rights belong to their respective owners.
 ### Shoutouts / Thanks
 
 - Ross from Kamikaze Games Inc., for creating and running Dominion
-- RedFox for creating [DomSim](https://dominion.lykanthropos.com/DomSim/)
+- RedFox for creating [DomSim](http://web.archive.org/web/20150918011332/http://dominion.lykanthropos.com:80/DomSim)
 - BlackReign for his OOP sim
 - All the people who contributed to the [Dominion Encyclopedia](http://web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
 - Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala's Crypt and Mickles from DomHQ
@@ -124,4 +124,4 @@ All rights belong to their respective owners.
 
 ## Notes
 
-<a name="notes-1">1</a>: Taken from the original [Dominion](https://dominion.lykanthropos.com/www.kamikazegames.com/dominion/index.htm) website.
+<a name="notes-1">1</a>: Taken from the original [Dominion](https://dominion.opendominion.net/) website.

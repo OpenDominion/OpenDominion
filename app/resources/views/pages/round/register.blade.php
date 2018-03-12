@@ -8,7 +8,7 @@
             <h3 class="box-title">Register to round {{ $round->name }} (#{{ $round->number }})</h3>
         </div>
         <form action="{{ route('round.register', $round) }}" method="post" class="form-horizontal" role="form">
-            {!! csrf_field() !!}
+            @csrf
 
             <div class="box-body">
 

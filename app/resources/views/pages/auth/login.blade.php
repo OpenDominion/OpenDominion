@@ -9,7 +9,7 @@
                     <h3 class="box-title">Login</h3>
                 </div>
                 <form action="{{ route('auth.login') }}" method="post" class="form-horizontal" role="form">
-                    {{ csrf_field() }}
+                    @csrf
 
                     <div class="box-body">
 

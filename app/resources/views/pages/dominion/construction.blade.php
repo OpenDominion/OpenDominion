@@ -11,7 +11,7 @@
                     <h3 class="box-title"><i class="fa fa-home"></i> Construct Buildings</h3>
                 </div>
                 <form action="{{ route('dominion.construct') }}" method="post" role="form">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="box-body no-padding">
                         <div class="row">
 

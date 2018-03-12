@@ -34,12 +34,9 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->buildingCalculator = m::mock(BuildingCalculator::class);
-        $this->landCalculator = m::mock(LandCalculator::class);
-
         $this->sut = m::mock(NetworthCalculator::class, [
-            $this->buildingCalculator,
-            $this->landCalculator,
+            $this->buildingCalculator = m::mock(BuildingCalculator::class),
+            $this->landCalculator = m::mock(LandCalculator::class),
         ])->makePartial();
     }
 

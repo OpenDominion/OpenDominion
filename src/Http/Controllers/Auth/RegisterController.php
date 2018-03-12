@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Auth;
 
+use Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
@@ -103,7 +104,7 @@ class RegisterController extends AbstractController
     {
         return User::create([
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => Hash::make($data['password']),
             'display_name' => $data['display_name'],
             'activation_code' => str_random(),
         ]);
