@@ -1,9 +1,9 @@
 version: '2'
 services:
     web:
-        build: docker/web
+        build: .docker/web
         environment:
-            - VIRTUAL_HOST=open-dominion.docker
+            - VIRTUAL_HOST=opendominion.docker
             - VIRTUAL_PORT=80
             - HTTPS_METHOD=noredirect
         links:
@@ -12,7 +12,7 @@ services:
             - .:/app
 
     php:
-        build: docker/php
+        build: .docker/php
         links:
             - db
         volumes:
@@ -22,8 +22,8 @@ services:
         image: mariadb:latest
         environment:
           - MYSQL_ROOT_PASSWORD=supersecurepassword
-          - MYSQL_DATABASE=open_dom
-          - MYSQL_USER=open_dom
-          - MYSQL_PASSWORD=open_dom
+          - MYSQL_DATABASE=opendominion
+          - MYSQL_USER=opendominion
+          - MYSQL_PASSWORD=opendominion
         ports:
           - 3306:3306
