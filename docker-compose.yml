@@ -7,19 +7,19 @@ services:
             - VIRTUAL_PORT=80
             - HTTPS_METHOD=noredirect
         links:
-            - php-fpm
+            - php
         volumes:
-            - .:/srv
+            - .:/app
 
-    php-fpm:
-        build: docker/php-fpm
+    php:
+        build: docker/php
         links:
-            - mysql
+            - db
         volumes:
-            - .:/srv
+            - .:/app
 
-    mysql:
-        image: mysql:latest
+    db:
+        image: mariadb:latest
         environment:
           - MYSQL_ROOT_PASSWORD=supersecurepassword
           - MYSQL_DATABASE=open_dom
@@ -27,7 +27,3 @@ services:
           - MYSQL_PASSWORD=open_dom
         ports:
           - 3306:3306
-        volumes:
-          - mysql_data:/var/lib/mysql
-volumes:
-    mysql_data:

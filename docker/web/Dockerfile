@@ -1,5 +1,5 @@
-FROM abiosoft/caddy
+FROM nginx:alpine
 
-MAINTAINER James Hodgson <james@tdchodgy.co.uk>
+LABEL maintainer="James Hodgson <james@tdchodgy.co.uk>"
 
-COPY Caddyfile /etc/Caddyfile
+COPY default.conf /etc/nginx/conf.d/default.conf
