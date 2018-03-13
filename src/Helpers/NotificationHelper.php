@@ -4,7 +4,7 @@ namespace OpenDominion\Helpers;
 
 class NotificationHelper
 {
-    public function getNotificationTypes(): array
+    public function getNotificationCategories(): array
     {
         return [
             'general' => $this->getGeneralTypes(),
@@ -153,7 +153,7 @@ class NotificationHelper
 
     public function getDefaultUserNotificationSettings(): array
     {
-        return collect($this->getNotificationTypes())->map(function ($notifications) {
+        return collect($this->getNotificationCategories())->map(function ($notifications) {
             $return = [];
 
             foreach ($notifications as $key => $notification) {
