@@ -14,7 +14,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
-use OpenDominion\Notifications\Dominion\LandExploredNotification;
+use OpenDominion\Services\NotificationService;
 use Throwable;
 
 class TickService
@@ -30,6 +30,9 @@ class TickService
 
     /** @var NetworthCalculator */
     protected $networthCalculator;
+
+    /** @var NotificationService */
+    protected $notificationService;
 
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -49,6 +52,7 @@ class TickService
         $this->casualtiesCalculator = app(CasualtiesCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
+        $this->notificationService = app(NotificationService::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
@@ -115,7 +119,11 @@ class TickService
                 $dominion->{'land_' . $land} += $amount;
             }
 
-            $dominion->notify(new LandExploredNotification($explorationQueueResult));
+            $this->notificationService->queueNotification(
+                'hourly_dominion.exploration_completed',
+                $explorationQueueResult
+            );
+//            $dominion->notify(new LandExploredNotification($explorationQueueResult));
         }
 
 
@@ -179,6 +187,10 @@ class TickService
 
         // Active spells
         $this->tickActiveSpells($dominion);
+
+        $this->notificationService->queueNotification('exploration_completed', ['plain' => 5]);
+
+        $this->notificationService->sendNotifications('hourly_dominion', $dominion);
 
         $dominion->save(['event' => HistoryService::EVENT_TICK]);
     }
