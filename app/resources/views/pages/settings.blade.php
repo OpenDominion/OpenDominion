@@ -78,7 +78,7 @@
 
                             <h2 class="page-header">Notifications</h2>
 
-                            @foreach ($notificationHelper->getNotificationTypes() as $type => $notifications)
+                            @foreach ($notificationHelper->getNotificationCategories() as $category => $notifications)
                                 <table class="table table-striped table-hover">
                                     <colgroup>
                                         <col>
@@ -87,32 +87,32 @@
                                     </colgroup>
                                     <thead>
                                         <tr>
-                                            <th>{{ $notificationHelper->getNotificationTypeLabel($type) }}</th>
+                                            <th>{{ $notificationHelper->getNotificationTypeLabel($category) }}</th>
                                             <th class="text-center">Email</th>
                                             <th class="text-center">Ingame</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><em>All {{ $notificationHelper->getNotificationTypeLabel($type) }}</em></td>
+                                            <td><em>All {{ $notificationHelper->getNotificationTypeLabel($category) }}</em></td>
                                             <td class="text-center">
-                                                <input type="checkbox" data-check-all data-check-all-type="email" {{ collect($notificationSettings[$type] ?? [])->map(function ($notification) { return $notification['email'] ?? false; })->reduce(function ($carry, $item) { return (($carry || ($carry === null)) && $item); }) ? 'checked' : null }}>
+                                                <input type="checkbox" data-check-all data-check-all-type="email" {{ collect($notificationSettings[$category] ?? [])->map(function ($notification) { return $notification['email'] ?? false; })->reduce(function ($carry, $item) { return (($carry || ($carry === null)) && $item); }) ? 'checked' : null }}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" data-check-all data-check-all-type="ingame" {{ collect($notificationSettings[$type] ?? [])->map(function ($notification) { return $notification['ingame'] ?? false; })->reduce(function ($carry, $item) { return (($carry || ($carry === null)) && $item); }) ? 'checked' : null }}>
+                                                <input type="checkbox" data-check-all data-check-all-type="ingame" {{ collect($notificationSettings[$category] ?? [])->map(function ($notification) { return $notification['ingame'] ?? false; })->reduce(function ($carry, $item) { return (($carry || ($carry === null)) && $item); }) ? 'checked' : null }}>
                                             </td>
                                         </tr>
-                                        @foreach ($notifications as $key => $notification)
+                                        @foreach ($notifications as $type => $notification)
                                             <tr>
                                                 <td>{{ $notification['label'] }}</td>
                                                 <td class="text-center">
-                                                    <input type="checkbox" name="notifications[{{ $type }}][{{ $key }}][email]" {{ array_get($notificationSettings, "{$type}.{$key}.email") ? 'checked' : null }} data-check-all-type="email">
+                                                    <input type="checkbox" name="notifications[{{ $category }}][{{ $type }}][email]" {{ array_get($notificationSettings, "{$category}.{$type}.email") ? 'checked' : null }} data-check-all-type="email">
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($notification['onlyemail'] ?? false)
                                                         &nbsp;
                                                     @else
-                                                        <input type="checkbox" name="notifications[{{ $type }}][{{ $key }}][ingame]" {{ array_get($notificationSettings, "{$type}.{$key}.ingame") ? 'checked' : null }} data-check-all-type="ingame">
+                                                        <input type="checkbox" name="notifications[{{ $category }}][{{ $type }}][ingame]" {{ array_get($notificationSettings, "{$category}.{$type}.ingame") ? 'checked' : null }} data-check-all-type="ingame">
                                                     @endif
                                                 </td>
                                             </tr>

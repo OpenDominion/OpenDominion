@@ -119,10 +119,7 @@ class TickService
                 $dominion->{'land_' . $land} += $amount;
             }
 
-            $this->notificationService->queueNotification(
-                'hourly_dominion.exploration_completed',
-                $explorationQueueResult
-            );
+            $this->notificationService->queueNotification('exploration_completed', $explorationQueueResult);
 //            $dominion->notify(new LandExploredNotification($explorationQueueResult));
         }
 
@@ -189,6 +186,7 @@ class TickService
         $this->tickActiveSpells($dominion);
 
         $this->notificationService->queueNotification('exploration_completed', ['plain' => 5]);
+        $this->notificationService->queueNotification('construction_completed', ['home' => 20, 'farm' => 5]);
 
         $this->notificationService->sendNotifications('hourly_dominion', $dominion);
 

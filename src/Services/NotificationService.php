@@ -16,12 +16,12 @@ class NotificationService
      *
      * @see sendNotifications
      *
-     * @param string $notificationType
-     * @param array $notificationData
+     * @param string $type
+     * @param array $data
      */
-    public function queueNotification(string $notificationType, array $notificationData)
+    public function queueNotification(string $type, array $data)
     {
-        $this->notifications[$notificationType] = $notificationData;
+        $this->notifications[$type] = $data;
     }
 
     /**
@@ -52,7 +52,10 @@ class NotificationService
 //            $user->notify(new HourlyEmailDigestNotification($emailNotifications));
         }
 
-        dd($this->notifications);
+        dd([
+            $this->notifications,
+            $emailNotifications
+        ]);
 
         \DB::rollBack();
         die('foo');

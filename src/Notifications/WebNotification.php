@@ -65,12 +65,32 @@ class WebNotification extends Notification
         return ['message' => $this->getMessage()];
     }
 
-    protected function getMessage()
+    protected function getMessage(): string
     {
-        $str = '';
+        switch ("{$this->category}.{$this->type}") {
 
-        $param1 = null;
-        $param2 = null;
+            case 'hourly_dominion.exploration_completed':
+                $acres = array_sum($this->data);
+
+                return sprintf(
+                    'Exploration of %s %s of land completed',
+                    number_format($acres),
+                    str_plural('acre', $acres)
+                );
+
+            case 'hourly_dominion.construction_completed':
+                $buildings = array_sum($this->data);
+
+                return sprintf(
+                    'Construction of %s %s completed',
+                    number_format($buildings),
+                    str_plural('building', $buildings)
+                );
+
+            default:
+                throw new LogicException("Unknown WebNotification message for type {$this->type} with category {$this->category}");
+
+        }
 
         // exploration/construction/training/returning = sum
         // spell = spell name
@@ -80,13 +100,5 @@ class WebNotification extends Notification
         // war = other realm name
         // wonder = wondername, attacker
         // realmie death = realmie dom name
-
-        $str = array_get(
-            $this->notificationHelper->getNotificationCategories(),
-            "{$this->category}.{$this->type}.message"
-        );
-
-        dd([$str, 'foo']);
-        return 'test message';
     }
 }
