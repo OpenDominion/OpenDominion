@@ -89,6 +89,21 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     }
 
     /**
+     * Returns whether the user is inactive.
+     *
+     * A user is considered inactive the user hasn't been in the game for 72 hours (3 days).
+     *
+     * @return bool
+     */
+    public function isInactive(): bool
+    {
+        return (
+            ($this->last_online !== null)
+            && ($this->last_online < new Carbon('-72 hours'))
+        );
+    }
+
+    /**
      * Returns whether the user has any staff roll associated with it.
      *
      * @return bool
