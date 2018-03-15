@@ -48,7 +48,17 @@
                                                     return ($unit->slot == (int)str_replace('unit', '', $unitType));
                                                 })->first();
                                                 @endphp
-                                                {{ number_format($unit->power_offense) }} / {{ number_format($unit->power_defense) }}
+                                                @if ($unit->power_offense == 0)
+                                                    <span class="text-muted">{{ number_format($unit->power_offense) }}</span>
+                                                @else
+                                                    {{ number_format($unit->power_offense) }}
+                                                @endif
+                                                /
+                                                @if ($unit->power_defense == 0)
+                                                    <span class="text-muted">{{ number_format($unit->power_defense) }}</span>
+                                                @else
+                                                    {{ number_format($unit->power_defense) }}
+                                                @endif
                                             @endif
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
