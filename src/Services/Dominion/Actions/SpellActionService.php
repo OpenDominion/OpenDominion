@@ -145,7 +145,7 @@ class SpellActionService
     /**
      * Returns the successful return message.
      *
-     * Little easter egg because I was bored.
+     * Little e a s t e r e g g because I was bored.
      *
      * @param Dominion $dominion
      * @return string
