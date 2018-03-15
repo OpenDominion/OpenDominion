@@ -137,7 +137,7 @@
 
                             {{-- Digest Email --}}
                             <div class="form-group">
-                                <label for="">Digest Irregular Email Notifications</label>
+                                <label>Digest Irregular Email Notifications</label>
                                 <br>
                                 <div class="btn-group" data-toggle="buttons">
                                     @foreach ([
