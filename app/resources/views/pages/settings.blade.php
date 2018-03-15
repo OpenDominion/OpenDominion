@@ -8,6 +8,8 @@
     @endphp
 
     <form action="{{ route('settings') }}" method="post" enctype="multipart/form-data" role="form">
+        @csrf
+
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#account" data-toggle="tab">Account</a></li>
