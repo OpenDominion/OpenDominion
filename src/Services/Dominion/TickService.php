@@ -113,23 +113,30 @@ class TickService
 
         // Queues
         $explorationQueueResult = $this->tickExplorationQueue($dominion);
-
         if (!empty($explorationQueueResult)) {
             foreach ($explorationQueueResult as $land => $amount) {
                 $dominion->{'land_' . $land} += $amount;
             }
 
             $this->notificationService->queueNotification('exploration_completed', $explorationQueueResult);
-//            $dominion->notify(new LandExploredNotification($explorationQueueResult));
         }
 
+        $constructionQueueResult = $this->tickConstructionQueue($dominion);
+        if (!empty($constructionQueueResult)) {
+            foreach ($constructionQueueResult as $building => $amount) {
+                $dominion->{'building_' . $building} += $amount;
+            }
 
-        foreach ($this->tickConstructionQueue($dominion) as $building => $amount) {
-            $dominion->{'building_' . $building} += $amount;
+            $this->notificationService->queueNotification('construction_completed', $constructionQueueResult);
         }
 
-        foreach ($this->tickTrainingQueue($dominion) as $unit => $amount) {
-            $dominion->{'military_' . $unit} += $amount;
+        $trainingQueueResult = $this->tickTrainingQueue($dominion);
+        if (!empty($trainingQueueResult)) {
+            foreach ($trainingQueueResult as $unit => $amount) {
+                $dominion->{'military_' . $unit} += $amount;
+            }
+
+            $this->notificationService->queueNotification('training_completed', $trainingQueueResult);
         }
 
         // todo: tickReturningQueue
@@ -155,6 +162,8 @@ class TickService
             }
 
             $dominion->resource_food = 0;
+
+            $this->notificationService->queueNotification('starvation_occurred', $casualties);
         }
 
         // Population
@@ -185,10 +194,7 @@ class TickService
         // Active spells
         $this->tickActiveSpells($dominion);
 
-        $this->notificationService->queueNotification('exploration_completed', ['plain' => 5]);
-        $this->notificationService->queueNotification('construction_completed', ['home' => 20, 'farm' => 5]);
-
-        $this->notificationService->sendNotifications('hourly_dominion', $dominion);
+        $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
 
         $dominion->save(['event' => HistoryService::EVENT_TICK]);
     }
@@ -275,7 +281,7 @@ class TickService
         return $return;
     }
 
-    protected function ticktrainingQueue(Dominion $dominion): array
+    protected function tickTrainingQueue(Dominion $dominion): array
     {
         // Two-step process to avoid getting UNIQUE constraint integrity errors
         // since we can't reliably use deferred transactions, deferred update
@@ -335,6 +341,29 @@ class TickService
                 'duration' => DB::raw('-`duration`'),
                 'updated_at' => $this->now,
             ]);
+
+        $finished = DB::table('active_spells')
+            ->where('dominion_id', $dominion->id)
+            ->where('duration', 0)
+            ->get();
+
+        $beneficialSpells = [];
+        $harmfulSpells = [];
+        foreach ($finished as $row) {
+            if ($row->cast_by_dominion_id == $dominion->id) {
+                $beneficialSpells[] = $row->spell;
+            } else {
+                $harmfulSpells[] = $row->spell;
+            }
+        }
+
+        if (!empty($beneficialSpells)) {
+            $this->notificationService->queueNotification('beneficial_magic_dissipated', $beneficialSpells);
+        }
+
+        if (!empty($harmfulSpells)) {
+            $this->notificationService->queueNotification('harmful_magic_dissipated', $harmfulSpells);
+        }
 
         DB::table('active_spells')
             ->where('dominion_id', $dominion->id)

@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Helpers;
 
+use LogicException;
+
 class NotificationHelper
 {
     public function getNotificationCategories(): array
@@ -43,30 +45,43 @@ class NotificationHelper
             'exploration_completed' => [
                 'label' => 'Land exploration completed',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.explore'),
+                'iconClass' => 'fa fa-search text-green',
             ],
             'construction_completed' => [
                 'label' => 'Building construction completed',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.construct'),
+                'iconClass' => 'fa fa-home text-green',
             ],
             'training_completed' => [
                 'label' => 'Military training completed',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.military'),
+                'iconClass' => 'ra ra-muscle-up text-green',
             ],
             'returning_completed' => [
                 'label' => 'Units returned from battle',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.military'),
+                'iconClass' => 'ra ra-player-dodge text-green',
             ],
             'beneficial_magic_dissipated' => [
                 'label' => 'Beneficial magic effect dissipated',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.magic'),
+                'iconClass' => 'ra ra-fairy-wand text-orange',
             ],
             'harmful_magic_dissipated' => [
                 'label' => 'Harmful magic effect dissipated',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-fairy-wand text-green',
             ],
-            'starvation' => [
+            'starvation_occurred' => [
                 'label' => 'Starvation occurred',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => route('dominion.advisors.production'),
+                'iconClass' => 'ra ra-tombstone text-red',
             ],
         ];
     }
@@ -164,29 +179,120 @@ class NotificationHelper
         })->toArray();
     }
 
+    public function getNotificationMessage(string $category, string $type, array $data): string
+    {
+        switch ("{$category}.{$type}") {
+
+            case 'hourly_dominion.exploration_completed':
+                $acres = array_sum($data);
+
+                return sprintf(
+                    'Exploration for %s %s of land completed',
+                    number_format($acres),
+                    str_plural('acre', $acres)
+                );
+
+            case 'hourly_dominion.construction_completed':
+                $buildings = array_sum($data);
+
+                return sprintf(
+                    'Construction of %s %s completed',
+                    number_format($buildings),
+                    str_plural('building', $buildings)
+                );
+
+            case 'hourly_dominion.training_completed':
+                $units = array_sum($data);
+
+                return sprintf(
+                    'Training of %s %s completed',
+                    number_format($units),
+                    str_plural('unit', $units)
+                );
+
+            // todo: returning
+
+            case 'hourly_dominion.beneficial_magic_dissipated':
+                $effects = count($data);
+
+                return sprintf(
+                    '%s beneficial magic %s dissipated',
+                    number_format($effects),
+                    str_plural('effect', $effects)
+                );
+
+            case 'hourly_dominion.harmful_magic_dissipated':
+                $effects = count($data);
+
+                return sprintf(
+                    '%s harmful magic %s dissipated',
+                    number_format($effects),
+                    str_plural('effect', $effects)
+                );
+
+            case 'hourly_dominion.starvation_occurred':
+                $units = array_sum($data);
+
+                return sprintf(
+                    '%s %s died due to starvation',
+                    number_format($units),
+                    str_plural('unit', $units)
+                );
+
+            // todo: irregular etc
+
+            default:
+                throw new LogicException("Unknown WebNotification message for {$category}.{$type}");
+
+        }
+
+        // exploration/construction/training/returning = sum
+        // spell = spell name
+        // invasion/spyop/spell = other dom name
+        // scripted = sum/amount of acres
+        // realmie invasion = instigator, target
+        // war = other realm name
+        // wonder = wondername, attacker
+        // realmie death = realmie dom name
+    }
+
     // todo: remove
     public function getIrregularTypes(): array
     {
         return [ // todo
-            'Your dominion was invaded', // An army from Penrhyndeudraeth (# 14) invaded our lands, conquering 681 acres of land! We lost 237 draftees, 0 Slingers, 2647 Defenders, 643 Staff Masters and 3262 Master Thieves during the battle.
-            'Your dominion repelled an invasion', // Forces from Night (# 42) invaded our lands, but our army drove them back! We lost 44 draftees, 0 Soldiers, 251 Miners, 199 Clerics and 0 Warriors during the battle.
-            'Hostile spy op received', // 1 boats have sunk mysteriously while docked. | 145 draftees were killed while they slept in the barracks
-            'Hostile spy op repelled', // Spies from Need more COWBELLT! (# 5) were discovered within the (draftee barracks | castle | vaults | docks/harbor?)! We executed 40 spies.
-            'Hostile spell received', // ???
-            'Hostile spell deflected', // Our wizards have repelled a Clear Sight spell attempt by And Thee Lord Taketh Away (# 21)!
+            'Your dominion was invaded',
+            // An army from Penrhyndeudraeth (# 14) invaded our lands, conquering 681 acres of land! We lost 237 draftees, 0 Slingers, 2647 Defenders, 643 Staff Masters and 3262 Master Thieves during the battle.
+            'Your dominion repelled an invasion',
+            // Forces from Night (# 42) invaded our lands, but our army drove them back! We lost 44 draftees, 0 Soldiers, 251 Miners, 199 Clerics and 0 Warriors during the battle.
+            'Hostile spy op received',
+            // 1 boats have sunk mysteriously while docked. | 145 draftees were killed while they slept in the barracks
+            'Hostile spy op repelled',
+            // Spies from Need more COWBELLT! (# 5) were discovered within the (draftee barracks | castle | vaults | docks/harbor?)! We executed 40 spies.
+            'Hostile spell received',
+            // ???
+            'Hostile spell deflected',
+            // Our wizards have repelled a Clear Sight spell attempt by And Thee Lord Taketh Away (# 21)!
 
             // Page: OP Center
             'Realmie performed info gathering spy op/spell',
 
             // Page: Town Crier
-            'Realmie invaded another dominion', // Victorious on the battlefield, Priapus (# 16) conquered 64 land from Black Whirling (# 26).
-            'Realmie failed to invade another dominion', // Sadly, the forces of Starscream (# 31) were beaten back by Myself Yourself (# 44).
-            'A dominion invaded realmie', // Battle Rain (# 29) invaded slow.internet.guy (# 16) and captured 440 land.
-            'Our realm delared war upon another realm', // We have declared WAR on Rise of the Dragons (# 9)!
-            'A realm has declared war upon us', // Golden Dragons (# 9) has declared WAR on us!
-            'our wonder attacked', // Dirge (# 31) has attacked the Temple of the Damned!
-            'our wonder destroyed', // The Temple of the Blessed has been destroyed and rebuilt by Realm #16!
-            'death', // Cruzer (# 2) has been abandoned by its ruler.
+            'Realmie invaded another dominion',
+            // Victorious on the battlefield, Priapus (# 16) conquered 64 land from Black Whirling (# 26).
+            'Realmie failed to invade another dominion',
+            // Sadly, the forces of Starscream (# 31) were beaten back by Myself Yourself (# 44).
+            'A dominion invaded realmie',
+            // Battle Rain (# 29) invaded slow.internet.guy (# 16) and captured 440 land.
+            'Our realm delared war upon another realm',
+            // We have declared WAR on Rise of the Dragons (# 9)!
+            'A realm has declared war upon us',
+            // Golden Dragons (# 9) has declared WAR on us!
+            'our wonder attacked',
+            // Dirge (# 31) has attacked the Temple of the Damned!
+            'our wonder destroyed',
+            // The Temple of the Blessed has been destroyed and rebuilt by Realm #16!
+            'death',
+            // Cruzer (# 2) has been abandoned by its ruler.
         ];
 
         // after successful invasion:

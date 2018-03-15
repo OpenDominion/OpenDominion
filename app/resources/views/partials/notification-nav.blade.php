@@ -16,21 +16,11 @@
                 <li>
                     <ul class="menu">
                         @foreach ($selectedDominion->unreadNotifications as $notification)
-                            @php
-                            switch ($notification->type) {
-                                case \OpenDominion\Notifications\Dominion\LandExploredNotification::class:
-                                    $iconClass = 'fa fa-search';
-                                    $route = route('dominion.explore');
-                                    break;
-                                default:
-                                    $iconClass = null;
-                                    $route = null;
-                            }
-                            @endphp
                             <li>
-                                <a href="{{ $route }}">
-                                    <i class="{{ $iconClass }}"></i>
-                                    {{ $notification->data['message'] }}
+                                <a href="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#') }}">
+                                    <i class="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.iconClass", 'fa fa-question') }}"></i>
+                                    {{ $notification->data['message'] }}<br>
+                                    <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                                 </a>
                             </li>
                         @endforeach

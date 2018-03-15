@@ -3,7 +3,7 @@
 namespace OpenDominion\Services;
 
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\User;
+use OpenDominion\Notifications\HourlyEmailDigestNotification;
 use OpenDominion\Notifications\WebNotification;
 
 class NotificationService
@@ -29,39 +29,35 @@ class NotificationService
      *
      * @see queueNotification
      *
+     * @param Dominion $dominion
      * @param string $category
-     * @param Dominion|User $notifiable
      */
-    public function sendNotifications(string $category, $notifiable)
+    public function sendNotifications(Dominion $dominion, string $category)
     {
-        $user = (($notifiable instanceof Dominion) ? $notifiable->user : $notifiable);
+        $user = $dominion->user;
 
         $emailNotifications = [];
 
         foreach ($this->notifications as $type => $data) {
             if ($user->getSetting("notifications.hourly_dominion.{$type}.ingame")) {
-                $user->notify(new WebNotification($category, $type, $data));
+                $dominion->notify(new WebNotification($category, $type, $data));
             }
 
             if ($user->getSetting("notifications.hourly_dominion.{$type}.email")) {
-                $emailNotifications[$type] = $data;
+                $emailNotifications[] = [
+                    'category' => $category,
+                    'type' => $type,
+                    'data' => $data,
+                ];
             }
         }
 
         if (!empty($emailNotifications)) {
-//            $user->notify(new HourlyEmailDigestNotification($emailNotifications));
+            $dominion->notify(new HourlyEmailDigestNotification($emailNotifications));
         }
-
-        dd([
-            $this->notifications,
-            $emailNotifications
-        ]);
-
-        \DB::rollBack();
-        die('foo');
     }
 
-    public function addIrregularNotification($notifiable, string $notificationType, array $notificationData)
+    public function addIrregularNotification(Dominion $dominion, string $notificationType, array $notificationData)
     {
         // add notification to the db (notification_queue?)
     }
