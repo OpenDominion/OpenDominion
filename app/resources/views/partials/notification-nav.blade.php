@@ -1,4 +1,4 @@
-@auth
+@if (auth()->check() && isset($selectedDominion))
     <li class="dropdown notifications-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-bell-o"></i>
@@ -33,17 +33,17 @@
             @endif
         </ul>
     </li>
-@endauth
 
-@push('inline-scripts')
-    <script type="text/javascript">
-        (function ($) {
+    @push('inline-scripts')
+        <script type="text/javascript">
+            (function ($) {
 
-            // todo: refactor to api route with laravel passwport
-            $('#clear-notifications').click(e => {
-                $('#clear-notifications-form').submit();
-            });
+                // todo: refactor to api route with laravel passwport
+                $('#clear-notifications').click(e => {
+                    $('#clear-notifications-form').submit();
+                });
 
-        })(jQuery);
-    </script>
-@endpush
+            })(jQuery);
+        </script>
+    @endpush
+@endif

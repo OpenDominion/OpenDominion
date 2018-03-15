@@ -102,7 +102,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @dataProvider testGetPopulationPeasantGrowthProvider
+     * @dataProvider getPopulationPeasantGrowthProvider
      */
     public function testGetPopulationPeasantGrowth(
         /** @noinspection PhpDocSignatureInspection */
@@ -132,7 +132,7 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
         );
     }
 
-    public function testGetPopulationPeasantGrowthProvider()
+    public function getPopulationPeasantGrowthProvider()
     {
         return [
             [39, 1300, 0, 2358, 1600, 39],
