@@ -51,5 +51,7 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
         npm run dev
     fi
 
+    supervisorctl restart restart laravel-worker-beta.opendominion.net:*
+
     php bin/artisan up
 fi
