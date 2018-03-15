@@ -55,6 +55,8 @@ class NotificationService
         if (!empty($emailNotifications)) {
             $dominion->notify(new HourlyEmailDigestNotification($emailNotifications));
         }
+
+        $this->notifications = [];
     }
 
     public function addIrregularNotification(Dominion $dominion, string $notificationType, array $notificationData)
