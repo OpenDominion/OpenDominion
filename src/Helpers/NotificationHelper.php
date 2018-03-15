@@ -243,7 +243,6 @@ class NotificationHelper
 
             default:
                 throw new LogicException("Unknown WebNotification message for {$category}.{$type}");
-
         }
 
         // exploration/construction/training/returning = sum
