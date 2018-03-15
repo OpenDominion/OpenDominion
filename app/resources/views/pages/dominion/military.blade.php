@@ -18,6 +18,7 @@
                                 <col>
                                 <col width="100">
                                 <col width="100">
+                                <col width="100">
                                 <col width="150">
                                 <col width="150">
                                 <col width="100">
@@ -25,6 +26,7 @@
                             <thead>
                                 <tr>
                                     <th>Unit</th>
+                                    <th class="text-center">OP / DP</th>
                                     <th class="text-center">Trained</th>
                                     <th class="text-center">Training</th>
                                     <th class="text-center">Cost Per Unit</th>
@@ -38,6 +40,16 @@
                                         <td>
                                             {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
                                             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}"></i>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
+                                                @php
+                                                $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
+                                                    return ($unit->slot == (int)str_replace('unit', '', $unitType));
+                                                })->first();
+                                                @endphp
+                                                {{ number_format($unit->power_offense) }} / {{ number_format($unit->power_defense) }}
+                                            @endif
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
                                         <td class="text-center">{{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}</td>
