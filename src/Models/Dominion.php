@@ -4,7 +4,6 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
-use LogicException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -154,7 +153,6 @@ class Dominion extends AbstractModel
     public function isSelectedByAuthUser()
     {
         // todo: move to SelectorService
-        // todo: repository criteria?
         $dominionSelectorService = app(SelectorService::class);
 
         $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
