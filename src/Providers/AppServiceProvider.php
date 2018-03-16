@@ -15,6 +15,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Services\Activity\ActivityService;
@@ -25,6 +26,7 @@ use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
+use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
@@ -36,6 +38,8 @@ use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\Dominion\TickService;
+use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\RealmFinderService;
 
 class AppServiceProvider extends AbstractServiceProvider
@@ -74,6 +78,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(MilitaryCalculator::class);
         $this->app->singleton(PopulationCalculator::class);
         $this->app->singleton(ProductionCalculator::class);
+        $this->app->singleton(RangeCalculator::class);
         $this->app->singleton(SpellCalculator::class);
 
         // Dominion Action Calculators
@@ -90,12 +95,14 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ActivityService::class);
         $this->app->singleton(AnalyticsService::class);
         $this->app->singleton(CouncilService::class);
+        $this->app->singleton(NotificationService::class);
         $this->app->singleton(RealmFinderService::class);
 
         // Dominion Services
         $this->app->singleton(HistoryService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(SelectorService::class);
+        $this->app->singleton(TickService::class);
 
         // Dominion Action Services
         $this->app->singleton(ChangeDraftRateActionService::class);
@@ -105,6 +112,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(DailyBonusesActionService::class);
         $this->app->singleton(DestroyActionService::class);
         $this->app->singleton(ExploreActionService::class);
+        $this->app->singleton(ImproveActionService::class);
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
         $this->app->singleton(SpellActionService::class);
