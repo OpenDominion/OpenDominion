@@ -31,6 +31,10 @@ const vendorDirs = {
     'node_modules/rpg-awesome/css': 'public/assets/vendor/rpg-awesome/css',
     'node_modules/rpg-awesome/fonts': 'public/assets/vendor/rpg-awesome/fonts',
 
+    // Select2
+    'node_modules/select2/dist/css': 'public/assets/vendor/select2/css',
+    'node_modules/select2/dist/js': 'public/assets/vendor/select2/js',
+
 };
 
 for (const dir in vendorDirs) {
