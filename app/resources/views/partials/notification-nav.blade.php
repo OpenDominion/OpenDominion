@@ -28,7 +28,9 @@
                 </li>
                 <li class="footer">
                     <a href="#" id="clear-notifications">Clear Notifications</a>
-                    <form action="{{ url('tmp/clear-notifications') }}" method="post" id="clear-notifications-form"></form>
+                    <form action="{{ url('tmp/clear-notifications') }}" method="post" id="clear-notifications-form">
+                        @csrf
+                    </form>
                 </li>
             @endif
         </ul>
