@@ -101,7 +101,7 @@
                                                     @php
                                                     $land = $landCalculator->getTotalLand($dominion);
                                                     @endphp
-                                                    <option value="{{ $dominion->id }}">
+                                                    <option value="{{ $dominion->id }}" {{ (!$rangeCalculator->isInRange($selectedDominion, $dominion) ? 'disabled' : null) }}>
                                                         {{ $dominion->name }}
                                                         ({{ number_format($land) }} land)
                                                     </option>
