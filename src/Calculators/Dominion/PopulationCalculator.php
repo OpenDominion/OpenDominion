@@ -75,7 +75,7 @@ class PopulationCalculator
      * Returns the Dominion's military population.
      *
      * The military consists of draftees, combat units, spies, wizards, archmages and
-     * units currently in training .
+     * units currently in training.
      *
      * @param Dominion $dominion
      * @return int
