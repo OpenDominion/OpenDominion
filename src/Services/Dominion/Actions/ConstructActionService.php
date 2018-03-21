@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use Carbon\Carbon;
 use DB;
 use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
@@ -98,7 +97,7 @@ class ConstructActionService
         $lumberCost = ($this->constructionCalculator->getLumberCost($dominion) * $totalBuildingsToConstruct);
         $newLumber = ($dominion->resource_lumber - $lumberCost);
 
-        $dateTime = new Carbon;
+        $now = now();
 
         DB::beginTransaction();
 
@@ -133,7 +132,7 @@ class ConstructActionService
 
                 $values = [
                     'amount' => $amount,
-                    'updated_at' => $dateTime,
+                    'updated_at' => $now,
                 ];
 
                 $existingQueueRow = $existingQueueRows->filter(function ($row) use ($buildingType) {
@@ -141,7 +140,7 @@ class ConstructActionService
                 });
 
                 if ($existingQueueRow->isEmpty()) {
-                    $values['created_at'] = $dateTime;
+                    $values['created_at'] = $now;
                 }
 
                 DB::table('queue_construction')
