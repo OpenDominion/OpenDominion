@@ -33,8 +33,11 @@ class ConstructActionService
      * @param LandCalculator $landCalculator
      * @param LandHelper $landHelper
      */
-    public function __construct(ConstructionCalculator $constructionCalculator, LandCalculator $landCalculator, LandHelper $landHelper)
-    {
+    public function __construct(
+        ConstructionCalculator $constructionCalculator,
+        LandCalculator $landCalculator,
+        LandHelper $landHelper
+    ) {
         $this->constructionCalculator = $constructionCalculator;
         $this->landCalculator = $landCalculator;
         $this->landHelper = $landHelper;
@@ -67,6 +70,8 @@ class ConstructActionService
             throw new RuntimeException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings.");
         }
 
+        $buildingsByLandType = [];
+
         foreach ($data as $buildingType => $amount) {
             if ($amount === 0) {
                 continue;
@@ -74,6 +79,14 @@ class ConstructActionService
 
             $landType = $this->landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
 
+            if (!isset($buildingsByLandType[$landType])) {
+                $buildingsByLandType[$landType] = 0;
+            }
+
+            $buildingsByLandType[$landType] += $amount;
+        }
+
+        foreach ($buildingsByLandType as $landType => $amount) {
             if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)) {
                 throw new RuntimeException("You do not have enough barren land to construct {$totalBuildingsToConstruct} buildings.");
             }
