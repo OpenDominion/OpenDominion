@@ -21,7 +21,7 @@ class RangeCalculator
 
     public function isInRange(Dominion $self, Dominion $target): bool
     {
-        // todo: if RG then $modifier = 0.6, else if EG then $modifier = 0.75, else $modifier = 0.6
+        // todo: if RG then $modifier = 0.6, else if EG then $modifier = 0.75, else $modifier = 0.4
 
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
