@@ -184,7 +184,7 @@
             }
 
             return $(`
-                <div class="pull-left">${state.text} (${land} land</div>
+                <div class="pull-left">${state.text}</div>
                 <div class="pull-right">${land} land, <span class="${difficultyClass}">${percentage}%</span></div>
                 <div style="clear: both;"></div>
             `);
