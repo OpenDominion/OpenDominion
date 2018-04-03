@@ -75,8 +75,20 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="target_dominion">Target</label>
-                                            <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Selecft a target dominion">
-                                                {{-- todo --}}
+                                            <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
+                                                <option></option>
+                                                @php
+                                                    $selfLand = $landCalculator->getTotalLand($selectedDominion);
+                                                @endphp
+                                                @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
+                                                    @php
+                                                        $land = $landCalculator->getTotalLand($dominion);
+                                                        $percentage = (($land / $selfLand) * 100);
+                                                    @endphp
+                                                    <option value="{{ $dominion->id }}" data-land="{{ $land }}" data-percentage="{{ number_format($percentage, 1) }}">
+                                                        {{ $dominion->name }} (#{{ $dominion->realm->number }})
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -144,7 +156,38 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('.select2').select2();
+            $('.select2').select2({
+                templateResult: select2Template,
+                templateSelection: select2Template,
+            });
         })(jQuery);
+
+        function select2Template(state) {
+            if (!state.id) {
+                return state.text;
+            }
+
+            const land = state.element.dataset.land;
+            const percentage = state.element.dataset.percentage;
+            let difficultyClass;
+
+            if (percentage >= 133) {
+                difficultyClass = 'text-red';
+            } else if (percentage >= 120) {
+                difficultyClass = 'text-orange';
+            } else if (percentage >= 75) {
+                difficultyClass = 'text-yellow';
+            } else if (percentage >= 66) {
+                difficultyClass = 'text-green';
+            } else {
+                difficultyClass = 'text-muted';
+            }
+
+            return $(`
+                <div class="pull-left">${state.text} (${land} land</div>
+                <div class="pull-right">${land} land, <span class="${difficultyClass}">${percentage}%</span></div>
+                <div style="clear: both;"></div>
+            `);
+        }
     </script>
 @endpush
