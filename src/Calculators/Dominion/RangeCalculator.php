@@ -19,6 +19,13 @@ class RangeCalculator
         $this->landCalculator = $landCalculator;
     }
 
+    /**
+     * Checks whether dominion $target is in range of dominion $self.
+     *
+     * @param Dominion $self
+     * @param Dominion $target
+     * @return bool
+     */
     public function isInRange(Dominion $self, Dominion $target): bool
     {
         // todo: if RG then $modifier = 0.6, else if EG then $modifier = 0.75, else $modifier = 0.4
