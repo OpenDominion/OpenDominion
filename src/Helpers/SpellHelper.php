@@ -78,11 +78,44 @@ class SpellHelper
 //                'duration' => 10,
 //                'cooldown' => 22, // todo
 //            ],
+            // todo: racial
         ]);
     }
 
     public function getOffensiveSpells(): Collection
     {
-        return collect([]); // todo
+        return collect([
+            [
+                'name' => 'Clear Sight',
+                'description' => 'Reveal status screen',
+                'key' => 'clear_sight',
+                'mana_cost' => 0.5,
+            ],
+//            [
+//                'name' => 'Vision',
+//                'description' => 'Reveal tech and heroes',
+//                'key' => 'vision',
+//                'mana_cost' => 0.5,
+//            ],
+            [
+                'name' => 'Revelation',
+                'description' => 'Reveal active spells',
+                'key' => 'revelation',
+                'mana_cost' => 1.2,
+            ],
+            [
+                'name' => 'Clairvoyance',
+                'description' => 'Reveal realm town crier',
+                'key' => 'clairvoyance',
+                'mana_cost' => 1.2,
+            ],
+//            [
+//                'name' => 'Disclosure',
+//                'description' => 'Reveal wonder',
+//                'key' => 'disclosure',
+//                'mana_cost' => 1.2,
+//            ],
+            // todo: black ops
+        ]);
     }
 }
