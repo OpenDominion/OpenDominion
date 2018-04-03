@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
 
 class RangeCalculator
@@ -39,5 +40,28 @@ class RangeCalculator
             ($targetLand >= ($selfLand * $modifier)) &&
             ($targetLand <= ($selfLand / $modifier))
         );
+    }
+
+    /**
+     * Returns all dominions in range of a dominion.
+     *
+     * @param Dominion $self
+     * @return Collection
+     */
+    public function getDominionsInRange(Dominion $self): Collection
+    {
+        return $self->round->dominions()
+            ->with('realm')
+            ->get()
+            ->filter(function ($dominion) use ($self) {
+                return (
+                    $this->isInRange($self, $dominion) &&
+                    ($dominion->id !== $self->id)
+                );
+            })
+            ->sortByDesc(function ($dominion) {
+                return $this->landCalculator->getTotalLand($dominion);
+            })
+            ->values();
     }
 }
