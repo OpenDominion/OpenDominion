@@ -29,17 +29,29 @@ class RangeCalculator
      */
     public function isInRange(Dominion $self, Dominion $target): bool
     {
-        // todo: if RG then $modifier = 0.6, else if EG then $modifier = 0.75, else $modifier = 0.4
-
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
 
-        $modifier = 0.6;
+        $selfModifier = $this->getRangeModifier($self);
+        $targetModifier = $this->getRangeModifier($target);
 
         return (
-            ($targetLand >= ($selfLand * $modifier)) &&
-            ($targetLand <= ($selfLand / $modifier))
+            ($targetLand >= ($selfLand * $selfModifier)) &&
+            ($targetLand <= ($selfLand / $selfModifier))
+            // todo: selfland .. targetLand * targetModifier
         );
+    }
+
+    /**
+     * Get the dominion range modifier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getRangeModifier(Dominion $dominion): float
+    {
+        // todo: if RG then $modifier = 0.6, else if EG then $modifier = 0.75, else $modifier = 0.4
+        return 0.6;
     }
 
     /**
