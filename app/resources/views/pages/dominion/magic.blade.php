@@ -8,74 +8,60 @@
         <div class="col-sm-12 col-md-9">
             <div class="row">
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="ra ra-fairy-wand"></i> Self Spells</h3>
                         </div>
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
                             @csrf
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table">
-                                    <colgroup>
-                                        <col width="150">
-                                        <col>
-                                        <col width="100">
-                                        <col width="100">
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Cast Spell</th>
-                                            <th>Effect</th>
-                                            <th class="text-center">Active</th>
-                                            <th class="text-center">Mana Cost</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($spellHelper->getSelfSpells() as $spell)
-                                            @php
-                                                $manaCost = ($spell['mana_cost'] * $landCalculator->getTotalLand($selectedDominion));
-                                                $canCast = (($selectedDominion->resource_mana >= $manaCost) && ($selectedDominion->wizard_strength >= 30));
 
-                                                $isActive = $spellCalculator->isSpellActive($selectedDominion, $spell['key']);
+                            <div class="box-body">
+                                @foreach ($spellHelper->getSelfSpells()->chunk(2) as $spells)
+                                    <div class="row">
+                                        @foreach ($spells as $spell)
+                                            <div class="col-xs-6 col-sm-6 col-md-12 col-lg-6 text-center">
+                                                @php
+                                                    $manaCost = ($spell['mana_cost'] * $landCalculator->getTotalLand($selectedDominion));
+                                                    $canCast = (($selectedDominion->resource_mana >= $manaCost) && ($selectedDominion->wizard_strength >= 30));
 
-                                                if ($isActive) {
-                                                    $buttonStyle = 'btn-success';
-                                                } elseif ($canCast) {
-                                                    $buttonStyle = 'btn-primary';
-                                                } else {
-                                                    $buttonStyle = 'btn-danger';
-                                                }
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center">
-                                                    <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>{{ $spell['name'] }}</button>
-                                                </td>
-                                                <td class="align-middle">{{ $spell['description'] }}</td>
-                                                <td class="text-center align-middle">
-                                                    @if ($isActive)
-                                                        {{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hr
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td class="text-center align-middle">
-                                                    @if ($canCast)
-                                                        <span class="text-success">{{ number_format($manaCost) }}</span>
-                                                    @else
-                                                        <span class="text-danger">{{ number_format($manaCost) }}</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
+                                                    $isActive = $spellCalculator->isSpellActive($selectedDominion, $spell['key']);
+
+                                                    if ($isActive) {
+                                                        $buttonStyle = 'btn-success';
+                                                    } elseif ($canCast) {
+                                                        $buttonStyle = 'btn-primary';
+                                                    } else {
+                                                        $buttonStyle = 'btn-danger';
+                                                    }
+                                                @endphp
+                                                <div class="form-group">
+                                                    <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
+                                                        {{ $spell['name'] }}
+                                                    </button>
+                                                    <p>{{ $spell['description'] }}</p>
+                                                    <small>
+                                                        @if ($isActive)
+                                                            ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hours remaining)
+                                                        @else
+                                                            @if ($canCast)
+                                                                Mana cost: <span class="text-success">{{ number_format($manaCost) }}</span>
+                                                            @else
+                                                                Mana cost: <span class="text-danger">{{ number_format($manaCost) }}</span>
+                                                            @endif
+                                                        @endif
+                                                    </small>
+                                                </div>
+                                            </div>
                                         @endforeach
-                                    </tbody>
-                                </table>
+                                    </div>
+                                @endforeach
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
@@ -84,36 +70,44 @@
                             @csrf
 
                             <div class="box-body">
-                                <div class="form-group">
-                                    <label for="target_dominion">Target</label>
-                                    <select name="target_dominion" id="target_dominion" class="form-control select2" style="width: 100%">
-                                        @foreach ($selectedDominion->round->realms()->with('dominions')->get() as $realm)
-                                            @if ($selectedDominion->realm->id == $realm->id)
-                                                @continue
-                                            @endif
-                                            @php
-                                            $dominions = $realm->dominions->sortByDesc(function ($dominion) use ($landCalculator) {
-                                                return $landCalculator->getTotalLand($dominion);
-                                            })->values();
-                                            @endphp
-                                            <optgroup label="{{ $realm->name }} (#{{ $realm->number }})">
-                                                @foreach ($dominions as $dominion)
-                                                    @php
-                                                    $land = $landCalculator->getTotalLand($dominion);
-                                                    @endphp
-                                                    <option value="{{ $dominion->id }}" {{ (!$rangeCalculator->isInRange($selectedDominion, $dominion) ? 'disabled' : null) }}>
-                                                        {{ $dominion->name }}
-                                                        ({{ number_format($land) }} land)
-                                                    </option>
-                                                @endforeach
-                                            </optgroup>
-                                        @endforeach
-                                    </select>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="target_dominion">Target</label>
+                                            <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Selecft a target dominion">
+                                                {{-- todo --}}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                spells
+                                @foreach ($spellHelper->getOffensiveSpells()->chunk(4) as $spells)
+                                    <div class="row">
+                                        @foreach ($spells as $spell)
+                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                @php
+                                                    $manaCost = ($spell['mana_cost'] * $landCalculator->getTotalLand($selectedDominion));
+                                                    $canCast = (($selectedDominion->resource_mana >= $manaCost) && ($selectedDominion->wizard_strength >= 30));
+                                                @endphp
+                                                <div class="form-group">
+                                                    <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
+                                                        {{ $spell['name'] }}
+                                                    </button>
+                                                    <p>{{ $spell['description'] }}</p>
+                                                    <small>
+                                                        @if ($canCast)
+                                                            Mana cost: <span class="text-success">{{ number_format($manaCost) }}</span>
+                                                        @else
+                                                            Mana cost: <span class="text-danger">{{ number_format($manaCost) }}</span>
+                                                        @endif
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
 
-                                <em>Not yet implemented</em>
                             </div>
                         </form>
                     </div>
