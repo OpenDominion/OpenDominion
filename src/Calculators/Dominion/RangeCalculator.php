@@ -50,7 +50,7 @@ class RangeCalculator
      */
     public function getRangeModifier(Dominion $dominion): float
     {
-        // todo: if RG then $modifier = 0.6, else if EG then $modifier = 0.75, else $modifier = 0.4
+        // todo: if EG then $modifier = 0.75, else if RG then $modifier = 0.6, else $modifier = 0.4
         return 0.6;
     }
 
