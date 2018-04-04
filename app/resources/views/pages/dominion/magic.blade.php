@@ -74,7 +74,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="target_dominion">Step 1: Select a target</label>
+                                            <label for="target_dominion">Step 1: Select target</label>
                                             <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
                                                 <option></option>
                                                 @php
@@ -97,7 +97,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Step 2: Choose spell to cast</label>
+                                            <label>Step 2: Cast spell</label>
                                         </div>
                                     </div>
                                 </div>
