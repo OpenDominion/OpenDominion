@@ -74,7 +74,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="target_dominion">Step 1: Select target</label>
+                                            <label for="target_dominion">Select a target</label>
                                             <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
                                                 <option></option>
                                                 @php
@@ -96,13 +96,11 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Step 2: Cast spell</label>
-                                        </div>
+                                        <label>Info Op Spells</label>
                                     </div>
                                 </div>
 
-                                @foreach ($spellHelper->getOffensiveSpells()->chunk(4) as $spells)
+                                @foreach ($spellHelper->getInfoOpSpells()->chunk(4) as $spells)
                                     <div class="row">
                                         @foreach ($spells as $spell)
                                             <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
