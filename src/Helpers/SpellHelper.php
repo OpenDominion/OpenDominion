@@ -6,11 +6,46 @@ use Illuminate\Support\Collection;
 
 class SpellHelper
 {
-    public function getSpellInfo(string $spell): array
+    public function getSpellInfo(string $spellKey): array
     {
-        return $this->getSpells()->filter(function ($value) use ($spell) {
-            return ($value['key'] === $spell);
+        return $this->getSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
         })->first();
+    }
+
+    public function isSelfSpell(string $spellKey): bool
+    {
+        return $this->getSelfSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
+    public function isOffensiveSpell(string $spellKey): bool
+    {
+        return $this->getOffensiveSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
+    public function isInfoOpSpell(string $spellKey): bool
+    {
+        return $this->getInfoOpSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
+    public function isBlackOpSpell(string $spellKey): bool
+    {
+        return $this->getBlackOpSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
+    public function isWarSpell(string $spellKey): bool
+    {
+        return $this->getWarSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
     }
 
     public function getSpells(): Collection
@@ -84,6 +119,15 @@ class SpellHelper
 
     public function getOffensiveSpells(): Collection
     {
+        return collect(
+            $this->getInfoOpSpells()->toArray() +
+            $this->getBlackOpSpells()->toArray() +
+            $this->getWarSpells()->toArray()
+        );
+    }
+
+    public function getInfoOpSpells(): Collection
+    {
         return collect([
             [
                 'name' => 'Clear Sight',
@@ -115,7 +159,25 @@ class SpellHelper
 //                'key' => 'disclosure',
 //                'mana_cost' => 1.2,
 //            ],
-            // todo: black ops
+        ]);
+    }
+
+    public function getBlackOpSpells(): Collection
+    {
+        return collect([
+            // plague
+            // insect swarm
+            // great flood
+            // earthquake
+        ]);
+    }
+
+    public function getWarSpells(): Collection
+    {
+        return collect([
+            // fireball
+            // lightning bolt
+            // disband spies
         ]);
     }
 }
