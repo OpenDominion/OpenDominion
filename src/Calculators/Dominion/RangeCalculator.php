@@ -62,6 +62,7 @@ class RangeCalculator
      */
     public function getDominionsInRange(Dominion $self): Collection
     {
+        // todo: this doesn't belong here since it touches the db. Move to RangeService?
         return $self->round->dominions()
             ->with('realm')
             ->get()
