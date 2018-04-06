@@ -132,6 +132,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('council/{thread}')->uses('Dominion\CouncilController@getThread')->name('council.thread');
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
 
+            // Op Center
+            $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
+            $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
+
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
 
