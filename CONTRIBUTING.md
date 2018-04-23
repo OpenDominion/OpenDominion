@@ -86,9 +86,9 @@ The original Dominion has been dead for quite a while now. Even links and resour
 
 Even though I've played Dominion myself, I can't remember how everything looked or worked. If you're a veteran player, please get in contact with me and share any knowledge, screenshots/drawings, info or anything relevant to the original Dominion that you want to share! I started this project alone, but I need **your** help to make it the great game it once was.
 
-Feel free to browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) and reply with your thoughts if you feel like it. Not everything is related to the original Dominion gameplay and I could use some help with other things, like [design](https://github.com/WaveHack/OpenDominion/issues/63) and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)) at time of writing.
+Feel free to browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["discussion"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A"discussion") and reply with your thoughts if you feel like it. Not everything is related to the original Dominion gameplay and I could use some help with other things, like [design](https://github.com/WaveHack/OpenDominion/issues/63) and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)) at time of writing.
 
-Also if want to bring up a topic that you think should get looked into, don't hesitate to poke me on Gitter or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
+Also if want to bring up a topic that you think should get looked into, don't hesitate to poke me on Discord or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
 
 
 ### Reporting bugs
@@ -126,7 +126,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Languages, frameworks, libraries and tools
 
-OpenDominion is built on the Laravel 5.4 PHP framework, using PHP 7.1 as language and Laravel's Blade as view/templating language.
+OpenDominion is built on the Laravel 5.6 PHP framework, using PHP 7.1 as language and Laravel's Blade as view/templating language.
 
 Composer production packages include L5-Repository (for model repositories), Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
 
@@ -244,13 +244,13 @@ With that said, here are some things to keep in mind if you're used to the Larav
 
 ### Things to keep in mind
 
-- The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance, and service classes (`src/Services`).
+- The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance without any interactions with database, sessions etc, and service classes (`src/Services`).
 - Classes for actions that a user takes with a dominion (e.g. exploring, invading) are called 'action services' and reside in `src/Services/Actions`.
 - Misc code that doesn't belong in a calculator or factory should generally go in a service class.
-- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.4/container) for all the calculator and service classes. There's a circular dependency issue between calculator classes, which is circumvented with the `DependencyInitializableInterface` interface. Bad coding patterns, I know! If someone can educate me how to do this specific scenario better then I'll gladly refactor it.
+- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.6/container) for all the calculator and service classes.
 - Also see `AppServiceProvider.php` for this.
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
-- The `GameTickCommand` command is executed every hour at xx:00 from the console kernel.
+- The `Game\TickCommand` command is executed every hour at xx:00 from the console kernel.
 - Slim controllers, slim models, many slim services.
 
 
