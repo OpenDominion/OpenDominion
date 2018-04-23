@@ -128,7 +128,7 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 OpenDominion is built on the Laravel 5.6 PHP framework, using PHP 7.1 as language and Laravel's Blade as view/templating language.
 
-Composer production packages include L5-Repository (for model repositories), Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
+Composer production packages include Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
 
 Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
 
