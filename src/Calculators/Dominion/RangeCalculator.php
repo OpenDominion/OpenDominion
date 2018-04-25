@@ -68,8 +68,8 @@ class RangeCalculator
             ->get()
             ->filter(function ($dominion) use ($self) {
                 return (
-                    $this->isInRange($self, $dominion) &&
-                    ($dominion->realm->id !== $self->realm->id)
+                    ($dominion->realm->id !== $self->realm->id) &&
+                    $this->isInRange($self, $dominion)
                 );
             })
             ->sortByDesc(function ($dominion) {
