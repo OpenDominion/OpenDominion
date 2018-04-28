@@ -14,7 +14,7 @@ git fetch origin ${branch}
 git checkout --force ${branch}
 
 if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 origin/${branch}) ]; then
-    php bin/artisan down --message="Updating" --retry=300
+    php artisan down --message="Updating" --retry=300
 
     git reset --hard origin/${branch}
 
@@ -28,14 +28,14 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
     fi
 
     # Artisan
-    php bin/artisan migrate --force
+    php artisan migrate --force
 
-    php bin/artisan clear-compiled
-    php bin/artisan cache:clear
-    php bin/artisan config:clear
-    php bin/artisan view:clear
+    php artisan clear-compiled
+    php artisan cache:clear
+    php artisan config:clear
+    php artisan view:clear
 
-    php bin/artisan version:update
+    php artisan version:update
 
     # Npm packages
     if [[ ${env} == production ]]; then
@@ -53,5 +53,5 @@ if [ $(git rev-list --max-count=1 ${branch}) != $(git rev-list --max-count=1 ori
 
     supervisorctl restart restart laravel-worker-beta.opendominion.net:*
 
-    php bin/artisan up
+    php artisan up
 fi

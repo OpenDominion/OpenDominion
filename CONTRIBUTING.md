@@ -160,17 +160,17 @@ $ composer install --prefer-source
 
 # Env file
 $ cp .env.template.local .env
-$ php bin/artisan key:generate
+$ php artisan key:generate
 
 # Database
 $ touch storage/databases/local.sqlite
-$ php bin/artisan migrate --seed
+$ php artisan migrate --seed
 
 # Optional IDE helpers
-$ php bin/artisan clear-compiled
-$ php bin/artisan ide-helper:generate
-$ php bin/artisan ide-helper:models -N
-$ php bin/artisan ide-helper:meta
+$ php artisan clear-compiled
+$ php artisan ide-helper:generate
+$ php artisan ide-helper:models -N
+$ php artisan ide-helper:meta
 
 # Frontend stuff
 $ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
@@ -260,7 +260,7 @@ To run OpenDominion you need a webserver pointing a document root towards the 'p
 What I like to do during development is to use PHP's internal webserver via Artisan serve:
 
 ```bash
-$ php bin/artisan serve
+$ php artisan serve
 ```
 
 OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to. Using things like Apache/Nginx with MySQL/MariaDB is possible at your own discretion.
