@@ -33,8 +33,8 @@ if [[ ! -f .env ]]; then
 fi
 
 # Setup/seed database + IDE files on local
-if [[ ${env} == local ]] && [[ ! -f app/storage/databases/local.sqlite ]]; then
-    touch app/storage/databases/local.sqlite
+if [[ ${env} == local ]] && [[ ! -f storage/databases/local.sqlite ]]; then
+    touch storage/databases/local.sqlite
     php bin/artisan migrate --seed
 fi
 

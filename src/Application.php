@@ -84,14 +84,6 @@ class Application extends LaravelApplication
     /**
      * {@inheritdoc}
      */
-    public function storagePath()
-    {
-        return ($this->appPath . DIRECTORY_SEPARATOR . 'storage');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function resourcePath($path = '')
     {
         return ($this->appPath . DIRECTORY_SEPARATOR . 'resources' . $this->getSuffixPath($path));

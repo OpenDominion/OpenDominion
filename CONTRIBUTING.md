@@ -163,7 +163,7 @@ $ cp .env.template.local .env
 $ php bin/artisan key:generate
 
 # Database
-$ touch app/storage/databases/local.sqlite
+$ touch storage/databases/local.sqlite
 $ php bin/artisan migrate --seed
 
 # Optional IDE helpers
@@ -202,7 +202,6 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 |   |       +-- partials # Partial views to split up layouts or to reuse template blocks
 |   |       +-- vendor # Vendor views. Currently unused
 |   +-- routes # Laravel route config
-|   +-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
 +-- bin # Artisan, init.sh and deploy.sh scripts
 +-- public # Web root
 |   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update webpack.mix.js to copy them
@@ -218,6 +217,7 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 |   +-- Services # Misc business logic classes which can touch sessions, database etc
 |   +-- Traits # DominionAwareTrait
 |   +-- Application.php # Custom application class to overwrite Laravel's default paths
++-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
 +-- tests # Test files. Note that tests are namespaced!
     +-- Feature # Feature tests
     +-- Unit # Unit tests
@@ -238,7 +238,7 @@ With that said, here are some things to keep in mind if you're used to the Larav
 
 - Artisan is in `bin`: `$ php bin/artisan [command]`.
 - Source code is in `src` instead of `app`.
-- Bootstrap, config, database, resources, routes and storage are in `app`.
+- Bootstrap, config, database, resources and routes are in `app`.
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
 
@@ -268,7 +268,7 @@ OpenDominion uses a SQLite database by default for development, so there's no ne
 
 **Note:** Due to hardcoded SQL queries in the [GameTickCommand class](https://github.com/WaveHack/OpenDominion/blob/master/src/Console/Commands/GameTickCommand.php), database engines other than Sqlite and MySQL are **not** supported.
 
-Make sure the directories `app/bootstrap/cache` and `app/storage` (and every directory under `app/storage`) are writable.
+Make sure the directories `app/bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
 
 If you run into an 'application encryption error', run the following:
 
@@ -312,7 +312,7 @@ If you want to reset the database, run the following:
 $ php bin/artisan migrate:refresh --seed
 ```
 
-If that doesn't work, remove the `app/storage/databases/local.sqlite` file, create a new one and then run:
+If that doesn't work, remove the `storage/databases/local.sqlite` file, create a new one and then run:
 
 ```bash
 $ php bin/artisan migrate --seed
@@ -320,7 +320,7 @@ $ php bin/artisan migrate --seed
 
 **Note:** Any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
 
-Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`app/storage/logs/laravel.log`).
+Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`storage/logs/laravel.log`).
 
 
 ### Style guide and standards
