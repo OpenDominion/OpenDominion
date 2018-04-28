@@ -19,6 +19,7 @@
   "require-dev": {
     "barryvdh/laravel-debugbar": "~3.1",
     "barryvdh/laravel-ide-helper": "~2.2",
+    "deployer/deployer": "^6.2",
     "doctrine/dbal": "~2.2",
     "filp/whoops": "~2.0",
     "fzaninotto/faker": "~1.4",
