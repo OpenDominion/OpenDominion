@@ -3,15 +3,19 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
-use Exception;
+use LogicException;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
+use Throwable;
 
 class SpellActionService
 {
@@ -19,6 +23,12 @@ class SpellActionService
 
     /** @var LandCalculator */
     protected $landCalculator;
+
+    /** @var NetworthCalculator */
+    protected $networthCalculator;
+
+    /** @var PopulationCalculator */
+    protected $populationCalculator;
 
     /** @var SpellCalculator */
     protected $spellCalculator;
@@ -33,114 +43,271 @@ class SpellActionService
      * SpellActionService constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param NetworthCalculator $networthCalculator
+     * @param PopulationCalculator $populationCalculator
      * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
      * @param TrainingQueueService $trainingQueueService
      */
     public function __construct(
         LandCalculator $landCalculator,
+        NetworthCalculator $networthCalculator,
+        PopulationCalculator $populationCalculator,
         SpellCalculator $spellCalculator,
         SpellHelper $spellHelper,
         TrainingQueueService $trainingQueueService
     ) {
         $this->landCalculator = $landCalculator;
+        $this->networthCalculator = $networthCalculator;
+        $this->populationCalculator = $populationCalculator;
         $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
         $this->trainingQueueService = $trainingQueueService;
     }
 
     /**
-     * Does a cast self spell action for a Dominion.
+     * Casts a magic spell for a dominion, optionally aimed at another dominion.
      *
      * @param Dominion $dominion
-     * @param string $spell
+     * @param string $spellKey
+     * @param null|Dominion $target
      * @return array
-     * @throws Exception
-     * @throws RuntimeException
+     * @throws Throwable
      */
-    public function castSelfSpell(Dominion $dominion, string $spell): array
+    public function castSpell(Dominion $dominion, string $spellKey, ?Dominion $target = null): array
     {
         $this->guardLockedDominion($dominion);
 
-        $spellInfo = $this->spellHelper->getSpellInfo($spell);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if (!$spellInfo) {
-            throw new RuntimeException("Unable to cast spell {$spell}");
+            throw new RuntimeException("Cannot cast unknown spell '{$spellKey}'");
         }
 
         if ($dominion->wizard_strength < 30) {
-            throw new RuntimeException("Not enough wizard strength to cast {$spellInfo['name']}.");
+            throw new RuntimeException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
         }
 
         $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
 
         if ($dominion->resource_mana < $manaCost) {
-            throw new RuntimeException("Not enough mana to cast {$spellInfo['name']}.");
+            throw new RuntimeException("You do not have enough mana to cast {$spellInfo['name']}.");
         }
 
-        try {
-            DB::beginTransaction();
+        if ($this->spellHelper->isOffensiveSpell($spellKey)) {
+            if ($target === null) {
+                throw new RuntimeException("You must select a target when casting offensive spell {$spellInfo['name']}");
+            }
 
-            if ($this->spellCalculator->isSpellActive($dominion, $spell)) {
+            if ($dominion->round->id !== $target->round->id) {
+                throw new RuntimeException('Nice try, but you cannot cast spells cross-round');
+            }
 
-                $where = [
-                    'dominion_id' => $dominion->id,
-                    'spell' => $spell,
-                ];
+            if ($dominion->realm->id === $target->realm->id) {
+                throw new RuntimeException('Nice try, but you cannot cast spells on your realmies');
+            }
+        }
 
-                $activeSpell = DB::table('active_spells')
-                    ->where($where)
-                    ->first();
+        $result = null;
 
-                /** @noinspection NullPointerExceptionInspection */
-                /** @noinspection PhpUndefinedFieldInspection */
-                if ((int)$activeSpell->duration === $spellInfo['duration']) {
-                    throw new RuntimeException("Spell {$spellInfo['name']} is already at maximum duration.");
-                }
+        DB::transaction(function () use ($dominion, $manaCost, $spellKey, &$result, $target) {
 
-                DB::table('active_spells')
-                    ->where($where)
-                    ->update([
-                        'duration' => $spellInfo['duration'],
-                        'updated_at' => now(),
-                    ]);
+            if ($this->spellHelper->isSelfSpell($spellKey)) {
+                $result = $this->castSelfSpell($dominion, $spellKey);
+
+            } elseif ($this->spellHelper->isInfoOpSpell($spellKey)) {
+                $result = $this->castInfoOpSpell($dominion, $spellKey, $target);
+
+            } elseif ($this->spellHelper->isBlackOpSpell($spellKey)) {
+                throw new LogicException('Not yet implemented');
+
+            } elseif ($this->spellHelper->isWarSpell($spellKey)) {
+                throw new LogicException('Not yet implemented');
 
             } else {
-                DB::table('active_spells')
-                    ->insert([
-                        'dominion_id' => $dominion->id,
-                        'spell' => $spell,
-                        'duration' => $spellInfo['duration'],
-                        'cast_by_dominion_id' => $dominion->id, // todo
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+                throw new LogicException("Unknown spell type for spell {$spellKey}");
             }
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= 5;
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
 
-            DB::commit();
+        });
 
-        } catch (Exception $e) {
-            DB::rollBack();
+        return [
+                'message' => $result['message'], /* sprintf(
+                    $this->getReturnMessageString($dominion), // todo
+                    $spellInfo['name'],
+                    number_format($manaCost)
+                ),*/
+                'data' => [
+                    'spell' => $spellKey,
+                    'manaCost' => $manaCost,
+                ],
+                'redirect' => ($this->spellHelper->isInfoOpSpell($spellKey) ? route('dominion.op-center.show',
+                    $target->id) : null),
+            ] + $result;
+    }
 
-            throw $e;
+    protected function castSelfSpell(Dominion $dominion, string $spellKey): array
+    {
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
+
+        if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
+
+            $where = [
+                'dominion_id' => $dominion->id,
+                'spell' => $spellKey,
+            ];
+
+            $activeSpell = DB::table('active_spells')
+                ->where($where)
+                ->first();
+
+            if ((int)$activeSpell->duration === $spellInfo['duration']) {
+                throw new RuntimeException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
+            }
+
+            DB::table('active_spells')
+                ->where($where)
+                ->update([
+                    'duration' => $spellInfo['duration'],
+                    'updated_at' => now(),
+                ]);
+
+        } else {
+
+            DB::table('active_spells')
+                ->insert([
+                    'dominion_id' => $dominion->id,
+                    'spell' => $spellKey,
+                    'duration' => $spellInfo['duration'],
+                    'cast_by_dominion_id' => $dominion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
         }
 
         return [
-            'message' => sprintf(
-                $this->getReturnMessageString($dominion),
-                $spellInfo['name'],
-                number_format($manaCost)
-            ),
-            'data' => [
-                'spell' => $spell,
-                'manaCost' => $manaCost,
-            ]
+            'message' => 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next 12 hours.',
         ];
     }
+
+    protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
+    {
+        $infoOp = InfoOp::firstOrNew([
+            'source_realm_id' => $dominion->realm->id,
+            'target_dominion_id' => $target->id,
+            'type' => $spellKey,
+        ], [
+            'source_dominion_id' => $dominion->id,
+        ]);
+
+        if ($infoOp->exists) {
+            $infoOp->source_dominion_id = $dominion->id;
+        }
+
+        switch ($spellKey) {
+            case 'clear_sight':
+                $infoOp->data = [
+
+                    'ruler_name' => $target->user->display_name, // todo: $target->ruler_name
+                    'race' => $target->race->name,
+                    'land' => $this->landCalculator->getTotalLand($target),
+                    'peasants' => $target->peasants,
+                    'employment' => $this->populationCalculator->getEmploymentPercentage($target),
+                    'networth' => $this->networthCalculator->getDominionNetworth($target),
+                    'prestige' => $target->prestige,
+
+                    'resource_platinum' => $target->resource_platinum,
+                    'resource_food' => $target->resource_food,
+                    'resource_lumber' => $target->resource_lumber,
+                    'resource_mana' => $target->resource_mana,
+                    'resource_ore' => $target->resource_ore,
+                    'resource_gems' => $target->resource_gems,
+                    'resource_tech' => $target->resource_tech,
+                    'resource_boats' => $target->resource_boats,
+
+                    'morale' => $target->morale,
+                    'military_draftees' => $target->military_draftees,
+                    'military_unit1' => $target->military_unit1,
+                    'military_unit2' => $target->military_unit2,
+                    'military_unit3' => $target->military_unit3,
+                    'military_unit4' => $target->military_unit4,
+
+                ];
+                break;
+
+//            case 'vision':
+//                $infoOp->data = [];
+//                break;
+
+            case 'revelation':
+                $infoOp->data = $this->spellCalculator->getActiveSpells($target);
+                break;
+
+            case 'clairvoyance':
+                $infoOp->data = [
+                    // tc
+                ];
+                break;
+
+//            case 'disclosure':
+//                $infoOp->data = [];
+//                break;
+
+            default:
+                throw new LogicException("Unknown info op spell {$spellKey}");
+        }
+
+        $infoOp->updated_at = now(); // Always force update updated_at on infoops to know which the last infoop was cast
+        $infoOp->save();
+
+        return [
+            'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
+            'redirect' => route('dominion.op-center.show', $target),
+        ];
+    }
+
+    protected function castClearSight(Dominion $dominion, Dominion $target)
+    {
+
+
+        dd('cast clear sight');
+
+        // status screen of $target
+
+        /*
+
+        Model: Realm
+        - infoOps(): InfoOp[]
+        - infoOpTargetDominions(): Dominion through InfoOp->targetDominion()
+        - infoOpFavoriteDominions(): Dominion through info_op_favorite_dominions.target_dominion_id?
+
+        Model: InfoOp
+        - realm(): Realm
+        - castByDominion(): Dominion
+        - targetDominion(): Dominions
+        - isStale(): bool - updated_at > last hour
+
+        */
+
+    }
+
+    // todo: vision
+
+    protected function castRevelation(Dominion $dominion, Dominion $target)
+    {
+        // spells affecting $target
+    }
+
+    protected function castClairvoyance(Dominion $dominion, Dominion $target)
+    {
+        // $target's TC
+    }
+
+    // todo: disclosure
 
     /**
      * Returns the successful return message.
