@@ -37,6 +37,7 @@ use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\RealmFinderService;
+use Schema;
 
 class AppServiceProvider extends AbstractServiceProvider
 {
@@ -46,6 +47,7 @@ class AppServiceProvider extends AbstractServiceProvider
     public function boot()
     {
         Paginator::useBootstrapThree();
+        Schema::defaultStringLength(191);
     }
 
     /**
