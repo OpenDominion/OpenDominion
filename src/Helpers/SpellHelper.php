@@ -50,7 +50,8 @@ class SpellHelper
 
     public function getSpells(): Collection
     {
-        return collect($this->getSelfSpells()->toArray() + $this->getOffensiveSpells()->toArray());
+        return $this->getSelfSpells()
+            ->merge($this->getOffensiveSpells());
     }
 
     public function getSelfSpells(): Collection
@@ -119,11 +120,9 @@ class SpellHelper
 
     public function getOffensiveSpells(): Collection
     {
-        return collect(
-            $this->getInfoOpSpells()->toArray() +
-            $this->getBlackOpSpells()->toArray() +
-            $this->getWarSpells()->toArray()
-        );
+        return $this->getInfoOpSpells()
+            ->merge($this->getBlackOpSpells())
+            ->merge($this->getWarSpells());
     }
 
     public function getInfoOpSpells(): Collection
