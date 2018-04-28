@@ -187,7 +187,6 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 ```bash
 .
 +-- app
-|   +-- bootstrap # Laravel bootstrap
 |   +-- config # Laravel config
 |   +-- data # Custom folder with static data JSON files. Units, races, perks etc
 |   +-- database # Laravel database
@@ -202,7 +201,8 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 |   |       +-- partials # Partial views to split up layouts or to reuse template blocks
 |   |       +-- vendor # Vendor views. Currently unused
 |   +-- routes # Laravel route config
-+-- bin # Artisan, init.sh and deploy.sh scripts
++-- bin # init.sh and deploy.sh scripts
++-- bootstrap # Laravel bootstrap
 +-- public # Web root
 |   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update webpack.mix.js to copy them
 |       +-- app # Application assets, compiled and/or copied from app/resources/
@@ -236,9 +236,8 @@ OpenDominion is built with the Laravel [*framework*](https://github.com/laravel/
 
 With that said, here are some things to keep in mind if you're used to the Laravel boiler plate project code:
 
-- Artisan is in `bin`: `$ php bin/artisan [command]`.
 - Source code is in `src` instead of `app`.
-- Bootstrap, config, database, resources and routes are in `app`.
+- Config, database, resources and routes are in `app`.
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
 
@@ -268,12 +267,12 @@ OpenDominion uses a SQLite database by default for development, so there's no ne
 
 **Note:** Due to hardcoded SQL queries in the [GameTickCommand class](https://github.com/WaveHack/OpenDominion/blob/master/src/Console/Commands/GameTickCommand.php), database engines other than Sqlite and MySQL are **not** supported.
 
-Make sure the directories `app/bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
+Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
 
 If you run into an 'application encryption error', run the following:
 
 ```bash
-$ php bin/artisan key:generate
+$ php artisan key:generate
 ```
 
 
@@ -309,13 +308,13 @@ For updating your local development environment, do a `git pull`, optionally fol
 If you want to reset the database, run the following:
 
 ```bash
-$ php bin/artisan migrate:refresh --seed
+$ php artisan migrate:refresh --seed
 ```
 
 If that doesn't work, remove the `storage/databases/local.sqlite` file, create a new one and then run:
 
 ```bash
-$ php bin/artisan migrate --seed
+$ php artisan migrate --seed
 ```
 
 **Note:** Any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).

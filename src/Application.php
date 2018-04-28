@@ -13,6 +13,8 @@ class Application extends LaravelApplication
      */
     protected $appPath;
 
+    /** @noinspection MagicMethodsValidityInspection */
+    /** @noinspection PhpMissingParentConstructorInspection */
     /**
      * Create a new OpenDominion application instance.
      *
@@ -47,14 +49,6 @@ class Application extends LaravelApplication
     public function path($path = '')
     {
         return ($this->basePath . DIRECTORY_SEPARATOR . 'src' . $this->getSuffixPath($path));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function bootstrapPath($path = '')
-    {
-        return ($this->appPath . DIRECTORY_SEPARATOR . 'bootstrap' . $this->getSuffixPath($path));
     }
 
     /**
