@@ -37,11 +37,7 @@ class ImprovementCalculator
             * (1 - exp(-$improvementPoints / ($this->getImprovementCoefficient($improvementType) * $totalLand + 15000)))
             * (1 + (($dominion->building_masonry * $efficiencyPerMasonry) / $totalLand));
 
-        $multiplier *= 10000;
-        $multiplier = round($multiplier);
-        $multiplier /= 10000;
-
-        return $multiplier;
+        return round($multiplier, 4);
     }
 
     /**
