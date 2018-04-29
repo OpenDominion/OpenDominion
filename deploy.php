@@ -24,8 +24,14 @@ task('npm run prod', function () {
     run('cd {{release_path}} && npm run prod');
 });
 
+task('artisan:version:update', function () {
+    run('{{bin/php}} {{release_path}}/artisan version:update');
+});
+
 after('deploy:vendors', 'npm install');
 after('npm install', 'npm run prod');
+
+after('artisan:optimize', 'artisan:version:update');
 
 before('deploy:symlink', 'artisan:migrate');
 
