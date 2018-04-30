@@ -15,6 +15,7 @@ class Application extends LaravelApplication
 
     /** @noinspection MagicMethodsValidityInspection */
     /** @noinspection PhpMissingParentConstructorInspection */
+
     /**
      * Create a new OpenDominion application instance.
      *
