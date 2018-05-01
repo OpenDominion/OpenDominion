@@ -46,11 +46,6 @@ class SelectorService
             throw new RuntimeException('User cannot select someone else\'s Dominion');
         }
 
-        // Check that round is active
-        if (!$dominion->round->hasStarted()) {
-            throw new RuntimeException('Cannot select a dominion when the round hasn\'t started yet');
-        }
-
         // todo: fire laravel event
 //        event(new Dominion\SelectedEvent($user, $dominion));
 
@@ -118,6 +113,7 @@ class SelectorService
         $activeDominions = $user->dominions()->active()->get();
 
         if ($activeDominions->count() !== 1) {
+            // todo: try select dominion which is about to start?
             return null;
         }
 
