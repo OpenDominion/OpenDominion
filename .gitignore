@@ -7,12 +7,12 @@
 /.idea/workspace.xml
 /.vagrant/
 /app/routes/web.local.php
-/app/storage/*.key
 /node_modules/
 /public/assets/
 /public/hot/
 /public/storage/
 /public/mix-manifest.json
+/storage/*.key
 /vendor/
 /.env
 /.phpstorm.meta.php

@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-define('ARTISAN_BINARY', 'bin/artisan');
 define('LARAVEL_START', microtime(true));
 
 /*
@@ -16,9 +15,9 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
-$app = require_once __DIR__ . '/../app/bootstrap/app.php';
+$app = require_once __DIR__ . '/bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------

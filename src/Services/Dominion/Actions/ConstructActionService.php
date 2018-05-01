@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use Carbon\Carbon;
 use DB;
 use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
@@ -33,8 +32,11 @@ class ConstructActionService
      * @param LandCalculator $landCalculator
      * @param LandHelper $landHelper
      */
-    public function __construct(ConstructionCalculator $constructionCalculator, LandCalculator $landCalculator, LandHelper $landHelper)
-    {
+    public function __construct(
+        ConstructionCalculator $constructionCalculator,
+        LandCalculator $landCalculator,
+        LandHelper $landHelper
+    ) {
         $this->constructionCalculator = $constructionCalculator;
         $this->landCalculator = $landCalculator;
         $this->landHelper = $landHelper;
@@ -67,6 +69,8 @@ class ConstructActionService
             throw new RuntimeException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings.");
         }
 
+        $buildingsByLandType = [];
+
         foreach ($data as $buildingType => $amount) {
             if ($amount === 0) {
                 continue;
@@ -74,6 +78,14 @@ class ConstructActionService
 
             $landType = $this->landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
 
+            if (!isset($buildingsByLandType[$landType])) {
+                $buildingsByLandType[$landType] = 0;
+            }
+
+            $buildingsByLandType[$landType] += $amount;
+        }
+
+        foreach ($buildingsByLandType as $landType => $amount) {
             if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)) {
                 throw new RuntimeException("You do not have enough barren land to construct {$totalBuildingsToConstruct} buildings.");
             }
@@ -85,7 +97,7 @@ class ConstructActionService
         $lumberCost = ($this->constructionCalculator->getLumberCost($dominion) * $totalBuildingsToConstruct);
         $newLumber = ($dominion->resource_lumber - $lumberCost);
 
-        $dateTime = new Carbon;
+        $now = now();
 
         DB::beginTransaction();
 
@@ -120,7 +132,7 @@ class ConstructActionService
 
                 $values = [
                     'amount' => $amount,
-                    'updated_at' => $dateTime,
+                    'updated_at' => $now,
                 ];
 
                 $existingQueueRow = $existingQueueRows->filter(function ($row) use ($buildingType) {
@@ -128,7 +140,7 @@ class ConstructActionService
                 });
 
                 if ($existingQueueRow->isEmpty()) {
-                    $values['created_at'] = $dateTime;
+                    $values['created_at'] = $now;
                 }
 
                 DB::table('queue_construction')

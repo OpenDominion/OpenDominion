@@ -51,13 +51,13 @@
                                 @foreach ($dominions->all() as $dominion)
                                     <tr>
                                         <td>
-                                            @if (!$dominion->round->hasStarted())
-                                                {{ $dominion->name }}
-                                                <abbr title="Available at {{ $dominion->round->start_date }}" class="label label-primary">In {{ $dominion->round->daysUntilStart() }} day(s)</abbr>
-
-                                            @elseif ($dominion->isSelectedByAuthUser())
+                                            @if ($dominion->isSelectedByAuthUser())
                                                 <a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a>
                                                 <span class="label label-success">Selected</span>
+
+                                                @if (!$dominion->round->hasStarted())
+                                                    <span class="label label-warning">Starting soon</span>
+                                                @endif
 
                                                 @if ($dominion->isLocked())
                                                     <span class="label label-danger">Locked</span>
@@ -66,6 +66,10 @@
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                     @csrf
                                                     <button type="submit" class="btn btn-link" style="padding: 0;">{{ $dominion->name }}</button>
+
+                                                    @if (!$dominion->round->hasStarted())
+                                                        <span class="label label-warning">Starting soon</span>
+                                                    @endif
 
                                                     @if ($dominion->isLocked())
                                                         <span class="label label-danger">Locked</span>

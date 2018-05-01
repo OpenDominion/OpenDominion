@@ -53,6 +53,14 @@ class TickTest extends AbstractBrowserKitTestCase
             'hours' => 3,
         ]);
 
+        // Two queue records in hourly sequence can give errors
+        DB::table('queue_exploration')->insert([
+            'dominion_id' => $dominion->id,
+            'land_type' => 'plain',
+            'amount' => 5,
+            'hours' => 2,
+        ]);
+
         DB::table('queue_construction')->insert([
             'dominion_id' => $dominion->id,
             'building' => 'home',
@@ -70,14 +78,14 @@ class TickTest extends AbstractBrowserKitTestCase
         // Test queue hours 2 -> 1
         Artisan::call('game:tick');
         $this
-            ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
+            ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 5, 'building_home' => 0])
             ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 1])
             ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 1]);
 
         // Test queues get processed on hour 0
         Artisan::call('game:tick');
         $this
-            ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 10, 'building_home' => 10])
+            ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 15, 'building_home' => 10])
             ->dontSeeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain'])
             ->dontSeeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home']);
     }

@@ -115,6 +115,9 @@
       <path value="$PROJECT_DIR$/vendor/dragonmantank/cron-expression" />
       <path value="$PROJECT_DIR$/vendor/nunomaduro/collision" />
       <path value="$PROJECT_DIR$/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/vendor/deployer/phar-update" />
+      <path value="$PROJECT_DIR$/vendor/deployer/deployer" />
+      <path value="$PROJECT_DIR$/vendor/pimple/pimple" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />

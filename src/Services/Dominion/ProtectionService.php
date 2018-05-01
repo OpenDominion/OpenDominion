@@ -59,11 +59,19 @@ class ProtectionService
             return 0;
         }
 
+        $protectionStartDate = $this->getProtectionStartDate($dominion);
+
+        $diffInHours = $this->getProtectionEndDate($dominion)->diffInHours($protectionStartDate);
+
+        if ($diffInHours === static::PROTECTION_DURATION_IN_HOURS) {
+            return $diffInHours;
+        }
+
         $minutes = (int)now()->format('i');
         $seconds = (int)now()->format('s');
-
+        
         $fraction = (1 - ((($minutes * 60) + $seconds) / 3600));
 
-        return ($this->getProtectionEndDate($dominion)->diffInHours(now()) + $fraction);
+        return ($diffInHours + $fraction);
     }
 }

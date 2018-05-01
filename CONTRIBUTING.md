@@ -86,9 +86,9 @@ The original Dominion has been dead for quite a while now. Even links and resour
 
 Even though I've played Dominion myself, I can't remember how everything looked or worked. If you're a veteran player, please get in contact with me and share any knowledge, screenshots/drawings, info or anything relevant to the original Dominion that you want to share! I started this project alone, but I need **your** help to make it the great game it once was.
 
-Feel free to browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) and reply with your thoughts if you feel like it. Not everything is related to the original Dominion gameplay and I could use some help with other things, like [design](https://github.com/WaveHack/OpenDominion/issues/63) and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)) at time of writing.
+Feel free to browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["discussion"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A"discussion") and reply with your thoughts if you feel like it. Not everything is related to the original Dominion gameplay and I could use some help with other things, like [design](https://github.com/WaveHack/OpenDominion/issues/63) and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)) at time of writing.
 
-Also if want to bring up a topic that you think should get looked into, don't hesitate to poke me on Gitter or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
+Also if want to bring up a topic that you think should get looked into, don't hesitate to poke me on Discord or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
 
 
 ### Reporting bugs
@@ -126,9 +126,9 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 
 ##### Languages, frameworks, libraries and tools
 
-OpenDominion is built on the Laravel 5.4 PHP framework, using PHP 7.1 as language and Laravel's Blade as view/templating language.
+OpenDominion is built on the Laravel 5.6 PHP framework, using PHP 7.1 as language and Laravel's Blade as view/templating language.
 
-Composer production packages include L5-Repository (for model repositories), Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
+Composer production packages include Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
 
 Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
 
@@ -160,17 +160,17 @@ $ composer install --prefer-source
 
 # Env file
 $ cp .env.template.local .env
-$ php bin/artisan key:generate
+$ php artisan key:generate
 
 # Database
-$ touch app/storage/databases/local.sqlite
-$ php bin/artisan migrate --seed
+$ touch storage/databases/local.sqlite
+$ php artisan migrate --seed
 
 # Optional IDE helpers
-$ php bin/artisan clear-compiled
-$ php bin/artisan ide-helper:generate
-$ php bin/artisan ide-helper:models -N
-$ php bin/artisan ide-helper:meta
+$ php artisan clear-compiled
+$ php artisan ide-helper:generate
+$ php artisan ide-helper:models -N
+$ php artisan ide-helper:meta
 
 # Frontend stuff
 $ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
@@ -187,7 +187,6 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 ```bash
 .
 +-- app
-|   +-- bootstrap # Laravel bootstrap
 |   +-- config # Laravel config
 |   +-- data # Custom folder with static data JSON files. Units, races, perks etc
 |   +-- database # Laravel database
@@ -202,8 +201,8 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 |   |       +-- partials # Partial views to split up layouts or to reuse template blocks
 |   |       +-- vendor # Vendor views. Currently unused
 |   +-- routes # Laravel route config
-|   +-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
-+-- bin # Artisan, init.sh and deploy.sh scripts
++-- bin # init.sh and deploy.sh scripts
++-- bootstrap # Laravel bootstrap
 +-- public # Web root
 |   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update webpack.mix.js to copy them
 |       +-- app # Application assets, compiled and/or copied from app/resources/
@@ -218,6 +217,7 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 |   +-- Services # Misc business logic classes which can touch sessions, database etc
 |   +-- Traits # DominionAwareTrait
 |   +-- Application.php # Custom application class to overwrite Laravel's default paths
++-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
 +-- tests # Test files. Note that tests are namespaced!
     +-- Feature # Feature tests
     +-- Unit # Unit tests
@@ -236,21 +236,20 @@ OpenDominion is built with the Laravel [*framework*](https://github.com/laravel/
 
 With that said, here are some things to keep in mind if you're used to the Laravel boiler plate project code:
 
-- Artisan is in `bin`: `$ php bin/artisan [command]`.
 - Source code is in `src` instead of `app`.
-- Bootstrap, config, database, resources, routes and storage are in `app`.
+- Config, database, resources and routes are in `app`.
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
 
 ### Things to keep in mind
 
-- The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance, and service classes (`src/Services`).
+- The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance without any interactions with database, sessions etc, and service classes (`src/Services`).
 - Classes for actions that a user takes with a dominion (e.g. exploring, invading) are called 'action services' and reside in `src/Services/Actions`.
 - Misc code that doesn't belong in a calculator or factory should generally go in a service class.
-- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.4/container) for all the calculator and service classes. There's a circular dependency issue between calculator classes, which is circumvented with the `DependencyInitializableInterface` interface. Bad coding patterns, I know! If someone can educate me how to do this specific scenario better then I'll gladly refactor it.
+- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.6/container) for all the calculator and service classes.
 - Also see `AppServiceProvider.php` for this.
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
-- The `GameTickCommand` command is executed every hour at xx:00 from the console kernel.
+- The `Game\TickCommand` command is executed every hour at xx:00 from the console kernel.
 - Slim controllers, slim models, many slim services.
 
 
@@ -261,19 +260,19 @@ To run OpenDominion you need a webserver pointing a document root towards the 'p
 What I like to do during development is to use PHP's internal webserver via Artisan serve:
 
 ```bash
-$ php bin/artisan serve
+$ php artisan serve
 ```
 
 OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to. Using things like Apache/Nginx with MySQL/MariaDB is possible at your own discretion.
 
 **Note:** Due to hardcoded SQL queries in the [GameTickCommand class](https://github.com/WaveHack/OpenDominion/blob/master/src/Console/Commands/GameTickCommand.php), database engines other than Sqlite and MySQL are **not** supported.
 
-Make sure the directories `app/bootstrap/cache` and `app/storage` (and every directory under `app/storage`) are writable.
+Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
 
 If you run into an 'application encryption error', run the following:
 
 ```bash
-$ php bin/artisan key:generate
+$ php artisan key:generate
 ```
 
 
@@ -309,18 +308,18 @@ For updating your local development environment, do a `git pull`, optionally fol
 If you want to reset the database, run the following:
 
 ```bash
-$ php bin/artisan migrate:refresh --seed
+$ php artisan migrate:refresh --seed
 ```
 
-If that doesn't work, remove the `app/storage/databases/local.sqlite` file, create a new one and then run:
+If that doesn't work, remove the `storage/databases/local.sqlite` file, create a new one and then run:
 
 ```bash
-$ php bin/artisan migrate --seed
+$ php artisan migrate --seed
 ```
 
 **Note:** Any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
 
-Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`app/storage/logs/laravel.log`).
+Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`storage/logs/laravel.log`).
 
 
 ### Style guide and standards
