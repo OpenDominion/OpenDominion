@@ -94,6 +94,11 @@ class TickService
 
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
+                // Ignore hour 0
+                if ($this->now->diff($round->start_date)->h === 0) {
+                    continue;
+                }
+
                 $dominionIds = [];
 
                 foreach ($round->dominions as $dominion) {
