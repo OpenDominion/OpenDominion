@@ -41,7 +41,9 @@ return [
     |
     */
 
-    'extensions' => [],
+    'extensions' => [
+        \OpenDominion\Extensions\Markdown\ResponsiveImageExtension::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
