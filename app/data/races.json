@@ -1,6 +1,23 @@
 {
   "races": [
     { "name": "Human", "alignment": "good", "home_land_type": "plain", "perks": [ { "key": "food_production", "value":  5 } ] },
-    { "name": "Nomad", "alignment": "evil", "home_land_type": "plain", "perks": [ { "key": "mana_production", "value": 10 } ] }
+    { "name": "Dwarf", "alignment": "good", "home_land_type": "mountain", "perks": [ { "key": "ore_production", "value":  10 }, { "key": "max_population", "value":  7.5 } ] },
+    { "name": "Woodelf", "alignment": "good", "home_land_type": "forest", "perks": [ { "key": "wizard_strength", "value":  10 }, { "key": "spy_strength", "value":  10 }, { "key": "max_population", "value":  -7.5 }, { "key": "lumber_production", "value":  10 }, { "key": "offense", "value":  5 } ] },
+    { "name": "Halfling", "alignment": "good", "home_land_type": "hills", "perks": [ { "key": "max_population", "value":  5 }, { "key": "food_consumption", "value":  -30 }, { "key": "spy_strength", "value":  30 } ] },
+    { "name": "Gnome", "alignment": "good", "home_land_type": "mountain", "perks": [ { "key": "offense", "value":  7.5 }, { "key": "max_population", "value":  -5 }, { "key": "food_consumption", "value":  -20 }, { "key": "gem_production", "value":  5 } ] },
+    { "name": "Merfolk", "alignment": "good", "home_land_type": "water", "perks": [ { "key": "lumber_production", "value":  -15 }, { "key": "food_production", "value":  15 } ] },
+    { "name": "Sylvan", "alignment": "good", "home_land_type": "forest", "perks": [ { "key": "lumber_production", "value":  20 }, { "key": "food_production", "value":  10 } ] },
+    { "name": "Firewalker", "alignment": "good", "home_land_type": "mountain", "perks": [ { "key": "max_population", "value":  5 }, { "key": "lumber_production", "value":  -10 }, { "key": "gem_production", "value":  15 }, { "key": "construction_cost", "value":  -10 } ] },    
+    { "name": "Nomad", "alignment": "evil", "home_land_type": "plain", "perks": [ { "key": "mana_production", "value": 10 } ] },
+    { "name": "Goblin", "alignment": "evil", "home_land_type": "mountain", "perks": [ { "key": "max_population", "value":  20 }, { "key": "gem_production", "value":  10 }, { "key": "invest_bonus", "value":  10 } ] },
+    { "name": "Troll", "alignment": "evil", "home_land_type": "swamp", "perks": [ { "key": "max_population", "value":  -5 }, { "key": "spy_strength", "value":  -10 }, { "key": "food_consumption", "value":  5 }, { "key": "offense", "value":  5 } ] },
+    { "name": "Darkelf", "alignment": "evil", "home_land_type": "forest", "perks": [ { "key": "wizard_strength", "value":  10 }, { "key": "mana_production", "value":  5 }, { "key": "gem_production", "value":  5 } ] },
+    { "name": "Undead", "alignment": "evil", "home_land_type": "swamp", "perks": [ { "key": "max_population", "value":  12.5 }, { "key": "food_consumption", "value":  -90 }, { "key": "immortal_wizard", "value":  1 } ] },
+    { "name": "Lycanthrope", "alignment": "evil", "home_land_type": "hills", "perks": [ { "key": "max_population", "value":  10 }, { "key": "defense", "value":  5 } ] },
+    { "name": "Kobold", "alignment": "evil", "home_land_type": "caverns", "perks": [ { "key": "max_population", "value":  40 }, { "key": "population_growth", "value":  20 }, { "key": "food_consumption", "value":  -30 }, { "key": "spy_strength", "value":  -10 }, { "key": "wizard_strength", "value":  -10 }, { "key": "boat_capacity", "value":  10 } ] },
+    { "name": "Lizardfolk", "alignment": "evil", "home_land_type": "water", "perks": [ { "key": "max_population", "value":  5 }, { "key": "spy_strength", "value":  10 }, { "key": "food_consumption", "value":  -15 } ] },
+    { "name": "Icekin", "alignment": "evil", "home_land_type": "mountain", "perks": [ { "key": "food_consumption", "value":  -50 }, { "key": "lumber_production", "value":  -10 }, { "key": "platinum_production", "value":  5 }, { "key": "archmage_cost", "value":  -150 } ] },
+    { "name": "Orc", "alignment": "evil", "home_land_type": "plain", "perks": [ { "key": "food_consumption", "value":  20 }, { "key": "lumber_production", "value":  50 } ] },
+    { "name": "Nox", "alignment": "evil", "home_land_type": "swamp", "perks": [ { "key": "mana_production", "value":  10 }, { "key": "food_consumption", "value":  -20 } ] }
   ]
 }
