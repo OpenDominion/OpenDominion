@@ -19,7 +19,7 @@ class ImprovementHelper
     public function getImprovementRatingString(string $improvementType): string
     {
         $ratingStrings = [
-            'science' => '+%s%% income',
+            'science' => '+%s%% platinum production',
             'keep' => '+%s%% max population',
             'towers' => '+%1$s%% wizard power, -%1$s%% damage from spells',
             'forges' => '+%s%% offensive power',
