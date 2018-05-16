@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Image;
 use OpenDominion\Helpers\NotificationHelper;
+use OpenDominion\Models\User;
 use RuntimeException;
 use Storage;
+use Throwable;
 
 class SettingsController extends AbstractController
 {
     public function getIndex()
     {
+        /** @var User $user */
         $user = Auth::user();
 
         /** @var NotificationHelper $notificationHelper */
@@ -29,10 +32,14 @@ class SettingsController extends AbstractController
 
     public function postIndex(Request $request)
     {
-        $user = Auth::user();
-
         if ($newAvatar = $request->file('account_avatar')) {
-            $this->handleAvatarUpload($newAvatar);
+            try {
+                $this->handleAvatarUpload($newAvatar);
+
+            } catch (Throwable $e) {
+                $request->session()->flash('alert-danger', $e->getMessage());
+                return redirect()->back();
+            }
         }
 
         $this->updateNotifications($request->input());
@@ -44,6 +51,7 @@ class SettingsController extends AbstractController
 
     protected function handleAvatarUpload(UploadedFile $file)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // Convert image
@@ -57,6 +65,7 @@ class SettingsController extends AbstractController
 
         if (!Storage::disk('public')->put(($path . '/' . $fileName), $data)) {
             throw new RuntimeException('Failed to upload avatar');
+            // todo: notify bugsnag
         }
 
         $user->avatar = $fileName;
@@ -69,6 +78,7 @@ class SettingsController extends AbstractController
             return;
         }
 
+        /** @var User $user */
         $user = Auth::user();
 
         $newNotifications = [];
@@ -76,7 +86,7 @@ class SettingsController extends AbstractController
         foreach ($data['notifications'] as $key => $types) {
             foreach ($types as $type => $channels) {
                 foreach ($channels as $channel => $enabled) {
-                    if ($enabled == 'on') {
+                    if ($enabled === 'on') {
                         array_set($newNotifications, "{$key}.{$type}.{$channel}", true);
                     }
                 }
@@ -92,6 +102,7 @@ class SettingsController extends AbstractController
 
     protected function updateNotificationSettings(array $data)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         $settings = ($user->settings ?? []);
