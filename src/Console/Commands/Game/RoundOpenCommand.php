@@ -14,6 +14,7 @@ class RoundOpenCommand extends Command
     protected $signature = 'game:round:open
                              {--now : Start the round right now (dev & testing only)}
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
+                             {--days= : Start the round in +DAYS days midnight, allowing for more finetuning}
                              {--league=standard : Round league to use}';
 
     /** @var string The console command description. */
@@ -43,13 +44,14 @@ class RoundOpenCommand extends Command
     {
         $now = $this->option('now');
         $open = $this->option('open');
+        $days = $this->option('days');
         $league = $this->option('league');
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');
         }
 
-        if ($now && $open) {
+        if (($now && $open) || ($now && $days) || ($open && $days)) {
             throw new RuntimeException('Options --now and --open are mutually exclusive');
         }
 
@@ -57,6 +59,12 @@ class RoundOpenCommand extends Command
             $startDate = 'now';
         } elseif ($open) {
             $startDate = '+3 days midnight';
+        } elseif ($days !== null) {
+            if (!ctype_digit($days)) {
+                throw new RuntimeException('Option --days=DAYS must be an integer');
+            }
+
+            $startDate = "+{$days} days midnight";
         } else {
             $startDate = '+5 days midnight';
         }

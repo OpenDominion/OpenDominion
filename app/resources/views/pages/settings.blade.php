@@ -66,7 +66,8 @@
 
                                     <span class="new-avatar-filename" style="padding-left: 8px;"></span>
 
-                                    <p class="help-block">Uploaded avatars will be cropped/resized to 200x200 pixels and converted to png. Upload a square image for best results.</p>
+                                    <p class="help-block">Uploaded avatars will be cropped/resized to 200x200 pixels and converted to PNG. Upload a square image for best results.</p>
+                                    <p class="help-block">Supported formats are JPG, PNG, WebP and non-animated GIF.</p>
                                 </div>
                             </div>
 

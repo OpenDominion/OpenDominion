@@ -29,21 +29,21 @@ if [[ ! -f .env ]]; then
     cp ".env.template.$env" .env
 
     # Generate app key
-    php bin/artisan key:generate
+    php artisan key:generate
 fi
 
 # Setup/seed database + IDE files on local
-if [[ ${env} == local ]] && [[ ! -f app/storage/databases/local.sqlite ]]; then
-    touch app/storage/databases/local.sqlite
-    php bin/artisan migrate --seed
+if [[ ${env} == local ]] && [[ ! -f storage/databases/local.sqlite ]]; then
+    touch storage/databases/local.sqlite
+    php artisan migrate --seed
 fi
 
 # Local IDE Helpers
 if [[ ${IDE_HELPERS} ]]; then
-    php bin/artisan clear-compiled
-    php bin/artisan ide-helper:generate
-    php bin/artisan ide-helper:models -N
-    php bin/artisan ide-helper:meta
+    php artisan clear-compiled
+    php artisan ide-helper:generate
+    php artisan ide-helper:models -N
+    php artisan ide-helper:meta
 fi
 
 # Frontend stuff, not needed during testing
@@ -73,7 +73,7 @@ fi
 
 # Show message on production
 if [[ ${env} == production ]]; then
-    echo "Don't forget to setup your .env file and run 'php bin/artisan migrate --seed'"
+    echo "Don't forget to setup your .env file and run 'php artisan migrate --seed'"
 fi
 
 echo "Done"

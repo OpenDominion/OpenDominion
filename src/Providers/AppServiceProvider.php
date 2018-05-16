@@ -41,6 +41,7 @@ use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\RealmFinderService;
+use Schema;
 
 class AppServiceProvider extends AbstractServiceProvider
 {
@@ -50,6 +51,7 @@ class AppServiceProvider extends AbstractServiceProvider
     public function boot()
     {
         Paginator::useBootstrapThree();
+        Schema::defaultStringLength(191);
     }
 
     /**

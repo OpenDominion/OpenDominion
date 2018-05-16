@@ -1,13 +1,13 @@
 language: php
 
 php:
-- 7.1
+  - 7.1
 
 before_script:
-- bash bin/init.sh testing
+  - bash bin/init.sh testing
 
 script:
-- vendor/bin/phpunit --coverage-clover app/storage/logs/clover.xml
+  - vendor/bin/phpunit --coverage-clover storage/logs/clover.xml
 
 after_success:
-- travis_retry vendor/bin/coveralls -v
+  - travis_retry vendor/bin/coveralls -v

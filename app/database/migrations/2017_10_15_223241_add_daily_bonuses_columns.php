@@ -14,8 +14,8 @@ class AddDailyBonusesColumns extends Migration
     public function up()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->boolean('daily_platinum')->default(false);
-            $table->boolean('daily_land')->default(false);
+            $table->boolean('daily_platinum')->default(false)->after('wizard_strength');
+            $table->boolean('daily_land')->default(false)->after('daily_platinum');
         });
     }
 

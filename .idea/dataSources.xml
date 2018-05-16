@@ -5,13 +5,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/app/storage/databases/local.sqlite</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="prod.sqlite" uuid="fb3f430b-5d14-400c-aeb6-5c0883cbade9">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/app/storage/databases/prod.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/storage/databases/local.sqlite</jdbc-url>
     </data-source>
   </component>
 </project>
