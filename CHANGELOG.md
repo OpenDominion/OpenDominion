@@ -9,4 +9,4 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/master...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.4.0...HEAD
