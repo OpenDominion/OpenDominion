@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Fix server error on realm page using invalid realm number ([#270](https://github.com/WaveHack/OpenDominion/issues/270))
+
 ## [0.4.1] - 2018-05-23
 ### Changed
 - Updated `version:update` command to support tags.
