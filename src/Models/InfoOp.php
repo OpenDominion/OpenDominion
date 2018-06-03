@@ -11,17 +11,17 @@ class InfoOp extends AbstractModel
         'data' => 'array',
     ];
 
-    protected function sourceRealm()
+    public function sourceRealm()
     {
 //        return $this->belongsTo(Realm::class);
     }
 
-    protected function sourceDominion()
+    public function sourceDominion()
     {
         return $this->belongsTo(Dominion::class, 'source_dominion_id');
     }
 
-    protected function targetDominion()
+    public function targetDominion()
     {
         //
     }
