@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changes
+- Employment percentage on status screen now shows 2 decimals.
 
 ## [0.4.2] - 2018-06-03
 ### Fixed
 - Fix dashboard page sometimes showing incorrect duration for round start/end dates.
-- Fix internal server error on realm page using invalid realm number ([#270](https://github.com/WaveHack/OpenDominion/issues/270))
+- Fix internal server error on realm page using invalid realm number. ([#270](https://github.com/WaveHack/OpenDominion/issues/270))
 
 ## [0.4.1] - 2018-05-23
 ### Changed

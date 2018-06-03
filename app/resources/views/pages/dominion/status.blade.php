@@ -43,7 +43,7 @@
                                     </tr>
                                     <tr>
                                         <td>Employment:</td>
-                                        <td>{{ number_format($populationCalculator->getEmploymentPercentage($selectedDominion)) }}%</td>
+                                        <td>{{ number_format($populationCalculator->getEmploymentPercentage($selectedDominion), 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Networth:</td>
