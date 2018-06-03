@@ -144,8 +144,11 @@ class SpellActionService
                     'spell' => $spellKey,
                     'manaCost' => $manaCost,
                 ],
-                'redirect' => ($this->spellHelper->isInfoOpSpell($spellKey) ? route('dominion.op-center.show',
-                    $target->id) : null),
+                'redirect' => (
+                    $this->spellHelper->isInfoOpSpell($spellKey)
+                        ? route('dominion.op-center.show', $target->id)
+                        : null
+                ),
             ] + $result;
     }
 
