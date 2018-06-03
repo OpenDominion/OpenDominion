@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\InfoOpService;
 
 class OpCenterController extends AbstractDominionController
 {
@@ -10,14 +12,13 @@ class OpCenterController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
 
-        $targetDominions = $dominion->realm->infoOpTargetDominions;
-
         // todo: filter $targetDominions by $dominion range
-
         // todo: keep track of how many dominions are filtered due to range? to see if upper/lower end of realm is active much
 
         return view('pages.dominion.op-center.index', [
-            'targetDominions' => $targetDominions,
+            'infoOpService' => app(InfoOpService::class),
+            'spellHelper' => app(SpellHelper::class),
+            'targetDominions' => $dominion->realm->infoOpTargetDominions,
         ]);
     }
 

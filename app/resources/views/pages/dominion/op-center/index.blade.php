@@ -45,22 +45,33 @@
                                         {{-- todo: highlight clicked dominion? --}}
                                     </td>
                                     <td class="text-center" data-search="">
-                                        ?
+                                        {{ $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion) ?: '?' }}
                                     </td>
                                     <td class="text-center" data-search="">
-                                        ?
+                                        {{ $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion) ?: '?' }}
                                     </td>
-                                    <td class="text-center" data-search="">
-                                        ?
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $dominion) ?: 0 }}">
+                                        {{ number_format($infoOpService->getLand($selectedDominion->realm, $dominion)) ?: '?' }}
+                                        {{-- todo: show range% --}}
                                     </td>
-                                    <td class="text-center" data-search="">
-                                        ?
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $dominion) ?: 0 }}">
+                                        {{ number_format($infoOpService->getNetworth($selectedDominion->realm, $dominion)) ?: '?' }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="$date todo">
-                                        x minutes ago
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->updated_at->getTimestamp() }}">
+                                        {{ $infoOpService->getLastInfoOpSpellName($selectedDominion->realm, $dominion) }}
+                                        by
+                                        @if ($infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->sourceDominion->id === $selectedDominion->id)
+                                            <strong>
+                                                {{ $selectedDominion->name }}
+                                            </strong>
+                                        @else
+                                            {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->sourceDominion->name }}
+                                        @endif
+                                        <br>
+                                        {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->updated_at->diffForHumans() }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="2 todo">
-                                        2/5
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}">
+                                        {{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}/{{ $infoOpService->getMaxInfoOps() }}
                                     </td>
                                 </tr>
                             @endforeach

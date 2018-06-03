@@ -30,7 +30,7 @@ class Realm extends AbstractModel
             'target_dominion_id'
         )
             ->groupBy('target_dominion_id')
-            ->orderBy('updated_at', 'desc');
+            ->orderBy('info_ops.updated_at', 'desc');
     }
 
     public function monarch()
@@ -41,10 +41,5 @@ class Realm extends AbstractModel
     public function round()
     {
         return $this->belongsTo(Round::class);
-    }
-
-    public function hasInfoOp(Dominion $targetDominion, string $infoOp)
-    {
-        //
     }
 }

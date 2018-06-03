@@ -78,7 +78,7 @@ class Dominion extends AbstractModel
         return $this->hasMany(Council\Thread::class);
     }
 
-    // info op target/source
+    // todo: info op target/source?
 
     public function history()
     {

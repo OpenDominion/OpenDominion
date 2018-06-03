@@ -33,6 +33,7 @@ use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
@@ -102,6 +103,7 @@ class AppServiceProvider extends AbstractServiceProvider
 
         // Dominion Services
         $this->app->singleton(HistoryService::class);
+        $this->app->singleton(InfoOpService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(SelectorService::class);
         $this->app->singleton(TickService::class);
