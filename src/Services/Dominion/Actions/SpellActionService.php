@@ -164,6 +164,10 @@ class SpellActionService
                 ->where($where)
                 ->first();
 
+            if ($activeSpell === null) {
+                throw new LogicException("Active spell '{$spellKey}' for dominion id {$dominion->id} not found");
+            }
+
             if ((int)$activeSpell->duration === $spellInfo['duration']) {
                 throw new RuntimeException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
             }
