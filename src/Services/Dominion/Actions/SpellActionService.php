@@ -212,6 +212,7 @@ class SpellActionService
         ]);
 
         if ($infoOp->exists) {
+            // Overwrite casted_by_dominion_id for the newer data
             $infoOp->source_dominion_id = $dominion->id;
         }
 
