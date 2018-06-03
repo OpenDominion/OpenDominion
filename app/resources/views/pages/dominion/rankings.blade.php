@@ -85,7 +85,7 @@
                 </div>
                 <div class="box-body">
                     <p>This page shows you the daily rankings of all the dominions in this round.</p>
-                    <p>Rankings are updated every day. Current displayed rankings are from {{ (new Carbon\Carbon('today midnight'))->diffForHumans() }}.</p>
+                    <p>Rankings are updated every day. Current displayed rankings are from {{ today()->diffForHumans() }}.</p>
                     <p><a href="{{ route('dominion.rankings', request('type')) }}">My Ranking</a></p>
                 </div>
             </div>

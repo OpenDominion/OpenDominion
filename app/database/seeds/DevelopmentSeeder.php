@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
@@ -64,7 +63,7 @@ INFO
     {
         $this->command->info('Creating development round');
 
-        $startDate = new Carbon('today midnight');
+        $startDate = today();
 
         return Round::create([
             'round_league_id' => RoundLeague::where('key', 'standard')->firstOrFail()->id,

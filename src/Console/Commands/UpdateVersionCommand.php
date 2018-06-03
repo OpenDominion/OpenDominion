@@ -23,23 +23,37 @@ class UpdateVersionCommand extends Command
     {
         Log::info('Updating version');
 
-        $env = getenv('APP_ENV');
+        $version = null;
+        $versionHtml = null;
 
-        $commits = shell_exec('git rev-list --count HEAD');
-
+        $tag = trim(shell_exec('git describe --tags --abbrev=0'));
+        $date = trim(shell_exec('git log --pretty="%ci" -n1 HEAD'));
         $shortHash = trim(shell_exec('git log --pretty="%h" -n1 HEAD'));
         $longHash = trim(shell_exec('git log --pretty="%H" -n1 HEAD'));
-        $date = trim(shell_exec('git log --pretty="%ci" -n1 HEAD'));
 
-        $branch = trim(shell_exec('git branch | grep \'* \''));
-        $branch = str_replace('* ', '', trim($branch));
+        if ($tag !== '') {
+            $url = "https://github.com/WaveHack/OpenDominion/releases/tag/{$tag}";
 
-        $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
+            $version = $tag;
+            $versionHtml = "<strong>{$tag}</strong> (<a href=\"{$url}\" target=\"_blank\">#{$shortHash}</a>)";
 
-        Cache::forever('version', "r{$commits} @ {$env} ({$branch} #{$shortHash})");
+        } else {
+            $env = getenv('APP_ENV');
+            $commits = shell_exec('git rev-list --count HEAD');
+
+            $branch = trim(shell_exec('git branch | grep \'* \''));
+            $branch = str_replace('* ', '', trim($branch));
+
+            $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
+
+            $version = "r{$commits} @ {$env} ({$branch} #{$shortHash})";
+            $versionHtml = "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
+        }
+
+        Cache::forever('version', $version);
         Cache::forever('version-date', $date);
-        Cache::forever('version-html', "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)");
+        Cache::forever('version-html', $versionHtml);
 
-        Log::info("Version updated to {$shortHash}");
+        Log::info("Version updated to {$version}");
     }
 }

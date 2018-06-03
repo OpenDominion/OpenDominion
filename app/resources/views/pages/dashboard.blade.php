@@ -155,11 +155,11 @@
                                                 <abbr title="Ended at {{ $round->end_date }}">Ended</abbr>
                                             @elseif ($round->isActive())
                                                 <abbr title="Ending at {{ $round->end_date }}">
-                                                    Ending in {{ $round->daysUntilEnd() }} day{{ ($round->daysUntilEnd() > 1) ? 's' : '' }}
+                                                    Ending in {{ $round->daysUntilEnd() }} {{ str_plural('day', $round->daysUntilEnd()) }}
                                                 </abbr>
                                             @else
                                                 <abbr title="Starting at {{ $round->start_date }}">
-                                                    Starting in {{ $round->daysUntilStart() }} day{{ ($round->daysUntilStart() > 1) ? 's' : '' }}
+                                                    Starting in {{ $round->daysUntilStart() }} {{ str_plural('day', $round->daysUntilStart()) }}
                                                 </abbr>
                                             @endif
                                         </td>

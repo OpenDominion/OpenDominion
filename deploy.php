@@ -7,7 +7,7 @@ require 'recipe/laravel.php';
 // Config
 
 set('repository', 'git@github.com:WaveHack/OpenDominion.git');
-set('branch', 'develop');
+set('branch', 'master');
 
 set('ssh_multiplexing', false);
 

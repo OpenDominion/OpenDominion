@@ -64,7 +64,7 @@ By time of writing, a few years of hard work have passed and significant progres
 
 As author of the OpenDominion project, I'd like to personally invite **you** (yes you, you're reading this, after all) to join us in the journey if you're interested in the project. Which I assume you somewhat are, since you're reading this! 
 
-It doesn't matter if you're a Dominion veteran of if you've new, feel free and be welcomed to:
+It doesn't matter if you're a Dominion veteran or if you're new, feel free and be welcomed to:
 
 - [Participate in the beta](#participating-in-the-beta)!
 - Joining the [Discord](https://discord.gg/mFk2wZT) 

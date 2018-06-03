@@ -44,7 +44,7 @@ class RealmController extends AbstractDominionController
                 'round_id' => $round->id,
                 'number' => $realmNumber,
             ])
-            ->first();
+            ->firstOrFail();
 
         // todo: still duplicate queries on this page. investigate later
 
