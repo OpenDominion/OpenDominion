@@ -8,6 +8,8 @@ use Log;
 
 class UpdateVersionCommand extends Command
 {
+    protected const REPO_URL = 'https://github.com/WaveHack/OpenDominion';
+
     /** @var string The name and signature of the console command */
     protected $signature = 'version:update';
 
@@ -26,16 +28,36 @@ class UpdateVersionCommand extends Command
         $version = null;
         $versionHtml = null;
 
-        $tag = trim(shell_exec('git describe --tags --abbrev=0'));
+        $branch = trim(shell_exec('git rev-parse --abbrev-ref HEAD'));
+        $tag = trim(shell_exec('git describe --tags'));
         $date = trim(shell_exec('git log --pretty="%ci" -n1 HEAD'));
         $shortHash = trim(shell_exec('git log --pretty="%h" -n1 HEAD'));
         $longHash = trim(shell_exec('git log --pretty="%H" -n1 HEAD'));
 
-        if ($tag !== '') {
-            $url = "https://github.com/WaveHack/OpenDominion/releases/tag/{$tag}";
+        if (($branch === 'master') && ($tag !== '')) {
+            if (str_contains($tag, '-')) {
+                $tagParts = explode('-', $tag);
+                [$tag, $commits] = $tagParts;
+            }
 
             $version = $tag;
-            $versionHtml = "<strong>{$tag}</strong> (<a href=\"{$url}\" target=\"_blank\">#{$shortHash}</a>)";
+            $versionHtml = sprintf(
+                '<a href="%1$s/releases/tag/%2$s" target="_blank"><strong>%2$s</strong></a>',
+                static::REPO_URL,
+                $tag
+            );
+
+            /** @noinspection UnSafeIsSetOverArrayInspection */
+            if (isset($commits)) {
+                $version .= "-{$commits}-g{$shortHash}";
+                $versionHtml .= sprintf(
+                    '-<a href="%s/compare/%s...%s" target="_blank">%s</a>',
+                    static::REPO_URL,
+                    $tag,
+                    $shortHash,
+                    $commits
+                );
+            }
 
         } else {
             $env = getenv('APP_ENV');
@@ -44,7 +66,11 @@ class UpdateVersionCommand extends Command
             $branch = trim(shell_exec('git branch | grep \'* \''));
             $branch = str_replace('* ', '', trim($branch));
 
-            $url = "https://github.com/WaveHack/OpenDominion/commit/{$longHash}";
+            $url = sprintf(
+                '%s/commit/%s',
+                static::REPO_URL,
+                $longHash
+            );
 
             $version = "r{$commits} @ {$env} ({$branch} #{$shortHash})";
             $versionHtml = "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
