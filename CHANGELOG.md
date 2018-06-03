@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [0.4.1] - 2018-05-23
 ### Changed
-- Updated `version:update` command to support tags.
+- Updated `version:update` command to support Git tags.
 
 ## 0.4.0 - 2018-05-22
 ### Added
