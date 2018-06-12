@@ -39,6 +39,9 @@
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                        @if ($infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->isStale())
+                                            stale
+                                        @endif
                                     </td>
                                     <td data-search="realm:{{ $dominion->realm->number }}">
                                         <a href="{{ route('dominion.realm', $dominion->realm->number) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>

@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Carbon\Carbon;
+
 class InfoOp extends AbstractModel
 {
     protected $casts = [
@@ -24,5 +26,10 @@ class InfoOp extends AbstractModel
     public function targetDominion()
     {
         //
+    }
+
+    public function isStale(): bool
+    {
+        return $this->updated_at < new Carbon('last hour');
     }
 }
