@@ -11,8 +11,8 @@ class NotificationHelper
         return [
             'general' => $this->getGeneralTypes(),
             'hourly_dominion' => $this->getHourlyDominionTypes(),
-            'irregular_dominion' => $this->getIrregularDominionTypes(),
-            'irregular_realm' => $this->getIrregularRealmTypes(),
+//            'irregular_dominion' => $this->getIrregularDominionTypes(),
+//            'irregular_realm' => $this->getIrregularRealmTypes(),
         ];
     }
 
@@ -21,8 +21,8 @@ class NotificationHelper
         return [
             'general' => 'General Notifications',
             'hourly_dominion' => 'Hourly Dominion Notifications',
-            'irregular_dominion' => 'Irregular Dominion Notifications',
-            'irregular_realm' => 'Irregular Realm Notifications',
+//            'irregular_dominion' => 'Irregular Dominion Notifications',
+//            'irregular_realm' => 'Irregular Realm Notifications',
         ][$key];
     }
 
