@@ -85,7 +85,7 @@
                                                         $land = $landCalculator->getTotalLand($dominion);
                                                         $percentage = (($land / $selfLand) * 100);
                                                     @endphp
-                                                    <option value="{{ $dominion->id }}" data-land="{{ $land }}" data-percentage="{{ number_format($percentage, 1) }}">
+                                                    <option value="{{ $dominion->id }}" data-land="{{ number_format($land) }}" data-percentage="{{ number_format($percentage, 1) }}">
                                                         {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                     </option>
                                                 @endforeach
