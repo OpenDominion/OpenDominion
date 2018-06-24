@@ -1,16 +1,118 @@
 {
   "units": {
     "Human": [
-      { "slot": 1, "name": "Spearman", "cost": { "platinum":  275, "ore":   25 }, "power": { "offense": 3, "defense": 0 } },
-      { "slot": 2, "name": "Archer",   "cost": { "platinum":  275, "ore":   15 }, "power": { "offense": 0, "defense": 3 } },
-      { "slot": 3, "name": "Knight",   "cost": { "platinum": 1000, "ore":   75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
-      { "slot": 4, "name": "Cavalry",  "cost": { "platinum": 1250, "ore":  100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "faster_return",    "values": [  3 ] } }
+      { "slot": 1, "name": "Spearman", "cost": { "platinum": 275, "ore": 25 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Archer", "cost": { "platinum": 275, "ore": 15 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Knight", "cost": { "platinum": 1000, "ore": 75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 4, "name": "Cavalry", "cost": { "platinum": 1250, "ore": 100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "faster_return", "values": [ 3 ] } }
+    ],
+    "Dwarf": [
+      { "slot": 1, "name": "Soldier", "cost": { "platinum": 275, "ore": 25 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Miner", "cost": { "platinum": 350, "ore": 25 }, "power": { "offense": 0, "defense": 3 }, "perk": { "key": "ore_production", "values": [ 0.5 ] } },
+      { "slot": 3, "name": "Cleric", "cost": { "platinum": 800, "ore": 0 }, "power": { "offense": 3, "defense": 4 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 4, "name": "Warrior", "cost": { "platinum": 1250, "ore": 110 }, "power": { "offense": 7, "defense": 2 } }
+    ],
+    "Woodelf": [
+      { "slot": 1, "name": "Ranger", "cost": { "platinum": 275, "ore": 25 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Longbowman", "cost": { "platinum": 325, "ore": 10 }, "power": { "offense": 0, "defense": 4 } },
+      { "slot": 3, "name": "Mystic", "cost": { "platinum": 1075, "ore": 0 }, "power": { "offense": 0, "defense": 4 }, "perk": { "key": "woodelf_mystic", "values": [ 1 ] } },
+      { "slot": 4, "name": "Druid", "cost": { "platinum": 1100, "ore": 0 }, "power": { "offense": 3, "defense": 1 }, "perk": { "key": "woodelf_druid", "values": [ 1 ] } }
+    ],
+    "Halfling": [
+      { "slot": 1, "name": "Slinger", "cost": { "platinum": 275, "ore": 15 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Defender", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Staff_master", "cost": { "platinum": 900, "ore": 25 }, "power": { "offense": 5, "defense": 3 }, "perk": { "key": "fewer_casualties", "values": [ 40 ] } },
+      { "slot": 4, "name": "Master_thief", "cost": { "platinum": 900, "ore": 30 }, "power": { "offense": 2, "defense": 4 }, "perk": { "key": "halfing_master_thief", "values": [ 1 ] } }
+    ],
+    "Gnome": [
+      { "slot": 1, "name": "Suicide_squad", "cost": { "platinum": 200, "ore": 50 }, "power": { "offense": 4, "defense": 0 } },
+      { "slot": 2, "name": "Tinker", "cost": { "platinum": 300, "ore": 5 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Rockapult",   "cost": { "platinum": 675, "ore": 330 }, "power": { "offense": 2, "defense": 4 }, "perk": { "key": "gnome_rockapult", "values": [ 1 ] } },
+      { "slot": 4, "name": "Juggernaut",  "cost": { "platinum": 775, "ore": 550 }, "power": { "offense": 5, "defense": 3 }, "perk": { "key": "gnome_juggernaut", "values": [ 1 ] } }
+    ],
+    "Merfolk": [
+      { "slot": 1, "name": "Merman", "cost": { "platinum": 275, "ore": 0 }, "power": { "offense": 3, "defense": 0 }, "perk": { "key": "water_walk", "values": [ 1 ] } },
+      { "slot": 2, "name": "Siren", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Kraken", "cost": { "platinum": 600, "ore": 0 }, "power": { "offense": 4, "defense": 2 }, "perk": { "key": "sink_boat", "values": [ 1 ] }, "perk": { "key": "water_walk", "values": [ 1 ] } },
+      { "slot": 4, "name": "Leviathan", "cost": { "platinum": 1350, "ore": 0 }, "power": { "offense": 0, "defense": 7 }, "perk": { "key": "sink_boat", "values": [ 1 ] } }
+    ],
+    "Sylvan": [
+      { "slot": 1, "name": "Satyr", "cost": { "platinum": 275, "ore": 0 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Sprite", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Dryad", "cost": { "platinum": 1050, "ore": 0 }, "power": { "offense": 0, "defense": 3 }, "perk": { "key": "sylvan_dryad", "values": [ 1 ] } },
+      { "slot": 4, "name": "Centaur",  "cost": { "platinum": 900, "ore": 90 }, "power": { "offense": 5, "defense": 2 }, "perk": { "key": "faster_return", "values": [ 3 ] }, "perk": { "key": "fewer_casualties", "values": [ 15 ] } }
+    ],
+    "Firewalker": [
+      { "slot": 1, "name": "Fire Sprite", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Flamewolf", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Phoenix", "cost": { "platinum": 925, "ore": 0 }, "power": { "offense": 2, "defense": 4.5 }, "perk": { "key": "firewalker_phoenix", "values": [ 1 ] } },
+      { "slot": 4, "name": "Salamander", "cost": { "platinum": 925, "ore":  0 }, "power": { "offense": 5, "defense": 3 }, "perk": { "key": "fewer_casualties", "values": [ 50 ] } }
     ],
     "Nomad": [
-      { "slot": 1, "name": "Fighter",     "cost": { "platinum":  275, "ore":   25 }, "power": { "offense": 3, "defense": 0 } },
-      { "slot": 2, "name": "Crossbowman", "cost": { "platinum":  275, "ore":   15 }, "power": { "offense": 0, "defense": 3 } },
-      { "slot": 3, "name": "Blademaster", "cost": { "platinum": 1000, "ore":   75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
-      { "slot": 4, "name": "Valkyrie",    "cost": { "platinum": 1250, "ore":  100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "faster_return",    "values": [  3 ] } }
+      { "slot": 1, "name": "Fighter", "cost": { "platinum": 275, "ore": 25 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Crossbowman", "cost": { "platinum": 275, "ore": 15 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Blademaster", "cost": { "platinum": 1000, "ore": 75 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 4, "name": "Valkyrie",    "cost": { "platinum": 1250, "ore": 100 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "faster_return", "values": [ 3 ] } }
+    ],
+    "Goblin": [
+      { "slot": 1, "name": "Raider", "cost": { "platinum": 325, "ore": 25 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Shaman",   "cost": { "platinum": 375, "ore": 15 }, "power": { "offense": 0, "defense": 3 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 3, "name": "Hob Goblin",   "cost": { "platinum": 1000, "ore": 80 }, "power": { "offense": 5, "defense": 3 }, "perk": { "key": "goblin_hobgoblin", "values": [ 1 ] } },
+      { "slot": 4, "name": "Wolfrider",  "cost": { "platinum": 1300, "ore": 130 }, "power": { "offense": 6, "defense": 2 }, "perk": { "key": "faster_return", "values": [ 3 ] } }
+    ],
+    "Troll": [
+      { "slot": 1, "name": "Brute", "cost": { "platinum": 350, "ore": 25 }, "power": { "offense": 4, "defense": 0 } },
+      { "slot": 2, "name": "Ogre", "cost": { "platinum": 300, "ore": 25 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Basher", "cost": { "platinum": 1000, "ore": 100 }, "power": { "offense": 5, "defense": 2 }, "perk": { "key": "troll_basher", "values": [ 1 ] } },
+      { "slot": 4, "name": "Smasher",  "cost": { "platinum": 1450, "ore":  150 }, "power": { "offense": 7, "defense": 7 }, "perk": { "key": "troll_smasher", "values": [ 1 ] } }
+    ],
+    "Darkelf": [
+      { "slot": 1, "name": "Swordman", "cost": { "platinum": 325, "ore": 25 }, "power": { "offense": 4, "defense": 0 } },
+      { "slot": 2, "name": "Gargoyle", "cost": { "platinum": 300, "ore": 15 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Adept", "cost": { "platinum": 1000, "ore": 55 }, "power": { "offense": 2, "defense": 4 }, "perk": { "key": "darkelf_adept", "values": [ 1 ] } },
+      { "slot": 4, "name": "Spirit Warrior", "cost": { "platinum": 1050, "ore": 55 }, "power": { "offense": 5.5, "defense": 0 }, "perk": { "key": "water_walk", "values": [ 1 ] }, "perk": { "key": "spirit_warrior", "values": [ 1 ] } }
+    ],
+    "Undead": [
+      { "slot": 1, "name": "Skeleton", "cost": { "platinum": 225, "ore": 0 }, "power": { "offense": 2.5, "defense": 0 }, "perk": { "key": "spirit_warrior", "values": [ 1 ] } },
+      { "slot": 2, "name": "Ghoul", "cost": { "platinum": 225, "ore": 0 }, "power": { "offense": 0, "defense": 2.5 }, "perk": { "key": "spirit_warrior", "values": [ 1 ] } },
+      { "slot": 3, "name": "Progeny", "cost": { "platinum": 900, "ore": 0 }, "power": { "offense": 2, "defense": 4 }, "perk": { "key": "water_walk", "values": [ 1 ] }, "perk": { "key": "spirit_warrior", "values": [  1 ] }, "perk": { "key": "raise_undead", "values": [ 1 ] } },
+      { "slot": 4, "name": "Vampire", "cost": { "platinum": 1000, "ore": 0 }, "power": { "offense": 4, "defense": 3 }, "perk": { "key": "water_walk", "values": [ 1 ] }, "perk": { "key": "spirit_warrior", "values": [  1 ] }, "perk": { "key": "raise_undead", "values": [ 1 ] } }
+    ],
+    "Lycanthrope": [
+      { "slot": 1, "name": "Scavenger", "cost": { "platinum": 300, "ore": 25 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Ratman", "cost": { "platinum": 250, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Werewolf", "cost": { "platinum": 875, "ore": 55 }, "power": { "offense": 3, "defense": 4 }, "perk": { "key": "fewer_defensive_casualties", "values": [ 50 ] } , "perk": { "key": "fewer_offensive_casualties", "values": [ 25 ] } },
+      { "slot": 4, "name": "Garou",  "cost": { "platinum": 1100, "ore": 110 }, "power": { "offense": 6, "defense": 0 }, "perk": { "key": "raise_wolf", "values": [ 1 ] } }
+    ],
+    "Kobold": [
+      { "slot": 1, "name": "Grunt", "cost": { "platinum": 275, "ore": 15 }, "power": { "offense": 2, "defense": 0 } },
+      { "slot": 2, "name": "Underling", "cost": { "platinum": 275, "ore": 20 }, "power": { "offense": 0, "defense": 2 } },
+      { "slot": 3, "name": "Beast",   "cost": { "platinum": 975, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 4, "name": "Overlord",  "cost": { "platinum": 875, "ore": 55 }, "power": { "offense": 3, "defense": 2 }, "perk": { "key": "kobald_overlord", "values": [ 1 ] } }
+    ],
+    "Lizardfolk": [
+      { "slot": 1, "name": "Reptile", "cost": { "platinum": 275, "ore": 0 }, "power": { "offense": 3, "defense": 0 }, "perk": { "key": "water_walk", "values": [ 1 ] } },
+      { "slot": 2, "name": "Serpent", "cost": { "platinum": 275, "ore": 0 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Chameleon", "cost": { "platinum": 900, "ore": 0 }, "power": { "offense": 4, "defense": 4 }, "perk": { "key": "water_walk", "values": [ 1 ] } },
+      { "slot": 4, "name": "Lizardman", "cost": { "platinum": 1050, "ore": 0 }, "power": { "offense": 6, "defense": 2 }, "perk": { "key": "water_walk", "values": [ 1 ] }, "perk": { "key": "lizardfolk_chameleon", "values": [ 1 ] } }
+    ],
+    "Icekin": [
+      { "slot": 1, "name": "Ice Beast", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Snow Witch", "cost": { "platinum":  350, "ore": 25 }, "power": { "offense": 0, "defense": 3 }, "perk": { "key": "fewer_casualties", "values": [ 25 ] } },
+      { "slot": 3, "name": "Frost Mage", "cost": { "platinum": 850, "ore": 100 }, "power": { "offense": 3, "defense": 3 }, "perk": { "key": "icekin_frostmage", "values": [ 1 ] } },
+      { "slot": 4, "name": "Ice Elemental",  "cost": { "platinum": 1100, "ore": 0 }, "power": { "offense": 4, "defense": 2 }, "perk": { "key": "icekin_ice_elemental", "values": [ 1 ] } }
+    ],
+    "Orc": [
+      { "slot": 1, "name": "Savage", "cost": { "platinum": 375, "ore": 0 }, "power": { "offense": 4, "defense": 0 } },
+      { "slot": 2, "name": "Guard", "cost": { "platinum": 300, "ore": 25 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Voodoo Magi", "cost": { "platinum": 800, "ore": 0 }, "power": { "offense": 0, "defense": 3 }, "perk": { "key": "orc_voodoo_magi", "values": [ 1 ] } },
+      { "slot": 4, "name": "Bone Breaker",  "cost": { "platinum": 1050, "ore": 105 }, "power": { "offense": 7, "defense": 2 }, "perk": { "key": "orc_bone_breaker", "values": [ 1 ] } }
+    ],
+    "Nox": [
+      { "slot": 1, "name": "Imp", "cost": { "platinum": 300, "ore": 0 }, "power": { "offense": 3, "defense": 0 } },
+      { "slot": 2, "name": "Fiend", "cost": { "platinum": 325, "ore": 25 }, "power": { "offense": 0, "defense": 3 } },
+      { "slot": 3, "name": "Nightshade", "cost": { "platinum": 875, "ore": 100 }, "power": { "offense": 2, "defense": 6 }, "perk": { "key": "nox_nightshade", "values": [ 1 ] } },
+      { "slot": 4, "name": "Lich", "cost": { "platinum": 1050, "ore": 0 }, "power": { "offense": 6, "defense": 3 }, "perk": { "key": "fewer_casualties", "values": [ 50 ] } }
     ]
   }
 }
