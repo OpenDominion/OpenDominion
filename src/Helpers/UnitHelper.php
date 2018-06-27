@@ -34,10 +34,11 @@ class UnitHelper
     {
         $helpStrings = [
             'draftees' => 'Basic military unit.<br><br>Used for exploring and training other units.',
-            'unit1' => 'Offensive specialist.',
-            'unit2' => 'Defensive specialist.',
-            'unit3' => 'Defensive elite.',
-            'unit4' => 'Offensive elite.',
+            /* added hardcoded values for Human/Nomad, will update with php code per race */
+            'unit1' => 'Offensive specialist. 3/0',
+            'unit2' => 'Defensive specialist. 0/3',
+            'unit3' => 'Defensive elite. 0/6',
+            'unit4' => 'Offensive elite. 6/2',
             'spies' => 'Used for espionage.',
             'wizards' => 'Used for casting offensive spells.',
             'archmages' => 'Used for casting offensive spells.<br><br>Immortal and twice as strong as regular wizards.',
