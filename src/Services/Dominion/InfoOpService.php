@@ -65,24 +65,40 @@ class InfoOpService
         })->first();
     }
 
-    public function getEstimatedOP(Realm $sourceRealm, Dominion $targetDominion): ?int
+    public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
+        // clear sight (units)
+
         return null;
     }
 
-    public function getOPString(Realm $sourceRealm, Dominion $targetDominion): string
+    public function getOffensivePowerString(Realm $sourceRealm, Dominion $targetDominion): string
     {
+        $op = $this->getOffensivePower($sourceRealm, $targetDominion);
+
+        if ($op === null) {
+            return '???';
+        }
+
+        return 'todo';
+    }
+
+    public function getDefensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
+    {
+        // clear sight (units + draftees + land
+
         return null;
     }
 
-    public function getEstimatedDP(Realm $sourceRealm, Dominion $targetDominion): ?int
+    public function getDefensivePowerString(Realm $sourceRealm, Dominion $targetDominion): string
     {
-        return null;
-    }
+        $dp = $this->getDefensivePower($sourceRealm, $targetDominion);
 
-    public function getDPString(Realm $sourceRealm, Dominion $targetDominion): string
-    {
-        return null;
+        if ($dp === null) {
+            return '???';
+        }
+
+        return 'todo';
     }
 
     public function getLand(Realm $sourceRealm, Dominion $targetDominion): ?int

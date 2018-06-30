@@ -141,7 +141,9 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#dominions-table').DataTable();
+            $('#dominions-table').DataTable({
+                order: [[6, 'desc']],
+            });
         })(jQuery);
     </script>
 @endpush
