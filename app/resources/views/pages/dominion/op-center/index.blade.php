@@ -45,47 +45,53 @@
                                     @endphp
                                     @continue;
                                 @endif
+                                @php
+                                    $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
+                                    $op = $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion);
+                                    $dp = $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion);
+                                    $land = $infoOpService->getLand($selectedDominion->realm, $dominion);
+                                    $networth = $infoOpService->getNetworth($selectedDominion->realm, $dominion);
+                                @endphp
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
-                                        @if ($infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->isStale())
+                                        @if ($lastInfoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
                                     </td>
                                     <td data-search="realm:{{ $dominion->realm->number }}">
                                         <a href="{{ route('dominion.realm', $dominion->realm->number) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
-                                        {{-- todo: highlight clicked dominion? --}}
+                                        {{-- todo: highlight clicked dominion in realm page? --}}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion) ?: '' }}">
-                                        {{ number_format($infoOpService->getEstimatedOP($selectedDominion->realm, $dominion)) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $op ?: '' }}">
+                                        {{ number_format($op) ?: '?' }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion) ?: '' }}">
-                                        {{ number_format($infoOpService->getEstimatedDP($selectedDominion->realm, $dominion)) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $dp ?: '' }}">
+                                        {{ number_format($dp) ?: '?' }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $dominion) ?: 0 }}">
-                                        {{ number_format($infoOpService->getLand($selectedDominion->realm, $dominion)) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $land ?: 0 }}">
+                                        {{ number_format($land) ?: '?' }}
                                         <br>
                                         <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion) }}">
-                                            ({{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%)
-                                            {{-- todo: show range% --}}
+                                            {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $dominion) ?: 0 }}">
-                                        {{ number_format($infoOpService->getNetworth($selectedDominion->realm, $dominion)) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $networth ?: 0 }}">
+                                        {{ number_format($networth) ?: '?' }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->updated_at->getTimestamp() }}">
+                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
                                         {{ $infoOpService->getLastInfoOpSpellName($selectedDominion->realm, $dominion) }}
                                         by
-                                        @if ($infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->sourceDominion->id === $selectedDominion->id)
+                                        @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
                                             <strong>
                                                 {{ $selectedDominion->name }}
                                             </strong>
                                         @else
-                                            {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->sourceDominion->name }}
+                                            {{ $lastInfoOp->sourceDominion->name }}
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->updated_at->diffForHumans() }}
+                                            {{ $lastInfoOp->updated_at->diffForHumans() }}
                                         </span>
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}">
