@@ -26,7 +26,14 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominion(Dominion $dominion)
     {
-        // assert we have info op for them
-        //
+        $infoOpService = app(InfoOpService::class);
+
+        if (!$infoOpService->hasInfoOps($this->getSelectedDominion()->realm, $dominion)) {
+            return redirect()->route('dominion.op-center');
+        }
+
+        return view('pages.dominion.op-center.show', [
+            'dominion' => $dominion,
+        ]);
     }
 }
