@@ -57,6 +57,13 @@ class RangeCalculator
         return (($targetLand / $selfLand) * 100);
     }
 
+    /**
+     * Helper function to return a colored <span> class for a $target dominion range.
+     *
+     * @param Dominion $self
+     * @param Dominion $target
+     * @return string
+     */
     public function getDominionRangeSpanClass(Dominion $self, Dominion $target): string
     {
         $range = $this->getDominionRange($self, $target);
