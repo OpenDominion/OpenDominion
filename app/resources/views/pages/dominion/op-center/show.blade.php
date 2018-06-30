@@ -246,7 +246,7 @@
                 <div class="box-body">
                     <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm {{ $dominion->realm->name }} (#{{ $dominion->realm->number }}).</p>
 
-                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from last hour (or earlier) and should be considered inaccurate. Recast your ops before performing any offensive operations during this hour.</p>
+                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Recast your info ops before performing any offensive operations during this hour.</p>
 
                     <p>
                         OP: ???<br>
