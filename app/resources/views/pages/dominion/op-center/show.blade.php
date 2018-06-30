@@ -9,10 +9,6 @@
             <div class="row">
 
                 <div class="col-sm-12 col-md-8">
-                    @php
-                        $spell = $spellHelper->getSpellInfo('clear_sight');
-                    dd($spell);
-                    @endphp
                     @if (!$infoOpService->hasInfoOp($selectedDominion->realm, $dominion, 'clear_sight'))
                         <div class="box box-primary">
                             <div class="box-header with-border">
@@ -24,7 +20,7 @@
                                         @csrf
                                         <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                         <input type="hidden" name="spell" value="clear_sight">
-                                        <button type="submit" class="btn btn-xs btn-primary">Cast: Clear Sight (X mana)</button>
+                                        <button type="submit" class="btn btn-xs btn-primary">Cast: Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
                                     </form>
                                 </div>
                             </div>
@@ -50,8 +46,12 @@
                                             @csrf
                                             <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                                             <input type="hidden" name="spell" value="clear_sight">
-                                            <button type="submit" class="btn btn-xs btn-success">Recast: Clear Sight (X mana)</button>
+                                            <button type="submit" class="btn btn-xs btn-success">Recast: Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
                                         </form>
+                                    </div>
+                                @else
+                                    <div class="pull-right box-tools">
+                                        <small>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</small>
                                     </div>
                                 @endif
                             </div>
