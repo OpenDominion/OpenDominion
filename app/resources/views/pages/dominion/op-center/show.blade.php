@@ -244,14 +244,17 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>This is the Op Center result for <b>{{ $dominion->name }}</b> from realm {{ $dominion->realm->name }} (#{{ $dominion->realm->number }}).</p>
+                    <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm {{ $dominion->realm->name }} (#{{ $dominion->realm->number }}).</p>
 
-                    {{-- stale warning --}}
+                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from last hour (or earlier) and should be considered inaccurate. Recast your ops before performing any offensive operations during this hour.</p>
 
-                    {{-- op --}}
-                    {{-- dp --}}
-                    {{-- land --}}
-                    {{-- networth --}}
+                    <p>
+                        OP: ???<br>
+                        DP: ???<br>
+                        Land: {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}<br>
+                        Networth: {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}<br>
+                    </p>
+
                     {{-- invade button --}}
                 </div>
             </div>

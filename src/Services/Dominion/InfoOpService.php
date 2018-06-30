@@ -70,7 +70,17 @@ class InfoOpService
         return null;
     }
 
+    public function getOPString(Realm $sourceRealm, Dominion $targetDominion): string
+    {
+        return null;
+    }
+
     public function getEstimatedDP(Realm $sourceRealm, Dominion $targetDominion): ?int
+    {
+        return null;
+    }
+
+    public function getDPString(Realm $sourceRealm, Dominion $targetDominion): string
     {
         return null;
     }
@@ -86,6 +96,25 @@ class InfoOpService
         return $clearSightInfoOp->data['land'];
     }
 
+    public function getLandString(Realm $sourceRealm, Dominion $targetDominion): string
+    {
+        $land = $this->getLand($sourceRealm, $targetDominion);
+
+        if ($land === null) {
+            return '???';
+        }
+
+        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
+
+        $return = number_format($clearSight->data['land']);
+
+        if ($clearSight->isStale()) {
+            $return .= '?';
+        }
+
+        return $return;
+    }
+
     public function getNetworth(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
         if (!$this->hasInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
@@ -95,6 +124,25 @@ class InfoOpService
         $clearSightInfoOp = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
 
         return $clearSightInfoOp->data['networth'];
+    }
+
+    public function getNetworthString(Realm $sourceRealm, Dominion $targetDominion): string
+    {
+        $networth = $this->getNetworth($sourceRealm, $targetDominion);
+
+        if ($networth === null) {
+            return '???';
+        }
+
+        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
+
+        $return = number_format($clearSight->data['networth']);
+
+        if ($clearSight->isStale()) {
+            $return .= '?';
+        }
+
+        return $return;
     }
 
     public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): InfoOp
