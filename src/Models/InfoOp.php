@@ -3,7 +3,7 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class InfoOp extends AbstractModel
 {
@@ -29,6 +29,16 @@ class InfoOp extends AbstractModel
         //
     }
 
+//    public function scopeNotInvalid(Builder $query): Builder
+//    {
+//        return $query->where('updated_at', '>=', now()->parse('-12 hours')->toDateTimeString());
+//    }
+//
+//    public function scopeTargetDominion(Builder $query, Dominion $target): Builder
+//    {
+//        return $query->where('target_dominion_id', $target->id);
+//    }
+
     public function isStale(): bool
     {
         return ($this->updated_at < new Carbon('last hour'));
@@ -36,6 +46,6 @@ class InfoOp extends AbstractModel
 
     public function isInvalid(): bool
     {
-        return ($this->updated_at < new Carbon('-24 hours'));
+        return ($this->updated_at < new Carbon('-12 hours'));
     }
 }

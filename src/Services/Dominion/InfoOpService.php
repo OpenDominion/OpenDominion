@@ -22,13 +22,32 @@ class InfoOpService
 
     public function hasInfoOps(Realm $sourceRealm, Dominion $targetDominion): bool
     {
-        //
+//        return ($sourceRealm
+//                ->infoOps()
+//                ->targetDominion($targetDominion)
+//                ->notInvalid()
+//                ->count() > 0);
+
+        return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion) {
+                return (
+                    !$infoOp->isInvalid() &&
+                    ($infoOp->target_dominion_id === $targetDominion->id)
+                );
+            })->count() > 1);
     }
 
     public function hasInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): bool
     {
-        return ($sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion, $type) {
+//        return ($sourceRealm
+//                ->infoOps()
+//                ->targetDominion($targetDominion)
+//                ->whereType($type)
+//                ->notInvalid()
+//                ->count() === 1);
+
+        return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
                 return (
+                    !$infoOp->isInvalid() &&
                     ($infoOp->target_dominion_id === $targetDominion->id) &&
                     ($infoOp->type === $type)
                 );
@@ -37,8 +56,9 @@ class InfoOpService
 
     public function getInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): InfoOp
     {
-        return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion, $type) {
+        return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
             return (
+                !$infoOp->isInvalid() &&
                 ($infoOp->target_dominion_id === $targetDominion->id) &&
                 ($infoOp->type === $type)
             );
