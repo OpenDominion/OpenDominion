@@ -35,6 +35,7 @@ class OpCenterController extends AbstractDominionController
         return view('pages.dominion.op-center.show', [
             'infoOpService' => app(InfoOpService::class),
             'rangeCalculator' => app(RangeCalculator::class),
+            'spellHelper' => app(SpellHelper::class),
             'dominion' => $dominion,
         ]);
     }

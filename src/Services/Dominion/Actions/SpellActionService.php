@@ -221,7 +221,7 @@ class SpellActionService
                 $infoOp->data = [
 
                     'ruler_name' => $target->user->display_name, // todo: $target->ruler_name
-                    'race' => $target->race->name,
+                    'race_id' => $target->race->id,
                     'land' => $this->landCalculator->getTotalLand($target),
                     'peasants' => $target->peasants,
                     'employment' => $this->populationCalculator->getEmploymentPercentage($target),
