@@ -43,6 +43,21 @@ class RangeCalculator
     }
 
     /**
+     * Returns the $target dominion range compared to $self dominion.
+     *
+     * @param Dominion $self
+     * @param Dominion $target
+     * @return float
+     */
+    public function getDominionRange(Dominion $self, Dominion $target): float
+    {
+        $selfLand = $this->landCalculator->getTotalLand($self);
+        $targetLand = $this->landCalculator->getTotalLand($target);
+
+        return (($targetLand / $selfLand) * 100);
+    }
+
+    /**
      * Get the dominion range modifier.
      *
      * @param Dominion $dominion

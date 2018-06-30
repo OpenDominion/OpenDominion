@@ -77,15 +77,8 @@
                                             <label for="target_dominion">Select a target</label>
                                             <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
                                                 <option></option>
-                                                @php
-                                                    $selfLand = $landCalculator->getTotalLand($selectedDominion);
-                                                @endphp
                                                 @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
-                                                    @php
-                                                        $land = $landCalculator->getTotalLand($dominion);
-                                                        $percentage = (($land / $selfLand) * 100);
-                                                    @endphp
-                                                    <option value="{{ $dominion->id }}" data-land="{{ number_format($land) }}" data-percentage="{{ number_format($percentage, 1) }}">
+                                                    <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
                                                         {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                     </option>
                                                 @endforeach
