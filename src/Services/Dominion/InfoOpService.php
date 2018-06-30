@@ -33,7 +33,7 @@ class InfoOpService
                     !$infoOp->isInvalid() &&
                     ($infoOp->target_dominion_id === $targetDominion->id)
                 );
-            })->count() > 1);
+            })->count() > 0);
     }
 
     public function hasInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): bool
