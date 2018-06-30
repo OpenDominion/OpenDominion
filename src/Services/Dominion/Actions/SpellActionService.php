@@ -203,6 +203,8 @@ class SpellActionService
 
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
+
+
         $infoOp = InfoOp::firstOrNew([
             'source_realm_id' => $dominion->realm->id,
             'target_dominion_id' => $target->id,
@@ -269,7 +271,8 @@ class SpellActionService
                 throw new LogicException("Unknown info op spell {$spellKey}");
         }
 
-        $infoOp->updated_at = now(); // Always force update updated_at on infoops to know which the last infoop was cast
+        // Always force update updated_at on infoops to know when the last infoop was cast
+        $infoOp->updated_at = now();
         $infoOp->save();
 
         return [
