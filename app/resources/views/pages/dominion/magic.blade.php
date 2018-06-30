@@ -37,9 +37,9 @@
                                                             ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hours remaining)
                                                         @else
                                                             @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getSpellManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
                                                             @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getSpellManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
                                                             @endif
                                                         @endif
                                                     </small>
@@ -96,9 +96,9 @@
                                                     <p>{{ $spell['description'] }}</p>
                                                     <small>
                                                         @if ($canCast)
-                                                            Mana cost: <span class="text-success">{{ number_format($spellCalculator->getSpellManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                            Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
                                                         @else
-                                                            Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getSpellManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                            Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
                                                         @endif
                                                     </small>
                                                 </div>

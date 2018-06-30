@@ -38,7 +38,7 @@ class SpellCalculator
      * @param string $spell
      * @return int
      */
-    public function getSpellManaCost(Dominion $dominion, string $spell): int
+    public function getManaCost(Dominion $dominion, string $spell): int
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spell);
         return round($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
@@ -56,7 +56,7 @@ class SpellCalculator
     public function canCast(Dominion $dominion, string $spell): bool
     {
         return (
-            ($dominion->resource_mana >= $this->getSpellManaCost($dominion, $spell)) &&
+            ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
             ($dominion->wizard_strength >= 30)
         );
     }
