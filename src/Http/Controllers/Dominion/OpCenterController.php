@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\InfoOpService;
@@ -17,6 +18,7 @@ class OpCenterController extends AbstractDominionController
 
         return view('pages.dominion.op-center.index', [
             'infoOpService' => app(InfoOpService::class),
+            'rangeCalculator' => app(RangeCalculator::class),
             'spellHelper' => app(SpellHelper::class),
             'targetDominions' => $dominion->realm->infoOpTargetDominions,
         ]);

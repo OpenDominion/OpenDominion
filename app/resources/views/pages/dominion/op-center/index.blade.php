@@ -3,6 +3,9 @@
 @section('page-header', 'Op Center')
 
 @section('content')
+    @php
+        $dominionsOutsideMyRange = 0;
+    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
@@ -36,26 +39,36 @@
                         </thead>
                         <tbody>
                             @foreach ($targetDominions as $dominion)
+                                @if (!$rangeCalculator->isInRange($selectedDominion, $dominion))
+                                    @php
+                                        $dominionsOutsideMyRange++;
+                                    @endphp
+                                    @continue;
+                                @endif
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                         @if ($infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->isStale())
-                                            stale
+                                            <span class="label label-warning">Stale</span>
                                         @endif
                                     </td>
                                     <td data-search="realm:{{ $dominion->realm->number }}">
                                         <a href="{{ route('dominion.realm', $dominion->realm->number) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
                                         {{-- todo: highlight clicked dominion? --}}
                                     </td>
-                                    <td class="text-center" data-search="">
-                                        {{ $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion) ?: '' }}">
+                                        {{ number_format($infoOpService->getEstimatedOP($selectedDominion->realm, $dominion)) ?: '?' }}
                                     </td>
-                                    <td class="text-center" data-search="">
-                                        {{ $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion) ?: '' }}">
+                                        {{ number_format($infoOpService->getEstimatedDP($selectedDominion->realm, $dominion)) ?: '?' }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $dominion) ?: 0 }}">
                                         {{ number_format($infoOpService->getLand($selectedDominion->realm, $dominion)) ?: '?' }}
-                                        {{-- todo: show range% --}}
+                                        <br>
+                                        <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion) }}">
+                                            ({{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%)
+                                            {{-- todo: show range% --}}
+                                        </span>
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $dominion) ?: 0 }}">
                                         {{ number_format($infoOpService->getNetworth($selectedDominion->realm, $dominion)) ?: '?' }}
@@ -71,7 +84,9 @@
                                             {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->sourceDominion->name }}
                                         @endif
                                         <br>
-                                        {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->updated_at->diffForHumans() }}
+                                        <span class="small">
+                                            {{ $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion)->updated_at->diffForHumans() }}
+                                        </span>
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}">
                                         {{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}/{{ $infoOpService->getMaxInfoOps() }}
@@ -93,6 +108,9 @@
                     <p>Whenever you or someone else in your realm performs an information gathering spy or magic operation, the information you gather is posted here.</p>
                     <p>Through this page, you can help one another find targets and scout threats to one another.</p>
                     <p>You are only able to see dominions that are within your range.</p>
+                    @if ($dominionsOutsideMyRange !== 0)
+                        <p>Your realmies have performed info ops against <b>{{ $dominionsOutsideMyRange }} dominions</b> that are out of your range, and are not visible for you here.</p>
+                    @endif
                 </div>
             </div>
         </div>

@@ -57,6 +57,29 @@ class RangeCalculator
         return (($targetLand / $selfLand) * 100);
     }
 
+    public function getDominionRangeSpanClass(Dominion $self, Dominion $target): string
+    {
+        $range = $this->getDominionRange($self, $target);
+
+        if ($range >= 133) {
+            return 'text-red';
+        }
+
+        if ($range >= 120) {
+            return 'text-orange';
+        }
+
+        if ($range >= 75) {
+            return 'text-yellow';
+        }
+
+        if ($range >= 66) {
+            return 'text-green';
+        }
+
+        return 'text-muted';
+    }
+
     /**
      * Get the dominion range modifier.
      *
