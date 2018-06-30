@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 
 class InfoOp extends AbstractModel
 {
@@ -31,5 +32,10 @@ class InfoOp extends AbstractModel
     public function isStale(): bool
     {
         return ($this->updated_at < new Carbon('last hour'));
+    }
+
+    public function isInvalid(): bool
+    {
+        return ($this->updated_at < new Carbon('-24 hours'));
     }
 }

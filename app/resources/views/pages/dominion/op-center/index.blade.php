@@ -39,14 +39,19 @@
                         </thead>
                         <tbody>
                             @foreach ($targetDominions as $dominion)
+                                @php
+                                    $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
+                                @endphp
+                                @if ($lastInfoOp->isInvalid())
+                                    @continue
+                                @endif
                                 @if (!$rangeCalculator->isInRange($selectedDominion, $dominion))
                                     @php
                                         $dominionsOutsideMyRange++;
                                     @endphp
-                                    @continue;
+                                    @continue
                                 @endif
                                 @php
-                                    $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
                                     $op = $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion);
                                     $dp = $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion);
                                     $land = $infoOpService->getLand($selectedDominion->realm, $dominion);
@@ -70,14 +75,14 @@
                                         {{ number_format($dp) ?: '?' }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $land ?: 0 }}">
-                                        {{ number_format($land) ?: '?' }}
+                                        {{ number_format($land) ?: '?' }}{{ $land && $lastInfoOp->isStale() ? '?' : '' }}
                                         <br>
                                         <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion) }}">
                                             {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%
                                         </span>
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $networth ?: 0 }}">
-                                        {{ number_format($networth) ?: '?' }}
+                                        {{ number_format($networth) ?: '?' }}{{ $networth && $lastInfoOp->isStale() ? '?' : '' }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
                                         {{ $infoOpService->getLastInfoOpSpellName($selectedDominion->realm, $dominion) }}
@@ -115,7 +120,7 @@
                     <p>Through this page, you can help one another find targets and scout threats to one another.</p>
                     <p>You are only able to see dominions that are within your range.</p>
                     @if ($dominionsOutsideMyRange !== 0)
-                        <p>Your realmies have performed info ops against <b>{{ $dominionsOutsideMyRange }} dominions</b> that are out of your range, and are not visible for you here.</p>
+                        <p>Your realmies have recently performed info ops against <b>{{ $dominionsOutsideMyRange }} dominions</b> that are out of your range, and are not visible for you here.</p>
                     @endif
                 </div>
             </div>
