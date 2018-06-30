@@ -4,8 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Added Op Center. ([#24](https://github.com/WaveHack/OpenDominion/issues/24))
+- Added Clear Sight spell. ([#220](https://github.com/WaveHack/OpenDominion/issues/220))
+- Added Revelation spell. ([#221](https://github.com/WaveHack/OpenDominion/issues/221))
+
 ### Changes
 - Employment percentage on status screen now shows 2 decimals.
+- Updated Re-zone Land icon in the sidebar.
+
+### Fixed
 
 ## [0.4.2] - 2018-06-03
 ### Fixed
