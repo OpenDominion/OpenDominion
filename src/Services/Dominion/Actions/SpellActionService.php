@@ -233,9 +233,7 @@ class SpellActionService
                 - 0.0134
             );
 
-            $success = ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $successRate);
-
-            if (!$success) {
+            if (!random_chance($successRate)) {
                 // Return here, thus completing the spell cast and reducing the caster's mana
                 return [
                     'success' => false,
