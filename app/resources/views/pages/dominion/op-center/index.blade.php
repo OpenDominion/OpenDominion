@@ -51,12 +51,6 @@
                                     @endphp
                                     @continue
                                 @endif
-                                @php
-                                    $op = $infoOpService->getEstimatedOP($selectedDominion->realm, $dominion);
-                                    $dp = $infoOpService->getEstimatedDP($selectedDominion->realm, $dominion);
-                                    $land = $infoOpService->getLand($selectedDominion->realm, $dominion);
-                                    $networth = $infoOpService->getNetworth($selectedDominion->realm, $dominion);
-                                @endphp
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
@@ -68,21 +62,21 @@
                                         <a href="{{ route('dominion.realm', $dominion->realm->number) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
                                         {{-- todo: highlight clicked dominion in realm page? --}}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $op ?: '' }}">
-                                        {{ number_format($op) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getOffensivePower($selectedDominion->realm, $dominion) }}">
+                                        {{ $infoOpService->getOffensivePowerString($selectedDominion->realm, $dominion) }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $dp ?: '' }}">
-                                        {{ number_format($dp) ?: '?' }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getDefensivePower($selectedDominion->realm, $dominion) }}">
+                                        {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $dominion) }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $land ?: 0 }}">
-                                        {{ number_format($land) ?: '?' }}{{ $land && $lastInfoOp->isStale() ? '?' : '' }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $dominion) }}">
+                                        {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}
                                         <br>
                                         <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion) }}">
                                             {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $networth ?: 0 }}">
-                                        {{ number_format($networth) ?: '?' }}{{ $networth && $lastInfoOp->isStale() ? '?' : '' }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $dominion) }}">
+                                        {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
                                         {{ $infoOpService->getLastInfoOpSpellName($selectedDominion->realm, $dominion) }}
