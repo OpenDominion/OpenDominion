@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use LogicException;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -23,6 +24,9 @@ class SpellActionService
 
     /** @var LandCalculator */
     protected $landCalculator;
+
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
 
     /** @var NetworthCalculator */
     protected $networthCalculator;
@@ -43,6 +47,7 @@ class SpellActionService
      * SpellActionService constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator
      * @param NetworthCalculator $networthCalculator
      * @param PopulationCalculator $populationCalculator
      * @param SpellCalculator $spellCalculator
@@ -51,6 +56,7 @@ class SpellActionService
      */
     public function __construct(
         LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator,
         NetworthCalculator $networthCalculator,
         PopulationCalculator $populationCalculator,
         SpellCalculator $spellCalculator,
@@ -58,6 +64,7 @@ class SpellActionService
         TrainingQueueService $trainingQueueService
     ) {
         $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
         $this->networthCalculator = $networthCalculator;
         $this->populationCalculator = $populationCalculator;
         $this->spellCalculator = $spellCalculator;
@@ -144,11 +151,10 @@ class SpellActionService
                     'spell' => $spellKey,
                     'manaCost' => $manaCost,
                 ],
-                'redirect' => (
-                    $this->spellHelper->isInfoOpSpell($spellKey)
+                'redirect' =>
+                    $this->spellHelper->isInfoOpSpell($spellKey) && $result['success']
                         ? route('dominion.op-center.show', $target->id)
-                        : null
-                ),
+                        : null,
             ] + $result;
     }
 
@@ -197,13 +203,49 @@ class SpellActionService
         }
 
         return [
+            'success' => true,
             'message' => 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next 12 hours.',
         ];
     }
 
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
+        $selfWpa = $this->militaryCalculator->getWizardRatio($dominion);
+        $targetWpa = $this->militaryCalculator->getWizardRatio($target);
+
+        // You need at least some positive WPA to cast info ops
+        if ($selfWpa === 0.0) {
+            // Don't reduce mana by throwing an exception here
+            throw new LogicException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
+        }
+
+        // 100% spell success if target has a WPA of 0
+        if ($targetWpa !== 0.0) {
+            $ratio = ($selfWpa / $targetWpa);
+
+            // Exact formula from Dom is unknown. Thanks to mriswith on Discord for coming up with this formula <3
+            $successRate = (
+                (0.0172 * ($ratio ** 3))
+                - (0.1809 * ($ratio ** 2))
+                + (0.6767 * $ratio)
+                - 0.0134
+            );
+
+            $success = ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $successRate);
+
+            if (!$success) {
+                // Return here, thus completing the spell cast and reducing the caster's mana
+                return [
+                    'success' => false,
+                    'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
+                    'alert-type' => 'warning',
+                ];
+            }
+        }
+
+        // todo: take Energy Mirror into account with 20% spell reflect (either show your info or give the infoop to the target)
 
         $infoOp = InfoOp::firstOrNew([
             'source_realm_id' => $dominion->realm->id,
@@ -257,11 +299,11 @@ class SpellActionService
                 $infoOp->data = $this->spellCalculator->getActiveSpells($target);
                 break;
 
-            case 'clairvoyance':
-                $infoOp->data = [
-                    // tc
-                ];
-                break;
+//            case 'clairvoyance':
+//                $infoOp->data = [
+            // tc
+//                ];
+//                break;
 
 //            case 'disclosure':
 //                $infoOp->data = [];
@@ -276,49 +318,11 @@ class SpellActionService
         $infoOp->save();
 
         return [
+            'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
             'redirect' => route('dominion.op-center.show', $target),
         ];
     }
-
-    protected function castClearSight(Dominion $dominion, Dominion $target)
-    {
-
-
-        dd('cast clear sight');
-
-        // status screen of $target
-
-        /*
-
-        Model: Realm
-        - infoOps(): InfoOp[]
-        - infoOpTargetDominions(): Dominion through InfoOp->targetDominion()
-        - infoOpFavoriteDominions(): Dominion through info_op_favorite_dominions.target_dominion_id?
-
-        Model: InfoOp
-        - realm(): Realm
-        - castByDominion(): Dominion
-        - targetDominion(): Dominions
-        - isStale(): bool - updated_at > last hour
-
-        */
-
-    }
-
-    // todo: vision
-
-    protected function castRevelation(Dominion $dominion, Dominion $target)
-    {
-        // spells affecting $target
-    }
-
-    protected function castClairvoyance(Dominion $dominion, Dominion $target)
-    {
-        // $target's TC
-    }
-
-    // todo: disclosure
 
     /**
      * Returns the successful return message.

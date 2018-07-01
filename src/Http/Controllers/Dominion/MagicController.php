@@ -52,7 +52,7 @@ class MagicController extends AbstractDominionController
             $result['data']['manaCost']
         ));
 
-        $request->session()->flash('alert-success', $result['message']);
+        $request->session()->flash(('alert-' . $result['alert-type'] ?? 'success'), $result['message']);
         return redirect()->to($result['redirect'] ?? route('dominion.magic'));
     }
 }
