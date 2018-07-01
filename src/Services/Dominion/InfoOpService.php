@@ -67,7 +67,12 @@ class InfoOpService
 
     public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
-        // clear sight (units)
+        // mag: clear sight (units raw value, racial op bonus & prestige)
+        // esp: castle spy (improvements)
+        // survery dominion (mod buildings)
+        // mag: revelation (active spells)
+        // mag: vision (tech)
+        // mag: disclosure (wonder)
 
         return null;
     }
@@ -107,9 +112,9 @@ class InfoOpService
             return null;
         }
 
-        $clearSightInfoOp = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
+        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
 
-        return $clearSightInfoOp->data['land'];
+        return $clearSight->data['land'];
     }
 
     public function getLandString(Realm $sourceRealm, Dominion $targetDominion): string
@@ -137,9 +142,9 @@ class InfoOpService
             return null;
         }
 
-        $clearSightInfoOp = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
+        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
 
-        return $clearSightInfoOp->data['networth'];
+        return $clearSight->data['networth'];
     }
 
     public function getNetworthString(Realm $sourceRealm, Dominion $targetDominion): string
