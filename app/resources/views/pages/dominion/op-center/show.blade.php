@@ -31,15 +31,15 @@
                         </div>
                     @else
                         @php
-                            $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clear_sight');
-                            $race = OpenDominion\Models\Race::/*with('units')->*/findOrFail($infoOp->data['race_id']);
+                            $clearSight = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clear_sight');
+                            $race = OpenDominion\Models\Race::/*with('units')->*/findOrFail($clearSight->data['race_id']);
                         @endphp
                         <div class="box box-primary">
                             <div class="box-header with-border">
                                 <h3 class="box-title">
                                     <i class="fa fa-bar-chart"></i> The Dominion of {{ $dominion->name }}
                                 </h3>
-                                @if ($infoOp->isStale())
+                                @if ($clearSight->isStale())
                                     <small class="label label-warning">Stale</small>
                                     <div class="pull-right box-tools">
                                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
@@ -51,7 +51,7 @@
                                     </div>
                                 @else
                                     <div class="pull-right box-tools">
-                                        <small>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</small>
+                                        <small>Revealed {{ $clearSight->updated_at->diffForHumans() }} by {{ $clearSight->sourceDominion->name }}</small>
                                     </div>
                                 @endif
                             </div>
@@ -71,7 +71,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Ruler:</td>
-                                                    <td>{{ $infoOp->data['ruler_name'] }}</td>
+                                                    <td>{{ $clearSight->data['ruler_name'] }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Race:</td>
@@ -80,7 +80,7 @@
                                                 <tr>
                                                     <td>Land:</td>
                                                     <td>
-                                                        {{ number_format($infoOp->data['land']) }}
+                                                        {{ number_format($clearSight->data['land']) }}
                                                         <span class="{{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion) }}">
                                                             ({{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%)
                                                         </span>
@@ -88,19 +88,19 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Peasants:</td>
-                                                    <td>{{ number_format($infoOp->data['peasants']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['peasants']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Employment:</td>
-                                                    <td>{{ number_format($infoOp->data['employment'], 2) }}%</td>
+                                                    <td>{{ number_format($clearSight->data['employment'], 2) }}%</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Networth:</td>
-                                                    <td>{{ number_format($infoOp->data['networth']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['networth']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Prestige:</td>
-                                                    <td>{{ number_format($infoOp->data['prestige']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['prestige']) }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -119,35 +119,35 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Platinum:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_platinum']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_platinum']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Food:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_food']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_food']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Lumber:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_lumber']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_lumber']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mana:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_mana']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_mana']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Ore:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_ore']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_ore']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Gems:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_gems']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_gems']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="nyi">Research Points:</td>
-                                                    <td class="nyi">{{ number_format($infoOp->data['resource_tech']) }}</td>
+                                                    <td class="nyi">{{ number_format($clearSight->data['resource_tech']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Boats:</td>
-                                                    <td>{{ number_format($infoOp->data['resource_boats']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['resource_boats']) }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -166,27 +166,27 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Morale:</td>
-                                                    <td>{{ number_format($infoOp->data['morale']) }}%</td>
+                                                    <td>{{ number_format($clearSight->data['morale']) }}%</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Draftees:</td>
-                                                    <td>{{ number_format($infoOp->data['military_draftees']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['military_draftees']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ $race->units->get(0)->name }}</td>
-                                                    <td>{{ number_format($infoOp->data['military_unit1']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['military_unit1']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ $race->units->get(1)->name }}</td>
-                                                    <td>{{ number_format($infoOp->data['military_unit2']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['military_unit2']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ $race->units->get(2)->name }}</td>
-                                                    <td>{{ number_format($infoOp->data['military_unit3']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['military_unit3']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ $race->units->get(3)->name }}</td>
-                                                    <td>{{ number_format($infoOp->data['military_unit4']) }}</td>
+                                                    <td>{{ number_format($clearSight->data['military_unit4']) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Spies:</td>
