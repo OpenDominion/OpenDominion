@@ -218,7 +218,7 @@ class SpellActionService
         // You need at least some positive WPA to cast info ops
         if ($selfWpa === 0.0) {
             // Don't reduce mana by throwing an exception here
-            throw new LogicException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
+            throw new RuntimeException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
         }
 
         // 100% spell success if target has a WPA of 0
