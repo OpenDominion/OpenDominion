@@ -1,5 +1,34 @@
 <?php
 
+use Illuminate\Support\Carbon;
+
+if (!function_exists('carbon')) {
+    /**
+     * Carbon helper function.
+     *
+     * @see https://github.com/laravel/framework/pull/21660#issuecomment-338359149
+     *
+     * @param mixed ...$params
+     * @return Carbon
+     */
+    function carbon(...$params)
+    {
+        if (!$params) {
+            return now();
+        }
+
+        if ($params[0] instanceof DateTime) {
+            return Carbon::instance($params[0]);
+        }
+
+        if (is_numeric($params[0]) && ((string)(int)$params[0] === (string)$params[0])) {
+            return Carbon::createFromTimestamp(...$params);
+        }
+
+        return Carbon::parse(...$params);
+    }
+}
+
 if (!function_exists('generate_sentence_from_array')) {
     /**
      * Generates a string with conjunction from an array of strings.
