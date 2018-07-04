@@ -132,7 +132,7 @@ class SpellActionService
                 throw new LogicException('Not yet implemented');
 
             } else {
-                throw new LogicException("Unknown spell type for spell {$spellKey}");
+                throw new LogicException("Unknown type for spell {$spellKey}");
             }
 
             $dominion->resource_mana -= $manaCost;
