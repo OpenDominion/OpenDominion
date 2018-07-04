@@ -81,7 +81,7 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label>Info Op Spells</label>
+                                        <label>Information Gathering Spells</label>
                                     </div>
                                 </div>
 
