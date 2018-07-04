@@ -125,6 +125,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
             $router->post('magic')->uses('Dominion\MagicController@postMagic');
 
+            // Espionage
+            $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
+            $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
+
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
             $router->get('council/create')->uses('Dominion\CouncilController@getCreate')->name('council.create');

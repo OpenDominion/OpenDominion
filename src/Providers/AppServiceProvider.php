@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
+use OpenDominion\Calculators\Dominion\EspionageCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -76,6 +77,7 @@ class AppServiceProvider extends AbstractServiceProvider
         // Dominion Calculators
         $this->app->singleton(BuildingCalculator::class);
         $this->app->singleton(CasualtiesCalculator::class);
+        $this->app->singleton(EspionageCalculator::class);
         $this->app->singleton(ImprovementCalculator::class);
         $this->app->singleton(LandCalculator::class);
         $this->app->singleton(MilitaryCalculator::class);
