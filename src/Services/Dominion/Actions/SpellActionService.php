@@ -158,6 +158,13 @@ class SpellActionService
             ] + $result;
     }
 
+    /**
+     * Casts a self spell for $dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $spellKey
+     * @return array
+     */
     protected function castSelfSpell(Dominion $dominion, string $spellKey): array
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
@@ -208,6 +215,14 @@ class SpellActionService
         ];
     }
 
+    /**
+     * Casts an info op spell for $dominion to $target.
+     *
+     * @param Dominion $dominion
+     * @param string $spellKey
+     * @param Dominion $target
+     * @return array
+     */
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
