@@ -26,6 +26,7 @@ use OpenDominion\Services\Dominion\Actions\BankActionService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
+use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
@@ -117,6 +118,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ConstructActionService::class);
         $this->app->singleton(DailyBonusesActionService::class);
         $this->app->singleton(DestroyActionService::class);
+        $this->app->singleton(EspionageActionService::class);
         $this->app->singleton(ExploreActionService::class);
         $this->app->singleton(ImproveActionService::class);
         $this->app->singleton(ReleaseActionService::class);

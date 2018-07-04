@@ -13,7 +13,7 @@ class PerformEspionageRequest extends AbstractDominionRequest
     {
         return [
             'operation' => 'required',
-            'target' => 'integer|exists:dominions', // todo: not in own realm && not cross round?
+            'target_dominion' => 'required|integer|exists:dominions,id', // todo: not in own realm && not cross round?
         ];
     }
 }

@@ -7,6 +7,11 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\PerformEspionageRequest;
+use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Services\Analytics\AnalyticsService;
+use OpenDominion\Services\Dominion\Actions\EspionageActionService;
+use Throwable;
 
 class EspionageController extends AbstractDominionController
 {
@@ -22,6 +27,32 @@ class EspionageController extends AbstractDominionController
 
     public function postEspionage(PerformEspionageRequest $request)
     {
-        dd($request);
+        $dominion = $this->getSelectedDominion();
+        $espionageActionService = app(EspionageActionService::class);
+
+        try {
+            /** @noinspection PhpParamsInspection */
+            $result = $espionageActionService->performOperation(
+                $dominion,
+                $request->get('operation'),
+                Dominion::findOrFail($request->get('target_dominion'))
+            );
+
+        } catch (Throwable $e) {
+            return redirect()->back()
+//                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        // todo: fire laravel event
+        $analyticsService = app(AnalyticsService::class);
+        $analyticsService->queueFlashEvent(new AnalyticsEvent(
+            'dominion',
+            'espionage.perform',
+            $result['data']['operation']
+        ));
+
+        $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
+        return redirect()->to($result['redirect'] ?? route('dominion.espionage'));
     }
 }

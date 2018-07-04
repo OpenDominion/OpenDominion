@@ -8,27 +8,45 @@ class EspionageHelper
 {
     public function getOperationInfo(string $operationKey): array
     {
-        return [];
+        return $this->getOperations()->filter(function ($operation) use ($operationKey) {
+            return ($operation['key'] === $operationKey);
+        })->first();
     }
 
     public function isInfoGatheringOperation(string $operationKey): bool
     {
-        return false;
+        return $this->getInfoGatheringOperations()->filter(function ($operation) use ($operationKey) {
+            return ($operation['key'] === $operationKey);
+        })->isNotEmpty();
     }
 
     public function isResourceTheftOperation(string $operationKey): bool
     {
-        return false;
+        return $this->getResourceTheftOperations()->filter(function ($operation) use ($operationKey) {
+            return ($operation['key'] === $operationKey);
+        })->isNotEmpty();
     }
 
     public function isBlackOperation(string $operationKey): bool
     {
-        return false;
+        return $this->getBlackOperations()->filter(function ($operation) use ($operationKey) {
+            return ($operation['key'] === $operationKey);
+        })->isNotEmpty();
     }
 
     public function isWarOperation(string $operationKey): bool
     {
-        return false;
+        return $this->getWarOperations()->filter(function ($operation) use ($operationKey) {
+            return ($operation['key'] === $operationKey);
+        })->isNotEmpty();
+    }
+
+    public function getOperations(): Collection
+    {
+        return $this->getInfoGatheringOperations()
+            ->merge($this->getResourceTheftOperations())
+            ->merge($this->getBlackOperations())
+            ->merge($this->getWarOperations());
     }
 
     public function getInfoGatheringOperations(): Collection

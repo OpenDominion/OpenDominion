@@ -41,7 +41,7 @@ class InfoOp extends AbstractModel
 
     public function isStale(): bool
     {
-        return ($this->updated_at < new Carbon('last hour'));
+        return ($this->updated_at < carbon()->minute(0)->second(0));
     }
 
     public function isInvalid(): bool
