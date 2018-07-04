@@ -136,7 +136,7 @@ class SpellActionService
             }
 
             $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= 5;
+            $dominion->wizard_strength -= 5; // todo: 2% for info ops, 5% for rest
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
 
         });
