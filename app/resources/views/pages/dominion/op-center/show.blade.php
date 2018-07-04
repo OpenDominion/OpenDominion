@@ -250,6 +250,10 @@
                                                     <button type="submit" class="btn btn-xs btn-success">Recast: Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'revelation')) }} mana)</button>
                                                 </form>
                                             </div>
+                                        @else
+                                            <div class="pull-right box-tools">
+                                                <small>Revealed {{ $revelation->updated_at->diffForHumans() }} by {{ $revelation->sourceDominion->name }}</small>
+                                            </div>
                                         @endif
                                     </div>
                                     <div class="box-body no-padding">
