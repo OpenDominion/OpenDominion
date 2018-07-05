@@ -134,14 +134,15 @@ class EspionageActionService
             if (!random_chance($successRate)) {
                 // todo: have some spies captured and killed
 
-                return [
-                    'success' => false,
-                    'message' => "The enemy spies have repelled our {$operationInfo['name']} attempt.",
-                    'alert-type' => 'warning',
-                ];
+//                return [
+//                    'success' => false,
+//                    'message' => "The enemy spies have repelled our {$operationInfo['name']} attempt.",
+//                    'alert-type' => 'warning',
+//                ];
             }
         }
 
+        // todo: is not invalid?
         $infoOp = InfoOp::firstOrNew([
             'source_realm_id' => $dominion->realm->id,
             'target_dominion_id' => $target->id,
@@ -157,9 +158,33 @@ class EspionageActionService
 
         switch ($operationKey) {
             case 'barracks_spy':
-                $infoOp->data = [
+//                $data = [];
+                $data = $infoOp->data;
 
-                ];
+                foreach (range(0, 3) as $i) {
+                    $amount = $target->{'military_unit' . $i};
+
+//                    dd(
+//                        array_get($data, "units.{$i}.exact"),
+//                        $amount
+//                    );
+
+                    if (array_get($data, "units.{$i}.exact") !== $amount) {
+
+                    }
+
+                    array_set($data, "units.{$i}.exact", $amount);
+
+
+                    $randomizedAmount = random_int(
+                        round($amount * 0.85),
+                        round($amount / 0.85)
+                    );
+
+                    array_set($data, "units.{$i}", $randomizedAmount);
+                }
+
+                $infoOp->data = $data;
                 break;
 
             case 'castle_spy':
@@ -174,6 +199,8 @@ class EspionageActionService
             default:
                 throw new LogicException("Unknown info gathering operation {$operationKey}");
         }
+
+        dd($infoOp->toArray()['data']['units']);
 
         // Always force update updated_at on infoops to know when the last infoop was performed
         $infoOp->updated_at = now();
