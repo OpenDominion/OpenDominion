@@ -54,7 +54,7 @@ class InfoOpService
             })->count() === 1);
     }
 
-    public function getInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): InfoOp
+    public function getInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): ?InfoOp
     {
         return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
             return (
