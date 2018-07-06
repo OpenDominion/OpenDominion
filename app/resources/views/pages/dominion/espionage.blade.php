@@ -81,7 +81,7 @@
 
     </div>
 @endsection
-s
+
 @push('page-styles')
     <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
 @endpush
