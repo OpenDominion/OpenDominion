@@ -10,7 +10,13 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-user-secret"></i> Offensive Operations</h3>
                 </div>
-                <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+
+                @if ($protectionService->isUnderProtection($selectedDominion))
+                    <div class="box-body">
+                        You are currently under protection for <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours and may not perform any espionage operations during that time.
+                    </div>
+                @else
+                    <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                     @csrf
 
                     <div class="box-body">
@@ -54,6 +60,8 @@
 
                     </div>
                 </form>
+                @endif
+
             </div>
         </div>
 

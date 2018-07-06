@@ -5,10 +5,12 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use LogicException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -23,16 +25,30 @@ class EspionageActionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var ProtectionService */
+    protected $protectionService;
+
+    /** @var RangeCalculator */
+    protected $rangeCalculator;
+
     /**
      * EspionageActionService constructor.
      *
      * @param EspionageHelper $espionageHelper
      * @param MilitaryCalculator $militaryCalculator
+     * @param ProtectionService $protectionService
+     * @param RangeCalculator $rangeCalculator
      */
-    public function __construct(EspionageHelper $espionageHelper, MilitaryCalculator $militaryCalculator)
-    {
+    public function __construct(
+        EspionageHelper $espionageHelper,
+        MilitaryCalculator $militaryCalculator,
+        ProtectionService $protectionService,
+        RangeCalculator $rangeCalculator
+    ) {
         $this->espionageHelper = $espionageHelper;
         $this->militaryCalculator = $militaryCalculator;
+        $this->protectionService = $protectionService;
+        $this->rangeCalculator = $rangeCalculator;
     }
 
     /**
@@ -56,6 +72,18 @@ class EspionageActionService
 
         if ($dominion->spy_strength < 30) {
             throw new RuntimeException("Your spies to not have enough strength to perform {$operationInfo['name']}.");
+        }
+
+        if ($this->protectionService->isUnderProtection($dominion)) {
+            throw new RuntimeException('You cannot perform espionage operations while under protection');
+        }
+
+        if ($this->protectionService->isUnderProtection($target)) {
+            throw new RuntimeException('You cannot perform espionage operations to targets which are under protection');
+        }
+
+        if (!$this->rangeCalculator->isInRange($dominion, $target)) {
+            throw new RuntimeException('You cannot perform espionage operations to targets outside of your range');
         }
 
         if ($dominion->round->id !== $target->round->id) {

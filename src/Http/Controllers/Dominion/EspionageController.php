@@ -11,6 +11,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use Throwable;
 
 class EspionageController extends AbstractDominionController
@@ -21,6 +22,7 @@ class EspionageController extends AbstractDominionController
             'espionageCalculator' => app(EspionageCalculator::class),
             'espionageHelper' => app(EspionageHelper::class),
             'landCalculator' => app(LandCalculator::class),
+            'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
         ]);
     }
