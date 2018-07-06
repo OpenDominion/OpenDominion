@@ -3,10 +3,11 @@
 namespace OpenDominion\Console\Commands\Game;
 
 use Illuminate\Console\Command;
+use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Services\Dominion\TickService;
 use Throwable;
 
-class TickCommand extends Command
+class TickCommand extends Command implements CommandInterface
 {
     /** @var string The name and signature of the console command. */
     protected $signature = 'game:tick';
@@ -28,9 +29,7 @@ class TickCommand extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @throws Throwable
+     * {@inheritdoc}
      */
     public function handle(): void
     {

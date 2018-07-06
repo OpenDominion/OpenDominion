@@ -4,11 +4,12 @@ namespace OpenDominion\Console\Commands\Game;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\RoundLeague;
 use RuntimeException;
 
-class RoundOpenCommand extends Command
+class RoundOpenCommand extends Command implements CommandInterface
 {
     /** @var string The name and signature of the console command. */
     protected $signature = 'game:round:open
@@ -36,9 +37,7 @@ class RoundOpenCommand extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @throws RuntimeException
+     * {@inheritdoc}
      */
     public function handle(): void
     {

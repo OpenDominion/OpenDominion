@@ -6,7 +6,7 @@ use Cache;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class VersionUpdateCommand extends Command
+class VersionUpdateCommand extends Command implements CommandInterface
 {
     protected const REPO_URL = 'https://github.com/WaveHack/OpenDominion';
 
@@ -17,11 +17,9 @@ class VersionUpdateCommand extends Command
     protected $description = 'Updates game version';
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function handle()
+    public function handle(): void
     {
         $this->info('Updating version', OutputInterface::VERBOSITY_DEBUG);
 
