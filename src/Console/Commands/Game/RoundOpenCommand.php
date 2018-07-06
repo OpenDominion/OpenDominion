@@ -52,7 +52,7 @@ class RoundOpenCommand extends Command
         }
 
         if (($now && $open) || ($now && $days) || ($open && $days)) {
-            throw new RuntimeException('Options --now and --open are mutually exclusive');
+            throw new RuntimeException('Options --now, --open and --days are mutually exclusive');
         }
 
         if ($now) {
