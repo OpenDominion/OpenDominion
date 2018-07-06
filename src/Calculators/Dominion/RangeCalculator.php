@@ -4,20 +4,26 @@ namespace OpenDominion\Calculators\Dominion;
 
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\ProtectionService;
 
 class RangeCalculator
 {
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var ProtectionService */
+    protected $protectionService;
+
     /**
      * RangeCalculator constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param ProtectionService $protectionService
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(LandCalculator $landCalculator, ProtectionService $protectionService)
     {
         $this->landCalculator = $landCalculator;
+        $this->protectionService = $protectionService;
     }
 
     /**
@@ -114,7 +120,9 @@ class RangeCalculator
             ->filter(function ($dominion) use ($self) {
                 return (
                     ($dominion->realm->id !== $self->realm->id) &&
-                    $this->isInRange($self, $dominion)
+                    $this->isInRange($self, $dominion) &&
+//                    $this->isInRange($dominion, $self) && // todo: needed?
+                    !$this->protectionService->isUnderProtection($dominion)
                 );
             })
             ->sortByDesc(function ($dominion) {
