@@ -39,7 +39,7 @@ class RangeCalculator
         $targetLand = $this->landCalculator->getTotalLand($target);
 
         $selfModifier = $this->getRangeModifier($self);
-        $targetModifier = $this->getRangeModifier($target);
+//        $targetModifier = $this->getRangeModifier($target);
 
         return (
             ($targetLand >= ($selfLand * $selfModifier)) &&
