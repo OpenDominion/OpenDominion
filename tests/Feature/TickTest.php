@@ -218,7 +218,7 @@ class TickTest extends AbstractBrowserKitTestCase
         // cast self spell for dominion 2 ONLY
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $spellActionService->castSelfSpell($dominion2, 'midas_touch');
+        $spellActionService->castSpell($dominion2, 'midas_touch');
 
         // Refresh active spells
         $spellCalculator->getActiveSpells($dominion1, true);
@@ -269,7 +269,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertEquals(-940, $productionCalculator->getFoodNetChange($dominion));
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $spellActionService->castSelfSpell($dominion, 'gaias_watch');
+        $spellActionService->castSpell($dominion, 'gaias_watch');
 
         // Refresh active spells
         $spellCalculator->getActiveSpells($dominion, true);
