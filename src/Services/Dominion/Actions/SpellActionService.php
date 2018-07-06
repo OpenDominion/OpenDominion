@@ -7,6 +7,7 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\SpellHelper;
@@ -38,6 +39,9 @@ class SpellActionService
     /** @var ProtectionService */
     protected $protectionService;
 
+    /** @var RangeCalculator */
+    protected $rangeCalculator;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -55,6 +59,7 @@ class SpellActionService
      * @param NetworthCalculator $networthCalculator
      * @param PopulationCalculator $populationCalculator
      * @param ProtectionService $protectionService
+     * @param RangeCalculator $rangeCalculator
      * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
      * @param TrainingQueueService $trainingQueueService
@@ -65,6 +70,7 @@ class SpellActionService
         NetworthCalculator $networthCalculator,
         PopulationCalculator $populationCalculator,
         ProtectionService $protectionService,
+        RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator,
         SpellHelper $spellHelper,
         TrainingQueueService $trainingQueueService
@@ -74,6 +80,7 @@ class SpellActionService
         $this->networthCalculator = $networthCalculator;
         $this->populationCalculator = $populationCalculator;
         $this->protectionService = $protectionService;
+        $this->rangeCalculator = $rangeCalculator;
         $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
         $this->trainingQueueService = $trainingQueueService;
@@ -119,6 +126,10 @@ class SpellActionService
 
             if ($this->protectionService->isUnderProtection($target)) {
                 throw new RuntimeException('You cannot cast offensive spells to targets which are under protection');
+            }
+
+            if (!$this->rangeCalculator->isInRange($dominion, $target)) {
+                throw new RuntimeException('You cannot cast offensive spells to targets outside of your range');
             }
 
             if ($dominion->round->id !== $target->round->id) {
