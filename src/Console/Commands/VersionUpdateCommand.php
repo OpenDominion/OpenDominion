@@ -6,7 +6,7 @@ use Cache;
 use Illuminate\Console\Command;
 use Log;
 
-class UpdateVersionCommand extends Command
+class VersionUpdateCommand extends Command
 {
     protected const REPO_URL = 'https://github.com/WaveHack/OpenDominion';
 
