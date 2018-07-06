@@ -13,6 +13,7 @@ use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
@@ -34,6 +35,9 @@ class SpellActionService
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
+    /** @var ProtectionService */
+    protected $protectionService;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -50,6 +54,7 @@ class SpellActionService
      * @param MilitaryCalculator $militaryCalculator
      * @param NetworthCalculator $networthCalculator
      * @param PopulationCalculator $populationCalculator
+     * @param ProtectionService $protectionService
      * @param SpellCalculator $spellCalculator
      * @param SpellHelper $spellHelper
      * @param TrainingQueueService $trainingQueueService
@@ -59,6 +64,7 @@ class SpellActionService
         MilitaryCalculator $militaryCalculator,
         NetworthCalculator $networthCalculator,
         PopulationCalculator $populationCalculator,
+        ProtectionService $protectionService,
         SpellCalculator $spellCalculator,
         SpellHelper $spellHelper,
         TrainingQueueService $trainingQueueService
@@ -67,6 +73,7 @@ class SpellActionService
         $this->militaryCalculator = $militaryCalculator;
         $this->networthCalculator = $networthCalculator;
         $this->populationCalculator = $populationCalculator;
+        $this->protectionService = $protectionService;
         $this->spellCalculator = $spellCalculator;
         $this->spellHelper = $spellHelper;
         $this->trainingQueueService = $trainingQueueService;
@@ -104,6 +111,14 @@ class SpellActionService
         if ($this->spellHelper->isOffensiveSpell($spellKey)) {
             if ($target === null) {
                 throw new RuntimeException("You must select a target when casting offensive spell {$spellInfo['name']}");
+            }
+
+            if ($this->protectionService->isUnderProtection($dominion)) {
+                throw new RuntimeException('You cannot cast offensive spells while under protection');
+            }
+
+            if ($this->protectionService->isUnderProtection($target)) {
+                throw new RuntimeException('You cannot cast offensive spells to targets which are under protection');
             }
 
             if ($dominion->round->id !== $target->round->id) {

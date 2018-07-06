@@ -11,6 +11,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use Throwable;
 
 class MagicController extends AbstractDominionController
@@ -19,6 +20,7 @@ class MagicController extends AbstractDominionController
     {
         return view('pages.dominion.magic', [
             'landCalculator' => app(LandCalculator::class),
+            'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),

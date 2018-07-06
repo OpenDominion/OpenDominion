@@ -58,57 +58,65 @@
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
                         </div>
-                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            @csrf
 
+                        @if ($protectionService->isUnderProtection($selectedDominion))
                             <div class="box-body">
+                                You are currently under protection for <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours and may not cast any offensive spells during that time.
+                            </div>
+                        @else
+                            <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                                @csrf
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="target_dominion">Select a target</label>
-                                            <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
-                                                <option></option>
-                                                @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
-                                                    <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
-                                                        {{ $dominion->name }} (#{{ $dominion->realm->number }})
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                <div class="box-body">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="target_dominion">Select a target</label>
+                                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
+                                                    <option></option>
+                                                    @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
+                                                        <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                                            {{ $dominion->name }} (#{{ $dominion->realm->number }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Information Gathering Spells</label>
-                                    </div>
-                                </div>
-
-                                @foreach ($spellHelper->getInfoOpSpells()->chunk(4) as $spells)
                                     <div class="row">
-                                        @foreach ($spells as $spell)
-                                            <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                                <div class="form-group">
-                                                    <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$spellCalculator->canCast($selectedDominion, $spell['key']) ? 'disabled' : null }}>
-                                                        {{ $spell['name'] }}
-                                                    </button>
-                                                    <p>{{ $spell['description'] }}</p>
-                                                    <small>
-                                                        @if ($canCast)
-                                                            Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
-                                                        @else
-                                                            Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
-                                                        @endif
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        @endforeach
+                                        <div class="col-md-12">
+                                            <label>Information Gathering Spells</label>
+                                        </div>
                                     </div>
-                                @endforeach
 
-                            </div>
-                        </form>
+                                    @foreach ($spellHelper->getInfoOpSpells()->chunk(4) as $spells)
+                                        <div class="row">
+                                            @foreach ($spells as $spell)
+                                                <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                                    <div class="form-group">
+                                                        <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$spellCalculator->canCast($selectedDominion, $spell['key']) ? 'disabled' : null }}>
+                                                            {{ $spell['name'] }}
+                                                        </button>
+                                                        <p>{{ $spell['description'] }}</p>
+                                                        <small>
+                                                            @if ($canCast)
+                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                            @else
+                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                            @endif
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+
+                                </div>
+                            </form>
+                        @endif
+
                     </div>
                 </div>
 
