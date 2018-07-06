@@ -353,7 +353,7 @@ class SpellActionService
         }
 
         // Always force update updated_at on infoops to know when the last infoop was cast
-        $infoOp->updated_at = now();
+        $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
 
         return [
