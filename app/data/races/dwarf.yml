@@ -29,7 +29,7 @@ units:
       offense: 4
       defense: 4
     perks:
-      dwarf_cleric: 1
+      reduce_combat_losses: 1
   - name: Warrior
     cost:
       platinum: 1250
