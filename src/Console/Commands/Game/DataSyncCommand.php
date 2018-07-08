@@ -84,7 +84,7 @@ class DataSyncCommand extends Command implements CommandInterface
             foreach (object_get($data, 'perks', []) as $perk => $value) {
                 $value = (float)$value;
 
-                $racePerkType = RacePerkType::firstOrNew(['key' => $perk]);
+                $racePerkType = RacePerkType::firstOrCreate(['key' => $perk]);
 
                 $racePerksToSync[$racePerkType->id] = ['value' => $value];
 
@@ -145,11 +145,10 @@ class DataSyncCommand extends Command implements CommandInterface
                 ]);
 
                 // Unit perks
-
                 foreach (object_get($unitData, 'perks', []) as $perk => $value) {
                     $value = (string)$value; // Can have multiple values for a perk, comma separated. todo: Probably needs a refactor later to JSON
 
-                    $unitPerkType = UnitPerkType::firstOrNew(['key' => $perk]);
+                    $unitPerkType = UnitPerkType::firstOrCreate(['key' => $perk]);
 
                     $unit->fill([
                         'unit_perk_type_id' => $unitPerkType->id,
