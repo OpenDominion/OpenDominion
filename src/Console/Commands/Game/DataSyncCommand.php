@@ -2,11 +2,15 @@
 
 namespace OpenDominion\Console\Commands\Game;
 
+use DB;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Models\Race;
-use Symfony\Component\Console\Output\OutputInterface;
+use OpenDominion\Models\RacePerk;
+use OpenDominion\Models\RacePerkType;
+use OpenDominion\Models\Unit;
+use OpenDominion\Models\UnitPerkType;
 use Symfony\Component\Yaml\Yaml;
 
 class DataSyncCommand extends Command implements CommandInterface
@@ -20,13 +24,16 @@ class DataSyncCommand extends Command implements CommandInterface
     /** @var Filesystem */
     protected $filesystem;
 
+    /**
+     * DataSyncCommand constructor.
+     *
+     * @param Filesystem $filesystem
+     */
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
 
         $this->filesystem = $filesystem;
-
-        //
     }
 
     /**
@@ -34,10 +41,14 @@ class DataSyncCommand extends Command implements CommandInterface
      */
     public function handle(): void
     {
-        $this->syncRaces();
-        //
+        DB::transaction(function () {
+            $this->syncRaces();
+        });
     }
 
+    /**
+     * Syncs race, unit and perk data from .yml files to the database.
+     */
     protected function syncRaces()
     {
         $files = $this->filesystem->files(base_path('app/data/races'));
@@ -45,7 +56,7 @@ class DataSyncCommand extends Command implements CommandInterface
         foreach ($files as $file) {
             $data = Yaml::parse($file->getContents(), Yaml::PARSE_OBJECT_FOR_MAP);
 
-            $this->info("Processing race {$data->name}");
+            $this->info("Race {$data->name}");
 
             // Race
             $race = Race::firstOrNew(['name' => $data->name])
@@ -60,92 +71,107 @@ class DataSyncCommand extends Command implements CommandInterface
                 foreach ($newValues as $key => $newValue) {
                     $originalValue = $race->getOriginal($key);
 
-                    $this->info("Changing {$key} from {$originalValue} to {$newValue}");
+                    $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
                 }
             }
 
-//            $race->save();
-//            $race->refresh();
+            $race->save();
+            $race->refresh();
 
             // Race Perks
+            $racePerksToSync = [];
+
             foreach (object_get($data, 'perks', []) as $perk => $value) {
-                //
+                $value = (float)$value;
+
+                $racePerkType = RacePerkType::firstOrNew(['key' => $perk]);
+
+                $racePerksToSync[$racePerkType->id] = ['value' => $value];
+
+                $racePerk = RacePerk::query()
+                    ->where('race_id', $race->id)
+                    ->where('race_perk_type_id', $racePerkType->id)
+                    ->first();
+
+                if ($racePerk === null) {
+                    $this->info("[Add Perk] {$perk}: {$value}");
+                } elseif ($racePerk->value !== $value) {
+                    $this->info("[Change Perk] {$perk}: {$racePerk->value} -> {$value}");
+                }
+            }
+
+            // todo: needs refactoring so we can use this: (issue #227).
+//            $race->perks()->sync($racePerksToSync);
+
+            // Delete from race_perks where race_id = $race->id
+            RacePerk::query()
+                ->where('race_id', $race->id)
+                ->delete();
+
+            foreach ($racePerksToSync as $racePerkTypeId => $racePerkData) {
+                RacePerk::create([
+                    'race_id' => $race->id,
+                    'race_perk_type_id' => $racePerkTypeId,
+                    'value' => $racePerkData['value'],
+                ]);
             }
 
             // Units
-            //
+            foreach (object_get($data, 'units', []) as $slot => $unitData) {
+                $slot++; // Because array indices start at 0
 
-            // Unit Perks
-            //
+                $unitName = object_get($unitData, 'name');
 
+                $this->info("Unit {$slot}: {$unitName}");
 
-            dd([
-                $race->toArray(),
-                $newValues,
-                $race->id,
-            ]);
+                $where = [
+                    'race_id' => $race->id,
+                    'slot' => $slot,
+                ];
 
+                $unit = Unit::where($where)->first();
 
-
-            $race = Race::where('name', $data->name)->first();
-
-            if ($race !== null) {
-
-                $race->fill([
-                    'alignment' => object_get($data, 'alignment'),
-                    'home_land_type' => object_get($data, 'home_land_type'),
-                ]);
-
-                foreach (object_get($data, 'perks', []) as $perk => $value) {
-                    // check if race_perk_types with key=$value exist
-                        // if not, create it
-
-                    // get race_perk_type
-
-                    // check if race_perks exists with race_id=$race->id and race_perk_type_id = $race_perk_type
-                        // if not, create it
-                    dd([
-                        $perk,
-                        $value,
-                    ]);
+                if ($unit === null) {
+                    $unit = Unit::make($where);
                 }
 
-                dd('test');
+                $unit->fill([
+                    'name' => $unitName,
+                    'cost_platinum' => object_get($unitData, 'cost.platinum', 0),
+                    'cost_ore' => object_get($unitData, 'cost.ore', 0),
+                    'power_offense' => object_get($unitData, 'power.offense', 0),
+                    'power_defense' => object_get($unitData, 'power.defense', 0),
+                    'need_boat' => (int)object_get($unitData, 'need_boat', true),
+                ]);
 
-                // perks
+                // Unit perks
 
-                // units
+                foreach (object_get($unitData, 'perks', []) as $perk => $value) {
+                    $value = (string)$value; // Can have multiple values for a perk, comma separated. todo: Probably needs a refactor later to JSON
 
-                // unit perks
+                    $unitPerkType = UnitPerkType::firstOrNew(['key' => $perk]);
 
+                    $unit->fill([
+                        'unit_perk_type_id' => $unitPerkType->id,
+                        'unit_perk_type_values' => $value,
+                    ]);
+
+                    // todo: unit can have only 1 perk atm. needs refactor later to many to many (issue #227)
+                    break;
+                }
+
+                if ($unit->exists) {
+                    $newValues = $unit->getDirty();
+
+                    foreach ($newValues as $key => $newValue) {
+                        $originalValue = $unit->getOriginal($key);
+
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
+                }
+
+                $unit->save();
             }
-
-
-
-            // perks
-
-            // units
-            // unit perks (+ type)
-
-            // set unique db keys on:
-            // - race_perks.[race_id + race_perk_type_id]
-            // - races.name
-
-
-
-            dd($race->toArray());
-
-//            if (!object_get($race, 'enabled', true)) {
-//                $this->info('Skipping disabled race ' . $race->name);
-//                continue;
-//            }
-
-            //
-
-            dd($data->name);
         }
-
-
-        $path = base_path('app/data/races');
     }
 }
