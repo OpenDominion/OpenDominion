@@ -1,0 +1,42 @@
+name: Goblin
+alignment: evil
+home_land_type: hill
+perks:
+  max_population: 20
+  gem_production: 10
+  invest_bonus: 10
+units:
+  - name: Raider
+    cost:
+      platinum: 325
+      ore: 25
+    power:
+      offense: 3
+      defense: 0
+  - name: Shaman
+    cost:
+      platinum: 375
+      ore: 15
+    power:
+      offense: 0
+      defense: 3
+    perks:
+      reduce_combat_losses: 1
+  - name: Hobgoblin
+    cost:
+      platinum: 1000
+      ore: 80
+    power:
+      offense: 5
+      defense: 3
+    perks:
+      plunders_resources_on_attack: 1
+  - name: Wolf Rider
+    cost:
+      platinum: 1300
+      ore: 130
+    power:
+      offense: 6
+      defense: 2
+    perks:
+      faster_return: 3
