@@ -23,7 +23,7 @@ class RealmFinderService
      *
      * @return Realm|null
      */
-    public function findRandomRealm(Round $round, Race $race, Int $slotsNeeded = 1, Bool $forPack = false): ?Realm
+    public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
         $query = DB::table('realms')
         ->select('realms.id', DB::raw('COUNT(dominions.id) + realms.reserved_slots AS dominion_count'))

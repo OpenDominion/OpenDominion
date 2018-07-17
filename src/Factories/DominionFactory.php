@@ -43,7 +43,7 @@ class DominionFactory
      * @throws RuntimeException
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $name, Pack $pack): Dominion
+    public function create(User $user, Round $round, Race $race, string $realmType, string $name, Pack $pack = null): Dominion
     {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
@@ -61,7 +61,7 @@ class DominionFactory
 
         // No vacant realm. Create a new one instead
         if ($realm === null) {
-            $realm = $this->realmFactory->create($round, $race->alignment);
+            $realm = $this->realmFactory->create($round, $race->alignment, $pack);
         }
 
         // todo: get starting values from config

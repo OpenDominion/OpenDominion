@@ -17,7 +17,7 @@ class CreatePacks extends Migration
             $table->increments('id');
             $table->unsignedInteger('round_id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('realm_id');
+            $table->unsignedInteger('realm_id')->nullable();
             $table->string('password');
             $table->unsignedInteger('size');
             $table->timestamps();
