@@ -38,6 +38,7 @@
                     <div class="col-sm-9">
                         <select name="realm" class="form-control" required>
                             <option value="random">Put me in a random realm</option>
+                            <option value="pack">Create a pack</option>
                         </select>
                     </div>
                 </div>
@@ -47,6 +48,20 @@
                     <label for="pack_password" class="col-sm-3 control-label">Pack password</label>
                     <div class="col-sm-9">
                         <input type="password" name="pack_password" id="pack_password" class="form-control" placeholder="Pack password">
+                    </div>
+                    <label for="create_pack" class="col-sm-3 control-label">Create new pack</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" name="create_pack" id="create_pack" >
+                    </div>
+                    <label for="pack_size" class="col-sm-3 control-label">Pack size</label>
+                    <div class="col-sm-9">
+                        <select name="pack_size" class="form-control">
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
                     </div>
                 </div>
 

@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Factories\PackFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -19,14 +20,18 @@ class RoundController extends AbstractController
     /** @var DominionFactory */
     protected $dominionFactory;
 
+    /** @var PackFactory */
+    protected $packFactory;
+
     /**
      * RoundController constructor.
      *
      * @param DominionFactory $dominionFactory
      */
-    public function __construct(DominionFactory $dominionFactory)
+    public function __construct(DominionFactory $dominionFactory, PackFactory $packFactory)
     {
         $this->dominionFactory = $dominionFactory;
+        $this->packFactory = $packFactory;
     }
 
     public function getRegister(Round $round)
@@ -46,19 +51,25 @@ class RoundController extends AbstractController
         $this->validate($request, [
             'dominion_name' => 'required',
             'race' => 'required|integer',
-            'realm' => 'in:random',
+            'realm' => 'in:random,pack',
         ]);
-        
+        $realmType = $request->get('realm');
         // Validate pack things
         $race = Race::find($request->get('race'));
-        $pack = $this->validatePack($request, $round, $race);
+
+        $pack = null;
+        if($realmType === 'pack')
+        {
+            $pack = $this->validatePack($request, $round, $race);
+        }
 
         $dominion = $this->dominionFactory->create(
             Auth::user(),
             $round,
             $race,
-            $request->get('realm'),
-            $request->get('dominion_name')
+            $realmType,
+            $request->get('dominion_name'),
+            $pack
         );
 
         if ($round->isActive()) {
@@ -99,24 +110,40 @@ class RoundController extends AbstractController
             return null;
         }
 
-        $packs = Pack::where([
-            'password' => $request->get('pack_password'),
-            'round_id' => $round->id
-        ])->withCount('dominions')->get();
+        $password = $request->get('pack_password');
 
-        if($packs->isEmpty()) {
-            throw new RuntimeException("No pack with that password found in round {$round->number}");
+        if($request->has('create_pack'))
+        {
+            $packSize = $request->get('pack_size');
+
+            if($packSize < 2 || $packSize > 6)
+            {
+                throw new RuntimeException("Pack size must be between 2 and 6.");
+            }
+
+            $pack = $this->packFactory->create($round, Auth::user(), $password, $packSize);
         }
+        else {
+            $packs = Pack::where([
+                'password' => $password,
+                'round_id' => $round->id
+            ])->withCount('dominions')->get();
+    
+            if($packs->isEmpty()) {
+                throw new RuntimeException("No pack with that password found in round {$round->number}");
+            }
+    
+            $pack = $packs[0];
 
-        $pack = $packs[0];
-        // TODO: race condition here
-        // TODO: Pack size should be a setting?
-        if($pack->dominions_count == 6) {
-            throw new RuntimeException("Pack is already full");
-        }
+            // TODO: race condition here
+            // TODO: Pack size should be a setting?
+            if($pack->dominions_count == 6) {
+                throw new RuntimeException("Pack is already full");
+            }
 
-        if($pack->realm()->alignment !== $race->alignment){
-            throw new RuntimeException("Race has wrong aligment to rest of pack.");
+            if($pack->realm->alignment !== $race->alignment){
+                throw new RuntimeException("Race has wrong aligment to rest of pack.");
+            }
         }
 
         return $pack;

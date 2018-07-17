@@ -3,6 +3,7 @@
 namespace OpenDominion\Factories;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
@@ -43,7 +44,7 @@ class DominionFactory
      * @throws RuntimeException
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $name, Pack $pack = null): Dominion
+    public function create(User $user, Round $round, Race $race, string $realmType, string $name, Pack $pack): Dominion
     {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
@@ -54,7 +55,8 @@ class DominionFactory
                 $realm = $this->realmFinderService->findRandomRealm($round, $race, false);
                 break;
             case 'pack':
-                $realm = $pack->realm();
+                $realm = $pack->realm;
+                break;
             default:
                 throw new RuntimeException("Realm type '{$realmType}' not supported");
         }
@@ -72,7 +74,7 @@ class DominionFactory
             'round_id' => $round->id,
             'realm_id' => $realm->id,
             'race_id' => $race->id,
-            'pack_id' => $pack->id ?? null,
+            'pack_id' => $pack->id,
 
             'name' => $name,
             'prestige' => 250,
@@ -138,6 +140,11 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
+        
+        if($pack !== null) {
+            $pack->realm->reserved_slots -= 1;
+            $pack->realm->save();
+        }
 
         return $dominion;
     }

@@ -26,7 +26,12 @@ class CreatePacks extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('realm_id')->references('id')->on('realms');
 
+            // One pack per user per round
+            $table->unique(['round_id', 'user_id']);
+            // Password should be unique per round
             $table->unique(['password', 'round_id']);
+            // One pack per user per round
+            $table->unique(['user_id', 'round_id']);
         });
     }
 

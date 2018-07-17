@@ -4,6 +4,7 @@ namespace OpenDominion\Factories;
 
 use Atrox\Haikunator;
 use DB;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 
