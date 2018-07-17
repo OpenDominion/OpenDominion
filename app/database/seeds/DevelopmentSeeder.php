@@ -83,7 +83,8 @@ INFO
             $round,
             Race::where('name', 'Human')->firstOrFail(),
             'random',
-            'Dev Dominion'
+            'Dev Dominion',
+            null
         );
     }
 }
