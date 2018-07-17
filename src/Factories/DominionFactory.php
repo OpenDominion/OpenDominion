@@ -43,7 +43,7 @@ class DominionFactory
      * @throws RuntimeException
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $name): Dominion
+    public function create(User $user, Round $round, Race $race, string $realmType, string $name, Pack $pack): Dominion
     {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
@@ -51,9 +51,10 @@ class DominionFactory
         // Try to find a vacant realm
         switch ($realmType) {
             case 'random':
-                $realm = $this->realmFinderService->findRandomRealm($round, $race);
+                $realm = $this->realmFinderService->findRandomRealm($round, $race, false);
                 break;
-
+            case 'pack':
+                $realm = $pack->realm();
             default:
                 throw new RuntimeException("Realm type '{$realmType}' not supported");
         }
@@ -71,6 +72,7 @@ class DominionFactory
             'round_id' => $round->id,
             'realm_id' => $realm->id,
             'race_id' => $race->id,
+            'pack_id' => $pack->id ?? null,
 
             'name' => $name,
             'prestige' => 250,

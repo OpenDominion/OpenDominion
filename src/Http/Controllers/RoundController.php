@@ -50,12 +50,13 @@ class RoundController extends AbstractController
         ]);
         
         // Validate pack things
-        $this->validatePack($request, $round);
+        $race = Race::find($request->get('race'));
+        $pack = $this->validatePack($request, $round, $race);
 
         $dominion = $this->dominionFactory->create(
             Auth::user(),
             $round,
-            Race::find($request->get('race')),
+            $race,
             $request->get('realm'),
             $request->get('dominion_name')
         );
@@ -91,11 +92,11 @@ class RoundController extends AbstractController
         }
     }
 
-    protected function validatePack(Request $request, Round $round)
+    protected function validatePack(Request $request, Round $round, Race $race): Pack
     {
         // TODO: Handle validation errors gracefully...
         if(!$request->filled('pack_password')) {
-            return;
+            return null;
         }
 
         $packs = Pack::where([
@@ -113,5 +114,11 @@ class RoundController extends AbstractController
         if($pack->dominions_count == 6) {
             throw new RuntimeException("Pack is already full");
         }
+
+        if($pack->realm()->alignment !== $race->alignment){
+            throw new RuntimeException("Race has wrong aligment to rest of pack.");
+        }
+
+        return $pack;
     }
 }

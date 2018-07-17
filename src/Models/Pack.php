@@ -20,4 +20,9 @@ class Pack extends AbstractModel
     {
         return $this->hasMany(Dominion::class);
     }
+
+    public function realm()
+    {
+        return $this->belongsTo(Realm::class);
+    }
 }
