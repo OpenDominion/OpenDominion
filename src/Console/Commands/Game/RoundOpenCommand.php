@@ -21,7 +21,7 @@ class RoundOpenCommand extends Command implements CommandInterface
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
 
-    /** @var RoundFactory  */
+    /** @var RoundFactory */
     protected $roundFactory;
 
     /**
