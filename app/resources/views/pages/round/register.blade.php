@@ -38,7 +38,7 @@
                     <div class="col-sm-9">
                         <select name="realm" class="form-control" required>
                             <option value="random">Put me in a random realm</option>
-                            <option value="pack">Create a pack</option>
+                            <option value="pack">Pack</option>
                         </select>
                     </div>
                 </div>

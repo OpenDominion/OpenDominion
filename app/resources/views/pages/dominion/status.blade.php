@@ -209,11 +209,13 @@
                 </div>
                 <div class="box-body">
                     <p>You are in a pack with (including yourself): <p/>
+                    @php ($i = 0)
                     @foreach ($selectedDominion->pack->dominions as $dominion)
-                        <p>{{ $dominion->name }}</p>
+                        <p>RULER_NAME of {{ $dominion->name }} ({{$dominion->user->display_name}})</p>
+                        @php ($i++)
                     @endforeach
 
-                    <p>You have a total of {{$selectedDominion->pack->size}} slots in your pack.</p>
+                    <p>Slots used: {{$i}}/{{$selectedDominion->pack->size}}</p>
                 </div>
             </div>
             @endif
