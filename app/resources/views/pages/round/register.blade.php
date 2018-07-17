@@ -42,6 +42,14 @@
                     </div>
                 </div>
 
+                <!-- Pack -->
+                <div class="form-group">
+                    <label for="pack_password" class="col-sm-3 control-label">Pack password</label>
+                    <div class="col-sm-9">
+                        <input type="password" name="pack_password" id="pack_password" class="form-control" placeholder="Pack password">
+                    </div>
+                </div>
+
             </div>
 
             <div class="box-footer">

@@ -6,6 +6,7 @@ use Auth;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
@@ -47,6 +48,9 @@ class RoundController extends AbstractController
             'race' => 'required|integer',
             'realm' => 'in:random',
         ]);
+        
+        // Validate pack things
+        $this->validatePack($request, $round);
 
         $dominion = $this->dominionFactory->create(
             Auth::user(),
@@ -84,6 +88,30 @@ class RoundController extends AbstractController
 
         if (!$dominions->isEmpty()) {
             throw new RuntimeException("User already has a dominion in round {$round->number}");
+        }
+    }
+
+    protected function validatePack(Request $request, Round $round)
+    {
+        // TODO: Handle validation errors gracefully...
+        if(!$request->filled('pack_password')) {
+            return;
+        }
+
+        $packs = Pack::where([
+            'password' => $request->get('pack_password'),
+            'round_id' => $round->id
+        ])->withCount('dominions')->get();
+
+        if($packs->isEmpty()) {
+            throw new RuntimeException("No pack with that password found in round {$round->number}");
+        }
+
+        $pack = $packs[0];
+        // TODO: race condition here
+        // TODO: Pack size should be a setting?
+        if($pack->dominions_count == 6) {
+            throw new RuntimeException("Pack is already full");
         }
     }
 }
