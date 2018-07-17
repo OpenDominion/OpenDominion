@@ -44,6 +44,7 @@ class RoundController extends AbstractController
 
         $this->validate($request, [
             'dominion_name' => 'required',
+            'ruler_name' => 'required',
             'race' => 'required|integer',
             'realm' => 'in:random',
         ]);
@@ -53,6 +54,7 @@ class RoundController extends AbstractController
             $round,
             Race::find($request->get('race')),
             $request->get('realm'),
+            $request->get('ruler_name'),
             $request->get('dominion_name')
         );
 
