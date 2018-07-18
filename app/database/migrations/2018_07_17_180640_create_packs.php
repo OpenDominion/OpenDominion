@@ -18,6 +18,7 @@ class CreatePacks extends Migration
             $table->unsignedInteger('round_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('realm_id')->nullable();
+            $table->string('name');
             $table->string('password');
             $table->unsignedInteger('size');
             $table->timestamps();
@@ -28,10 +29,12 @@ class CreatePacks extends Migration
 
             // One pack per user per round
             $table->unique(['round_id', 'user_id']);
-            // Password should be unique per round
-            $table->unique(['password', 'round_id']);
+            // Password should be unique per round and group
+            $table->unique(['password', 'round_id', 'name']);
             // One pack per user per round
             $table->unique(['user_id', 'round_id']);
+            // Pack name is unique to the round
+            $table->unique(['name', 'round_id']);
         });
     }
 

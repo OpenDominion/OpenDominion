@@ -208,7 +208,7 @@
                     <h3 class="box-title">Pack</h3>
                 </div>
                 <div class="box-body">
-                    <p>You are in a pack with (including yourself): <p/>
+                    <p>You are in pack {{$selectedDominion->pack->name}} with (including yourself): <p/>
                     @php ($i = 0)
                     @foreach ($selectedDominion->pack->dominions as $dominion)
                         <p>RULER_NAME of {{ $dominion->name }} ({{$dominion->user->display_name}})</p>

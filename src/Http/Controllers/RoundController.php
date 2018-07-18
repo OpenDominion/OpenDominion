@@ -12,6 +12,7 @@ use OpenDominion\Models\Round;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\PackService;
 use RuntimeException;
 
 class RoundController extends AbstractController
@@ -59,7 +60,7 @@ class RoundController extends AbstractController
         $pack = null;
         if($realmType === 'pack')
         {
-            $pack = $this->packService->validatePack($request, $round, $race);
+            $pack = $this->packService->getOrCreatePack($request, $round, $race);
         }
 
         $dominion = $this->dominionFactory->create(

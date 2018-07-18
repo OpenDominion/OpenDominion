@@ -45,6 +45,10 @@
 
                 <!-- Pack -->
                 <div class="form-group">
+                    <label for="pack_name" class="col-sm-3 control-label">Pack name</label>
+                    <div class="col-sm-9">
+                        <input type="input" name="pack_name" id="pack_name" class="form-control" placeholder="Pack name">
+                    </div>
                     <label for="pack_password" class="col-sm-3 control-label">Pack password</label>
                     <div class="col-sm-9">
                         <input type="password" name="pack_password" id="pack_password" class="form-control" placeholder="Pack password">

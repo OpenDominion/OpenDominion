@@ -2,6 +2,12 @@
 
 namespace OpenDominion\Services;
 
+use Auth;
+use Illuminate\Http\Request;
+use OpenDominion\Models\Pack;
+use OpenDominion\Models\Race;
+use OpenDominion\Models\Round;
+
 class PackService
 {
     public function getOrCreatePack(Request $request, Round $round, Race $race): Pack
@@ -12,9 +18,9 @@ class PackService
         }
 
         $password = $request->get('pack_password');
+        $name = $request->get('pack_name');
 
-        if($request->has('create_pack'))
-        {
+        if($request->has('create_pack')) {
             $packSize = $request->get('pack_size');
 
             if($packSize < 2 || $packSize > 6)
@@ -25,16 +31,24 @@ class PackService
             $pack = Pack::create([
                 'round_id' => $round->id,
                 'user_id' => Auth::user()->id,
+                'name' => $name,
                 'password' => $password,
                 'size' => $packSize
             ]);
         }
         else {
-            $pack = Pack::where([
+            $packs = Pack::where([
+                'name' => $name,
                 'password' => $password,
                 'round_id' => $round->id
-            ])->withCount('dominions')->findOrFail();
+            ])->withCount('dominions')->get();
     
+            if($packs->isEmpty()) {
+                throw new RuntimeException("No pack with that password found in round {$round->number}");
+            }
+
+            $pack = $packs->first();
+
             // TODO: race condition here
             // TODO: Pack size should be a setting?
             if($pack->dominions_count == 6) {
@@ -42,7 +56,7 @@ class PackService
             }
 
             if($pack->realm->alignment !== $race->alignment){
-                throw new RuntimeException("Race has wrong aligment to rest of pack.");
+                throw new RuntimeException("Race has wrong aligment to the rest of pack.");
             }
         }
 
