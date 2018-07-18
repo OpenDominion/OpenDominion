@@ -4,6 +4,7 @@ namespace OpenDominion\Services;
 
 use DB;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -51,11 +52,18 @@ class RealmFinderService
 
         $realmId = $results->first()->id;
 
-        return Realm::find($realmId)->lockForUpdate();
+        return Realm::lockForUpdate()->find($realmId);
     }
 
     public function findRandomRealmForPack(Round $round, Race $race, Pack $pack): ?Realm
     {
-        return $this->findRandomRealm($round, $race, $pack->size, true);
+        $realm = $this->findRandomRealm($round, $race, $pack->size, true);
+
+        if($realm !== null){
+            $pack->update(['realm_id' => $realm->id]);
+            $pack->load('realm');
+        }
+
+        return $realm;
     }
 }

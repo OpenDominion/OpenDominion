@@ -52,10 +52,13 @@ class DominionFactory
         // Try to find a vacant realm
         switch ($realmType) {
             case 'random':
-                $realm = $this->realmFinderService->findRandomRealm($round, $race, false);
+                $realm = $this->realmFinderService->findRandomRealm($round, $race);
                 break;
             case 'pack':
                 $realm = $pack->realm;
+                if ($realm === null) {
+                    $realm = $this->realmFinderService->findRandomRealmForPack($round, $race, $pack);
+                }
                 break;
             default:
                 throw new RuntimeException("Realm type '{$realmType}' not supported");
