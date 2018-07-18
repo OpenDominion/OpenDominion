@@ -19,7 +19,7 @@ class PackService
 
         $password = $request->get('pack_password');
         $name = $request->get('pack_name');
-
+        $pack = null;
         if($request->has('create_pack')) {
             $packSize = $request->get('pack_size');
 
@@ -35,13 +35,17 @@ class PackService
                 'password' => $password,
                 'size' => $packSize
             ]);
+
+            $packId = $pack->id;
+
+            $pack = Pack::lockForUpdate()->find($packId);
         }
         else {
             $packs = Pack::where([
                 'name' => $name,
                 'password' => $password,
                 'round_id' => $round->id
-            ])->withCount('dominions')->get();
+            ])->withCount('dominions')->lockForUpdate()->get();
     
             if($packs->isEmpty()) {
                 throw new RuntimeException("No pack with that password found in round {$round->number}");

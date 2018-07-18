@@ -51,7 +51,7 @@ class RealmFinderService
 
         $realmId = $results->first()->id;
 
-        return Realm::find($realmId);
+        return Realm::find($realmId)->lockForUpdate();
     }
 
     public function findRandomRealmForPack(Round $round, Race $race, Pack $pack): ?Realm

@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
@@ -56,7 +57,9 @@ class RoundController extends AbstractController
 
         $realmType = $request->get('realm');
         $race = Race::find($request->get('race'));
-
+        
+        DB::beginTransaction();
+        
         $pack = null;
         if($realmType === 'pack')
         {
@@ -71,6 +74,8 @@ class RoundController extends AbstractController
             $request->get('dominion_name'),
             $pack
         );
+
+        DB::commit();
 
         if ($round->isActive()) {
             $dominionSelectorService = app(SelectorService::class);
