@@ -47,7 +47,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, Realm::count());
         $this->assertEquals(0, Dominion::count());
 
-        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy');
+        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy', null);
 
         $this->assertEquals(1, Realm::count());
         $this->assertEquals(1, Dominion::count());
