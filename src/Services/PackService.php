@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
+use RuntimeException;
 
 class PackService
 {
-    public function getOrCreatePack(Request $request, Round $round, Race $race): Pack
+    public function getOrCreatePack(Request $request, Round $round, Race $race): ?Pack
     {
         // TODO: Handle validation errors gracefully...
-        if(!$request->filled('pack_password')) {
+        if(!$request->filled('pack_password') || !$request->filled('pack_name')) {
             return null;
         }
 
@@ -38,7 +39,7 @@ class PackService
 
             $packId = $pack->id;
 
-            $pack = Pack::lockForUpdate()->find($packId);
+            $pack = Pack::lockForUpdate()->findOrFail($packId);
         }
         else {
             $packs = Pack::where([
@@ -46,7 +47,7 @@ class PackService
                 'password' => $password,
                 'round_id' => $round->id
             ])->withCount('dominions')->lockForUpdate()->get();
-    
+
             if($packs->isEmpty()) {
                 throw new RuntimeException("No pack with that password found in round {$round->number}");
             }
@@ -55,7 +56,7 @@ class PackService
 
             // TODO: race condition here
             // TODO: Pack size should be a setting?
-            if($pack->dominions_count == 6) {
+            if($pack->dominions_count >= $pack->size) {
                 throw new RuntimeException("Pack is already full");
             }
 
