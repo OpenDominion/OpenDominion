@@ -14,7 +14,7 @@
 
                 <!-- Ruler Name -->
                 <div class="form-group">
-                    <label for="ruler_name" class="col-sm-3 control-label">Dominion Name</label>
+                    <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="Ruler Name" required>
                     </div>
