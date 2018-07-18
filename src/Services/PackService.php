@@ -26,7 +26,7 @@ class PackService
 
             if($packSize < 2 || $packSize > 6)
             {
-                throw new RuntimeException("Pack size must be between 2 and 6.");
+                throw new RuntimeException('Pack size must be between 2 and 6.');
             }
 
             $pack = Pack::create([
@@ -49,7 +49,7 @@ class PackService
             ])->withCount('dominions')->lockForUpdate()->get();
 
             if($packs->isEmpty()) {
-                throw new RuntimeException("No pack with that password found in round {$round->number}");
+                throw new RuntimeException('No pack with that password found in round {$round->number}');
             }
 
             $pack = $packs->first();
@@ -57,11 +57,11 @@ class PackService
             // TODO: race condition here
             // TODO: Pack size should be a setting?
             if($pack->dominions_count >= $pack->size) {
-                throw new RuntimeException("Pack is already full");
+                throw new RuntimeException('Pack is already full');
             }
 
             if($pack->realm->alignment !== $race->alignment){
-                throw new RuntimeException("Race has wrong aligment to the rest of pack.");
+                throw new RuntimeException('Race has wrong aligment to the rest of pack.');
             }
         }
 

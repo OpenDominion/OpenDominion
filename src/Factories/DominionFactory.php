@@ -140,7 +140,7 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
-        
+
         if($pack !== null) {
             $pack->realm()->update(['reserved_slots' => $pack->realm->reserved_slots - 1]);
         }

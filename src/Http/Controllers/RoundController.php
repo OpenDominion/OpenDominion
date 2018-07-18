@@ -57,9 +57,9 @@ class RoundController extends AbstractController
 
         $realmType = $request->get('realm');
         $race = Race::find($request->get('race'));
-        
+
         DB::beginTransaction();
-        
+
         $pack = null;
         if($realmType === 'pack')
         {

@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
-use DB;
 use CoreDataSeeder;
+use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\Request;
 use OpenDominion\Models\Race;
@@ -25,7 +25,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
 
     /** @var Race */
     protected $evilRace;
-    
+
     /** @var Realm */
     protected $goodRealm;
 
@@ -47,7 +47,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->goodRealm = $this->createRealm($this->round, $this->goodRace->alignment);
         $this->request = new Request();
         $this->createAndImpersonateUser();
-        
+
         $this->packService = $this->app->make(PackService::class);
     }
 
@@ -55,9 +55,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
-            'pack_name' => 'name', 
-            'create_pack' => 'true', 
+            'pack_password' => 'password',
+            'pack_name' => 'name',
+            'create_pack' => 'true',
             'pack_size' => 5
             ]);
 
@@ -72,16 +72,15 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
-            'pack_name' => 'name', 
-            'create_pack' => 'true', 
+            'pack_password' => 'password',
+            'pack_name' => 'name',
+            'create_pack' => 'true',
             'pack_size' => 1
             ]);
 
         $thrown = false;
         // Act
-        
-        try 
+        try
         {
             $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         }
@@ -97,16 +96,16 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
-            'pack_name' => 'name', 
-            'create_pack' => 'true', 
+            'pack_password' => 'password',
+            'pack_name' => 'name',
+            'create_pack' => 'true',
             'pack_size' => 7
             ]);
 
         $thrown = false;
 
         // Act
-        try 
+        try
         {
             $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         }
@@ -123,9 +122,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
-            'pack_name' => 'name', 
-            'create_pack' => 'true', 
+            'pack_password' => 'password',
+            'pack_name' => 'name',
+            'create_pack' => 'true',
             'pack_size' => 5
             ]);
 
@@ -134,7 +133,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $existingPack->load('realm');
 
         $this->request->replace([
-            'pack_password' => 'password', 
+            'pack_password' => 'password',
             'pack_name' => 'name'
             ]);
 
@@ -149,9 +148,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
-            'pack_name' => 'name', 
-            'create_pack' => 'true', 
+            'pack_password' => 'password',
+            'pack_name' => 'name',
+            'create_pack' => 'true',
             'pack_size' => 5
             ]);
 
@@ -159,14 +158,14 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $existingPack->update(['size' => 0]);
 
         $this->request->replace([
-            'pack_password' => 'password', 
+            'pack_password' => 'password',
             'pack_name' => 'name'
             ]);
 
         $thrown = false;
 
         // Act
-        try 
+        try
         {
             $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         }
@@ -183,9 +182,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
-            'pack_name' => 'name', 
-            'create_pack' => 'true', 
+            'pack_password' => 'password',
+            'pack_name' => 'name',
+            'create_pack' => 'true',
             'pack_size' => 5
             ]);
 
@@ -194,14 +193,14 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $existingPack->load('realm');
 
         $this->request->replace([
-            'pack_password' => 'password', 
+            'pack_password' => 'password',
             'pack_name' => 'name'
             ]);
 
         $thrown = false;
 
         // Act
-        try 
+        try
         {
             $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->evilRace);
         }
@@ -218,14 +217,14 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $this->request->replace([
-            'pack_password' => 'password', 
+            'pack_password' => 'password',
             'pack_name' => 'name'
             ]);
 
         $thrown = false;
 
         // Act
-        try 
+        try
         {
             $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         }

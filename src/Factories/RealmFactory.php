@@ -38,7 +38,7 @@ class RealmFactory
             'tokenLength' => 0,
             'delimiter' => ' '
         ]));
-        
+
         $hasPack = $pack !== null ? true : false;
         $reservedSlots = $pack->size ?? 0;
         $realm = Realm::create([
@@ -49,7 +49,7 @@ class RealmFactory
             'has_pack' => $hasPack,
             'reserved_slots' => $reservedSlots,
         ]);
-        
+
         if($pack !== null){
             $pack->update(['realm_id' => $realm->id]);
             $pack->load('realm');

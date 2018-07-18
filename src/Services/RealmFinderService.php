@@ -33,7 +33,7 @@ class RealmFinderService
         })
         ->where('realms.round_id', $round->id)
         ->where('realms.alignment', $race->alignment);
-        
+
         if($forPack) {
             $query = $query->where('realms.has_pack', false);
         }
@@ -58,5 +58,4 @@ class RealmFinderService
     {
         return $this->findRandomRealm($round, $race, $pack->size, true);
     }
-
 }
