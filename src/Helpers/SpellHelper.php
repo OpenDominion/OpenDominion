@@ -129,50 +129,37 @@ class SpellHelper
     {
         return collect([
             [
-                'name' => 'Miner\'s Sight',
-                'description' => 'Gives +20% ore production (not cumulative with Mining Strength).',
-                'key' => 'miners_sight',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Dwarf']),
-            ]
-        ]);
-    }
-
-    public function getOffensiveSpells(): Collection
-    {
-        $raceName = app(SelectorService::class)->getUserSelectedDominion()->race->name;
-
-        $racialSpell = $this->getRacialOffensiveSpells()->filter(function ($spell) use ($raceName) {
-            return $spell['races']->contains($raceName);
-        })->first();
-        
-        return $this->getInfoOpSpells()
-            ->merge($this->getBlackOpSpells())
-            ->merge($this->getWarSpells())
-            ->push($racialSpell);
-    }
-
-    public function getRacialOffensiveSpells(): Collection
-    {
-        return collect([
-            [
                 'name' => 'Crusade',
-                'description' => 'Gives 5% attack strength bonus, and allows you to kill Undead',
+                'description' => '+5% offensive power, allows you to kill Undead',
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Human', 'Nomad']),
             ],
             [
+                'name' => 'Miner\'s Sight',
+                'description' => '+20% ore production (not cumulative with Mining Strength)',
+                'key' => 'miners_sight',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Dwarf']),
+            ],
+            [
                 'name' => 'Killing Rage',
-                'description' => 'Gives +10% offensive power..',
+                'description' => '+10% offensive power',
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Goblin']),
             ]
         ]);
+    }
+
+    public function getOffensiveSpells(): Collection
+    {
+        return $this->getInfoOpSpells()
+            ->merge($this->getBlackOpSpells())
+            ->merge($this->getWarSpells());
     }
 
     public function getInfoOpSpells(): Collection

@@ -85,6 +85,8 @@ class MilitaryCalculator
         // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
         // Spell: Nightfall (+5%)
+        // Spell: Killing rage (+10)
+        // Spell: Crusade (+5)
         // todo
 
         // Prestige
