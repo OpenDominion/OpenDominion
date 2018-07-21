@@ -124,7 +124,7 @@ class SpellHelper
             $racialSpell
         ]);
     }
-    
+
     public function getRacialSelfSpells(): Collection
     {
         return collect([
