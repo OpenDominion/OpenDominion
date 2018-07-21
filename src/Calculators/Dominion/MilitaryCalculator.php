@@ -82,12 +82,16 @@ class MilitaryCalculator
         // Improvement: Forges
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
+        // todo
         // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
         // Spell: Nightfall (+5%)
-        // Spell: Killing rage (+10)
-        // Spell: Crusade (+5)
-        // todo
+        $spellCrusade = 5;
+        $spellKillingRage = 10;
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
+            'crusade' => $spellCrusade,
+            'killing_rage' => $spellKillingRage,
+        ]);
 
         // Prestige
         $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);

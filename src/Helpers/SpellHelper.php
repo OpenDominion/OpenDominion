@@ -147,7 +147,7 @@ class SpellHelper
             [
                 'name' => 'Killing Rage',
                 'description' => '+10% offensive power',
-                'key' => 'miners_sight',
+                'key' => 'killing_rage',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Goblin']),
