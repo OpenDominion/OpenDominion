@@ -3,6 +3,7 @@
 namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class SpellHelper
 {
@@ -56,6 +57,12 @@ class SpellHelper
 
     public function getSelfSpells(): Collection
     {
+        $raceName = app(SelectorService::class)->getUserSelectedDominion()->race->name;
+
+        $racialSpell = $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
+
         return collect([
             [
                 'name' => 'Gaia\'s Watch',
@@ -114,15 +121,58 @@ class SpellHelper
 //                'duration' => 10,
 //                'cooldown' => 22, // todo
 //            ],
-            // todo: racial
+            $racialSpell
+        ]);
+    }
+    
+    public function getRacialSelfSpells(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Miner\'s Sight',
+                'description' => 'Gives +20% ore production (not cumulative with Mining Strength).',
+                'key' => 'miners_sight',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Dwarf']),
+            ]
         ]);
     }
 
     public function getOffensiveSpells(): Collection
     {
+        $raceName = app(SelectorService::class)->getUserSelectedDominion()->race->name;
+
+        $racialSpell = $this->getRacialOffensiveSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
+        
         return $this->getInfoOpSpells()
             ->merge($this->getBlackOpSpells())
-            ->merge($this->getWarSpells());
+            ->merge($this->getWarSpells())
+            ->push($racialSpell);
+    }
+
+    public function getRacialOffensiveSpells(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Crusade',
+                'description' => 'Gives 5% attack strength bonus, and allows you to kill Undead',
+                'key' => 'crusade',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Human', 'Nomad']),
+            ],
+            [
+                'name' => 'Killing Rage',
+                'description' => 'Gives +10% offensive power..',
+                'key' => 'miners_sight',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Goblin']),
+            ]
+        ]);
     }
 
     public function getInfoOpSpells(): Collection
