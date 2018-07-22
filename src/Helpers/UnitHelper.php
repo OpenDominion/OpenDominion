@@ -47,6 +47,8 @@ class UnitHelper
         $perkTypeStrings = [
             'fewer_casualties' => '%s%% fewer casualties.',
             'faster_return' => 'Returns %s hours faster from battle.',
+            'ore_production' => 'Each unit produces %s units of ore per hour.',
+            'reduce_combat_losses' => 'Reduces combat losses.',
         ];
 
         foreach ($race->units as $unit) {
