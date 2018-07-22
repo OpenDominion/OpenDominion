@@ -26,7 +26,7 @@
                     <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}">
-                        <p class="help-block">This is your personal alias in the round which will be shown to your realmies. Defaults to your user display name if omitted.</p>
+                        <p class="help-block">This is your personal alias in the round which will be shown to your realmies. Defaults to your display name '{{ Auth::user()->display_name }}' if omitted.</p>
                     </div>
                 </div>
 
