@@ -47,7 +47,7 @@ class RoundController extends AbstractController
         $this->validate($request, [
             'dominion_name' => 'required|string|max:50',
             'ruler_name' => 'string|max:50',
-            'race' => 'required|exists:races',
+            'race' => 'required|exists:races,id',
             'realm' => 'in:random',
         ]);
 
