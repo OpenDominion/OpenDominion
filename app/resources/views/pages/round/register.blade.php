@@ -16,7 +16,7 @@
                 <div class="form-group">
                     <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
-                        <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}" required>
+                        <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}" required autofocus>
                         <p class="help-block">This is your alias in the round which will be shown to your realmies. Defaults to your user display name if omitted.</p>
                     </div>
                 </div>
