@@ -485,15 +485,12 @@ class ProductionCalculator
 
         // Values
         $orePerOreMine = 60;
-        $orePerDwarfMiner = 0.5;
 
         // Building: Ore Mine
         $ore += ($dominion->building_ore_mine * $orePerOreMine);
 
-        // Dwarf Unit: Miner
-        if ($dominion->race->name === 'Dwarf') {
-            $ore += floor($dominion->military_unit2 * $orePerDwarfMiner);
-        }
+        // Unit Perk Production Bonus (Dwarf Unit: Miner)
+        $ore += $dominion->getUnitPerkProductionBonus('ore_production');
 
         return $ore;
     }
