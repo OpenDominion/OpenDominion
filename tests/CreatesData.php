@@ -109,6 +109,7 @@ trait CreatesData
             $round,
             ($race ?: Race::firstOrFail()),
             'random',
+            str_random(),
             str_random()
         );
 
