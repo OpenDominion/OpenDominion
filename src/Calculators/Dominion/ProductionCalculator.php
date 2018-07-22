@@ -490,7 +490,9 @@ class ProductionCalculator
         $ore += ($dominion->building_ore_mine * $orePerOreMine);
 
         // Dwarf Unit: Miner
-        // todo
+        if ($dominion->race->name === 'Dwarf') {
+            $ore += floor($dominion->military_unit2 / 2);
+        }
 
         return $ore;
     }
