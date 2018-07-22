@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="row">
                                     @foreach ($races->filter(function ($race) { return $race->alignment === 'good'; }) as $race)
-                                        <div class="col-xs-6 col-md-4">
+                                        <div class="col-xs-6">
                                             <label class="btn btn-block">
                                                 <p>
                                                     <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off">
@@ -59,15 +59,22 @@
                                 <div class="text-center">
                                     <strong>Evil Aligned Races</strong>
                                 </div>
-                                Evil races
+                                <div class="row">
+                                    @foreach ($races->filter(function ($race) { return $race->alignment === 'evil'; }) as $race)
+                                        <div class="col-xs-6">
+                                            <label class="btn btn-block">
+                                                <p>
+                                                    <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off">
+                                                    <strong>{{ $race->name }}</strong>
+                                                </p>
+                                                {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
 
                         </div>
-{{--                        <select name="race" class="form-control" required>
-                            @foreach ($races as $race)
-                                <option value="{{ $race->id }}">{{ $race->name }}</option>
-                            @endforeach
-                        </select>--}}
                     </div>
                 </div>
 

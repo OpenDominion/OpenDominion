@@ -10,13 +10,13 @@ class RaceHelper
     {
         return [
 
-                'human' => '<p>foo</p><p>bar</p>',
+                'human' => '<p>description here</p><p class="text-green">Increased food production</p>',
 
-                'nomad' => '',
+                'nomad' => '<p>description here</p><p class="text-green">Increased mana production</p>',
 
-                'dwarf' => '',
+                'dwarf' => '<p>description here</p><p class="text-green">Increased ore production<br>Increased max population</p>',
 
-                'goblin' => '',
+                'goblin' => '<p>description here</p><p class="text-green">Increased gem production<br>Increased max population</p>',
 
             ][strtolower($race->name)] ?: 'todo';
     }
