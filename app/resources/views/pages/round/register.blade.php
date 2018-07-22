@@ -16,7 +16,8 @@
                 <div class="form-group">
                     <label for="ruler_name" class="col-sm-3 control-label">Ruler Name</label>
                     <div class="col-sm-9">
-                        <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="Ruler Name" required>
+                        <input type="text" name="ruler_name" id="ruler_name" class="form-control" placeholder="{{ Auth::user()->display_name }}" required>
+                        <p class="help-block">This is your alias in the round which will be shown to your realmies. Defaults to your user display name if omitted.</p>
                     </div>
                 </div>
 
@@ -25,6 +26,7 @@
                     <label for="dominion_name" class="col-sm-3 control-label">Dominion Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="dominion_name" id="dominion_name" class="form-control" placeholder="Dominion Name" required>
+                        <p class="help-block">Your dominion name is shown when viewing and interacting with other players.</p>
                     </div>
                 </div>
 
