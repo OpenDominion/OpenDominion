@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -33,6 +34,7 @@ class RoundController extends AbstractController
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
         return view('pages.round.register', [
+            'raceHelper' => app(RaceHelper::class),
             'round' => $round,
             'races' => Race::all(),
         ]);

@@ -30,24 +30,44 @@
                     </div>
                 </div>
 
-                <!-- Dominion Name -->
-                <div class="form-group">
-                    <label for="dominion_name" class="col-sm-3 control-label">Dominion Name</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="dominion_name" id="dominion_name" class="form-control" placeholder="Dominion Name" required>
-                        <p class="help-block">Your dominion name is shown when viewing and interacting with other players.</p>
-                    </div>
-                </div>
-
                 <!-- Race -->
                 <div class="form-group">
                     <label for="race" class="col-sm-3 control-label">Race</label>
                     <div class="col-sm-9">
-                        <select name="race" class="form-control" required>
+                        <div class="row">
+
+                            <div class="col-xs-6">
+                                <div class="text-center">
+                                    <strong>Good Aligned Races</strong>
+                                </div>
+                                <div class="row">
+                                    @foreach ($races->filter(function ($race) { return $race->alignment === 'good'; }) as $race)
+                                        <div class="col-xs-6 col-md-4">
+                                            <label class="btn btn-block">
+                                                <p>
+                                                    <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off">
+                                                    <strong>{{ $race->name }}</strong>
+                                                </p>
+                                                {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <div class="text-center">
+                                    <strong>Evil Aligned Races</strong>
+                                </div>
+                                Evil races
+                            </div>
+
+                        </div>
+{{--                        <select name="race" class="form-control" required>
                             @foreach ($races as $race)
                                 <option value="{{ $race->id }}">{{ $race->name }}</option>
                             @endforeach
-                        </select>
+                        </select>--}}
                     </div>
                 </div>
 
