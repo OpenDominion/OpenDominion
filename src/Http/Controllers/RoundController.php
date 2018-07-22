@@ -43,9 +43,9 @@ class RoundController extends AbstractController
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
         $this->validate($request, [
-            'dominion_name' => 'required',
-            'ruler_name' => 'required',
-            'race' => 'required|integer',
+            'dominion_name' => 'required|string|max:50',
+            'ruler_name' => 'string|max:50',
+            'race' => 'required|exists:races',
             'realm' => 'in:random',
         ]);
 
@@ -54,7 +54,7 @@ class RoundController extends AbstractController
             $round,
             Race::find($request->get('race')),
             $request->get('realm'),
-            $request->get('ruler_name'),
+            $request->get('ruler_name', Auth::user()->display_name),
             $request->get('dominion_name')
         );
 
