@@ -90,6 +90,7 @@ INFO
             $round,
             Race::where('name', 'Human')->firstOrFail(),
             'random',
+            'Developer',
             'Dev Dominion'
         );
     }
