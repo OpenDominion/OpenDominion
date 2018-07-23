@@ -12,14 +12,14 @@ class CoreDataSeeder extends Seeder
      *
      * @throws Throwable
      */
-    public function run()
+    public function run(): void
     {
         DB::transaction(function () {
             $this->createRoundLeagues();
         });
     }
 
-    protected function createRoundLeagues()
+    protected function createRoundLeagues(): void
     {
         $this->command->info('Creating round leagues');
 

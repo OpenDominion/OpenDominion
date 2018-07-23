@@ -31,7 +31,7 @@ class DevelopmentSeeder extends Seeder
      *
      * @throws Throwable
      */
-    public function run()
+    public function run(): void
     {
         DB::transaction(function () {
             $user = $this->createUser();
