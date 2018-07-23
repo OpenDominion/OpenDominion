@@ -37,7 +37,7 @@ class MilitaryCalculator
     public function getOffensivePower(Dominion $dominion): float
     {
         $offensivePower = $this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion);
-        return $offensivePower * $this->getMoraleModifier($dominion);
+        return $offensivePower * $this->getMoralMultiplier($dominion);
     }
 
     /**
@@ -129,7 +129,7 @@ class MilitaryCalculator
     public function getDefensivePower(Dominion $dominion): float
     {
         $defensivePower = $this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion);
-        return $defensivePower * $this->getMoraleModifier($dominion);
+        return $defensivePower * $this->getMoralMultiplier($dominion);
     }
 
     /**
@@ -200,6 +200,20 @@ class MilitaryCalculator
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
 
         return (1 + $multiplier);
+    }
+
+    /**
+     * Returns the Dominion's morale modifier.
+     * Scales from 0% to -10%.
+     * If dominion has 50% morale, the morale modifier would be -5%
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getMoralMultiplier(Dominion $dominion): float
+    {
+        $morale = $dominion->morale;
+
+        return 1 - (100 - $morale / 100);
     }
 
     /**
@@ -338,19 +352,5 @@ class MilitaryCalculator
         // todo: check if this needs to be a float
 
         return (float)$regen;
-    }
-
-    /**
-     * Returns the Dominion's morale modifier.
-     * Scales from 0% to -10%.
-     * If dominion has 50% morale, the morale modifier would be -5%
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getMoraleModifier(Dominion $dominion): float
-    {
-        $morale = $dominion->morale;
-
-        return 1 - (100 - $morale / 100);
     }
 }
