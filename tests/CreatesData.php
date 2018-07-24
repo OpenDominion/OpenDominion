@@ -70,6 +70,8 @@ trait CreatesData
             'name' => 'Testing Round',
             'start_date' => new Carbon($startDate . ' midnight'),
             'end_date' => new Carbon($endDate . ' midnight'),
+            'realm_size' => 12,
+            'pack_size' => 6
         ]);
 
         return $round;

@@ -16,7 +16,9 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--now : Start the round right now (dev & testing only)}
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
                              {--days= : Start the round in +DAYS days midnight, allowing for more finetuning}
-                             {--league=standard : Round league to use}';
+                             {--league=standard : Round league to use}
+                             {--realmSize=12}
+                             {--packSize=6}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
@@ -45,6 +47,8 @@ class RoundOpenCommand extends Command implements CommandInterface
         $open = $this->option('open');
         $days = $this->option('days');
         $league = $this->option('league');
+        $realmSize = $this->option('realmSize');
+        $packSize = $this->option('packSize');
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');
@@ -52,6 +56,18 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         if (($now && $open) || ($now && $days) || ($open && $days)) {
             throw new RuntimeException('Options --now, --open and --days are mutually exclusive');
+        }
+
+        if($realmSize <= 0) {
+            throw new RuntimeException('Option --realmSize must be greater than 0.');
+        }
+
+        if($packSize <= 0) {
+            throw new RuntimeException('Option --packSize must be greater than 0.');
+        }
+
+        if($realmSize < $packSize) {
+            throw new RuntimeException('Option --realmSize must be greater than or equal to option --packSize.');
         }
 
         if ($now) {
@@ -73,7 +89,7 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         $this->info("Starting a new round in {$roundLeague->key} league");
 
-        $round = $this->roundFactory->create($roundLeague, $startDate);
+        $round = $this->roundFactory->create($roundLeague, $startDate, $realmSize, $packSize);
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}");
     }

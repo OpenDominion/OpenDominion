@@ -19,7 +19,7 @@ class RoundFactory
      *
      * @return Round
      */
-    public function create(RoundLeague $league, Carbon $startDate): Round
+    public function create(RoundLeague $league, Carbon $startDate, int $realmSize, int $packSize): Round
     {
         $number = ($this->getLastRoundNumber($league) + 1);
 
@@ -29,6 +29,8 @@ class RoundFactory
             'name' => "Beta Round {$number}", // todo
             'start_date' => $startDate,
             'end_date' => (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS),
+            'realm_size' => $realmSize,
+            'pack_size' => $packSize
         ]);
     }
 
