@@ -3,6 +3,7 @@
 namespace OpenDominion\Factories;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
@@ -43,7 +44,7 @@ class DominionFactory
      *
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $rulerName, string $dominionName): Dominion
+    public function create(User $user, Round $round, Race $race, string $realmType, string $rulerName, string $dominionName, ?Pack $pack): Dominion
     {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
@@ -53,14 +54,19 @@ class DominionFactory
             case 'random':
                 $realm = $this->realmFinderService->findRandomRealm($round, $race);
                 break;
-
+            case 'pack':
+                $realm = $pack->realm;
+                if ($realm === null) {
+                    $realm = $this->realmFinderService->findRandomRealmForPack($round, $race, $pack);
+                }
+                break;
             default:
                 throw new RuntimeException("Realm type '{$realmType}' not supported");
         }
 
         // No vacant realm. Create a new one instead
         if ($realm === null) {
-            $realm = $this->realmFactory->create($round, $race->alignment);
+            $realm = $this->realmFactory->create($round, $race->alignment, $pack);
         }
 
         // todo: get starting values from config
@@ -71,6 +77,7 @@ class DominionFactory
             'round_id' => $round->id,
             'realm_id' => $realm->id,
             'race_id' => $race->id,
+            'pack_id' => $pack->id ?? null,
 
             'ruler_name' => $rulerName,
             'name' => $dominionName,
@@ -137,6 +144,10 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
+
+        if($pack !== null) {
+            $pack->realm()->update(['reserved_slots' => $pack->realm->reserved_slots - 1]);
+        }
 
         return $dominion;
     }
