@@ -27,7 +27,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Ruler:</td>
-                                        <td>{{ Auth::user()->display_name }}</td>
+                                        <td>{{ $selectedDominion->ruler_name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Race:</td>

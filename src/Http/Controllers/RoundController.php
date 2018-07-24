@@ -6,6 +6,7 @@ use Auth;
 use DB;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -40,6 +41,7 @@ class RoundController extends AbstractController
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
         return view('pages.round.register', [
+            'raceHelper' => app(RaceHelper::class),
             'round' => $round,
             'races' => Race::all(),
         ]);
@@ -50,8 +52,9 @@ class RoundController extends AbstractController
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
         $this->validate($request, [
-            'dominion_name' => 'required',
-            'race' => 'required|integer',
+            'dominion_name' => 'required|string|max:50',
+            'ruler_name' => 'nullable|string|max:50',
+            'race' => 'required|exists:races,id',
             'realm' => 'in:random,pack',
         ]);
 
@@ -71,6 +74,7 @@ class RoundController extends AbstractController
             $round,
             $race,
             $realmType,
+            ($request->get('ruler_name') ?: Auth::user()->display_name),
             $request->get('dominion_name'),
             $pack
         );

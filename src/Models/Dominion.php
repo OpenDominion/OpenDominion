@@ -182,4 +182,27 @@ class Dominion extends AbstractModel
     {
         return (now() >= $this->round->end_date);
     }
+
+    /**
+     * Returns the unit production bonus for a specific resource type (across all eligible units) for this dominion.
+     *
+     * @param string $resourceType
+     * @return float
+     */
+    public function getUnitPerkProductionBonus(string $resourceType): float
+    {
+        $bonus = 0;
+
+        foreach ($this->race->units as $unit) {
+            if ($unit->perkType === null) {
+                continue;
+            }
+
+            if ($unit->perkType->key === $resourceType) {
+                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$unit->unit_perk_type_values);
+            }
+        }
+
+        return $bonus;
+    }
 }

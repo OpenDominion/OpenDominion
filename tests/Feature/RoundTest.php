@@ -77,6 +77,7 @@ class RoundTest extends AbstractBrowserKitTestCase
             ->seePageIs('round/1/register')
             ->see('Register to round 1 (Standard league)')
             ->type('dominionname', 'dominion_name')
+            ->type('rulername', 'ruler_name')
             ->select(1, 'race')
             ->select('random', 'realm')
             ->press('Register')
