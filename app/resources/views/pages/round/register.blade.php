@@ -106,11 +106,9 @@
                     <label for="pack_size" class="col-sm-3 control-label">Pack size</label>
                     <div class="col-sm-9">
                         <select name="pack_size" class="form-control">
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
+                        @for ($i = 2; $i < $round->pack_size; $i++)
+                            <option value="{{$i}}">{{$i}}</option>
+                        @endfor
                         </select>
                     </div>
                 </div>

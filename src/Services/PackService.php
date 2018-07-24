@@ -24,7 +24,7 @@ class PackService
         if($request->has('create_pack')) {
             $packSize = $request->get('pack_size');
 
-            if($packSize < 2 || $packSize > 6)
+            if($packSize < 2 || $packSize > $round->pack_size)
             {
                 throw new RuntimeException('Pack size must be between 2 and 6.');
             }

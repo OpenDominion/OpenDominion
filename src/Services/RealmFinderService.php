@@ -40,7 +40,7 @@ class RealmFinderService
         }
 
         $query = $query->groupBy('realms.id')
-        ->having('dominion_count', '<=', 12 - $slotsNeeded)
+        ->having('dominion_count', '<=', $round->realm_size - $slotsNeeded)
         ->orderBy('dominion_count')
         ->limit(1);
 
