@@ -20,9 +20,13 @@ class MilitaryCalculator
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param SpellCalculator $spellCalculator
      */
-    public function __construct(ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator, SpellCalculator $spellCalculator)
-    {
+    public function __construct(
+        ImprovementCalculator $improvementCalculator,
+        LandCalculator $landCalculator,
+        SpellCalculator $spellCalculator
+    ) {
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->spellCalculator = $spellCalculator;
@@ -36,8 +40,9 @@ class MilitaryCalculator
      */
     public function getOffensivePower(Dominion $dominion): float
     {
-        $offensivePower = $this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion);
-        return $offensivePower * $this->getMoralMultiplier($dominion);
+        $op = ($this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion));
+
+        return ($op * $this->getMoraleMultiplier($dominion));
     }
 
     /**
@@ -128,8 +133,9 @@ class MilitaryCalculator
      */
     public function getDefensivePower(Dominion $dominion): float
     {
-        $defensivePower = $this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion);
-        return $defensivePower * $this->getMoralMultiplier($dominion);
+        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
+
+        return ($dp * $this->getMoraleMultiplier($dominion));
     }
 
     /**
@@ -200,20 +206,6 @@ class MilitaryCalculator
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
 
         return (1 + $multiplier);
-    }
-
-    /**
-     * Returns the Dominion's morale modifier.
-     * Scales from 0% to -10%.
-     * If dominion has 50% morale, the morale modifier would be -5%
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getMoralMultiplier(Dominion $dominion): float
-    {
-        $morale = $dominion->morale;
-
-        return 1 - (100 - $morale / 100);
     }
 
     /**
@@ -352,5 +344,18 @@ class MilitaryCalculator
         // todo: check if this needs to be a float
 
         return (float)$regen;
+    }
+
+    /**
+     * Returns the Dominion's morale modifier for OP/DP.
+     *
+     * Net OP/DP gets lowered linearly by up to -10% at 0% morale.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    protected function getMoraleMultiplier(Dominion $dominion): float
+    {
+        return clamp((0.9 + ($dominion->morale / 1000)), 0.9, 1.0);
     }
 }
