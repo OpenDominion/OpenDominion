@@ -162,7 +162,7 @@ class SpellActionService
             }
 
             $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= 5; // todo: 2% for info ops, 5% for rest
+            $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
 
         });
@@ -279,6 +279,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
+                    'wizardStrengthCost' => 2,
                     'alert-type' => 'warning',
                 ];
             }
@@ -303,7 +304,7 @@ class SpellActionService
             case 'clear_sight':
                 $infoOp->data = [
 
-                    'ruler_name' => $target->ruler_name,
+                    'ruler_name' => ($target->ruler_name ?: $target->user->display_name),
                     'race_id' => $target->race->id,
                     'land' => $this->landCalculator->getTotalLand($target),
                     'peasants' => $target->peasants,
@@ -359,6 +360,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
+            'wizardStrengthCost' => 2,
             'redirect' => route('dominion.op-center.show', $target),
         ];
     }
