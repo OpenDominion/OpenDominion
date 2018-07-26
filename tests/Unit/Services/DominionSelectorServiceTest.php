@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
-use CoreDataSeeder;
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
@@ -31,7 +30,7 @@ class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $this->user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();

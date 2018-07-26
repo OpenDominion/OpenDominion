@@ -3,7 +3,6 @@
 namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mockery as m;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -32,7 +31,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
