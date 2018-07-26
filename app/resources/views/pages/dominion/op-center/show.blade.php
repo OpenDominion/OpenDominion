@@ -11,7 +11,7 @@
                     $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clear_sight');
                 @endphp
 
-                @slot('title', 'Status Screen')
+                @slot('title', ('Status Screen (' . $dominion->name . ')'))
                 @slot('titleIconClass', 'fa fa-bar-chart')
 
                 @if ($infoOp === null)
