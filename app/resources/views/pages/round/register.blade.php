@@ -141,26 +141,18 @@
             var joinPackOnlyEls = $('.join-pack-only');
 
             $('#realm').change(function (e) {
+                if (this.value === 'join_pack') {
+                    createPackOnlyEls.hide();
+                    joinPackOnlyEls.show();
 
-                switch (this.value) {
-                    case 'random':
-                        createPackOnlyEls.hide();
-                        joinPackOnlyEls.hide();
-                        break;
+                } else if (this.value === 'create_pack') {
+                    joinPackOnlyEls.hide();
+                    createPackOnlyEls.show();
 
-                    case 'join_pack':
-                        createPackOnlyEls.hide();
-                        joinPackOnlyEls.show();
-                        break;
-
-                    case 'create_pack':
-                        joinPackOnlyEls.hide();
-                        createPackOnlyEls.show();
-                        break;
+                } else {
+                    createPackOnlyEls.hide();
+                    joinPackOnlyEls.hide();
                 }
-
-                // console.log([this, this.value]);
-
             });
 
         })(jQuery);
