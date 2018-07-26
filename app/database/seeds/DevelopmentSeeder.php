@@ -91,8 +91,7 @@ INFO
             Race::where('name', 'Human')->firstOrFail(),
             'random',
             'Developer',
-            'Dev Dominion',
-            null
+            'Dev Dominion'
         );
     }
 }

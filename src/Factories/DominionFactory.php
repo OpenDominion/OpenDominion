@@ -41,11 +41,19 @@ class DominionFactory
      * @param string $realmType Currently only 'random'. Future will support packs
      * @param string $rulerName
      * @param string $dominionName
+     * @param null|Pack $pack
      *
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $rulerName, string $dominionName, ?Pack $pack): Dominion
-    {
+    public function create(
+        User $user,
+        Round $round,
+        Race $race,
+        string $realmType,
+        string $rulerName,
+        string $dominionName,
+        ?Pack $pack = null
+    ): Dominion {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
