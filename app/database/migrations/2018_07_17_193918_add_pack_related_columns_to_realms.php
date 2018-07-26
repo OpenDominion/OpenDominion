@@ -27,7 +27,8 @@ class AddPackRelatedColumnsToRealms extends Migration
     public function down()
     {
         Schema::table('realms', function (Blueprint $table) {
-            //
+            $table->dropColumn('reserved_slots');
+            $table->dropColumn('has_pack');
         });
     }
 }

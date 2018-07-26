@@ -15,6 +15,7 @@ class AddPackIdToDominion extends Migration
     {
         Schema::table('dominions', function (Blueprint $table) {
             $table->unsignedInteger('pack_id')->nullable();
+
             $table->foreign('pack_id')->references('id')->on('packs');
         });
     }
@@ -27,7 +28,7 @@ class AddPackIdToDominion extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            //
+            $table->dropColumn('pack_id');
         });
     }
 }
