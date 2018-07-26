@@ -231,6 +231,19 @@ class MilitaryCalculator
     }
 
     /**
+     * Returns the Dominion's morale modifier for OP/DP.
+     *
+     * Net OP/DP gets lowered linearly by up to -10% at 0% morale.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getMoraleMultiplier(Dominion $dominion): float
+    {
+        return clamp((0.9 + ($dominion->morale / 1000)), 0.9, 1.0);
+    }
+
+    /**
      * Returns the Dominion's spy ratio.
      *
      * @param Dominion $dominion
@@ -344,18 +357,5 @@ class MilitaryCalculator
         // todo: check if this needs to be a float
 
         return (float)$regen;
-    }
-
-    /**
-     * Returns the Dominion's morale modifier for OP/DP.
-     *
-     * Net OP/DP gets lowered linearly by up to -10% at 0% morale.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    protected function getMoraleMultiplier(Dominion $dominion): float
-    {
-        return clamp((0.9 + ($dominion->morale / 1000)), 0.9, 1.0);
     }
 }
