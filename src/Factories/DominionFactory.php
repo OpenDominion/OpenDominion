@@ -52,8 +52,8 @@ class DominionFactory
         string $realmType,
         string $rulerName,
         string $dominionName,
-        ?Pack $pack = null
-    ): Dominion {
+        ?Pack $pack = null): Dominion 
+        {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
@@ -62,7 +62,8 @@ class DominionFactory
             case 'random':
                 $realm = $this->realmFinderService->findRandomRealm($round, $race);
                 break;
-            case 'pack':
+            case 'join_pack':
+            case 'create_pack':
                 $realm = $pack->realm;
                 if ($realm === null) {
                     $realm = $this->realmFinderService->findRandomRealmForPack($round, $race, $pack);
