@@ -40,7 +40,7 @@ class UnitsReturningQueueService
             ->where('dominion_id', $dominion->id)
             ->get(['unit_type', 'amount', 'hours']);
 
-        $returningQueue = array_fill_keys($this->unitHelper->getUnitTypes(), array_fill(0, 12, 0));
+        $returningQueue = array_fill_keys($this->unitHelper->getUnitTypes(true), array_fill(0, 12, 0));
 
         foreach ($rows as $row) {
             $returningQueue[$row->unit_type][$row->hours - 1] = (int)$row->amount;
