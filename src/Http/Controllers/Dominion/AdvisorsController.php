@@ -15,6 +15,7 @@ use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 
 class AdvisorsController extends AbstractDominionController
 {
@@ -34,6 +35,7 @@ class AdvisorsController extends AbstractDominionController
     public function getAdvisorsMilitary()
     {
         return view('pages.dominion.advisors.military', [
+            'unitsReturningQueueService' => app(UnitsReturningQueueService::class),
             'trainingQueueService' => app(TrainingQueueService::class),
             'unitHelper' => app(UnitHelper::class),
         ]);

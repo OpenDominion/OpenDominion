@@ -85,18 +85,15 @@
                                     <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
                                     @for ($i = 0; $i < 12; $i++)
                                         <td class="text-center">
-                                            -
-                                            {{--@if ($trainingQueueService->getQueue($selectedDominion)[$unitType][$i] === 0)
+                                            @if ($unitsReturningQueueService->getQueue($selectedDominion)[$unitType][$i] === 0)
                                                 -
                                             @else
-                                                {{ number_format($trainingQueueService->getQueue($selectedDominion)[$unitType][$i]) }}
-                                            @endif--}}
+                                                {{ number_format($unitsReturningQueueService->getQueue($selectedDominion)[$unitType][$i]) }}
+                                            @endif
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        {{--{{ number_format($selectedDominion->{'military_' . $unitType}) }}
-                                        ({{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }})--}}
-                                        0
+                                        {{ number_format($unitsReturningQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}
                                     </td>
                                 </tr>
                             @endforeach
