@@ -290,7 +290,7 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            imps
+            todo: imps
         </div>
 
     </div>
@@ -392,11 +392,11 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            buildings
+            todo: buildings
         </div>
 
         <div class="col-sm-12 col-md-6">
-            land
+            todo: land
         </div>
 
     </div>
