@@ -583,7 +583,62 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            buildings under construction
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                @endphp
+
+                @slot('title', 'Incoming building breakdown')
+                @slot('titleIconClass', 'fa fa-clock-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Survey Dominion' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Land Type</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
+                                <tr>
+                                    <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "constructing.{$buildingType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">
+                                        {{ number_format(array_sum(array_get($infoOp->data, "constructing.{$buildingType}"))) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endcomponent
         </div>
 
     </div>
