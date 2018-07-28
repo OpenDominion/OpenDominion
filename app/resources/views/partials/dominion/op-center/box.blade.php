@@ -3,6 +3,10 @@
         <h3 class="box-title">
             <i class="{{ $titleIconClass }}"></i> {{ $title }}
         </h3>
+
+        @isset ($titleExtra)
+            {!! $titleExtra !!}
+        @endisset
     </div>
 
     <div class="box-body {{ (isset($noPadding) && $noPadding) ? 'no-padding' : null }}">

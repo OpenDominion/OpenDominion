@@ -513,12 +513,83 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            todo: buildings
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                @endphp
+
+                @slot('title', 'Constructed Buildings')
+                @slot('titleIconClass', 'fa fa-home')
+                @slot('titleExtra')
+                    <span class="pull-right">Barren Land: {{ number_format($landCalculator->getTotalBarrenLand($dominion)) }}</span>
+                @endslot
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Survey Dominion' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            <col width="100">
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Building Type</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">% of land</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
+                                @php
+                                    $amount = array_get($infoOp->data, "constructed.{$buildingType}");
+                                @endphp
+                                <tr>
+                                    <td>
+                                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
+                                    </td>
+                                    <td class="text-center">{{ number_format($amount) }}</td>
+                                    <td class="text-center">{{ number_format((($amount / $landCalculator->getTotalLand($dominion)) * 100), 2) }}%</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="survey_dominion">
+                            <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                        </form>
+                    </div>
+                @endslot
+            @endcomponent
         </div>
 
         <div class="col-sm-12 col-md-6">
-            todo: land
+            buildings under construction
         </div>
+
+    </div>
+    <div class="row">
+
+        todo: land
 
     </div>
 @endsection

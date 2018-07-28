@@ -5,14 +5,17 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use LogicException;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -23,6 +26,12 @@ class EspionageActionService
 {
     use DominionGuardsTrait;
 
+    /** @var BuildingHelper */
+    protected $buildingHelper;
+
+    /** @var ConstructionQueueService */
+    protected $constructionQueueService;
+
     /** @var EspionageHelper */
     protected $espionageHelper;
 
@@ -31,6 +40,9 @@ class EspionageActionService
 
     /** @var ImprovementHelper */
     protected $improvementHelper;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -50,9 +62,12 @@ class EspionageActionService
     /**
      * EspionageActionService constructor.
      *
+     * @param BuildingHelper $buildingHelper
+     * @param ConstructionQueueService $constructionQueueService
      * @param EspionageHelper $espionageHelper
      * @param ImprovementCalculator $improvementCalculator
      * @param ImprovementHelper $improvementHelper
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
@@ -60,18 +75,24 @@ class EspionageActionService
      * @param UnitsReturningQueueService $unitsReturningQueueService
      */
     public function __construct(
+        BuildingHelper $buildingHelper,
+        ConstructionQueueService $constructionQueueService,
         EspionageHelper $espionageHelper,
         ImprovementCalculator $improvementCalculator,
         ImprovementHelper $improvementHelper,
+        LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
         RangeCalculator $rangeCalculator,
         TrainingQueueService $trainingQueueService,
         UnitsReturningQueueService $unitsReturningQueueService
     ) {
+        $this->buildingHelper = $buildingHelper;
+        $this->constructionQueueService = $constructionQueueService;
         $this->espionageHelper = $espionageHelper;
         $this->improvementCalculator = $improvementCalculator;
         $this->improvementHelper = $improvementHelper;
+        $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
@@ -267,6 +288,17 @@ class EspionageActionService
                 break;
 
             case 'survey_dominion':
+                $data = [];
+
+                foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
+                    array_set($data, "constructed.{$buildingType}", $target->{'building_' . $buildingType});
+                }
+
+                array_set($data, 'constructing', $this->constructionQueueService->getQueue($target));
+
+                array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($target));
+
+                $infoOp->data = $data;
                 break;
 
             case 'land_spy':
