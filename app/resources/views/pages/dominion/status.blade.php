@@ -127,19 +127,19 @@
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(0)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit1) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 1)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(1)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit2) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 2)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(2)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit3) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 3)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(3)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit4) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 4)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Spies:</td>
