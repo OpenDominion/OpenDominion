@@ -323,10 +323,10 @@ class SpellActionService
 
                     'morale' => $target->morale,
                     'military_draftees' => $target->military_draftees,
-                    'military_unit1' => $target->military_unit1,
-                    'military_unit2' => $target->military_unit2,
-                    'military_unit3' => $target->military_unit3,
-                    'military_unit4' => $target->military_unit4,
+                    'military_unit1' => $this->militaryCalculator->getTotalUnitsForSlot($target, 1),
+                    'military_unit2' => $this->militaryCalculator->getTotalUnitsForSlot($target, 2),
+                    'military_unit3' => $this->militaryCalculator->getTotalUnitsForSlot($target, 3),
+                    'military_unit4' => $this->militaryCalculator->getTotalUnitsForSlot($target, 4),
 
                 ];
                 break;
