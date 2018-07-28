@@ -73,6 +73,7 @@ class ExplorationQueueService
      * Returns the total number of a specific land being explored by a
      * dominion.
      *
+     * @todo rename to getQueueTotalByLandType
      * @param Dominion $dominion
      * @param string $landType
      * @return int

@@ -72,6 +72,7 @@ class LandIncomingQueueService
     /**
      * Returns the total number of a specific land incoming for a dominion.
      *
+     * @todo rename to getQueueTotalByLandType
      * @param Dominion $dominion
      * @param string $landType
      * @return int
