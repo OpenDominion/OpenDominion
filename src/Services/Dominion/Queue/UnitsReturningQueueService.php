@@ -6,16 +6,16 @@ use DB;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 
-class ReturningQueueService
+class UnitsReturningQueueService
 {
     /** @var array */
-    protected $returningQueue;
+    protected $unitsReturningQueue;
 
     /** @var UnitHelper */
     protected $unitHelper;
 
     /**
-     * ReturningQueueService constructor.
+     * UnitsReturningQueueService constructor.
      *
      * @param UnitHelper $unitHelper
      */
@@ -25,18 +25,18 @@ class ReturningQueueService
     }
 
     /**
-     * Returns the returning queue of a dominion.
+     * Returns the units returning queue of a dominion.
      *
      * @param Dominion $dominion
      * @return array
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->returningQueue) {
-            return $this->returningQueue;
+        if ($this->unitsReturningQueue) {
+            return $this->unitsReturningQueue;
         }
 
-        $rows = DB::table('queue_returning')
+        $rows = DB::table('queue_returning_units')
             ->where('dominion_id', $dominion->id)
             ->get(['unit_type', 'amount', 'hours']);
 
@@ -46,7 +46,7 @@ class ReturningQueueService
             $returningQueue[$row->unit_type][$row->hours - 1] = (int)$row->amount;
         }
 
-        return $this->returningQueue = $returningQueue;
+        return $this->unitsReturningQueue = $returningQueue;
     }
 
     /**
