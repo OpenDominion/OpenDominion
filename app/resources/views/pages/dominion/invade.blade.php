@@ -48,7 +48,7 @@
                                 </div>
                             @endforeach
 
-                            <label for="total_op">Total OP</label>
+                            <label for="total_op">Total raw OP</label>
                             <p class="form-control-static" id="total-op">0</p>
                             
                         </div>
