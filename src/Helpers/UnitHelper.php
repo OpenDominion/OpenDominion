@@ -6,17 +6,24 @@ use OpenDominion\Models\Race;
 
 class UnitHelper
 {
-    public function getUnitTypes(): array
+    public function getUnitTypes(bool $hideSpecialUnits = false): array
     {
-        return [
+        $data = [
             'unit1',
             'unit2',
             'unit3',
             'unit4',
-            'spies',
-            'wizards',
-            'archmages',
         ];
+
+        if (!$hideSpecialUnits) {
+            $data += [
+                'spies',
+                'wizards',
+                'archmages',
+            ];
+        }
+
+        return $data;
     }
 
     public function getUnitName(string $unitType, Race $race): string
