@@ -11,6 +11,8 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -31,6 +33,12 @@ class EspionageActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var TrainingQueueService */
+    protected $trainingQueueService;
+
+    /** @var UnitsReturningQueueService */
+    protected $unitsReturningQueueService;
+
     /**
      * EspionageActionService constructor.
      *
@@ -38,17 +46,23 @@ class EspionageActionService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
+     * @param TrainingQueueService $trainingQueueService
+     * @param UnitsReturningQueueService $unitsReturningQueueService
      */
     public function __construct(
         EspionageHelper $espionageHelper,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
-        RangeCalculator $rangeCalculator
+        RangeCalculator $rangeCalculator,
+        TrainingQueueService $trainingQueueService,
+        UnitsReturningQueueService $unitsReturningQueueService
     ) {
         $this->espionageHelper = $espionageHelper;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
+        $this->trainingQueueService = $trainingQueueService;
+        $this->unitsReturningQueueService = $unitsReturningQueueService;
     }
 
     /**
@@ -186,30 +200,34 @@ class EspionageActionService
 
         switch ($operationKey) {
             case 'barracks_spy':
-//                $data = [];
-                $data = $infoOp->data;
+                $data = [];
 
-                foreach (range(0, 3) as $i) {
-                    $amount = $target->{'military_unit' . $i};
+                foreach (range(1, 4) as $slot) {
+                    $amountAtHome = $target->{'military_unit' . $slot};
 
-//                    dd(
-//                        array_get($data, "units.{$i}.exact"),
-//                        $amount
-//                    );
-
-                    if (array_get($data, "units.{$i}.exact") !== $amount) {
-
+                    if ($amountAtHome !== 0) {
+                        $amountAtHome = random_int(
+                            round($amountAtHome * 0.85),
+                            round($amountAtHome / 0.85)
+                        );
                     }
 
-                    array_set($data, "units.{$i}.exact", $amount);
+                    array_set($data, "units.home.unit{$slot}", $amountAtHome);
 
+                    $amountReturning = $this->unitsReturningQueueService->getQueueTotalByUnitType($target, ('unit' . $slot));
 
-                    $randomizedAmount = random_int(
-                        round($amount * 0.85),
-                        round($amount / 0.85)
-                    );
+                    if ($amountReturning !== 0) {
+                        $amountReturning = random_int(
+                            round($amountReturning * 0.85),
+                            round($amountReturning / 0.85)
+                        );
+                    }
 
-                    array_set($data, "units.{$i}", $randomizedAmount);
+                    array_set($data, "units.returning.unit{$slot}", $amountReturning);
+
+                    $amountInTraining = $this->trainingQueueService->getQueue($target);
+
+                    array_set($data, 'units.training', $amountInTraining);
                 }
 
                 $infoOp->data = $data;
