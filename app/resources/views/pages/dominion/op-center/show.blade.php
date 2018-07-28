@@ -644,7 +644,135 @@
     </div>
     <div class="row">
 
-        todo: land
+        <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                @endphp
+
+                @slot('title', 'Explored Land')
+                @slot('titleIconClass', 'ra ra-honeycomb')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Land Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            <col width="100">
+                            <col width="100">
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Land Type</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">% of total</th>
+                                <th class="text-center">Barren</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($landHelper->getLandTypes() as $landType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($landType) }}
+                                        @if ($landType === $dominion->race->home_land_type)
+                                            <small class="text-muted"><i>(home)</i></small>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "explored.{$landType}.amount")) }}</td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "explored.{$landType}.percentage"), 2) }}%</td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "explored.{$landType}.barren")) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="land_spy">
+                            <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
+                        </form>
+                    </div>
+                @endslot
+            @endcomponent
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                @endphp
+
+                @slot('title', 'Incoming land breakdown')
+                @slot('titleIconClass', 'fa fa-clock-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Land Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Land Type</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($landHelper->getLandTypes() as $landType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($landType) }}
+                                        @if ($landType === $dominion->race->home_land_type)
+                                            <small class="text-muted"><i>(home)</i></small>
+                                        @endif
+                                    </td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "incoming.{$landType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">{{ number_format(array_sum(array_get($infoOp->data, "incoming.{$landType}"))) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endcomponent
+        </div>
 
     </div>
 @endsection

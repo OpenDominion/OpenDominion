@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
@@ -42,6 +43,7 @@ class OpCenterController extends AbstractDominionController
             'improvementHelper' => app(ImprovementHelper::class),
             'infoOpService' => app(InfoOpService::class),
             'landCalculator' => app(LandCalculator::class),
+            'landHelper' => app(LandHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),

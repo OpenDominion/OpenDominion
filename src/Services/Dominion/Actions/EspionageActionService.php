@@ -11,11 +11,14 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -35,6 +38,9 @@ class EspionageActionService
     /** @var EspionageHelper */
     protected $espionageHelper;
 
+    /** @var ExplorationQueueService */
+    protected $explorationQueueService;
+
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
 
@@ -43,6 +49,12 @@ class EspionageActionService
 
     /** @var LandCalculator */
     protected $landCalculator;
+
+    /** @var LandHelper */
+    protected $landHelper;
+
+    /** @var LandIncomingQueueService */
+    protected $landIncomingQueueService;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -65,9 +77,12 @@ class EspionageActionService
      * @param BuildingHelper $buildingHelper
      * @param ConstructionQueueService $constructionQueueService
      * @param EspionageHelper $espionageHelper
+     * @param ExplorationQueueService $explorationQueueService
      * @param ImprovementCalculator $improvementCalculator
      * @param ImprovementHelper $improvementHelper
      * @param LandCalculator $landCalculator
+     * @param LandHelper $landHelper
+     * @param LandIncomingQueueService $landIncomingQueueService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
@@ -78,9 +93,12 @@ class EspionageActionService
         BuildingHelper $buildingHelper,
         ConstructionQueueService $constructionQueueService,
         EspionageHelper $espionageHelper,
+        ExplorationQueueService $explorationQueueService,
         ImprovementCalculator $improvementCalculator,
         ImprovementHelper $improvementHelper,
         LandCalculator $landCalculator,
+        LandHelper $landHelper,
+        LandIncomingQueueService $landIncomingQueueService,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
         RangeCalculator $rangeCalculator,
@@ -90,9 +108,12 @@ class EspionageActionService
         $this->buildingHelper = $buildingHelper;
         $this->constructionQueueService = $constructionQueueService;
         $this->espionageHelper = $espionageHelper;
+        $this->explorationQueueService = $explorationQueueService;
         $this->improvementCalculator = $improvementCalculator;
         $this->improvementHelper = $improvementHelper;
         $this->landCalculator = $landCalculator;
+        $this->landHelper = $landHelper;
+        $this->landIncomingQueueService = $landIncomingQueueService;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
@@ -303,6 +324,34 @@ class EspionageActionService
                 break;
 
             case 'land_spy':
+                $data = [];
+
+                foreach ($this->landHelper->getLandTypes() as $landType) {
+                    $amount = $target->{'land_' . $landType};
+
+                    array_set($data, "explored.{$landType}.amount", $amount);
+                    array_set($data, "explored.{$landType}.percentage", (($amount / $this->landCalculator->getTotalLand($target)) * 100));
+                    array_set($data, "explored.{$landType}.barren", $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
+                }
+
+                // hacky hack
+                $incoming = [];
+
+                $exploringLand = $this->explorationQueueService->getQueue($target);
+                $incomingLand = $this->landIncomingQueueService->getQueue($target);
+
+                foreach ($this->landHelper->getLandTypes() as $landType) {
+                    foreach (range(0, 11) as $hour) {
+                        array_set($incoming, "{$landType}.{$hour}", (
+                            array_get($exploringLand, "{$landType}.{$hour}", 0) +
+                            array_get($incomingLand, "{$landType}.{$hour}", 0)
+                        ));
+                    }
+                }
+
+                array_set($data, 'incoming', $incoming);
+
+                $infoOp->data = $data;
                 break;
 
             default:
