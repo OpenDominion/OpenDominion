@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
+use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\EspionageHelper;
@@ -24,6 +25,9 @@ class EspionageActionService
 
     /** @var EspionageHelper */
     protected $espionageHelper;
+
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
 
     /** @var ImprovementHelper */
     protected $improvementHelper;
@@ -47,6 +51,7 @@ class EspionageActionService
      * EspionageActionService constructor.
      *
      * @param EspionageHelper $espionageHelper
+     * @param ImprovementCalculator $improvementCalculator
      * @param ImprovementHelper $improvementHelper
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
@@ -56,6 +61,7 @@ class EspionageActionService
      */
     public function __construct(
         EspionageHelper $espionageHelper,
+        ImprovementCalculator $improvementCalculator,
         ImprovementHelper $improvementHelper,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
@@ -64,6 +70,7 @@ class EspionageActionService
         UnitsReturningQueueService $unitsReturningQueueService
     ) {
         $this->espionageHelper = $espionageHelper;
+        $this->improvementCalculator = $improvementCalculator;
         $this->improvementHelper = $improvementHelper;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
@@ -252,7 +259,8 @@ class EspionageActionService
                 $data = [];
 
                 foreach ($this->improvementHelper->getImprovementTypes() as $type) {
-                    $data[$type] = $target->{'improvement_' . $type};
+                    array_set($data, "{$type}.points", $target->{'improvement_' . $type});
+                    array_set($data, "{$type}.rating", $this->improvementCalculator->getImprovementMultiplierBonus($target, $type));
                 }
 
                 $infoOp->data = $data;

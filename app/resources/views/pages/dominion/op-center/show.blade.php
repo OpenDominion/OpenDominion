@@ -290,7 +290,72 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            todo: imps
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'castle_spy');
+                @endphp
+
+                @slot('title', 'Improvements')
+                @slot('titleIconClass', 'fa fa-arrow-up')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Castle Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td>Part</td>
+                                <td>Rating</td>
+                                <td class="text-center">Invested</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($improvementHelper->getImprovementTypes() as $improvementType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($improvementType) }}
+                                        {!! $improvementHelper->getImprovementImplementedString($improvementType) !!}
+                                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
+                                    </td>
+                                    <td>
+                                        {{ sprintf(
+                                            $improvementHelper->getImprovementRatingString($improvementType),
+                                            number_format((array_get($infoOp->data, "{$improvementType}.rating") * 100), 2)
+                                        ) }}
+                                    </td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "{$improvementType}.points")) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="castle_spy">
+                            <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
+                        </form>
+                    </div>
+                @endslot
+            @endcomponent
         </div>
 
     </div>
