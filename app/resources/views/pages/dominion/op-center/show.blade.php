@@ -575,7 +575,7 @@
                             @csrf
                             <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
                             <input type="hidden" name="operation" value="survey_dominion">
-                            <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
                         </form>
                     </div>
                 @endslot
