@@ -107,7 +107,7 @@ class TickService
                     $dominion->daily_platinum = false;
                     $dominion->daily_land = false;
 
-                    $dominion->save();
+                    $dominion->save(['event' => 'tick']);
                 }
 
                 $this->updateDailyRankings($dominionIds);
