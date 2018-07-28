@@ -521,7 +521,7 @@
                 @slot('title', 'Constructed Buildings')
                 @slot('titleIconClass', 'fa fa-home')
                 @slot('titleExtra')
-                    <span class="pull-right">Barren Land: {{ number_format($landCalculator->getTotalBarrenLand($dominion)) }}</span>
+                    <span class="pull-right">Barren Land: {{ number_format(array_get($infoOp->data, 'barren_land')) }}</span>
                 @endslot
 
                 @if ($infoOp === null)
