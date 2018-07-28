@@ -230,12 +230,13 @@ class EspionageActionService
             );
 
             if (!random_chance($successRate)) {
-                // todo: have some spies captured and killed
-                // todo: 2% of your spies
+                $spiesKilled = (int)ceil($dominion->military_spies * 0.02);
+
+                $dominion->military_spies -= $spiesKilled;
 
                 return [
                     'success' => false,
-                    'message' => "The enemy has prevented our {$operationInfo['name']} attempt and killed X of our spies.",
+                    'message' => ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.'),
                     'alert-type' => 'warning',
                 ];
             }
