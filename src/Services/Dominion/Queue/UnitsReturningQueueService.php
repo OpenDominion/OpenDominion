@@ -36,7 +36,7 @@ class UnitsReturningQueueService
             return $this->unitsReturningQueue;
         }
 
-        $rows = DB::table('queue_returning_units')
+        $rows = DB::table('queue_units_returning')
             ->where('dominion_id', $dominion->id)
             ->get(['unit_type', 'amount', 'hours']);
 
