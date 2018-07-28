@@ -14,6 +14,7 @@ use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 
@@ -45,6 +46,7 @@ class AdvisorsController extends AbstractDominionController
     {
         return view('pages.dominion.advisors.land', [
             'explorationQueueService' => app(ExplorationQueueService::class),
+            'landIncomingQueueService' => app(LandIncomingQueueService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
         ]);

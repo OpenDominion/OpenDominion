@@ -81,15 +81,21 @@
                                     @endif
                                 </td>
                                 @for ($i = 0; $i < 12; $i++)
+                                    @php
+                                        $land = (
+                                            $explorationQueueService->getQueue($selectedDominion)[$landType][$i] +
+                                            $landIncomingQueueService->getQueue($selectedDominion)[$landType][$i]
+                                        );
+                                    @endphp
                                     <td class="text-center">
-                                        @if ($explorationQueueService->getQueue($selectedDominion)[$landType][$i] === 0)
+                                        @if ($land === 0)
                                             -
                                         @else
-                                            {{ number_format($explorationQueueService->getQueue($selectedDominion)[$landType][$i]) }}
+                                            {{ number_format($land) }}
                                         @endif
                                     </td>
                                 @endfor
-                                <td class="text-center">{{ number_format($explorationQueueService->getQueueTotalByLand($selectedDominion, $landType)) }}</td>
+                                <td class="text-center">{{ number_format($explorationQueueService->getQueueTotalByLand($selectedDominion, $landType) + $landIncomingQueueService->getQueueTotalByLand($selectedDominion, $landType)) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
