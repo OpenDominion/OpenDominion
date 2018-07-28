@@ -381,8 +381,6 @@
                         </div>
                 @endslot
             @endcomponent
-
-            military home/training
         </div>
         <div class="col-sm-12 col-md-6">
             military returning
