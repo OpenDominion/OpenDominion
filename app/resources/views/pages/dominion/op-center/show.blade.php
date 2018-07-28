@@ -297,6 +297,91 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                @endphp
+
+                @slot('title', 'Units in training and home')
+                @slot('titleIconClass', 'ra ra-sword')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Barracks Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Home (Training)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($unitHelper->getUnitTypes() as $unitType)
+                                <tr>
+                                    <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "units.training.{$unitType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">
+                                        @php
+                                            $unitsAtHome = (int)array_get($infoOp->data, "units.home.{$unitType}");
+                                        @endphp
+
+                                        @if ($unitsAtHome !== 0)
+                                            ~{{ number_format($unitsAtHome) }}
+                                        @else
+                                            0
+                                        @endif
+
+                                        ({{ number_format(array_sum(array_get($infoOp->data, "units.training.{$unitType}"))) }})
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="operation" value="barracks_spy">
+                                <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                            </form>
+                        </div>
+                @endslot
+            @endcomponent
+
             military home/training
         </div>
         <div class="col-sm-12 col-md-6">
