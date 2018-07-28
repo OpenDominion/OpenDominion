@@ -212,7 +212,7 @@
                         Networth: {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}<br>
                     </p>
 
-                    {{-- invade button --}}
+                    {{-- todo: invade button --}}
                 </div>
             </div>
         </div>
