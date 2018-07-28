@@ -16,11 +16,11 @@ class UnitHelper
         ];
 
         if (!$hideSpecialUnits) {
-            $data += [
+            $data = array_merge($data, [
                 'spies',
                 'wizards',
                 'archmages',
-            ];
+            ]);
         }
 
         return $data;
