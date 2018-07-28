@@ -36,7 +36,7 @@ class LandIncomingQueueService
             return $this->landIncomingQueue;
         }
 
-        $rows = DB::table('queue_land_incoming`')
+        $rows = DB::table('queue_land_incoming')
             ->where('dominion_id', $dominion->id)
             ->get(['land_type', 'amount', 'hours']);
 
