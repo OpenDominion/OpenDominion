@@ -204,9 +204,10 @@
 
                     <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Recast your info ops before performing any offensive operations during this hour.</p>
 
+                    <p>Estimated stats:</p>
                     <p>
-                        OP: ???<br>
-                        DP: ???<br>
+                        OP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
+                        DP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
                         Land: {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}<br>
                         Networth: {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}<br>
                     </p>
