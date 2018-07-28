@@ -39,6 +39,7 @@ use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\ReturningQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
@@ -128,6 +129,7 @@ class AppServiceProvider extends AbstractServiceProvider
         // Dominion Queue Services
         $this->app->singleton(ConstructionQueueService::class);
         $this->app->singleton(ExplorationQueueService::class);
+        $this->app->singleton(ReturningQueueService::class);
         $this->app->singleton(TrainingQueueService::class);
     }
 }
