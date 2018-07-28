@@ -210,12 +210,13 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // todo: have some spies captured and killed
+                // todo: 2% of your spies
 
-//                return [
-//                    'success' => false,
-//                    'message' => "The enemy spies have repelled our {$operationInfo['name']} attempt.",
-//                    'alert-type' => 'warning',
-//                ];
+                return [
+                    'success' => false,
+                    'message' => "The enemy has prevented our {$operationInfo['name']} attempt and killed X of our spies.",
+                    'alert-type' => 'warning',
+                ];
             }
         }
 
