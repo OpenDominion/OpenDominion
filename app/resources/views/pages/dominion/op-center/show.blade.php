@@ -383,7 +383,65 @@
             @endcomponent
         </div>
         <div class="col-sm-12 col-md-6">
-            military returning
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                @endphp
+
+                @slot('title', 'Units returning from battle')
+                @slot('titleIconClass', 'fa fa-clock-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Barracks Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (range(1, 4) as $slot)
+                                @php
+                                    $unitType = ('unit' . $slot);
+                                @endphp
+                                <tr>
+                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "units.returning.{$unitType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">
+                                        {{ number_format(array_sum(array_get($infoOp->data, "units.returning.{$unitType}"))) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endcomponent
         </div>
 
     </div>
