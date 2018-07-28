@@ -202,6 +202,7 @@ class EspionageActionService
             case 'barracks_spy':
                 $data = [];
 
+                // Units at home (85% accurate)
                 foreach (range(1, 4) as $slot) {
                     $amountAtHome = $target->{'military_unit' . $slot};
 
@@ -213,22 +214,29 @@ class EspionageActionService
                     }
 
                     array_set($data, "units.home.unit{$slot}", $amountAtHome);
-
-                    $amountReturning = $this->unitsReturningQueueService->getQueueTotalByUnitType($target, ('unit' . $slot));
-
-                    if ($amountReturning !== 0) {
-                        $amountReturning = random_int(
-                            round($amountReturning * 0.85),
-                            round($amountReturning / 0.85)
-                        );
-                    }
-
-                    array_set($data, "units.returning.unit{$slot}", $amountReturning);
-
-                    $amountInTraining = $this->trainingQueueService->getQueue($target);
-
-                    array_set($data, 'units.training', $amountInTraining);
                 }
+
+                // Units returning (85% accurate)
+                $amountReturning = $this->unitsReturningQueueService->getQueue($target);
+
+                foreach ($amountReturning as $unitType => $returningData) {
+                    foreach ($returningData as $hour => $amount) {
+                        if ($amount !== 0) {
+                            $amount = random_int(
+                                round($amount * 0.85),
+                                round($amount / 0.85)
+                            );
+
+                            array_set($amountReturning, "{$unitType}.{$hour}", $amount);
+                        }
+                    }
+                }
+
+                array_set($data, 'units.returning', $amountReturning);
+
+                // Units in training (100% accurate)
+                $amountInTraining = $this->trainingQueueService->getQueue($target);
+                array_set($data, 'units.training', $amountInTraining);
 
                 $infoOp->data = $data;
                 break;
