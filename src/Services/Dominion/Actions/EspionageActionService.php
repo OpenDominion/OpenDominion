@@ -7,6 +7,7 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Helpers\EspionageHelper;
+use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -23,6 +24,9 @@ class EspionageActionService
 
     /** @var EspionageHelper */
     protected $espionageHelper;
+
+    /** @var ImprovementHelper */
+    protected $improvementHelper;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -43,6 +47,7 @@ class EspionageActionService
      * EspionageActionService constructor.
      *
      * @param EspionageHelper $espionageHelper
+     * @param ImprovementHelper $improvementHelper
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
@@ -51,6 +56,7 @@ class EspionageActionService
      */
     public function __construct(
         EspionageHelper $espionageHelper,
+        ImprovementHelper $improvementHelper,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
         RangeCalculator $rangeCalculator,
@@ -58,6 +64,7 @@ class EspionageActionService
         UnitsReturningQueueService $unitsReturningQueueService
     ) {
         $this->espionageHelper = $espionageHelper;
+        $this->improvementHelper = $improvementHelper;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
@@ -242,6 +249,13 @@ class EspionageActionService
                 break;
 
             case 'castle_spy':
+                $data = [];
+
+                foreach ($this->improvementHelper->getImprovementTypes() as $type) {
+                    $data[$type] = $target->{'improvement_' . $type};
+                }
+
+                $infoOp->data = $data;
                 break;
 
             case 'survey_dominion':
