@@ -254,8 +254,6 @@ class EspionageActionService
                 throw new LogicException("Unknown info gathering operation {$operationKey}");
         }
 
-        dd($infoOp->toArray()['data']['units']);
-
         // Always force update updated_at on infoops to know when the last infoop was performed
         $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
