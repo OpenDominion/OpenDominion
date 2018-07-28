@@ -214,7 +214,7 @@ class NotificationHelper
                 $units = array_sum($data);
 
                 return sprintf(
-                    'Returning of %s %s completed',
+                    '%s %s returned from battle',
                     number_format($units),
                     str_plural('unit', $units)
                 );
