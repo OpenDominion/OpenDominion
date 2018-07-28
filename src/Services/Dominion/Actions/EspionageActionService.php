@@ -196,7 +196,7 @@ class EspionageActionService
             ];
         }
 
-        if ($targetSpa !== 1.0) {
+        if ($targetSpa !== 0.0) {
             $ratio = ($selfSpa / $targetSpa);
 
             // todo: copied from spell success ratio. needs looking into later
