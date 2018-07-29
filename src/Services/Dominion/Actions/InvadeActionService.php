@@ -45,6 +45,8 @@ class InvadeActionService
     {
         DB::transaction(function () use ($dominion, $target, $units) {
 
+            // CHECKS
+
             $this->guardLockedDominion($dominion);
 
             if ($this->protectionService->isUnderProtection($dominion)) {
@@ -67,13 +69,14 @@ class InvadeActionService
                 throw new RuntimeException('Nice try, but you cannot invade your realmies');
             }
 
-            $result = null;
-
             // check if we actually have all the $units _at home_
             // check morale (min 70%)
             // check if we have enough boats
             // 33% rule
             // 5:4 rule
+
+
+            // VARIABLES
 
             $totalRawDP = 0;
             $totalNetOP = 0;
@@ -82,28 +85,74 @@ class InvadeActionService
 
             $invasionSuccessful = ($totalNetOP > $targetNetDP);
 
-            $eligibleForPrestigeGain = false; // min 75% range and $target not invaded 3+ times within 24 hrs
-            $prestigeGain = 0; // 5% $target->prestige + 20
-            $targetPrestigeLoss = 0; // 5%
+
+            // PRESTIGE
+
+            // if range < 66
+                // $prestigeLoss = 5% (needs confirmation)
+            // else if range >= 75 && range < 120
+                // if !$invasionSuccesful
+                    // if 1 - $totalNetOP / $targetNetDP >= 0.15 (fail by 15%, aka raze)
+                        // $prestigeLoss = 5% (needs confirmation)
+                // else
+                    // $prestigeGain = 5% target->prestige + 20
+                    // if $target was successfully invaded recently (within 24 hrs), multiply $prestigeGain by: (needs confirmation)
+                        // 1 time: 75%
+                        // 2 times: 50%
+                        // 3 times: 25%
+                        // 4 times: -25% (i.e. losing prestige)
+                        // 5+ times: -50%
+                    // todo: if at war, increase $prestigeGain by +15%
+                    // $targetPrestigeLoss = 5% target->prestige
+
+
+            // CASUALTIES
 
             $offensiveCasualties = 0; // 8.5% needed to break the target, *2 if !$invasionSuccessful
+            // offensive casualty modifiers (cleric/shaman, shrines), capped at -80% casualties (needs confirmation)
+
             $targetDefensiveCasualties = 0; // 6.6% at 1.0 land size ratio (see issue #151)
-
-            // casualty modifiers step 1 (reductions like cleric/shaman, shrine for offensive). Capped at 80% reduction?
-            // casualty modifiers, step 2 (reduction based recent invasions in 24hrs: 100% 80% 60% 55% 45% 35%)
-
+            // defensive casualty modifiers (reduction based on recent invasion: 100%, 80%, 60%, 55%, 45%, 35%)
             // (note: defensive casualties are spread out in ratio between all units that help def (have DP), including draftees)
 
-            // calculate total conquered, 10% of their total land
-            // calculate land gain (array)
-            // calculate extra land generated (array) (always 50% %landConquered)
-            // calculate their barren land losses (array)
-            // calculate their buildings destroyed (array)
+
+            // LAND GAINS/LOSSES
+
+            // if $invasionSuccessful
+                // calculate total conquered acres; 10% of target total land
+                // calculate target barren land losses (array), based on ratio of what the target has
+                // calculate land conquers (array) (= target land loss)
+                // calculate target buildings destroyed (array), only if target does not have enough barren land buffer, in ratio of buildings constructed per land type
+                // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
+
+
+            // MORALE
 
             // calc morale loss (5%) (see issue #151)
-            // calc target morale loss (needed?)
+            // calc target morale loss (?%) (only on $invasionSuccessful?) (needs confirmation)
 
-            // todo: converts
+
+            // MISC
+
+            // if $invasionSuccessful
+                // hobbos and other special units that trigger something upon invading
+                // later: converts
+
+
+            // insert queues for returning units, incoming land and incoming prestige
+            // send notification to $target
+            // todo: post to both TCs
+
+
+            // shit for elsewhere:
+
+            // todo: show message in Clear Sight at the bottom for dominions that have been invaded too much recently:
+                // 1-2 times: "This dominion has been invaded in recent times"
+                // 3-4 times: "This dominion has been invaded heavily in recent times"
+                // 5+ times: "This dominion has been invaded extremely heavily in recent times"
+
+            // todo: add battle reports table/mechanic
+            // todo: add a table for incoming prestige to the database
 
         });
 
