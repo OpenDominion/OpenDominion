@@ -73,7 +73,7 @@ class InvadeActionService
                 throw new RuntimeException('You cannot send units that have no OP');
             }
 
-            if (!$this->hasUnitsAtHome($dominion, $units)) {
+            if (!$this->hasEnoughUnitsAtHome($dominion, $units)) {
                 throw new RuntimeException('You don\'t have enough units at home to send this many units');
             }
 
@@ -207,7 +207,7 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function hasUnitsAtHome(Dominion $dominion, array $units): bool
+    protected function hasEnoughUnitsAtHome(Dominion $dominion, array $units): bool
     {
         foreach ($dominion->race->units as $unit) {
             if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
