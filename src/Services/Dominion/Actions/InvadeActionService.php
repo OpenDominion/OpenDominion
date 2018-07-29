@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -14,6 +15,9 @@ class InvadeActionService
 {
     use DominionGuardsTrait;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
     /** @var ProtectionService */
     protected $protectionService;
 
@@ -23,11 +27,13 @@ class InvadeActionService
     /**
      * InvadeActionService constructor.
      *
+     * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
      */
-    public function __construct(ProtectionService $protectionService, RangeCalculator $rangeCalculator)
+    public function __construct(MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, RangeCalculator $rangeCalculator)
     {
+        $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
     }
@@ -85,18 +91,42 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough boats to send this many units');
             }
 
+            $netOP = $this->getNetOP($dominion, $units);
+            $netDP = $this->militaryCalculator->getDefensivePower($dominion);
+            $netDPWithoutAttackingUnits = ($netDP - $this->getNetDP($dominion, $units));
+
             // 33% rule
+            // todo: test
+            $DPNeededToLeaveAtHome = (int)floor($netOP / 3);
+            if ($netDPWithoutAttackingUnits < $DPNeededToLeaveAtHome) {
+                throw new RuntimeException('You need to leave more defensive units at home (33% rule)');
+            }
+
             // 5:4 rule
+            // todo: test
+            $allowedMaxOP = (int)floor($netDP * 1.25);
+            if ($netOP > $allowedMaxOP) {
+                throw new RuntimeException('You need to leave more offensive units at home (5:4 rule)');
+            }
+
+            $targetNetDP = $this->militaryCalculator->getDefensivePower($target);
+
+            dd([
+                'net op' => $netOP,
+                'net dp' => $netDP,
+                'net dp w/o attackers' => $netDPWithoutAttackingUnits,
+                'target net dp' => $targetNetDP,
+            ]);
 
 
             // VARIABLES
 
             $totalRawDP = 0;
-            $totalNetOP = 0;
+            $netOP = 0;
 
             $targetNetDP = 0; // including temples
 
-            $invasionSuccessful = ($totalNetOP > $targetNetDP);
+            $invasionSuccessful = ($netOP > $targetNetDP);
 
 
             // PRESTIGE
@@ -245,5 +275,45 @@ class InvadeActionService
         }
 
         return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $unitsPerBoat));
+    }
+
+    protected function getRawOP(Dominion $dominion, array $units): float
+    {
+        $op = 0;
+
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            $op += ($unit->power_offense * (int)$units[$unit->slot]);
+        }
+
+        return $op;
+    }
+
+    protected function getNetOP(Dominion $dominion, array $units): float
+    {
+        return ($this->getRawOP($dominion, $units) * $this->militaryCalculator->getOffensivePowerMultiplier($dominion));
+    }
+
+    protected function getRawDP(Dominion $dominion, array $units): float
+    {
+        $op = 0;
+
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            $op += ($unit->power_defense * (int)$units[$unit->slot]);
+        }
+
+        return $op;
+    }
+
+    protected function getNetDP(Dominion $dominion, array $units): float
+    {
+        return ($this->getRawDP($dominion, $units) * $this->militaryCalculator->getDefensivePowerMultiplier($dominion));
     }
 }
