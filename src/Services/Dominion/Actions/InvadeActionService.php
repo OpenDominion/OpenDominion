@@ -164,6 +164,7 @@ class InvadeActionService
 
             // todo: add battle reports table/mechanic
             // todo: add a table for incoming prestige to the database
+            // todo: add 'boats needed'/'boats total' on invade page
 
         });
 
