@@ -44,7 +44,7 @@
                                 @endif
                                 <div class="form-group">
                                     <label for="unit1">{{ $unitHelper->getUnitName(('unit'.  $slot), $selectedDominion->race) }}</label>
-                                    <input type="number" name="unit{{ $slot }}" class="form-control" placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}" min="0" max="{{ $selectedDominion->{'military_unit' . $slot} }}" data-op="{{ $unit->power_offense }}">
+                                    <input type="number" name="unit[{{ $slot }}]" class="form-control" placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}" min="0" max="{{ $selectedDominion->{'military_unit' . $slot} }}" data-op="{{ $unit->power_offense }}">
                                 </div>
                             @endforeach
 
@@ -52,11 +52,11 @@
                             <p class="form-control-static" id="total-op">0</p>
                             
                         </div>
-                    </form>
 
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Invade</button>
-                    </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Invade</button>
+                        </div>
+                    </form>
                 @endif
             </div>
         </div>

@@ -29,6 +29,7 @@ use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
+use OpenDominion\Services\Dominion\Actions\InvadeActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
@@ -123,6 +124,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(EspionageActionService::class);
         $this->app->singleton(ExploreActionService::class);
         $this->app->singleton(ImproveActionService::class);
+        $this->app->singleton(InvadeActionService::class);
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
         $this->app->singleton(SpellActionService::class);
