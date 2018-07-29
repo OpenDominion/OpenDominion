@@ -81,7 +81,6 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough morale to invade others');
             }
 
-            // check morale (min 70%)
             // check if we have enough boats
             // 33% rule
             // 5:4 rule
