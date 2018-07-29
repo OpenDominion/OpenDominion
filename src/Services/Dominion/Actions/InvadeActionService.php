@@ -96,6 +96,7 @@ class InvadeActionService
                         // $prestigeLoss = 5% (needs confirmation)
                 // else
                     // $prestigeGain = 5% target->prestige + 20
+                    // todo: in tech ruleset, multiply base prestige gain (i.e. the 5%) by shrines bonus
                     // if $target was successfully invaded recently (within 24 hrs), multiply $prestigeGain by: (needs confirmation)
                         // 1 time: 75%
                         // 2 times: 50%
