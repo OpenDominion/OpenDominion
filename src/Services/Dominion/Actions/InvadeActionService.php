@@ -92,19 +92,19 @@ class InvadeActionService
             }
 
             $netOP = $this->getNetOP($dominion, $units);
-            $netDP = $this->militaryCalculator->getDefensivePower($dominion);
-            $netDPWithoutAttackingUnits = ($netDP - $this->getNetDP($dominion, $units));
+            $totalNetDP = $this->militaryCalculator->getDefensivePower($dominion);
+            $totalNetDPWithoutAttackingUnits = ($totalNetDP - $this->getNetDP($dominion, $units));
 
             // 33% rule
             // todo: test
             $DPNeededToLeaveAtHome = (int)floor($netOP / 3);
-            if ($netDPWithoutAttackingUnits < $DPNeededToLeaveAtHome) {
+            if ($totalNetDPWithoutAttackingUnits < $DPNeededToLeaveAtHome) {
                 throw new RuntimeException('You need to leave more defensive units at home (33% rule)');
             }
 
             // 5:4 rule
             // todo: test
-            $allowedMaxOP = (int)floor($netDP * 1.25);
+            $allowedMaxOP = (int)floor($totalNetDP * 1.25);
             if ($netOP > $allowedMaxOP) {
                 throw new RuntimeException('You need to leave more offensive units at home (5:4 rule)');
             }
@@ -113,8 +113,8 @@ class InvadeActionService
 
             dd([
                 'net op' => $netOP,
-                'net dp' => $netDP,
-                'net dp w/o attackers' => $netDPWithoutAttackingUnits,
+                'net dp' => $totalNetDP,
+                'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
                 'target net dp' => $targetNetDP,
             ]);
 
