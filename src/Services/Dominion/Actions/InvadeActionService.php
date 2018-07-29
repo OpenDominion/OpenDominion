@@ -74,7 +74,7 @@ class InvadeActionService
             }
 
             if (!$this->hasUnitsAtHome($dominion, $units)) {
-                throw new RuntimeException('You don\'t have enough units at home to send this amount');
+                throw new RuntimeException('You don\'t have enough units at home to send this many units');
             }
 
             if ($dominion->morale < 70) {
