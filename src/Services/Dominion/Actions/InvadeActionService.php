@@ -85,7 +85,6 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough boats to send this many units');
             }
 
-            // check if we have enough boats
             // 33% rule
             // 5:4 rule
 
