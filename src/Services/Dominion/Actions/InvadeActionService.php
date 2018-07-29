@@ -111,22 +111,15 @@ class InvadeActionService
 
             $targetNetDP = $this->militaryCalculator->getDefensivePower($target);
 
+            $invasionSuccessful = ($netOP > $targetNetDP);
+
             dd([
                 'net op' => $netOP,
                 'net dp' => $totalNetDP,
                 'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
                 'target net dp' => $targetNetDP,
+                'success?' => $invasionSuccessful,
             ]);
-
-
-            // VARIABLES
-
-            $totalRawDP = 0;
-            $netOP = 0;
-
-            $targetNetDP = 0; // including temples
-
-            $invasionSuccessful = ($netOP > $targetNetDP);
 
 
             // PRESTIGE
