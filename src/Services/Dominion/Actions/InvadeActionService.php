@@ -69,7 +69,13 @@ class InvadeActionService
                 throw new RuntimeException('Nice try, but you cannot invade your realmies');
             }
 
-            // check if we actually have all the $units _at home_
+            if (!$this->allUnitsHaveOP($dominion, $units)) {
+                throw new RuntimeException('You cannot send units that have no OP');
+            }
+
+            if (!$this->hasUnitsAtHome($dominion, $units)) {
+                throw new RuntimeException('You don\'t have enough units at home to send this amount');
+            }
 
             if ($dominion->morale < 70) {
                 throw new RuntimeException('You do not have enough morale to invade others');
@@ -167,5 +173,49 @@ class InvadeActionService
         ]);
 
         return [];
+    }
+
+    /**
+     * Check if all units being sent have positive OP.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return bool
+     */
+    protected function allUnitsHaveOP(Dominion $dominion, array $units): bool
+    {
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            if ($unit->power_offense === 0.0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if dominion has enough units at home to send out.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return bool
+     */
+    protected function hasUnitsAtHome(Dominion $dominion, array $units): bool
+    {
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            if ($units[$unit->slot] > $dominion->{'military_unit' . $unit->slot}) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
