@@ -70,6 +70,11 @@ class InvadeActionService
             }
 
             // check if we actually have all the $units _at home_
+
+            if ($dominion->morale < 70) {
+                throw new RuntimeException('You do not have enough morale to invade others');
+            }
+
             // check morale (min 70%)
             // check if we have enough boats
             // 33% rule

@@ -54,7 +54,11 @@
                         </div>
 
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Invade</button>
+                            @if ($selectedDominion->morale < 70)
+                                Your military needs at least 70% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
+                            @else
+                                <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Invade</button>
+                            @endif
                         </div>
                     </form>
                 @endif
