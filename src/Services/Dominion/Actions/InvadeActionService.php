@@ -81,6 +81,10 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough morale to invade others');
             }
 
+            if (!$this->hasEnoughBoats($dominion, $units)) {
+                throw new RuntimeException('You do not have enough boats to send this many units');
+            }
+
             // check if we have enough boats
             // 33% rule
             // 5:4 rule
@@ -217,5 +221,30 @@ class InvadeActionService
         }
 
         return true;
+    }
+
+    /**
+     * Check if dominion has enough boats to send units out.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return bool
+     */
+    protected function hasEnoughBoats(Dominion $dominion, array $units): bool
+    {
+        $unitsPerBoat = 30;
+        $unitsThatNeedBoats = 0;
+
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            if ($unit->need_boat) {
+                $unitsThatNeedBoats += (int)$units[$unit->slot];
+            }
+        }
+
+        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $unitsPerBoat));
     }
 }
