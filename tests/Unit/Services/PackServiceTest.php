@@ -35,7 +35,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
@@ -187,13 +187,8 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $existingPack->update(['realm_id' => $this->goodRealm->id]);
         $existingPack->load('realm');
 
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name'
-            ]);
-
         $thrown = false;
-
+        
         // Act
         try
         {
