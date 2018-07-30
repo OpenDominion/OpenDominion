@@ -148,7 +148,8 @@ class InvadeActionService
             $offensiveCasualties = 0; // 8.5% needed to break the target, on bounce 8.5% of total sent
             // offensive casualty modifiers (cleric/shaman, shrines), capped at -80% casualties (needs confirmation)
 
-            $targetDefensiveCasualties = 0; // 6.6% at 1.0 land size ratio (see issue #151)
+            $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
+            // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
             // defensive casualty modifiers (reduction based on recent invasion: 100%, 80%, 60%, 55%, 45%, 35%)
             // (note: defensive casualties are spread out in ratio between all units that help def (have DP), including draftees)
 
