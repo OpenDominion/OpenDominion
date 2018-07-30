@@ -113,7 +113,8 @@ trait CreatesData
             ($race ?: Race::where('name', 'Human')->firstOrFail()),
             'random',
             str_random(),
-            str_random()
+            str_random(),
+            null
         );
 
         return $dominion;

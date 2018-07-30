@@ -3,15 +3,18 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\PackService;
 use RuntimeException;
 
 class RoundController extends AbstractController
@@ -19,14 +22,18 @@ class RoundController extends AbstractController
     /** @var DominionFactory */
     protected $dominionFactory;
 
+    /** @var PackService */
+    protected $packService;
+
     /**
      * RoundController constructor.
      *
      * @param DominionFactory $dominionFactory
      */
-    public function __construct(DominionFactory $dominionFactory)
+    public function __construct(DominionFactory $dominionFactory, PackService $packService)
     {
         $this->dominionFactory = $dominionFactory;
+        $this->packService = $packService;
     }
 
     public function getRegister(Round $round)
@@ -48,17 +55,42 @@ class RoundController extends AbstractController
             'dominion_name' => 'required|string|max:50',
             'ruler_name' => 'nullable|string|max:50',
             'race' => 'required|exists:races,id',
-            'realm' => 'in:random',
+            'realm' => 'in:random,join_pack,create_pack'
         ]);
+
+        $realmType = $request->get('realm');
+        $race = Race::find($request->get('race'));
+
+        DB::beginTransaction();
+
+        $pack = null;
+        if(strpos($realmType, 'pack') !== false)
+        {
+            $packPassword = $request->get('pack_password');
+            $packName = $request->get('pack_name');
+            $packSize = $request->get('pack_size');
+            $createPack = $realmType === 'create_pack';
+
+            $pack = $this->packService->getOrCreatePack(
+                $round,
+                $race,
+                $packName,
+                $packPassword,
+                $packSize,
+                $createPack);
+        }
 
         $dominion = $this->dominionFactory->create(
             Auth::user(),
             $round,
-            Race::find($request->get('race')),
-            $request->get('realm'),
+            $race,
+            $realmType,
             ($request->get('ruler_name') ?: Auth::user()->display_name),
-            $request->get('dominion_name')
+            $request->get('dominion_name'),
+            $pack
         );
+
+        DB::commit();
 
         if ($round->isActive()) {
             $dominionSelectorService = app(SelectorService::class);

@@ -201,6 +201,23 @@
                     <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
                 </div>
             </div>
+
+            @if ($selectedDominion->pack !== null)
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Pack</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
+                        <ul>
+                            @foreach ($selectedDominion->pack->dominions as $dominion)
+                                <li>{{ $dominion->ruler_name }} of {{ $dominion->name }} ({{ $dominion->user->display_name }})</li>
+                            @endforeach
+                        </ul>
+                        <p>Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.</p>
+                    </div>
+                </div>
+            @endif
         </div>
 
     </div>
