@@ -104,7 +104,7 @@ class InvadeActionService
 
             // 5:4 rule
             // todo: test
-            $allowedMaxOP = (int)floor($totalNetDP * 1.25);
+            $allowedMaxOP = (int)floor($totalNetDPWithoutAttackingUnits * 1.25);
             if ($netOP > $allowedMaxOP) {
                 throw new RuntimeException('You need to leave more offensive units at home (5:4 rule)');
             }
