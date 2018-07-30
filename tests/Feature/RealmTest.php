@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -13,7 +12,7 @@ class RealmTest extends AbstractBrowserKitTestCase
 
     public function testNewDominionGetsPlacedInARealmBasedOnRaceAlignment()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $round = $this->createRound();
 
@@ -47,7 +46,7 @@ class RealmTest extends AbstractBrowserKitTestCase
 
     public function testRealmsCantContainMoreThan12Dominions()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $round = $this->createRound();
 

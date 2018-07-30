@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -35,7 +34,7 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testDominionGetsAutoSelectedIfUserHasOnlyOneActiveDominion()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -46,7 +45,7 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testNoDominionGetsAutoSelectedIfUserHasMultipleActiveDominions()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -59,7 +58,7 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeStatusPage()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createAndSelectDominion($user, $round);

@@ -11,7 +11,7 @@
                     $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clear_sight');
                 @endphp
 
-                @slot('title', 'Status Screen')
+                @slot('title', ('Status Screen (' . $dominion->name . ')'))
                 @slot('titleIconClass', 'fa fa-bar-chart')
 
                 @if ($infoOp === null)
@@ -204,14 +204,15 @@
 
                     <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Recast your info ops before performing any offensive operations during this hour.</p>
 
+                    {{--<p>Estimated stats:</p>
                     <p>
-                        OP: ???<br>
-                        DP: ???<br>
+                        OP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
+                        DP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
                         Land: {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}<br>
                         Networth: {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}<br>
-                    </p>
+                    </p>--}}
 
-                    {{-- invade button --}}
+                    {{-- todo: invade button --}}
                 </div>
             </div>
         </div>
@@ -289,28 +290,490 @@
         </div>
 
         <div class="col-sm-12 col-md-6">
-            imps
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'castle_spy');
+                @endphp
+
+                @slot('title', 'Improvements')
+                @slot('titleIconClass', 'fa fa-arrow-up')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Castle Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td>Part</td>
+                                <td>Rating</td>
+                                <td class="text-center">Invested</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($improvementHelper->getImprovementTypes() as $improvementType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($improvementType) }}
+                                        {!! $improvementHelper->getImprovementImplementedString($improvementType) !!}
+                                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
+                                    </td>
+                                    <td>
+                                        {{ sprintf(
+                                            $improvementHelper->getImprovementRatingString($improvementType),
+                                            number_format((array_get($infoOp->data, "{$improvementType}.rating") * 100), 2)
+                                        ) }}
+                                    </td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "{$improvementType}.points")) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="castle_spy">
+                            <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
+                        </form>
+                    </div>
+                @endslot
+            @endcomponent
         </div>
 
     </div>
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            military home/training
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                @endphp
+
+                @slot('title', 'Units in training and home')
+                @slot('titleIconClass', 'ra ra-sword')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Barracks Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Home (Training)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($unitHelper->getUnitTypes() as $unitType)
+                                <tr>
+                                    <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "units.training.{$unitType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">
+                                        @php
+                                            $unitsAtHome = (int)array_get($infoOp->data, "units.home.{$unitType}");
+                                        @endphp
+
+                                        @if (in_array($unitType, ['spies', 'wizards', 'archmages']))
+                                            ???
+                                        @elseif ($unitsAtHome !== 0)
+                                            ~{{ number_format($unitsAtHome) }}
+                                        @else
+                                            0
+                                        @endif
+
+                                        ({{ number_format(array_sum(array_get($infoOp->data, "units.training.{$unitType}"))) }})
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="operation" value="barracks_spy">
+                                <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                            </form>
+                        </div>
+                @endslot
+            @endcomponent
         </div>
         <div class="col-sm-12 col-md-6">
-            military returning
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                @endphp
+
+                @slot('title', 'Units returning from battle')
+                @slot('titleIconClass', 'fa fa-clock-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Barracks Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Unit</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (range(1, 4) as $slot)
+                                @php
+                                    $unitType = ('unit' . $slot);
+                                @endphp
+                                <tr>
+                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "units.returning.{$unitType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">
+                                        {{ number_format(array_sum(array_get($infoOp->data, "units.returning.{$unitType}"))) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endcomponent
         </div>
 
     </div>
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
-            buildings
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                @endphp
+
+                @slot('title', 'Constructed Buildings')
+                @slot('titleIconClass', 'fa fa-home')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Survey Dominion' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+                    @slot('titleExtra')
+                        <span class="pull-right">Barren Land: {{ number_format(array_get($infoOp->data, 'barren_land')) }}</span>
+                    @endslot
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            <col width="100">
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Building Type</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">% of land</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
+                                @php
+                                    $amount = array_get($infoOp->data, "constructed.{$buildingType}");
+                                @endphp
+                                <tr>
+                                    <td>
+                                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
+                                    </td>
+                                    <td class="text-center">{{ number_format($amount) }}</td>
+                                    <td class="text-center">{{ number_format((($amount / $landCalculator->getTotalLand($dominion)) * 100), 2) }}%</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="survey_dominion">
+                            <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
+                        </form>
+                    </div>
+                @endslot
+            @endcomponent
         </div>
 
         <div class="col-sm-12 col-md-6">
-            land
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                @endphp
+
+                @slot('title', 'Incoming building breakdown')
+                @slot('titleIconClass', 'fa fa-clock-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Survey Dominion' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Land Type</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
+                                <tr>
+                                    <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "constructing.{$buildingType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">
+                                        {{ number_format(array_sum(array_get($infoOp->data, "constructing.{$buildingType}"))) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endcomponent
+        </div>
+
+    </div>
+    <div class="row">
+
+        <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                @endphp
+
+                @slot('title', 'Explored Land')
+                @slot('titleIconClass', 'ra ra-honeycomb')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Land Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            <col width="100">
+                            <col width="100">
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Land Type</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">% of total</th>
+                                <th class="text-center">Barren</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($landHelper->getLandTypes() as $landType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($landType) }}
+                                        @if ($landType === $dominion->race->home_land_type)
+                                            <small class="text-muted"><i>(home)</i></small>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "explored.{$landType}.amount")) }}</td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "explored.{$landType}.percentage"), 2) }}%</td>
+                                    <td class="text-center">{{ number_format(array_get($infoOp->data, "explored.{$landType}.barren")) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @slot('boxFooter')
+                    @if ($infoOp !== null)
+                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isStale())
+                            <span class="label label-warning">Stale</span>
+                        @endif
+                    @endif
+
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="land_spy">
+                            <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
+                        </form>
+                    </div>
+                @endslot
+            @endcomponent
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                @endphp
+
+                @slot('title', 'Incoming land breakdown')
+                @slot('titleIconClass', 'fa fa-clock-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Perform espionage operation 'Land Spy' to reveal information.</p>
+                @else
+                    @slot('noPadding', true)
+
+                    <table class="table">
+                        <colgroup>
+                            <col>
+                            @for ($i = 0; $i < 12; $i++)
+                                <col width="20">
+                            @endfor
+                            <col width="100">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Land Type</th>
+                                @for ($i = 0; $i < 12; $i++)
+                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @endfor
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($landHelper->getLandTypes() as $landType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($landType) }}
+                                        @if ($landType === $dominion->race->home_land_type)
+                                            <small class="text-muted"><i>(home)</i></small>
+                                        @endif
+                                    </td>
+                                    @for ($i = 0; $i < 12; $i++)
+                                        @php
+                                            $amount = array_get($infoOp->data, "incoming.{$landType}.{$i}", 0);
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($amount === 0)
+                                                -
+                                            @else
+                                                {{ number_format($amount) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">{{ number_format(array_sum(array_get($infoOp->data, "incoming.{$landType}"))) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            @endcomponent
         </div>
 
     </div>

@@ -6,16 +6,16 @@ use DB;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 
-class ExplorationQueueService
+class LandIncomingQueueService
 {
     /** @var LandHelper */
     protected $landHelper;
 
     /** @var array */
-    protected $explorationQueue;
+    protected $landIncomingQueue;
 
     /**
-     * ExplorationQueueService constructor.
+     * LandIncomingQueueService constructor.
      *
      * @param LandHelper $landHelper
      */
@@ -25,32 +25,32 @@ class ExplorationQueueService
     }
 
     /**
-     * Returns the exploration queue of a dominion.
+     * Returns the land incoming queue of a dominion.
      *
      * @param Dominion $dominion
      * @return array
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->explorationQueue) {
-            return $this->explorationQueue;
+        if ($this->landIncomingQueue) {
+            return $this->landIncomingQueue;
         }
 
-        $rows = DB::table('queue_exploration')
+        $rows = DB::table('queue_land_incoming')
             ->where('dominion_id', $dominion->id)
             ->get(['land_type', 'amount', 'hours']);
 
-        $explorationQueue = array_fill_keys($this->landHelper->getLandTypes(), array_fill(0, 12, 0));
+        $landIncomingQueue = array_fill_keys($this->landHelper->getLandTypes(), array_fill(0, 12, 0));
 
         foreach ($rows as $row) {
-            $explorationQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
+            $landIncomingQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
         }
 
-        return $this->explorationQueue = $explorationQueue;
+        return $this->landIncomingQueue = $landIncomingQueue;
     }
 
     /**
-     * Returns the total number of land being explored of a dominion.
+     * Returns the total number of land incoming for a dominion.
      *
      * @param Dominion $dominion
      * @return int
@@ -58,9 +58,9 @@ class ExplorationQueueService
     public function getQueueTotal(Dominion $dominion): int
     {
         $total = 0;
-        $explorationQueue = $this->getQueue($dominion);
+        $landIncomingQueue = $this->getQueue($dominion);
 
-        foreach ($explorationQueue as $landType => $data) {
+        foreach ($landIncomingQueue as $landType => $data) {
             foreach ($data as $hours => $amount) {
                 $total += $amount;
             }
@@ -70,8 +70,7 @@ class ExplorationQueueService
     }
 
     /**
-     * Returns the total number of a specific land being explored by a
-     * dominion.
+     * Returns the total number of a specific land incoming for a dominion.
      *
      * @todo rename to getQueueTotalByLandType
      * @param Dominion $dominion

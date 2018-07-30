@@ -17,49 +17,49 @@
                     </div>
                 @else
                     <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                    @csrf
+                        @csrf
 
-                    <div class="box-body">
+                        <div class="box-body">
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="target_dominion">Select a target</label>
-                                    <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
-                                        <option></option>
-                                        @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
-                                            <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
-                                                {{ $dominion->name }} (#{{ $dominion->realm->number }})
-                                            </option>
-                                        @endforeach
-                                    </select>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="target_dominion">Select a target</label>
+                                        <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
+                                            <option></option>
+                                            @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
+                                                <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                                    {{ $dominion->name }} (#{{ $dominion->realm->number }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label>Information Gathering Operations</label>
-                            </div>
-                        </div>
-
-                        @foreach ($espionageHelper->getInfoGatheringOperations()->chunk(4) as $operations)
                             <div class="row">
-                                @foreach ($operations as $operation)
-                                    <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
-                                        <div class="form-group">
-                                            <button type="submit" name="operation" value="{{ $operation['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) ? 'disabled' : null }}>
-                                                {{ $operation['name'] }}
-                                            </button>
-                                            <p>{{ $operation['description'] }}</p>
-                                        </div>
-                                    </div>
-                                @endforeach
+                                <div class="col-md-12">
+                                    <label>Information Gathering Operations</label>
+                                </div>
                             </div>
-                        @endforeach
 
-                    </div>
-                </form>
+                            @foreach ($espionageHelper->getInfoGatheringOperations()->chunk(4) as $operations)
+                                <div class="row">
+                                    @foreach ($operations as $operation)
+                                        <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
+                                            <div class="form-group">
+                                                <button type="submit" name="operation" value="{{ $operation['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) ? 'disabled' : null }}>
+                                                    {{ $operation['name'] }}
+                                                </button>
+                                                <p>{{ $operation['description'] }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+
+                        </div>
+                    </form>
                 @endif
 
             </div>

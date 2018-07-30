@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Unit\Factories;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Realm;
@@ -23,7 +22,7 @@ class RealmFactoryTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $this->round = $this->createRound();
 

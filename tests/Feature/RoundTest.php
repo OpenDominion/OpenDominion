@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -21,7 +20,7 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeActiveRounds()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $this->createAndImpersonateUser();
         $this->createRound();
 
@@ -37,7 +36,7 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeRoundWhichStartSoon()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $this->createAndImpersonateUser();
         $this->createRound('+3 days', '+53 days');
 
@@ -52,7 +51,7 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeRoundsWhichDontStartSoon()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $this->createAndImpersonateUser();
         $this->createRound('+5 days', '+55 days');
 
@@ -67,7 +66,7 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanRegisterToARound()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
 

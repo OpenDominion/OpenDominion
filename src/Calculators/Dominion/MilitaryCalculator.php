@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 
 class MilitaryCalculator
 {
@@ -15,17 +16,27 @@ class MilitaryCalculator
     /** @var SpellCalculator */
     protected $spellCalculator;
 
+    /** @var UnitsReturningQueueService */
+    protected $unitsReturningQueueService;
+
     /**
      * MilitaryCalculator constructor.
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param SpellCalculator $spellCalculator
+     * @param UnitsReturningQueueService $unitsReturningQueueService
      */
-    public function __construct(ImprovementCalculator $improvementCalculator, LandCalculator $landCalculator, SpellCalculator $spellCalculator)
-    {
+    public function __construct(
+        ImprovementCalculator $improvementCalculator,
+        LandCalculator $landCalculator,
+        SpellCalculator $spellCalculator,
+        UnitsReturningQueueService $unitsReturningQueueService
+    ) {
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->spellCalculator = $spellCalculator;
+        $this->unitsReturningQueueService = $unitsReturningQueueService;
     }
 
     /**
@@ -36,7 +47,9 @@ class MilitaryCalculator
      */
     public function getOffensivePower(Dominion $dominion): float
     {
-        return ($this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion));
+        $op = ($this->getOffensivePowerRaw($dominion) * $this->getOffensivePowerMultiplier($dominion));
+
+        return ($op * $this->getMoraleMultiplier($dominion));
     }
 
     /**
@@ -127,7 +140,9 @@ class MilitaryCalculator
      */
     public function getDefensivePower(Dominion $dominion): float
     {
-        return ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
+        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
+
+        return ($dp * $this->getMoraleMultiplier($dominion));
     }
 
     /**
@@ -220,6 +235,19 @@ class MilitaryCalculator
     public function getDefensivePowerRatioRaw(Dominion $dominion): float
     {
         return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
+    }
+
+    /**
+     * Returns the Dominion's morale modifier for OP/DP.
+     *
+     * Net OP/DP gets lowered linearly by up to -10% at 0% morale.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getMoraleMultiplier(Dominion $dominion): float
+    {
+        return clamp((0.9 + ($dominion->morale / 1000)), 0.9, 1.0);
     }
 
     /**
@@ -336,5 +364,22 @@ class MilitaryCalculator
         // todo: check if this needs to be a float
 
         return (float)$regen;
+    }
+
+    /**
+     * Gets the total amount of living specialist/elite units for a Dominion.
+     *
+     * Total amount includes units at home and units returning from battle.
+     *
+     * @param Dominion $dominion
+     * @param int $slot
+     * @return int
+     */
+    public function getTotalUnitsForSlot(Dominion $dominion, int $slot): int
+    {
+        return (
+            $dominion->{'military_unit' . $slot} +
+            $this->unitsReturningQueueService->getQueueTotalByUnitType($dominion, ('unit' . $slot))
+        );
     }
 }
