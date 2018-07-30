@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class TickTest extends AbstractBrowserKitTestCase
@@ -206,12 +207,10 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $platToBeAdded = 86850;
 
-        session(['selected_dominion_id' => $dominion1->id]);
         $this->assertEquals(18000, $populationCalculator->getPopulationEmployed($dominion1));
         $this->assertEquals($platToBeAdded, $productionCalculator->getPlatinumProduction($dominion1));
         $this->assertFalse($spellCalculator->isSpellActive($dominion1, 'midas_touch'));
 
-        session(['selected_dominion_id' => $dominion2->id]);
         $this->assertEquals(18000, $populationCalculator->getPopulationEmployed($dominion2));
         $this->assertEquals($platToBeAdded, $productionCalculator->getPlatinumProduction($dominion2));
         $this->assertFalse($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
@@ -222,12 +221,10 @@ class TickTest extends AbstractBrowserKitTestCase
         $spellActionService->castSpell($dominion2, 'midas_touch');
 
         // Refresh active spells
-        session(['selected_dominion_id' => $dominion1->id]);
         $spellCalculator->getActiveSpells($dominion1, true);
         $this->assertFalse($spellCalculator->isSpellActive($dominion1, 'midas_touch'));
         $this->assertEquals($platToBeAdded * 1.0, $productionCalculator->getPlatinumProduction($dominion1));
 
-        session(['selected_dominion_id' => $dominion2->id]);
         $spellCalculator->getActiveSpells($dominion2, true);
         $this->assertTrue($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
         $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion2));
@@ -262,8 +259,6 @@ class TickTest extends AbstractBrowserKitTestCase
             'military_spies' => 0,
             'military_wizards' => 0,
         ])->save();
-
-        session(['selected_dominion_id' => $dominion->id]);
 
         // 80 farms * 80 food * 1.05 human * 1.025 prestige = 6888 food
         $this->assertEquals(6888, $productionCalculator->getFoodProduction($dominion));
