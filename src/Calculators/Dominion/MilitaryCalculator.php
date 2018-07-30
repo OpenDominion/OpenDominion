@@ -97,6 +97,7 @@ class MilitaryCalculator
         // Improvement: Forges
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
+        // Racial Spell
         // todo
         // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
