@@ -145,7 +145,7 @@ class InvadeActionService
 
             // CASUALTIES
 
-            $offensiveCasualties = 0; // 8.5% needed to break the target, *2 if !$invasionSuccessful
+            $offensiveCasualties = 0; // 8.5% needed to break the target, on bounce 8.5% of total sent
             // offensive casualty modifiers (cleric/shaman, shrines), capped at -80% casualties (needs confirmation)
 
             $targetDefensiveCasualties = 0; // 6.6% at 1.0 land size ratio (see issue #151)
