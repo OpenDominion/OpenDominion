@@ -157,10 +157,32 @@ class InvadeActionService
             // LAND GAINS/LOSSES
 
             // if $invasionSuccessful
-                // calculate total conquered acres; 10% of target total land
-                // calculate target barren land losses (array), based on ratio of what the target has
-                // calculate land conquers (array) (= target land loss)
+                // landGrabRatio = 1.0
+                // if mutual war, landGrabRatio = 1.2
+                // if non-mutual war, lanGrabRatio = 1.15
+                // todo if peace, landGrabRatio = 0.9
+
+                // calculate total acres of land lost. FORMULA:
+                /*
+                $landLost% = max(
+                    floor(
+                        if(
+                            $ratio < 0.55,
+                            (0.304 * $ratio ^ 2 - 0.227 * $ratio + 0.048) * $netOP * landGrabRatio,
+                            if(
+                                $ratio < 0.75,
+                                $netOP * landGrabRatio * (0.154 * $ratio - 0.069),
+                                landGrabRatio * $netOP * (0.129 * $ratio - 0.048)
+                            )
+                        ),
+                    1),
+                10)
+                 */
+
+                // calculate target barren land losses (array)
                 // calculate target buildings destroyed (array), only if target does not have enough barren land buffer, in ratio of buildings constructed per land type
+                // calculate total conquered acres (same acres as target land lost)
+                // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
 
 
