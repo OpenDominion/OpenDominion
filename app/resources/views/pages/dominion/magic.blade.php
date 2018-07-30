@@ -17,7 +17,7 @@
                             @csrf
 
                             <div class="box-body">
-                                @foreach ($spellHelper->getSelfSpells()->chunk(2) as $spells)
+                                @foreach ($spellHelper->getSelfSpells($selectedDominion->race)->chunk(2) as $spells)
                                     <div class="row">
                                         @foreach ($spells as $spell)
                                             <div class="col-xs-6 col-sm-6 col-md-12 col-lg-6 text-center">

@@ -99,7 +99,7 @@ class SpellActionService
     {
         $this->guardLockedDominion($dominion);
 
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
         if (!$spellInfo) {
             throw new RuntimeException("Cannot cast unknown spell '{$spellKey}'");
@@ -145,7 +145,7 @@ class SpellActionService
 
         DB::transaction(function () use ($dominion, $manaCost, $spellKey, &$result, $target) {
 
-            if ($this->spellHelper->isSelfSpell($spellKey)) {
+            if ($this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $result = $this->castSelfSpell($dominion, $spellKey);
 
             } elseif ($this->spellHelper->isInfoOpSpell($spellKey)) {
@@ -193,7 +193,7 @@ class SpellActionService
      */
     protected function castSelfSpell(Dominion $dominion, string $spellKey): array
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
         if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
 
@@ -251,7 +251,7 @@ class SpellActionService
      */
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion);
         $targetWpa = $this->militaryCalculator->getWizardRatio($target);

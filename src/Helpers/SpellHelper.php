@@ -3,20 +3,21 @@
 namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class SpellHelper
 {
-    public function getSpellInfo(string $spellKey): array
+    public function getSpellInfo(string $spellKey, Race $race): array
     {
-        return $this->getSpells()->filter(function ($spell) use ($spellKey) {
+        return $this->getSpells($race)->filter(function ($spell) use ($spellKey) {
             return ($spell['key'] === $spellKey);
         })->first();
     }
 
-    public function isSelfSpell(string $spellKey): bool
+    public function isSelfSpell(string $spellKey, Race $race): bool
     {
-        return $this->getSelfSpells()->filter(function ($spell) use ($spellKey) {
+        return $this->getSelfSpells($race)->filter(function ($spell) use ($spellKey) {
             return ($spell['key'] === $spellKey);
         })->isNotEmpty();
     }
@@ -49,15 +50,15 @@ class SpellHelper
         })->isNotEmpty();
     }
 
-    public function getSpells(): Collection
+    public function getSpells(Race $race): Collection
     {
-        return $this->getSelfSpells()
+        return $this->getSelfSpells($race)
             ->merge($this->getOffensiveSpells());
     }
 
-    public function getSelfSpells(): Collection
+    public function getSelfSpells(Race $race): Collection
     {
-        $raceName = app(SelectorService::class)->getUserSelectedDominion()->race->name;
+        $raceName = $race->name;
 
         $racialSpell = $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
             return $spell['races']->contains($raceName);
