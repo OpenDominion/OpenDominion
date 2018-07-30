@@ -72,10 +72,10 @@ class RoundController extends AbstractController
             $createPack = $realmType === 'create_pack';
 
             $pack = $this->packService->getOrCreatePack(
-                $round, 
-                $race, 
-                $packName, 
-                $packPassword, 
+                $round,
+                $race,
+                $packName,
+                $packPassword,
                 $packSize,
                 $createPack);
         }

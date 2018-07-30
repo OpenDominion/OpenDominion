@@ -50,11 +50,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Act
         $result = $this->packService->getOrCreatePack(
-            $this->round, 
-            $this->goodRace, 
-            'name', 
-            'password', 
-            5, 
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
             true);
 
         // Assert
@@ -70,11 +70,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         try
         {
             $result = $this->packService->getOrCreatePack(
-                $this->round, 
-                $this->goodRace, 
-                'name', 
-                'password', 
-                1, 
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                1,
                 true);
         }
         catch(RuntimeException $e)
@@ -94,11 +94,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         try
         {
             $result = $this->packService->getOrCreatePack(
-                $this->round, 
-                $this->goodRace, 
-                'name', 
-                'password', 
-                7, 
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                7,
                 true);
         }
         catch(RuntimeException $e)
@@ -114,11 +114,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $existingPack = $this->packService->getOrCreatePack(
-            $this->round, 
-            $this->goodRace, 
-            'name', 
-            'password', 
-            5, 
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
             true);
 
         $existingPack->update(['realm_id' => $this->goodRealm->id]);
@@ -126,11 +126,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
 
         // Act
         $result = $this->packService->getOrCreatePack(
-            $this->round, 
-            $this->goodRace, 
-            'name', 
-            'password', 
-            0, 
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            0,
             false);
 
         // Assert
@@ -141,11 +141,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $existingPack = $this->packService->getOrCreatePack(
-            $this->round, 
-            $this->goodRace, 
-            'name', 
-            'password', 
-            5, 
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
             true);
 
         $existingPack->update(['size' => 0]);
@@ -156,11 +156,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         try
         {
             $result = $this->packService->getOrCreatePack(
-                $this->round, 
-                $this->goodRace, 
-                'name', 
-                'password', 
-                0, 
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                0,
                 false);
 
         }
@@ -177,27 +177,27 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         // Arrange
         $existingPack = $this->packService->getOrCreatePack(
-            $this->round, 
-            $this->goodRace, 
-            'name', 
-            'password', 
-            5, 
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
             true);
 
         $existingPack->update(['realm_id' => $this->goodRealm->id]);
         $existingPack->load('realm');
 
         $thrown = false;
-        
+
         // Act
         try
         {
             $result = $this->packService->getOrCreatePack(
-                $this->round, 
-                $this->evilRace, 
-                'name', 
-                'password', 
-                0, 
+                $this->round,
+                $this->evilRace,
+                'name',
+                'password',
+                0,
                 false);
         }
         catch(RuntimeException $e)
@@ -218,11 +218,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         try
         {
             $result = $this->packService->getOrCreatePack(
-                $this->round, 
-                $this->goodRace, 
-                'name', 
-                'password', 
-                0, 
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                0,
                 false);
         }
         catch(RuntimeException $e)

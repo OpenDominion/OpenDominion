@@ -11,11 +11,11 @@ use RuntimeException;
 class PackService
 {
     public function getOrCreatePack(
-        Round $round, 
-        Race $race, 
-        string $packName, 
-        string $packPassword, 
-        int $packSize, 
+        Round $round,
+        Race $race,
+        string $packName,
+        string $packPassword,
+        int $packSize,
         bool $createPack): ?Pack
     {
         $packNameIsNullOrEmpty = (!isset($packName) || trim($packName) === '');
