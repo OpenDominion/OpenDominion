@@ -56,8 +56,6 @@ class DataSyncCommand extends Command implements CommandInterface
         foreach ($files as $file) {
             $data = Yaml::parse($file->getContents(), Yaml::PARSE_OBJECT_FOR_MAP);
 
-            $this->info("Race {$data->name}");
-
             // Race
             $race = Race::firstOrNew(['name' => $data->name])
                 ->fill([
@@ -65,7 +63,12 @@ class DataSyncCommand extends Command implements CommandInterface
                     'home_land_type' => object_get($data, 'home_land_type'),
                 ]);
 
-            if ($race->exists) {
+            if (!$race->exists) {
+                $this->info("Adding race {$data->name}");
+
+            } else {
+                $this->info("Processing race {$data->name}");
+
                 $newValues = $race->getDirty();
 
                 foreach ($newValues as $key => $newValue) {

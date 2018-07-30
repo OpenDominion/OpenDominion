@@ -29,6 +29,7 @@ use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
+use OpenDominion\Services\Dominion\Actions\InvadeActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
@@ -39,7 +40,9 @@ use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
 use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\NotificationService;
@@ -121,6 +124,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(EspionageActionService::class);
         $this->app->singleton(ExploreActionService::class);
         $this->app->singleton(ImproveActionService::class);
+        $this->app->singleton(InvadeActionService::class);
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
         $this->app->singleton(SpellActionService::class);
@@ -128,6 +132,8 @@ class AppServiceProvider extends AbstractServiceProvider
         // Dominion Queue Services
         $this->app->singleton(ConstructionQueueService::class);
         $this->app->singleton(ExplorationQueueService::class);
+        $this->app->singleton(LandIncomingQueueService::class);
         $this->app->singleton(TrainingQueueService::class);
+        $this->app->singleton(UnitsReturningQueueService::class);
     }
 }

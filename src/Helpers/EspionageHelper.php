@@ -54,7 +54,7 @@ class EspionageHelper
         return collect([
             [
                 'name' => 'Barracks Spy',
-                'description' => 'Reveal units',
+                'description' => 'Reveal estimate units',
                 'key' => 'barracks_spy',
             ],
             [

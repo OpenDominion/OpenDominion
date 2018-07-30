@@ -29,6 +29,22 @@ if (!function_exists('carbon')) {
     }
 }
 
+if (!function_exists('clamp')) {
+    /**
+     * Clamps $current number between $min and $max.
+     *
+     * (tfw no generics)
+     *
+     * @param int|float $current
+     * @param int|float $min
+     * @param int|float $max
+     * @return int|float
+     */
+    function clamp($current, $min, $max) {
+        return max($min, min($max, $current));
+    }
+}
+
 if (!function_exists('generate_sentence_from_array')) {
     /**
      * Generates a string with conjunction from an array of strings.

@@ -5,9 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
+- New races: Dwarf and Goblin.
+- Added ruler name for round registration. ([#254](https://github.com/WaveHack/OpenDominion/issues/254))
 - Added Op Center. ([#24](https://github.com/WaveHack/OpenDominion/issues/24))
+- Added Espionage with the operations: Barracks Spy, Castle Spy, Survey Dominon and Land Spy. ([#21](https://github.com/WaveHack/OpenDominion/issues/21))
 - Added Clear Sight spell. ([#220](https://github.com/WaveHack/OpenDominion/issues/220))
 - Added Revelation spell. ([#221](https://github.com/WaveHack/OpenDominion/issues/221))
+- Added unit OP/DP on military page ([#234](https://github.com/WaveHack/OpenDominion/issues/234))
+- Add NYI/PI indicator and help text icon on Construction Advisor page
 
 ### Changes
 - Employment percentage on status screen now shows 2 decimals.

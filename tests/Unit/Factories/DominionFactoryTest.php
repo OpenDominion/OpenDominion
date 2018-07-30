@@ -2,9 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Factories;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Mockery as m;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -33,7 +31,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $this->user = $this->createUser();
         $this->round = $this->createRound();
@@ -47,7 +45,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         $this->assertEquals(0, Realm::count());
         $this->assertEquals(0, Dominion::count());
 
-        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Dummy');
+        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Ruler Name', 'Dominion Name');
 
         $this->assertEquals(1, Realm::count());
         $this->assertEquals(1, Dominion::count());

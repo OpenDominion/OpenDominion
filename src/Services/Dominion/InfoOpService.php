@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -9,15 +10,22 @@ use OpenDominion\Models\Realm;
 
 class InfoOpService
 {
+    /** @var EspionageHelper */
+    protected $espionageHelper;
+
     /** @var SpellHelper */
     protected $spellHelper;
 
     /**
      * InfoOpService constructor.
+     *
+     * @param EspionageHelper $espionageHelper
+     * @param SpellHelper $spellHelper
      */
-    public function __construct()
+    public function __construct(EspionageHelper $espionageHelper, SpellHelper $spellHelper)
     {
-        $this->spellHelper = app(SpellHelper::class);
+        $this->espionageHelper = $espionageHelper;
+        $this->spellHelper = $spellHelper;
     }
 
     public function hasInfoOps(Realm $sourceRealm, Dominion $targetDominion): bool
@@ -175,22 +183,32 @@ class InfoOpService
             ->first();
     }
 
-    public function getLastInfoOpSpellName(Realm $sourceRealm, Dominion $targetDominion): string
+    public function getLastInfoOpName(Realm $sourceRealm, Dominion $targetDominion): string
     {
-        return $this->spellHelper->getInfoOpSpells()->filter(function ($spell) use ($sourceRealm, $targetDominion) {
-            return ($spell['key'] === $this->getLastInfoOp($sourceRealm, $targetDominion)->type);
-        })->first()['name'];
+        $lastInfoOp = $this->getLastInfoOp($sourceRealm, $targetDominion);
+
+        return $this->espionageHelper->getInfoGatheringOperations()
+            ->merge($this->spellHelper->getInfoOpSpells())
+            ->filter(function ($op) use ($lastInfoOp) {
+                return ($op['key'] === $lastInfoOp->type);
+            })
+            ->first()['name'];
     }
 
     public function getNumberOfActiveInfoOps(Realm $sourceRealm, Dominion $targetDominion): int
     {
-        return $this->spellHelper->getInfoOpSpells()->filter(function ($value) use ($sourceRealm, $targetDominion) {
-            return $this->hasInfoOp($sourceRealm, $targetDominion, $value['key']);
-        })->count();
+        return $this->espionageHelper->getInfoGatheringOperations()
+            ->merge($this->spellHelper->getInfoOpSpells())
+            ->filter(function ($op) use ($sourceRealm, $targetDominion) {
+                return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
+            })
+            ->count();
     }
 
     public function getMaxInfoOps(): int
     {
-        return $this->spellHelper->getInfoOpSpells()->count();
+        return $this->espionageHelper->getInfoGatheringOperations()
+            ->merge($this->spellHelper->getInfoOpSpells())
+            ->count();
     }
 }

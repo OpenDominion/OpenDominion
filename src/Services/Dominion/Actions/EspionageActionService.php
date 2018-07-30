@@ -4,13 +4,23 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
+use OpenDominion\Calculators\Dominion\ImprovementCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
+use OpenDominion\Helpers\ImprovementHelper;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
+use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -19,8 +29,32 @@ class EspionageActionService
 {
     use DominionGuardsTrait;
 
+    /** @var BuildingHelper */
+    protected $buildingHelper;
+
+    /** @var ConstructionQueueService */
+    protected $constructionQueueService;
+
     /** @var EspionageHelper */
     protected $espionageHelper;
+
+    /** @var ExplorationQueueService */
+    protected $explorationQueueService;
+
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
+
+    /** @var ImprovementHelper */
+    protected $improvementHelper;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    /** @var LandHelper */
+    protected $landHelper;
+
+    /** @var LandIncomingQueueService */
+    protected $landIncomingQueueService;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -31,24 +65,60 @@ class EspionageActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var TrainingQueueService */
+    protected $trainingQueueService;
+
+    /** @var UnitsReturningQueueService */
+    protected $unitsReturningQueueService;
+
     /**
      * EspionageActionService constructor.
      *
+     * @param BuildingHelper $buildingHelper
+     * @param ConstructionQueueService $constructionQueueService
      * @param EspionageHelper $espionageHelper
+     * @param ExplorationQueueService $explorationQueueService
+     * @param ImprovementCalculator $improvementCalculator
+     * @param ImprovementHelper $improvementHelper
+     * @param LandCalculator $landCalculator
+     * @param LandHelper $landHelper
+     * @param LandIncomingQueueService $landIncomingQueueService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
+     * @param TrainingQueueService $trainingQueueService
+     * @param UnitsReturningQueueService $unitsReturningQueueService
      */
     public function __construct(
+        BuildingHelper $buildingHelper,
+        ConstructionQueueService $constructionQueueService,
         EspionageHelper $espionageHelper,
+        ExplorationQueueService $explorationQueueService,
+        ImprovementCalculator $improvementCalculator,
+        ImprovementHelper $improvementHelper,
+        LandCalculator $landCalculator,
+        LandHelper $landHelper,
+        LandIncomingQueueService $landIncomingQueueService,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
-        RangeCalculator $rangeCalculator
+        RangeCalculator $rangeCalculator,
+        TrainingQueueService $trainingQueueService,
+        UnitsReturningQueueService $unitsReturningQueueService
     ) {
+        $this->buildingHelper = $buildingHelper;
+        $this->constructionQueueService = $constructionQueueService;
         $this->espionageHelper = $espionageHelper;
+        $this->explorationQueueService = $explorationQueueService;
+        $this->improvementCalculator = $improvementCalculator;
+        $this->improvementHelper = $improvementHelper;
+        $this->landCalculator = $landCalculator;
+        $this->landHelper = $landHelper;
+        $this->landIncomingQueueService = $landIncomingQueueService;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
+        $this->trainingQueueService = $trainingQueueService;
+        $this->unitsReturningQueueService = $unitsReturningQueueService;
     }
 
     /**
@@ -147,7 +217,7 @@ class EspionageActionService
             ];
         }
 
-        if ($targetSpa !== 1.0) {
+        if ($targetSpa !== 0.0) {
             $ratio = ($selfSpa / $targetSpa);
 
             // todo: copied from spell success ratio. needs looking into later
@@ -160,13 +230,15 @@ class EspionageActionService
             );
 
             if (!random_chance($successRate)) {
-                // todo: have some spies captured and killed
+                $spiesKilled = (int)ceil($dominion->military_spies * 0.02);
 
-//                return [
-//                    'success' => false,
-//                    'message' => "The enemy spies have repelled our {$operationInfo['name']} attempt.",
-//                    'alert-type' => 'warning',
-//                ];
+                $dominion->military_spies -= $spiesKilled;
+
+                return [
+                    'success' => false,
+                    'message' => ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.'),
+                    'alert-type' => 'warning',
+                ];
             }
         }
 
@@ -186,49 +258,106 @@ class EspionageActionService
 
         switch ($operationKey) {
             case 'barracks_spy':
-//                $data = [];
-                $data = $infoOp->data;
+                $data = [];
 
-                foreach (range(0, 3) as $i) {
-                    $amount = $target->{'military_unit' . $i};
+                // Units at home (85% accurate)
+                foreach (range(1, 4) as $slot) {
+                    $amountAtHome = $target->{'military_unit' . $slot};
 
-//                    dd(
-//                        array_get($data, "units.{$i}.exact"),
-//                        $amount
-//                    );
-
-                    if (array_get($data, "units.{$i}.exact") !== $amount) {
-
+                    if ($amountAtHome !== 0) {
+                        $amountAtHome = random_int(
+                            round($amountAtHome * 0.85),
+                            round($amountAtHome / 0.85)
+                        );
                     }
 
-                    array_set($data, "units.{$i}.exact", $amount);
-
-
-                    $randomizedAmount = random_int(
-                        round($amount * 0.85),
-                        round($amount / 0.85)
-                    );
-
-                    array_set($data, "units.{$i}", $randomizedAmount);
+                    array_set($data, "units.home.unit{$slot}", $amountAtHome);
                 }
+
+                // Units returning (85% accurate)
+                $amountReturning = $this->unitsReturningQueueService->getQueue($target);
+
+                foreach ($amountReturning as $unitType => $returningData) {
+                    foreach ($returningData as $hour => $amount) {
+                        if ($amount !== 0) {
+                            $amount = random_int(
+                                round($amount * 0.85),
+                                round($amount / 0.85)
+                            );
+
+                            array_set($amountReturning, "{$unitType}.{$hour}", $amount);
+                        }
+                    }
+                }
+
+                array_set($data, 'units.returning', $amountReturning);
+
+                // Units in training (100% accurate)
+                $amountInTraining = $this->trainingQueueService->getQueue($target);
+                array_set($data, 'units.training', $amountInTraining);
 
                 $infoOp->data = $data;
                 break;
 
             case 'castle_spy':
+                $data = [];
+
+                foreach ($this->improvementHelper->getImprovementTypes() as $type) {
+                    array_set($data, "{$type}.points", $target->{'improvement_' . $type});
+                    array_set($data, "{$type}.rating", $this->improvementCalculator->getImprovementMultiplierBonus($target, $type));
+                }
+
+                $infoOp->data = $data;
                 break;
 
             case 'survey_dominion':
+                $data = [];
+
+                foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
+                    array_set($data, "constructed.{$buildingType}", $target->{'building_' . $buildingType});
+                }
+
+                array_set($data, 'constructing', $this->constructionQueueService->getQueue($target));
+
+                array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($target));
+
+                $infoOp->data = $data;
                 break;
 
             case 'land_spy':
+                $data = [];
+
+                foreach ($this->landHelper->getLandTypes() as $landType) {
+                    $amount = $target->{'land_' . $landType};
+
+                    array_set($data, "explored.{$landType}.amount", $amount);
+                    array_set($data, "explored.{$landType}.percentage", (($amount / $this->landCalculator->getTotalLand($target)) * 100));
+                    array_set($data, "explored.{$landType}.barren", $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
+                }
+
+                // hacky hack
+                $incoming = [];
+
+                $exploringLand = $this->explorationQueueService->getQueue($target);
+                $incomingLand = $this->landIncomingQueueService->getQueue($target);
+
+                foreach ($this->landHelper->getLandTypes() as $landType) {
+                    foreach (range(0, 11) as $hour) {
+                        array_set($incoming, "{$landType}.{$hour}", (
+                            array_get($exploringLand, "{$landType}.{$hour}", 0) +
+                            array_get($incomingLand, "{$landType}.{$hour}", 0)
+                        ));
+                    }
+                }
+
+                array_set($data, 'incoming', $incoming);
+
+                $infoOp->data = $data;
                 break;
 
             default:
                 throw new LogicException("Unknown info gathering operation {$operationKey}");
         }
-
-        dd($infoOp->toArray()['data']['units']);
 
         // Always force update updated_at on infoops to know when the last infoop was performed
         $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?

@@ -26,20 +26,27 @@ class DevelopmentSeeder extends Seeder
         $this->dominionFactory = $dominionFactory;
     }
 
-    public function run()
+    /**
+     * Run the database seeds.
+     *
+     * @throws Throwable
+     */
+    public function run(): void
     {
-        $user = $this->createUser();
-        $round = $this->createRound();
-        $this->createRealmAndDominion($user, $round);
+        DB::transaction(function () {
+            $user = $this->createUser();
+            $round = $this->createRound();
+            $this->createRealmAndDominion($user, $round);
 
-        $this->command->info(<<<INFO
+            $this->command->info(<<<INFO
 
 Done seeding data.
 A development round, user and dominion have been created for your convenience.
 You may login with email '{$user->email}' and password '{$this->userPassword}'.
 
 INFO
-        );
+            );
+        });
     }
 
     protected function createUser(): User
@@ -83,6 +90,7 @@ INFO
             $round,
             Race::where('name', 'Human')->firstOrFail(),
             'random',
+            'Developer',
             'Dev Dominion'
         );
     }

@@ -162,7 +162,7 @@ class SpellActionService
             }
 
             $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= 5; // todo: 2% for info ops, 5% for rest
+            $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
 
         });
@@ -279,6 +279,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
+                    'wizardStrengthCost' => 2,
                     'alert-type' => 'warning',
                 ];
             }
@@ -303,7 +304,7 @@ class SpellActionService
             case 'clear_sight':
                 $infoOp->data = [
 
-                    'ruler_name' => $target->user->display_name, // todo: $target->ruler_name
+                    'ruler_name' => ($target->ruler_name ?: $target->user->display_name),
                     'race_id' => $target->race->id,
                     'land' => $this->landCalculator->getTotalLand($target),
                     'peasants' => $target->peasants,
@@ -322,10 +323,10 @@ class SpellActionService
 
                     'morale' => $target->morale,
                     'military_draftees' => $target->military_draftees,
-                    'military_unit1' => $target->military_unit1,
-                    'military_unit2' => $target->military_unit2,
-                    'military_unit3' => $target->military_unit3,
-                    'military_unit4' => $target->military_unit4,
+                    'military_unit1' => $this->militaryCalculator->getTotalUnitsForSlot($target, 1),
+                    'military_unit2' => $this->militaryCalculator->getTotalUnitsForSlot($target, 2),
+                    'military_unit3' => $this->militaryCalculator->getTotalUnitsForSlot($target, 3),
+                    'military_unit4' => $this->militaryCalculator->getTotalUnitsForSlot($target, 4),
 
                 ];
                 break;
@@ -359,6 +360,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
+            'wizardStrengthCost' => 2,
             'redirect' => route('dominion.op-center.show', $target),
         ];
     }
