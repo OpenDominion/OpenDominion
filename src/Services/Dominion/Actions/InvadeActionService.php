@@ -152,7 +152,6 @@ class InvadeActionService
             // defensive casualty modifiers (reduction based on recent invasion: 100%, 80%, 60%, 55%, 45%, 35%)
             // (note: defensive casualties are spread out in ratio between all units that help def (have DP), including draftees)
 
-
             // LAND GAINS/LOSSES
 
             // if $invasionSuccessful
@@ -165,8 +164,9 @@ class InvadeActionService
 
             // MORALE
 
-            // calc morale loss (5%) (see issue #151)
-            // calc target morale loss (?%) (only on $invasionSuccessful?) (needs confirmation)
+            // >= 75%+ size: reduce -5% self morale
+            // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
+            // reduce target morale by -5%
 
 
             // MISC
