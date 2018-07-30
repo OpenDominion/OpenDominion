@@ -131,7 +131,7 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Crusade',
-                'description' => '+5% offensive power, allows you to kill Undead',
+                'description' => '+5% offensive power, allows you to kill Spirit/Undead',
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
