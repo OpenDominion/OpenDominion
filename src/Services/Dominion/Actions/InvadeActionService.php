@@ -147,7 +147,7 @@ class InvadeActionService
 
             $offensiveCasualties = 0; // 8.5% needed to break the target, on bounce 8.5% of total sent
             // offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
-            // offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc)
+            // offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
 
             $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
             // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
