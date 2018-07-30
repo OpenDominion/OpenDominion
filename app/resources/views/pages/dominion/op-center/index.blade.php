@@ -79,7 +79,7 @@
                                         {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
-                                        {{ $infoOpService->getLastInfoOpSpellName($selectedDominion->realm, $dominion) }}
+                                        {{ $infoOpService->getLastInfoOpName($selectedDominion->realm, $dominion) }}
                                         by
                                         @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
                                             <strong>

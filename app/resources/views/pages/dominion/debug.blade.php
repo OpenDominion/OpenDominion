@@ -83,6 +83,7 @@
                             'getDefensivePowerMultiplier',
                             'getDefensivePowerRatio',
                             'getDefensivePowerRatioRaw',
+                            'getMoraleMultiplier',
                             'getSpyRatio',
                             'getSpyRatioRaw',
                             'getWizardRatio',

@@ -121,6 +121,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military/release')->uses('Dominion\MilitaryController@getRelease')->name('military.release');
             $router->post('military/release')->uses('Dominion\MilitaryController@postRelease');
 
+            $router->get('invade')->uses('Dominion\InvasionController@getInvade')->name('invade');
+            $router->post('invade')->uses('Dominion\InvasionController@postInvade');
+
             // Magic
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
             $router->post('magic')->uses('Dominion\MagicController@postMagic');
