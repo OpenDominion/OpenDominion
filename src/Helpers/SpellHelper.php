@@ -3,19 +3,21 @@
 namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Collection;
+use OpenDominion\Models\Race;
+use OpenDominion\Services\Dominion\SelectorService;
 
 class SpellHelper
 {
-    public function getSpellInfo(string $spellKey): array
+    public function getSpellInfo(string $spellKey, Race $race): array
     {
-        return $this->getSpells()->filter(function ($spell) use ($spellKey) {
+        return $this->getSpells($race)->filter(function ($spell) use ($spellKey) {
             return ($spell['key'] === $spellKey);
         })->first();
     }
 
-    public function isSelfSpell(string $spellKey): bool
+    public function isSelfSpell(string $spellKey, Race $race): bool
     {
-        return $this->getSelfSpells()->filter(function ($spell) use ($spellKey) {
+        return $this->getSelfSpells($race)->filter(function ($spell) use ($spellKey) {
             return ($spell['key'] === $spellKey);
         })->isNotEmpty();
     }
@@ -48,14 +50,20 @@ class SpellHelper
         })->isNotEmpty();
     }
 
-    public function getSpells(): Collection
+    public function getSpells(Race $race): Collection
     {
-        return $this->getSelfSpells()
+        return $this->getSelfSpells($race)
             ->merge($this->getOffensiveSpells());
     }
 
-    public function getSelfSpells(): Collection
+    public function getSelfSpells(Race $race): Collection
     {
+        $raceName = $race->name;
+
+        $racialSpell = $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
+
         return collect([
             [
                 'name' => 'Gaia\'s Watch',
@@ -114,7 +122,37 @@ class SpellHelper
 //                'duration' => 10,
 //                'cooldown' => 22, // todo
 //            ],
-            // todo: racial
+            $racialSpell
+        ]);
+    }
+
+    public function getRacialSelfSpells(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Crusade',
+                'description' => '+5% offensive power, allows you to kill Spirit/Undead',
+                'key' => 'crusade',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Human', 'Nomad']),
+            ],
+            [
+                'name' => 'Miner\'s Sight',
+                'description' => '+20% ore production (not cumulative with Mining Strength)',
+                'key' => 'miners_sight',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Dwarf']),
+            ],
+            [
+                'name' => 'Killing Rage',
+                'description' => '+10% offensive power',
+                'key' => 'killing_rage',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Goblin']),
+            ]
         ]);
     }
 

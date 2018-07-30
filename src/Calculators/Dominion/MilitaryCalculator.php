@@ -82,6 +82,8 @@ class MilitaryCalculator
         // Values (percentages)
         $opPerGryphonNest = 1.75;
         $gryphonNestMaxOp = 35;
+        $spellCrusade = 5;
+        $spellKillingRage = 10;
 
         // Gryphon Nests
         $multiplier += min(
@@ -95,10 +97,15 @@ class MilitaryCalculator
         // Improvement: Forges
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
+        // Racial Spell
+        // todo
         // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
         // Spell: Nightfall (+5%)
-        // todo
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
+            'crusade' => $spellCrusade,
+            'killing_rage' => $spellKillingRage,
+        ]);
 
         // Prestige
         $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);

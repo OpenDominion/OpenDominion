@@ -40,7 +40,7 @@ class SpellCalculator
      */
     public function getManaCost(Dominion $dominion, string $spell): int
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spell);
+        $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
         return round($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
     }
 
