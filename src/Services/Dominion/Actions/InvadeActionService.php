@@ -167,7 +167,7 @@ class InvadeActionService
 
             // >= 75%+ size: reduce -5% self morale
             // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
-            // reduce target morale by -5%
+            // if $invasionSuccessful: reduce target morale by -5%
 
 
             // MISC
