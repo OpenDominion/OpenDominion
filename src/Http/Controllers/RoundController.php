@@ -55,7 +55,7 @@ class RoundController extends AbstractController
             'dominion_name' => 'required|string|max:50',
             'ruler_name' => 'nullable|string|max:50',
             'race' => 'required|exists:races,id',
-            'realm' => 'in:random,pack',
+            'realm' => 'in:random,join_pack,create_pack'
         ]);
 
         $realmType = $request->get('realm');
@@ -64,9 +64,20 @@ class RoundController extends AbstractController
         DB::beginTransaction();
 
         $pack = null;
-        if($realmType === 'pack')
+        if(strpos($realmType, 'pack') !== false)
         {
-            $pack = $this->packService->getOrCreatePack($request, $round, $race);
+            $packPassword = $request->get('pack_password');
+            $packName = $request->get('pack_name');
+            $packSize = $request->get('pack_size');
+            $createPack = $realmType === 'create_pack';
+
+            $pack = $this->packService->getOrCreatePack(
+                $round,
+                $race,
+                $packName,
+                $packPassword,
+                $packSize,
+                $createPack);
         }
 
         $dominion = $this->dominionFactory->create(

@@ -5,7 +5,6 @@ namespace OpenDominion\Tests\Unit\Services;
 use CoreDataSeeder;
 use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Http\Request;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -29,9 +28,6 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     /** @var Realm */
     protected $goodRealm;
 
-    /** @var Request */
-    protected $request;
-
     /** @var PackService */
     protected $packService;
 
@@ -39,13 +35,12 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
         $this->evilRace = Race::where('alignment', 'evil')->firstOrFail();
         $this->goodRealm = $this->createRealm($this->round, $this->goodRace->alignment);
-        $this->request = new Request();
         $this->createAndImpersonateUser();
 
         $this->packService = $this->app->make(PackService::class);
@@ -53,16 +48,14 @@ class PackServiceTest extends AbstractBrowserKitTestCase
 
     public function testGetOrCreatePackWhenCreatePackIsTrueReturnsNewPack()
     {
-        // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name',
-            'create_pack' => 'true',
-            'pack_size' => 5
-            ]);
-
         // Act
-        $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
+        $result = $this->packService->getOrCreatePack(
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
+            true);
 
         // Assert
         $this->assertEquals($result->id, 1);
@@ -71,18 +64,18 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testGetOrCreatePackWhenCreatePackIsTrueAndPackSizeIsLowerThan2Throws()
     {
         // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name',
-            'create_pack' => 'true',
-            'pack_size' => 1
-            ]);
-
         $thrown = false;
+
         // Act
         try
         {
-            $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
+            $result = $this->packService->getOrCreatePack(
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                1,
+                true);
         }
         catch(RuntimeException $e)
         {
@@ -95,19 +88,18 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testGetOrCreatePackWhenCreatePackIsTrueAndPackSizeIsGreaterThan6Throws()
     {
         // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name',
-            'create_pack' => 'true',
-            'pack_size' => 7
-            ]);
-
         $thrown = false;
 
         // Act
         try
         {
-            $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
+            $result = $this->packService->getOrCreatePack(
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                7,
+                true);
         }
         catch(RuntimeException $e)
         {
@@ -121,24 +113,25 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testGetOrCreatePackWhenCreatePackIsFalseAndExistingPackReturnsExistingPack()
     {
         // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name',
-            'create_pack' => 'true',
-            'pack_size' => 5
-            ]);
+        $existingPack = $this->packService->getOrCreatePack(
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
+            true);
 
-        $existingPack = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         $existingPack->update(['realm_id' => $this->goodRealm->id]);
         $existingPack->load('realm');
 
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name'
-            ]);
-
         // Act
-        $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
+        $result = $this->packService->getOrCreatePack(
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            0,
+            false);
 
         // Assert
         $this->assertEquals($result->id, $existingPack->id);
@@ -147,27 +140,29 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testGetOrCreatePackWhenCreatePackIsFalseAndExistingPackIsFullThrows()
     {
         // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name',
-            'create_pack' => 'true',
-            'pack_size' => 5
-            ]);
+        $existingPack = $this->packService->getOrCreatePack(
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
+            true);
 
-        $existingPack = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         $existingPack->update(['size' => 0]);
-
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name'
-            ]);
 
         $thrown = false;
 
         // Act
         try
         {
-            $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
+            $result = $this->packService->getOrCreatePack(
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                0,
+                false);
+
         }
         catch(RuntimeException $e)
         {
@@ -181,28 +176,29 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testGetOrCreatePackWhenCreatePackIsFalseAndExistingPackIsWrongAlignmentThrows()
     {
         // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name',
-            'create_pack' => 'true',
-            'pack_size' => 5
-            ]);
+        $existingPack = $this->packService->getOrCreatePack(
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            5,
+            true);
 
-        $existingPack = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
         $existingPack->update(['realm_id' => $this->goodRealm->id]);
         $existingPack->load('realm');
-
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name'
-            ]);
 
         $thrown = false;
 
         // Act
         try
         {
-            $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->evilRace);
+            $result = $this->packService->getOrCreatePack(
+                $this->round,
+                $this->evilRace,
+                'name',
+                'password',
+                0,
+                false);
         }
         catch(RuntimeException $e)
         {
@@ -216,17 +212,18 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     public function testGetOrCreatePackWhenCreatePackIsFalseAndNoExistingPackThrows()
     {
         // Arrange
-        $this->request->replace([
-            'pack_password' => 'password',
-            'pack_name' => 'name'
-            ]);
-
         $thrown = false;
 
         // Act
         try
         {
-            $result = $this->packService->getOrCreatePack($this->request, $this->round, $this->goodRace);
+            $result = $this->packService->getOrCreatePack(
+                $this->round,
+                $this->goodRace,
+                'name',
+                'password',
+                0,
+                false);
         }
         catch(RuntimeException $e)
         {

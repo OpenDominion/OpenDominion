@@ -41,11 +41,19 @@ class DominionFactory
      * @param string $realmType Currently only 'random'. Future will support packs
      * @param string $rulerName
      * @param string $dominionName
+     * @param null|Pack $pack
      *
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $rulerName, string $dominionName, ?Pack $pack): Dominion
-    {
+    public function create(
+        User $user,
+        Round $round,
+        Race $race,
+        string $realmType,
+        string $rulerName,
+        string $dominionName,
+        ?Pack $pack = null): Dominion
+        {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
@@ -54,7 +62,8 @@ class DominionFactory
             case 'random':
                 $realm = $this->realmFinderService->findRandomRealm($round, $race);
                 break;
-            case 'pack':
+            case 'join_pack':
+            case 'create_pack':
                 $realm = $pack->realm;
                 if ($realm === null) {
                     $realm = $this->realmFinderService->findRandomRealmForPack($round, $race, $pack);
@@ -145,7 +154,7 @@ class DominionFactory
             'building_dock' => 0,
         ]);
 
-        if($pack !== null) {
+        if ($pack !== null) {
             $pack->realm()->update(['reserved_slots' => $pack->realm->reserved_slots - 1]);
         }
 

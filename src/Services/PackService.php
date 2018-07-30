@@ -3,7 +3,6 @@
 namespace OpenDominion\Services;
 
 use Auth;
-use Illuminate\Http\Request;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -11,19 +10,22 @@ use RuntimeException;
 
 class PackService
 {
-    public function getOrCreatePack(Request $request, Round $round, Race $race): ?Pack
+    public function getOrCreatePack(
+        Round $round,
+        Race $race,
+        string $packName,
+        string $packPassword,
+        int $packSize,
+        bool $createPack): ?Pack
     {
-        // TODO: Handle validation errors gracefully...
-        if(!$request->filled('pack_password') || !$request->filled('pack_name')) {
-            return null;
+        $packNameIsNullOrEmpty = (!isset($packName) || trim($packName) === '');
+        $packPasswordIsNullOrEmpty = (!isset($packPassword) || trim($packPassword) === '');
+        if($packNameIsNullOrEmpty || $packPasswordIsNullOrEmpty) {
+            throw new RuntimeException('You need to enter both name and password for the pack.');
         }
 
-        $password = $request->get('pack_password');
-        $name = $request->get('pack_name');
         $pack = null;
-        if($request->has('create_pack')) {
-            $packSize = $request->get('pack_size');
-
+        if($createPack) {
             if($packSize < 2 || $packSize > $round->pack_size)
             {
                 throw new RuntimeException('Pack size must be between 2 and 6.');
@@ -32,8 +34,8 @@ class PackService
             $pack = Pack::create([
                 'round_id' => $round->id,
                 'user_id' => Auth::user()->id,
-                'name' => $name,
-                'password' => $password,
+                'name' => $packName,
+                'password' => $packPassword,
                 'size' => $packSize
             ]);
 
@@ -43,8 +45,8 @@ class PackService
         }
         else {
             $packs = Pack::where([
-                'name' => $name,
-                'password' => $password,
+                'name' => $packName,
+                'password' => $packPassword,
                 'round_id' => $round->id
             ])->withCount('dominions')->lockForUpdate()->get();
 

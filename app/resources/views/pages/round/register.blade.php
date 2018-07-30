@@ -82,34 +82,43 @@
                 <div class="form-group">
                     <label for="realm" class="col-sm-3 control-label">Realm</label>
                     <div class="col-sm-9">
-                        <select name="realm" class="form-control" required>
+                        <select name="realm" id="realm" class="form-control" required>
                             <option value="random">Put me in a random realm</option>
-                            <option value="pack">Pack</option>
+                            <option value="join_pack">Join an existing pack</option>
+                            <option value="create_pack">Create a new pack</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Pack -->
-                <div class="form-group">
-                    <label for="pack_name" class="col-sm-3 control-label">Pack name</label>
+                <!-- Pack Name -->
+                <div class="form-group create-pack-only join-pack-only" style="display: none;">
+                    <label for="pack_name" class="col-sm-3 control-label">Pack Name</label>
                     <div class="col-sm-9">
-                        <input type="input" name="pack_name" id="pack_name" class="form-control" placeholder="Pack name">
+                        <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name">
+                        <p class="help-block create-pack-only">This is the name of your pack. This will be recoded and will eventually be shown in Valhalla.</p>
+                        <p class="help-block join-pack-only">You need the pack name and password from the player whose pack you want to join.</p>
                     </div>
-                    <label for="pack_password" class="col-sm-3 control-label">Pack password</label>
+                </div>
+
+                <!-- Pack Password -->
+                <div class="form-group create-pack-only join-pack-only" style="display: none;">
+                    <label for="pack_password" class="col-sm-3 control-label">Pack Password</label>
                     <div class="col-sm-9">
-                        <input type="password" name="pack_password" id="pack_password" class="form-control" placeholder="Pack password">
+                        <input type="text" name="pack_password" id="pack_password" class="form-control" placeholder="Pack Password">
+                        <p class="help-block create-pack-only">Your packies need both your pack name and pack password in order to join.</p>
                     </div>
-                    <label for="create_pack" class="col-sm-3 control-label">Create new pack</label>
+                </div>
+
+                <!-- Pack Size (create only) -->
+                <div class="form-group create-pack-only" style="display: none;">
+                    <label for="pack_size" class="col-sm-3 control-label">Pack Size</label>
                     <div class="col-sm-9">
-                        <input type="checkbox" name="create_pack" id="create_pack" >
-                    </div>
-                    <label for="pack_size" class="col-sm-3 control-label">Pack size</label>
-                    <div class="col-sm-9">
-                        <select name="pack_size" class="form-control">
+                        {{--<input type="number" name="pack_size" id="pack_size" class="form-control" min="2" max="3" placeholder="2">--}}
                         @for ($i = 2; $i < $round->pack_size; $i++)
                             <option value="{{$i}}">{{$i}}</option>
                         @endfor
                         </select>
+                        <p class="help-block">The amount of players that will be in your pack (including yourself).</p>
                     </div>
                 </div>
 
@@ -122,3 +131,29 @@
         </form>
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+
+            var createPackOnlyEls = $('.create-pack-only');
+            var joinPackOnlyEls = $('.join-pack-only');
+
+            $('#realm').change(function (e) {
+                if (this.value === 'join_pack') {
+                    createPackOnlyEls.hide();
+                    joinPackOnlyEls.show();
+
+                } else if (this.value === 'create_pack') {
+                    joinPackOnlyEls.hide();
+                    createPackOnlyEls.show();
+
+                } else {
+                    createPackOnlyEls.hide();
+                    joinPackOnlyEls.hide();
+                }
+            });
+
+        })(jQuery);
+    </script>
+@endpush
