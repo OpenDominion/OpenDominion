@@ -55,6 +55,7 @@ class UnitHelper
             'fewer_casualties' => '%s%% fewer casualties.',
             'faster_return' => 'Returns %s hours faster from battle.',
             'ore_production' => 'Each unit produces %s units of ore per hour.',
+            'plunders_resources_on_attack' => 'Plunders resources on attack.',
             'reduce_combat_losses' => 'Reduces combat losses.',
         ];
 
