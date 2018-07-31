@@ -163,6 +163,7 @@ class MilitaryCalculator
         $dp = 0;
 
         // Values
+        $minDPPerAcre = 1.5;
         $dpPerDraftee = 1;
         $forestHavenDpPerPeasant = 0.75;
         $peasantsPerForestHaven = 20;
@@ -181,7 +182,10 @@ class MilitaryCalculator
             ($dominion->building_forest_haven * $forestHavenDpPerPeasant * $peasantsPerForestHaven)
         ); // todo: recheck this
 
-        return $dp;
+        return max(
+            $dp,
+            ($minDPPerAcre * $this->landCalculator->getTotalBarrenLand($dominion))
+        );
     }
 
     /**
