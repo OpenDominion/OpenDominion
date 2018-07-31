@@ -184,7 +184,7 @@ class MilitaryCalculator
 
         return max(
             $dp,
-            ($minDPPerAcre * $this->landCalculator->getTotalBarrenLand($dominion))
+            ($minDPPerAcre * $this->landCalculator->getTotalLand($dominion))
         );
     }
 
