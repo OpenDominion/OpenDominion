@@ -15,7 +15,7 @@ class InvasionController extends AbstractDominionController
 {
     public function getInvade()
     {
-        return view('pages.dominion.invade',  [
+        return view('pages.dominion.invade', [
             'landCalculator' => app(LandCalculator::class),
             'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
