@@ -121,7 +121,6 @@ class InvadeActionService
                 'success?' => $invasionSuccessful,
             ]);
 
-
             // PRESTIGE
 
             // if range < 66
@@ -141,7 +140,6 @@ class InvadeActionService
                         // 5+ times: -50%
                     // todo: if at war, increase $prestigeGain by +15%
                     // $targetPrestigeLoss = 5% target->prestige
-
 
             // CASUALTIES
 
@@ -185,13 +183,11 @@ class InvadeActionService
                 // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
 
-
             // MORALE
 
             // >= 75%+ size: reduce -5% self morale
             // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
             // if $invasionSuccessful: reduce target morale by -5%
-
 
             // MISC
 
@@ -199,11 +195,9 @@ class InvadeActionService
                 // hobbos and other special units that trigger something upon invading
                 // later: converts
 
-
             // insert queues for returning units, incoming land and incoming prestige
             // send notification to $target
             // todo: post to both TCs
-
 
             // shit for elsewhere:
 

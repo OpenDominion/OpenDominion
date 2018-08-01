@@ -173,13 +173,10 @@ class EspionageActionService
 
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 throw new LogicException('Not yet implemented');
-
             } elseif ($this->espionageHelper->isBlackOperation($operationKey)) {
                 throw new LogicException('Not yet implemented');
-
             } elseif ($this->espionageHelper->isWarOperation($operationKey)) {
                 throw new LogicException('Not yet implemented');
-
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }

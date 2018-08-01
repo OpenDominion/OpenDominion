@@ -153,10 +153,8 @@ class SpellActionService
 
             } elseif ($this->spellHelper->isBlackOpSpell($spellKey)) {
                 throw new LogicException('Not yet implemented');
-
             } elseif ($this->spellHelper->isWarSpell($spellKey)) {
                 throw new LogicException('Not yet implemented');
-
             } else {
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
