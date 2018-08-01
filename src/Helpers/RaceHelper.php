@@ -2,22 +2,60 @@
 
 namespace OpenDominion\Helpers;
 
+use LogicException;
 use OpenDominion\Models\Race;
 
 class RaceHelper
 {
     public function getRaceDescriptionHtml(Race $race): string
     {
-        return [
+        $descriptions = [];
 
-                'human' => '<p>description here</p><p class="text-green">Increased food production</p>',
+        // Good races
 
-                'nomad' => '<p>description here</p><p class="text-green">Increased mana production</p>',
+        $descriptions['dwarf'] = <<<DWARF
+<p>Defined by their majestic beards and their love for booze and labor, these descendants of Caedair Hold have come to fight for the forces of good.</p>
+<p>Short and grumpy, they have an intense hatred towards Goblins.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased ore production
+</p>
+DWARF;
 
-                'dwarf' => '<p>Short and grumpy little creatures.</p><p>Defined by their majestic beards and their love for booze and labor, these descendants of Caedair Hold have come to fight for the forces of good.</p><p>They have an intense hatred towards Goblins.</p><p class="text-green">Increased max population<br>Increased ore production</p>',
+        $descriptions['human'] = <<<HUMAN
+<p>These noble and religious Humans hail from fallen city of Brimstone Keep.</p>
+<p>Proficient at everything but excelling at nothing, they are a well-balanced and self-sufficient race.</p>
+<p class="text-green">
+    Increased food production
+</p>
+HUMAN;
 
-                'goblin' => '<p>description here</p><p class="text-green">Increased max population<br>Increased gem production<br>Improved castle bonuses</p>',
+        // Evil races
 
-            ][strtolower($race->name)] ?: 'todo';
+        $descriptions['goblin'] = <<<GOBLIN
+<p>What they lack in intelligence, they make up for in sheer numbers. They love slaughtering other living things as much as they love shiny gems.</p>
+<p>Short, cunning and gnarling, they have an intense hatred towards Dwarves.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased gem production<br>
+    Improved castle bonuses
+</p>
+GOBLIN;
+
+        $descriptions['nomad'] = <<<NOMAD
+<p>Descendants of Humans. These folk have been exiled from the kingdom long ago and went their own way.</p>
+<p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
+<p class="text-green">
+    Increased mana production
+</p>
+NOMAD;
+
+        $key = strtolower($race->name);
+
+        if (!isset($descriptions[$key])) {
+            throw new LogicException("Racial description for {$key} needs implementing");
+        }
+
+        return $descriptions[$key];
     }
 }
