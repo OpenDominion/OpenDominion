@@ -2,10 +2,11 @@
 
 namespace OpenDominion\Tests;
 
+use Artisan;
 use Carbon\Carbon;
 use CoreDataSeeder;
+use OpenDominion\Console\Commands\Game\DataSyncCommand;
 use OpenDominion\Factories\DominionFactory;
-use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -21,6 +22,8 @@ trait CreatesData
     public function seedDatabase()
     {
         $this->seed(CoreDataSeeder::class);
+
+        Artisan::call(DataSyncCommand::class);
     }
 
     /**
@@ -107,9 +110,11 @@ trait CreatesData
         $dominion = $dominionFactory->create(
             $user,
             $round,
-            ($race ?: Race::firstOrFail()),
+            ($race ?: Race::where('name', 'Human')->firstOrFail()),
             'random',
-            str_random()
+            str_random(),
+            str_random(),
+            null
         );
 
         return $dominion;

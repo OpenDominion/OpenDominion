@@ -4,11 +4,12 @@ namespace OpenDominion\Console\Commands\Game;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\RoundLeague;
 use RuntimeException;
 
-class RoundOpenCommand extends Command
+class RoundOpenCommand extends Command implements CommandInterface
 {
     /** @var string The name and signature of the console command. */
     protected $signature = 'game:round:open
@@ -20,7 +21,7 @@ class RoundOpenCommand extends Command
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
 
-    /** @var RoundFactory  */
+    /** @var RoundFactory */
     protected $roundFactory;
 
     /**
@@ -36,9 +37,7 @@ class RoundOpenCommand extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @throws RuntimeException
+     * {@inheritdoc}
      */
     public function handle(): void
     {
@@ -52,7 +51,7 @@ class RoundOpenCommand extends Command
         }
 
         if (($now && $open) || ($now && $days) || ($open && $days)) {
-            throw new RuntimeException('Options --now and --open are mutually exclusive');
+            throw new RuntimeException('Options --now, --open and --days are mutually exclusive');
         }
 
         if ($now) {

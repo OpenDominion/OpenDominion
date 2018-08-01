@@ -4,6 +4,10 @@ namespace OpenDominion\Models;
 
 class RacePerk extends AbstractModel
 {
+    protected $casts = [
+        'value' => 'float',
+    ];
+
     public function race()
     {
         return $this->belongsTo(Race::class);

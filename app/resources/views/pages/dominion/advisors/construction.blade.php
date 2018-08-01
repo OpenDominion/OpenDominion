@@ -29,7 +29,11 @@
                         <tbody>
                             @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
                                 <tr>
-                                    <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
+                                    <td>
+                                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
+                                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
+                                    </td>
                                     <td class="text-center">{{ number_format($selectedDominion->{'building_' . $buildingType}) }}</td>
                                     <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
                                 </tr>

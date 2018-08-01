@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -27,7 +26,7 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();

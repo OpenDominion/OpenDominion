@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Tests\Feature\Dominion;
 
-use CoreDataSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -18,7 +17,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
 
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();

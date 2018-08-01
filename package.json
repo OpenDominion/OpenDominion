@@ -17,6 +17,7 @@
     "font-awesome": "^4.7.0",
     "laravel-mix": "^2.0",
     "lodash": "^4.17.5",
-    "rpg-awesome": "^0.1.1"
+    "rpg-awesome": "^0.1.1",
+    "select2": "^4.0.5"
   }
 }

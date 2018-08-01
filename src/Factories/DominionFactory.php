@@ -3,6 +3,7 @@
 namespace OpenDominion\Factories;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
@@ -38,13 +39,21 @@ class DominionFactory
      * @param Round $round
      * @param Race $race
      * @param string $realmType Currently only 'random'. Future will support packs
-     * @param string $name
+     * @param string $rulerName
+     * @param string $dominionName
+     * @param null|Pack $pack
      *
-     * @throws RuntimeException
      * @return Dominion
      */
-    public function create(User $user, Round $round, Race $race, string $realmType, string $name): Dominion
-    {
+    public function create(
+        User $user,
+        Round $round,
+        Race $race,
+        string $realmType,
+        string $rulerName,
+        string $dominionName,
+        ?Pack $pack = null): Dominion
+        {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
@@ -53,14 +62,20 @@ class DominionFactory
             case 'random':
                 $realm = $this->realmFinderService->findRandomRealm($round, $race);
                 break;
-
+            case 'join_pack':
+            case 'create_pack':
+                $realm = $pack->realm;
+                if ($realm === null) {
+                    $realm = $this->realmFinderService->findRandomRealmForPack($round, $race, $pack);
+                }
+                break;
             default:
                 throw new RuntimeException("Realm type '{$realmType}' not supported");
         }
 
         // No vacant realm. Create a new one instead
         if ($realm === null) {
-            $realm = $this->realmFactory->create($round, $race->alignment);
+            $realm = $this->realmFactory->create($round, $race->alignment, $pack);
         }
 
         // todo: get starting values from config
@@ -71,8 +86,10 @@ class DominionFactory
             'round_id' => $round->id,
             'realm_id' => $realm->id,
             'race_id' => $race->id,
+            'pack_id' => $pack->id ?? null,
 
-            'name' => $name,
+            'ruler_name' => $rulerName,
+            'name' => $dominionName,
             'prestige' => 250,
 
             'peasants' => 1300,
@@ -136,6 +153,10 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
+
+        if ($pack !== null) {
+            $pack->realm()->update(['reserved_slots' => $pack->realm->reserved_slots - 1]);
+        }
 
         return $dominion;
     }

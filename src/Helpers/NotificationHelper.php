@@ -11,8 +11,8 @@ class NotificationHelper
         return [
             'general' => $this->getGeneralTypes(),
             'hourly_dominion' => $this->getHourlyDominionTypes(),
-            'irregular_dominion' => $this->getIrregularDominionTypes(),
-            'irregular_realm' => $this->getIrregularRealmTypes(),
+//            'irregular_dominion' => $this->getIrregularDominionTypes(),
+//            'irregular_realm' => $this->getIrregularRealmTypes(),
         ];
     }
 
@@ -21,8 +21,8 @@ class NotificationHelper
         return [
             'general' => 'General Notifications',
             'hourly_dominion' => 'Hourly Dominion Notifications',
-            'irregular_dominion' => 'Irregular Dominion Notifications',
-            'irregular_realm' => 'Irregular Realm Notifications',
+//            'irregular_dominion' => 'Irregular Dominion Notifications',
+//            'irregular_realm' => 'Irregular Realm Notifications',
         ][$key];
     }
 
@@ -210,7 +210,14 @@ class NotificationHelper
                     str_plural('unit', $units)
                 );
 
-            // todo: returning
+            case 'hourly_dominion.returning_completed':
+                $units = array_sum($data);
+
+                return sprintf(
+                    '%s %s returned from battle',
+                    number_format($units),
+                    str_plural('unit', $units)
+                );
 
             case 'hourly_dominion.beneficial_magic_dissipated':
                 $effects = count($data);

@@ -4,13 +4,70 @@ namespace OpenDominion\Calculators\Dominion;
 
 use DB;
 use Illuminate\Support\Collection;
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 
+// todo: rename params $spell to $spellKey for clarity. Also use $spellInfo for just info. Spell instances should be $spell
 class SpellCalculator
 {
+    /** @var LandCalculator */
+    protected $landCalculator;
+
+    /** @var SpellHelper */
+    protected $spellHelper;
+
     /** @var Collection */
     protected $activeSpells;
 
+    /**
+     * SpellCalculator constructor.
+     *
+     * @param LandCalculator $landCalculator
+     * @param SpellHelper $spellHelper
+     */
+    public function __construct(LandCalculator $landCalculator, SpellHelper $spellHelper)
+    {
+        $this->landCalculator = $landCalculator;
+        $this->spellHelper = $spellHelper;
+    }
+
+    /**
+     * Returns the mana cost of a particular spell for $dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return int
+     */
+    public function getManaCost(Dominion $dominion, string $spell): int
+    {
+        $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
+        return round($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
+    }
+
+    /**
+     * Returns whether $dominion can currently cast spell $type.
+     *
+     * Spells require mana and enough wizard strength to be cast.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return bool
+     */
+    public function canCast(Dominion $dominion, string $spell): bool
+    {
+        return (
+            ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
+            ($dominion->wizard_strength >= 30)
+        );
+    }
+
+    /**
+     * Returns a list of spells currently affecting $dominion.
+     *
+     * @param Dominion $dominion
+     * @param bool $forceRefresh
+     * @return Collection
+     */
     public function getActiveSpells(Dominion $dominion, bool $forceRefresh = false): Collection
     {
         if ($this->activeSpells === null || $forceRefresh) {
@@ -30,6 +87,13 @@ class SpellCalculator
         return $this->activeSpells;
     }
 
+    /**
+     * Returns whether a particular spell is affecting $dominion right now.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return bool
+     */
     public function isSpellActive(Dominion $dominion, string $spell): bool
     {
         return $this->getActiveSpells($dominion)->contains(function ($value) use ($spell) {
@@ -37,6 +101,14 @@ class SpellCalculator
         });
     }
 
+    /**
+     * Returns the remaining duration (in ticks) of a spell affecting $dominion.
+     *
+     * @todo Rename to getSpellRemainingDuration for clarity
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return int|null
+     */
     public function getSpellDuration(Dominion $dominion, string $spell): ?int
     {
         if (!$this->isSpellActive($dominion, $spell)) {
@@ -68,6 +140,7 @@ class SpellCalculator
             $spell = [$spell => $bonusPercentage];
         }
 
+        // todo: check this foreach
         foreach ($spell as $spellName => $bonusPercentage) {
             if ($this->isSpellActive($dominion, $spellName)) {
                 return ($bonusPercentage / 100);
