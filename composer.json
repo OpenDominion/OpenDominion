@@ -27,9 +27,9 @@
     "laravel/homestead": "~7.1",
     "mockery/mockery": "~1.0",
     "nunomaduro/collision": "~2.0",
+    "php-coveralls/php-coveralls": "~2.1",
     "phpunit/phpunit": "~7.0",
-    "roave/security-advisories": "dev-master",
-    "satooshi/php-coveralls": "~2.0"
+    "roave/security-advisories": "dev-master"
   },
   "autoload": {
     "classmap": [
