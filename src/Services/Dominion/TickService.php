@@ -215,7 +215,17 @@ class TickService
 
         // Wizard Strength
         if ($dominion->wizard_strength < 100) {
-            $dominion->wizard_strength = min(($dominion->wizard_strength + 4), 100);
+            $wizardStrengthAdded = 4;
+
+            $wizardStrengthPerWizardGuild = 0.1;
+            $wizardStrengthPerWizardGuildMax = 2;
+
+            $wizardStrengthAdded += min(
+                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild)),
+                $wizardStrengthPerWizardGuildMax
+            );
+
+            $dominion->wizard_strength = min(($dominion->wizard_strength + $wizardStrengthAdded), 100);
         }
 
         // Active spells
