@@ -227,7 +227,16 @@ class EspionageActionService
             );
 
             if (!random_chance($successRate)) {
-                $spiesKilled = (int)ceil($dominion->military_spies * 0.02);
+                // todo: move to CasualtiesCalculator
+                $forestHavenSpyCasualtyReduction = 3;
+                $forestHavenSpyCasualtyReductionMax = 30;
+
+                $spiesKilledMulitplier = (1 - min(
+                        (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
+                        ($forestHavenSpyCasualtyReductionMax / 100)
+                    ));
+
+                $spiesKilled = (int)ceil(($dominion->military_spies * 0.02) * $spiesKilledMulitplier);
 
                 $dominion->military_spies -= $spiesKilled;
 
@@ -301,7 +310,8 @@ class EspionageActionService
 
                 foreach ($this->improvementHelper->getImprovementTypes() as $type) {
                     array_set($data, "{$type}.points", $target->{'improvement_' . $type});
-                    array_set($data, "{$type}.rating", $this->improvementCalculator->getImprovementMultiplierBonus($target, $type));
+                    array_set($data, "{$type}.rating",
+                        $this->improvementCalculator->getImprovementMultiplierBonus($target, $type));
                 }
 
                 $infoOp->data = $data;
@@ -328,8 +338,10 @@ class EspionageActionService
                     $amount = $target->{'land_' . $landType};
 
                     array_set($data, "explored.{$landType}.amount", $amount);
-                    array_set($data, "explored.{$landType}.percentage", (($amount / $this->landCalculator->getTotalLand($target)) * 100));
-                    array_set($data, "explored.{$landType}.barren", $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
+                    array_set($data, "explored.{$landType}.percentage",
+                        (($amount / $this->landCalculator->getTotalLand($target)) * 100));
+                    array_set($data, "explored.{$landType}.barren",
+                        $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
                 }
 
                 // hacky hack
