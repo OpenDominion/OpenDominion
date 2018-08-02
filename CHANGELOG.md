@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added Clear Sight spell. ([#220](https://github.com/WaveHack/OpenDominion/issues/220))
 - Added Revelation spell. ([#221](https://github.com/WaveHack/OpenDominion/issues/221))
 - Added unit OP/DP stats on military page ([#234](https://github.com/WaveHack/OpenDominion/issues/234))
-- Add NYI/PI indicator and help text icon on Construction Advisor page
+- Added NYI/PI indicator and help text icon on Construction Advisor page
 
 ### Changed
 - Updated round registration page with better help texts and racial descriptions.
