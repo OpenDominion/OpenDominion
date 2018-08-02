@@ -15,8 +15,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added Revelation spell. ([#221](https://github.com/WaveHack/OpenDominion/issues/221))
 - Added unit OP/DP stats on military page ([#234](https://github.com/WaveHack/OpenDominion/issues/234))
 - Added NYI/PI indicator and help text icon on Construction Advisor page
-- Added Wizard Guild building. ([#305](https://github.com/WaveHack/OpenDominion/issues/305))
-- Forest Havens now reduce spy losses. ([#306](https://github.com/WaveHack/OpenDominion/issues/306))
+- Added Wizard Guild building, reducing wizard/AM plat cost and increasing wizard strength regen per hour. ([#305](https://github.com/WaveHack/OpenDominion/issues/305))
+- Added failed spy op losses reduction on Forest Havens. ([#306](https://github.com/WaveHack/OpenDominion/issues/306))
 
 ### Changed
 - Updated round registration page with better help texts and racial descriptions.
