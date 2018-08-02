@@ -36,10 +36,22 @@ class TrainingCalculator
     {
         $costsPerUnit = [];
 
+        // Values (percentages)
+        $wizardCostReductionPerWizardGuild = 2;
+        $wizardCostReductionPerWizardGuildMax = 40;
+
         // Values
         $spyPlatinumCost = 500;
         $wizardPlatinumCost = 500;
         $archmagePlatinumCost = 1000;
+
+        $wizardCostMultiplier = (1 - min(
+                ($wizardCostReductionPerWizardGuild * $dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)),
+                ($wizardCostReductionPerWizardGuildMax / 100)
+            ));
+
+        $wizardPlatinumCost *= $wizardCostMultiplier;
+        $archmagePlatinumCost *= $wizardCostMultiplier;
 
         $units = $dominion->race->units;
 
