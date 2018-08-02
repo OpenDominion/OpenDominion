@@ -15,7 +15,7 @@ class RaceHelper
 
         $descriptions['dwarf'] = <<<DWARF
 <p>Defined by their majestic beards and their love for booze and labor, these descendants of Caedair Hold have come to fight for the forces of good.</p>
-<p>Short and grumpy, they have an intense hatred towards Goblins.</p>
+<p>Short and grumpy, they harbor an intense hatred towards Goblins.</p>
 <p class="text-green">
     Increased max population<br>
     Increased ore production
@@ -34,7 +34,7 @@ HUMAN;
 
         $descriptions['goblin'] = <<<GOBLIN
 <p>What they lack in intelligence, they make up for in sheer numbers. They love slaughtering other living things as much as they love shiny gems.</p>
-<p>Short, cunning and gnarling, they have an intense hatred towards Dwarves.</p>
+<p>Short, cunning, and gnarling, they hate anything that smells like Dwarf.</p>
 <p class="text-green">
     Increased max population<br>
     Increased gem production<br>
