@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class TickTest extends AbstractBrowserKitTestCase

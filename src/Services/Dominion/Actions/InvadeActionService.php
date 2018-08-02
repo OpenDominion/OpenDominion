@@ -104,7 +104,7 @@ class InvadeActionService
 
             // 5:4 rule
             // todo: test
-            $allowedMaxOP = (int)floor($totalNetDP * 1.25);
+            $allowedMaxOP = (int)floor($totalNetDPWithoutAttackingUnits * 1.25);
             if ($netOP > $allowedMaxOP) {
                 throw new RuntimeException('You need to leave more offensive units at home (5:4 rule)');
             }
@@ -145,28 +145,52 @@ class InvadeActionService
 
             // CASUALTIES
 
-            $offensiveCasualties = 0; // 8.5% needed to break the target, *2 if !$invasionSuccessful
-            // offensive casualty modifiers (cleric/shaman, shrines), capped at -80% casualties (needs confirmation)
+            $offensiveCasualties = 0; // 8.5% needed to break the target, on bounce 8.5% of total sent
+            // offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
+            // offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
 
-            $targetDefensiveCasualties = 0; // 6.6% at 1.0 land size ratio (see issue #151)
+            $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
+            // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
             // defensive casualty modifiers (reduction based on recent invasion: 100%, 80%, 60%, 55%, 45%, 35%)
             // (note: defensive casualties are spread out in ratio between all units that help def (have DP), including draftees)
-
 
             // LAND GAINS/LOSSES
 
             // if $invasionSuccessful
-                // calculate total conquered acres; 10% of target total land
-                // calculate target barren land losses (array), based on ratio of what the target has
-                // calculate land conquers (array) (= target land loss)
+                // landGrabRatio = 1.0
+                // if mutual war, landGrabRatio = 1.2
+                // if non-mutual war, lanGrabRatio = 1.15
+                // todo if peace, landGrabRatio = 0.9
+
+                // calculate total acres of land lost. FORMULA:
+                /*
+                $landLost% = max(
+                    floor(
+                        if(
+                            $ratio < 0.55,
+                            (0.304 * $ratio ^ 2 - 0.227 * $ratio + 0.048) * $netOP * landGrabRatio,
+                            if(
+                                $ratio < 0.75,
+                                $netOP * landGrabRatio * (0.154 * $ratio - 0.069),
+                                landGrabRatio * $netOP * (0.129 * $ratio - 0.048)
+                            )
+                        ),
+                    1),
+                10)
+                 */
+
+                // calculate target barren land losses (array)
                 // calculate target buildings destroyed (array), only if target does not have enough barren land buffer, in ratio of buildings constructed per land type
+                // calculate total conquered acres (same acres as target land lost)
+                // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
 
 
             // MORALE
 
-            // calc morale loss (5%) (see issue #151)
-            // calc target morale loss (?%) (only on $invasionSuccessful?) (needs confirmation)
+            // >= 75%+ size: reduce -5% self morale
+            // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
+            // if $invasionSuccessful: reduce target morale by -5%
 
 
             // MISC
