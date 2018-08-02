@@ -95,7 +95,7 @@
                     <label for="pack_name" class="col-sm-3 control-label">Pack Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name">
-                        <p class="help-block create-pack-only">This is the name of your pack. This will be recoded and will eventually be shown in Valhalla.</p>
+                        <p class="help-block create-pack-only">This is the name of your pack. This will be recorded and will eventually be shown in Valhalla.</p>
                         <p class="help-block join-pack-only">You need the pack name and password from the player whose pack you want to join.</p>
                     </div>
                 </div>
