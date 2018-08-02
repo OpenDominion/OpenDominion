@@ -17,8 +17,8 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
                              {--days= : Start the round in +DAYS days midnight, allowing for more finetuning}
                              {--league=standard : Round league to use}
-                             {--realmSize=12}
-                             {--packSize=6}';
+                             {--realmSize=12 : Maximum number of dominions in one realm}
+                             {--packSize=6 : Maximum number of players in a pack}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
@@ -91,6 +91,6 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         $round = $this->roundFactory->create($roundLeague, $startDate, $realmSize, $packSize);
 
-        $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}");
+        $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
     }
 }
