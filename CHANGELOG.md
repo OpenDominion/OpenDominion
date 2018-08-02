@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
-- New races: Dwarf and Goblin.
+- Added new races: Dwarf and Goblin.
 - Added ruler name for round registration. ([#254](https://github.com/WaveHack/OpenDominion/issues/254))
 - Added packs. ([#280](https://github.com/WaveHack/OpenDominion/issues/280))
 - Added racial spells. ([#157](https://github.com/WaveHack/OpenDominion/issues/157))
