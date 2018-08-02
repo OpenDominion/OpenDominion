@@ -20,7 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Updated round registration page with better help texts and racial descriptions.
 - Employment percentage on status screen now shows 2 decimals.
 - Updated Re-zone Land icon in the sidebar.
-- OP/DP now scales with morale, down to -10% at 0% morale.
+- Net OP/DP now scales with morale, down to -10% at 0% morale.
 
 ## [0.4.2] - 2018-06-03
 ### Fixed
