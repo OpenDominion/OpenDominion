@@ -228,6 +228,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // todo: move to CasualtiesCalculator
+
+                // Values (percentage)
+                $spiesKilled = 2;
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -236,7 +239,7 @@ class EspionageActionService
                         ($forestHavenSpyCasualtyReductionMax / 100)
                     ));
 
-                $spiesKilled = (int)ceil(($dominion->military_spies * 0.02) * $spiesKilledMulitplier);
+                $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilled / 100)) * $spiesKilledMulitplier);
 
                 $dominion->military_spies -= $spiesKilled;
 
