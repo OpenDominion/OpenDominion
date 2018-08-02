@@ -35,23 +35,12 @@ class TrainingCalculator
     public function getTrainingCostsPerUnit(Dominion $dominion): array
     {
         $costsPerUnit = [];
-
-        // Values (percentages)
-        $wizardCostReductionPerWizardGuild = 2;
-        $wizardCostReductionPerWizardGuildMax = 40;
+        $wizardCostMultiplier = $this->getWizardCostMultiplier($dominion);
 
         // Values
         $spyPlatinumCost = 500;
-        $wizardPlatinumCost = 500;
-        $archmagePlatinumCost = 1000;
-
-        $wizardCostMultiplier = (1 - min(
-                ($wizardCostReductionPerWizardGuild * $dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)),
-                ($wizardCostReductionPerWizardGuildMax / 100)
-            ));
-
-        $wizardPlatinumCost *= $wizardCostMultiplier;
-        $archmagePlatinumCost *= $wizardCostMultiplier;
+        $wizardPlatinumCost = (500 * $wizardCostMultiplier);
+        $archmagePlatinumCost = (1000 * $wizardCostMultiplier);
 
         $units = $dominion->race->units;
 
@@ -152,6 +141,29 @@ class TrainingCalculator
         );
 
         // todo: Master of Resources Tech (note: no ore reduction for gnomes)
+
+        return (1 + $multiplier);
+    }
+
+    /**
+     * Returns the Dominion's training platinum cost multiplier for wizards and archmages.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getWizardCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $wizardGuildReduction = 2;
+        $wizardGuildReductionMax = 40;
+
+        // Wizard Guilds
+        $multiplier -= min(
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildReduction),
+            ($wizardGuildReductionMax / 100)
+        );
 
         return (1 + $multiplier);
     }
