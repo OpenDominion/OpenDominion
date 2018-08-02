@@ -43,7 +43,7 @@ HUMAN;
 GOBLIN;
 
         $descriptions['nomad'] = <<<NOMAD
-<p>Descendants of Humans. These folk have been exiled from the kingdom long ago and went their own way.</p>
+<p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
 <p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
 <p class="text-green">
     Increased mana production
