@@ -4,7 +4,6 @@ namespace OpenDominion\Helpers;
 
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Race;
-use OpenDominion\Services\Dominion\SelectorService;
 
 class SpellHelper
 {
@@ -131,7 +130,7 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Crusade',
-                'description' => '+5% offensive power, allows you to kill Spirit/Undead',
+                'description' => '+5% offensive power', // todo: add mention later that you can kill SPUD
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,

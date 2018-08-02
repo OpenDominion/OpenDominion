@@ -115,7 +115,7 @@ class RangeCalculator
     {
         // todo: this doesn't belong here since it touches the db. Move to RangeService?
         return $self->round->dominions()
-            ->with('realm')
+            ->with(['realm', 'round'])
             ->get()
             ->filter(function ($dominion) use ($self) {
                 return (
