@@ -178,7 +178,7 @@ $ php artisan migrate --seed
 
 If your database is setup correctly then the migrations and seeders will run without errors, and you will receive user credentials for an automatically generated user account and dominion. 
 
-Optional: If your editor or IDE supports code inspection and autocompletion, there are some helpers you can run to generate helper files:
+Optional: If your editor or IDE supports code inspection and autocompletion, there are some additional Artisan commands you can run to generate helper files:
 
 ```bash
 $ php artisan ide-helper:generate
