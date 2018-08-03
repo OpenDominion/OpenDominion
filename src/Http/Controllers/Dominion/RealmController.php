@@ -3,7 +3,6 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
-use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -71,6 +70,7 @@ class RealmController extends AbstractDominionController
             'landCalculator',
             'networthCalculator',
             'realm',
+            'round',
             'dominions',
             'prevRealm',
             'protectionService',

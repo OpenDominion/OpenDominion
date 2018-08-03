@@ -36,7 +36,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 0; $i < $round->realm_size; $i++)
                                 @php
                                     $dominion = $dominions->get($i);
                                 @endphp
