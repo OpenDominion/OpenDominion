@@ -21,7 +21,6 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Directory structure](#directory-structure)
   - [Deviation from Laravel](#deviation-from-laravel)
   - [Things to keep in mind](#things-to-keep-in-mind)
-  - [How to run OpenDominion](#how-to-run-opendominion)
   - [How to run tests](#how-to-run-tests)
   - [How to update](#how-to-update)
   - [How to reset](#how-to-reset)
