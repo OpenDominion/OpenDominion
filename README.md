@@ -37,14 +37,14 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 
 | System         | Status                                    |
 | -------------- | ----------------------------------------- |
-| Authentication | ![Progress](http://progressed.io/bar/95)  |
-| Buildings      | ![Progress](http://progressed.io/bar/75)  |
+| Authentication | ![Progress](http://progressed.io/bar/100) |
+| Buildings      | ![Progress](http://progressed.io/bar/80)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
-| Notifications  | ![Progress](http://progressed.io/bar/0)   |
+| Notifications  | ![Progress](http://progressed.io/bar/30)  |
 | Population     | ![Progress](http://progressed.io/bar/100) |
-| Races & Units  | ![Progress](http://progressed.io/bar/5)   |
-| Resources      | ![Progress](http://progressed.io/bar/80)  |
+| Races & Units  | ![Progress](http://progressed.io/bar/10)  |
+| Resources      | ![Progress](http://progressed.io/bar/90)  |
 | Tech           | ![Progress](http://progressed.io/bar/0)   |
 
 ### Pages
@@ -65,15 +65,15 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
-| Magic               | ![Progress](http://progressed.io/bar/20)  |
-| Espionage           | ![Progress](http://progressed.io/bar/0)   |
+| Magic               | ![Progress](http://progressed.io/bar/60)  |
+| Espionage           | ![Progress](http://progressed.io/bar/35)  |
 | Messages            | ![Progress](http://progressed.io/bar/0)   |
 | Realm Council       | ![Progress](http://progressed.io/bar/50)  |
-| Op Center           | ![Progress](http://progressed.io/bar/0)   |
+| Op Center           | ![Progress](http://progressed.io/bar/75)  |
 | Government          | ![Progress](http://progressed.io/bar/0)   |
 | Diplomacy           | ![Progress](http://progressed.io/bar/0)   |
 | Realm Page          | ![Progress](http://progressed.io/bar/100) |
-| Rankings            | ![Progress](http://progressed.io/bar/0)   |
+| Rankings            | ![Progress](http://progressed.io/bar/80)  |
 | Town Crier          | ![Progress](http://progressed.io/bar/0)   |
 | Valhalla            | ![Progress](http://progressed.io/bar/20)  |
 | Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   |
