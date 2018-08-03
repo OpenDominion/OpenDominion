@@ -10,6 +10,8 @@ use OpenDominion\Services\PackService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 use RuntimeException;
 
+// todo: refactor manually test thrown exceptions to @expectedException annotation
+
 class PackServiceTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
