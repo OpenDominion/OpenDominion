@@ -282,6 +282,7 @@ With that said, here are some things to keep in mind if you're used to the Larav
 - Config, database, resources and routes are in `app`.
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
+This is experimental and is subject to change. Please keep an eye on the #dev-announcements channel in the Discord server.
 
 ### Things to keep in mind
 
