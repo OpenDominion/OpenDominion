@@ -178,6 +178,12 @@ $ php artisan migrate --seed
 
 If your database is setup correctly then the migrations and seeders will run without errors, and you will receive user credentials for an automatically generated user account and dominion. 
 
+Now [link the storage directory](https://laravel.com/docs/5.6/filesystem#the-public-disk):
+
+```bash
+$ php artisan storage:link
+```
+
 Optional: If your editor or IDE supports code inspection and autocompletion, there are some additional Artisan commands you can run to generate helper files:
 
 ```bash
