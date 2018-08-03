@@ -20,6 +20,7 @@ class HistoryService
     public const EVENT_ACTION_TRAIN = 'train';
     public const EVENT_ACTION_RELEASE = 'release';
     public const EVENT_ACTION_CAST_SPELL = 'cast spell';
+    public const EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION = 'perform espionage operation';
 
     /**
      * Returns a cloned dominion instance with state at a certain time.

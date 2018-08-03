@@ -5,13 +5,12 @@
 <p align="center">
   <a href="https://travis-ci.org/WaveHack/OpenDominion"><img src="https://travis-ci.org/WaveHack/OpenDominion.svg?branch=develop" alt="Build Status"></a>
   <a href="https://styleci.io/repos/29497480"><img src="https://styleci.io/repos/29497480/shield?branch=develop&style=flat" alt="StyleCI"></a>
-  <a href="https://gemnasium.com/github.com/WaveHack/OpenDominion"><img src="https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg" alt="Dependency Status"></a>
   <a href="https://coveralls.io/github/WaveHack/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="MIT licensed"></a>
   <br>
+  <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
   <a href="https://www.patreon.com/OpenDominion"><img src="https://img.shields.io/badge/donate-patreon-ff69b4.svg" alt="Donate on Patreon"></a>
   <a href="https://discord.gg/mFk2wZT"><img src="https://img.shields.io/discord/325315157335212032.svg?label=chat%20&#40;discord&#41;" alt="Chat on Discord"></a>
-  <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
 </p>
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
@@ -38,14 +37,14 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 
 | System         | Status                                    |
 | -------------- | ----------------------------------------- |
-| Authentication | ![Progress](http://progressed.io/bar/95)  |
-| Buildings      | ![Progress](http://progressed.io/bar/75)  |
+| Authentication | ![Progress](http://progressed.io/bar/100) |
+| Buildings      | ![Progress](http://progressed.io/bar/80)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
-| Notifications  | ![Progress](http://progressed.io/bar/0)   |
+| Notifications  | ![Progress](http://progressed.io/bar/30)  |
 | Population     | ![Progress](http://progressed.io/bar/100) |
-| Races & Units  | ![Progress](http://progressed.io/bar/5)   |
-| Resources      | ![Progress](http://progressed.io/bar/80)  |
+| Races & Units  | ![Progress](http://progressed.io/bar/10)  |
+| Resources      | ![Progress](http://progressed.io/bar/90)  |
 | Tech           | ![Progress](http://progressed.io/bar/0)   |
 
 ### Pages
@@ -66,15 +65,15 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
 | Invading            | ![Progress](http://progressed.io/bar/0)   |
-| Magic               | ![Progress](http://progressed.io/bar/20)  |
-| Espionage           | ![Progress](http://progressed.io/bar/0)   |
+| Magic               | ![Progress](http://progressed.io/bar/60)  |
+| Espionage           | ![Progress](http://progressed.io/bar/35)  |
 | Messages            | ![Progress](http://progressed.io/bar/0)   |
 | Realm Council       | ![Progress](http://progressed.io/bar/50)  |
-| Op Center           | ![Progress](http://progressed.io/bar/0)   |
+| Op Center           | ![Progress](http://progressed.io/bar/75)  |
 | Government          | ![Progress](http://progressed.io/bar/0)   |
 | Diplomacy           | ![Progress](http://progressed.io/bar/0)   |
 | Realm Page          | ![Progress](http://progressed.io/bar/100) |
-| Rankings            | ![Progress](http://progressed.io/bar/0)   |
+| Rankings            | ![Progress](http://progressed.io/bar/80)  |
 | Town Crier          | ![Progress](http://progressed.io/bar/0)   |
 | Valhalla            | ![Progress](http://progressed.io/bar/20)  |
 | Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   |

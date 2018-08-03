@@ -27,7 +27,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Ruler:</td>
-                                        <td>{{ Auth::user()->display_name }}</td>
+                                        <td>{{ $selectedDominion->ruler_name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Race:</td>
@@ -43,7 +43,7 @@
                                     </tr>
                                     <tr>
                                         <td>Employment:</td>
-                                        <td>{{ number_format($populationCalculator->getEmploymentPercentage($selectedDominion)) }}%</td>
+                                        <td>{{ number_format($populationCalculator->getEmploymentPercentage($selectedDominion), 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Networth:</td>
@@ -127,19 +127,19 @@
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(0)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit1) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 1)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(1)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit2) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 2)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(2)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit3) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 3)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ $selectedDominion->race->units->get(3)->name }}:</td>
-                                        <td>{{ number_format($selectedDominion->military_unit4) }}</td>
+                                        <td>{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, 4)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Spies:</td>
@@ -201,6 +201,23 @@
                     <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
                 </div>
             </div>
+
+            @if ($selectedDominion->pack !== null)
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Pack</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
+                        <ul>
+                            @foreach ($selectedDominion->pack->dominions as $dominion)
+                                <li>{{ $dominion->ruler_name }} of {{ $dominion->name }} ({{ $dominion->user->display_name }})</li>
+                            @endforeach
+                        </ul>
+                        <p>Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.</p>
+                    </div>
+                </div>
+            @endif
         </div>
 
     </div>

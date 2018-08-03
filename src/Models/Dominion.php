@@ -4,7 +4,6 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
-use LogicException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -79,6 +78,8 @@ class Dominion extends AbstractModel
         return $this->hasMany(Council\Thread::class);
     }
 
+    // todo: info op target/source?
+
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
@@ -102,6 +103,11 @@ class Dominion extends AbstractModel
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function pack()
+    {
+        return $this->belongsTo(Pack::class);
     }
 
     // Eloquent Query Scopes
@@ -154,7 +160,6 @@ class Dominion extends AbstractModel
     public function isSelectedByAuthUser()
     {
         // todo: move to SelectorService
-        // todo: repository criteria?
         $dominionSelectorService = app(SelectorService::class);
 
         $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
@@ -176,5 +181,28 @@ class Dominion extends AbstractModel
     public function isLocked()
     {
         return (now() >= $this->round->end_date);
+    }
+
+    /**
+     * Returns the unit production bonus for a specific resource type (across all eligible units) for this dominion.
+     *
+     * @param string $resourceType
+     * @return float
+     */
+    public function getUnitPerkProductionBonus(string $resourceType): float
+    {
+        $bonus = 0;
+
+        foreach ($this->race->units as $unit) {
+            if ($unit->perkType === null) {
+                continue;
+            }
+
+            if ($unit->perkType->key === $resourceType) {
+                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$unit->unit_perk_type_values);
+            }
+        }
+
+        return $bonus;
     }
 }

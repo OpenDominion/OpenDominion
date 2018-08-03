@@ -4,9 +4,9 @@ namespace OpenDominion\Console\Commands;
 
 use Cache;
 use Illuminate\Console\Command;
-use Log;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateVersionCommand extends Command
+class VersionUpdateCommand extends Command implements CommandInterface
 {
     protected const REPO_URL = 'https://github.com/WaveHack/OpenDominion';
 
@@ -17,13 +17,11 @@ class UpdateVersionCommand extends Command
     protected $description = 'Updates game version';
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function handle()
+    public function handle(): void
     {
-        Log::info('Updating version');
+        $this->info('Updating version', OutputInterface::VERBOSITY_DEBUG);
 
         $version = null;
         $versionHtml = null;
@@ -61,7 +59,7 @@ class UpdateVersionCommand extends Command
 
         } else {
             $env = getenv('APP_ENV');
-            $commits = shell_exec('git rev-list --count HEAD');
+            $commits = trim(shell_exec('git rev-list --count HEAD'));
 
             $branch = trim(shell_exec('git branch | grep \'* \''));
             $branch = str_replace('* ', '', trim($branch));
@@ -80,6 +78,6 @@ class UpdateVersionCommand extends Command
         Cache::forever('version-date', $date);
         Cache::forever('version-html', $versionHtml);
 
-        Log::info("Version updated to {$version}");
+        $this->info("Version updated to: {$version}");
     }
 }

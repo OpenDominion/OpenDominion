@@ -43,7 +43,7 @@ class SettingsController extends AbstractController
         }
 
         $this->updateNotifications($request->input());
-        $this->updateNotificationSettings($request->input());
+//        $this->updateNotificationSettings($request->input());
 
         $request->session()->flash('alert-success', 'Your settings have been updated.');
         return redirect()->route('settings');

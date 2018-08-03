@@ -6,17 +6,24 @@ use OpenDominion\Models\Race;
 
 class UnitHelper
 {
-    public function getUnitTypes(): array
+    public function getUnitTypes(bool $hideSpecialUnits = false): array
     {
-        return [
+        $data = [
             'unit1',
             'unit2',
             'unit3',
             'unit4',
-            'spies',
-            'wizards',
-            'archmages',
         ];
+
+        if (!$hideSpecialUnits) {
+            $data = array_merge($data, [
+                'spies',
+                'wizards',
+                'archmages',
+            ]);
+        }
+
+        return $data;
     }
 
     public function getUnitName(string $unitType, Race $race): string
@@ -47,6 +54,9 @@ class UnitHelper
         $perkTypeStrings = [
             'fewer_casualties' => '%s%% fewer casualties.',
             'faster_return' => 'Returns %s hours faster from battle.',
+            'ore_production' => 'Each unit produces %s units of ore per hour.',
+            'plunders_resources_on_attack' => 'Plunders resources on attack.',
+            'reduce_combat_losses' => 'Reduces combat losses.',
         ];
 
         foreach ($race->units as $unit) {

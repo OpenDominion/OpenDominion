@@ -4,6 +4,7 @@ namespace OpenDominion\Factories;
 
 use Atrox\Haikunator;
 use DB;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 
@@ -17,7 +18,7 @@ class RealmFactory
      *
      * @return Realm
      */
-    public function create(Round $round, string $alignment): Realm
+    public function create(Round $round, string $alignment, Pack $pack = null): Realm
     {
         // todo: whitelist $alignment?
         // todo: repositories?
@@ -38,12 +39,21 @@ class RealmFactory
             'delimiter' => ' '
         ]));
 
+        $hasPack = $pack !== null ? true : false;
+        $reservedSlots = $pack->size ?? 0;
         $realm = Realm::create([
             'round_id' => $round->id,
             'alignment' => $alignment,
             'number' => $number,
             'name' => $realmName,
+            'has_pack' => $hasPack,
+            'reserved_slots' => $reservedSlots,
         ]);
+
+        if($pack !== null){
+            $pack->update(['realm_id' => $realm->id]);
+            $pack->load('realm');
+        }
 
         return $realm;
     }

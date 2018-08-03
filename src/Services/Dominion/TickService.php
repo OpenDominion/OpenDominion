@@ -107,7 +107,7 @@ class TickService
                     $dominion->daily_platinum = false;
                     $dominion->daily_land = false;
 
-                    $dominion->save();
+                    $dominion->save(['event' => 'tick']);
                 }
 
                 $this->updateDailyRankings($dominionIds);
@@ -149,7 +149,24 @@ class TickService
             $this->notificationService->queueNotification('training_completed', $trainingQueueResult);
         }
 
-        // todo: tickReturningQueue
+        $unitsReturningQueueResult = $this->tickUnitsReturningQueue($dominion);
+        if (!empty($unitsReturningQueueResult)) {
+            foreach ($unitsReturningQueueResult as $unit => $amount) {
+                $dominion->{'military_' . $unit} += $amount;
+            }
+
+            $this->notificationService->queueNotification('returning_completed', $unitsReturningQueueResult);
+        }
+
+        $landIncomingQueueResult = $this->tickLandIncomingQueue($dominion);
+        if (!empty($landIncomingQueueResult)) {
+            foreach ($landIncomingQueueResult as $land => $amount) {
+                $dominion->{'land_' . $land} += $amount;
+            }
+
+            // todo: do we need a notification? If so, we need to make one in NotificationHelper first
+//            $this->notificationService->queueNotification('land_incoming_complete', $landIncomingQueueResult);
+        }
 
         // Hacky refresh active spells for dominion
         $this->spellCalculator->getActiveSpells($dominion, true);
@@ -198,7 +215,17 @@ class TickService
 
         // Wizard Strength
         if ($dominion->wizard_strength < 100) {
-            $dominion->wizard_strength = min(($dominion->wizard_strength + 4), 100);
+            $wizardStrengthAdded = 4;
+
+            $wizardStrengthPerWizardGuild = 0.1;
+            $wizardStrengthPerWizardGuildMax = 2;
+
+            $wizardStrengthAdded += min(
+                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild)),
+                $wizardStrengthPerWizardGuildMax
+            );
+
+            $dominion->wizard_strength = min(($dominion->wizard_strength + $wizardStrengthAdded), 100);
         }
 
         // Active spells
@@ -325,6 +352,88 @@ class TickService
             DB::table('queue_training')
                 ->where('dominion_id', $dominion->id)
                 ->where('unit_type', $row->unit_type)
+                ->where('hours', 0)
+                ->delete();
+        }
+
+        return $return;
+    }
+
+    protected function tickUnitsReturningQueue(Dominion $dominion): array
+    {
+        // Two-step process to avoid getting UNIQUE constraint integrity errors
+        // since we can't reliably use deferred transactions, deferred update
+        // queries or update+orderby cross-database vendors
+        DB::table('queue_units_returning')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', '>', 0)
+            ->update([
+                'hours' => DB::raw('-(`hours` - 1)'),
+            ]);
+
+        DB::table('queue_units_returning')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', '<', 0)
+            ->update([
+                'hours' => DB::raw('-`hours`'),
+                'updated_at' => $this->now,
+            ]);
+
+        $finished = DB::table('queue_units_returning')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', 0)
+            ->get();
+
+        $return = [];
+
+        foreach ($finished as $row) {
+            $return[$row->unit_type] = $row->amount;
+
+            // Cleanup
+            DB::table('queue_units_returning')
+                ->where('dominion_id', $dominion->id)
+                ->where('unit_type', $row->unit_type)
+                ->where('hours', 0)
+                ->delete();
+        }
+
+        return $return;
+    }
+
+    protected function tickLandIncomingQueue(Dominion $dominion): array
+    {
+        // Two-step process to avoid getting UNIQUE constraint integrity errors
+        // since we can't reliably use deferred transactions, deferred update
+        // queries or update+orderby cross-database vendors
+        DB::table('queue_land_incoming')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', '>', 0)
+            ->update([
+                'hours' => DB::raw('-(`hours` - 1)'),
+            ]);
+
+        DB::table('queue_land_incoming')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', '<', 0)
+            ->update([
+                'hours' => DB::raw('-`hours`'),
+                'updated_at' => $this->now,
+            ]);
+
+        $finished = DB::table('queue_land_incoming')
+            ->where('dominion_id', $dominion->id)
+            ->where('hours', 0)
+            ->get();
+
+        $return = [];
+
+        foreach ($finished as $row) {
+            $return[$row->land_type] = $row->amount;
+
+            // Cleanup
+            DB::table('queue_land_incoming')
+                ->where('dominion_id', $dominion->id)
+                ->where('land_type', $row->land_type)
                 ->where('hours', 0)
                 ->delete();
         }

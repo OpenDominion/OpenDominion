@@ -125,9 +125,9 @@
                             @endforeach
 
                         </div>
-                        <div class="col-sm-6">
+                        {{--<div class="col-sm-6">
 
-                            <h2 class="page-header">Notification Settings</h2>
+                            <h2 class="page-header">Notification Settings</h2>--}}
 
                             {{-- Disable email notifications --}}
                             {{--<div class="checkbox">
@@ -139,7 +139,7 @@
                             </div>--}}
 
                             {{-- Digest Email --}}
-                            <div class="form-group">
+                            {{--<div class="form-group">
                                 <label>Digest Irregular Email Notifications</label>
                                 <br>
                                 <div class="btn-group" data-toggle="buttons">
@@ -165,7 +165,8 @@
                                 <p class="help-text">Having a low digest setting can result in a lot of emails.</p>
                             </div>
 
-                        </div>
+                        </div>--}}
+
                     </div>
                 </div>
 

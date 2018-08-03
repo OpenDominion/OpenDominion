@@ -1,0 +1,39 @@
+name: Dwarf
+alignment: good
+home_land_type: mountain
+perks:
+  max_population: 7.5
+  ore_production: 10
+units:
+  - name: Soldier
+    cost:
+      platinum: 275
+      ore: 25
+    power:
+      offense: 3
+      defense: 0
+  - name: Miner
+    cost:
+      platinum: 350
+      ore: 25
+    power:
+      offense: 0
+      defense: 3
+    perks:
+      ore_production: 0.5
+  - name: Cleric
+    cost:
+      platinum: 800
+      ore: 0
+    power:
+      offense: 4
+      defense: 4
+    perks:
+      reduce_combat_losses: 1
+  - name: Warrior
+    cost:
+      platinum: 1250
+      ore: 110
+    power:
+      offense: 7
+      defense: 2

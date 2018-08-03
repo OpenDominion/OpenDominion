@@ -121,9 +121,16 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military/release')->uses('Dominion\MilitaryController@getRelease')->name('military.release');
             $router->post('military/release')->uses('Dominion\MilitaryController@postRelease');
 
+//            $router->get('invade')->uses('Dominion\InvasionController@getInvade')->name('invade');
+//            $router->post('invade')->uses('Dominion\InvasionController@postInvade');
+
             // Magic
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
             $router->post('magic')->uses('Dominion\MagicController@postMagic');
+
+            // Espionage
+            $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
+            $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
@@ -131,6 +138,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->post('council/create')->uses('Dominion\CouncilController@postCreate');
             $router->get('council/{thread}')->uses('Dominion\CouncilController@getThread')->name('council.thread');
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
+
+            // Op Center
+            $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
+            $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');

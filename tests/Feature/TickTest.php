@@ -3,13 +3,13 @@
 namespace OpenDominion\Tests\Feature;
 
 use Artisan;
-use CoreDataSeeder;
 use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class TickTest extends AbstractBrowserKitTestCase
@@ -18,7 +18,7 @@ class TickTest extends AbstractBrowserKitTestCase
 
     public function testMoraleTick()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -37,7 +37,7 @@ class TickTest extends AbstractBrowserKitTestCase
 
     public function testQueuesTick()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -92,7 +92,7 @@ class TickTest extends AbstractBrowserKitTestCase
 
     public function testQueueShouldntTickLockedDominions()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound('-2 days', '-1 days');
         $dominion = $this->createDominion($user, $round);
@@ -140,7 +140,7 @@ class TickTest extends AbstractBrowserKitTestCase
 
     public function testResourcesGetGeneratedOnTheSameHourThatBuildingsComeIn()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -175,7 +175,7 @@ class TickTest extends AbstractBrowserKitTestCase
     // https://github.com/WaveHack/OpenDominion/issues/217
     public function testTheProperAmountOfPlatinumGetsAddedOnTick()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user1 = $this->createUser();
         $user2 = $this->createUser();
         $round = $this->createRound();
@@ -218,7 +218,7 @@ class TickTest extends AbstractBrowserKitTestCase
         // cast self spell for dominion 2 ONLY
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $spellActionService->castSelfSpell($dominion2, 'midas_touch');
+        $spellActionService->castSpell($dominion2, 'midas_touch');
 
         // Refresh active spells
         $spellCalculator->getActiveSpells($dominion1, true);
@@ -240,7 +240,7 @@ class TickTest extends AbstractBrowserKitTestCase
     // https://github.com/WaveHack/OpenDominion/issues/227
     public function testTheProperAmountOfFoodGetsAddedOnTick()
     {
-        $this->seed(CoreDataSeeder::class);
+        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -269,7 +269,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertEquals(-940, $productionCalculator->getFoodNetChange($dominion));
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $spellActionService->castSelfSpell($dominion, 'gaias_watch');
+        $spellActionService->castSpell($dominion, 'gaias_watch');
 
         // Refresh active spells
         $spellCalculator->getActiveSpells($dominion, true);

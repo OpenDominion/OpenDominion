@@ -489,8 +489,8 @@ class ProductionCalculator
         // Building: Ore Mine
         $ore += ($dominion->building_ore_mine * $orePerOreMine);
 
-        // Dwarf Unit: Miner
-        // todo
+        // Unit Perk Production Bonus (Dwarf Unit: Miner)
+        $ore += $dominion->getUnitPerkProductionBonus('ore_production');
 
         return $ore;
     }
