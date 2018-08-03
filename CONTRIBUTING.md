@@ -132,7 +132,7 @@ Composer production packages include Haikunator (to generate random realm names)
 
 Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
 
-I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a `.idea` directory for you if you do use PhpStorm.
+I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a partially gitignored `.idea` directory for you if you do use PhpStorm.
 
 
 ##### Cloning the repository:
