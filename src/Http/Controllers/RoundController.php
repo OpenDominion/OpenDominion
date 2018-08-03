@@ -61,7 +61,7 @@ class RoundController extends AbstractController
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
         ]);
 
-        $realmType = $request->get('realm');
+        $realmType = $request->get('realm_type');
         $joinRandomRealm = ($realmType === 'random');
         $joinOrCreatePack = !$joinRandomRealm;
 
