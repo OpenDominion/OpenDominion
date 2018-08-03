@@ -206,7 +206,7 @@ And build the frontend:
 $ npm run dev
 ```
 
-Finally make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
+Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
 
 Optional: You can run a self-diagnostic check to see if everything was setup correctly.
 
