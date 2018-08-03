@@ -52,8 +52,8 @@ class DominionFactory
         string $realmType,
         string $rulerName,
         string $dominionName,
-        ?Pack $pack = null): Dominion
-        {
+        ?Pack $pack = null
+    ): Dominion {
         // todo: check if user already has a dominion in this round
         // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
 
@@ -79,6 +79,35 @@ class DominionFactory
         }
 
         // todo: get starting values from config
+
+        $startingBarrenLand = [
+            'plain' => 40,
+            'mountain' => 20,
+            'swamp' => 20,
+            'cavern' => 20,
+            'forest' => 20,
+            'hill' => 20,
+            'water' => 20,
+        ];
+
+        $startingBuildings = [
+            'home' => 10,
+            'alchemy' => 30,
+            'farm' => 30,
+            'lumberyard' => 20,
+        ];
+
+        $startingLand = [
+            'plain' => $startingBarrenLand['plain'] + $startingBuildings['alchemy'] + $startingBuildings['farm'],
+            'mountain' => $startingBarrenLand['mountain'],
+            'swamp' => $startingBarrenLand['swamp'],
+            'cavern' => $startingBarrenLand['cavern'],
+            'forest' => $startingBarrenLand['forest'] + $startingBuildings['lumberyard'],
+            'hill' => $startingBarrenLand['hill'],
+            'water' => $startingBarrenLand['water'],
+        ];
+
+        $startingLand[$race->home_land_type] += $startingBuildings['home'];
 
         // Create dominion
         $dominion = Dominion::create([
@@ -125,17 +154,17 @@ class DominionFactory
             'military_wizards' => 25,
             'military_archmages' => 0,
 
-            'land_plain' => 110,
-            'land_mountain' => 20,
-            'land_swamp' => 20,
-            'land_cavern' => 20,
-            'land_forest' => 40,
-            'land_hill' => 20,
-            'land_water' => 20,
+            'land_plain' => $startingLand['plain'],
+            'land_mountain' => $startingLand['mountain'],
+            'land_swamp' => $startingLand['swamp'],
+            'land_cavern' => $startingLand['cavern'],
+            'land_forest' => $startingLand['forest'],
+            'land_hill' => $startingLand['hill'],
+            'land_water' => $startingLand['water'],
 
-            'building_home' => 10,
-            'building_alchemy' => 30,
-            'building_farm' => 30,
+            'building_home' => $startingBuildings['home'],
+            'building_alchemy' => $startingBuildings['alchemy'],
+            'building_farm' => $startingBuildings['farm'],
             'building_smithy' => 0,
             'building_masonry' => 0,
             'building_ore_mine' => 0,
@@ -145,7 +174,7 @@ class DominionFactory
             'building_temple' => 0,
             'building_diamond_mine' => 0,
             'building_school' => 0,
-            'building_lumberyard' => 20,
+            'building_lumberyard' => $startingBuildings['lumberyard'],
             'building_forest_haven' => 0,
             'building_factory' => 0,
             'building_guard_tower' => 0,
