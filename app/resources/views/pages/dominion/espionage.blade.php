@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-user-secret"></i> Offensive Operations</h3>
+                    <h3 class="box-title"><i class="fa fa-user-secret"></i> Offensive Operations <span class="label label-success">new</span></h3>
                 </div>
 
                 @if ($protectionService->isUnderProtection($selectedDominion))
