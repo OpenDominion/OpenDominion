@@ -113,10 +113,10 @@
                 <div class="form-group create-pack-only" style="display: none;">
                     <label for="pack_size" class="col-sm-3 control-label">Pack Size</label>
                     <div class="col-sm-9">
-                        {{--<input type="number" name="pack_size" id="pack_size" class="form-control" min="2" max="3" placeholder="2">--}}
-                        @for ($i = 2; $i < $round->pack_size; $i++)
-                            <option value="{{$i}}">{{$i}}</option>
-                        @endfor
+                        <select name="pack_size" id="pack_size" class="form-control">
+                            @for ($i = 2; $i < $round->pack_size; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
                         </select>
                         <p class="help-block">The amount of players that will be in your pack (including yourself).</p>
                     </div>
