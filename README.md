@@ -8,9 +8,9 @@
   <a href="https://coveralls.io/github/WaveHack/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="MIT licensed"></a>
   <br>
+  <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
   <a href="https://www.patreon.com/OpenDominion"><img src="https://img.shields.io/badge/donate-patreon-ff69b4.svg" alt="Donate on Patreon"></a>
   <a href="https://discord.gg/mFk2wZT"><img src="https://img.shields.io/discord/325315157335212032.svg?label=chat%20&#40;discord&#41;" alt="Chat on Discord"></a>
-  <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
 </p>
 
 *Note: OpenDominion is still in development. Some features of the game have not been implemented yet.*
