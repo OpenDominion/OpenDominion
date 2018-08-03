@@ -79,7 +79,7 @@
                                             @endif
                                         </td>
                                         @if ($isOwnRealm)
-                                            <td class="text-center">{{ $dominion->user->display_name }}</td>
+                                            <td class="text-center">{{ $dominion->ruler_name }}</td>
                                         @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}
