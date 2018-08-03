@@ -114,7 +114,7 @@
                     <label for="pack_size" class="col-sm-3 control-label">Pack Size</label>
                     <div class="col-sm-9">
                         <select name="pack_size" id="pack_size" class="form-control">
-                            @for ($i = 2; $i < $round->pack_size; $i++)
+                            @for ($i = 2; $i <= $round->pack_size; $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
                         </select>
