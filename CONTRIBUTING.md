@@ -342,7 +342,7 @@ If that doesn't work, remove the `storage/databases/local.sqlite` file, create a
 $ php artisan migrate --seed
 ```
 
-**Note:** Any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
+**Note:** Any additionally registered user accounts and dominions next to the ones provided by the database seeding process will have to be re-registered (and activated in the case of a user account).
 
 Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`storage/logs/laravel.log`).
 
