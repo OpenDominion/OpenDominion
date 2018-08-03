@@ -58,28 +58,31 @@ class RoundOpenCommand extends Command implements CommandInterface
             throw new RuntimeException('Options --now, --open and --days are mutually exclusive');
         }
 
-        if($realmSize <= 0) {
+        if ($realmSize <= 0) {
             throw new RuntimeException('Option --realmSize must be greater than 0.');
         }
 
-        if($packSize <= 0) {
+        if ($packSize <= 0) {
             throw new RuntimeException('Option --packSize must be greater than 0.');
         }
 
-        if($realmSize < $packSize) {
+        if ($realmSize < $packSize) {
             throw new RuntimeException('Option --realmSize must be greater than or equal to option --packSize.');
         }
 
         if ($now) {
             $startDate = 'now';
+
         } elseif ($open) {
             $startDate = '+3 days midnight';
+
         } elseif ($days !== null) {
             if (!ctype_digit($days)) {
                 throw new RuntimeException('Option --days=DAYS must be an integer');
             }
 
             $startDate = "+{$days} days midnight";
+
         } else {
             $startDate = '+5 days midnight';
         }
