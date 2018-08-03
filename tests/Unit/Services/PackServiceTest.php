@@ -2,8 +2,6 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
-use CoreDataSeeder;
-use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -67,8 +65,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $thrown = false;
 
         // Act
-        try
-        {
+        try {
             $result = $this->packService->getOrCreatePack(
                 $this->round,
                 $this->goodRace,
@@ -76,9 +73,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
                 'password',
                 1,
                 true);
-        }
-        catch(RuntimeException $e)
-        {
+        } catch (RuntimeException $e) {
             $thrown = true;
         }
 
@@ -91,8 +86,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $thrown = false;
 
         // Act
-        try
-        {
+        try {
             $result = $this->packService->getOrCreatePack(
                 $this->round,
                 $this->goodRace,
@@ -100,9 +94,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
                 'password',
                 7,
                 true);
-        }
-        catch(RuntimeException $e)
-        {
+        } catch (RuntimeException $e) {
             $thrown = true;
         }
 
@@ -153,8 +145,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $thrown = false;
 
         // Act
-        try
-        {
+        try {
             $result = $this->packService->getOrCreatePack(
                 $this->round,
                 $this->goodRace,
@@ -163,9 +154,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
                 0,
                 false);
 
-        }
-        catch(RuntimeException $e)
-        {
+        } catch (RuntimeException $e) {
             $thrown = true;
         }
 
@@ -190,8 +179,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $thrown = false;
 
         // Act
-        try
-        {
+        try {
             $result = $this->packService->getOrCreatePack(
                 $this->round,
                 $this->evilRace,
@@ -199,9 +187,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
                 'password',
                 0,
                 false);
-        }
-        catch(RuntimeException $e)
-        {
+        } catch (RuntimeException $e) {
             $thrown = true;
         }
 
@@ -215,8 +201,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $thrown = false;
 
         // Act
-        try
-        {
+        try {
             $result = $this->packService->getOrCreatePack(
                 $this->round,
                 $this->goodRace,
@@ -224,9 +209,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
                 'password',
                 0,
                 false);
-        }
-        catch(RuntimeException $e)
-        {
+        } catch (RuntimeException $e) {
             $thrown = true;
         }
 
