@@ -307,6 +307,8 @@ You can run tests with:
 $ vendor/bin/phpunit
 ```
 
+**Note: The rest of this section is out of date and needs to be updated later.**
+
 There are two test suites, named as follows:
 
 - Feature Tests
