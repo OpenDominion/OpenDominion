@@ -16,9 +16,9 @@ class Kernel extends HttpKernel
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \OpenDominion\Http\Middleware\TrimStrings::class,
+        Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \OpenDominion\Http\Middleware\TrustProxies::class,
+        Middleware\TrustProxies::class,
     ];
 
     /**
@@ -28,17 +28,17 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \OpenDominion\Http\Middleware\EncryptCookies::class,
+            Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \OpenDominion\Http\Middleware\VerifyCsrfToken::class,
+            Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
-            \OpenDominion\Http\Middleware\UpdateUserLastOnline::class,
-            \OpenDominion\Http\Middleware\ShareSelectedDominion::class,
-            \OpenDominion\Http\Middleware\FireAnalyticsFlashEvents::class,
+            Middleware\UpdateUserLastOnline::class,
+            Middleware\ShareSelectedDominion::class,
+            Middleware\FireAnalyticsFlashEvents::class,
         ],
 
         'api' => [
