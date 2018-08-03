@@ -297,29 +297,6 @@ This is experimental and is subject to change. Please keep an eye on the #dev-an
 - Slim controllers, slim models, many slim services.
 
 
-### How to run OpenDominion
-
-To run OpenDominion you need a webserver pointing a document root towards the 'public' directory.
-
-What I like to do during development is to use PHP's internal webserver via Artisan serve:
-
-```bash
-$ php artisan serve
-```
-
-OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to. Using things like Apache/Nginx with MySQL/MariaDB is possible at your own discretion.
-
-**Note:** Due to hardcoded SQL queries in the [GameTickCommand class](https://github.com/WaveHack/OpenDominion/blob/master/src/Console/Commands/GameTickCommand.php), database engines other than Sqlite and MySQL are **not** supported.
-
-Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
-
-If you run into an 'application encryption error', run the following:
-
-```bash
-$ php artisan key:generate
-```
-
-
 ### How to run tests
 
 You can run tests with:
