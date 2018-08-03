@@ -284,6 +284,7 @@ With that said, here are some things to keep in mind if you're used to the Larav
 
 This is experimental and is subject to change. Please keep an eye on the #dev-announcements channel in the Discord server.
 
+
 ### Things to keep in mind
 
 - The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance without any interactions with database, sessions etc, and service classes (`src/Services`).
