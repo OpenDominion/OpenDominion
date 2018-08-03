@@ -217,7 +217,6 @@ It should pass most checks and you're good to go! Note that the following checks
 - Locale check on Windows, which are not supported there.
 - If using Sqlite, the example environmental variables not being set. Most notably `DB_DATABASE` (and optionally any other `DB_*` that are not `DB_CONNECTION`).
 
-
 Run the internal PHP webserver with a helper command through Artisan:
 
 ```bash
