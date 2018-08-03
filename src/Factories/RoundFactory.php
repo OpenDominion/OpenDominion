@@ -16,7 +16,8 @@ class RoundFactory
      *
      * @param RoundLeague $league
      * @param Carbon $startDate
-     *
+     * @param int $realmSize
+     * @param int $packSize
      * @return Round
      */
     public function create(RoundLeague $league, Carbon $startDate, int $realmSize, int $packSize): Round
