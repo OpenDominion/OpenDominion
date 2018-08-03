@@ -27,11 +27,7 @@ class AddRealmAndPackSizeToRoundsTable extends Migration
     public function down()
     {
         Schema::table('rounds', function (Blueprint $table) {
-            $table->dropColumn('pack_size');
-        });
-
-        Schema::table('rounds', function (Blueprint $table) {
-            $table->dropColumn('realm_size');
+            $table->dropColumn(['pack_size', 'realm_size']);
         });
     }
 }
