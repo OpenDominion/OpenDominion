@@ -10,7 +10,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
 - [Before getting started](#before-getting-started)
   - [Prerequisites](#prerequisites)
   - [Vision](#vision)
-- [How can I contribute?](#how-can-i-contribute)
+- [How can I contribute?](#how-can-i-contribute?)
   - [Joining the community](#joining-the-community)
   - [Participating in the beta](#participating-in-the-beta)
   - [Providing info](#providing-info)
