@@ -212,7 +212,11 @@ Optional: You can run a self-diagnostic check to see if everything was setup cor
 $ php artisan self-diagnosis
 ```
 
-It should pass every check and you're good to go! Note that on Windows this check will always complain about locales not being setup correct. Just ignore this.
+It should pass most checks and you're good to go! Note that the following checks might fail in certain conditions, which you can safely ignore:
+
+- Locale check on Windows, which are not supported there.
+- If using Sqlite, the example environmental variables not being set. Most notably `DB_DATABASE` (and optionally any other `DB_*` that are not `DB_CONNECTION`).
+
 
 Run the internal PHP webserver with a helper command through Artisan:
 
