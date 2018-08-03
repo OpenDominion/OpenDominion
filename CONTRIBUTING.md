@@ -123,6 +123,12 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 - You have [NPM](https://nodejs.org/en/) 5 or higher installed and in your path.
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
+In addition:
+
+- If you want to use MySQL as your database engine, you have a server setup. In in doubt, just follow the instructions for Sqlite below.
+- If not going to use the internal PHP webserver, you need to have a webserver like Nginx or Apache setup according to the [Laravel documentation](https://laravel.com/docs/5.6/installation#pretty-urls).
+
+As a replacement for both of these there's Docker Compose and [Homestead](https://laravel.com/docs/5.6/homestead) configuration files available. 
 
 ##### Languages, frameworks, libraries and tools
 
@@ -138,48 +144,83 @@ I'm developing OpenDominion in PhpStorm myself, but you're of course free to use
 ##### Cloning the repository:
 
 ```bash
-$ git pull https://github.com/WaveHack/OpenDominion.git OpenDominion
+$ git clone https://github.com/WaveHack/OpenDominion.git OpenDominion
 $ cd OpenDominion
 ```
 
 
-##### Init script
+##### Setting up after cloning:
 
-There's an [init script](https://github.com/WaveHack/OpenDominion/blob/master/bin/init.sh) available which will set up the rest: 
+**Note:** The `bin/init.sh` script that was previously available has been removed. These commands will now have to be entered manually.
+
+Install PHP dependencies:
 
 ```bash
-$ bash bin/init.sh local
+$ composer install
 ```
 
-If you don't want to use my awesome init script, you can enter these commands manually instead:
+Copy the provided .env example file and generate a fresh application encryption key.
 
 ```bash
-# Composer stuff
-$ composer self-update
-$ composer install --prefer-source
-
-# Env file
-$ cp .env.template.local .env
+$ cp .env.example .env
 $ php artisan key:generate
+```
 
-# Database
-$ touch storage/databases/local.sqlite
+Now is the time to decide if you want to setup a MySQL database, or use Sqlite instead.
+
+Edit the `.env` file and set the correct `DB_*` fields. If you want to use Sqlite, set `DB_CONNECTION=local`, comment out `DB_DATABASE=` and run `touch storage/databases/local.sqlite`.
+
+After this, migrate the database and seed development testing data:
+
+```bash
 $ php artisan migrate --seed
+```
 
-# Optional IDE helpers
-$ php artisan clear-compiled
+If your database is setup correctly then the migrations and seeders will run without errors, and you will receive user credentials for an automatically generated user account and dominion. 
+
+Optional: If your editor or IDE supports code inspection and autocompletion, there are some helpers you can run to generate helper files:
+
+```bash
 $ php artisan ide-helper:generate
 $ php artisan ide-helper:models -N
 $ php artisan ide-helper:meta
+```
 
-# Frontend stuff
+Now install the frontend dependencies:
+
+```bash
 $ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
 # If using Vagrant, node-sass might fail to install properly.
-# If so, run: npm rebuild node-sass --no-bin-links 
+# If so, run: npm rebuild node-sass --no-bin-links
+```
+
+And build the frontend:
+
+```bash
 $ npm run dev
 ```
 
-Make sure to change the `MAIL_*` settings in your `.env` if you want to use your own SMTP server (or just set `MAIL_DRIVER` to `log`). 
+Optional: You can run a self-diagnostic check to see if everything was setup correctly.
+
+```bash
+$ php artisan self-diagnosis
+```
+
+It should pass every check and you're good to go! Note that on Windows this check will always complain about locales not being setup correct. Just ignore this.
+
+Run the internal PHP webserver with a helper command through Artisan:
+
+```bash
+$ php artisan serve
+```
+
+Open your web browser, navigate to [localhost:8000](http://localhost:8000) and login with the credentials provided to you after migrating and seeding the database.
+
+If you want to tinker with stuff through the command-line with an interactive shell (i.e. a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)), you can run `php artisan tinker`. Note that you need to restart the tinker process every time you make a change in the code.
+
+For more info about Artisan and Tinker, consult the [documentation](https://laravel.com/docs/5.6/artisan#introduction).
+
+**Note:** If you want to use an SMTP server like Mailtrap.io for testing emails, change the `MAIL_*` fields accordingly in `.env`. By default emails are logged in the Laravel log file at `storage/logs/laravel*.log`. 
 
 
 ### Directory structure
