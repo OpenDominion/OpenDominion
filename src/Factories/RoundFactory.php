@@ -30,7 +30,7 @@ class RoundFactory
             'start_date' => $startDate,
             'end_date' => (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS),
             'realm_size' => $realmSize,
-            'pack_size' => $packSize
+            'pack_size' => $packSize,
         ]);
     }
 
