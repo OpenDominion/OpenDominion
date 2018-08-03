@@ -5,7 +5,6 @@
 <p align="center">
   <a href="https://travis-ci.org/WaveHack/OpenDominion"><img src="https://travis-ci.org/WaveHack/OpenDominion.svg?branch=develop" alt="Build Status"></a>
   <a href="https://styleci.io/repos/29497480"><img src="https://styleci.io/repos/29497480/shield?branch=develop&style=flat" alt="StyleCI"></a>
-  <a href="https://gemnasium.com/github.com/WaveHack/OpenDominion"><img src="https://gemnasium.com/badges/github.com/WaveHack/OpenDominion.svg" alt="Dependency Status"></a>
   <a href="https://coveralls.io/github/WaveHack/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="MIT licensed"></a>
   <br>
