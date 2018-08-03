@@ -333,7 +333,7 @@ For updating your local development environment, do a `git pull`, optionally fol
 If you want to reset the database, run the following:
 
 ```bash
-$ php artisan migrate:refresh --seed
+$ php artisan migrate:fresh --seed
 ```
 
 If that doesn't work, remove the `storage/databases/local.sqlite` file, create a new one and then run:
