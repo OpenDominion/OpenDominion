@@ -197,25 +197,18 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->assertTrue($thrown);
     }
 
-    public function testGetOrCreatePackWhenCreatePackIsFalseAndNoExistingPackThrows()
+    public function testGetOrCreatePackWhenCreatePackIsFalseAndNoExistingPackReturnsNull()
     {
-        // Arrange
-        $thrown = false;
-
         // Act
-        try {
-            $result = $this->packService->getOrCreatePack(
-                $this->round,
-                $this->goodRace,
-                'name',
-                'password',
-                0,
-                false);
-        } catch (RuntimeException $e) {
-            $thrown = true;
-        }
+        $result = $this->packService->getOrCreatePack(
+            $this->round,
+            $this->goodRace,
+            'name',
+            'password',
+            0,
+            false);
 
         // Assert
-        $this->assertTrue($thrown);
+        $this->assertNull($result);
     }
 }
