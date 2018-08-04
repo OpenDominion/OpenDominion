@@ -308,7 +308,7 @@ You can run the full test suite with:
 $ vendor/bin/phpunit
 ```
 
-**Note: The rest of this section is out of date and needs to be updated later.**
+**Note: The rest of this section is largely out of date as tests need refactoring. This section will be updated later.**
 
 There are two test suites, named as follows:
 
