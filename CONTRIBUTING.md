@@ -349,7 +349,7 @@ You can activate newly created users by either:
 
 1. Inspecting the registration mail sent (either through a SMTP server like Mailtrap.io, or fishing the activation link out of the logged email if your MAIL_DRIVER is set to 'log' in .env),
 2. Use a database client and set `users.activated = 1` on the relevant user account,
-3. Using Tinker to manually set the activated field to 1. For example:
+3. Using Tinker to manually set the activated field to 1. For example (using `php artisan tinker`):
 
 ```php
 >>> $u = User::find(2)
