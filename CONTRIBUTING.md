@@ -191,7 +191,7 @@ $ php artisan ide-helper:models -N
 $ php artisan ide-helper:meta
 ```
 
-Now install the frontend dependencies:
+Now install the frontend dependencies. Note that if you're on Linux you need to have `libpng-dev` installed.
 
 ```bash
 $ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
