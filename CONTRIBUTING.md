@@ -302,7 +302,7 @@ This is experimental and is subject to change. Please keep an eye on the #dev-an
 
 Tests are ran in an in-memory Sqlite database. Even if you use MySQL, you need to have the `php-sqlite3` installed for this.
 
-You can run tests with:
+You can run the full test suite with:
 
 ```bash
 $ vendor/bin/phpunit
