@@ -345,7 +345,17 @@ $ php artisan migrate --seed
 
 **Note:** Any additionally registered user accounts and dominions next to the ones provided by the database seeding process will have to be re-registered (and activated in the case of a user account).
 
-Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`storage/logs/laravel.log`).
+You can activate newly created users by either:
+
+1. Inspecting the registration mail sent (either through a SMTP server like Mailtrap.io, or fishing the activation link out of the logged email if your MAIL_DRIVER is set to 'log' in .env),
+2. Use a database client and set `users.activated = 1` on the relevant user account,
+3. Using Tinker to manually set the activated field to 1. For example:
+
+```php
+>>> $u = User::find(2)
+>>> $u->activated =  1
+>>> $u->save()
+```
 
 
 ### Style guide and standards
