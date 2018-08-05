@@ -61,7 +61,13 @@ class RealmFinderService
         $realm = $this->findRandomRealm($round, $race, $pack->size, true);
 
         if ($realm !== null) {
-            $pack->update(['realm_id' => $realm->id]);
+            $pack->realm_id = $realm->id;
+            $pack->save();
+
+            $realm->has_pack = true;
+            $realm->reserved_slots = $round->pack_size;
+            $realm->save();
+
             $pack->load('realm');
         }
 
