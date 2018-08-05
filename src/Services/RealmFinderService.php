@@ -20,6 +20,7 @@ class RealmFinderService
      *
      * @param Round $round
      * @param Race $race
+     * @param int $slotsNeeded
      * @param Bool $forPack
      *
      * @return Realm|null
