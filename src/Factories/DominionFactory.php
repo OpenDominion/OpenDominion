@@ -184,7 +184,8 @@ class DominionFactory
         ]);
 
         if ($pack !== null) {
-            $pack->realm()->update(['reserved_slots' => $pack->realm->reserved_slots - 1]);
+            $realm->reserved_slots--;
+            $realm->save();
         }
 
         return $dominion;
