@@ -211,7 +211,11 @@
                         <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
                         <ul>
                             @foreach ($selectedDominion->pack->dominions as $dominion)
-                                <li>{{ $dominion->ruler_name }} of {{ $dominion->name }} ({{ $dominion->user->display_name }})</li>
+                                <li>{{ $dominion->ruler_name }} of {{ $dominion->name }}
+                                @if($dominion->ruler_name !== $dominion->user->display_name)
+                                    ({{ $dominion->user->display_name }})
+                                @endif
+                                </li>
                             @endforeach
                         </ul>
                         <p>Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.</p>
