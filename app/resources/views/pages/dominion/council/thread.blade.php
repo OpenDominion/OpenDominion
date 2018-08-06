@@ -14,8 +14,8 @@
             <small>
                 <i>
                     Posted {{ $thread->created_at->diffForHumans() }} by <b>{{ $thread->dominion->name }}</b>
-                    @if ($thread->dominion->name !== $thread->dominion->user->display_name)
-                        ({{ $thread->dominion->user->display_name }})
+                    @if ($thread->dominion->name !== $thread->dominion->ruler_name)
+                        ({{ $thread->dominion->ruler_name }})
                     @endif
                 </i>
             </small>
@@ -32,8 +32,8 @@
                     <small>
                         <i>
                             Posted {{ $post->created_at->diffForHumans() }} by <b>{{ $post->dominion->name }}</b>
-                            @if ($post->dominion->name !== $post->dominion->user->display_name)
-                                ({{ $post->dominion->user->display_name }})
+                            @if ($post->dominion->name !== $post->dominion->ruler_name)
+                                ({{ $post->dominion->ruler_name }})
                             @endif
                         </i>
                     </small>

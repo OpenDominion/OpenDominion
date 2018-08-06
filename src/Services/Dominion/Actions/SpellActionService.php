@@ -302,7 +302,7 @@ class SpellActionService
             case 'clear_sight':
                 $infoOp->data = [
 
-                    'ruler_name' => ($target->ruler_name ?: $target->user->display_name),
+                    'ruler_name' => $target->ruler_name,
                     'race_id' => $target->race->id,
                     'land' => $this->landCalculator->getTotalLand($target),
                     'peasants' => $target->peasants,
