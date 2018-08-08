@@ -230,8 +230,10 @@ class LogParserService
     }
     function parse_construction ($string) {
         if (preg_match_all('/Construction of ,*((\s*\d+ [a-z\s]+,?)*) started at a cost of (\d+) platinum and (\d+) lumber./im', $string, $pp)) {
-            foreach (self::simtodombuildings as $sim => $dom)
+            foreach (self::simtodombuildings as $sim => $dom) {
+                $construction['construction'][$dom] = 0;
                 $pp[1][0] = str_replace($sim, $dom, $pp[1][0]);
+            }
             foreach (explode(',', trim($pp[1][0])) as $p) {
                 list ($count, $building) = explode(' ', trim($p));
                 $construction['construction'][$building] = $count;
@@ -241,8 +243,10 @@ class LogParserService
     }
     function parse_destruction ($string) {
         if (preg_match_all('/Destruction of ,*((\s*\d+ [a-z\s]+,?)*) is complete./im', $string, $pp)) {
-            foreach (self::simtodombuildings as $sim => $dom)
-                $pp[1][0] = str_replace($sim, $dom, $pp[1][0]);    
+            foreach (self::simtodombuildings as $sim => $dom) {
+                $construction['destruction'][$dom] = 0;
+                $pp[1][0] = str_replace($sim, $dom, $pp[1][0]);
+            }   
             foreach (explode(',', trim($pp[1][0])) as $p) {
                 list ($count, $building) = explode(' ', trim($p));
                 $destruction['destruction'][$building] = $count;
@@ -253,8 +257,10 @@ class LogParserService
     function parse_rezone ($string) {
                            //Rezoning begun at a cost of 15000 platinum. The changes in land are as following: ((\s*\d+ [a-z\s]+,?)*)
         if (preg_match_all('/Rezoning begun at a cost of (\d+) platinum. The changes in land are as following: ((\s*-?\d+ [a-z]+,?)*)/i', $string, $pp)) {
-            foreach (self::simtodomlandtypes as $sim => $dom)
+            foreach (self::simtodomlandtypes as $sim => $dom) {
+                $rezone['rezone'][$dom] = 0;
                 $pp[2][0] = str_replace($sim, $dom, $pp[2][0]);
+            }
             foreach (explode(',', trim($pp[2][0])) as $p) {
                 list ($count, $building) = explode(' ', trim($p));    
                 $rezone['rezone'][$building] = $count;
@@ -311,6 +317,7 @@ class LogParserService
 
         if (preg_match_all('/Training of ((\s*\d+ [a-z\s]+,?)*) begun at a cost of (\d*) platinum, (\d*) ore, (\d+) draftees, and (\d*) wizards\./i', $string, $pp)) {
             foreach (self::unitstodomparamsmap as $unit => $domparam) {
+                $train['train'][$domparam] = 0;
                 $pp[1][0] = str_replace($unit, $domparam, $pp[1][0]);
             }
             foreach (explode(',', trim($pp[1][0])) as $v) {
@@ -327,8 +334,11 @@ class LogParserService
         if (preg_match_all('/You sucessfully released ((\s*\d+ [a-z\s]+,?)*)\./i', $string, $pp)) {
             
             foreach ($pp[1] as $k => $ppp)
-                foreach (self::unitstodomparamsmap as $unit => $domparam)
+                foreach (self::unitstodomparamsmap as $unit => $domparam) {
+                    $train['release'][$domparam] = 0;
                     $pp[1][$k] = str_replace($unit, $domparam, $pp[1][$k]);
+                }
+                
             foreach ($pp[1] as $k => $ppp) {
                 foreach (explode(',', trim($ppp)) as $eachunit) {
                     list ($num, $unit) = explode(' ', trim($eachunit));
