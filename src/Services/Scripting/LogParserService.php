@@ -174,9 +174,8 @@ class LogParserService
         'Archmages'            => 'archmages'
     );
 
-    public function parselogfile($log, $userid, $begin): array
+    public function parselogfile($data): array
     {
-        $data         = file_get_contents('C:\Git\OpenDominion\slz_test_log.txt');
         //echo $data;
         //$begintime  = $begin.' 0'.($wave-1).':00:00';
         
@@ -190,15 +189,19 @@ class LogParserService
         $returnResults = array();
 
         foreach ($results[0] as $k => $string) {
+            $returnResults[$results[1][$k]] = array();
+
             $nextpos = isset($results[0][$k+1]) ? strpos($data, $results[0][$k+1]) : strlen($data)-1;
             $hourlog = trim(substr($data, $begin=strpos($data, $string)+strlen($string), $nextpos-$begin));
-            //$types = array('daily', 'bank', 'destruction', 'rezone', 'construction', 'explore', 'magic', 'train', 'release');
-            $types = array('daily', 'bank', 'destruction', 'construction', 'explore', 'magic', 'train');
+            $types = array('daily', 'bank', 'destruction', 'rezone', 'construction', 'explore', 'magic', 'train', 'release');
             foreach ($types as $type) {
                 $func = "parse_{$type}";
                 if ($result = $this->$func($hourlog)) {
                     // $this->saveAction($type, $result, $results[1][$k]);
-                    $returnResults[$results[1][$k]][] = $result;
+                    foreach($result as $key => $value)
+                    {
+                        $returnResults[$results[1][$k]][$key] = $value;
+                    }
                 }
             }
         }
@@ -208,12 +211,14 @@ class LogParserService
     
     function parse_explore ($string) {
         if (preg_match_all('/Exploration for ((\s*\d+ [a-z]+,?)*) begun at a cost of (\d+) platinum and (\d+) draftees./im', $string, $pp)) {
-            $explores = array(
-                'explore' => array()
-            );
-            foreach (self::simtodomlandtypes as $sim => $dom)
-                foreach ($pp[1] as $key => $val)
+            foreach (self::simtodomlandtypes as $sim => $dom) {
+                $explores['explore'][$dom] = 0;
+                foreach ($pp[1] as $key => $val) {
                     $pp[1][$key] = str_replace($sim, $dom, $val);
+                }
+            }
+                
+
             foreach ($pp[0] as $k => $val) {
                 foreach (explode(',', $pp[1][$k]) as $xplorland) {
                     list ($land, $type) = explode(' ', trim($xplorland));
@@ -225,9 +230,6 @@ class LogParserService
     }
     function parse_construction ($string) {
         if (preg_match_all('/Construction of ,*((\s*\d+ [a-z\s]+,?)*) started at a cost of (\d+) platinum and (\d+) lumber./im', $string, $pp)) {
-            $construction = array(
-                'construction' => array()
-            );
             foreach (self::simtodombuildings as $sim => $dom)
                 $pp[1][0] = str_replace($sim, $dom, $pp[1][0]);
             foreach (explode(',', trim($pp[1][0])) as $p) {
@@ -239,14 +241,11 @@ class LogParserService
     }
     function parse_destruction ($string) {
         if (preg_match_all('/Destruction of ,*((\s*\d+ [a-z\s]+,?)*) is complete./im', $string, $pp)) {
-            $destruction = array(
-                'destroy' => array()
-            );
             foreach (self::simtodombuildings as $sim => $dom)
                 $pp[1][0] = str_replace($sim, $dom, $pp[1][0]);    
             foreach (explode(',', trim($pp[1][0])) as $p) {
                 list ($count, $building) = explode(' ', trim($p));
-                $destruction['destroy'][$building] = $count;
+                $destruction['destruction'][$building] = $count;
             }
             return $destruction;
         }
@@ -254,9 +253,6 @@ class LogParserService
     function parse_rezone ($string) {
                            //Rezoning begun at a cost of 15000 platinum. The changes in land are as following: ((\s*\d+ [a-z\s]+,?)*)
         if (preg_match_all('/Rezoning begun at a cost of (\d+) platinum. The changes in land are as following: ((\s*-?\d+ [a-z]+,?)*)/i', $string, $pp)) {
-            $rezone = array(
-                'rezone' => array()
-            );
             foreach (self::simtodomlandtypes as $sim => $dom)
                 $pp[2][0] = str_replace($sim, $dom, $pp[2][0]);
             foreach (explode(',', trim($pp[2][0])) as $p) {
@@ -268,14 +264,14 @@ class LogParserService
     }
     function parse_bank ($string) {
         if (preg_match_all('/(\d+) ([a-z]+) have been traded for (\d+) ([a-z]+)./i', $string, $pp)) {
-            $bank = array();
+
             foreach ($pp[0] as $key => $val)
                 foreach (self::simtodombanktypes as $sim => $dom) {
                     $pp[2][$key] = str_replace($sim, $dom, $pp[2][$key]);
                     $pp[4][$key] = str_replace($sim, $dom, $pp[4][$key]);
                 }
             foreach ($pp[0] as $k => $dummy) {
-                $bank[] =
+                $bank['bank'] =
                     array(
                         'source' => $pp[2][0],
                         'target' => $pp[4][0],
@@ -295,7 +291,7 @@ class LogParserService
             foreach ($pp[0] as $k => $v) {
                 foreach (self::simtodomspells as $sim => $dom)
                     $pp[1][$k] = str_replace($sim, $dom, $pp[1][$k]);
-                $spells[$pp[2][$k]] = $pp[1][$k];
+                $spells['magic'][$pp[2][$k]] = $pp[1][$k];
             }
             return $spells;
         }
@@ -305,7 +301,7 @@ class LogParserService
         $dailies = array();
         if (preg_match_all('/You have been awarded with (\d+) ([a-zA-Z0-9]+)\./i', $string, $pp)) {
             foreach ($pp[0] as $k => $v) {
-                $dailies['dailies'][] = $pp[1][$k] == 20 ? 'land' : 'plat';
+                $dailies['daily'][] = $pp[1][$k] == 20 ? 'land' : 'plat';
             }
             return $dailies;
         }
@@ -314,15 +310,12 @@ class LogParserService
     function parse_train ($string) {
 
         if (preg_match_all('/Training of ((\s*\d+ [a-z\s]+,?)*) begun at a cost of (\d*) platinum, (\d*) ore, (\d+) draftees, and (\d*) wizards\./i', $string, $pp)) {
-            $train = array(
-                'army'         => array()
-            );
             foreach (self::unitstodomparamsmap as $unit => $domparam) {
                 $pp[1][0] = str_replace($unit, $domparam, $pp[1][0]);
             }
             foreach (explode(',', trim($pp[1][0])) as $v) {
                 list ($units, $unit) = explode(' ', trim($v));
-                $train['army'][$unit] = $units;
+                $train['train'][$unit] = $units;
             }
             return $train;
         }
@@ -339,23 +332,10 @@ class LogParserService
             foreach ($pp[1] as $k => $ppp) {
                 foreach (explode(',', trim($ppp)) as $eachunit) {
                     list ($num, $unit) = explode(' ', trim($eachunit));
-                    $release[str_replace(' ', '', $unit)] = $num;
+                    $release['release'][str_replace(' ', '', $unit)] = $num;
                 }
             }
         }
         return $release;
-    }
-
-    function normalize_prot ($protid) {
-        $nullord = mysqlquery("select hour, group_concat(id) as ids, group_concat(time) as times, count(*) as num from protection_actions where prot_id = '{$protid}' and ord = 0 group by hour having num > 1");
-        while ($row = mysql_fetch_assoc($nullord)) {
-            $timesarr = explode(', ', $row['times']);
-            $sametime = trim($timesarr[mt_rand(0, count($timesarr)-1)]);
-            $p = 0;
-            foreach (explode(',', $row['ids']) as $eachid) {
-                ++$p;
-                mysqlquery("update protection_actions set ord = {$p}, time = '{$sametime}' where id = {$eachid}");
-            }
-        }
     }
 }

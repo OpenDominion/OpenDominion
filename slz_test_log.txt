@@ -1,8 +1,5 @@
 ====== Protection Hour: 1  ( Local Time: 02:00:00 2018-08-06 )  ( Domtime: 18:00:00 2018-08-05 ) ======
-Draftrate changed to 90%.
-You sucessfully released 150 Shaman, 25 Spies, 24 Wizards.
-Exploration for 29 Plains begun at a cost of 27115 platinum and 116 draftees.
-You have been awarded with 20 Hill.
-You have been awarded with 9152 platinum.
-Construction of 25 Alchemies, 40 Factories, 16 Towers started at a cost of 68850 platinum and 7128 lumber.
-You invested 10000 Gems into Science.
+Exploration for 10 Plains, 10 Forest begun at a cost of 41880 platinum and 120 draftees.
+
+====== Protection Hour: 2  ( Local Time: 02:00:00 2018-08-06 )  ( Domtime: 18:00:00 2018-08-05 ) ======
+Exploration for 5 Forest begun at a cost of 41880 platinum and 120 draftees.
