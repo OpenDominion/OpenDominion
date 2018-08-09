@@ -186,7 +186,7 @@ class LogParserService
 
             $nextpos = isset($results[0][$k+1]) ? strpos($data, $results[0][$k+1]) : strlen($data)-1;
             $hourlog = trim(substr($data, $begin=strpos($data, $string)+strlen($string), $nextpos-$begin));
-            $types = array('daily', 'bank', 'destruction', 'rezone', 'construction', 'explore', 'magic', 'train', 'release');
+            $types = array('release', 'daily', 'bank', 'destruction', 'rezone', 'construction', 'explore', 'magic', 'train');
             foreach ($types as $type) {
                 $func = "parse_{$type}";
                 if ($result = $this->$func($hourlog)) {

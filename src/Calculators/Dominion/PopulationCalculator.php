@@ -297,7 +297,8 @@ class PopulationCalculator
 
         $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
 
-        // echo "\n$maximumPeasantDeath $roomForPeasants $currentPopulationChange";
+        echo "\n$maximumPeasantDeath $roomForPeasants $currentPopulationChange";
+        // echo "\n".max($maximumPeasantDeath, $maximumPopulationChange);
         return max($maximumPeasantDeath, $maximumPopulationChange);
 
         /*
@@ -327,7 +328,7 @@ class PopulationCalculator
         $growthFactor = 1;
 
         if ($this->getPopulationMilitaryPercentage($dominion) < $dominion->draft_rate) {
-            $draftees += ($dominion->peasants * ($growthFactor / 100));
+            $draftees += round(($dominion->peasants * ($growthFactor / 100)));
         }
 
         return $draftees;

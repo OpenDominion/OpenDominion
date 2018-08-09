@@ -32,9 +32,9 @@ class ConstructionQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->constructionQueue) {
-            return $this->constructionQueue;
-        }
+        // if ($this->constructionQueue) {
+        //     return $this->constructionQueue;
+        // }
 
         $rows = DB::table('queue_construction')
             ->where('dominion_id', $dominion->id)

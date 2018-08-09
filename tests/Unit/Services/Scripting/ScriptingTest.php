@@ -26,15 +26,14 @@ class ScriptingTest extends AbstractBrowserKitTestCase
     public function testSomething()
     {
         $service = new \OpenDominion\Services\Scripting\LogParserService();
-        $scriptingService = new \OpenDominion\Services\Scripting\ScriptingService();
-        $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
+        
         $draftRateService = app(\OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService::class);
         $round = $this->createRound();
         $goodRealm = $this->createRealm($round);
         $user = $this->createUser();
         $dominion = $this->createDominion($user, $round);
 
-        $draftRateService->changeDraftRate($dominion, 0);
+        $draftRateService->changeDraftRate($dominion, 90);
 
         $data = file_get_contents('C:\Git\OpenDominion\slz_test_log.txt');
 
@@ -44,19 +43,25 @@ class ScriptingTest extends AbstractBrowserKitTestCase
         $maxHours = max(array_keys($actionsPerHours));
         // print_r($maxHours);
         echo "\n";
-        for($hour = 1; $hour <= 2; $hour++)
+        for($hour = 1; $hour <= 72; $hour++)
         {
+            $scriptingService = new \OpenDominion\Services\Scripting\ScriptingService();
+            $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
             // echo "\n $hour: ";
-            // echo "\n";
-            // print_r($dominion->peasants);
-
+            // echo "\n$dominion->peasants";
+            $popCalc = app(\OpenDominion\Calculators\Dominion\PopulationCalculator::class);
+            $maxPop = $popCalc->getMaxPopulationRaw($dominion);
             if(array_key_exists($hour, $actionsPerHours))
             {
                 $actionsForHour = $actionsPerHours[$hour];
                 $results[$hour][] = $scriptingService->scriptHour($dominion, $actionsForHour);
             }
-            Artisan::call('game:tick');
-            // $tickService->tickDominion($dominion);
+
+            $tickService->tickDominion($dominion);
+            // echo "\n$dominion->military_draftees";
+
+            // echo "\n$maxPop";
+            // echo "\n";
         }
 
         // print_r($results);

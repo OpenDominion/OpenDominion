@@ -75,65 +75,73 @@ class AppServiceProvider extends AbstractServiceProvider
 
     protected function registerCalculators()
     {
+        $func = "singleton";
+        if ($this->app->environment() === 'testing') {
+            $func = "bind";
+        }
         // Generic Calculators
-        $this->app->singleton(NetworthCalculator::class);
+        $this->app->$func(NetworthCalculator::class);
 
         // Dominion Calculators
-        $this->app->singleton(BuildingCalculator::class);
-        $this->app->singleton(CasualtiesCalculator::class);
-        $this->app->singleton(EspionageCalculator::class);
-        $this->app->singleton(ImprovementCalculator::class);
-        $this->app->singleton(LandCalculator::class);
-        $this->app->singleton(MilitaryCalculator::class);
-        $this->app->singleton(PopulationCalculator::class);
-        $this->app->singleton(ProductionCalculator::class);
-        $this->app->singleton(RangeCalculator::class);
-        $this->app->singleton(SpellCalculator::class);
+        $this->app->$func(BuildingCalculator::class);
+        $this->app->$func(CasualtiesCalculator::class);
+        $this->app->$func(EspionageCalculator::class);
+        $this->app->$func(ImprovementCalculator::class);
+        $this->app->$func(LandCalculator::class);
+        $this->app->$func(MilitaryCalculator::class);
+        $this->app->$func(PopulationCalculator::class);
+        $this->app->$func(ProductionCalculator::class);
+        $this->app->$func(RangeCalculator::class);
+        $this->app->$func(SpellCalculator::class);
 
         // Dominion Action Calculators
-        $this->app->singleton(BankingCalculator::class);
-        $this->app->singleton(ConstructionCalculator::class);
-        $this->app->singleton(ExplorationCalculator::class);
-        $this->app->singleton(RezoningCalculator::class);
-        $this->app->singleton(TrainingCalculator::class);
+        $this->app->$func(BankingCalculator::class);
+        $this->app->$func(ConstructionCalculator::class);
+        $this->app->$func(ExplorationCalculator::class);
+        $this->app->$func(RezoningCalculator::class);
+        $this->app->$func(TrainingCalculator::class);
     }
 
     protected function registerServices()
     {
+        $func = "singleton";
+        if ($this->app->environment() === 'testing') {
+            $func = "bind";
+        }
         // Services
-        $this->app->singleton(ActivityService::class);
-        $this->app->singleton(AnalyticsService::class);
-        $this->app->singleton(CouncilService::class);
-        $this->app->singleton(NotificationService::class);
-        $this->app->singleton(RealmFinderService::class);
+        $this->app->$func(ActivityService::class);
+        $this->app->$func(AnalyticsService::class);
+        $this->app->$func(CouncilService::class);
+        $this->app->$func(NotificationService::class);
+        $this->app->$func(RealmFinderService::class);
 
         // Dominion Services
-        $this->app->singleton(HistoryService::class);
-        $this->app->singleton(InfoOpService::class);
-        $this->app->singleton(ProtectionService::class);
-        $this->app->singleton(SelectorService::class);
-        $this->app->singleton(TickService::class);
+        $this->app->$func(HistoryService::class);
+        $this->app->$func(InfoOpService::class);
+        $this->app->$func(ProtectionService::class);
+        $this->app->$func(SelectorService::class);
+        $this->app->$func(TickService::class);
 
         // Dominion Action Services
-        $this->app->singleton(ChangeDraftRateActionService::class);
-        $this->app->singleton(TrainActionService::class);
-        $this->app->singleton(BankActionService::class);
-        $this->app->singleton(ConstructActionService::class);
-        $this->app->singleton(DailyBonusesActionService::class);
-        $this->app->singleton(DestroyActionService::class);
-        $this->app->singleton(EspionageActionService::class);
-        $this->app->singleton(ExploreActionService::class);
-        $this->app->singleton(ImproveActionService::class);
-        $this->app->singleton(InvadeActionService::class);
-        $this->app->singleton(ReleaseActionService::class);
-        $this->app->singleton(RezoneActionService::class);
-        $this->app->singleton(SpellActionService::class);
+        $this->app->$func(ChangeDraftRateActionService::class);
+        $this->app->$func(TrainActionService::class);
+        $this->app->$func(BankActionService::class);
+        $this->app->$func(ConstructActionService::class);
+        $this->app->$func(DailyBonusesActionService::class);
+        $this->app->$func(DestroyActionService::class);
+        $this->app->$func(EspionageActionService::class);
+        $this->app->$func(ExploreActionService::class);
+        $this->app->$func(ImproveActionService::class);
+        $this->app->$func(InvadeActionService::class);
+        $this->app->$func(ReleaseActionService::class);
+        $this->app->$func(RezoneActionService::class);
+        $this->app->$func(SpellActionService::class);
 
         // Dominion Queue Services
-        $this->app->singleton(ConstructionQueueService::class);
-        $this->app->singleton(ExplorationQueueService::class);
-        $this->app->singleton(LandIncomingQueueService::class);
-        $this->app->singleton(TrainingQueueService::class);
-        $this->app->singleton(UnitsReturningQueueService::class);
+        $this->app->$func(ConstructionQueueService::class);
+        $this->app->$func(ExplorationQueueService::class);
+        $this->app->$func(LandIncomingQueueService::class);
+        $this->app->$func(TrainingQueueService::class);
+        $this->app->$func(UnitsReturningQueueService::class);
     }
 }
