@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Services\Scripting;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
-class LogParserServiceTest extends AbstractBrowserKitTestCase
+class ScriptingTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
     
@@ -26,6 +26,7 @@ class LogParserServiceTest extends AbstractBrowserKitTestCase
     {
         $service = new \OpenDominion\Services\Scripting\LogParserService();
         $scriptingService = new \OpenDominion\Services\Scripting\ScriptingService();
+        $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
         $round = $this->createRound();
         $goodRealm = $this->createRealm($round);
         $user = $this->createUser();
@@ -36,9 +37,16 @@ class LogParserServiceTest extends AbstractBrowserKitTestCase
         $actionsPerHours = $service->parselogfile($data);
 
         print_r($actionsPerHours);
-        foreach($actionsPerHours as $actionsForHour)
+        $maxHours = max(array_keys($actionsPerHours));
+        print_r($maxHours);
+        for($hour = 1; $hour <= $maxHours; $hour++)
         {
-            $results[] = $scriptingService->scriptHour($dominion, $actionsForHour);
+            if(array_key_exists($hour, $actionsPerHours))
+            {
+                $actionsForHour = $actionsPerHours[$hour];
+                $results[$hour][] = $scriptingService->scriptHour($dominion, $actionsForHour);
+            }
+            $tickService->tickDominion($dominion);
         }
 
         print_r($results);

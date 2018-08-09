@@ -1,5 +1,2 @@
-====== Protection Hour: 1  ( Local Time: 02:00:00 2018-08-06 )  ( Domtime: 18:00:00 2018-08-05 ) ======
-Exploration for 10 Plains, 10 Forest begun at a cost of 41880 platinum and 120 draftees.
-
-====== Protection Hour: 2  ( Local Time: 02:00:00 2018-08-06 )  ( Domtime: 18:00:00 2018-08-05 ) ======
-Exploration for 5 Forest begun at a cost of 41880 platinum and 120 draftees.
+====== Protection Hour: 1  ( Local Time: 00:00:00 2018-05-01 )  ( Domtime: 18:00:00 2018-04-30 ) ======
+10000 gems have been traded for 20000 platinum.

@@ -117,7 +117,7 @@ class TickService
         Log::info('Daily tick finished');
     }
 
-    protected function tickDominion(Dominion $dominion)
+    public function tickDominion(Dominion $dominion)
     {
         // todo: split up in their own methods
 

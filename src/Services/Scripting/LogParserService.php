@@ -258,12 +258,20 @@ class LogParserService
                            //Rezoning begun at a cost of 15000 platinum. The changes in land are as following: ((\s*\d+ [a-z\s]+,?)*)
         if (preg_match_all('/Rezoning begun at a cost of (\d+) platinum. The changes in land are as following: ((\s*-?\d+ [a-z]+,?)*)/i', $string, $pp)) {
             foreach (self::simtodomlandtypes as $sim => $dom) {
-                $rezone['rezone'][$dom] = 0;
+                $rezone['rezone']['remove'][$dom] = 0;
+                $rezone['rezone']['add'][$dom] = 0;
                 $pp[2][0] = str_replace($sim, $dom, $pp[2][0]);
             }
             foreach (explode(',', trim($pp[2][0])) as $p) {
-                list ($count, $building) = explode(' ', trim($p));    
-                $rezone['rezone'][$building] = $count;
+                list ($count, $building) = explode(' ', trim($p));
+                if($count < 0)
+                {
+                    $rezone['rezone']['remove'][$building] = ($count * -1);
+                }
+                else
+                {
+                    $rezone['rezone']['add'][$building] = $count;
+                }
             }
             return $rezone;
         }
@@ -297,7 +305,7 @@ class LogParserService
             foreach ($pp[0] as $k => $v) {
                 foreach (self::simtodomspells as $sim => $dom)
                     $pp[1][$k] = str_replace($sim, $dom, $pp[1][$k]);
-                $spells['magic'][$pp[2][$k]] = $pp[1][$k];
+                $spells['magic'][] = $pp[1][$k];
             }
             return $spells;
         }
@@ -338,7 +346,7 @@ class LogParserService
                     $train['release'][$domparam] = 0;
                     $pp[1][$k] = str_replace($unit, $domparam, $pp[1][$k]);
                 }
-                
+
             foreach ($pp[1] as $k => $ppp) {
                 foreach (explode(',', trim($ppp)) as $eachunit) {
                     list ($num, $unit) = explode(' ', trim($eachunit));
