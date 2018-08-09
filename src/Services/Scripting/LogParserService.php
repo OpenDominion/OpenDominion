@@ -176,16 +176,9 @@ class LogParserService
 
     public function parselogfile($data): array
     {
-        //echo $data;
-        //$begintime  = $begin.' 0'.($wave-1).':00:00';
-        
-        //preg_match_all('/=+ Protection Hour: (\d+)  \( Local Time: (\d{1,2}:\d{1,2}:\d{1,2} \d{1,2}\.\d{1,2}\.\d{4}).*\)  \( Domtime: (\d{1,2}:\d{1,2}:\d{2} \d{1,2}.\d{1,2}.\d{4}).*\) =+/im', $data, $results);
+        // TODO: Add support for other date format
         preg_match_all('/=+ Protection Hour: (\d+)  \( Local Time: (\d{1,2}:\d{1,2}:\d{1,2} \d{4}-\d{1,2}\-\d{1,2}).*\)  \( Domtime: (\d{1,2}:\d{1,2}:\d{2} \d{4}-\d{1,2}\-\d{1,2}).*\) =+/im', $data, $results);
         
-        // echo '<pre>';
-        // print_r($results);
-        // echo '</pre>';
-        // exit;
         $returnResults = array();
 
         foreach ($results[0] as $k => $string) {

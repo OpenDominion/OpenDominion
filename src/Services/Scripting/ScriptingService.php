@@ -57,16 +57,6 @@ class ScriptingService
 
     public function scriptHour(Dominion $dominion, array $data): array
     {
-        // $types = array(
-        // 'daily',
-        // 'bank',
-        // 'destruction',
-        // 'rezone',
-        // 'construction',
-        // 'explore',
-        // 'magic',
-        // 'train',
-        // 'release');
         foreach($data as $type => $typeData)
         {
             $func = "perform{$type}";
