@@ -233,6 +233,7 @@
                             'getTrainingCostsPerUnit',
                             'getMaxTrainable',
                             'getSpecialistEliteCostMultiplier',
+                            'getWizardCostMultiplier',
                         ]) !!}
                     </p>
                 </div>
