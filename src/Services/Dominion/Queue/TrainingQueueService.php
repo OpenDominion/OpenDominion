@@ -32,8 +32,8 @@ class TrainingQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->trainingQueue) {
-            return $this->trainingQueue;
+        if ($this->trainingQueue && array_key_exists($dominion->id, $this->trainingQueue)) {
+            return $this->trainingQueue[$dominion->id];
         }
 
         $rows = DB::table('queue_training')
@@ -45,8 +45,8 @@ class TrainingQueueService
         foreach ($rows as $row) {
             $trainingQueue[$row->unit_type][$row->hours - 1] = (int)$row->amount;
         }
-
-        return $this->trainingQueue = $trainingQueue;
+        
+        return $this->trainingQueue[$dominion->id] = $trainingQueue;
     }
 
     /**
