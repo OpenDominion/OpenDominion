@@ -171,6 +171,19 @@
                 </div>
             @endif
 
+            {{-- todo: message about black ops not being enabled until 8th day in the round --}}
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                </div>
+                <div class="box-body">
+                    <p>This section gives you a quick overview of your dominion.</p>
+                    <p>Your total land size is {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} and networth is {{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}.</p>
+                    <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
+                </div>
+            </div>
+
             @if ($dominionProtectionService->isUnderProtection($selectedDominion))
                 <div class="box box-warning">
                     <div class="box-header with-border">
@@ -188,19 +201,6 @@
                     </div>
                 </div>
             @endif
-
-            {{-- todo: message about black ops not being enabled until 8th day in the round --}}
-
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                </div>
-                <div class="box-body">
-                    <p>This section gives you a quick overview of your dominion.</p>
-                    <p>Your total land size is {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} and networth is {{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}.</p>
-                    <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
-                </div>
-            </div>
 
             @if ($selectedDominion->pack !== null)
                 <div class="box">
