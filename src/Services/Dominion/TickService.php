@@ -136,7 +136,7 @@ class TickService
             foreach ($constructionQueueResult as $building => $amount) {
                 $dominion->{'building_' . $building} += $amount;
             }
-
+            
             $this->notificationService->queueNotification('construction_completed', $constructionQueueResult);
         }
 

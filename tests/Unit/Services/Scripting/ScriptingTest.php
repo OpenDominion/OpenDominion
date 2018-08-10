@@ -26,12 +26,14 @@ class ScriptingTest extends AbstractBrowserKitTestCase
     public function testSomething()
     {
         $service = new \OpenDominion\Services\Scripting\LogParserService();
-        
         $draftRateService = app(\OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService::class);
         $round = $this->createRound();
         $goodRealm = $this->createRealm($round);
         $user = $this->createUser();
         $dominion = $this->createDominion($user, $round);
+
+        $user2 = $this->createUser();
+        $dominion2 = $this->createDominion($user2, $round);
 
         $draftRateService->changeDraftRate($dominion, 90);
 
@@ -42,15 +44,13 @@ class ScriptingTest extends AbstractBrowserKitTestCase
         // print_r($actionsPerHours);
         $maxHours = max(array_keys($actionsPerHours));
         // print_r($maxHours);
-        echo "\n";
-        for($hour = 1; $hour <= 72; $hour++)
+        for($hour = 1; $hour <= 4; $hour++)
         {
             $scriptingService = new \OpenDominion\Services\Scripting\ScriptingService();
             $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
             // echo "\n $hour: ";
             // echo "\n$dominion->peasants";
             $popCalc = app(\OpenDominion\Calculators\Dominion\PopulationCalculator::class);
-            $maxPop = $popCalc->getMaxPopulationRaw($dominion);
             if(array_key_exists($hour, $actionsPerHours))
             {
                 $actionsForHour = $actionsPerHours[$hour];
@@ -58,10 +58,17 @@ class ScriptingTest extends AbstractBrowserKitTestCase
             }
 
             $tickService->tickDominion($dominion);
+            $tickService->tickDominion($dominion2);
+
             // echo "\n$dominion->military_draftees";
 
-            // echo "\n$maxPop";
+            // echo "\n{$popCalc->getMaxPopulation($dominion)}";
             // echo "\n";
+            if($hour % 24 == 0) {
+                $dominion->daily_platinum = false;
+                $dominion->daily_land = false;
+            }
+            echo "\n";
         }
 
         // print_r($results);

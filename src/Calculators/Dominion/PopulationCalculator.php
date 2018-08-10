@@ -151,7 +151,11 @@ class PopulationCalculator
         }
 
         // Constructing buildings
-        $population += ($this->constructionQueueService->getQueueTotal($dominion) * $housingPerConstructingBuilding);
+        $foo = ($this->constructionQueueService->getQueueTotal($dominion) * $housingPerConstructingBuilding);
+
+        echo "\n Pop from construction: $foo for $dominion->id";
+
+        $population += $foo;
 
         // Barren land
         $population += ($this->landCalculator->getTotalBarrenLand($dominion) * $housingPerBarrenLand);
@@ -297,7 +301,7 @@ class PopulationCalculator
 
         $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
 
-        echo "\n$maximumPeasantDeath $roomForPeasants $currentPopulationChange";
+        // echo "\n$maximumPeasantDeath $roomForPeasants $currentPopulationChange";
         // echo "\n".max($maximumPeasantDeath, $maximumPopulationChange);
         return max($maximumPeasantDeath, $maximumPopulationChange);
 

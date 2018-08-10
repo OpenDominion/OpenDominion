@@ -2,9 +2,27 @@
 Draftrate changed to 90%.
 Construction of 20 Towers started at a cost of 17000 platinum and 1760 lumber.
 
-====== Protection Hour: 37  ( Local Time: 12:00:00 2018-05-02 )  ( Domtime: 06:00:00 2018-05-02 ) ======
-Exploration for 150 Forest begun at a cost of 140250 platinum and 600 draftees.
+====== Protection Hour: 14  ( Local Time: 13:00:00 2018-05-01 )  ( Domtime: 07:00:00 2018-05-01 ) ======
+Your wizards successfully cast Harmony at a cost of 625 mana.
 
-====== Protection Hour: 49  ( Local Time: 00:00:00 2018-05-03 )  ( Domtime: 18:00:00 2018-05-02 ) ======
-Construction of 170 Lumber Yards started at a cost of 157590 platinum and 17850 lumber.
+====== Protection Hour: 26  ( Local Time: 01:00:00 2018-05-02 )  ( Domtime: 19:00:00 2018-05-01 ) ======
+Your wizards successfully cast Harmony at a cost of 625 mana.
+
+====== Protection Hour: 38  ( Local Time: 13:00:00 2018-05-02 )  ( Domtime: 07:00:00 2018-05-02 ) ======
+Your wizards successfully cast Harmony at a cost of 625 mana.
+
+====== Protection Hour: 50  ( Local Time: 01:00:00 2018-05-03 )  ( Domtime: 19:00:00 2018-05-02 ) ======
+Your wizards successfully cast Harmony at a cost of 625 mana.
+
+====== Protection Hour: 61  ( Local Time: 12:00:00 2018-05-03 )  ( Domtime: 06:00:00 2018-05-03 ) ======
+Exploration for 100 Swamps begun at a cost of 93500 platinum and 400 draftees.
+
+====== Protection Hour: 62  ( Local Time: 13:00:00 2018-05-03 )  ( Domtime: 07:00:00 2018-05-03 ) ======
+Your wizards successfully cast Harmony at a cost of 625 mana.
+
+====== Protection Hour: 73  ( Local Time: 00:00:00 2018-05-04 )  ( Domtime: 18:00:00 2018-05-03 ) ======
+Construction of 100 Temples started at a cost of 86900 platinum and 9200 lumber.
+
+====== Protection Hour: 74  ( Local Time: 01:00:00 2018-05-04 )  ( Domtime: 19:00:00 2018-05-03 ) ======
+Your wizards successfully cast Harmony at a cost of 875 mana.
 
