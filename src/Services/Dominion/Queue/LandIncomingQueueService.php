@@ -32,8 +32,8 @@ class LandIncomingQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->landIncomingQueue) {
-            return $this->landIncomingQueue;
+        if ($this->landIncomingQueue && array_key_exists($dominion->id, $this->landIncomingQueue)) {
+            return $this->landIncomingQueue[$dominion->id];
         }
 
         $rows = DB::table('queue_land_incoming')
@@ -46,7 +46,7 @@ class LandIncomingQueueService
             $landIncomingQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
         }
 
-        return $this->landIncomingQueue = $landIncomingQueue;
+        return $this->landIncomingQueue[$dominion->id] = $landIncomingQueue;
     }
 
     /**

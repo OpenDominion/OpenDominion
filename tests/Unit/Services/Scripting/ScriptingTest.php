@@ -23,6 +23,13 @@ class ScriptingTest extends AbstractBrowserKitTestCase
         $this->seedDatabase();
     }
 
+    protected function refreshApplication()
+    {
+        putenv('APP_ENV=script-testing');
+
+        $this->app = $this->createApplication();
+    }
+
     public function testSomething()
     {
         $service = new \OpenDominion\Services\Scripting\LogParserService();

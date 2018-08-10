@@ -32,11 +32,9 @@ class ConstructionQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->constructionQueue) {
-            // echo "\n Get cached queue for $dominion->id";
-            return $this->constructionQueue;
+        if ($this->constructionQueue && array_key_exists($dominion->id, $this->constructionQueue)) {
+            return $this->constructionQueue[$dominion->id];
         }
-        // echo "\n Get fresh queue for $dominion->id";
         $rows = DB::table('queue_construction')
             ->where('dominion_id', $dominion->id)
             ->get(['building', 'amount', 'hours']);
@@ -47,7 +45,7 @@ class ConstructionQueueService
             $constructionQueue[$row->building][$row->hours - 1] = (int)$row->amount;
         }
 
-        return $this->constructionQueue = $constructionQueue;
+        return $this->constructionQueue[$dominion->id] = $constructionQueue;
     }
 
     /**
