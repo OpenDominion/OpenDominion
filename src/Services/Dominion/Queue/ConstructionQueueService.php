@@ -32,8 +32,8 @@ class ConstructionQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->constructionQueue) {
-            return $this->constructionQueue;
+        if ($this->constructionQueue && array_key_exists($dominion->id, $this->constructionQueue)) {
+            return $this->constructionQueue[$dominion->id];
         }
 
         $rows = DB::table('queue_construction')
@@ -45,8 +45,8 @@ class ConstructionQueueService
         foreach ($rows as $row) {
             $constructionQueue[$row->building][$row->hours - 1] = (int)$row->amount;
         }
-
-        return $this->constructionQueue = $constructionQueue;
+        
+        return $this->constructionQueue[$dominion->id] = $constructionQueue;
     }
 
     /**
