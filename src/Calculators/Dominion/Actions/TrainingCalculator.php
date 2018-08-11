@@ -39,8 +39,8 @@ class TrainingCalculator
 
         // Values
         $spyPlatinumCost = 500;
-        $wizardPlatinumCost = (500 * $wizardCostMultiplier);
-        $archmagePlatinumCost = (1000 * $wizardCostMultiplier);
+        $wizardPlatinumCost = (int)ceil(500 * $wizardCostMultiplier);
+        $archmagePlatinumCost = (int)ceil(1000 * $wizardCostMultiplier);
 
         $units = $dominion->race->units;
 
