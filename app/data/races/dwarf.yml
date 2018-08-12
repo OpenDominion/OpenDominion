@@ -3,6 +3,7 @@ alignment: good
 home_land_type: mountain
 perks:
   max_population: 7.5
+  barren_max_population: 100
   ore_production: 10
 units:
   - name: Soldier

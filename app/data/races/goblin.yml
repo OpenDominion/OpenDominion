@@ -3,6 +3,7 @@ alignment: evil
 home_land_type: hill
 perks:
   max_population: 20
+  barren_max_population: 100
   gem_production: 10
   invest_bonus: 10
 units:
