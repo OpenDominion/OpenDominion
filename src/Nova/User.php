@@ -4,9 +4,9 @@ namespace OpenDominion\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Gravatar;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
@@ -33,7 +33,6 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'id',
         'display_name',
         'email',
     ];
@@ -78,14 +77,13 @@ class User extends Resource
 
             Boolean::make('Activated'),
 
-            Code::make('Settings')
-                ->json(),
-
             DateTime::make('Last Online')
                 ->sortable(),
 
             DateTime::make('Created At')
                 ->onlyOnForms(),
+
+            HasMany::make('Dominions'),
         ];
     }
 

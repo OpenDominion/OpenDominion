@@ -4,6 +4,7 @@ namespace OpenDominion\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 
@@ -21,7 +22,7 @@ class Round extends Resource
      *
      * @var string
      */
-    public static $title = 'todo';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -32,6 +33,16 @@ class Round extends Resource
         'name',
         'number',
     ];
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string
+     */
+    public function subtitle()
+    {
+        return $this->league->description;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -60,7 +71,7 @@ class Round extends Resource
             Number::make('Pack Size')
                 ->hideFromIndex(),
 
-            //HasMany::make('Dominions'),
+            HasMany::make('Dominions'),
         ];
     }
 }
