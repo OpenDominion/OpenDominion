@@ -49,7 +49,11 @@ class User extends Resource
         return [
             ID::make()->sortable(),
 
-            Gravatar::make(), // todo: use avatar field
+            // Doesn't work (yet): https://github.com/laravel/nova-issues/issues/127
+//            Avatar::make('Avatar')
+//                ->path('uploads/avatars'),
+
+            Gravatar::make(), // todo: use avatar field instead
 
             Text::make('Display Name')
                 ->sortable()
