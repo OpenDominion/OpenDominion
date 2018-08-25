@@ -12,7 +12,7 @@ class UserActivated extends Filter
      *
      * @var string
      */
-    public $name = 'Activated';
+    public $name = 'Activated Users';
 
     /**
      * Apply the filter to the given query.
@@ -36,8 +36,8 @@ class UserActivated extends Filter
     public function options(Request $request)
     {
         return [
-            'Active' => 1,
-            'Inactive' => 0,
+            'Activated Users' => 1,
+            'Non-activated Users' => 0,
         ];
     }
 }
