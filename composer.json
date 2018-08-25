@@ -32,6 +32,12 @@
     "phpunit/phpunit": "~7.0",
     "roave/security-advisories": "dev-master"
   },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "git@gitlab.com:WaveHack/laravel-nova.git"
+    }
+  ],
   "autoload": {
     "classmap": [
       "app/database/factories",
