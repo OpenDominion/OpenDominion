@@ -100,6 +100,7 @@ class User extends Resource
     {
         return [
             new Filters\UserActivated,
+            new Filters\UserOnline,
         ];
     }
 
