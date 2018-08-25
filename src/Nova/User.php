@@ -3,6 +3,9 @@
 namespace OpenDominion\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Code;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
@@ -22,7 +25,7 @@ class User extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'display_name';
 
     /**
      * The columns that should be searched.
@@ -30,13 +33,15 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name', 'email',
+        'id',
+        'display_name',
+        'email',
     ];
 
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function fields(Request $request)
@@ -44,9 +49,9 @@ class User extends Resource
         return [
             ID::make()->sortable(),
 
-            Gravatar::make(),
+            Gravatar::make(), // todo: use avatar field
 
-            Text::make('Name')
+            Text::make('Display Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
@@ -60,13 +65,24 @@ class User extends Resource
                 ->onlyOnForms()
                 ->creationRules('required', 'string', 'min:6')
                 ->updateRules('nullable', 'string', 'min:6'),
+
+            Boolean::make('Activated'),
+
+            Code::make('Settings')
+                ->json(),
+
+            DateTime::make('Last Online')
+                ->sortable(),
+
+            DateTime::make('Created At')
+                ->onlyOnForms(),
         ];
     }
 
     /**
      * Get the cards available for the request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function cards(Request $request)
@@ -77,18 +93,20 @@ class User extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new Filters\UserActivated,
+        ];
     }
 
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function lenses(Request $request)
@@ -99,7 +117,7 @@ class User extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function actions(Request $request)
