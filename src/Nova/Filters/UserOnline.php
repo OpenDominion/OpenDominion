@@ -8,6 +8,9 @@ use Laravel\Nova\Filters\Filter;
 
 class UserOnline extends Filter
 {
+    public const FIELD = 'last_online';
+    public const ONLINE_THRESHOLD = '-5 minutes';
+
     /**
      * The displayable name of the action.
      *
@@ -26,10 +29,10 @@ class UserOnline extends Filter
     public function apply(Request $request, $query, $value)
     {
         return (($value === 'online')
-            ? $query->whereNotNull('last_online')
-                ->where('last_online', '>', (new Carbon('-5 minutes'))->format('Y-m-d H:i:s'))
-            : $query->whereNull('last_online')
-                ->orWhere('last_online', '<=', (new Carbon('-5 minutes'))->format('Y-m-d H:i:s'))
+            ? $query->whereNotNull(static::FIELD)
+                ->where(static::FIELD, '>', (new Carbon(static::ONLINE_THRESHOLD))->format('Y-m-d H:i:s'))
+            : $query->whereNull(static::FIELD)
+                ->orWhere(static::FIELD, '<=', (new Carbon(static::ONLINE_THRESHOLD))->format('Y-m-d H:i:s'))
         );
     }
 
