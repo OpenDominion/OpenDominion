@@ -74,6 +74,8 @@ class User extends Resource
                 return $this->isOnline();
             }),
 
+            // todo: is playing in current round
+
             Boolean::make('Activated'),
 
             Code::make('Settings')
