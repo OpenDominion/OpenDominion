@@ -66,6 +66,10 @@ class User extends Resource
                 ->creationRules('required', 'string', 'min:6')
                 ->updateRules('nullable', 'string', 'min:6'),
 
+            Boolean::make('Online', function () {
+                return $this->isOnline();
+            }),
+
             Boolean::make('Activated'),
 
             Code::make('Settings')
