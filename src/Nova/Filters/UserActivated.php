@@ -8,6 +8,13 @@ use Laravel\Nova\Filters\Filter;
 class UserActivated extends Filter
 {
     /**
+     * The displayable name of the action.
+     *
+     * @var string
+     */
+    public $name = 'Activated';
+
+    /**
      * Apply the filter to the given query.
      *
      * @param  \Illuminate\Http\Request  $request
