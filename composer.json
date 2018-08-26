@@ -13,6 +13,7 @@
     "ipunkt/laravel-analytics": "~1.3",
     "jenssegers/agent": "~2.5",
     "laravel/framework": "5.6.*",
+    "laravel/nova": "*",
     "laravel/tinker": "~1.0",
     "spatie/laravel-backup": "^5.10",
     "spatie/laravel-permission": "~2.9",
@@ -34,12 +35,6 @@
     "phpunit/phpunit": "~7.0",
     "roave/security-advisories": "dev-master"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "git@gitlab.com:WaveHack/laravel-nova.git"
-    }
-  ],
   "autoload": {
     "classmap": [
       "app/database/factories",
@@ -78,6 +73,12 @@
       "php artisan package:discover"
     ]
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "./nova"
+    }
+  ],
   "config": {
     "preferred-install": "dist",
     "sort-packages": true,
