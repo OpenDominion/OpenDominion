@@ -62,7 +62,7 @@ class Dominion extends Resource
             // pack
 
             new Panel('Population', [
-                Number::make('Prestige'),
+                Number::make('Prestige')->hideFromIndex(),
                 Number::make('Peasants')->hideFromIndex(),
                 Number::make('Peasants Last Hour')->hideFromIndex(),
             ]),
