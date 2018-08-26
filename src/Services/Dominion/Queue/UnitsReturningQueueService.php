@@ -45,7 +45,7 @@ class UnitsReturningQueueService
         foreach ($rows as $row) {
             $returningQueue[$row->unit_type][$row->hours - 1] = (int)$row->amount;
         }
-        
+
         return $this->unitsReturningQueue[$dominion->id] = $returningQueue;
     }
 

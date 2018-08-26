@@ -45,7 +45,7 @@ class TrainingQueueService
         foreach ($rows as $row) {
             $trainingQueue[$row->unit_type][$row->hours - 1] = (int)$row->amount;
         }
-        
+
         return $this->trainingQueue[$dominion->id] = $trainingQueue;
     }
 

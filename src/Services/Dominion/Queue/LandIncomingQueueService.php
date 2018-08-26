@@ -45,7 +45,7 @@ class LandIncomingQueueService
         foreach ($rows as $row) {
             $landIncomingQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
         }
-        
+
         return $this->landIncomingQueue[$dominion->id] = $landIncomingQueue;
     }
 
