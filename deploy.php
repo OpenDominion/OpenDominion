@@ -22,8 +22,9 @@ host('opendominion.net')
 desc('Installing Laravel Nova');
 task('nova install', function () {
     run('cd {{release_path}} && rm -rf nova');
-    run('cd {{release_path}} && git clone git@gitlab.com:WaveHack/laravel-nova.git nova');
-    run('cd {{release_path}} && composer require --no-update laravel/nova=*');
+    run('cd {{release_path}} && {{bin/git}} clone git@gitlab.com:WaveHack/laravel-nova.git nova');
+    run('cd {{release_path}} && {{bin/composer}} update --no-dev laravel/nova');
+    run('cd {{release_path}} && {{bin/php}} artisan nova:publish');
 });
 
 desc('Installing NPM dependencies');
