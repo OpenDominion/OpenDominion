@@ -17,6 +17,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('game:tick')
             ->hourly();
+
+        $schedule->command('backup:clean')->daily()->at('01:20');
+        $schedule->command('backup:run')->daily()->at('01:50');
     }
 
     /**

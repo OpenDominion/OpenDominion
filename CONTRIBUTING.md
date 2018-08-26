@@ -191,7 +191,7 @@ $ php artisan ide-helper:models -N
 $ php artisan ide-helper:meta
 ```
 
-Now install the frontend dependencies:
+Now install the frontend dependencies. Note that if you're on Linux you need to have `libpng-dev` installed.
 
 ```bash
 $ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
@@ -300,13 +300,15 @@ This is experimental and is subject to change. Please keep an eye on the #dev-an
 
 ### How to run tests
 
-You can run tests with:
+Tests are ran in an in-memory Sqlite database. Even if you use MySQL, you need to have the `php-sqlite3` installed for this.
+
+You can run the full test suite with:
 
 ```bash
 $ vendor/bin/phpunit
 ```
 
-**Note: The rest of this section is out of date and needs to be updated later.**
+**Note: The rest of this section is largely out of date as tests need refactoring. This section will be updated later.**
 
 There are two test suites, named as follows:
 
@@ -343,7 +345,17 @@ $ php artisan migrate --seed
 
 **Note:** Any additionally registered user accounts and dominions next to the ones provided by the database seeding process will have to be re-registered (and activated in the case of a user account).
 
-Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`storage/logs/laravel.log`).
+You can activate newly created users by either:
+
+1. Inspecting the registration mail sent (either through a SMTP server like Mailtrap.io, or fishing the activation link out of the logged email if your MAIL_DRIVER is set to 'log' in .env),
+2. Use a database client and set `users.activated = 1` on the relevant user account,
+3. Using Tinker to manually set the activated field to 1. For example (using `php artisan tinker`):
+
+```php
+>>> $u = User::find(2)
+>>> $u->activated =  1
+>>> $u->save()
+```
 
 
 ### Style guide and standards
