@@ -19,6 +19,13 @@ host('opendominion.net')
 
 // Task definitions
 
+desc('Installing Laravel Nova');
+task('nova install', function () {
+    run('cd {{release_path}} && rm -rf nova');
+    run('cd {{release_path}} && git clone git@gitlab.com:WaveHack/laravel-nova.git nova');
+    run('cd {{release_path}} && composer require --no-update laravel/nova=*');
+});
+
 desc('Installing NPM dependencies');
 task('npm install', function () {
     if (has('previous_release')) {
@@ -58,6 +65,7 @@ task('deploy', [
     'deploy:update_code',
     'deploy:shared',
     'deploy:vendors',
+    'nova install', //
     'npm install', //
     'npm run prod', //
     'deploy:writable',

@@ -153,6 +153,7 @@ return [
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
+        Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider::class,
 
         /*
          * Application Service Providers...
