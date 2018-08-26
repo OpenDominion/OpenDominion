@@ -22,6 +22,10 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory suffix=".php">./src/Nova</directory>
+                <file>./src/Providers/NovaServiceProvider.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <php>
