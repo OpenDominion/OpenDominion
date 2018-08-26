@@ -45,7 +45,7 @@ class ConstructionQueueService
         foreach ($rows as $row) {
             $constructionQueue[$row->building][$row->hours - 1] = (int)$row->amount;
         }
-        
+
         return $this->constructionQueue[$dominion->id] = $constructionQueue;
     }
 

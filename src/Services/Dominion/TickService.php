@@ -200,7 +200,7 @@ class TickService
         $dominion->peasants += $populationPeasantGrowth;
         $dominion->peasants_last_hour = $populationPeasantGrowth;
         $dominion->military_draftees += $drafteesGrowthRate;
-        
+
         // Morale
         if ($dominion->morale < 70) {
             $dominion->morale += 6;

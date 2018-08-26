@@ -45,7 +45,7 @@ class ExplorationQueueService
         foreach ($rows as $row) {
             $explorationQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
         }
-        
+
         return $this->explorationQueue[$dominion->id] = $explorationQueue;
     }
 
