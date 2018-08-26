@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f292269129bf09267dedd73765155b8e",
+    "content-hash": "f63099400ced2d0c76212d85ab4de7c2",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -1968,6 +1968,18 @@
             "time": "2018-07-26T16:01:26+00:00"
         },
         {
+            "name": "laravel/nova",
+            "version": "dev-develop",
+            "dist": {
+                "type": "path",
+                "url": "./nova",
+                "reference": "c92bedf37ff04401badf1daa0f2d757c018f7652",
+                "shasum": null
+            },
+            "type": "library",
+            "description": "Dummy package placeholder."
+        },
+        {
             "name": "laravel/tinker",
             "version": "v1.0.7",
             "source": {
@@ -3081,6 +3093,64 @@
                 "spatie"
             ],
             "time": "2018-06-14T02:52:40+00:00"
+        },
+        {
+            "name": "spatie/nova-backup-tool",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/nova-backup-tool.git",
+                "reference": "aca75a501f86deb4cf4a680539ecb4e98c23a837"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/nova-backup-tool/zipball/aca75a501f86deb4cf4a680539ecb4e98c23a837",
+                "reference": "aca75a501f86deb4cf4a680539ecb4e98c23a837",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "*",
+                "php": ">=7.1.0",
+                "spatie/laravel-backup": "^5.10.0",
+                "symfony/process": "^4.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.6",
+                "phpunit/phpunit": "7.1",
+                "spatie/phpunit-snapshot-assertions": "^1.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\BackupTool\\BackupToolServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\BackupTool\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Nova tool to backup your application.",
+            "homepage": "https://github.com/spatie/nova-backup-tool",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "time": "2018-08-25T22:25:05+00:00"
         },
         {
             "name": "spatie/temporary-directory",

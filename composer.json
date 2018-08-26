@@ -17,6 +17,7 @@
     "laravel/tinker": "~1.0",
     "spatie/laravel-backup": "^5.10",
     "spatie/laravel-permission": "~2.9",
+    "spatie/nova-backup-tool": "^1.0",
     "superbalist/laravel-google-cloud-storage": "^2.0",
     "symfony/yaml": "^4.1",
     "thomaswelton/laravel-gravatar": "~1.0"
