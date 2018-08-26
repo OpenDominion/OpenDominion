@@ -15,6 +15,7 @@
     "laravel/framework": "5.6.*",
     "laravel/tinker": "~1.0",
     "spatie/laravel-permission": "~2.9",
+    "superbalist/laravel-google-cloud-storage": "^2.0",
     "symfony/yaml": "^4.1",
     "thomaswelton/laravel-gravatar": "~1.0"
   },
