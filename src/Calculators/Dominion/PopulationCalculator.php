@@ -126,10 +126,8 @@ class PopulationCalculator
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
         $housingPerBarrenLand = 5;
+        $housingPerBarrenLand += $dominion->race->getPerkMultiplier('extra_barren_max_population');
         $housingPerConstructingBuilding = 15; // todo: check how many constructing home/barracks houses
-
-        // todo: race bonus for barren land
-        // todo: ^ think about what I meant to say here. note to self: be more clear in the future
 
         // Constructed buildings
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
