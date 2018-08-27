@@ -36,4 +36,38 @@ class BuildingCalculator
 
         return $totalBuildings;
     }
+
+    public function getBuildingTypesToDestroy(
+        Dominion $dominion, int $totalBuildingsToDestroy, string $landType): array
+    {
+        $buildingTypesForLandType = $this->buildingHelper->getBuildingTypesByRace($dominion->race)[$landType];
+
+        $buildingsPerType = [];
+
+        $totalBuildingsForLandType = 0;
+
+        foreach($buildingTypesForLandType as $buildingType) {
+            $buildingsForType = $dominion->{'building_' . $buildingType};
+            $totalBuildingsForLandType += $buildingsForType;
+            $buildingsPerType[$buildingType] = $buildingsForType;
+        }
+
+        $buildingsToDestroyRatio = $totalBuildingsToDestroy / $totalBuildingsForLandType;
+        $totalBuildingsDestroyed = 0;
+        $buildingsDestroyedByType = [];
+        foreach($buildingsPerType as $buildingType => $buildings) {
+            $buildingsToDestroy = $buildings * $buildingsToDestroyRatio;
+            $buildingsToDestroy = round($buildingsToDestroy, 0, PHP_ROUND_HALF_EVEN);
+
+            $totalBuildingsDestroyed += $buildingsToDestroy;
+
+            $buildingsDestroyedByType[$buildingType] = $buildingsToDestroy;
+        }
+
+        if($totalBuildingsToDestroy != $totalBuildingsDestroyed) {
+            // TODO: What should we do here?
+        }
+
+        return $buildingsDestroyedByType;
+    }
 }
