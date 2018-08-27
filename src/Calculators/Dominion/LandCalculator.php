@@ -110,4 +110,42 @@ class LandCalculator
 
         return $return;
     }
+
+    public function getLandLostByLandType(Dominion $dominion, float $landLossRatio): array
+    {
+        $targetLand = $this->getTotalLand($dominion);
+
+        $totalLandToLose = floor($targetLand * $landLoss);
+
+        $barrenLandByLandType = $this->getBarrenLandByLandType($dominion);
+        $totalLandLost = 0;
+        $landLostByLandType = [];
+        foreach ($this->landHelper->getLandTypes() as $landType) {
+            $landTypeLoss = $dominion->{'land_' . $landType} * $landLossRatio;
+
+            $totalLandTypeLoss = round($landTypeLoss, 0, PHP_ROUND_HALF_EVEN); // bankers rounding </3
+            $totalLandLost += $totalLandTypeLoss;
+
+            $barrenLandForLandType = $barrenLandByLandType[$landType];
+
+            $barrenLandLostForLandType = 0;
+            if($barrenLandForLandType <= $totalLandTypeLoss) {
+                $barrenLandLostForLandType = $barrenLandForLandType;
+            } else {
+                $barrenLandLostForLandType = $totalLandTypeLoss;
+            }
+
+            $buildingsToDestroy = $totalLandTypeLoss - $barrenLandLostForLandType;
+            $landLostByLandType[$landType] = array(
+                "landLost" => $totalLandTypeLoss,
+                "barrenLandLost" => $barrenLandLostForLandType,
+                "buildingsToDestroy" => $buildingsToDestroy);
+        }
+
+        if($totalLandToLose != $totalLandLost){
+            // TODO: What should we do here?
+        }
+
+        return $landLostByLandType;
+    }
 }

@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
@@ -14,6 +15,9 @@ use Throwable;
 class InvadeActionService
 {
     use DominionGuardsTrait;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -27,12 +31,18 @@ class InvadeActionService
     /**
      * InvadeActionService constructor.
      *
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
      */
-    public function __construct(MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, RangeCalculator $rangeCalculator)
+    public function __construct(
+        LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator,
+        ProtectionService $protectionService,
+        RangeCalculator $rangeCalculator)
     {
+        $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
@@ -121,6 +131,7 @@ class InvadeActionService
                 'success?' => $invasionSuccessful,
             ]);
 
+            $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
             // PRESTIGE
 
@@ -184,7 +195,31 @@ class InvadeActionService
                 // calculate total conquered acres (same acres as target land lost)
                 // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
+            
+            if($invasionSuccessful) {
+                $landGrabRatio = 1;
+                // TODO: check for war/peace
+                $netOPWithRatioModifier = $netOP * $landGrabRatio;
 
+                $landLossPercentage = 0;
+                if($landRatio < 0.55) {
+                    $landLossPercentage = $netOPWithRatioModifier * (0.304 * $ratio ^ 2 - 0.227 * $ratio + 0.048);
+                } else if($landRatio < 0.75) {
+                    $landLossPercentage = $netOPWithRatioModifier * (0.154 * $ratio - 0.069);
+                } else {
+                    $landLossPercentage = $netOPWithRatioModifier * (0.129 * $ratio - 0.048);
+                }
+
+                $landLossPercentage = floor($landLossPercentage);
+
+                $landLossPercentage = max($landLossPercentage, 10);
+
+                $landLossRatio = $landLossPercentage / 100;
+
+                $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
+
+                
+            }
 
             // MORALE
 
