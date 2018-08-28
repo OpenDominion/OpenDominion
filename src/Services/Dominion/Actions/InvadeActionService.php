@@ -168,8 +168,9 @@ class InvadeActionService
             // if $invasionSuccessful
                 // landGrabRatio = 1.0
                 // if mutual war, landGrabRatio = 1.2
-                // if non-mutual war, lanGrabRatio = 1.15
-                // todo if peace, landGrabRatio = 0.9
+                // if non-mutual war, landGrabRatio = 1.15
+                // if war and peace, landGrabRatio = 1
+                // if peace, landGrabRatio = 0.9
 
                 // calculate total acres of land lost. FORMULA:
                 /*
