@@ -216,25 +216,30 @@ class InvadeActionService
                 $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
                 $buildingsLostTemp = [];
-                $landGainedPerLandType = [];
-                foreach($landAndBuildingsLostPerLandType as $landType => $foo) {
-                    $buildingsToDestroy = $foo['buildingsToDestroy'];
-                    $fisk = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
+                $landGainedPerLandTypeTemp = [];
+                foreach($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
+                    $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
+                    $landLost = $landAndBuildingsLost['landLost'];
+                    $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
+                    $buildingsLostTemp[$landType] = $buildingsLost;
 
-                    // TODO: Remove land
-                    $buildingsLostTemp[$landType] = $fisk;
+                    // Remove land
+                    $target->{'land_' . $landType} -= $landLost;
+                    // Destroy buildings
+                    foreach($buildingsLostForLandType as $buildingType => $buildingsLost) {
+                        $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
+                        $target->{'building_' . $buildingType} -= $builtBuildingsToDestroy;
+                        // TODO: Remove buildings from queue
+                    }
                     
-                    $landGainedPerLandType[$landType] = round($foo['landLost'] * $bonusLandRatio);
+                    $landGained = round($landLost * $bonusLandRatio);
+                    // TODO: Input into queue for $dominion
+                    $landGainedPerLandTypeTemp[$landType] = $landGained;
                 }
 
                 dd([
-                    'net op' => $netOP,
-                    'net dp' => $totalNetDP,
-                    'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
-                    'target net dp' => $targetNetDP,
-                    'success?' => $invasionSuccessful,
                     'land losses' => $landAndBuildingsLostPerLandType,
-                    'land gain' => $landGainedPerLandType,
+                    'land gain' => $landGainedPerLandTypeTemp,
                     'buildings etc' =>  $buildingsLostTemp
                 ]);
             }
