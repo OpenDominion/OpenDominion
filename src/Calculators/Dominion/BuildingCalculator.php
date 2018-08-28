@@ -82,6 +82,7 @@ class BuildingCalculator
 
         if($totalBuildingsToDestroy != $totalBuildingsDestroyed) {
             // TODO: What should we do here?
+            // Maybe just take the missing acres from the largest building type?
         }
 
         return $buildingsDestroyedByType;
