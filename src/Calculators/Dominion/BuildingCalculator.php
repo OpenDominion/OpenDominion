@@ -40,6 +40,11 @@ class BuildingCalculator
     public function getBuildingTypesToDestroy(
         Dominion $dominion, int $totalBuildingsToDestroy, string $landType): array
     {
+        if($totalBuildingsToDestroy <= 0) {
+            return [];
+        }
+
+        // TODO: Check the queue for inc buildings as well
         $buildingTypesForLandType = $this->buildingHelper->getBuildingTypesByRace($dominion->race)[$landType];
 
         $buildingsPerType = [];
@@ -52,6 +57,11 @@ class BuildingCalculator
             $buildingsPerType[$buildingType] = $buildingsForType;
         }
 
+        if($totalBuildingsForLandType <= 0) {
+            // :/
+            dd(['$totalBuildingsToDestroy' => $totalBuildingsToDestroy, 'landType' => $landType ]);
+        }
+
         $buildingsToDestroyRatio = $totalBuildingsToDestroy / $totalBuildingsForLandType;
         $totalBuildingsDestroyed = 0;
         $buildingsDestroyedByType = [];
@@ -59,9 +69,15 @@ class BuildingCalculator
             $buildingsToDestroy = $buildings * $buildingsToDestroyRatio;
             $buildingsToDestroy = round($buildingsToDestroy, 0, PHP_ROUND_HALF_EVEN);
 
+            if($buildingsToDestroy <= 0) {
+                continue;
+            }
+
             $totalBuildingsDestroyed += $buildingsToDestroy;
 
-            $buildingsDestroyedByType[$buildingType] = $buildingsToDestroy;
+            $buildingsDestroyedByType[$buildingType] = array(
+                'builtBuildingsToDestroy' => $buildingsToDestroy,
+                'buildingsInQueueToRemove' => 0);
         }
 
         if($totalBuildingsToDestroy != $totalBuildingsDestroyed) {

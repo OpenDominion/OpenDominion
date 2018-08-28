@@ -115,7 +115,7 @@ class LandCalculator
     {
         $targetLand = $this->getTotalLand($dominion);
 
-        $totalLandToLose = floor($targetLand * $landLoss);
+        $totalLandToLose = floor($targetLand * $landLossRatio);
 
         $barrenLandByLandType = $this->getBarrenLandByLandType($dominion);
         $totalLandLost = 0;
@@ -137,15 +137,15 @@ class LandCalculator
 
             $buildingsToDestroy = $totalLandTypeLoss - $barrenLandLostForLandType;
             $landLostByLandType[$landType] = array(
-                "landLost" => $totalLandTypeLoss,
-                "barrenLandLost" => $barrenLandLostForLandType,
-                "buildingsToDestroy" => $buildingsToDestroy);
+                'landLost' => $totalLandTypeLoss,
+                'barrenLandLost' => $barrenLandLostForLandType,
+                'buildingsToDestroy' => $buildingsToDestroy);
         }
 
         if($totalLandToLose != $totalLandLost){
             // TODO: What should we do here?
         }
-
+        
         return $landLostByLandType;
     }
 }
