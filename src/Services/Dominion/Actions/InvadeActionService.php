@@ -92,6 +92,11 @@ class InvadeActionService
             }
 
             $netOP = $this->getNetOP($dominion, $units);
+
+            if ($netOP === 0.0) {
+                throw new RuntimeException('You need to send at least some units');
+            }
+
             $totalNetDP = $this->militaryCalculator->getDefensivePower($dominion);
             $totalNetDPWithoutAttackingUnits = ($totalNetDP - $this->getNetDP($dominion, $units));
 
@@ -110,15 +115,17 @@ class InvadeActionService
             }
 
             $targetNetDP = $this->militaryCalculator->getDefensivePower($target);
+            $targetRange = $this->rangeCalculator->getDominionRange($dominion, $target);
 
-            $invasionSuccessful = ($netOP > $targetNetDP);
+            $isInvasionSuccessful = ($netOP > $targetNetDP);
 
             dd([
                 'net op' => $netOP,
                 'net dp' => $totalNetDP,
                 'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
                 'target net dp' => $targetNetDP,
-                'success?' => $invasionSuccessful,
+                'success?' => $isInvasionSuccessful,
+                'target range' => $targetRange,
             ]);
 
             // PRESTIGE
