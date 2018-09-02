@@ -63,7 +63,7 @@ class ConstructionCalculator
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
 
         $lumber += max(
-            (($totalBuildings < 250) ? 250 : $totalBuildings),
+            max($totalBuildings, 250),
             (3 * $totalBuildings) / 4
         );
 
