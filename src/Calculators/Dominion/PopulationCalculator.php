@@ -125,8 +125,7 @@ class PopulationCalculator
         $housingPerHome = 30;
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
-        $housingPerBarrenLand = 5;
-        $housingPerBarrenLand += $dominion->race->getPerkMultiplier('extra_barren_max_population');
+        $housingPerBarrenLand = (5 + $dominion->race->getPerkMultiplier('extra_barren_max_population'));
         $housingPerConstructingBuilding = 15; // todo: check how many constructing home/barracks houses
 
         // Constructed buildings
