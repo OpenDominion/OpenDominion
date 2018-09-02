@@ -16,55 +16,48 @@ class PackService
         string $packName,
         string $packPassword,
         int $packSize,
-        bool $createPack): ?Pack
+        bool $createPack
+    ): ?Pack {
+        return (
+            $createPack
+                ? $this->createPack($round, $packName, $packPassword, $packSize)
+                : $this->getPack($round, $race, $packName, $packPassword)
+        );
+    }
+
+    protected function createPack(Round $round, string $packName, string $packPassword, int $packSize): Pack
     {
-        $packNameIsNullOrEmpty = (!isset($packName) || trim($packName) === '');
-        $packPasswordIsNullOrEmpty = (!isset($packPassword) || trim($packPassword) === '');
-        if($packNameIsNullOrEmpty || $packPasswordIsNullOrEmpty) {
-            throw new RuntimeException('You need to enter both name and password for the pack.');
+        if (($packSize < 2) || ($packSize > $round->pack_size)) {
+            throw new RuntimeException("Pack size must be between 2 and {$round->pack_size}.");
         }
 
-        $pack = null;
-        if($createPack) {
-            if($packSize < 2 || $packSize > 6)
-            {
-                throw new RuntimeException('Pack size must be between 2 and 6.');
-            }
+        return Pack::create([
+            'round_id' => $round->id,
+            'user_id' => Auth::user()->id,
+            'name' => $packName,
+            'password' => $packPassword,
+            'size' => $packSize,
+        ]);
+    }
 
-            $pack = Pack::create([
-                'round_id' => $round->id,
-                'user_id' => Auth::user()->id,
-                'name' => $packName,
-                'password' => $packPassword,
-                'size' => $packSize
-            ]);
+    protected function getPack(Round $round, Race $race, string $packName, string $packPassword): ?Pack
+    {
+        $pack = Pack::where([
+            'round_id' => $round->id,
+            'name' => $packName,
+            'password' => $packPassword,
+        ])->withCount('dominions')->first();
 
-            $packId = $pack->id;
-
-            $pack = Pack::lockForUpdate()->findOrFail($packId);
+        if (!$pack) {
+            return null;
         }
-        else {
-            $packs = Pack::where([
-                'name' => $packName,
-                'password' => $packPassword,
-                'round_id' => $round->id
-            ])->withCount('dominions')->lockForUpdate()->get();
 
-            if($packs->isEmpty()) {
-                throw new RuntimeException('No pack with that password found in round {$round->number}');
-            }
+        if ($pack->dominions_count >= $pack->size) {
+            throw new RuntimeException('Pack is already full');
+        }
 
-            $pack = $packs->first();
-
-            // TODO: race condition here
-            // TODO: Pack size should be a setting?
-            if($pack->dominions_count >= $pack->size) {
-                throw new RuntimeException('Pack is already full');
-            }
-
-            if($pack->realm->alignment !== $race->alignment){
-                throw new RuntimeException('Race has wrong aligment to the rest of pack.');
-            }
+        if ($pack->realm->alignment !== $race->alignment) {
+            throw new RuntimeException('Race has wrong alignment to the rest of pack.');
         }
 
         return $pack;

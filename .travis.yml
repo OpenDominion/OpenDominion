@@ -4,7 +4,9 @@ php:
   - 7.1
 
 before_script:
-  - bash bin/init.sh testing
+  - composer install --no-interaction --prefer-source
+  - echo 'APP_KEY=' > .env && php artisan key:generate
+  - echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
 
 script:
   - vendor/bin/phpunit --coverage-clover storage/logs/clover.xml

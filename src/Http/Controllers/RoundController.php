@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
@@ -51,33 +50,36 @@ class RoundController extends AbstractController
     {
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
+        // todo: make this its own FormRequest class
         $this->validate($request, [
             'dominion_name' => 'required|string|max:50',
             'ruler_name' => 'nullable|string|max:50',
             'race' => 'required|exists:races,id',
-            'realm' => 'in:random,join_pack,create_pack'
+            'realm_type' => 'in:random,join_pack,create_pack',
+            'pack_name' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
+            'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
+            'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
         ]);
 
-        $realmType = $request->get('realm');
-        $race = Race::find($request->get('race'));
+        $realmType = $request->get('realm_type');
+        $joinRandomRealm = ($realmType === 'random');
+        $joinOrCreatePack = !$joinRandomRealm;
 
         DB::beginTransaction();
 
-        $pack = null;
-        if(strpos($realmType, 'pack') !== false)
-        {
-            $packPassword = $request->get('pack_password');
-            $packName = $request->get('pack_name');
-            $packSize = $request->get('pack_size');
-            $createPack = $realmType === 'create_pack';
+        /** @var Race $race */
+        $race = Race::findOrFail($request->get('race'));
 
+        $pack = null;
+        if ($joinOrCreatePack) {
             $pack = $this->packService->getOrCreatePack(
                 $round,
                 $race,
-                $packName,
-                $packPassword,
-                $packSize,
-                $createPack);
+                $request->get('pack_name'),
+                $request->get('pack_password'),
+                $request->get('pack_size'),
+                ($realmType === 'create_pack')
+            );
         }
 
         $dominion = $this->dominionFactory->create(

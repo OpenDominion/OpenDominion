@@ -56,7 +56,7 @@
                 <div class="col-md-8">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells</h3>
+                            <h3 class="box-title"><i class="ra ra-burning-embers"></i> Offensive Spells <span class="label label-success">new</span></h3>
                         </div>
 
                         @if ($protectionService->isUnderProtection($selectedDominion))

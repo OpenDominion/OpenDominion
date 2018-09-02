@@ -8,9 +8,11 @@
 /.vagrant/
 /app/routes/web.local.php
 /node_modules/
+/nova/
 /public/assets/
 /public/hot/
-/public/storage/
+/public/nova-assets/
+/public/storage
 /public/mix-manifest.json
 /storage/*.key
 /vendor/

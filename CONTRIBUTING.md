@@ -10,7 +10,7 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
 - [Before getting started](#before-getting-started)
   - [Prerequisites](#prerequisites)
   - [Vision](#vision)
-- [How can I contribute?](#how-can-i-contribute)
+- [How can I contribute?](#how-can-i-contribute?)
   - [Joining the community](#joining-the-community)
   - [Participating in the beta](#participating-in-the-beta)
   - [Providing info](#providing-info)
@@ -21,7 +21,6 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Directory structure](#directory-structure)
   - [Deviation from Laravel](#deviation-from-laravel)
   - [Things to keep in mind](#things-to-keep-in-mind)
-  - [How to run OpenDominion](#how-to-run-opendominion)
   - [How to run tests](#how-to-run-tests)
   - [How to update](#how-to-update)
   - [How to reset](#how-to-reset)
@@ -123,6 +122,12 @@ Once you're satisfied with your modifications, send me a pull request. I will re
 - You have [NPM](https://nodejs.org/en/) 5 or higher installed and in your path.
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
+In addition:
+
+- If you want to use MySQL as your database engine, you have a server setup. In in doubt, just follow the instructions for Sqlite below.
+- If not going to use the internal PHP webserver, you need to have a webserver like Nginx or Apache setup according to the [Laravel documentation](https://laravel.com/docs/5.6/installation#pretty-urls).
+
+As a replacement for both of these there's Docker Compose and [Homestead](https://laravel.com/docs/5.6/homestead) configuration files available. 
 
 ##### Languages, frameworks, libraries and tools
 
@@ -132,54 +137,100 @@ Composer production packages include Haikunator (to generate random realm names)
 
 Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
 
-I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a `.idea` directory for you if you do use PhpStorm.
+I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a partially gitignored `.idea` directory for you if you do use PhpStorm.
 
 
 ##### Cloning the repository:
 
 ```bash
-$ git pull https://github.com/WaveHack/OpenDominion.git OpenDominion
+$ git clone https://github.com/WaveHack/OpenDominion.git OpenDominion
 $ cd OpenDominion
 ```
 
 
-##### Init script
+##### Setting up after cloning:
 
-There's an [init script](https://github.com/WaveHack/OpenDominion/blob/master/bin/init.sh) available which will set up the rest: 
+**Note:** The `bin/init.sh` script that was previously available has been removed. These commands will now have to be entered manually.
+
+Install PHP dependencies:
 
 ```bash
-$ bash bin/init.sh local
+$ composer install
 ```
 
-If you don't want to use my awesome init script, you can enter these commands manually instead:
+Copy the provided .env example file and generate a fresh application encryption key.
 
 ```bash
-# Composer stuff
-$ composer self-update
-$ composer install --prefer-source
-
-# Env file
-$ cp .env.template.local .env
+$ cp .env.example .env
 $ php artisan key:generate
+```
 
-# Database
-$ touch storage/databases/local.sqlite
+Now is the time to decide if you want to setup a MySQL database, or use Sqlite instead.
+
+Edit the `.env` file and set the correct `DB_*` fields. If you want to use Sqlite, set `DB_CONNECTION=local`, comment out `DB_DATABASE=` and run `touch storage/databases/local.sqlite`.
+
+After this, migrate the database and seed development testing data:
+
+```bash
 $ php artisan migrate --seed
+```
 
-# Optional IDE helpers
-$ php artisan clear-compiled
+If your database is setup correctly then the migrations and seeders will run without errors, and you will receive user credentials for an automatically generated user account and dominion. 
+
+Now [link the storage directory](https://laravel.com/docs/5.6/filesystem#the-public-disk):
+
+```bash
+$ php artisan storage:link
+```
+
+Optional: If your editor or IDE supports code inspection and autocompletion, there are some additional Artisan commands you can run to generate helper files:
+
+```bash
 $ php artisan ide-helper:generate
 $ php artisan ide-helper:models -N
 $ php artisan ide-helper:meta
+```
 
-# Frontend stuff
+Now install the frontend dependencies. Note that if you're on Linux you need to have `libpng-dev` installed.
+
+```bash
 $ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
 # If using Vagrant, node-sass might fail to install properly.
-# If so, run: npm rebuild node-sass --no-bin-links 
+# If so, run: npm rebuild node-sass --no-bin-links
+```
+
+And build the frontend:
+
+```bash
 $ npm run dev
 ```
 
-Make sure to change the `MAIL_*` settings in your `.env` if you want to use your own SMTP server (or just set `MAIL_DRIVER` to `log`). 
+Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
+
+Optional: You can run a self-diagnostic check to see if everything was setup correctly.
+
+```bash
+$ php artisan self-diagnosis
+```
+
+It should pass most checks and you're good to go! Note that the following checks might fail in certain conditions, which you can safely ignore:
+
+- Locale check on Windows, which are not supported there.
+- If using Sqlite, the example environmental variables not being set. Most notably `DB_DATABASE` (and optionally any other `DB_*` that are not `DB_CONNECTION`).
+
+Run the internal PHP webserver with a helper command through Artisan:
+
+```bash
+$ php artisan serve
+```
+
+Open your web browser, navigate to [localhost:8000](http://localhost:8000) and login with the credentials provided to you after migrating and seeding the database.
+
+If you want to tinker with stuff through the command-line with an interactive shell (i.e. a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)), you can run `php artisan tinker`. Note that you need to restart the tinker process every time you make a change in the code.
+
+For more info about Artisan and Tinker, consult the [documentation](https://laravel.com/docs/5.6/artisan#introduction).
+
+**Note:** If you want to use an SMTP server like Mailtrap.io for testing emails, change the `MAIL_*` fields accordingly in `.env`. By default emails are logged in the Laravel log file at `storage/logs/laravel*.log`. 
 
 
 ### Directory structure
@@ -188,43 +239,35 @@ Make sure to change the `MAIL_*` settings in your `.env` if you want to use your
 .
 +-- app
 |   +-- config # Laravel config
-|   +-- data # Custom folder with static data JSON files. Units, races, perks etc
-|   +-- database # Laravel database
-|   +-- resources # Laravel resources
+|   +-- data # Custom folder with JSON/YAML data files. Most notably units, races, perks and round leagues
+|   +-- database # Laravel database folder
+|   +-- resources # Laravel resources folder
 |   |   +-- assets # Application Sass, JavaScript, images etc
 |   |   +-- lang # Language files. Currently unused
 |   |   +-- views # Blade template views
-|   |       +-- emails # Email templates
 |   |       +-- errors # Laravel errors
 |   |       +-- layouts # Layouts
 |   |       +-- pages # Page contents. Subdirectories by route segments (e.g. route('foo.bar.baz') => foo/bar/baz.blade.php)
 |   |       +-- partials # Partial views to split up layouts or to reuse template blocks
 |   |       +-- vendor # Vendor views. Currently unused
 |   +-- routes # Laravel route config
-+-- bin # init.sh and deploy.sh scripts
 +-- bootstrap # Laravel bootstrap
 +-- public # Web root
 |   +-- assets # Generated assets folder. Don't put your resources here, put them in app/resources/ instead and update webpack.mix.js to copy them
 |       +-- app # Application assets, compiled and/or copied from app/resources/
-|       +-- vendor # Vendor assets, usually copied from node_modules/$library/dist
+|       +-- vendor # Vendor assets, usually copied from node_modules/$library/dist using Webpack during 'npm run dev'
 +-- src # Source files. These are pretty Laravel generic, with the addition of:
 |   +-- Calculators # Calculator classes which just do calculations. No touching database or session or anything. Just input-output
 |   |   +-- Dominion # Calculator classes which operate on a Dominion instance
 |   +-- Factories # DominionFactory and RealmFactory
 |   +-- Helpers # Helper classes which contains like building types and land types
 |   +-- Models # Eloquent models
-|   +-- Repositories # L5-Repositories repositories
 |   +-- Services # Misc business logic classes which can touch sessions, database etc
-|   +-- Traits # DominionAwareTrait
+|   +-- Traits # Traits to use in other classes
 |   +-- Application.php # Custom application class to overwrite Laravel's default paths
+|   +-- helpers.php # Custom helper function that live in the global scope
 +-- storage # Laravel storage folder. Contains an additional databases directory with local.sqlite for local development
-+-- tests # Test files. Note that tests are namespaced!
-    +-- Feature # Feature tests
-    +-- Unit # Unit tests
-        +-- Calculators # Unit tests which test a single method per test method. Don't do database testing in here, just mock everything except the test method
-        |   +-- Dominion # Same as above, but with a Dominion
-        +-- Factories # Factory tests, must touch database
-        +-- Services # Service tests, may touch database
++-- tests # Unit and feature tests
 ```
 
 The rest should be pretty self-explanatory, assuming you're at least somewhat comfortable with the Laravel framework.
@@ -240,6 +283,8 @@ With that said, here are some things to keep in mind if you're used to the Larav
 - Config, database, resources and routes are in `app`.
 - As a result of this, the `$app` instance is our custom application class, residing at `src/Application.php`, to override all the paths that Laravel uses by default. 
 
+This is experimental and is subject to change. Please keep an eye on the #dev-announcements channel in the Discord server.
+
 
 ### Things to keep in mind
 
@@ -253,36 +298,17 @@ With that said, here are some things to keep in mind if you're used to the Larav
 - Slim controllers, slim models, many slim services.
 
 
-### How to run OpenDominion
-
-To run OpenDominion you need a webserver pointing a document root towards the 'public' directory.
-
-What I like to do during development is to use PHP's internal webserver via Artisan serve:
-
-```bash
-$ php artisan serve
-```
-
-OpenDominion uses a SQLite database by default for development, so there's no need to setup MySQL or anything PDO-compatible unless you really want to. Using things like Apache/Nginx with MySQL/MariaDB is possible at your own discretion.
-
-**Note:** Due to hardcoded SQL queries in the [GameTickCommand class](https://github.com/WaveHack/OpenDominion/blob/master/src/Console/Commands/GameTickCommand.php), database engines other than Sqlite and MySQL are **not** supported.
-
-Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
-
-If you run into an 'application encryption error', run the following:
-
-```bash
-$ php artisan key:generate
-```
-
-
 ### How to run tests
 
-You can run tests with:
+Tests are ran in an in-memory Sqlite database. Even if you use MySQL, you need to have the `php-sqlite3` installed for this.
+
+You can run the full test suite with:
 
 ```bash
 $ vendor/bin/phpunit
 ```
+
+**Note: The rest of this section is largely out of date as tests need refactoring. This section will be updated later.**
 
 There are two test suites, named as follows:
 
@@ -308,7 +334,7 @@ For updating your local development environment, do a `git pull`, optionally fol
 If you want to reset the database, run the following:
 
 ```bash
-$ php artisan migrate:refresh --seed
+$ php artisan migrate:fresh --seed
 ```
 
 If that doesn't work, remove the `storage/databases/local.sqlite` file, create a new one and then run:
@@ -317,9 +343,19 @@ If that doesn't work, remove the `storage/databases/local.sqlite` file, create a
 $ php artisan migrate --seed
 ```
 
-**Note:** Any registered user accounts and dominions will have to be re-registered (and activated in the case of a user account).
+**Note:** Any additionally registered user accounts and dominions next to the ones provided by the database seeding process will have to be re-registered (and activated in the case of a user account).
 
-Edit your database manually and set `users.activated = 1` or set `MAIL_DRIVER=log` in `.env` to get the user activation link in the log (`storage/logs/laravel.log`).
+You can activate newly created users by either:
+
+1. Inspecting the registration mail sent (either through a SMTP server like Mailtrap.io, or fishing the activation link out of the logged email if your MAIL_DRIVER is set to 'log' in .env),
+2. Use a database client and set `users.activated = 1` on the relevant user account,
+3. Using Tinker to manually set the activated field to 1. For example (using `php artisan tinker`):
+
+```php
+>>> $u = User::find(2)
+>>> $u->activated =  1
+>>> $u->save()
+```
 
 
 ### Style guide and standards
