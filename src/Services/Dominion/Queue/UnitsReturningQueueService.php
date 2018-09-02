@@ -32,8 +32,8 @@ class UnitsReturningQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->unitsReturningQueue) {
-            return $this->unitsReturningQueue;
+        if ($this->unitsReturningQueue && array_key_exists($dominion->id, $this->unitsReturningQueue)) {
+            return $this->unitsReturningQueue[$dominion->id];
         }
 
         $rows = DB::table('queue_units_returning')
@@ -46,7 +46,7 @@ class UnitsReturningQueueService
             $returningQueue[$row->unit_type][$row->hours - 1] = (int)$row->amount;
         }
 
-        return $this->unitsReturningQueue = $returningQueue;
+        return $this->unitsReturningQueue[$dominion->id] = $returningQueue;
     }
 
     /**

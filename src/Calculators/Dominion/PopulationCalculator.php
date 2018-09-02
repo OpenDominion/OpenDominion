@@ -125,11 +125,8 @@ class PopulationCalculator
         $housingPerHome = 30;
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
-        $housingPerBarrenLand = 5;
+        $housingPerBarrenLand = (5 + $dominion->race->getPerkMultiplier('extra_barren_max_population'));
         $housingPerConstructingBuilding = 15; // todo: check how many constructing home/barracks houses
-
-        // todo: race bonus for barren land
-        // todo: ^ think about what I meant to say here. note to self: be more clear in the future
 
         // Constructed buildings
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
@@ -291,21 +288,23 @@ class PopulationCalculator
      */
     public function getPopulationPeasantGrowth(Dominion $dominion): int
     {
-        return max(
-            ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion)),
-            min(
-                // todo: getMaxPopulation should be next hour. this method needs refactoring
-                ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion)),
-                ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion))
-            )
-        );
+        $maximumPeasantDeath = ((-0.05 * $dominion->peasants) - $this->getPopulationDrafteeGrowth($dominion));
+        $roomForPeasants = ($this->getMaxPopulation($dominion) - $this->getPopulation($dominion) - $this->getPopulationDrafteeGrowth($dominion));
+        $currentPopulationChange = ($this->getPopulationBirth($dominion) - $this->getPopulationDrafteeGrowth($dominion));
 
-        /*
+        $maximumPopulationChange = min($roomForPeasants, $currentPopulationChange);
+
+        return max($maximumPeasantDeath, $maximumPopulationChange);
+
+         /*
         =MAX(
             -5% * peasants - drafteegrowth,
+            -5% * peasants - drafteegrowth, // MAX PEASANT DEATH
             MIN(
                 maxpop(nexthour) - (peasants - military) - drafteesgrowth,
                 moddedbirth - drafteegrowth
+                maxpop(nexthour) - (peasants - military) - drafteesgrowth, // MAX SPACE FOR PEASANTS
+                moddedbirth - drafteegrowth // CURRENT BIRTH RATE
             )
         )
         */
@@ -327,7 +326,7 @@ class PopulationCalculator
         $growthFactor = 1;
 
         if ($this->getPopulationMilitaryPercentage($dominion) < $dominion->draft_rate) {
-            $draftees += ($dominion->peasants * ($growthFactor / 100));
+            $draftees += round(($dominion->peasants * ($growthFactor / 100)));
         }
 
         return $draftees;

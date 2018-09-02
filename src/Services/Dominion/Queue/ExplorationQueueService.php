@@ -32,8 +32,8 @@ class ExplorationQueueService
      */
     public function getQueue(Dominion $dominion): array
     {
-        if ($this->explorationQueue) {
-            return $this->explorationQueue;
+        if ($this->explorationQueue && array_key_exists($dominion->id, $this->explorationQueue)) {
+            return $this->explorationQueue[$dominion->id];
         }
 
         $rows = DB::table('queue_exploration')
@@ -46,7 +46,7 @@ class ExplorationQueueService
             $explorationQueue[$row->land_type][$row->hours - 1] = (int)$row->amount;
         }
 
-        return $this->explorationQueue = $explorationQueue;
+        return $this->explorationQueue[$dominion->id] = $explorationQueue;
     }
 
     /**

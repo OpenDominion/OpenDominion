@@ -194,11 +194,12 @@ class TickService
         }
 
         // Population
+        $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
         $dominion->peasants += $populationPeasantGrowth;
         $dominion->peasants_last_hour = $populationPeasantGrowth;
-        $dominion->military_draftees += $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
+        $dominion->military_draftees += $drafteesGrowthRate;
 
         // Morale
         if ($dominion->morale < 70) {
