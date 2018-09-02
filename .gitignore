@@ -6,8 +6,6 @@
 /.idea/vcs.xml
 /.idea/workspace.xml
 /.vagrant/
-/app/resources/lang/vendor/
-/app/resources/views/vendor/
 /app/routes/web.local.php
 /node_modules/
 /nova/
