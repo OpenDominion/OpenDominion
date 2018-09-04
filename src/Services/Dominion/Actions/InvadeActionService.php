@@ -149,6 +149,12 @@ class InvadeActionService
                         // 5+ times: -50%
                     // todo: if at war, increase $prestigeGain by +15%
                     // $targetPrestigeLoss = 5% target->prestige
+            $prestigeLossPercentage = 0;
+            if(!$invasionSuccesful || $landRatio < 0.66) {
+                $prestigeLossPercentage = -0.05;
+            } else if($landRatio >= 0.75 && $landRatio <= 1.20) {
+
+            }
 
             // CASUALTIES
 
