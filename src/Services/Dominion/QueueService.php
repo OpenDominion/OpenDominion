@@ -105,6 +105,49 @@ class QueueService
     }
 
     /**
+     * Queues new resources for a dominion.
+     *
+     * @param string $type
+     * @param Dominion $dominion
+     * @param array $data In format: [$resource => $amount, $resource2 => $amount2] etc
+     * @param int $hours
+     */
+    public function queueResources(string $type, Dominion $dominion, array $data, int $hours = 12): void
+    {
+        $data = array_map('\intval', $data);
+        $now = now();
+
+        foreach ($data as $resource => $amount) {
+            if ($amount === 0) {
+                continue;
+            }
+
+            $existingQueueRow = $this->getQueue($type, $dominion)->filter(function ($row) use ($resource, $hours) {
+                return (
+                    ($row->resource === $resource) &&
+                    ($row->hours === $hours)
+                );
+            })->first();
+
+            if ($existingQueueRow === null) {
+                DB::table('dominion_queue')->insert([
+                    'dominion_id' => $dominion->id,
+                    'source' => $type,
+                    'resource' => $resource,
+                    'hours' => $hours,
+                    'amount' => $amount,
+                    'created_at' => $now,
+                ]);
+
+            } else {
+                DB::table('dominion_queue')->update([
+                    'amount' => ($existingQueueRow->amount + $amount),
+                ]);
+            }
+        }
+    }
+
+    /**
      * Helper getter to call queue methods with types specified in the method
      * name.
      *
