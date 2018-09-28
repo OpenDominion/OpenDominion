@@ -10,7 +10,7 @@ use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
-use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class ExplorationController extends AbstractDominionController
 {
@@ -18,9 +18,9 @@ class ExplorationController extends AbstractDominionController
     {
         return view('pages.dominion.explore', [
             'explorationCalculator' => app(ExplorationCalculator::class),
-            'explorationQueueService' => app(ExplorationQueueService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
+            'queueService' => app(QueueService::class),
         ]);
     }
 

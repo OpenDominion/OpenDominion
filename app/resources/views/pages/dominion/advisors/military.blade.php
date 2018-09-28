@@ -36,16 +36,16 @@
                                     <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
                                     @for ($i = 0; $i < 12; $i++)
                                         <td class="text-center">
-                                            @if ($trainingQueueService->getQueue($selectedDominion)[$unitType][$i] === 0)
+                                            @if ($queueService->getTrainingQueueAmount($selectedDominion, "military_{$unitType}", $i) === 0)
                                                 -
                                             @else
-                                                {{ number_format($trainingQueueService->getQueue($selectedDominion)[$unitType][$i]) }}
+                                                {{ number_format($queueService->getTrainingQueueAmount($selectedDominion, "military_{$unitType}", $i)) }}
                                             @endif
                                         </td>
                                     @endfor
                                     <td class="text-center">
                                         {{ number_format($selectedDominion->{'military_' . $unitType}) }}
-                                        ({{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }})
+                                        ({{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }})
                                     </td>
                                 </tr>
                             @endforeach
@@ -85,15 +85,15 @@
                                     <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
                                     @for ($i = 0; $i < 12; $i++)
                                         <td class="text-center">
-                                            @if ($unitsReturningQueueService->getQueue($selectedDominion)[$unitType][$i] === 0)
+                                            @if ($queueService->getInvasionQueueAmount($selectedDominion, "military_{$unitType}", $i) === 0)
                                                 -
                                             @else
-                                                {{ number_format($unitsReturningQueueService->getQueue($selectedDominion)[$unitType][$i]) }}
+                                                {{ number_format($queueService->getInvasionQueueAmount($selectedDominion, "military_{$unitType}", $i)) }}
                                             @endif
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        {{ number_format($unitsReturningQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}
+                                        {{ number_format($queueService->getInvasionQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}
                                     </td>
                                 </tr>
                             @endforeach
