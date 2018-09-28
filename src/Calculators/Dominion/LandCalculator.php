@@ -123,7 +123,7 @@ class LandCalculator
         foreach ($this->landHelper->getLandTypes() as $landType) {
             $landTypeLoss = $dominion->{'land_' . $landType} * $landLossRatio;
 
-            $totalLandTypeLoss = round($landTypeLoss, 0, PHP_ROUND_HALF_EVEN); // bankers rounding </3
+            $totalLandTypeLoss = (int)round($landTypeLoss, 0, PHP_ROUND_HALF_EVEN);
             $totalLandLost += $totalLandTypeLoss;
 
             $barrenLandForLandType = $barrenLandByLandType[$landType];
