@@ -197,7 +197,7 @@ class InvadeActionService
                 // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
             
-            if($invasionSuccessful) {
+            if($isInvasionSuccessful) {
                 $landGrabRatio = 1;
                 $bonusLandRatio = 1.5;
                 // TODO: check for war/peace
@@ -226,7 +226,16 @@ class InvadeActionService
                     $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
                     $landLost = $landAndBuildingsLost['landLost'];
                     $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
-                    $buildingsLostTemp[$landType] = $buildingsLost;
+                    $buildingsLostTemp[$landType] = $buildingsLostForLandType;
+
+
+                    // TEMP
+
+                    continue;
+                    
+                    // END TEMP
+
+
 
                     // Remove land
                     $target->{'land_' . $landType} -= $landLost;
@@ -239,6 +248,7 @@ class InvadeActionService
                     
                     $landGained = round($landLost * $bonusLandRatio);
                     // TODO: Input into queue for $dominion
+                    
                     $landGainedPerLandTypeTemp[$landType] = $landGained;
                 }
 
@@ -254,7 +264,7 @@ class InvadeActionService
                 'net dp' => $totalNetDP,
                 'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
                 'target net dp' => $targetNetDP,
-                'success?' => $invasionSuccessful,
+                'success?' => $isInvasionSuccessful,
             ]);
             // MORALE
 
