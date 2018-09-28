@@ -83,8 +83,8 @@
                                 @for ($i = 0; $i < 12; $i++)
                                     @php
                                         $land = (
-                                            $explorationQueueService->getQueue($selectedDominion)[$landType][$i] +
-                                            $landIncomingQueueService->getQueue($selectedDominion)[$landType][$i]
+                                            $queueService->getExplorationQueueAmount($selectedDominion, "land_{$landType}", $i) +
+                                            $queueService->getInvasionQueueAmount($selectedDominion, "land_{$landType}", $i)
                                         );
                                     @endphp
                                     <td class="text-center">
@@ -95,7 +95,7 @@
                                         @endif
                                     </td>
                                 @endfor
-                                <td class="text-center">{{ number_format($explorationQueueService->getQueueTotalByLand($selectedDominion, $landType) + $landIncomingQueueService->getQueueTotalByLand($selectedDominion, $landType)) }}</td>
+                                <td class="text-center">{{ number_format($queueService->getExplorationQueueTotalByResource($selectedDominion, "land_{$landType}") + $queueService->getInvasionQueueTotalByResource($selectedDominion, "land_{$landType}")) }}</td>
                             </tr>
                         @endforeach
                         </tbody>

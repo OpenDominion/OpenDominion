@@ -38,11 +38,7 @@ use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
-use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
-use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\NotificationService;
@@ -115,6 +111,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(HistoryService::class);
         $this->app->singleton(InfoOpService::class);
         $this->app->singleton(ProtectionService::class);
+        $this->app->singleton(QueueService::class);
         $this->app->singleton(SelectorService::class);
         $this->app->singleton(TickService::class);
 
@@ -132,12 +129,5 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
         $this->app->singleton(SpellActionService::class);
-
-        // Dominion Queue Services
-        $this->app->singleton(ConstructionQueueService::class);
-        $this->app->singleton(ExplorationQueueService::class);
-        $this->app->singleton(LandIncomingQueueService::class);
-        $this->app->singleton(TrainingQueueService::class);
-        $this->app->singleton(UnitsReturningQueueService::class);
     }
 }

@@ -3,7 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class MilitaryCalculator
 {
@@ -13,30 +13,30 @@ class MilitaryCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
-
-    /** @var UnitsReturningQueueService */
-    protected $unitsReturningQueueService;
 
     /**
      * MilitaryCalculator constructor.
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
-     * @param UnitsReturningQueueService $unitsReturningQueueService
      */
     public function __construct(
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
-        SpellCalculator $spellCalculator,
-        UnitsReturningQueueService $unitsReturningQueueService
+        QueueService $queueService,
+        SpellCalculator $spellCalculator
     ) {
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
-        $this->unitsReturningQueueService = $unitsReturningQueueService;
     }
 
     /**
@@ -390,7 +390,7 @@ class MilitaryCalculator
     {
         return (
             $dominion->{'military_unit' . $slot} +
-            $this->unitsReturningQueueService->getQueueTotalByUnitType($dominion, ('unit' . $slot))
+            $this->queueService->getInvasionQueueTotalByResource($dominion, "unit{$slot}")
         );
     }
 }
