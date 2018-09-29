@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -18,19 +19,20 @@ class ExploreActionService
     /** @var ExplorationCalculator */
     protected $explorationCalculator;
 
+    /** @var LandHelper */
+    protected $landHelper;
+
     /** @var QueueService */
     protected $queueService;
 
     /**
      * ExplorationActionService constructor.
-     *
-     * @param ExplorationCalculator $explorationCalculator
-     * @param QueueService $queueService
      */
-    public function __construct(ExplorationCalculator $explorationCalculator, QueueService $queueService)
+    public function __construct()
     {
-        $this->explorationCalculator = $explorationCalculator;
-        $this->queueService = $queueService;
+        $this->explorationCalculator = app(ExplorationCalculator::class);
+        $this->landHelper = app(LandHelper::class);
+        $this->queueService = app(QueueService::class);
     }
 
     /**
@@ -44,6 +46,10 @@ class ExploreActionService
     public function explore(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
+
+        $data = array_only($data, array_map(function ($value) {
+            return "land_{$value}";
+        }, $this->landHelper->getLandTypes()));
 
         $data = array_map('\intval', $data);
 

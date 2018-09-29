@@ -27,19 +27,12 @@ class TrainActionService
 
     /**
      * TrainActionService constructor.
-     *
-     * @param QueueService $queueService
-     * @param TrainingCalculator $trainingCalculator
-     * @param UnitHelper $unitHelper
      */
-    public function __construct(
-        QueueService $queueService,
-        TrainingCalculator $trainingCalculator,
-        UnitHelper $unitHelper
-    ) {
-        $this->queueService = $queueService;
-        $this->trainingCalculator = $trainingCalculator;
-        $this->unitHelper = $unitHelper;
+    public function __construct()
+    {
+        $this->queueService = app(QueueService::class);
+        $this->trainingCalculator = app(TrainingCalculator::class);
+        $this->unitHelper = app(UnitHelper::class);
     }
 
     /**
@@ -53,6 +46,10 @@ class TrainActionService
     public function train(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
+
+        $data = array_only($data, array_map(function ($value) {
+            return "military_{$value}";
+        }, $this->unitHelper->getUnitTypes()));
 
         $data = array_map('\intval', $data);
 
