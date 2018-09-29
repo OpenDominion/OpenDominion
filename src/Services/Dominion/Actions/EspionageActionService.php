@@ -232,6 +232,11 @@ class EspionageActionService
                 ];
 
                 // Units at home (85% accurate)
+                array_set($data, 'units.home.draftees', random_int(
+                    round($target->military_draftees * 0.85),
+                    round($target->military_draftees / 0.85)
+                ));
+
                 foreach (range(1, 4) as $slot) {
                     $amountAtHome = $target->{'military_unit' . $slot};
 

@@ -394,6 +394,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td>Draftees</td>
+                                <td colspan="12">&nbsp;</td>
+                                <td class="text-center">
+                                    {{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
+                                </td>
+                            </tr>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
                                 <tr>
                                     <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
@@ -489,7 +496,7 @@
                                     $unitType = ('unit' . $slot);
                                 @endphp
                                 <tr>
-                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
                                     @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "units.returning.{$unitType}.{$i}", 0);
