@@ -2,20 +2,22 @@
 
 namespace OpenDominion\Services\Dominion\Actions\Military;
 
-use Carbon\Carbon;
 use DB;
-use Exception;
-use Illuminate\Database\Query\Builder;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
+use Throwable;
 
 class TrainActionService
 {
     use DominionGuardsTrait;
+
+    /** @var QueueService */
+    protected $queueService;
 
     /** @var TrainingCalculator */
     protected $trainingCalculator;
@@ -26,11 +28,16 @@ class TrainActionService
     /**
      * TrainActionService constructor.
      *
+     * @param QueueService $queueService
      * @param TrainingCalculator $trainingCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(TrainingCalculator $trainingCalculator, UnitHelper $unitHelper)
-    {
+    public function __construct(
+        QueueService $queueService,
+        TrainingCalculator $trainingCalculator,
+        UnitHelper $unitHelper
+    ) {
+        $this->queueService = $queueService;
         $this->trainingCalculator = $trainingCalculator;
         $this->unitHelper = $unitHelper;
     }
@@ -41,14 +48,13 @@ class TrainActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws RuntimeException
-     * @throws Exception
+     * @throws Throwable
      */
     public function train(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
 
-        $data = array_map('intval', $data);
+        $data = array_map('\intval', $data);
 
         $totalUnitsToTrain = array_sum($data);
 
@@ -71,6 +77,8 @@ class TrainActionService
             if (!$amountToTrain) {
                 continue;
             }
+
+            $unitType = str_replace('military_', '', $unitType);
 
             $costs = $trainingCostsPerUnit[$unitType];
 
@@ -98,11 +106,7 @@ class TrainActionService
         $newDraftees = ($dominion->military_draftees - $totalCosts['draftees']);
         $newWizards = ($dominion->military_wizards - $totalCosts['wizards']);
 
-        $dateTime = new Carbon;
-
-        DB::beginTransaction();
-
-        try {
+        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newOre, $newDraftees, $newWizards) {
             $dominion->fill([
                 'resource_platinum' => $newPlatinum,
                 'resource_ore' => $newOre,
@@ -110,60 +114,16 @@ class TrainActionService
                 'military_wizards' => $newWizards,
             ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
 
-            // Check for existing queue
-            $existingQueueRows = DB::table('queue_training')
-                ->where('dominion_id', $dominion->id)
-                ->where(function (Builder $query) {
-                    $query->orWhere(function (Builder $query) {
-                        // Specialist units take 9 hours to train
-                        $query->whereIn('unit_type', ['unit1', 'unit2'])
-                            ->where('hours', 9);
-                    })->orWhere(function (Builder $query) {
-                        // Non-specialist units take 12 hours to train
-                        $query->whereNotIn('unit_type', ['unit1', 'unit2'])
-                            ->where('hours', 12);
-                    });
-                })->get(['unit_type', 'amount']);
+            // Specialists train in 9 hours
+            $nineHourData = [
+                'military_unit1' => $data['military_unit1'],
+                'military_unit2' => $data['military_unit2'],
+            ];
+            unset($data['military_unit1'], $data['military_unit2']);
 
-            foreach ($existingQueueRows as $row) {
-                $data[$row->unit_type] += $row->amount;
-            }
-
-            foreach ($data as $unitType => $amount) {
-                if ($amount === 0) {
-                    continue;
-                }
-
-                $where = [
-                    'dominion_id' => $dominion->id,
-                    'unit_type' => $unitType,
-                    'hours' => (in_array($unitType, ['unit1', 'unit2'], true) ? 9 : 12),
-                ];
-
-                $values = [
-                    'amount' => $amount,
-                    'updated_at' => $dateTime,
-                ];
-
-                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($unitType) {
-                    return ($row->unit_type === $unitType);
-                });
-
-                if ($existingQueueRow->isEmpty()) {
-                    $values['created_at'] = $dateTime;
-                }
-
-                DB::table('queue_training')
-                    ->updateOrInsert($where, $values);
-            }
-
-            DB::commit();
-
-        } catch (Exception $e) {
-            DB::rollBack();
-
-            throw $e;
-        }
+            $this->queueService->queueResources('training', $dominion, $nineHourData, 9);
+            $this->queueService->queueResources('training', $dominion, $data);
+        });
 
         return [
             'message' => $this->getReturnMessageString($dominion, $unitsToTrain, $totalCosts),
@@ -188,7 +148,8 @@ class TrainActionService
         foreach ($unitsToTrain as $unitType => $amount) {
             if ($amount > 0) {
                 $unitName = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
-                $unitsToTrainStringParts[] = (number_format($amount) . ' ' . str_plural(str_singular($unitName), $amount));
+                $unitsToTrainStringParts[] = (number_format($amount) . ' ' . str_plural(str_singular($unitName),
+                        $amount));
             }
         }
 
