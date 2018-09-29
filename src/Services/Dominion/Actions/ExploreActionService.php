@@ -2,14 +2,14 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
-use Carbon\Carbon;
 use DB;
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
+use Throwable;
 
 class ExploreActionService
 {
@@ -18,14 +18,19 @@ class ExploreActionService
     /** @var ExplorationCalculator */
     protected $explorationCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * ExplorationActionService constructor.
      *
      * @param ExplorationCalculator $explorationCalculator
+     * @param QueueService $queueService
      */
-    public function __construct(ExplorationCalculator $explorationCalculator)
+    public function __construct(ExplorationCalculator $explorationCalculator, QueueService $queueService)
     {
         $this->explorationCalculator = $explorationCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -34,8 +39,7 @@ class ExploreActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws Exception
-     * @throws RuntimeException
+     * @throws Throwable
      */
     public function explore(Dominion $dominion, array $data): array
     {
@@ -65,64 +69,15 @@ class ExploreActionService
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
         $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
-        $dateTime = new Carbon;
-
-        DB::beginTransaction();
-
-        try {
+        DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees) {
             $dominion->fill([
                 'morale' => $newMorale,
                 'resource_platinum' => $newPlatinum,
                 'military_draftees' => $newDraftees,
             ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
 
-            // todo: move to ExplorationQueueService->queue($dominion, $data)
-            // Check for existing queue
-            $existingQueueRows = DB::table('queue_exploration')
-                ->where([
-                    'dominion_id' => $dominion->id,
-                    'hours' => 12,
-                ])->get(['land_type', 'amount']);
-
-            foreach ($existingQueueRows as $row) {
-                $data[$row->land_type] += $row->amount;
-            }
-
-            foreach ($data as $landType => $amount) {
-                if ($amount === 0) {
-                    continue;
-                }
-
-                $where = [
-                    'dominion_id' => $dominion->id,
-                    'land_type' => $landType,
-                    'hours' => 12,
-                ];
-
-                $values = [
-                    'amount' => $amount,
-                    'updated_at' => $dateTime,
-                ];
-
-                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($landType) {
-                    return ($row->land_type === $landType);
-                });
-
-                if ($existingQueueRow->isEmpty()) {
-                    $values['created_at'] = $dateTime;
-                }
-
-                DB::table('queue_exploration')
-                    ->updateOrInsert($where, $values);
-            }
-
-            DB::commit();
-
-        } catch (Exception $e) {
-            DB::rollBack();
-
-            throw $e;
-        }
+            $this->queueService->queueResources('exploration', $dominion, $data);
+        });
 
         return [
             'message' => sprintf(

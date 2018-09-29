@@ -3,14 +3,15 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
+use Throwable;
 
 class ConstructActionService
 {
@@ -25,21 +26,27 @@ class ConstructActionService
     /** @var LandHelper */
     protected $landHelper;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * ConstructionActionService constructor.
      *
      * @param ConstructionCalculator $constructionCalculator
      * @param LandCalculator $landCalculator
      * @param LandHelper $landHelper
+     * @param QueueService $queueService
      */
     public function __construct(
         ConstructionCalculator $constructionCalculator,
         LandCalculator $landCalculator,
-        LandHelper $landHelper
+        LandHelper $landHelper,
+        QueueService $queueService
     ) {
         $this->constructionCalculator = $constructionCalculator;
         $this->landCalculator = $landCalculator;
         $this->landHelper = $landHelper;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -48,8 +55,7 @@ class ConstructActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws Exception
-     * @throws RuntimeException
+     * @throws Throwable
      */
     public function construct(Dominion $dominion, array $data): array
     {
@@ -76,7 +82,7 @@ class ConstructActionService
                 continue;
             }
 
-            $landType = $this->landHelper->getLandTypeForBuildingByRace($buildingType, $dominion->race);
+            $landType = $this->landHelper->getLandTypeForBuildingByRace(str_replace('building_', '', $buildingType), $dominion->race);
 
             if (!isset($buildingsByLandType[$landType])) {
                 $buildingsByLandType[$landType] = 0;
@@ -97,63 +103,14 @@ class ConstructActionService
         $lumberCost = ($this->constructionCalculator->getLumberCost($dominion) * $totalBuildingsToConstruct);
         $newLumber = ($dominion->resource_lumber - $lumberCost);
 
-        $now = now();
-
-        DB::beginTransaction();
-
-        try {
+        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newLumber) {
             $dominion->fill([
                 'resource_platinum' => $newPlatinum,
                 'resource_lumber' => $newLumber,
             ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
 
-            // todo: move to ConstructionQueueService->queue($dominion, $data)
-            // Check for existing queue
-            $existingQueueRows = DB::table('queue_construction')
-                ->where([
-                    'dominion_id' => $dominion->id,
-                    'hours' => 12,
-                ])->get(['building', 'amount']);
-
-            foreach ($existingQueueRows as $row) {
-                $data[$row->building] += $row->amount;
-            }
-
-            foreach ($data as $buildingType => $amount) {
-                if ($amount === 0) {
-                    continue;
-                }
-
-                $where = [
-                    'dominion_id' => $dominion->id,
-                    'building' => $buildingType,
-                    'hours' => 12,
-                ];
-
-                $values = [
-                    'amount' => $amount,
-                    'updated_at' => $now,
-                ];
-
-                $existingQueueRow = $existingQueueRows->filter(function ($row) use ($buildingType) {
-                    return ($row->building === $buildingType);
-                });
-
-                if ($existingQueueRow->isEmpty()) {
-                    $values['created_at'] = $now;
-                }
-
-                DB::table('queue_construction')
-                    ->updateOrInsert($where, $values);
-            }
-
-            DB::commit();
-
-        } catch (Exception $e) {
-            DB::rollBack();
-
-            throw $e;
-        }
+            $this->queueService->queueResources('construction', $dominion, $data);
+        });
 
         return [
             'message' => sprintf(

@@ -31,13 +31,13 @@ class QueueService
     /**
      * Returns the queue of specific type of a dominion.
      *
-     * @param string $type
+     * @param string $source
      * @param Dominion $dominion
      * @return Collection
      */
-    public function getQueue(string $type, Dominion $dominion): Collection
+    public function getQueue(string $source, Dominion $dominion): Collection
     {
-        $cacheKey = "{$type}.{$dominion->id}";
+        $cacheKey = "{$source}.{$dominion->id}";
 
         if (array_has($this->queueCache, $cacheKey)) {
             return collect(array_get($this->queueCache, $cacheKey));
@@ -45,7 +45,7 @@ class QueueService
 
         $data = DB::table('dominion_queue')->where([
             'dominion_id' => $dominion->id,
-            'source' => $type,
+            'source' => $source,
         ])->get();
 
         array_set($this->queueCache, $cacheKey, $data->toArray());
@@ -56,15 +56,15 @@ class QueueService
     /**
      * Returns the amount of incoming resource for a specific type and hour of a dominion.
      *
-     * @param string $type
+     * @param string $source
      * @param Dominion $dominion
      * @param string $resource
      * @param int $hour
      * @return int
      */
-    public function getQueueAmount(string $type, Dominion $dominion, string $resource, int $hour): int
+    public function getQueueAmount(string $source, Dominion $dominion, string $resource, int $hour): int
     {
-        return $this->getQueue($type, $dominion)
+        return $this->getQueue($source, $dominion)
                 ->filter(function ($row) use ($resource, $hour) {
                     return (
                         ($row->resource === $resource) &&
@@ -77,13 +77,13 @@ class QueueService
      * Returns the sum of resources in a queue of a specific type of a
      * dominion.
      *
-     * @param string $type
+     * @param string $source
      * @param Dominion $dominion
      * @return int
      */
-    public function getQueueTotal(string $type, Dominion $dominion): int
+    public function getQueueTotal(string $source, Dominion $dominion): int
     {
-        return $this->getQueue($type, $dominion)
+        return $this->getQueue($source, $dominion)
             ->sum('amount');
     }
 
@@ -91,17 +91,60 @@ class QueueService
      * Returns the sum of a specific resource in a queue of a specific type of
      * a dominion.
      *
-     * @param string $type
+     * @param string $source
      * @param Dominion $dominion
      * @param string $resource
      * @return int
      */
-    public function getQueueTotalByResource(string $type, Dominion $dominion, string $resource): int
+    public function getQueueTotalByResource(string $source, Dominion $dominion, string $resource): int
     {
-        return $this->getQueue($type, $dominion)
+        return $this->getQueue($source, $dominion)
             ->filter(function ($row) use ($resource) {
                 return ($row->resource === $resource);
             })->sum('amount');
+    }
+
+    /**
+     * Queues new resources for a dominion.
+     *
+     * @param string $source
+     * @param Dominion $dominion
+     * @param array $data In format: [$resource => $amount, $resource2 => $amount2] etc
+     * @param int $hours
+     */
+    public function queueResources(string $source, Dominion $dominion, array $data, int $hours = 12): void
+    {
+        $data = array_map('\intval', $data);
+        $now = now();
+
+        foreach ($data as $resource => $amount) {
+            if ($amount === 0) {
+                continue;
+            }
+
+            $existingQueueRow = $this->getQueue($source, $dominion)->filter(function ($row) use ($resource, $hours) {
+                return (
+                    ($row->resource === $resource) &&
+                    ($row->hours === $hours)
+                );
+            })->first();
+
+            if ($existingQueueRow === null) {
+                DB::table('dominion_queue')->insert([
+                    'dominion_id' => $dominion->id,
+                    'source' => $source,
+                    'resource' => $resource,
+                    'hours' => $hours,
+                    'amount' => $amount,
+                    'created_at' => $now,
+                ]);
+
+            } else {
+                DB::table('dominion_queue')->update([
+                    'amount' => ($existingQueueRow->amount + $amount),
+                ]);
+            }
+        }
     }
 
     /**
@@ -123,9 +166,9 @@ class QueueService
             ));
         }
 
-        $type = strtolower(array_get($methodParts, '1'));
+        $source = strtolower(array_get($methodParts, '1'));
         $method = implode('', array_except($methodParts, '1'));
-        array_unshift($arguments, $type);
+        array_unshift($arguments, $source);
 
         return \call_user_func_array([$this, $method], $arguments);
     }
