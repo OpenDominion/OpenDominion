@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Fixed networth sometimes showing incorrect values  on realm page
+- Fixed construction cost calculation to be based off total land and not buildings. As a result, construction costs are significantly higher than before
 
 ## [0.5.0] - 2018-08-04
 ### Added
