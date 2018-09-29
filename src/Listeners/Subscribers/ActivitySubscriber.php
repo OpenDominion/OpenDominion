@@ -22,7 +22,7 @@ class ActivitySubscriber implements SubscriberInterface
         UserFailedLoginEvent::class,
         UserLoggedInEvent::class,
         UserRegisteredEvent::class,
-        UserLoggedOutEvent::class
+        UserLoggedOutEvent::class,
     ];
 
     /**

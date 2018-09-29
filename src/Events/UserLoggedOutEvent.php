@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OpenDominion\Events;
-
 
 use OpenDominion\Services\Activity\ActivityEvent;
 use OpenDominion\Services\Activity\HasActivityEvent;
@@ -11,7 +9,6 @@ use OpenDominion\Services\Analytics\HasAnalyticsEvent;
 
 class UserLoggedOutEvent extends AbstractUserEvent implements HasActivityEvent, HasAnalyticsEvent
 {
-
     /**
      * Returns the ActivityEvent associated with this event.
      *

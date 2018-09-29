@@ -20,7 +20,7 @@ class AnalyticsSubscriber implements SubscriberInterface
         UserActivatedEvent::class,
         UserLoggedInEvent::class,
         UserRegisteredEvent::class,
-        UserLoggedOutEvent::class
+        UserLoggedOutEvent::class,
     ];
 
     /**
