@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+### Changes
+- Info gathering ops on Op Center page now show exact time upon hover. ([#337](https://github.com/WaveHack/OpenDominion/issues/337))
+
 ### Fixed
 - Fixed networth sometimes showing incorrect values on realm page.
 - Fixed construction cost calculation. As a result, construction costs are significantly higher than before.
