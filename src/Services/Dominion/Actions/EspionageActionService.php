@@ -290,7 +290,7 @@ class EspionageActionService
                     array_set($data, "constructed.{$buildingType}", $target->{'building_' . $buildingType});
                 }
 
-                $this->queueService->getConstructionQueue($target)->each(function ($row) {
+                $this->queueService->getConstructionQueue($target)->each(function ($row) use (&$data) {
                     $buildingType = str_replace('building_', '', $row->resource);
 
                     array_set($data, "constructing.{$buildingType}.{$row->hours}", $row->amount);
