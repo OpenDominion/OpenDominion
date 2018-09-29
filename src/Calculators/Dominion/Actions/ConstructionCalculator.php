@@ -2,21 +2,27 @@
 
 namespace OpenDominion\Calculators\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 
 class ConstructionCalculator
 {
+    /** @var BuildingCalculator */
+    protected $buildingCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
     /**
      * ConstructionCalculator constructor.
      *
+     * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(BuildingCalculator $buildingCalculator, LandCalculator $landCalculator)
     {
+        $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
     }
 
@@ -29,12 +35,11 @@ class ConstructionCalculator
     public function getPlatinumCost(Dominion $dominion): int
     {
         $platinum = 0;
-
-        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
 
         $platinum += max(
-            max($totalLand, 250),
-            (3 * $totalLand) / 4
+            max($totalBuildings, 250),
+            (3 * $totalBuildings) / 4
         );
 
         $platinum -= 250;
@@ -55,12 +60,11 @@ class ConstructionCalculator
     public function getLumberCost(Dominion $dominion): int
     {
         $lumber = 0;
-
-        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
 
         $lumber += max(
-            max($totalLand, 250),
-            (3 * $totalLand) / 4
+            max($totalBuildings, 250),
+            (3 * $totalBuildings) / 4
         );
 
         $lumber -= 250;
