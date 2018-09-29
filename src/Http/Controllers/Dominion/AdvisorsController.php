@@ -12,11 +12,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
-use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
-use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
-use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class AdvisorsController extends AbstractDominionController
 {
@@ -36,8 +32,7 @@ class AdvisorsController extends AbstractDominionController
     public function getAdvisorsMilitary()
     {
         return view('pages.dominion.advisors.military', [
-            'unitsReturningQueueService' => app(UnitsReturningQueueService::class),
-            'trainingQueueService' => app(TrainingQueueService::class),
+            'queueService' => app(QueueService::class),
             'unitHelper' => app(UnitHelper::class),
         ]);
     }
@@ -45,10 +40,9 @@ class AdvisorsController extends AbstractDominionController
     public function getAdvisorsLand()
     {
         return view('pages.dominion.advisors.land', [
-            'explorationQueueService' => app(ExplorationQueueService::class),
-            'landIncomingQueueService' => app(LandIncomingQueueService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
+            'queueService' => app(QueueService::class),
         ]);
     }
 
@@ -57,8 +51,8 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.construction', [
             'buildingCalculator' => app(BuildingCalculator::class),
             'buildingHelper' => app(BuildingHelper::class),
-            'constructionQueueService' => app(ConstructionQueueService::class),
             'landCalculator' => app(LandCalculator::class),
+            'queueService' => app(QueueService::class),
         ]);
     }
 

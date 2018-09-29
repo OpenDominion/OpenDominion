@@ -33,7 +33,7 @@ class ConstructionCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $platinum += max(
-            (($totalLand < 250) ? 250 : $totalLand),
+            max($totalLand, 250),
             (3 * $totalLand) / 4
         );
 
@@ -59,7 +59,7 @@ class ConstructionCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $lumber += max(
-            (($totalLand < 250) ? 250 : $totalLand),
+            max($totalLand, 250),
             (3 * $totalLand) / 4
         );
 
