@@ -314,22 +314,21 @@ class EspionageActionService
                         $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
                 }
 
-                // hacky hack
-                $incoming = [];
+                $this->queueService->getExplorationQueue($target)->each(function ($row) use (&$data) {
+                    $landType = str_replace('land_', '', $row->resource);
 
-                $exploringLand = $this->queueService->getExplorationQueue($target)->toArray();
-                $incomingLand = $this->queueService->getInvasionQueue($target)->toArray();
+                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                });
 
-                foreach ($this->landHelper->getLandTypes() as $landType) {
-                    foreach (range(0, 11) as $hour) {
-                        array_set($incoming, "{$landType}.{$hour}", (
-                            array_get($exploringLand, "{$landType}.{$hour}", 0) +
-                            array_get($incomingLand, "{$landType}.{$hour}", 0)
-                        ));
+                $this->queueService->getInvasionQueue($target)->each(function ($row) use (&$data) {
+                    if (!starts_with($row->resource, 'land_')) {
+                        return; // continue
                     }
-                }
 
-                array_set($data, 'incoming', $incoming);
+                    $landType = str_replace('land_', '', $row->resource);
+
+                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                });
 
                 $infoOp->data = $data;
                 break;

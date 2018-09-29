@@ -777,7 +777,13 @@
                                             @endif
                                         </td>
                                     @endfor
-                                    <td class="text-center">{{ number_format(array_sum(array_get($infoOp->data, "incoming.{$landType}"))) }}</td>
+                                    <td class="text-center">
+                                        @if ($amountIncoming = array_get($infoOp->data, "incoming.{$landType}"))
+                                            {{ number_format(array_sum($amountIncoming)) }}
+                                        @else
+                                            0
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
