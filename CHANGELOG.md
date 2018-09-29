@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+### Fixed
+- Fixed networth sometimes showing incorrect values  on realm page
+
 ## [0.5.0] - 2018-08-04
 ### Added
 - Added new races: Dwarf and Goblin.
