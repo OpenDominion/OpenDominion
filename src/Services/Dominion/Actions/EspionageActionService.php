@@ -290,7 +290,11 @@ class EspionageActionService
                     array_set($data, "constructed.{$buildingType}", $target->{'building_' . $buildingType});
                 }
 
-                array_set($data, 'constructing', $this->queueService->getConstructionQueue($target)->toArray());
+                $this->queueService->getConstructionQueue($target)->each(function ($row) {
+                    $buildingType = str_replace('building_', '', $row->resource);
+
+                    array_set($data, "constructing.{$buildingType}.{$row->hours}", $row->amount);
+                });
 
                 array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($target));
 

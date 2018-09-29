@@ -503,7 +503,7 @@
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        @if ($amountTraining = array_get($infoOp->data, "unts.returning.{$unitType}"))
+                                        @if ($amountTraining = array_get($infoOp->data, "units.returning.{$unitType}"))
                                             {{ number_format(array_sum($amountTraining)) }}
                                         @else
                                             0
@@ -639,7 +639,11 @@
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        {{ number_format(array_sum(array_get($infoOp->data, "constructing.{$buildingType}"))) }}
+                                        @if ($amountConstructing = array_get($infoOp->data, "constructing.{$buildingType}"))
+                                            {{ number_format(array_sum($amountConstructing)) }}
+                                        @else
+                                            0
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
