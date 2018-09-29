@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed networth sometimes showing incorrect values on realm page.
 - Fixed construction cost calculation. As a result, construction costs are significantly higher than before.
 - Barracks Spy now shows number of draftees.
+- Fixed an division by zero error if you have 0 peasants.
 
 ## [0.5.0] - 2018-08-04
 ### Added

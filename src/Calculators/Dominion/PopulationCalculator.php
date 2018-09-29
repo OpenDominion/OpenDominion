@@ -411,6 +411,10 @@ class PopulationCalculator
      */
     public function getEmploymentPercentage(Dominion $dominion): float
     {
+        if ($dominion->peasants === 0) {
+            return 0;
+        }
+
         return (min(1, ($this->getPopulationEmployed($dominion) / $dominion->peasants)) * 100);
     }
 }
