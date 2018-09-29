@@ -40,6 +40,9 @@ class TickService
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -55,6 +58,7 @@ class TickService
         $this->notificationService = app(NotificationService::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
+        $this->queueService = app(QueueService::class);
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
@@ -122,50 +126,16 @@ class TickService
         // todo: split up in their own methods
 
         // Queues
-        $explorationQueueResult = $this->tickExplorationQueue($dominion);
-        if (!empty($explorationQueueResult)) {
-            foreach ($explorationQueueResult as $land => $amount) {
-                $dominion->{'land_' . $land} += $amount;
+        foreach (['exploration', 'notification', 'training', 'invasion'] as $source) {
+            $queueResult = $this->tickQueue($dominion, $source);
+
+            if (!empty($queueResult)) {
+                foreach ($queueResult as $resource => $amount) {
+                    $dominion->$resource += $amount;
+                }
+
+                $this->notificationService->queueNotification("{$source}_completed", $queueResult);
             }
-
-            $this->notificationService->queueNotification('exploration_completed', $explorationQueueResult);
-        }
-
-        $constructionQueueResult = $this->tickConstructionQueue($dominion);
-        if (!empty($constructionQueueResult)) {
-            foreach ($constructionQueueResult as $building => $amount) {
-                $dominion->{'building_' . $building} += $amount;
-            }
-
-            $this->notificationService->queueNotification('construction_completed', $constructionQueueResult);
-        }
-
-        $trainingQueueResult = $this->tickTrainingQueue($dominion);
-        if (!empty($trainingQueueResult)) {
-            foreach ($trainingQueueResult as $unit => $amount) {
-                $dominion->{'military_' . $unit} += $amount;
-            }
-
-            $this->notificationService->queueNotification('training_completed', $trainingQueueResult);
-        }
-
-        $unitsReturningQueueResult = $this->tickUnitsReturningQueue($dominion);
-        if (!empty($unitsReturningQueueResult)) {
-            foreach ($unitsReturningQueueResult as $unit => $amount) {
-                $dominion->{'military_' . $unit} += $amount;
-            }
-
-            $this->notificationService->queueNotification('returning_completed', $unitsReturningQueueResult);
-        }
-
-        $landIncomingQueueResult = $this->tickLandIncomingQueue($dominion);
-        if (!empty($landIncomingQueueResult)) {
-            foreach ($landIncomingQueueResult as $land => $amount) {
-                $dominion->{'land_' . $land} += $amount;
-            }
-
-            // todo: do we need a notification? If so, we need to make one in NotificationHelper first
-//            $this->notificationService->queueNotification('land_incoming_complete', $landIncomingQueueResult);
         }
 
         // Hacky refresh active spells for dominion
@@ -184,8 +154,8 @@ class TickService
         if ($dominion->resource_food < 0) {
             $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion);
 
-            foreach ($casualties as $unit => $unitCasualties) {
-                $dominion->{$unit} -= $unitCasualties;
+            foreach ($casualties as $unitType => $unitCasualties) {
+                $dominion->{$unitType} -= $unitCasualties;
             }
 
             $dominion->resource_food = 0;
@@ -237,204 +207,44 @@ class TickService
         $dominion->save(['event' => HistoryService::EVENT_TICK]);
     }
 
-    protected function tickExplorationQueue(Dominion $dominion): array
+    protected function tickQueue(Dominion $dominion, string $source): array
     {
         // Two-step process to avoid getting UNIQUE constraint integrity errors
         // since we can't reliably use deferred transactions, deferred update
         // queries or update+orderby cross-database vendors
-        DB::table('queue_exploration')
+        DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
+            ->where('source', $source)
             ->where('hours', '>', 0)
             ->update([
                 'hours' => DB::raw('-(`hours` - 1)'),
             ]);
 
-        DB::table('queue_exploration')
+        DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
+            ->where('source', $source)
             ->where('hours', '<', 0)
             ->update([
                 'hours' => DB::raw('-`hours`'),
                 'updated_at' => $this->now,
             ]);
 
-        $finished = DB::table('queue_exploration')
+        $finished = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
+            ->where('source', $source)
             ->where('hours', 0)
             ->get();
 
         $return = [];
 
         foreach ($finished as $row) {
-            $return[$row->land_type] = $row->amount;
+            $return[$row->resource] = $row->amount;
 
             // Cleanup
-            DB::table('queue_exploration')
+            DB::table('dominion_queue')
                 ->where('dominion_id', $dominion->id)
-                ->where('land_type', $row->land_type)
-                ->where('hours', 0)
-                ->delete();
-        }
-
-        return $return;
-    }
-
-    protected function tickConstructionQueue(Dominion $dominion): array
-    {
-        // Two-step process to avoid getting UNIQUE constraint integrity errors
-        // since we can't reliably use deferred transactions, deferred update
-        // queries or update+orderby cross-database vendors
-        DB::table('queue_construction')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '>', 0)
-            ->update([
-                'hours' => DB::raw('-(`hours` - 1)'),
-            ]);
-
-        DB::table('queue_construction')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '<', 0)
-            ->update([
-                'hours' => DB::raw('-`hours`'),
-                'updated_at' => $this->now,
-            ]);
-
-        $finished = DB::table('queue_construction')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', 0)
-            ->get();
-
-        $return = [];
-
-        foreach ($finished as $row) {
-            $return[$row->building] = $row->amount;
-
-            // Cleanup
-            DB::table('queue_construction')
-                ->where('dominion_id', $dominion->id)
-                ->where('building', $row->building)
-                ->where('hours', 0)
-                ->delete();
-        }
-
-        return $return;
-    }
-
-    protected function tickTrainingQueue(Dominion $dominion): array
-    {
-        // Two-step process to avoid getting UNIQUE constraint integrity errors
-        // since we can't reliably use deferred transactions, deferred update
-        // queries or update+orderby cross-database vendors
-        DB::table('queue_training')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '>', 0)
-            ->update([
-                'hours' => DB::raw('-(`hours` - 1)'),
-            ]);
-
-        DB::table('queue_training')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '<', 0)
-            ->update([
-                'hours' => DB::raw('-`hours`'),
-                'updated_at' => $this->now,
-            ]);
-
-        $finished = DB::table('queue_training')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', 0)
-            ->get();
-
-        $return = [];
-
-        foreach ($finished as $row) {
-            $return[$row->unit_type] = $row->amount;
-
-            // Cleanup
-            DB::table('queue_training')
-                ->where('dominion_id', $dominion->id)
-                ->where('unit_type', $row->unit_type)
-                ->where('hours', 0)
-                ->delete();
-        }
-
-        return $return;
-    }
-
-    protected function tickUnitsReturningQueue(Dominion $dominion): array
-    {
-        // Two-step process to avoid getting UNIQUE constraint integrity errors
-        // since we can't reliably use deferred transactions, deferred update
-        // queries or update+orderby cross-database vendors
-        DB::table('queue_units_returning')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '>', 0)
-            ->update([
-                'hours' => DB::raw('-(`hours` - 1)'),
-            ]);
-
-        DB::table('queue_units_returning')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '<', 0)
-            ->update([
-                'hours' => DB::raw('-`hours`'),
-                'updated_at' => $this->now,
-            ]);
-
-        $finished = DB::table('queue_units_returning')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', 0)
-            ->get();
-
-        $return = [];
-
-        foreach ($finished as $row) {
-            $return[$row->unit_type] = $row->amount;
-
-            // Cleanup
-            DB::table('queue_units_returning')
-                ->where('dominion_id', $dominion->id)
-                ->where('unit_type', $row->unit_type)
-                ->where('hours', 0)
-                ->delete();
-        }
-
-        return $return;
-    }
-
-    protected function tickLandIncomingQueue(Dominion $dominion): array
-    {
-        // Two-step process to avoid getting UNIQUE constraint integrity errors
-        // since we can't reliably use deferred transactions, deferred update
-        // queries or update+orderby cross-database vendors
-        DB::table('queue_land_incoming')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '>', 0)
-            ->update([
-                'hours' => DB::raw('-(`hours` - 1)'),
-            ]);
-
-        DB::table('queue_land_incoming')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', '<', 0)
-            ->update([
-                'hours' => DB::raw('-`hours`'),
-                'updated_at' => $this->now,
-            ]);
-
-        $finished = DB::table('queue_land_incoming')
-            ->where('dominion_id', $dominion->id)
-            ->where('hours', 0)
-            ->get();
-
-        $return = [];
-
-        foreach ($finished as $row) {
-            $return[$row->land_type] = $row->amount;
-
-            // Cleanup
-            DB::table('queue_land_incoming')
-                ->where('dominion_id', $dominion->id)
-                ->where('land_type', $row->land_type)
+                ->where('source', $source)
+                ->where('resource', $row->resource)
                 ->where('hours', 0)
                 ->delete();
         }
