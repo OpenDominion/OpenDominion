@@ -15,7 +15,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -39,6 +39,9 @@ class SpellActionService
     /** @var ProtectionService */
     protected $protectionService;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
@@ -48,42 +51,20 @@ class SpellActionService
     /** @var SpellHelper */
     protected $spellHelper;
 
-    /** @var TrainingQueueService */
-    protected $trainingQueueService;
-
     /**
      * SpellActionService constructor.
-     *
-     * @param LandCalculator $landCalculator
-     * @param MilitaryCalculator $militaryCalculator
-     * @param NetworthCalculator $networthCalculator
-     * @param PopulationCalculator $populationCalculator
-     * @param ProtectionService $protectionService
-     * @param RangeCalculator $rangeCalculator
-     * @param SpellCalculator $spellCalculator
-     * @param SpellHelper $spellHelper
-     * @param TrainingQueueService $trainingQueueService
      */
-    public function __construct(
-        LandCalculator $landCalculator,
-        MilitaryCalculator $militaryCalculator,
-        NetworthCalculator $networthCalculator,
-        PopulationCalculator $populationCalculator,
-        ProtectionService $protectionService,
-        RangeCalculator $rangeCalculator,
-        SpellCalculator $spellCalculator,
-        SpellHelper $spellHelper,
-        TrainingQueueService $trainingQueueService
-    ) {
-        $this->landCalculator = $landCalculator;
-        $this->militaryCalculator = $militaryCalculator;
-        $this->networthCalculator = $networthCalculator;
-        $this->populationCalculator = $populationCalculator;
-        $this->protectionService = $protectionService;
-        $this->rangeCalculator = $rangeCalculator;
-        $this->spellCalculator = $spellCalculator;
-        $this->spellHelper = $spellHelper;
-        $this->trainingQueueService = $trainingQueueService;
+    public function __construct()
+    {
+        $this->landCalculator = app(LandCalculator::class);
+        $this->militaryCalculator = app(MilitaryCalculator::class);
+        $this->networthCalculator = app(NetworthCalculator::class);
+        $this->populationCalculator = app(PopulationCalculator::class);
+        $this->protectionService = app(ProtectionService::class);
+        $this->queueService = app(QueueService::class);
+        $this->rangeCalculator = app(RangeCalculator::class);
+        $this->spellCalculator = app(SpellCalculator::class);
+        $this->spellHelper = app(SpellHelper::class);
     }
 
     /**
@@ -393,13 +374,13 @@ class SpellActionService
                 'winks at you',
             ];
 
-            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_wizards') > 0) {
+            if ($this->queueService->getTrainingQueueTotalByResource($dominion, 'military_wizards') > 0) {
                 $thoughts[] = 'carefully observes the trainee wizards';
             } else {
                 $thoughts[] = 'mumbles something about the lack of student wizards to teach';
             }
 
-            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'military_archmages') > 0) {
+            if ($this->queueService->getTrainingQueueTotalByResource($dominion, 'military_archmages') > 0) {
                 $thoughts[] = 'mumbles something about being a bit sad because she probably won\'t be the single most powerful sorceress in the dominion anymore';
                 $thoughts[] = 'mumbles something about looking forward to discuss the secrets of arcane knowledge with her future peers';
             } else {
@@ -420,14 +401,14 @@ class SpellActionService
                 'has the feeling that an omnipotent being is watching him',
             ];
 
-            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'wizards') > 0) {
+            if ($this->queueService->getTrainingQueueTotalByResource($dominion, 'military_wizards') > 0) {
                 $thoughts[] = 'mumbles something about being delighted by the new wizard trainees so he won\'t be lonely anymore';
             } else {
                 $thoughts[] = 'mumbles something about not having enough peers to properly conduct his studies';
                 $thoughts[] = 'mumbles something about feeling a bit lonely';
             }
 
-            if ($this->trainingQueueService->getQueueTotalByUnitType($dominion, 'archmages') > 0) {
+            if ($this->queueService->getTrainingQueueTotalByResource($dominion, 'military_archmages') > 0) {
                 $thoughts[] = 'mumbles something about looking forward to his future teacher';
             } else {
                 $thoughts[] = 'mumbles something about not having an archmage master to study under';
