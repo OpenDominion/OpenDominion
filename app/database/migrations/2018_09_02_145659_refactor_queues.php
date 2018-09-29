@@ -83,8 +83,102 @@ class RefactorQueues extends Migration
      */
     public function down()
     {
-        // todo. maybe
+        Schema::create('queue_construction', function (Blueprint $table) {
+            $table->integer('dominion_id')->unsigned();
+            $table->string('building');
+            $table->integer('amount');
+            $table->integer('hours');
+            $table->timestamps();
 
-//        Schema::dropIfExists('dominion_queue');
+            $table->foreign('dominion_id')->references('id')->on('dominions');
+
+            $table->primary(['dominion_id', 'building', 'hours']);
+        });
+
+        Schema::create('queue_exploration', function (Blueprint $table) {
+            $table->integer('dominion_id')->unsigned();
+            $table->string('land_type');
+            $table->integer('amount');
+            $table->integer('hours');
+            $table->timestamps();
+
+            $table->foreign('dominion_id')->references('id')->on('dominions');
+
+            $table->primary(['dominion_id', 'land_type', 'hours']);
+        });
+
+        Schema::create('queue_land_incoming', function (Blueprint $table) {
+            $table->integer('dominion_id')->unsigned();
+            $table->string('land_type');
+            $table->integer('amount');
+            $table->integer('hours');
+            $table->timestamps();
+
+            $table->foreign('dominion_id')->references('id')->on('dominions');
+
+            $table->primary(['dominion_id', 'land_type', 'hours']);
+        });
+
+        Schema::create('queue_training', function (Blueprint $table) {
+            $table->integer('dominion_id')->unsigned();
+            $table->string('unit_type');
+            $table->integer('amount');
+            $table->integer('hours');
+            $table->timestamps();
+
+            $table->foreign('dominion_id')->references('id')->on('dominions');
+
+            $table->primary(['dominion_id', 'unit_type', 'hours']);
+        });
+
+        Schema::create('queue_units_returning', function (Blueprint $table) {
+            $table->integer('dominion_id')->unsigned();
+            $table->string('unit_type');
+            $table->integer('amount');
+            $table->integer('hours');
+            $table->timestamps();
+
+            $table->foreign('dominion_id')->references('id')->on('dominions');
+
+            $table->primary(['dominion_id', 'unit_type', 'hours']);
+        });
+
+        DB::transaction(function () {
+
+            foreach (DB::table('dominion_queue')->get() as $row) {
+                $table = '';
+                $field = '';
+                $resource = '';
+
+                switch ($row->source) {
+                    case 'construction':
+                        $table = 'queue_construction';
+                        $field = 'building';
+                        $resource = str_replace('building_', '', $row->resource);
+                        break;
+
+                    case 'exploration':
+                        $table = 'queue_exploration';
+                        $field = 'land_type';
+                        $resource = str_replace('land_', '', $row->resource);
+                        break;
+
+                    case 'training':
+                        $table = 'queue_training';
+                        $field = 'unit_type';
+                        $resource = str_replace('military_', '', $row->resource);
+                        break;
+                }
+
+                DB::table($table)->insert([
+                    'dominion_id' => $row->dominion_id,
+                    $field => $resource,
+                    'amount' => $row->amount,
+                    'hours' => $row->hours,
+                ]);
+            }
+        });
+
+        Schema::dropIfExists('dominion_queue');
     }
 }

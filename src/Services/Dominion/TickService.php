@@ -126,7 +126,7 @@ class TickService
         // todo: split up in their own methods
 
         // Queues
-        foreach (['exploration', 'notification', 'training', 'invasion'] as $source) {
+        foreach (['exploration', 'construction', 'training', 'invasion'] as $source) {
             $queueResult = $this->tickQueue($dominion, $source);
 
             if (!empty($queueResult)) {

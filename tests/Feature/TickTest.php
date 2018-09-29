@@ -3,14 +3,14 @@
 namespace OpenDominion\Tests\Feature;
 
 use Artisan;
-use DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
-use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
+use Throwable;
 
 class TickTest extends AbstractBrowserKitTestCase
 {
@@ -35,67 +35,57 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 73]);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testQueuesTick()
     {
         $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
+        $queueService = app(QueueService::class);
 
         $dominion->land_plain = 0;
         $dominion->building_home = 0;
         $dominion->save();
 
-        DB::table('queue_exploration')->insert([
-            'dominion_id' => $dominion->id,
-            'land_type' => 'plain',
-            'amount' => 10,
-            'hours' => 3,
-        ]);
-
-        // Two queue records in hourly sequence can give errors
-        DB::table('queue_exploration')->insert([
-            'dominion_id' => $dominion->id,
-            'land_type' => 'plain',
-            'amount' => 5,
-            'hours' => 2,
-        ]);
-
-        DB::table('queue_construction')->insert([
-            'dominion_id' => $dominion->id,
-            'building' => 'home',
-            'amount' => 10,
-            'hours' => 3,
-        ]);
+        $queueService->queueResources('exploration', $dominion, ['land_plain' => 10], 3);
+        $queueService->queueResources('exploration', $dominion, ['land_plain' => 5], 2);
+        $queueService->queueResources('construction', $dominion, ['building_home' => 10], 3);
 
         // Test queue hours 3 -> 2
         Artisan::call('game:tick');
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
-            ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 2])
-            ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 2]);
+            ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 2, 'amount' => 10])
+            ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 2, 'amount' => 10]);
 
         // Test queue hours 2 -> 1
         Artisan::call('game:tick');
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 5, 'building_home' => 0])
-            ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 1])
-            ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 1]);
+            ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 1, 'amount' => 10])
+            ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 1, 'amount' => 10]);
 
         // Test queues get processed on hour 0
         Artisan::call('game:tick');
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 15, 'building_home' => 10])
-            ->dontSeeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain'])
-            ->dontSeeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home']);
+            ->dontSeeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain'])
+            ->dontSeeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home']);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testQueueShouldntTickLockedDominions()
     {
         $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound('-2 days', '-1 days');
         $dominion = $this->createDominion($user, $round);
+        $queueService = app(QueueService::class);
 
         $dominion->fill([
             'peasants' => 0,
@@ -109,19 +99,8 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $this->assertTrue($dominion->isLocked());
 
-        DB::table('queue_exploration')->insert([
-            'dominion_id' => $dominion->id,
-            'land_type' => 'plain',
-            'amount' => 10,
-            'hours' => 3,
-        ]);
-
-        DB::table('queue_construction')->insert([
-            'dominion_id' => $dominion->id,
-            'building' => 'home',
-            'amount' => 10,
-            'hours' => 3,
-        ]);
+        $queueService->queueResources('exploration', $dominion, ['land_plain' => 10], 3);
+        $queueService->queueResources('construction', $dominion, ['building_home' => 10], 3);
 
         Artisan::call('game:tick');
 
@@ -134,8 +113,8 @@ class TickTest extends AbstractBrowserKitTestCase
                 'wizard_strength' => 0,
                 'resource_platinum' => 0,
             ])
-            ->seeInDatabase('queue_exploration', ['dominion_id' => $dominion->id, 'land_type' => 'plain', 'hours' => 3])
-            ->seeInDatabase('queue_construction', ['dominion_id' => $dominion->id, 'building' => 'home', 'hours' => 3]);
+            ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 3, 'amount' => 10])
+            ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 3, 'amount' => 10]);
     }
 
     public function testResourcesGetGeneratedOnTheSameHourThatBuildingsComeIn()
@@ -144,24 +123,14 @@ class TickTest extends AbstractBrowserKitTestCase
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
+        $queueService = app(QueueService::class);
 
         $dominion->resource_gems = 0;
         $dominion->resource_mana = 0;
         $dominion->save();
 
-        DB::table('queue_construction')->insert([
-            'dominion_id' => $dominion->id,
-            'building' => 'diamond_mine',
-            'amount' => 20,
-            'hours' => 1,
-        ]);
-
-        DB::table('queue_construction')->insert([
-            'dominion_id' => $dominion->id,
-            'building' => 'tower',
-            'amount' => 20,
-            'hours' => 1,
-        ]);
+        $queueService->queueResources('construction', $dominion, ['building_diamond_mine' => 20], 1);
+        $queueService->queueResources('construction', $dominion, ['building_tower' => 20], 1);
 
         Artisan::call('game:tick');
 
