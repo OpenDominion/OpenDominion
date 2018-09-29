@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Helpers\LandHelper;
@@ -11,6 +10,7 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\QueueService;
+use Throwable;
 
 class ExplorationController extends AbstractDominionController
 {
@@ -32,7 +32,7 @@ class ExplorationController extends AbstractDominionController
         try {
             $result = $exploreActionService->explore($dominion, $request->get('explore'));
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

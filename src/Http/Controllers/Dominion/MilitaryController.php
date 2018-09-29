@@ -15,6 +15,7 @@ use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\QueueService;
+use Throwable;
 
 class MilitaryController extends AbstractDominionController
 {
@@ -63,7 +64,7 @@ class MilitaryController extends AbstractDominionController
         try {
             $result = $militaryTrainActionService->train($dominion, $request->get('train'));
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
