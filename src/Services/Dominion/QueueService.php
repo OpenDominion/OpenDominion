@@ -6,6 +6,7 @@ use BadMethodCallException;
 use DB;
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
+use Throwable;
 
 /**
  * Class QueueService
@@ -111,40 +112,49 @@ class QueueService
      * @param Dominion $dominion
      * @param array $data In format: [$resource => $amount, $resource2 => $amount2] etc
      * @param int $hours
+     * @throws Throwable
      */
     public function queueResources(string $source, Dominion $dominion, array $data, int $hours = 12): void
     {
-        $data = array_map('\intval', $data);
-        $now = now();
+        DB::transaction(function () use ($source, $dominion, $data, $hours) {
+            $data = array_map('\intval', $data);
+            $now = now();
 
-        foreach ($data as $resource => $amount) {
-            if ($amount === 0) {
-                continue;
+            foreach ($data as $resource => $amount) {
+                if ($amount === 0) {
+                    continue;
+                }
+
+                $existingQueueRow = $this->getQueue($source, $dominion)
+                    ->filter(function ($row) use ($resource, $hours) {
+                        return (
+                            ($row->resource === $resource) &&
+                            ($row->hours === $hours)
+                        );
+                    })->first();
+
+                if ($existingQueueRow === null) {
+                    DB::table('dominion_queue')->insert([
+                        'dominion_id' => $dominion->id,
+                        'source' => $source,
+                        'resource' => $resource,
+                        'hours' => $hours,
+                        'amount' => $amount,
+                        'created_at' => $now,
+                    ]);
+
+                } else {
+                    DB::table('dominion_queue')->where([
+                        'dominion_id' => $dominion->id,
+                        'source' => $source,
+                        'resource' => $resource,
+                        'hours' => $hours,
+                    ])->update([
+                        'amount' => ($existingQueueRow->amount + $amount),
+                    ]);
+                }
             }
-
-            $existingQueueRow = $this->getQueue($source, $dominion)->filter(function ($row) use ($resource, $hours) {
-                return (
-                    ($row->resource === $resource) &&
-                    ($row->hours === $hours)
-                );
-            })->first();
-
-            if ($existingQueueRow === null) {
-                DB::table('dominion_queue')->insert([
-                    'dominion_id' => $dominion->id,
-                    'source' => $source,
-                    'resource' => $resource,
-                    'hours' => $hours,
-                    'amount' => $amount,
-                    'created_at' => $now,
-                ]);
-
-            } else {
-                DB::table('dominion_queue')->update([
-                    'amount' => ($existingQueueRow->amount + $amount),
-                ]);
-            }
-        }
+        });
     }
 
     /**
