@@ -8,15 +8,6 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
     $router->get('pbbg', function () {
         return [
             'name' => 'OpenDominion',
-            'born' => '2013-02-04',
-            'registered_players' => \OpenDominion\Models\User::count(),
-            'tags' => ['fantasy', 'multiplayer', 'strategy'],
-        ];
-    });
-
-    $router->get('pbbg2', function () {
-        return [
-            'name' => 'OpenDominion',
             'version' => (Cache::has('version') ? Cache::get('version') : 'unknown'),
             'description' => 'A text-based, persistent browser-based strategy game (PBBG) in a fantasy war setting',
             'tags' => ['fantasy', 'multiplayer', 'strategy'],
@@ -26,7 +17,7 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
                 'updated' => (Cache::has('version-date') ? (new \Carbon\Carbon(Cache::get('version-date')))->format('Y-m-d') : null),
             ],
             'players' => [
-                'registered' => \OpenDominion\Models\User::count(),
+                'registered' => \OpenDominion\Models\User::whereActivated(true)->count(),
                 'active' => \OpenDominion\Models\Dominion::whereHas('round', function ($q) {
                     $q->where('start_date', '<=', now())
                         ->where('end_date', '>', now());
