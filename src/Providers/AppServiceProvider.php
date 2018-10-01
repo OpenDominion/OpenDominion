@@ -75,9 +75,9 @@ class AppServiceProvider extends AbstractServiceProvider
 
     protected function registerCalculators()
     {
-        $func = "singleton";
+        $func = 'singleton';
         if ($this->app->environment() === 'script-testing') {
-            $func = "bind";
+            $func = 'bind';
         }
         // Generic Calculators
         $this->app->$func(NetworthCalculator::class);
@@ -104,9 +104,9 @@ class AppServiceProvider extends AbstractServiceProvider
 
     protected function registerServices()
     {
-        $func = "singleton";
+        $func = 'singleton';
         if ($this->app->environment() === 'script-testing') {
-            $func = "bind";
+            $func = 'bind';
         }
         // Services
         $this->app->$func(ActivityService::class);

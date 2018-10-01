@@ -3,19 +3,19 @@
 namespace OpenDominion\Tests\Unit\Services\Scripting;
 
 use Artisan;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use OpenDominion\Services\Scripting;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class ScriptingTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
-    
+
     protected function setUp()
     {
         parent::setUp();
