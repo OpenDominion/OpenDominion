@@ -14,7 +14,6 @@ class BuildingCalculator
     /** @var QueueService */
     protected $queueService;
 
-
     /**
      * BuildingCalculator constructor.
      *
@@ -66,12 +65,12 @@ class BuildingCalculator
             $buildingsInQueueForType = $this->queueService->getConstructionQueueTotalByResource($dominion, $resourceName);
             $totalBuildingsForLandType += $buildingsInQueueForType;
 
-            $buildingsPerType[$buildingType] = array(
+            $buildingsPerType[$buildingType] = [
                 'constructedBuildings' => $buildingsForType,
-                'buildingsInQueue' => $buildingsInQueueForType);
+                'buildingsInQueue' => $buildingsInQueueForType];
         }
 
-        uasort($buildingsPerType, function($item1, $item2){
+        uasort($buildingsPerType, function ($item1, $item2) {
             $item1Total = $item1['constructedBuildings'] + $item1['buildingsInQueue'];
             $item2Total = $item2['constructedBuildings'] + $item2['buildingsInQueue'];
 
@@ -79,7 +78,7 @@ class BuildingCalculator
         });
 
         $buildingsToDestroyRatio = $totalBuildingsToDestroy / $totalBuildingsForLandType;
-        
+
         $buildingsLeftToDestroy = $totalBuildingsToDestroy;
         $initialTotalBuildingsDestroyed = 0;
         $buildingsToDestroyByType = [];
@@ -109,7 +108,7 @@ class BuildingCalculator
         }
 
         if($initialTotalBuildingsDestroyed != $totalBuildingsToDestroy) {
-            // TODO: Remove? Log? 
+            // TODO: Remove? Log?
         }
 
         $actualTotalBuildingsDestroyed = 0;
@@ -132,9 +131,9 @@ class BuildingCalculator
 
             $actualTotalBuildingsDestroyed += $buildingsToDestroy;
 
-            $buildingsDestroyedByType[$buildingType] = array(
+            $buildingsDestroyedByType[$buildingType] = [
                 'builtBuildingsToDestroy' => $constructedBuildingsToDestroy,
-                'buildingsInQueueToRemove' => $buildingsInQueueToDestroy);
+                'buildingsInQueueToRemove' => $buildingsInQueueToDestroy];
         }
 
         return $buildingsDestroyedByType;

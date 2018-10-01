@@ -164,10 +164,10 @@ class LandCalculator
             }
 
             $buildingsToDestroy = $totalLandTypeLoss - $barrenLandLostForLandType;
-            $landLostByLandType[$landType] = array(
+            $landLostByLandType[$landType] = [
                 'landLost' => $totalLandTypeLoss,
                 'barrenLandLost' => $barrenLandLostForLandType,
-                'buildingsToDestroy' => $buildingsToDestroy);
+                'buildingsToDestroy' => $buildingsToDestroy];
 
             $landLeftToLose -= $totalLandTypeLoss;
         }
