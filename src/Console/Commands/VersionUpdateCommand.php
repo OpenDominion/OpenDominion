@@ -36,9 +36,8 @@ class VersionUpdateCommand extends Command implements CommandInterface
 
             $version = $tag;
 
-            $versionHtml = '<strong>';
-            $versionHtml .= sprintf(
-                '<a href="%1$s/releases/tag/%2$s" target="_blank">%2$s</a>',
+            $versionHtml = sprintf(
+                '<a href="%1$s/releases/tag/%2$s" target="_blank"><strong>%2$s</strong></a>',
                 static::REPO_URL,
                 $releaseVersion
             );
@@ -56,8 +55,6 @@ class VersionUpdateCommand extends Command implements CommandInterface
                     $hash
                 );
             }
-
-            $versionHtml .= '</strong>';
         }
 
         Cache::forever('version', $version);
