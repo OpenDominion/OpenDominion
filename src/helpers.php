@@ -64,6 +64,7 @@ if (!function_exists('generate_sentence_from_array')) {
 }
 
 if (!function_exists('random_chance')) {
+    $mockRandomChance = false;
     /**
      * Returns whether a random chance check succeeds.
      *
@@ -74,6 +75,11 @@ if (!function_exists('random_chance')) {
      */
     function random_chance(float $chance): bool
     {
-        return ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $chance);
+        global $mockRandomChance;
+        if ($mockRandomChance === true) {
+            return false;
+        } else {
+            return ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $chance);
+        }
     }
 }

@@ -53,7 +53,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -61,8 +61,8 @@
                         <thead>
                             <tr>
                                 <th>Land Type</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Total</th>
                             </tr>
@@ -71,7 +71,7 @@
                             @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
                                 <tr>
                                     <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    @for ($i = 1; $i <= 12; $i++)
                                         <td class="text-center">
                                             @if ($queueService->getConstructionQueueAmount($selectedDominion, "building_{$buildingType}", $i) === 0)
                                                 -

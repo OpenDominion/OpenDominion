@@ -14,6 +14,7 @@ use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\QueueService;
+use Throwable;
 
 class ConstructionController extends AbstractDominionController
 {
@@ -36,7 +37,7 @@ class ConstructionController extends AbstractDominionController
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

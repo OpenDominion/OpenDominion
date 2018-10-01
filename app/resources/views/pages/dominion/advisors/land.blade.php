@@ -57,7 +57,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -65,8 +65,8 @@
                         <thead>
                             <tr>
                                 <th>Land Type</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Total</th>
                             </tr>
@@ -80,7 +80,7 @@
                                         <small class="text-muted"><i>(home)</i></small>
                                     @endif
                                 </td>
-                                @for ($i = 0; $i < 12; $i++)
+                                @for ($i = 1; $i <= 12; $i++)
                                     @php
                                         $land = (
                                             $queueService->getExplorationQueueAmount($selectedDominion, "land_{$landType}", $i) +

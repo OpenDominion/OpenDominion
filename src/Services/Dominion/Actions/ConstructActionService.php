@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -16,6 +17,9 @@ use Throwable;
 class ConstructActionService
 {
     use DominionGuardsTrait;
+
+    /** @var BuildingHelper */
+    protected $buildingHelper;
 
     /** @var ConstructionCalculator */
     protected $constructionCalculator;
@@ -31,22 +35,14 @@ class ConstructActionService
 
     /**
      * ConstructionActionService constructor.
-     *
-     * @param ConstructionCalculator $constructionCalculator
-     * @param LandCalculator $landCalculator
-     * @param LandHelper $landHelper
-     * @param QueueService $queueService
      */
-    public function __construct(
-        ConstructionCalculator $constructionCalculator,
-        LandCalculator $landCalculator,
-        LandHelper $landHelper,
-        QueueService $queueService
-    ) {
-        $this->constructionCalculator = $constructionCalculator;
-        $this->landCalculator = $landCalculator;
-        $this->landHelper = $landHelper;
-        $this->queueService = $queueService;
+    public function __construct()
+    {
+        $this->buildingHelper = app(BuildingHelper::class);
+        $this->constructionCalculator = app(ConstructionCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
+        $this->landHelper = app(LandHelper::class);
+        $this->queueService = app(QueueService::class);
     }
 
     /**
@@ -60,6 +56,10 @@ class ConstructActionService
     public function construct(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
+
+        $data = array_only($data, array_map(function ($value) {
+            return "building_{$value}";
+        }, $this->buildingHelper->getBuildingTypes()));
 
         $data = array_map('\intval', $data);
 
@@ -82,7 +82,8 @@ class ConstructActionService
                 continue;
             }
 
-            $landType = $this->landHelper->getLandTypeForBuildingByRace(str_replace('building_', '', $buildingType), $dominion->race);
+            $landType = $this->landHelper->getLandTypeForBuildingByRace(str_replace('building_', '', $buildingType),
+                $dominion->race);
 
             if (!isset($buildingsByLandType[$landType])) {
                 $buildingsByLandType[$landType] = 0;

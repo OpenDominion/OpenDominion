@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use OpenDominion\Events\UserFailedLoginEvent;
 use OpenDominion\Events\UserLoggedInEvent;
+use OpenDominion\Events\UserLoggedOutEvent;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
@@ -46,16 +47,9 @@ class LoginController extends AbstractController
      */
     public function logout(Request $request)
     {
-//        event(new UserLogoutEvent(auth()->user()));
+        event(new UserLoggedOutEvent(auth()->user()));
 
         $response = $this->traitLogout($request);
-
-        // todo: fire laravel event
-        $analyticsService = app(AnalyticsService::class);
-        $analyticsService->queueFlashEvent(new AnalyticsEvent(
-            'user',
-            'logout'
-        ));
 
         session()->flash('alert-success', 'You have been logged out.');
 
