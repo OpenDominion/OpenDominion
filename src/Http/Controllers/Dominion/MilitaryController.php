@@ -14,7 +14,8 @@ use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\QueueService;
+use Throwable;
 
 class MilitaryController extends AbstractDominionController
 {
@@ -22,8 +23,8 @@ class MilitaryController extends AbstractDominionController
     {
         return view('pages.dominion.military', [
             'populationCalculator' => app(PopulationCalculator::class),
+            'queueService' => app(QueueService::class),
             'trainingCalculator' => app(TrainingCalculator::class),
-            'trainingQueueService' => app(TrainingQueueService::class),
             'unitHelper' => app(UnitHelper::class),
         ]);
     }
@@ -63,7 +64,7 @@ class MilitaryController extends AbstractDominionController
         try {
             $result = $militaryTrainActionService->train($dominion, $request->get('train'));
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

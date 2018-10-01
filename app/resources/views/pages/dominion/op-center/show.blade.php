@@ -176,7 +176,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -271,7 +271,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -340,7 +340,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -379,7 +379,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -387,17 +387,24 @@
                         <thead>
                             <tr>
                                 <th>Unit</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Home (Training)</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td>Draftees</td>
+                                <td colspan="12">&nbsp;</td>
+                                <td class="text-center">
+                                    {{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
+                                </td>
+                            </tr>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
                                 <tr>
                                     <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "units.training.{$unitType}.{$i}", 0);
                                         @endphp
@@ -422,7 +429,9 @@
                                             0
                                         @endif
 
-                                        ({{ number_format(array_sum(array_get($infoOp->data, "units.training.{$unitType}"))) }})
+                                        @if ($amountTraining = array_get($infoOp->data, "units.training.{$unitType}"))
+                                            ({{ number_format(array_sum($amountTraining)) }})
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -432,7 +441,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -467,7 +476,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -475,8 +484,8 @@
                         <thead>
                             <tr>
                                 <th>Unit</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Total</th>
                             </tr>
@@ -487,8 +496,8 @@
                                     $unitType = ('unit' . $slot);
                                 @endphp
                                 <tr>
-                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "units.returning.{$unitType}.{$i}", 0);
                                         @endphp
@@ -501,7 +510,11 @@
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        {{ number_format(array_sum(array_get($infoOp->data, "units.returning.{$unitType}"))) }}
+                                        @if ($amountTraining = array_get($infoOp->data, "units.returning.{$unitType}"))
+                                            {{ number_format(array_sum($amountTraining)) }}
+                                        @else
+                                            0
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -566,7 +579,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -602,7 +615,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -610,8 +623,8 @@
                         <thead>
                             <tr>
                                 <th>Land Type</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Total</th>
                             </tr>
@@ -620,7 +633,7 @@
                             @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
                                 <tr>
                                     <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "constructing.{$buildingType}.{$i}", 0);
                                         @endphp
@@ -633,7 +646,11 @@
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        {{ number_format(array_sum(array_get($infoOp->data, "constructing.{$buildingType}"))) }}
+                                        @if ($amountConstructing = array_get($infoOp->data, "constructing.{$buildingType}"))
+                                            {{ number_format(array_sum($amountConstructing)) }}
+                                        @else
+                                            0
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -696,7 +713,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -732,7 +749,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -740,8 +757,8 @@
                         <thead>
                             <tr>
                                 <th>Land Type</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Total</th>
                             </tr>
@@ -755,7 +772,7 @@
                                             <small class="text-muted"><i>(home)</i></small>
                                         @endif
                                     </td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "incoming.{$landType}.{$i}", 0);
                                         @endphp
@@ -767,7 +784,13 @@
                                             @endif
                                         </td>
                                     @endfor
-                                    <td class="text-center">{{ number_format(array_sum(array_get($infoOp->data, "incoming.{$landType}"))) }}</td>
+                                    <td class="text-center">
+                                        @if ($amountIncoming = array_get($infoOp->data, "incoming.{$landType}"))
+                                            {{ number_format(array_sum($amountIncoming)) }}
+                                        @else
+                                            0
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

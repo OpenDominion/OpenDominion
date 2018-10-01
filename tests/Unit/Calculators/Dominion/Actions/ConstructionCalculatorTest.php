@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Unit\Calculators\Dominion\Actions;
 
 use Mockery as m;
+use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -14,13 +15,13 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Dominion */
     protected $dominionMock;
 
-    /** @var BuildingCalculator */
+    /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
 
-    /** @var LandCalculator */
+    /** @var Mock|LandCalculator */
     protected $landCalculator;
 
-    /** @var ConstructionCalculator */
+    /** @var Mock|ConstructionCalculator */
     protected $sut;
 
     protected function setUp()
@@ -28,12 +29,10 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         parent::setUp();
 
         $this->dominionMock = m::mock(Dominion::class);
-        $this->buildingCalculator = m::mock(BuildingCalculator::class);
-        $this->landCalculator = m::mock(LandCalculator::class);
 
         $this->sut = m::mock(ConstructionCalculator::class, [
-            $this->buildingCalculator,
-            $this->landCalculator,
+            $this->buildingCalculator = m::mock(BuildingCalculator::class),
+            $this->landCalculator = m::mock(LandCalculator::class),
         ])->makePartial();
     }
 
@@ -77,9 +76,34 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         }
     }
 
-    public function testGetMaxAfford()
+    /**
+     * @dataProvider getGetMaxAffordProvider
+     */
+    public function testGetMaxAfford(
+        /** @noinspection PhpDocSignatureInspection */
+        int $totalBuildings,
+        int $totalLand,
+        int $totalBarrenLand,
+        int $platinum,
+        int $lumber,
+        int $expectedMaxAfford
+    ) {
+        $this->sut->shouldReceive('getCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
+
+        $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($platinum)->byDefault();
+        $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn($lumber)->byDefault();
+
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalBuildings)->byDefault();
+        $this->landCalculator->shouldReceive('getTotalLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalLand)->byDefault();
+        $this->landCalculator->shouldReceive('getTotalBarrenLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalBarrenLand)->byDefault();
+
+        $this->assertEquals($expectedMaxAfford, $this->sut->getMaxAfford($this->dominionMock));
+
+    }
+
+    public function getGetMaxAffordProvider()
     {
-        $scenarios = [
+        return [
             [ // new dominion
                 'totalBuildings' => 90,
                 'totalLand' => 250,
@@ -94,7 +118,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'totalBarrenLand' => 3000,
                 'platinum' => 1000000,
                 'lumber' => 150000,
-                'expectedMaxAfford' => 214,
+                'expectedMaxAfford' => 114,
             ],
             [
                 'totalBuildings' => 4000,
@@ -102,21 +126,8 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'totalBarrenLand' => 4000,
                 'platinum' => 10000000,
                 'lumber' => 1500000,
-                'expectedMaxAfford' => 1071,
+                'expectedMaxAfford' => 714,
             ],
         ];
-
-        $this->sut->shouldReceive('getCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
-
-        foreach ($scenarios as $scenario) {
-            $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($scenario['platinum'])->byDefault();
-            $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn($scenario['lumber'])->byDefault();
-
-            $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalBuildings'])->byDefault();
-            $this->landCalculator->shouldReceive('getTotalLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalLand'])->byDefault();
-            $this->landCalculator->shouldReceive('getTotalBarrenLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($scenario['totalBarrenLand'])->byDefault();
-
-            $this->assertEquals($scenario['expectedMaxAfford'], $this->sut->getMaxAfford($this->dominionMock));
-        }
     }
 }

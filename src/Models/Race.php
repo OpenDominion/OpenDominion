@@ -17,8 +17,7 @@ class Race extends AbstractModel
     public function units()
     {
         return $this->hasMany(Unit::class)
-            ->orderBy('slot')
-            ->limit(4);
+            ->orderBy('slot');
     }
 
     /**
@@ -27,14 +26,14 @@ class Race extends AbstractModel
      * @param string $key
      * @return float
      */
-    public function getPerkMultiplier($key): float
+    public function getPerkMultiplier(string $key): float
     {
         $perks = $this->perks->filter(function (RacePerk $racePerk) use ($key) {
             return ($racePerk->type->key === $key);
         });
 
         if ($perks->isEmpty()) {
-            return (float)0;
+            return 0;
         }
 
         return ((float)$perks->first()->value / 100);
