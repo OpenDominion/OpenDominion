@@ -72,6 +72,7 @@ class AppServiceProvider extends AbstractServiceProvider
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
 
+        /** @noinspection ClassConstantCanBeUsedInspection */
         if (class_exists('Laravel\\Nova\\Nova')) {
             $this->app->register(NovaServiceProvider::class);
         }
