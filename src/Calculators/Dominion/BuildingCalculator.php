@@ -75,9 +75,9 @@ class BuildingCalculator
 
             $totalBuildingsDestroyed += $buildingsToDestroy;
 
-            $buildingsDestroyedByType[$buildingType] = array(
+            $buildingsDestroyedByType[$buildingType] = [
                 'builtBuildingsToDestroy' => $buildingsToDestroy,
-                'buildingsInQueueToRemove' => 0);
+                'buildingsInQueueToRemove' => 0];
         }
 
         if($totalBuildingsToDestroy != $totalBuildingsDestroyed) {

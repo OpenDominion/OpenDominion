@@ -152,7 +152,7 @@ class InvadeActionService
             $prestigeLossPercentage = 0;
             if(!$invasionSuccesful || $landRatio < 0.66) {
                 $prestigeLossPercentage = -0.05;
-            } else if($landRatio >= 0.75 && $landRatio <= 1.20) {
+            } elseif($landRatio >= 0.75 && $landRatio <= 1.20) {
 
             }
 
@@ -195,7 +195,7 @@ class InvadeActionService
                 // calculate total conquered acres (same acres as target land lost)
                 // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
-            
+
             if($invasionSuccessful) {
                 $landGrabRatio = 1;
                 $bonusLandRatio = 1.5;
@@ -205,10 +205,10 @@ class InvadeActionService
                 $landLossPercentage = 0;
                 if($landRatio < 0.55) {
                     $landLossPercentage = (0.304 * $landRatio ^ 2 - 0.227 * $landRatio + 0.048) * $attackerLandWithRatioModifier;
-                } else if($landRatio < 0.75) {
-                    $landLossPercentage = (0.154 * $landRatio - 0.069) * $attackerLandWithRatioModifier;;
+                } elseif($landRatio < 0.75) {
+                    $landLossPercentage = (0.154 * $landRatio - 0.069) * $attackerLandWithRatioModifier;
                 } else {
-                    $landLossPercentage = (0.129 * $landRatio - 0.048) * $attackerLandWithRatioModifier;;
+                    $landLossPercentage = (0.129 * $landRatio - 0.048) * $attackerLandWithRatioModifier;
                 }
 
                 $landLossPercentage = floor($landLossPercentage);
@@ -235,7 +235,7 @@ class InvadeActionService
                         $target->{'building_' . $buildingType} -= $builtBuildingsToDestroy;
                         // TODO: Remove buildings from queue
                     }
-                    
+
                     $landGained = round($landLost * $bonusLandRatio);
                     // TODO: Input into queue for $dominion
                     $landGainedPerLandTypeTemp[$landType] = $landGained;
