@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -32,6 +33,9 @@ class InvadeActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * InvadeActionService constructor.
      *
@@ -39,19 +43,22 @@ class InvadeActionService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
+     * @param QueueService $queueService
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
-        RangeCalculator $rangeCalculator)
+        RangeCalculator $rangeCalculator,
+        QueueService $queueService)
     {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -221,21 +228,12 @@ class InvadeActionService
                 $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
                 $buildingsLostTemp = [];
-                $landGainedPerLandTypeTemp = [];
+                $landGainedPerLandType = [];
                 foreach($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
                     $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
                     $landLost = $landAndBuildingsLost['landLost'];
                     $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
                     $buildingsLostTemp[$landType] = $buildingsLostForLandType;
-
-
-                    // TEMP
-
-                    continue;
-                    
-                    // END TEMP
-
-
 
                     // Remove land
                     $target->{'land_' . $landType} -= $landLost;
@@ -247,14 +245,14 @@ class InvadeActionService
                     }
                     
                     $landGained = round($landLost * $bonusLandRatio);
-                    // TODO: Input into queue for $dominion
-                    
-                    $landGainedPerLandTypeTemp[$landType] = $landGained;
+                    $landGainedPerLandType["land_{$landType}"] = $landGained;
                 }
+
+                $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
 
                 dd([
                     'land losses' => $landAndBuildingsLostPerLandType,
-                    'land gain' => $landGainedPerLandTypeTemp,
+                    'land gain' => $landGainedPerLandType,
                     'buildings etc' =>  $buildingsLostTemp
                 ]);
             }

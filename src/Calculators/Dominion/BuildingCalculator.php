@@ -71,10 +71,12 @@ class BuildingCalculator
                 'buildingsInQueue' => $buildingsInQueueForType);
         }
 
-        if($totalBuildingsForLandType <= 0) {
-            // :/
-            dd(['$totalBuildingsToDestroy' => $totalBuildingsToDestroy, 'landType' => $landType ]);
-        }
+        uasort($buildingsPerType, function($item1, $item2){
+            $item1Total = $item1['constructedBuildings'] + $item1['buildingsInQueue'];
+            $item2Total = $item2['constructedBuildings'] + $item2['buildingsInQueue'];
+
+            return $item2Total <=> $item1Total;
+        });
 
         $buildingsToDestroyRatio = $totalBuildingsToDestroy / $totalBuildingsForLandType;
         
@@ -82,7 +84,6 @@ class BuildingCalculator
         $initialTotalBuildingsDestroyed = 0;
         $buildingsToDestroyByType = [];
         foreach($buildingsPerType as $buildingType => $buildings) {
-            
             if($buildingsLeftToDestroy == 0) {
                 break;
             }
