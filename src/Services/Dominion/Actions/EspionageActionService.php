@@ -186,7 +186,7 @@ class EspionageActionService
                 // todo: move to CasualtiesCalculator
 
                 // Values (percentage)
-                $spiesKilledBase = 1;
+                $spiesKilledBasePercentage = 1;
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -196,9 +196,9 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBase * $spyLossSpaRatio, 0.5, 1.5);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
 
-                $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMulitplier);
+                $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
 
                 $dominion->military_spies -= $spiesKilled;
 
