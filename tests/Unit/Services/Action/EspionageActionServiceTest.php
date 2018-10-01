@@ -28,7 +28,6 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
     public function setUp()
     {
-        $this->markTestSkipped('random_chance needs to be refactored, so it can be mocked.');
         parent::setUp();
 
         $this->seedDatabase();
@@ -44,6 +43,9 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->target->created_at = Carbon::now()->addHours(-80);
 
         $this->espionageActionService = $this->app->make(EspionageActionService::class);
+
+        global $mockRandomChance;
+        $mockRandomChance = true;
     }
 
     public function testPerformOperation_SameSpa_LoseOnePercent()
