@@ -16,7 +16,7 @@ The OpenDominion project uses a governance model commonly described as Benevolen
 
 Decisions will be made by trying to reach consensus in discussions between the BDFL and collaborators, with input from everyone else (especially veterans). In case consensus cannot be reached, the BDFL makes a decision.
 
-## Contribution Process
+## Contribution process
 
 Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
