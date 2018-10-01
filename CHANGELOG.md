@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-### Changes
+## [0.5.0-8] - 2018-10-01
+### Changed
 - Info gathering ops on Op Center page now show exact time upon hover. ([#337](https://github.com/WaveHack/OpenDominion/issues/337))
 - Significantly reduced spy losses on failed ops.
 
@@ -49,7 +50,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-8...HEAD
+[0.5.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...0.5.0-8
 [0.5.0]: https://github.com/WaveHack/OpenDominion/compare/0.4.2...0.5.0
 [0.4.2]: https://github.com/WaveHack/OpenDominion/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/WaveHack/OpenDominion/compare/0.4.0...0.4.1
