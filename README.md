@@ -81,7 +81,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 
 
 ## Links

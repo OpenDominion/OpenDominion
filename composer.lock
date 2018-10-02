@@ -1111,12 +1111,12 @@
             "version": "v1.3.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "436007a77fd2037f933d3a5c8e4c7e0c9b88a7b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/436007a77fd2037f933d3a5c8e4c7e0c9b88a7b0",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/436007a77fd2037f933d3a5c8e4c7e0c9b88a7b0",
                 "reference": "436007a77fd2037f933d3a5c8e4c7e0c9b88a7b0",
                 "shasum": ""
             },
@@ -1158,12 +1158,12 @@
             "version": "v1.23.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/GoogleCloudPlatform/google-cloud-php-core.git",
+                "url": "https://github.com/googleapis/google-cloud-php-core.git",
                 "reference": "44b3bb512a7a445bd4ecafbdc86ed7c142e58f9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-core/zipball/44b3bb512a7a445bd4ecafbdc86ed7c142e58f9f",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/44b3bb512a7a445bd4ecafbdc86ed7c142e58f9f",
                 "reference": "44b3bb512a7a445bd4ecafbdc86ed7c142e58f9f",
                 "shasum": ""
             },
@@ -1217,12 +1217,12 @@
             "version": "v1.3.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/GoogleCloudPlatform/google-cloud-php-storage.git",
+                "url": "https://github.com/googleapis/google-cloud-php-storage.git",
                 "reference": "240de4b1d65fad78983d80ca78bed7b1facd6467"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-storage/zipball/240de4b1d65fad78983d80ca78bed7b1facd6467",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/240de4b1d65fad78983d80ca78bed7b1facd6467",
                 "reference": "240de4b1d65fad78983d80ca78bed7b1facd6467",
                 "shasum": ""
             },
@@ -1830,16 +1830,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.29",
+            "version": "v5.6.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "acc6b5c54ab196d3358f60acc5f55d9ebaaccc02"
+                "reference": "38d838bab9434af79e8ab274ae63f52f7ed45d6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/acc6b5c54ab196d3358f60acc5f55d9ebaaccc02",
-                "reference": "acc6b5c54ab196d3358f60acc5f55d9ebaaccc02",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/38d838bab9434af79e8ab274ae63f52f7ed45d6e",
+                "reference": "38d838bab9434af79e8ab274ae63f52f7ed45d6e",
                 "shasum": ""
             },
             "require": {
@@ -1965,7 +1965,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-07-26T16:01:26+00:00"
+            "time": "2018-09-04T13:15:09+00:00"
         },
         {
             "name": "laravel/nova",
