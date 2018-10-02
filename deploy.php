@@ -21,7 +21,7 @@ host('opendominion.net')
 
 desc('Installing Laravel Nova');
 task('nova install', function () {
-    run('cd {{release_path}} && rm -rf nova');
+    run('cd {{release_path}} && rm -rf nova vendor/laravel/nova');
     run('cd {{release_path}} && ln -s storage/keys/composer-nova.json ./auth.json');
     run('cd {{release_path}} && {{bin/composer}} update --no-dev --no-scripts laravel/nova');
     run('cd {{release_path}} && {{bin/php}} artisan nova:publish');
