@@ -144,6 +144,14 @@ class InvadeActionService
 
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
+            $tempLogObject = [];
+            $tempLogObject['success?'] = $isInvasionSuccessful;
+            $tempLogObject['units'] = $units;
+            $tempLogObject['net op'] = $netOP;
+            $tempLogObject['net dp'] = $totalNetDP;
+            $tempLogObject['net dp w/o attackers'] = $totalNetDPWithoutAttackingUnits;
+            $tempLogObject['target net dp'] = $targetNetDP;
+
             // PRESTIGE
 
             // if range < 66
@@ -250,20 +258,11 @@ class InvadeActionService
 
                 $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
 
-                dd([
-                    'land losses' => $landAndBuildingsLostPerLandType,
-                    'land gain' => $landGainedPerLandType,
-                    'buildings etc' =>  $buildingsLostTemp
-                ]);
+                $tempLogObject['land losses'] = $landAndBuildingsLostPerLandType;
+                $tempLogObject['land gain'] = $landGainedPerLandType;
+                $tempLogObject['buildings etc'] = $buildingsLostTemp;
             }
 
-            dd([
-                'net op' => $netOP,
-                'net dp' => $totalNetDP,
-                'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
-                'target net dp' => $targetNetDP,
-                'success?' => $isInvasionSuccessful,
-            ]);
             // MORALE
 
             // >= 75%+ size: reduce -5% self morale
@@ -293,9 +292,7 @@ class InvadeActionService
 
         });
 
-        dd([
-            'units' => $units,
-        ]);
+        dd($tempLogObject);
 
         return [];
     }

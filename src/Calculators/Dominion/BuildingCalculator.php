@@ -37,7 +37,7 @@ class BuildingCalculator
         $totalBuildings = 0;
 
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-            $totalBuildings += $dominion->{'building_' . $buildingType};
+            $totalBuildings += $dominion->{"building_{$buildingType}"};
         }
 
         return $totalBuildings;
@@ -50,7 +50,6 @@ class BuildingCalculator
             return [];
         }
 
-        // TODO: Check the queue for inc buildings as well
         $buildingTypesForLandType = $this->buildingHelper->getBuildingTypesByRace($dominion->race)[$landType];
 
         $buildingsPerType = [];
@@ -80,7 +79,6 @@ class BuildingCalculator
         $buildingsToDestroyRatio = $totalBuildingsToDestroy / $totalBuildingsForLandType;
 
         $buildingsLeftToDestroy = $totalBuildingsToDestroy;
-        $initialTotalBuildingsDestroyed = 0;
         $buildingsToDestroyByType = [];
         foreach($buildingsPerType as $buildingType => $buildings) {
             if($buildingsLeftToDestroy == 0) {
@@ -103,12 +101,7 @@ class BuildingCalculator
 
             $buildingsToDestroyByType[$buildingType] = $buildingsToDestroy;
 
-            $initialTotalBuildingsDestroyed += $buildingsToDestroy;
             $buildingsLeftToDestroy -= $buildingsToDestroy;
-        }
-
-        if($initialTotalBuildingsDestroyed != $totalBuildingsToDestroy) {
-            // TODO: Remove? Log?
         }
 
         $actualTotalBuildingsDestroyed = 0;
@@ -119,7 +112,6 @@ class BuildingCalculator
             $buildingsInQueue = $buildings['buildingsInQueue'];
 
             $buildingsInQueueToDestroy = 0;
-            // take buildings in queue first
             if($buildingsInQueue <= $buildingsToDestroy) {
                 $buildingsInQueueToDestroy = $buildingsInQueue;
             }

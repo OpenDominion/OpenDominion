@@ -172,11 +172,6 @@ class LandCalculator
             $landLeftToLose -= $totalLandTypeLoss;
         }
 
-        if($totalLandToLose != $totalLandLost){
-            // TODO: What should we do here?
-            // Maybe just take the missing acres from the largest land type?
-        }
-
         return $landLostByLandType;
     }
 }
