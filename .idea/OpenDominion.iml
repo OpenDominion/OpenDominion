@@ -17,6 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/google/cloud-core" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/google/cloud-storage" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/intervention/image" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/nova" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/moontoast/math" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nunomaduro/collision" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-coveralls/php-coveralls" />
