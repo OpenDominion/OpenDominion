@@ -38,6 +38,14 @@ class Handler extends ExceptionHandler
     /**
      * {@inheritdoc}
      */
+    protected function context()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function render($request, Exception $exception)
     {
         return parent::render($request, $exception);

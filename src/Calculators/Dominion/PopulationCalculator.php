@@ -5,16 +5,12 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class PopulationCalculator
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
-
-    /** @var ConstructionQueueService */
-    protected $constructionQueueService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -22,11 +18,11 @@ class PopulationCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
-
-    /** @var TrainingQueueService */
-    protected $trainingQueueService;
 
     /** @var UnitHelper */
     protected $unitHelper;
@@ -35,28 +31,25 @@ class PopulationCalculator
      * PopulationCalculator constructor.
      *
      * @param BuildingHelper $buildingHelper
-     * @param ConstructionQueueService $constructionQueueService
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
-     * @param TrainingQueueService $trainingQueueService
      * @param UnitHelper $unitHelper
      */
     public function __construct(
         BuildingHelper $buildingHelper,
-        ConstructionQueueService $constructionQueueService,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
+        QueueService $queueService,
         SpellCalculator $spellCalculator,
-        TrainingQueueService $trainingQueueService,
         UnitHelper $unitHelper
     ) {
         $this->buildingHelper = $buildingHelper;
-        $this->constructionQueueService = $constructionQueueService;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
-        $this->trainingQueueService = $trainingQueueService;
         $this->unitHelper = $unitHelper;
     }
 
@@ -91,7 +84,7 @@ class PopulationCalculator
             + $dominion->military_spies
             + $dominion->military_wizards
             + $dominion->military_archmages
-            + $this->trainingQueueService->getQueueTotal($dominion)
+            + $this->queueService->getTrainingQueueTotal($dominion)
         );
     }
 
@@ -148,7 +141,7 @@ class PopulationCalculator
         }
 
         // Constructing buildings
-        $population += ($this->constructionQueueService->getQueueTotal($dominion) * $housingPerConstructingBuilding);
+        $population += ($this->queueService->getConstructionQueueTotal($dominion) * $housingPerConstructingBuilding);
 
         // Barren land
         $population += ($this->landCalculator->getTotalBarrenLand($dominion) * $housingPerBarrenLand);
@@ -219,7 +212,7 @@ class PopulationCalculator
         $troopsPerBarracks = 36;
 
         return min(
-            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees - $this->trainingQueueService->getQueueTotal($dominion)),
+            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees - $this->queueService->getTrainingQueueTotal($dominion)),
             ($dominion->building_barracks * $troopsPerBarracks)
         );
     }
@@ -418,6 +411,10 @@ class PopulationCalculator
      */
     public function getEmploymentPercentage(Dominion $dominion): float
     {
+        if ($dominion->peasants === 0) {
+            return 0;
+        }
+
         return (min(1, ($this->getPopulationEmployed($dominion) / $dominion->peasants)) * 100);
     }
 }

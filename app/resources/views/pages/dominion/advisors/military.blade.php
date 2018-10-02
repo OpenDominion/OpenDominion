@@ -16,7 +16,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -24,8 +24,8 @@
                         <thead>
                             <tr>
                                 <th>Unit</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Home (Training)</th>
                             </tr>
@@ -34,18 +34,18 @@
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
                                 <tr>
                                     <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    @for ($i = 1; $i <= 12; $i++)
                                         <td class="text-center">
-                                            @if ($trainingQueueService->getQueue($selectedDominion)[$unitType][$i] === 0)
+                                            @if ($queueService->getTrainingQueueAmount($selectedDominion, "military_{$unitType}", $i) === 0)
                                                 -
                                             @else
-                                                {{ number_format($trainingQueueService->getQueue($selectedDominion)[$unitType][$i]) }}
+                                                {{ number_format($queueService->getTrainingQueueAmount($selectedDominion, "military_{$unitType}", $i)) }}
                                             @endif
                                         </td>
                                     @endfor
                                     <td class="text-center">
                                         {{ number_format($selectedDominion->{'military_' . $unitType}) }}
-                                        ({{ number_format($trainingQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }})
+                                        ({{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }})
                                     </td>
                                 </tr>
                             @endforeach
@@ -64,7 +64,7 @@
                     <table class="table">
                         <colgroup>
                             <col>
-                            @for ($i = 0; $i < 12; $i++)
+                            @for ($i = 1; $i <= 12; $i++)
                                 <col width="20">
                             @endfor
                             <col width="100">
@@ -72,8 +72,8 @@
                         <thead>
                             <tr>
                                 <th>Unit</th>
-                                @for ($i = 0; $i < 12; $i++)
-                                    <th class="text-center">{{ ($i + 1) }}</th>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <th class="text-center">{{ $i }}</th>
                                 @endfor
                                 <th class="text-center">Total</th>
                             </tr>
@@ -83,17 +83,17 @@
                                 @php($unitType = ('unit' . $slot))
                                 <tr>
                                     <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
-                                    @for ($i = 0; $i < 12; $i++)
+                                    @for ($i = 1; $i <= 12; $i++)
                                         <td class="text-center">
-                                            @if ($unitsReturningQueueService->getQueue($selectedDominion)[$unitType][$i] === 0)
+                                            @if ($queueService->getInvasionQueueAmount($selectedDominion, "military_{$unitType}", $i) === 0)
                                                 -
                                             @else
-                                                {{ number_format($unitsReturningQueueService->getQueue($selectedDominion)[$unitType][$i]) }}
+                                                {{ number_format($queueService->getInvasionQueueAmount($selectedDominion, "military_{$unitType}", $i)) }}
                                             @endif
                                         </td>
                                     @endfor
                                     <td class="text-center">
-                                        {{ number_format($unitsReturningQueueService->getQueueTotalByUnitType($selectedDominion, $unitType)) }}
+                                        {{ number_format($queueService->getInvasionQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}
                                     </td>
                                 </tr>
                             @endforeach

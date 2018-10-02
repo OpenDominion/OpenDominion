@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.5.0-8] - 2018-10-01
+### Changed
+- Info gathering ops on Op Center page now show exact time upon hover. ([#337](https://github.com/WaveHack/OpenDominion/issues/337))
+- Significantly reduced spy losses on failed ops.
+
+### Fixed
+- Fixed networth sometimes showing incorrect values on realm page. ([#310](https://github.com/WaveHack/OpenDominion/issues/310))
+- Fixed construction cost calculation. As a result, construction costs are significantly higher than before. ([#347](https://github.com/WaveHack/OpenDominion/issues/347))
+- Barracks Spy now shows number of draftees. ([#331](https://github.com/WaveHack/OpenDominion/issues/331))
+- Fixed an division by zero error if you have 0 peasants. ([#349](https://github.com/WaveHack/OpenDominion/issues/349))
+
 ## [0.5.0] - 2018-08-04
 ### Added
 - Added new races: Dwarf and Goblin.
@@ -39,7 +50,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-8...HEAD
+[0.5.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...0.5.0-8
 [0.5.0]: https://github.com/WaveHack/OpenDominion/compare/0.4.2...0.5.0
 [0.4.2]: https://github.com/WaveHack/OpenDominion/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/WaveHack/OpenDominion/compare/0.4.0...0.4.1

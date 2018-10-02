@@ -60,8 +60,8 @@ class NotificationHelper
                 'route' => route('dominion.military'),
                 'iconClass' => 'ra ra-muscle-up text-green',
             ],
-            'returning_completed' => [
-                'label' => 'Units returned from battle',
+            'invasion_completed' => [
+                'label' => 'Invasion completed',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'route' => route('dominion.military'),
                 'iconClass' => 'ra ra-player-dodge text-green',

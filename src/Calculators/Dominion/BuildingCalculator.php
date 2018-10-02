@@ -4,20 +4,26 @@ namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\QueueService;
 
 class BuildingCalculator
 {
     /** @var BuildingHelper */
     protected $buildingHelper;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * BuildingCalculator constructor.
      *
      * @param BuildingHelper $buildingHelper
+     * @param QueueService $queueService
      */
-    public function __construct(BuildingHelper $buildingHelper)
+    public function __construct(BuildingHelper $buildingHelper, QueueService $queueService)
     {
         $this->buildingHelper = $buildingHelper;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -31,7 +37,7 @@ class BuildingCalculator
         $totalBuildings = 0;
 
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-            $totalBuildings += $dominion->{'building_' . $buildingType};
+            $totalBuildings += $dominion->{"building_{$buildingType}"};
         }
 
         return $totalBuildings;
@@ -44,7 +50,6 @@ class BuildingCalculator
             return [];
         }
 
-        // TODO: Check the queue for inc buildings as well
         $buildingTypesForLandType = $this->buildingHelper->getBuildingTypesByRace($dominion->race)[$landType];
 
         $buildingsPerType = [];
@@ -52,37 +57,75 @@ class BuildingCalculator
         $totalBuildingsForLandType = 0;
 
         foreach($buildingTypesForLandType as $buildingType) {
-            $buildingsForType = $dominion->{'building_' . $buildingType};
+            $resourceName = "building_{$buildingType}";
+            $buildingsForType = $dominion->$resourceName;
             $totalBuildingsForLandType += $buildingsForType;
-            $buildingsPerType[$buildingType] = $buildingsForType;
+
+            $buildingsInQueueForType = $this->queueService->getConstructionQueueTotalByResource($dominion, $resourceName);
+            $totalBuildingsForLandType += $buildingsInQueueForType;
+
+            $buildingsPerType[$buildingType] = [
+                'constructedBuildings' => $buildingsForType,
+                'buildingsInQueue' => $buildingsInQueueForType];
         }
 
-        if($totalBuildingsForLandType <= 0) {
-            // :/
-            dd(['$totalBuildingsToDestroy' => $totalBuildingsToDestroy, 'landType' => $landType ]);
-        }
+        uasort($buildingsPerType, function ($item1, $item2) {
+            $item1Total = $item1['constructedBuildings'] + $item1['buildingsInQueue'];
+            $item2Total = $item2['constructedBuildings'] + $item2['buildingsInQueue'];
+
+            return $item2Total <=> $item1Total;
+        });
 
         $buildingsToDestroyRatio = $totalBuildingsToDestroy / $totalBuildingsForLandType;
-        $totalBuildingsDestroyed = 0;
-        $buildingsDestroyedByType = [];
+
+        $buildingsLeftToDestroy = $totalBuildingsToDestroy;
+        $buildingsToDestroyByType = [];
         foreach($buildingsPerType as $buildingType => $buildings) {
-            $buildingsToDestroy = $buildings * $buildingsToDestroyRatio;
-            $buildingsToDestroy = round($buildingsToDestroy, 0, PHP_ROUND_HALF_EVEN);
+            if($buildingsLeftToDestroy == 0) {
+                break;
+            }
+
+            $constructedBuildings = $buildings['constructedBuildings'];
+            $buildingsInQueue = $buildings['buildingsInQueue'];
+
+            $totalBuildings = $constructedBuildings + $buildingsInQueue;
+            $buildingsToDestroy = (int)ceil($totalBuildings * $buildingsToDestroyRatio);
 
             if($buildingsToDestroy <= 0) {
                 continue;
             }
 
-            $totalBuildingsDestroyed += $buildingsToDestroy;
+            if($buildingsToDestroy > $buildingsLeftToDestroy) {
+                $buildingsToDestroy = $buildingsLeftToDestroy;
+            }
 
-            $buildingsDestroyedByType[$buildingType] = [
-                'builtBuildingsToDestroy' => $buildingsToDestroy,
-                'buildingsInQueueToRemove' => 0];
+            $buildingsToDestroyByType[$buildingType] = $buildingsToDestroy;
+
+            $buildingsLeftToDestroy -= $buildingsToDestroy;
         }
 
-        if($totalBuildingsToDestroy != $totalBuildingsDestroyed) {
-            // TODO: What should we do here?
-            // Maybe just take the missing acres from the largest building type?
+        $actualTotalBuildingsDestroyed = 0;
+        $buildingsDestroyedByType = [];
+        foreach($buildingsToDestroyByType as $buildingType => $buildingsToDestroy) {
+            $buildings = $buildingsPerType[$buildingType];
+            $constructedBuildings = $buildings['constructedBuildings'];
+            $buildingsInQueue = $buildings['buildingsInQueue'];
+
+            $buildingsInQueueToDestroy = 0;
+            if($buildingsInQueue <= $buildingsToDestroy) {
+                $buildingsInQueueToDestroy = $buildingsInQueue;
+            }
+            else {
+                $buildingsInQueueToDestroy = $buildingsToDestroy;
+            }
+
+            $constructedBuildingsToDestroy = $buildingsToDestroy - $buildingsInQueueToDestroy;
+
+            $actualTotalBuildingsDestroyed += $buildingsToDestroy;
+
+            $buildingsDestroyedByType[$buildingType] = [
+                'builtBuildingsToDestroy' => $constructedBuildingsToDestroy,
+                'buildingsInQueueToRemove' => $buildingsInQueueToDestroy];
         }
 
         return $buildingsDestroyedByType;

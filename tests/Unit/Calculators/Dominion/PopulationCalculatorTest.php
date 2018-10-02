@@ -11,20 +11,16 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 /**
- * @coversDefaultClass \OpenDominion\Calculators\PopulationCalculator
+ * @coversDefaultClass \OpenDominion\Calculators\Dominion\PopulationCalculator
  */
 class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|Dominion */
     protected $dominion;
-
-    /** @var Mock|ConstructionQueueService */
-    protected $constructionQueueService;
 
     /** @var Mock|ImprovementCalculator */
     protected $improvementsCalculator;
@@ -32,11 +28,11 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
+    /** @var Mock|QueueService */
+    protected $queueService;
+
     /** @var Mock|SpellCalculator */
     protected $spellCalculator;
-
-    /** @var Mock|TrainingQueueService */
-    protected $trainingQueueService;
 
     /** @var Mock|PopulationCalculator */
     protected $sut;
@@ -52,11 +48,10 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(PopulationCalculator::class, [
             $this->app->make(BuildingHelper::class),
-            $this->constructionQueueService = m::mock(ConstructionQueueService::class),
             $this->improvementsCalculator = m::mock(ImprovementCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
+            $this->queueService = m::mock(QueueService::class),
             $this->spellCalculator = m::mock(SpellCalculator::class),
-            $this->trainingQueueService = m::mock(TrainingQueueService::class),
             $this->app->make(UnitHelper::class)
         ])->makePartial();
     }

@@ -23,59 +23,42 @@ class VersionUpdateCommand extends Command implements CommandInterface
     {
         $this->info('Updating version', OutputInterface::VERBOSITY_DEBUG);
 
+        $tag = trim(shell_exec('git describe --tags'));
+
         $version = null;
+        $versionDate = trim(shell_exec('git log --pretty="%ci" -n1 HEAD'));
         $versionHtml = null;
 
-        $branch = trim(shell_exec('git rev-parse --abbrev-ref HEAD'));
-        $tag = trim(shell_exec('git describe --tags'));
-        $date = trim(shell_exec('git log --pretty="%ci" -n1 HEAD'));
-        $shortHash = trim(shell_exec('git log --pretty="%h" -n1 HEAD'));
-        $longHash = trim(shell_exec('git log --pretty="%H" -n1 HEAD'));
+        if ($tag !== '') {
+            preg_match('/(\d+\.\d+\.\d+(?:-\d+)?)(?:-(\d+)(?:\-g([0-9a-f]{8})))?/', $tag, $matches);
 
-        if (($branch === 'master') && ($tag !== '')) {
-            if (str_contains($tag, '-')) {
-                $tagParts = explode('-', $tag);
-                [$tag, $commits] = $tagParts;
-            }
+            $releaseVersion = $matches[1];
 
             $version = $tag;
+
             $versionHtml = sprintf(
                 '<a href="%1$s/releases/tag/%2$s" target="_blank"><strong>%2$s</strong></a>',
                 static::REPO_URL,
-                $tag
+                $releaseVersion
             );
 
-            /** @noinspection UnSafeIsSetOverArrayInspection */
-            if (isset($commits)) {
-                $version .= "-{$commits}-g{$shortHash}";
+            if (isset($matches[2])) {
+                $commitsUponRelease = $matches[2];
+                $hash = $matches[3];
+
                 $versionHtml .= sprintf(
-                    '-<a href="%s/compare/%s...%s" target="_blank">%s</a>',
+                    '-%s-g<a href="%s/compare/%s...%s" target="_blank">%s</a>',
+                    $commitsUponRelease,
                     static::REPO_URL,
-                    $tag,
-                    $shortHash,
-                    $commits
+                    $releaseVersion,
+                    $hash,
+                    $hash
                 );
             }
-
-        } else {
-            $env = getenv('APP_ENV');
-            $commits = trim(shell_exec('git rev-list --count HEAD'));
-
-            $branch = trim(shell_exec('git branch | grep \'* \''));
-            $branch = str_replace('* ', '', trim($branch));
-
-            $url = sprintf(
-                '%s/commit/%s',
-                static::REPO_URL,
-                $longHash
-            );
-
-            $version = "r{$commits} @ {$env} ({$branch} #{$shortHash})";
-            $versionHtml = "r<strong>{$commits}</strong> @ {$env} ({$branch} <a href=\"{$url}\" target=\"_blank\"><strong>#{$shortHash}</strong></a>)";
         }
 
         Cache::forever('version', $version);
-        Cache::forever('version-date', $date);
+        Cache::forever('version-date', $versionDate);
         Cache::forever('version-html', $versionHtml);
 
         $this->info("Version updated to: {$version}");

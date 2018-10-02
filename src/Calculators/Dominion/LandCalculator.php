@@ -5,7 +5,7 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class LandCalculator
 {
@@ -15,8 +15,8 @@ class LandCalculator
     /** @var BuildingHelper */
     protected $buildingHelper;
 
-    /** @var ConstructionQueueService */
-    protected $constructionQueueService;
+    /** @var QueueService */
+    protected $queueService;
 
     /** @var LandHelper */
     protected $landHelper;
@@ -26,19 +26,19 @@ class LandCalculator
      *
      * @param BuildingCalculator $buildingCalculator
      * @param BuildingHelper $buildingHelper
-     * @param ConstructionQueueService $constructionQueueService
      * @param LandHelper $landHelper
+     * @param QueueService $queueService
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
         BuildingHelper $buildingHelper,
-        ConstructionQueueService $constructionQueueService,
-        LandHelper $landHelper
+        LandHelper $landHelper,
+        QueueService $queueService
     ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->buildingHelper = $buildingHelper;
-        $this->constructionQueueService = $constructionQueueService;
         $this->landHelper = $landHelper;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -69,7 +69,7 @@ class LandCalculator
         return (
             $this->getTotalLand($dominion)
             - $this->buildingCalculator->getTotalBuildings($dominion)
-            - $this->constructionQueueService->getQueueTotal($dominion)
+            - $this->queueService->getConstructionQueueTotal($dominion)
         );
     }
 
@@ -101,11 +101,21 @@ class LandCalculator
             $barrenLand = $dominion->{'land_' . $landType};
 
             foreach ($buildingTypes as $buildingType) {
-                $barrenLand -= $dominion->{'building_' . $buildingType};
-                $barrenLand -= $this->constructionQueueService->getQueueTotalByBuilding($dominion, $buildingType);
+                $barrenLand -= $dominion->{"building_{$buildingType}"};
+                $barrenLand -= $this->queueService->getConstructionQueueTotalByResource($dominion, "building_{$buildingType}");
             }
 
             $return[$landType] = $barrenLand;
+        }
+
+        return $return;
+    }
+
+    public function getLandByLandType(Dominion $dominion): array
+    {
+        $return = [];
+        foreach ($this->landHelper->getLandTypes() as $landType) {
+            $return[$landType] = $dominion->{"land_{$landType}"};
         }
 
         return $return;
@@ -118,14 +128,32 @@ class LandCalculator
         $totalLandToLose = floor($targetLand * $landLossRatio);
 
         $barrenLandByLandType = $this->getBarrenLandByLandType($dominion);
+
+        $landPerType = $this->getLandByLandType($dominion);
+
+        arsort($landPerType);
+
+        $landLeftToLose = $totalLandToLose;
         $totalLandLost = 0;
         $landLostByLandType = [];
-        foreach ($this->landHelper->getLandTypes() as $landType) {
-            $landTypeLoss = $dominion->{'land_' . $landType} * $landLossRatio;
+        foreach ($landPerType as $landType => $totalLandForType) {
+            if($landLeftToLose == 0) {
+                break;
+            }
 
-            $totalLandTypeLoss = round($landTypeLoss, 0, PHP_ROUND_HALF_EVEN); // bankers rounding </3
+            $landTypeLoss = $totalLandForType * $landLossRatio;
+
+            $totalLandTypeLoss = (int)ceil($landTypeLoss);
+
+            if($totalLandTypeLoss == 0) {
+                continue;
+            }
+
+            if($totalLandTypeLoss > $landLeftToLose) {
+                $totalLandTypeLoss = $landLeftToLose;
+            }
+
             $totalLandLost += $totalLandTypeLoss;
-
             $barrenLandForLandType = $barrenLandByLandType[$landType];
 
             $barrenLandLostForLandType = 0;
@@ -140,11 +168,8 @@ class LandCalculator
                 'landLost' => $totalLandTypeLoss,
                 'barrenLandLost' => $barrenLandLostForLandType,
                 'buildingsToDestroy' => $buildingsToDestroy];
-        }
 
-        if($totalLandToLose != $totalLandLost){
-            // TODO: What should we do here?
-            // Maybe just take the missing acres from the largest land type?
+            $landLeftToLose -= $totalLandTypeLoss;
         }
 
         return $landLostByLandType;

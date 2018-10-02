@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -32,6 +33,9 @@ class InvadeActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * InvadeActionService constructor.
      *
@@ -39,19 +43,22 @@ class InvadeActionService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
+     * @param QueueService $queueService
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
-        RangeCalculator $rangeCalculator)
+        RangeCalculator $rangeCalculator,
+        QueueService $queueService)
     {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -108,6 +115,11 @@ class InvadeActionService
             }
 
             $netOP = $this->getNetOP($dominion, $units);
+
+            if ($netOP === 0.0) {
+                throw new RuntimeException('You need to send at least some units');
+            }
+
             $totalNetDP = $this->militaryCalculator->getDefensivePower($dominion);
             $totalNetDPWithoutAttackingUnits = ($totalNetDP - $this->getNetDP($dominion, $units));
 
@@ -126,10 +138,20 @@ class InvadeActionService
             }
 
             $targetNetDP = $this->militaryCalculator->getDefensivePower($target);
+            $targetRange = $this->rangeCalculator->getDominionRange($dominion, $target);
 
-            $invasionSuccessful = ($netOP > $targetNetDP);
+            $isInvasionSuccessful = ($netOP > $targetNetDP);
 
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+
+            $tempLogObject = [];
+            $tempLogObject['success?'] = $isInvasionSuccessful;
+            $tempLogObject['units'] = $units;
+            $tempLogObject['net op'] = $netOP;
+            $tempLogObject['net dp'] = $totalNetDP;
+            $tempLogObject['net dp w/o attackers'] = $totalNetDPWithoutAttackingUnits;
+            $tempLogObject['target net dp'] = $targetNetDP;
+
             // PRESTIGE
 
             // if range < 66
@@ -196,7 +218,7 @@ class InvadeActionService
                 // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
 
-            if($invasionSuccessful) {
+            if($isInvasionSuccessful) {
                 $landGrabRatio = 1;
                 $bonusLandRatio = 1.5;
                 // TODO: check for war/peace
@@ -220,12 +242,12 @@ class InvadeActionService
                 $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
                 $buildingsLostTemp = [];
-                $landGainedPerLandTypeTemp = [];
+                $landGainedPerLandType = [];
                 foreach($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
                     $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
                     $landLost = $landAndBuildingsLost['landLost'];
                     $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
-                    $buildingsLostTemp[$landType] = $buildingsLost;
+                    $buildingsLostTemp[$landType] = $buildingsLostForLandType;
 
                     // Remove land
                     $target->{'land_' . $landType} -= $landLost;
@@ -237,24 +259,16 @@ class InvadeActionService
                     }
 
                     $landGained = round($landLost * $bonusLandRatio);
-                    // TODO: Input into queue for $dominion
-                    $landGainedPerLandTypeTemp[$landType] = $landGained;
+                    $landGainedPerLandType["land_{$landType}"] = $landGained;
                 }
 
-                dd([
-                    'land losses' => $landAndBuildingsLostPerLandType,
-                    'land gain' => $landGainedPerLandTypeTemp,
-                    'buildings etc' =>  $buildingsLostTemp
-                ]);
+                $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
+
+                $tempLogObject['land losses'] = $landAndBuildingsLostPerLandType;
+                $tempLogObject['land gain'] = $landGainedPerLandType;
+                $tempLogObject['buildings etc'] = $buildingsLostTemp;
             }
 
-            dd([
-                'net op' => $netOP,
-                'net dp' => $totalNetDP,
-                'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
-                'target net dp' => $targetNetDP,
-                'success?' => $invasionSuccessful,
-            ]);
             // MORALE
 
             // >= 75%+ size: reduce -5% self morale
@@ -284,9 +298,7 @@ class InvadeActionService
 
         });
 
-        dd([
-            'units' => $units,
-        ]);
+        dd($tempLogObject);
 
         return [];
     }
