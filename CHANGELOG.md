@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.5.1] - 2018-10-02
+## Fixed
+- Fix deploy error. (for real this time I sweat)
+
 ## [0.5.0-9] - 2018-10-01
 ## Fixed
 - Fix deploy error. (actually lolnope still broken)
