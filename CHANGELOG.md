@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.5.1-1] - 2018-10-02
+## Fixed
+- Fixed deploy. Maybe.
+
 ## [0.5.1] - 2018-10-02
 ## Fixed
 - Fix deploy error. (for real this time I sweat)
@@ -106,7 +110,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-9...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-1...HEAD
+[0.5.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.1...0.5.1-1
+[0.5.1]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-9...0.5.1
 [0.5.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-8...0.5.0-9
 [0.5.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-7...0.5.0-8
 [0.5.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-6...0.5.0-7
