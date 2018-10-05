@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+## Fixed
+- Dominion numbering on the realm page now correctly starts at 1, instead of 0. 
 
 ## [0.5.1-4] and [0.5.1-5] - 2018-10-04
 ## Fixed
