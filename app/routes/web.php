@@ -51,12 +51,6 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('settings')->uses('SettingsController@getIndex')->name('settings');
     $router->post('settings')->uses('SettingsController@postIndex');
 
-    // todo: refactor this to an api route with laravel passport
-    $router->post('tmp/clear-notifications', function () {
-        auth()->user()->dominions()->active()->first()->notifications()->delete();
-        return redirect()->back();
-    });
-
     // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');
@@ -149,6 +143,10 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Realm
             $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
+
+            // Misc
+            $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
+            $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
 
             // Debug
             $router->get('debug')->uses('DebugController@getIndex');

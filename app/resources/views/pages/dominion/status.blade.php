@@ -211,14 +211,36 @@
                         <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
                         <ul>
                             @foreach ($selectedDominion->pack->dominions as $dominion)
-                                <li>{{ $dominion->ruler_name }} of {{ $dominion->name }}
-                                @if($dominion->ruler_name !== $dominion->user->display_name)
-                                    ({{ $dominion->user->display_name }})
-                                @endif
+                                <li>
+                                    @if ($dominion->ruler_name === $dominion->name)
+                                        <strong>{{ $dominion->name }}</strong>
+                                    @else
+                                        {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
+                                    @endif
+
+                                    @if($dominion->ruler_name !== $dominion->user->display_name)
+                                        ({{ $dominion->user->display_name }})
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>
-                        <p>Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.</p>
+                        <p>
+                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
+                            @if ($selectedDominion->pack->isFull())
+                                (full)
+                            @elseif ($selectedDominion->pack->isClosed())
+                                (closed)
+                            @endif
+                        </p>
+                        @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
+                            <p>Your pack will automatically close in <strong>{{ $selectedDominion->pack->getClosingDate()->diffForHumans() }}</strong> to make space for random players in your realm.</p>
+                            <p>
+                                <form action="{{ route('dominion.misc.close-pack') }}" method="post">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
+                                </form>
+                            </p>
+                        @endif
                     </div>
                 </div>
             @endif
