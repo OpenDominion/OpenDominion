@@ -15,10 +15,10 @@ class RealmFactory
      *
      * @param Round $round
      * @param string $alignment
-     *
+     * @param Pack|null $pack
      * @return Realm
      */
-    public function create(Round $round, string $alignment, Pack $pack = null): Realm
+    public function create(Round $round, string $alignment, ?Pack $pack = null): Realm
     {
         // todo: whitelist $alignment?
         // todo: repositories?
@@ -28,7 +28,7 @@ class RealmFactory
             ->limit(1)
             ->get();
 
-        if (empty($results)) {
+        if ($results === null) {
             $number = 1;
         } else {
             $number = ((int)$results[0]->max_realm_number + 1);
@@ -39,15 +39,11 @@ class RealmFactory
             'delimiter' => ' '
         ]));
 
-        $hasPack = $pack !== null ? true : false;
-        $reservedSlots = $pack->size ?? 0;
         $realm = Realm::create([
             'round_id' => $round->id,
             'alignment' => $alignment,
             'number' => $number,
-            'name' => $realmName,
-            'has_pack' => $hasPack,
-            'reserved_slots' => $reservedSlots,
+            'name' => $realmName
         ]);
 
         if($pack !== null){
