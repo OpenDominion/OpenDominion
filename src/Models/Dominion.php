@@ -85,6 +85,11 @@ class Dominion extends AbstractModel
         return $this->hasMany(Dominion\History::class);
     }
 
+    public function pack()
+    {
+        return $this->belongsTo(Pack::class);
+    }
+
     public function race()
     {
         return $this->belongsTo(Race::class);
@@ -103,11 +108,6 @@ class Dominion extends AbstractModel
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function pack()
-    {
-        return $this->belongsTo(Pack::class);
     }
 
     // Eloquent Query Scopes

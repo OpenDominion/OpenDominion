@@ -8,15 +8,10 @@ class Pack extends AbstractModel
 {
     protected $dates = ['closed_at', 'created_at', 'updated_at'];
 
-    public function round()
-    {
-        return $this->belongsTo(Round::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    //    public function creatorDominion()
+//    {
+//        return $this->hasOne(Dominion::class); // todo
+//    }
 
     public function dominions()
     {
@@ -28,6 +23,16 @@ class Pack extends AbstractModel
         return $this->belongsTo(Realm::class);
     }
 
+    public function round()
+    {
+        return $this->belongsTo(Round::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function isFull(): bool
     {
         return ($this->dominions->count() === $this->size);
@@ -35,7 +40,7 @@ class Pack extends AbstractModel
 
     public function isClosed(): bool
     {
-        return (($this->closed_at !== null) || $this->getClosingDate() < now());
+        return (($this->closed_at !== null) || $this->isFull() || ($this->getClosingDate() < now()));
     }
 
     public function getClosingDate(): Carbon
