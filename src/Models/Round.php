@@ -71,7 +71,7 @@ class Round extends AbstractModel
             ->limit(1)
             ->get();
 
-        return (count($results) === 1);
+        return (\count($results) === 1);
     }
 
     /**
