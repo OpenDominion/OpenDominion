@@ -74,8 +74,8 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         $pack = $this->packService->createPack($dominion, 'pack name', 'pack password', 3);
 
         $otherUser = $this->createUser();
-        // create dominion with random realm type
-        $otherDominion = $this->dominionFactory->create($otherUser, $this->round, $this->race, 'random', 'ruler', 'dominion');
+        // create other dominion with random realm type
+        $this->dominionFactory->create($otherUser, $this->round, $this->race, 'random', 'ruler', 'dominion');
 
         $realm->refresh();
 
