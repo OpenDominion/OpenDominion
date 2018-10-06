@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Services;
 
-use Auth;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -10,37 +10,23 @@ use RuntimeException;
 
 class PackService
 {
-    public function getOrCreatePack(
-        Round $round,
-        Race $race,
-        string $packName,
-        string $packPassword,
-        int $packSize,
-        bool $createPack
-    ): ?Pack {
-        return (
-            $createPack
-                ? $this->createPack($round, $packName, $packPassword, $packSize)
-                : $this->getPack($round, $race, $packName, $packPassword)
-        );
-    }
-
-    protected function createPack(Round $round, string $packName, string $packPassword, int $packSize): Pack
+    public function createPack(Dominion $dominion, string $packName, string $packPassword, int $packSize): Pack
     {
-        if (($packSize < 2) || ($packSize > $round->pack_size)) {
-            throw new RuntimeException("Pack size must be between 2 and {$round->pack_size}.");
+        if (($packSize < 2) || ($packSize > $dominion->round->pack_size)) {
+            throw new RuntimeException("Pack size must be between 2 and {$dominion->round->pack_size}.");
         }
 
         return Pack::create([
-            'round_id' => $round->id,
-            'user_id' => Auth::user()->id,
+            'round_id' => $dominion->round->id,
+            'realm_id' => $dominion->realm->id,
+            'creator_dominion_id' => $dominion->id,
             'name' => $packName,
             'password' => $packPassword,
             'size' => $packSize,
         ]);
     }
 
-    protected function getPack(Round $round, Race $race, string $packName, string $packPassword): ?Pack
+    public function getPack(Round $round, Race $race, string $packName, string $packPassword): ?Pack
     {
         $pack = Pack::where([
             'round_id' => $round->id,
