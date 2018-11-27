@@ -97,7 +97,7 @@ Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 
 ## License
 
-OpenDominion is open-sourced software licensed under the [GNU AGPLv3 license](https://www.gnu.org/licenses/agpl-3.0.en.html).
+OpenDominion is open-sourced software licensed under the [GNU AGPLv3 license](LICENSE).
 
 
 ## Acknowledgments
