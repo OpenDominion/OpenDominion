@@ -24,7 +24,7 @@ class ForgotPasswordController extends AbstractController
     /**
      * {@inheritdoc}
      */
-    protected function sendResetLinkResponse($response)
+    protected function sendResetLinkResponse(Request $request, $response)
     {
         return redirect()
             ->back()
@@ -39,6 +39,6 @@ class ForgotPasswordController extends AbstractController
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return $this->sendResetLinkResponse($response);
+        return $this->sendResetLinkResponse($request, $response);
     }
 }

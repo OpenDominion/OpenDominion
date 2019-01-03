@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
-## Fixed
-- Dominion numbering on the realm page now correctly starts at 1, instead of 0. 
 
-## [0.5.1-4] and [0.5.1-5] - 2018-10-04
+## [0.5.1-4] and [0.5.1-8] - 2018-10-04
 ## Fixed
 - Fix user IP resolving when behind Cloudflare DNS with trusted proxies.
+- Dominion numbering on the realm page now correctly starts at 1, instead of 0.
+
+## Other
+- Maintenance work.
 
 ## [0.5.0-9] to [0.5.1-3] - 2018-10-02
 ## Fixed
@@ -108,7 +110,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-5...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...HEAD
+[0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8
+[0.5.1-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-6...0.5.1-7
+[0.5.1-6]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-5...0.5.1-6
 [0.5.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-4...0.5.1-5
 [0.5.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-3...0.5.1-4
 [0.5.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-2...0.5.1-3

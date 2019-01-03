@@ -41,9 +41,13 @@ for (const dir in vendorDirs) {
     mix.copyDirectory(dir, vendorDirs[dir]);
 }
 
-mix.copy('app/resources/assets/images', 'public/assets/app/images');
+mix.copy('app/resources/images', 'public/assets/app/images');
 
-mix.js('app/resources/assets/js/app.js', 'public/assets/app/js')
-    .sass('app/resources/assets/sass/app.scss', 'public/assets/app/css')
-    .sourceMaps()
-    .version();
+mix.js('app/resources/js/app.js', 'public/assets/app/js')
+    .sass('app/resources/sass/app.scss', 'public/assets/app/css');
+
+if (mix.inProduction()) {
+    mix.version();
+} else {
+    mix.sourceMaps();
+}
