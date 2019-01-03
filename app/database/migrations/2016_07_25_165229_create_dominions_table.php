@@ -110,9 +110,13 @@ class CreateDominionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('realms', function (Blueprint $table) {
-            $table->dropForeign('realms_monarch_dominion_id_foreign');
-        });
+        // Dropping foreign keys on sqlite throws an exception since Laravel 5.7, since it never worked with sqlite to
+        // begin with
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('realms', function (Blueprint $table) {
+                $table->dropForeign('realms_monarch_dominion_id_foreign');
+            });
+        }
 
         Schema::drop('dominions');
     }
