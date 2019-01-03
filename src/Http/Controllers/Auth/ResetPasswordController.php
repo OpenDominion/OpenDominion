@@ -26,7 +26,7 @@ class ResetPasswordController extends AbstractController
     /**
      * {@inheritdoc}
      */
-    protected function sendResetResponse($response)
+    protected function sendResetResponse(Request $request, $response)
     {
         return redirect()
             ->route('home')
