@@ -39,6 +39,6 @@ class ForgotPasswordController extends AbstractController
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return $this->sendResetLinkResponse($response);
+        return $this->sendResetLinkResponse($request, $response);
     }
 }
