@@ -17,8 +17,6 @@ class PruneUnactivatedUsers1 extends Migration
         DB::transaction(function () use ($output) {
 
             // First pass: Delete unactivated users
-            $output->writeln('Pruning unactivated users');
-
             $users = DB::table('users')
                 ->where('activated', 0)
                 ->get();
@@ -33,11 +31,13 @@ class PruneUnactivatedUsers1 extends Migration
                     ->delete();
             });
 
-            $output->writeln("Pruned {$users->count()} users");
+            $usersCount = $users->count();
+
+            if ($usersCount > 0) {
+                $output->writeln("Pruned {$users->count()} users");
+            }
 
             // Second pass: Delete all users with no dominions
-            $output->writeln('Pruning users with no dominion');
-
             $usersPrunedCount = 0;
 
             DB::table('users')
@@ -62,7 +62,9 @@ class PruneUnactivatedUsers1 extends Migration
                     $usersPrunedCount++;
                 });
 
-            $output->writeln("Pruned {$usersPrunedCount} users");
+            if ($usersPrunedCount > 0) {
+                $output->writeln("Pruned {$usersPrunedCount} users");
+            }
         });
     }
 
