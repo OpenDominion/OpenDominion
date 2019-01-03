@@ -23,6 +23,8 @@ abstract class AbstractBrowserKitTestCase extends TestCase
     {
         parent::setUp();
 
+        config()->set('honeypot.enabled', false);
+
 //        Bus::fake();
 //        Event::fake();
 //        Mail::fake();

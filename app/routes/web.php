@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Routing\Router;
+use Spatie\Honeypot\ProtectAgainstSpam;
 
 /** @var Router $router */
 $router->get('/')->uses('HomeController@getIndex')->name('home');
@@ -17,7 +18,7 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
         // Registration
         $router->get('register')->uses('Auth\RegisterController@showRegistrationForm')->name('register');
-        $router->post('register')->uses('Auth\RegisterController@register');
+        $router->post('register')->uses('Auth\RegisterController@register')->middleware(ProtectAgainstSpam::class);
         $router->get('activate/{activation_code}')->uses('Auth\RegisterController@activate')->name('activate');
 
         // Password Reset
