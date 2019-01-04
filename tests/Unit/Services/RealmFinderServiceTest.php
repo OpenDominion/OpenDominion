@@ -97,21 +97,17 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         // Last 2 spots reserved for pack from user in spot 1
         $pack = Pack::create([
             'round_id' => $this->round->id,
-            'user_id' => $user->id,
             'realm_id' => $realm->id,
+            'creator_dominion_id' => $dominion->id,
             'name' => 'test pack name',
             'password' => 'test pack password',
             'size' => 3,
+            'closed_at' => now()->addDays(3),
         ]);
 
         $dominion->pack_id = $pack->id;
         $dominion->save();
         $dominion->refresh();
-
-        $realm->has_pack = true;
-        $realm->reserved_slots = 2;
-        $realm->save();
-        $realm->refresh();
 
         $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
     }
@@ -134,8 +130,8 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         // Last 2 spots reserved for pack from user in spot 1
         $pack = Pack::create([
             'round_id' => $this->round->id,
-            'user_id' => $user->id,
             'realm_id' => $realm->id,
+            'creator_dominion_id' => $dominion->id,
             'name' => 'test pack name',
             'password' => 'test pack password',
             'size' => 3,
@@ -145,11 +141,6 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         $dominion->pack_id = $pack->id;
         $dominion->save();
         $dominion->refresh();
-
-        $realm->has_pack = true;
-        $realm->reserved_slots = 2;
-        $realm->save();
-        $realm->refresh();
 
         $this->assertEquals($realm->id, $this->realmFinderService->findRandomRealm($this->round, $this->goodRace)->id);
     }

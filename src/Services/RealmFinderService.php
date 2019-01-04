@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services;
 
+use Illuminate\Database\Query\JoinClause;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -28,12 +29,16 @@ class RealmFinderService
         $realms = Realm::query()
             ->with('packs.dominions')
             ->withCount('dominions')
+            ->leftJoin('packs', function (JoinClause $join) {
+                $join->on('packs.realm_id', '=', 'realms.id')
+                    ->where('packs.closed_at', '>', now());
+            })
             ->where([
                 'realms.round_id' => $round->id,
                 'realms.alignment' => $race->alignment,
             ])
             ->groupBy('realms.id')
-            ->having('dominions_count', '<', $round->realm_size)
+            ->having(\DB::raw('dominions_count + coalesce(packs.size, 1) - 1'), '<', $round->realm_size)
             ->orderBy('number')
             ->get();
 

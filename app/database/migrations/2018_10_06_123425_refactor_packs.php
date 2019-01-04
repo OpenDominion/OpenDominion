@@ -54,10 +54,12 @@ class RefactorPacks extends Migration
             }
 
             // Drop unique keys
-            $table->dropUnique(['round_id', 'user_id']);
-            $table->dropUnique(['user_id', 'round_id']);
-            $table->dropUnique(['name', 'round_id']);
-            $table->dropUnique(['password', 'round_id', 'name']);
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropUnique(['round_id', 'user_id']);
+                $table->dropUnique(['user_id', 'round_id']);
+                $table->dropUnique(['name', 'round_id']);
+                $table->dropUnique(['password', 'round_id', 'name']);
+            }
 
             // Drop user_id
             $table->dropColumn('user_id');
@@ -87,56 +89,53 @@ class RefactorPacks extends Migration
      */
     public function down()
     {
-        // todo: cba atm. I have backups
+        Schema::table('realms', function (Blueprint $table) {
+            $table->boolean('has_pack')->default(false);
+            $table->unsignedInteger('reserved_slots')->default(0);
+        });
 
-//        Schema::table('realms', function (Blueprint $table) {
-//            $table->boolean('has_pack')->default(false);
-//            $table->unsignedInteger('reserved_slots')->default(0);
-//        });
-//
-//        Schema::table('packs', function (Blueprint $table) {
-//            if (DB::getDriverName() !== 'sqlite') {
-//                $table->dropForeign(['creator_dominion_id']);
-//            }
-//
-//            $table->dropUnique(['creator_dominion_id', 'round_id']);
-//
-//            $table->unsignedInteger('user_id')->default(0);
-//        });
-//
-//        $realmIds = [];
-//
-//        foreach (DB::table('packs')->get() as $pack) {
-//            $dominion = DB::table('dominions')->where([
-//                'id' => $pack->creator_dominion_id,
-//            ])->first();
-//
-//            if (!in_array($dominion->realm_id, $realmIds, true)) {
-//                $realmIds[] = $dominion->realm_id;
-//            }
-//
-//            DB::table('packs')->where([
-//                'round_id' => $dominion->round_id,
-//                'creator_dominion_id' => $dominion->id,
-//            ])->update([
-//                'user_id' => $dominion->user_id,
-//            ]);
-//        }
-//
-//        foreach ($realmIds as $realmId) {
-//            DB::table('realms')->where([
-//                'id' => $realmId,
-//            ])->update([
-//                'has_pack' => true,
-//                'reserved_slots' => 0, // eh cba
-//            ]);
-//        }
-//
-//        Schema::table('packs', function (Blueprint $table) {
-//            $table->foreign('user_id')->references('id')->on('users');
-//            $table->foreign('realm_id')->references('id')->on('realms');
-//
-//            $table->dropColumn('creator_dominion_id');
-//        });
+        Schema::table('packs', function (Blueprint $table) {
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign(['creator_dominion_id']);
+                $table->dropUnique(['creator_dominion_id', 'round_id']);
+            }
+
+            $table->unsignedInteger('user_id')->default(0);
+        });
+
+        $realmIds = [];
+
+        foreach (DB::table('packs')->get() as $pack) {
+            $dominion = DB::table('dominions')->where([
+                'id' => $pack->creator_dominion_id,
+            ])->first();
+
+            if (!in_array($dominion->realm_id, $realmIds, true)) {
+                $realmIds[] = $dominion->realm_id;
+            }
+
+            DB::table('packs')->where([
+                'round_id' => $dominion->round_id,
+                'creator_dominion_id' => $dominion->id,
+            ])->update([
+                'user_id' => $dominion->user_id,
+            ]);
+        }
+
+        foreach ($realmIds as $realmId) {
+            DB::table('realms')->where([
+                'id' => $realmId,
+            ])->update([
+                'has_pack' => true,
+                'reserved_slots' => 0, // eh cba
+            ]);
+        }
+
+        Schema::table('packs', function (Blueprint $table) {
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('realm_id')->references('id')->on('realms');
+
+            $table->dropColumn('creator_dominion_id');
+        });
     }
 }

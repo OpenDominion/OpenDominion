@@ -107,6 +107,7 @@ trait CreatesData
      */
     protected function createDominion(User $user, Round $round, Race $race = null)
     {
+        /** @var DominionFactory $dominionFactory */
         $dominionFactory = $this->app->make(DominionFactory::class);
 
         $dominion = $dominionFactory->create(
