@@ -32,8 +32,6 @@ class TickTest extends AbstractBrowserKitTestCase
 
         // Test +6 morale below 70
         Artisan::call('game:tick');
-        $dominion->refresh();
-
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 70]);
 
         // Test +3 morale above 70
