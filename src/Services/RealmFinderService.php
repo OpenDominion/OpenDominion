@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services;
 
+use DB;
 use Illuminate\Database\Query\JoinClause;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Pack;
@@ -38,7 +39,7 @@ class RealmFinderService
                 'realms.alignment' => $race->alignment,
             ])
             ->groupBy('realms.id')
-            ->having(\DB::raw('dominions_count + coalesce(packs.size, 1) - 1'), '<', $round->realm_size)
+            ->having(DB::raw('dominions_count + coalesce(packs.size, 1) - 1'), '<', $round->realm_size)
             ->orderBy('number')
             ->get();
 
