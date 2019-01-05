@@ -16,6 +16,9 @@ class PackService
             throw new RuntimeException("Pack size must be between 2 and {$dominion->round->pack_size}.");
         }
 
+        // todo: check if pack already exists with same name and password, and
+        // throw exception if that's the case
+
         return Pack::create([
             'round_id' => $dominion->round->id,
             'realm_id' => $dominion->realm->id,
