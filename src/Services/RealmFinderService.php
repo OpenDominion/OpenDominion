@@ -2,8 +2,6 @@
 
 namespace OpenDominion\Services;
 
-use DB;
-use Illuminate\Database\Query\JoinClause;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -16,6 +14,7 @@ class RealmFinderService
      * Finds and returns the first best realm for a new Dominion to settle in.
      *
      * Up to 12 Dominions can exist in a realm.
+     * todo: update docblock so it says max dominions in realm is dictated by round->realm_size
      *
      * @see DominionFactory::create()
      *
