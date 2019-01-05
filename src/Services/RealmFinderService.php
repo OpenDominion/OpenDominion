@@ -26,27 +26,30 @@ class RealmFinderService
      */
     public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1): ?Realm
     {
+        // Get a list of realms which are not full, disregarding pack status for now
         $realms = Realm::query()
             ->with('packs.dominions')
             ->withCount('dominions')
-            ->leftJoin('packs', function (JoinClause $join) {
-                $join->on('packs.realm_id', '=', 'realms.id')
-                    ->where('packs.closed_at', '>', now());
-            })
             ->where([
                 'realms.round_id' => $round->id,
                 'realms.alignment' => $race->alignment,
             ])
             ->groupBy('realms.id')
-            ->having(DB::raw('dominions_count + coalesce(packs.size, 1) - 1'), '<', $round->realm_size)
-            ->orderBy('number')
+            ->having('dominions_count', '<', $round->realm_size)
+            ->orderBy('number')// Start from realm 1 to n, to fill the early realms first. Could be refactored later to
+            // sort on dominions_count asc, to fill more empty realms first
             ->get();
 
+        // Iterate over suspected eligible realms and check pack status
         foreach ($realms as $realm) {
             $availableSlots = ($round->realm_size - $realm->dominions_count);
 
-            if (($realm->pack !== null) && !$realm->pack->isClosed()) {
-                $availableSlots -= ($realm->pack->size - $realm->pack->dominions->count());
+            foreach ($realm->packs as $pack) {
+                if ($pack->isClosed()) {
+                    continue;
+                }
+
+                $availableSlots -= $pack->size;
             }
 
             if ($availableSlots >= $slotsNeeded) {
