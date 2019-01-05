@@ -110,6 +110,8 @@ class RoundController extends AbstractController
         $request->session()->flash('alert-success',
             "You have successfully registered to round {$round->number} ({$round->league->description}).");
 
+        // todo: add text to alert: You are placed in realm #realmnumber (realmname) with X other dominions in it
+
         return redirect()->route('dominion.status');
     }
 
