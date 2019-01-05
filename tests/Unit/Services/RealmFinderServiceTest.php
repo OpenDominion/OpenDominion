@@ -102,7 +102,6 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
             'name' => 'test pack name',
             'password' => 'test pack password',
             'size' => 3,
-            'closed_at' => now()->addDays(3),
         ]);
 
         $dominion->pack_id = $pack->id;
