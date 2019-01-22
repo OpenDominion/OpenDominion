@@ -7,6 +7,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 
 class DominionFactory
@@ -30,11 +31,8 @@ class DominionFactory
         string $dominionName,
         ?Pack $pack = null
     ): Dominion {
-        // check if user already has a dominion in this realm->round
-
-        if ($race->alignment !== $realm->alignment) {
-            throw new LogicException('Race and realm alignment do not match');
-        }
+        $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
+        $this->guardAgainstMismatchedAlignments($race, $realm);
 
         // todo: get starting values from config
 
@@ -118,6 +116,37 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
+    }
+
+    /**
+     * @param User $user
+     * @param Round $round
+     * @throws LogicException
+     */
+    protected function guardAgainstMultipleDominionsInARound(User $user, Round $round): void
+    {
+        $dominionCount = Dominion::query()
+            ->where([
+                'user_id' => $user->id,
+                'round_id' => $round->id,
+            ])
+            ->count();
+
+        if ($dominionCount > 0) {
+            throw new LogicException('User already has a dominion in this round');
+        }
+    }
+
+    /**
+     * @param Race $race
+     * @param Realm $realm
+     * @throws LogicException
+     */
+    protected function guardAgainstMismatchedAlignments(Race $race, Realm $realm): void
+    {
+        if ($race->alignment !== $realm->alignment) {
+            throw new LogicException('Race and realm alignment do not match');
+        }
     }
 
     /**
