@@ -14,6 +14,7 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\PackService;
+use OpenDominion\Services\RealmFinderService;
 use RuntimeException;
 
 class RoundController extends AbstractController
@@ -117,6 +118,8 @@ class RoundController extends AbstractController
 
     protected function guardAgainstUserAlreadyHavingDominionInRound(Round $round)
     {
+        // todo: make this a route middleware instead
+
         $dominions = Dominion::where([
             'user_id' => Auth::user()->id,
             'round_id' => $round->id,
