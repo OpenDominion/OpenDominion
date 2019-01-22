@@ -22,6 +22,7 @@ class DominionFactory
      * @param string $dominionName
      * @param Pack|null $pack
      * @return Dominion
+     * @throws LogicException
      */
     public function create(
         User $user,
