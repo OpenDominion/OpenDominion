@@ -122,6 +122,7 @@ class Dominion extends AbstractModel
 
     // Methods
 
+    // todo: move to eloquent events, see $dispatchesEvents
     public function save(array $options = [])
     {
         $recordChanges = isset($options['event']);
