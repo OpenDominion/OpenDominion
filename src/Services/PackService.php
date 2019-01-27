@@ -27,6 +27,8 @@ class PackService
             'password' => $packPassword,
             'size' => $packSize,
         ]);
+
+        // todo: set $dominion->pack_id = $pack->id here?
     }
 
     public function getPack(Round $round, Race $race, string $packName, string $packPassword): ?Pack
