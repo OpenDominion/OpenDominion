@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use CoreDataSeeder;
 use OpenDominion\Console\Commands\Game\DataSyncCommand;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -102,25 +103,34 @@ trait CreatesData
     /**
      * @param User $user
      * @param Round $round
-     * @param Race $race
+     * @param Race|null $race
+     * @param Realm|null $realm
      * @return Dominion
      */
-    protected function createDominion(User $user, Round $round, Race $race = null)
+    protected function createDominion(User $user, Round $round, ?Race $race = null, ?Realm $realm = null): Dominion
     {
+        $faker = \Faker\Factory::create();
+
         /** @var DominionFactory $dominionFactory */
         $dominionFactory = $this->app->make(DominionFactory::class);
 
-        $dominion = $dominionFactory->create(
-            $user,
-            $round,
-            ($race ?: Race::where('name', 'Human')->firstOrFail()),
-            'random',
-            str_random(),
-            str_random(),
-            null
-        );
+        if ($realm === null) {
+            /** @var RealmFactory $realmFactory */
+            $realmFactory = $this->app->make(RealmFactory::class);
 
-        return $dominion;
+            $realm = $realmFactory->create(
+                $round,
+                $race->alignment ?? 'good'
+            );
+        }
+
+        return $dominionFactory->create(
+            $user,
+            $realm,
+            $race ?? Race::first(),
+            $faker->name,
+            $faker->company
+        );
     }
 
     /**
