@@ -30,6 +30,19 @@ DWARF;
 </p>
 HUMAN;
 
+        $descriptions['firewalker'] = <<<FIREWALKER
+<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
+<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased gem production<br>
+    Reduced construction costs
+</p>
+<p class="text-red">
+    Reduced lumber production
+</p>
+FIREWALKER;
+
         // Evil races
 
         $descriptions['goblin'] = <<<GOBLIN
