@@ -41,7 +41,7 @@ HUMAN;
         Reduced lumber production    
     </span>
 </p>
-FIREWALKER;
+FIREWALKER; // todo: span in p? hacky hacky, move to yml pls
 
         // Evil races
 
