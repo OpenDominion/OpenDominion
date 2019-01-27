@@ -185,9 +185,12 @@
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($constructionCalculator, [
                             'getPlatinumCost',
+                            'getPlatinumCostRaw',
+                            'getPlatinumCostMultiplier',
                             'getLumberCost',
+                            'getLumberCostRaw',
+                            'getLumberCostMultiplier',
                             'getMaxAfford',
-                            'getCostMultiplier',
                         ]) !!}
                     </p>
                 </div>
