@@ -36,10 +36,10 @@ HUMAN;
 <p class="text-green">
     Increased max population<br>
     Increased gem production<br>
-    Reduced construction costs
-</p>
-<p class="text-red">
-    Reduced lumber production
+    Reduced construction costs<br>
+    <span class="text-red">
+        Reduced lumber production    
+    </span>
 </p>
 FIREWALKER;
 
