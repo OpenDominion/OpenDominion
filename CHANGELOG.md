@@ -5,8 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.5.2-1] - 2019-01-27
+### Fixed
+- Fixed racial spells for Firewalker and Lizardfolk
+
 ## [0.5.2] - 2019-01-27
-## Added
+### Added
 - Added new races: Firewalker and Lizardfolk.
 
 ## [0.5.1-4] and [0.5.1-8] - 2018-10-04
@@ -114,7 +118,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...HEAD
+[0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
 [0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2
 [0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8
 [0.5.1-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-6...0.5.1-7
