@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Added new races: Firewalker and Lizardfolk.
 
-## [0.5.1-4] and [0.5.1-8] - 2018-10-04
+## [0.5.1-4] to [0.5.1-8] - 2018-10-04
 ### Fixed
 - Fix user IP resolving when behind Cloudflare DNS with trusted proxies.
 - Dominion numbering on the realm page now correctly starts at 1, instead of 0.
