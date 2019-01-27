@@ -41,7 +41,8 @@ HUMAN;
         Reduced lumber production    
     </span>
 </p>
-FIREWALKER; // todo: span in p? hacky hacky, move to yml pls
+FIREWALKER;
+        // todo: ^ span in p? hacky hacky, move to yml pls
 
         // Evil races
 
@@ -62,6 +63,17 @@ GOBLIN;
     Increased mana production
 </p>
 NOMAD;
+
+        $descriptions['lizardfolk'] = <<<LIZARDFOLK
+<p>These amphibious creatures hail from the depths of the seas, having remained mostly hidden for decades before resurfacing and joining the war.</p>
+<p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased spy strength<br>
+    Reduced food consumption<br>
+    No boats needed
+</p>
+LIZARDFOLK;
 
         $key = strtolower($race->name);
 
