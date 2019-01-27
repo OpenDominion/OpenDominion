@@ -280,7 +280,20 @@ class MilitaryCalculator
      */
     public function getSpyRatioRaw(Dominion $dominion): float
     {
-        return ($dominion->military_spies / $this->landCalculator->getTotalLand($dominion));
+        $spies = $dominion->military_spies;
+
+        // Add units which count as (partial) spies (Lizardfolk Chameleon)
+        foreach ($dominion->race->units as $unit) {
+            if ($unit->perkType === null) {
+                continue;
+            }
+
+            if ($unit->perkType->key === 'counts_as_spy') {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            }
+        }
+
+        return ($spies / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**
