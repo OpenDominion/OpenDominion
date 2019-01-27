@@ -29,6 +29,7 @@ class RoundController extends AbstractController
      * RoundController constructor.
      *
      * @param DominionFactory $dominionFactory
+     * @param PackService $packService
      */
     public function __construct(DominionFactory $dominionFactory, PackService $packService)
     {
@@ -61,6 +62,32 @@ class RoundController extends AbstractController
             'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
         ]);
+
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        // round
+        $race = Race::findOrFail($request->get('race'));
+
+        $realmFinderService = app(RealmFinderService::class);
+
+
+        $realm = $realmFinderService->findRandomRealm($round, $race, 1);
+
+
+        switch ($request->get('realm_type')) {
+            case 'random':
+                break;
+
+            case 'join_pack':
+                break;
+
+            case 'create_pack':
+                break;
+        }
+
+
+
 
         $realmType = $request->get('realm_type');
         $joinRandomRealm = ($realmType === 'random');
