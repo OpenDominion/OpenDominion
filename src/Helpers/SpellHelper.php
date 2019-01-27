@@ -151,6 +151,22 @@ class SpellHelper
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Goblin']),
+            ],
+            [
+                'name' => 'Alchemist Flame',
+                'description' => '+15 alchemy platinum production',
+                'key' => 'alchemist_flame',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Firewalker']),
+            ],
+            [
+                'name' => 'Erosion',
+                'description' => '20% of captured land re-zoned into water',
+                'key' => 'erosion',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Lizardfolk']),
             ]
         ]);
     }
