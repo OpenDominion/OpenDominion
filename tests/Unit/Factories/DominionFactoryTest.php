@@ -69,27 +69,4 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         $this->assertEquals(1, Dominion::count());
         $this->assertEquals($dominion->id, Dominion::first()->id);
     }
-
-    public function testCreateReturnsEligibleRealmIfAlreadyFilledWithPack()
-    {
-        $dominion = $this->createDominion($this->user, $this->round, $this->race);
-        $realm = $dominion->realm;
-
-        $this->assertEquals(1, $realm->dominions()->count());
-
-        // Create a new pack
-        $this->be($this->user);
-        $pack = $this->packService->createPack($dominion, 'pack name', 'pack password', 3);
-
-        $otherUser = $this->createUser();
-        // create other dominion with random realm type
-        $this->dominionFactory->create($otherUser, $this->round, $this->race, 'random', 'ruler', 'dominion');
-
-        $realm->refresh();
-
-        $this->assertEquals(1, $realm->packs()->count());
-        $this->assertEquals(2, $realm->dominions()->count());
-    }
-
-    // todo: test realmType / multiple dominions in realm?
 }
