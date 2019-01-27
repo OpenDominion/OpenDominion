@@ -86,8 +86,10 @@
                             'getMoraleMultiplier',
                             'getSpyRatio',
                             'getSpyRatioRaw',
+                            'getSpyRatioMultiplier',
                             'getWizardRatio',
                             'getWizardRatioRaw',
+                            'getWizardRatioMultiplier',
                         ]) !!}
                     </p>
                 </div>
@@ -185,9 +187,12 @@
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($constructionCalculator, [
                             'getPlatinumCost',
+                            'getPlatinumCostRaw',
+                            'getPlatinumCostMultiplier',
                             'getLumberCost',
+                            'getLumberCostRaw',
+                            'getLumberCostMultiplier',
                             'getMaxAfford',
-                            'getCostMultiplier',
                         ]) !!}
                     </p>
                 </div>
