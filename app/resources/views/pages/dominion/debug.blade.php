@@ -86,8 +86,10 @@
                             'getMoraleMultiplier',
                             'getSpyRatio',
                             'getSpyRatioRaw',
+                            'getSpyRatioMultiplier',
                             'getWizardRatio',
                             'getWizardRatioRaw',
+                            'getWizardRatioMultiplier',
                         ]) !!}
                     </p>
                 </div>
