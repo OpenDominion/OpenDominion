@@ -131,7 +131,7 @@ trait CreatesData
         return $dominionFactory->create(
             $user,
             $realm,
-            $race ?? Race::first(),
+            $race ?? Race::where('name', 'Human')->firstOrFail(),
             $faker->name,
             $faker->company
         );
