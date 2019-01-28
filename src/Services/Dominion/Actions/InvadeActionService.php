@@ -3,10 +3,13 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -14,6 +17,12 @@ use Throwable;
 class InvadeActionService
 {
     use DominionGuardsTrait;
+
+    /** @var BuildingCalculator */
+    protected $buildingCalculator;
+
+    /** @var LandCalculator */
+    protected $landCalculator;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
@@ -24,18 +33,32 @@ class InvadeActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * InvadeActionService constructor.
      *
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
+     * @param QueueService $queueService
      */
-    public function __construct(MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, RangeCalculator $rangeCalculator)
+    public function __construct(
+        BuildingCalculator $buildingCalculator,
+        LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator,
+        ProtectionService $protectionService,
+        RangeCalculator $rangeCalculator,
+        QueueService $queueService)
     {
+        $this->buildingCalculator = $buildingCalculator;
+        $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -119,14 +142,15 @@ class InvadeActionService
 
             $isInvasionSuccessful = ($netOP > $targetNetDP);
 
-            dd([
-                'net op' => $netOP,
-                'net dp' => $totalNetDP,
-                'net dp w/o attackers' => $totalNetDPWithoutAttackingUnits,
-                'target net dp' => $targetNetDP,
-                'success?' => $isInvasionSuccessful,
-                'target range' => $targetRange,
-            ]);
+            $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+
+            $tempLogObject = [];
+            $tempLogObject['success?'] = $isInvasionSuccessful;
+            $tempLogObject['units'] = $units;
+            $tempLogObject['net op'] = $netOP;
+            $tempLogObject['net dp'] = $totalNetDP;
+            $tempLogObject['net dp w/o attackers'] = $totalNetDPWithoutAttackingUnits;
+            $tempLogObject['target net dp'] = $targetNetDP;
 
             // PRESTIGE
 
@@ -164,24 +188,22 @@ class InvadeActionService
             // if $invasionSuccessful
                 // landGrabRatio = 1.0
                 // if mutual war, landGrabRatio = 1.2
-                // if non-mutual war, lanGrabRatio = 1.15
-                // todo if peace, landGrabRatio = 0.9
+                // if non-mutual war, landGrabRatio = 1.15
+                // if war and peace, landGrabRatio = 1
+                // if peace, landGrabRatio = 0.9
 
                 // calculate total acres of land lost. FORMULA:
                 /*
-                $landLost% = max(
-                    floor(
-                        if(
-                            $ratio < 0.55,
-                            (0.304 * $ratio ^ 2 - 0.227 * $ratio + 0.048) * $netOP * landGrabRatio,
-                            if(
-                                $ratio < 0.75,
-                                $netOP * landGrabRatio * (0.154 * $ratio - 0.069),
-                                landGrabRatio * $netOP * (0.129 * $ratio - 0.048)
-                            )
-                        ),
-                    1),
-                10)
+                // max(
+                //     floor(
+                //         if(landRatio<0.55) then
+                //             (0.304*landRatio^2-0.227*landRatio+0.048)*attackerLand*landGrabRatio
+                //         elseif(landRatio<0.75) then
+                //             attackerLand*landGrabRatio*(0.154*landRatio - 0.069)
+                //         else
+                //             landGrabRatio*attackerLand*(0.129*landRatio-0.048)
+                //     ,1)
+                // ,10)
                  */
 
                 // calculate target barren land losses (array)
@@ -189,6 +211,57 @@ class InvadeActionService
                 // calculate total conquered acres (same acres as target land lost)
                 // calculate land conquers (array) (= target land loss)
                 // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
+
+            if($isInvasionSuccessful) {
+                $landGrabRatio = 1;
+                $bonusLandRatio = 1.5;
+                // TODO: check for war/peace
+                $attackerLandWithRatioModifier = $this->landCalculator->getTotalLand($dominion) * $landGrabRatio;
+
+                $landLossPercentage = 0;
+                if($landRatio < 0.55) {
+                    $landLossPercentage = (0.304 * $landRatio ^ 2 - 0.227 * $landRatio + 0.048) * $attackerLandWithRatioModifier;
+                } elseif($landRatio < 0.75) {
+                    $landLossPercentage = (0.154 * $landRatio - 0.069) * $attackerLandWithRatioModifier;
+                } else {
+                    $landLossPercentage = (0.129 * $landRatio - 0.048) * $attackerLandWithRatioModifier;
+                }
+
+                $landLossPercentage = floor($landLossPercentage);
+
+                $landLossPercentage = min(max($landLossPercentage, 10), 15);
+
+                $landLossRatio = $landLossPercentage / 100;
+
+                $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
+
+                $buildingsLostTemp = [];
+                $landGainedPerLandType = [];
+                foreach($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
+                    $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
+                    $landLost = $landAndBuildingsLost['landLost'];
+                    $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
+                    $buildingsLostTemp[$landType] = $buildingsLostForLandType;
+
+                    // Remove land
+                    $target->{'land_' . $landType} -= $landLost;
+                    // Destroy buildings
+                    foreach($buildingsLostForLandType as $buildingType => $buildingsLost) {
+                        $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
+                        $target->{'building_' . $buildingType} -= $builtBuildingsToDestroy;
+                        // TODO: Remove buildings from queue
+                    }
+
+                    $landGained = round($landLost * $bonusLandRatio);
+                    $landGainedPerLandType["land_{$landType}"] = $landGained;
+                }
+
+                $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
+
+                $tempLogObject['land losses'] = $landAndBuildingsLostPerLandType;
+                $tempLogObject['land gain'] = $landGainedPerLandType;
+                $tempLogObject['buildings etc'] = $buildingsLostTemp;
+            }
 
             // MORALE
 
@@ -219,9 +292,7 @@ class InvadeActionService
 
         });
 
-        dd([
-            'units' => $units,
-        ]);
+        dd($tempLogObject);
 
         return [];
     }
