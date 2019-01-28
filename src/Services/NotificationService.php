@@ -19,7 +19,7 @@ class NotificationService
      * @param string $type
      * @param array $data
      */
-    public function queueNotification(string $type, array $data)
+    public function queueNotification(string $type, array $data): void
     {
         $this->notifications[$type] = $data;
     }
@@ -32,7 +32,7 @@ class NotificationService
      * @param Dominion $dominion
      * @param string $category
      */
-    public function sendNotifications(Dominion $dominion, string $category)
+    public function sendNotifications(Dominion $dominion, string $category): void
     {
         $user = $dominion->user;
 

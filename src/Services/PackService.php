@@ -10,6 +10,16 @@ use RuntimeException;
 
 class PackService
 {
+    /**
+     * Creates a new pack for a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param string $packName
+     * @param string $packPassword
+     * @param int $packSize
+     * @return Pack
+     * @throws RuntimeException
+     */
     public function createPack(Dominion $dominion, string $packName, string $packPassword, int $packSize): Pack
     {
         if (($packSize < 2) || ($packSize > $dominion->round->pack_size)) {
@@ -31,6 +41,16 @@ class PackService
         // todo: set $dominion->pack_id = $pack->id here?
     }
 
+    /**
+     * Gets a pack based on pack based on round, alignment, pack name and password.
+     *
+     * @param Round $round
+     * @param Race $race
+     * @param string $packName
+     * @param string $packPassword
+     * @return Pack|null
+     * @throws RuntimeException
+     */
     public function getPack(Round $round, Race $race, string $packName, string $packPassword): ?Pack
     {
         $pack = Pack::where([
