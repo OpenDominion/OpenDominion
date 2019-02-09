@@ -327,7 +327,7 @@ class InvadeActionService
             // todo: add 'boats needed'/'boats total' on invade page
             $target->save();
             $dominion->save();
-            
+
         });
         dd($tempLogObject);
 

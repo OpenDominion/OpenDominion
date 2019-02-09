@@ -124,7 +124,7 @@ class QueueService
 
             $leftToDequeue -= $amountDequeued;
             $newAmount = $amountEnqueued - $amountDequeued;
-            
+
             if($newAmount == 0) {
                 DB::table('dominion_queue')->where([
                     'dominion_id' => $dominion->id,
@@ -168,7 +168,7 @@ class QueueService
                     continue;
                 }
                 $q = $this->getQueue($source, $dominion, true);
-                $existingQueueRow = 
+                $existingQueueRow =
                     $q->filter(function ($row) use ($resource, $hours) {
                         return (
                             ($row->resource === $resource) &&
