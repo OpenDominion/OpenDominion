@@ -39,7 +39,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/db-dumper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-backup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-honeypot" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/nova-backup-tool" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/once" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/phpunit-snapshot-assertions" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/temporary-directory" />
