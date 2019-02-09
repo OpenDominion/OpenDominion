@@ -141,6 +141,7 @@ class InvadeActionService
             $targetRange = $this->rangeCalculator->getDominionRange($dominion, $target);
 
             $isInvasionSuccessful = ($netOP > $targetNetDP);
+            $isRaze = (1 - $netOP / $targetNetDP) >= 0.15;
 
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
@@ -171,12 +172,38 @@ class InvadeActionService
                         // 5+ times: -50%
                     // todo: if at war, increase $prestigeGain by +15%
                     // $targetPrestigeLoss = 5% target->prestige
-            $prestigeLossPercentage = 0;
-            if(!$invasionSuccesful || $landRatio < 0.66) {
-                $prestigeLossPercentage = -0.05;
-            } elseif($landRatio >= 0.75 && $landRatio <= 1.20) {
+            $attackerPrestigeChange = 0;
+            $targetPrestigeChange = 0;
+            if($isRaze || $landRatio < 0.66) {
+                $attackerPrestigeLossPercentage = -0.05;
+                $attackerPrestigeChange = $dominion->prestige * $attackerPrestigeLossPercentage;
+            } elseif($isInvasionSuccessful && $landRatio >= 0.75 && $landRatio <= 1.20) {
+                $attackerPrestigeChange = ($target->prestige * 0.05);
 
+                $targetPrestigeChange = ($target->prestige * -0.05);
+                // if $target was successfully invaded recently (within 24 hrs), multiply $prestigeGain by: (needs confirmation)
+                        // 1 time: 75%
+                        // 2 times: 50%
+                        // 3 times: 25%
+                        // 4 times: -25% (i.e. losing prestige)
+                        // 5+ times: -50%
+
+                // todo: if at war, increase $prestigeGain by +15%
+
+                $attackerMaxPrestigeChange = $target->prestige * 0.1;
+                $attackerPrestigeChange = min($attackerPrestigeChange, $attackerMaxPrestigeChange) + 20;
             }
+
+            if($attackerPrestigeChange != 0) {
+                $this->queueService->queueResources('invasion', $dominion, ['prestige' => $attackerPrestigeChange]);
+            }
+
+            if($targetPrestigeChange != 0) {
+                $target->prestige += $targetPrestigeChange;
+            }
+
+            $tempLogObject['attackerPrestigeChange'] = $attackerPrestigeChange;
+            $tempLogObject['targetPrestigeChange'] = $targetPrestigeChange;
 
             // CASUALTIES
 
@@ -293,7 +320,6 @@ class InvadeActionService
                 // 5+ times: "This dominion has been invaded extremely heavily in recent times"
 
             // todo: add battle reports table/mechanic
-            // todo: add a table for incoming prestige to the database
             // todo: add 'boats needed'/'boats total' on invade page
 
         });
