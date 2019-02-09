@@ -1,4 +1,5 @@
 {
   "name": "laravel/nova",
-  "description": "Dummy package placeholder."
+  "description": "Dummy package placeholder.",
+  "version": "1.999999"
 }
