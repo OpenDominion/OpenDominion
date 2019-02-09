@@ -57,6 +57,9 @@ class UnitHelper
             'ore_production' => 'Each unit produces %s units of ore per hour.',
             'plunders_resources_on_attack' => 'Plunders resources on attack.',
             'reduce_combat_losses' => 'Reduces combat losses.',
+            'immortal_except_vs_icekin' => 'Immortal (except vs Icekin).',
+            'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
+            'counts_as_spy' => 'Each unit count as %s of a spy.',
         ];
 
         foreach ($race->units as $unit) {

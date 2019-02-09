@@ -176,7 +176,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -271,7 +271,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -340,7 +340,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -394,6 +394,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td>Draftees</td>
+                                <td colspan="12">&nbsp;</td>
+                                <td class="text-center">
+                                    {{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
+                                </td>
+                            </tr>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
                                 <tr>
                                     <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
@@ -434,7 +441,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -489,7 +496,7 @@
                                     $unitType = ('unit' . $slot);
                                 @endphp
                                 <tr>
-                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
                                     @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "units.returning.{$unitType}.{$i}", 0);
@@ -572,7 +579,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -706,7 +713,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at->diffForHumans() }} by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif

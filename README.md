@@ -6,7 +6,7 @@
   <a href="https://travis-ci.org/WaveHack/OpenDominion"><img src="https://travis-ci.org/WaveHack/OpenDominion.svg?branch=develop" alt="Build Status"></a>
   <a href="https://styleci.io/repos/29497480"><img src="https://styleci.io/repos/29497480/shield?branch=develop&style=flat" alt="StyleCI"></a>
   <a href="https://coveralls.io/github/WaveHack/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="MIT licensed"></a>
+  <a href="https://github.com/WaveHack/OpenDominion/blob/develop/LICENSE"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="GNU AGPLv3 licensed"></a>
   <br>
   <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
   <a href="https://www.patreon.com/OpenDominion"><img src="https://img.shields.io/badge/donate-patreon-ff69b4.svg" alt="Donate on Patreon"></a>
@@ -81,7 +81,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 
 
 ## Links
@@ -97,7 +97,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
-OpenDominion is open-sourced software licensed under the [MIT License](https://opensource.org/licenses/MIT).
+OpenDominion is open-sourced software licensed under the [GNU AGPLv3 license](LICENSE).
 
 
 ## Acknowledgments

@@ -30,25 +30,50 @@ class ConstructionCalculator
      * Returns the Dominion's construction platinum cost (per building).
      *
      * @param Dominion $dominion
-     * @return int
+     * @return float
      */
     public function getPlatinumCost(Dominion $dominion): int
     {
+        return ($this->getPlatinumCostRaw($dominion) * $this->getPlatinumCostMultiplier($dominion));
+    }
+
+    /**
+     * Returns the Dominion's raw construction platinum cost (per building).
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getPlatinumCostRaw(Dominion $dominion): int
+    {
         $platinum = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $platinum += max(
             max($totalBuildings, 250),
-            (3 * $totalBuildings) / 4
+            (3 * $totalLand) / 4
         );
 
         $platinum -= 250;
         $platinum *= 1.53;
         $platinum += 850;
 
-        $platinum *= $this->getCostMultiplier($dominion);
-
         return round($platinum);
+    }
+
+    /**
+     * Returns the Dominion's construction platinum cost multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getPlatinumCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = $this->getCostMultiplier($dominion);
+
+        $multiplier += $dominion->race->getPerkMultiplier('construction_cost');
+
+        return $multiplier;
     }
 
     /**
@@ -59,21 +84,42 @@ class ConstructionCalculator
      */
     public function getLumberCost(Dominion $dominion): int
     {
+        return ($this->getLumberCostRaw($dominion) * $this->getLumberCostMultiplier($dominion));
+    }
+
+    /**
+     * Returns the Dominion's raw construction lumber cost (per building).
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getLumberCostRaw(Dominion $dominion): int
+    {
         $lumber = 0;
         $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $lumber += max(
             max($totalBuildings, 250),
-            (3 * $totalBuildings) / 4
+            (3 * $totalLand) / 4
         );
 
         $lumber -= 250;
         $lumber *= 0.35;
         $lumber += 87.5;
 
-        $lumber *= $this->getCostMultiplier($dominion);
-
         return round($lumber);
+    }
+
+    /**
+     * Returns the Dominion's construction lumber cost multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getLumberCostMultiplier(Dominion $dominion): float
+    {
+        return $this->getCostMultiplier($dominion);
     }
 
     /**
@@ -92,12 +138,12 @@ class ConstructionCalculator
     }
 
     /**
-     * Returns the Dominion's construction cost multiplier.
+     * Returns the Dominion's global construction cost multiplier.
      *
      * @param Dominion $dominion
      * @return float
      */
-    public function getCostMultiplier(Dominion $dominion): float
+    protected function getCostMultiplier(Dominion $dominion): float
     {
         $multiplier = 0;
 

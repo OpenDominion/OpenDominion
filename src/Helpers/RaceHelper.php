@@ -30,6 +30,20 @@ DWARF;
 </p>
 HUMAN;
 
+        $descriptions['firewalker'] = <<<FIREWALKER
+<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
+<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased gem production<br>
+    Reduced construction costs<br>
+    <span class="text-red">
+        Reduced lumber production    
+    </span>
+</p>
+FIREWALKER;
+        // todo: ^ span in p? hacky hacky, move to yml pls
+
         // Evil races
 
         $descriptions['goblin'] = <<<GOBLIN
@@ -49,6 +63,17 @@ GOBLIN;
     Increased mana production
 </p>
 NOMAD;
+
+        $descriptions['lizardfolk'] = <<<LIZARDFOLK
+<p>These amphibious creatures hail from the depths of the seas, having remained mostly hidden for decades before resurfacing and joining the war.</p>
+<p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased spy strength<br>
+    Reduced food consumption<br>
+    No boats needed
+</p>
+LIZARDFOLK;
 
         $key = strtolower($race->name);
 

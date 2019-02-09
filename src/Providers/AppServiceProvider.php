@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Providers;
 
+use Bugsnag;
+use Cache;
 use Illuminate\Pagination\Paginator;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
@@ -54,6 +56,11 @@ class AppServiceProvider extends AbstractServiceProvider
     {
         Paginator::useBootstrapThree();
         Schema::defaultStringLength(191);
+
+        // Set Bugsnag app version
+        if (($appVersion = Cache::get('version')) !== null) {
+            Bugsnag::getConfig()->setAppVersion($appVersion);
+        }
     }
 
     /**
@@ -65,6 +72,7 @@ class AppServiceProvider extends AbstractServiceProvider
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
 
+        /** @noinspection ClassConstantCanBeUsedInspection */
         if (class_exists('Laravel\\Nova\\Nova')) {
             $this->app->register(NovaServiceProvider::class);
         }

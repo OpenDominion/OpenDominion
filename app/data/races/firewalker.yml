@@ -1,0 +1,34 @@
+name: Firewalker
+alignment: good
+home_land_type: cavern
+perks:
+  max_population: 5
+  lumber_production: -10
+  gem_production: 15
+  construction_cost: -10
+units:
+  - name: Fire Sprite
+    cost:
+      platinum: 300
+    power:
+      offense: 3
+  - name: Flamewolf
+    cost:
+      platinum: 300
+    power:
+      defense: 3
+  - name: Phoenix
+    cost:
+      platinum: 925
+    power:
+      defense: 4.5
+    perks:
+      immortal_except_vs_icekin: true
+  - name: Salamander
+    cost:
+      platinum: 925
+    power:
+      offense: 5
+      defense: 3
+    perks:
+      fewer_casualties_offense: 50

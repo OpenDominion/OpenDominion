@@ -186,7 +186,7 @@ class EspionageActionService
                 // todo: move to CasualtiesCalculator
 
                 // Values (percentage)
-                $spiesKilled = 2;
+                $spiesKilledBasePercentage = 1;
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -195,7 +195,10 @@ class EspionageActionService
                         ($forestHavenSpyCasualtyReductionMax / 100)
                     ));
 
-                $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilled / 100)) * $spiesKilledMultiplier);
+                $spyLossSpaRatio = ($targetSpa / $selfSpa);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
+
+                $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
 
                 $dominion->military_spies -= $spiesKilled;
 
@@ -232,6 +235,11 @@ class EspionageActionService
                 ];
 
                 // Units at home (85% accurate)
+                array_set($data, 'units.home.draftees', random_int(
+                    round($target->military_draftees * 0.85),
+                    round($target->military_draftees / 0.85)
+                ));
+
                 foreach (range(1, 4) as $slot) {
                     $amountAtHome = $target->{'military_unit' . $slot};
 

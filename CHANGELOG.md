@@ -5,6 +5,85 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.5.2-1] - 2019-01-27
+### Fixed
+- Fixed racial spells for Firewalker and Lizardfolk
+
+## [0.5.2] - 2019-01-27
+### Added
+- Added new races: Firewalker and Lizardfolk.
+
+## [0.5.1-4] and [0.5.1-8] - 2018-10-04
+### Fixed
+- Fix user IP resolving when behind Cloudflare DNS with trusted proxies.
+- Dominion numbering on the realm page now correctly starts at 1, instead of 0.
+
+### Other
+- Maintenance work.
+
+## [0.5.0-9] to [0.5.1-3] - 2018-10-02
+### Fixed
+- Trying to fix deploy errors.
+
+### Other
+- Maintenance work.
+
+## [0.5.0-8] - 2018-10-01
+### Changed
+- Info gathering ops on Op Center page now show exact time upon hover. ([#337](https://github.com/WaveHack/OpenDominion/issues/337))
+- Significantly reduced spy losses on failed ops.
+
+### Fixed
+- Fixed networth sometimes showing incorrect values on realm page. ([#310](https://github.com/WaveHack/OpenDominion/issues/310))
+- Fixed construction cost calculation. As a result, construction costs are significantly higher than before. Time to start building factories. ([#347](https://github.com/WaveHack/OpenDominion/issues/347))
+- Barracks Spy now shows number of draftees. ([#331](https://github.com/WaveHack/OpenDominion/issues/331))
+- Fixed an division by zero error if you have 0 peasants. ([#349](https://github.com/WaveHack/OpenDominion/issues/349))
+- Various other issues.
+
+### Other
+- Documentation update.
+- Refactoring.
+- Queue refactor!
+- More refactoring.
+- Seriously, a lot of refactoring.
+
+## [0.5.0-7] - 2018-08-26
+### Other
+- Maintenance work.
+
+## [0.5.0-6] - 2018-08-26
+### Changed
+- Switched Information and Under Protection sections around on status page.([#313](https://github.com/WaveHack/OpenDominion/issues/313))
+
+### Other
+- Maintenance work.
+- Documentation update.
+
+## [0.5.0-5] - 2018-08-11
+### Fixed
+- Fixed cost rounding issues on wizard cost multiplier when wizard guilds were built.
+- Fixed a bug regarding population growth. ([#176](https://github.com/WaveHack/OpenDominion/issues/176))
+
+## [0.5.0-4] - 2018-08-07
+### Fixed
+- Council pages now show ruler name instead of user name.
+
+## [0.5.0-3] - 2018-08-05
+### Fixed
+- Fixed creating a pack sometimes giving an error. ([#321](https://github.com/WaveHack/OpenDominion/issues/321))
+
+## [0.5.0-2] - 2018-08-04
+### Fixed
+- Realm page now shows ruler name instead of user name. ([#309](https://github.com/WaveHack/OpenDominion/issues/309))
+- Limit amount of rows of show on realm page in case realm size is less than 12. ([#308](https://github.com/WaveHack/OpenDominion/issues/308))
+
+### Other
+- Refactoring.
+
+## [0.5.0-1] - 2018-08-04
+### Fixed
+- Fix deploy error.
+
 ## [0.5.0] - 2018-08-04
 ### Added
 - Added new races: Dwarf and Goblin.
@@ -39,7 +118,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...HEAD
+[0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
+[0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2
+[0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8
+[0.5.1-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-6...0.5.1-7
+[0.5.1-6]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-5...0.5.1-6
+[0.5.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-4...0.5.1-5
+[0.5.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-3...0.5.1-4
+[0.5.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-2...0.5.1-3
+[0.5.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-1...0.5.1-2
+[0.5.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.1...0.5.1-1
+[0.5.1]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-9...0.5.1
+[0.5.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-8...0.5.0-9
+[0.5.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-7...0.5.0-8
+[0.5.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-6...0.5.0-7
+[0.5.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-5...0.5.0-6
+[0.5.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-4...0.5.0-5
+[0.5.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-3...0.5.0-4
+[0.5.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-2...0.5.0-3
+[0.5.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-1...0.5.0-2
+[0.5.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...0.5.0-1
 [0.5.0]: https://github.com/WaveHack/OpenDominion/compare/0.4.2...0.5.0
 [0.4.2]: https://github.com/WaveHack/OpenDominion/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/WaveHack/OpenDominion/compare/0.4.0...0.4.1

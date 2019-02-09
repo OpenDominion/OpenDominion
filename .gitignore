@@ -11,8 +11,8 @@
 /nova/
 /public/assets/
 /public/hot/
-/public/nova-assets/
 /public/storage
+/public/vendor/nova/
 /public/mix-manifest.json
 /storage/*.key
 /vendor/
@@ -20,5 +20,6 @@
 /.phpstorm.meta.php
 /_ide_helper.php
 /_ide_helper_models.php
+/auth.json
 /phpunit.xml
 npm-debug.log
