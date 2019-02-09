@@ -72,7 +72,9 @@ class InvadeActionService
      */
     public function invade(Dominion $dominion, Dominion $target, array $units): array
     {
-        DB::transaction(function () use ($dominion, $target, $units) {
+        $tempLogObject = [];
+
+        DB::transaction(function () use ($dominion, $target, $units, $tempLogObject) {
 
             // CHECKS
 
@@ -145,7 +147,6 @@ class InvadeActionService
 
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-            $tempLogObject = [];
             $tempLogObject['success?'] = $isInvasionSuccessful;
             $tempLogObject['units'] = $units;
             $tempLogObject['net op'] = $netOP;
@@ -281,8 +282,11 @@ class InvadeActionService
                     // Destroy buildings
                     foreach($buildingsLostForLandType as $buildingType => $buildingsLost) {
                         $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
-                        $target->{'building_' . $buildingType} -= $builtBuildingsToDestroy;
-                        // TODO: Remove buildings from queue
+                        $resourceName = "building_{$buildingType}";
+                        $target->$resourceName -= $builtBuildingsToDestroy;
+
+                        $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
+                        $this->queueService->dequeueResource('construction', $target, $resourceName, $buildingsInQueueToRemove);
                     }
 
                     $landGained = round($landLost * $bonusLandRatio);
@@ -321,9 +325,10 @@ class InvadeActionService
 
             // todo: add battle reports table/mechanic
             // todo: add 'boats needed'/'boats total' on invade page
+            $target->save();
+            $dominion->save();
 
         });
-
         dd($tempLogObject);
 
         return [];
