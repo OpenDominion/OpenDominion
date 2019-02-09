@@ -45,13 +45,13 @@ class PackService
      * Gets a pack based on pack based on round, alignment, pack name and password.
      *
      * @param Round $round
-     * @param Race $race
+     * @param string $alignment
      * @param string $packName
      * @param string $packPassword
      * @return Pack|null
      * @throws RuntimeException
      */
-    public function getPack(Round $round, Race $race, string $packName, string $packPassword): ?Pack
+    public function getPack(Round $round, string $alignment, string $packName, string $packPassword): ?Pack
     {
         $pack = Pack::where([
             'round_id' => $round->id,
@@ -67,7 +67,7 @@ class PackService
             throw new RuntimeException('Pack is already full');
         }
 
-        if ($pack->realm->alignment !== $race->alignment) {
+        if ($pack->realm->alignment !== $alignment) {
             throw new RuntimeException('Race has wrong alignment to the rest of pack.');
         }
 
