@@ -301,6 +301,15 @@ class InvadeActionService
             // >= 75%+ size: reduce -5% self morale
             // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
             // if $invasionSuccessful: reduce target morale by -5%
+            $dominion->morale -= 5;
+            if($landRatio < 0.75) {
+                $additionalMoraleLoss = max(round(((($landRatio - 0.4) * 100) / 7) - 5), -5);
+                $dominion->morale += $additionalMoraleLoss;
+            }
+
+            if($isInvasionSuccessful) {
+                $target->morale -= 5;
+            }
 
             // MISC
 
