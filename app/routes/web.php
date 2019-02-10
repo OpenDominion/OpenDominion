@@ -125,6 +125,8 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('invade')->uses('Dominion\InvasionController@getInvade')->name('invade');
             $router->post('invade')->uses('Dominion\InvasionController@postInvade');
 
+            $router->get('battle-result/{guid}')->uses('Dominion\BattleResultController@index');
+
             // Magic
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
             $router->post('magic')->uses('Dominion\MagicController@postMagic');
