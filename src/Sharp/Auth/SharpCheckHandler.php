@@ -11,7 +11,7 @@ class SharpCheckHandler implements SharpAuthenticationCheckHandler
      * @param Authenticatable $user
      * @return bool
      */
-    function check($user): bool
+    public function check($user): bool
     {
         return in_array($user->email, [
             base64_decode('ZW1haWxAd2F2ZWhhY2submV0'), // WaveHack

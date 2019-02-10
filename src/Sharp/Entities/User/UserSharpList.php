@@ -15,7 +15,7 @@ class UserSharpList extends SharpEntityList
      * @param EntityListQueryParams $params
      * @return array
      */
-    function getListData(EntityListQueryParams $params)
+    public function getListData(EntityListQueryParams $params)
     {
         $query = User::query()
             ->orderBy($params->sortedBy(), $params->sortedDir());
@@ -47,7 +47,7 @@ class UserSharpList extends SharpEntityList
      *
      * @return void
      */
-    function buildListDataContainers()
+    public function buildListDataContainers()
     {
         $this->addDataContainer(
             EntityListDataContainer::make('id')
@@ -77,7 +77,7 @@ class UserSharpList extends SharpEntityList
      *
      * @return void
      */
-    function buildListLayout()
+    public function buildListLayout()
     {
         $this->addColumn('id', 1)
             ->addColumn('display_name', 6)
@@ -91,7 +91,7 @@ class UserSharpList extends SharpEntityList
      *
      * @return void
      */
-    function buildListConfig()
+    public function buildListConfig()
     {
         $this->setPaginated()
             ->setSearchable();

@@ -9,24 +9,24 @@ use OpenDominion\Models\Dominion;
 
 class DominionSharpForm extends SharpForm
 {
-    function find($id): array
+    public function find($id): array
     {
         return $this->transform(Dominion::find($id));
     }
 
-    function update($id, array $data)
+    public function update($id, array $data)
     {
         dd([$id, $data]);
         // TODO: Implement update() method.
     }
 
-    function delete($id)
+    public function delete($id)
     {
         dd($id);
         // TODO: Implement delete() method.
     }
 
-    function buildFormFields()
+    public function buildFormFields()
     {
         $this->addField(
             SharpFormTextField::make('name')
@@ -34,7 +34,7 @@ class DominionSharpForm extends SharpForm
         );
     }
 
-    function buildFormLayout()
+    public function buildFormLayout()
     {
         $this->addColumn(6, function (FormLayoutColumn $column) {
             $column->withSingleField('name');

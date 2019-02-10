@@ -18,7 +18,7 @@ class UserSharpForm extends SharpForm
      * @param $id
      * @return array
      */
-    function find($id): array
+    public function find($id): array
     {
         return $this->transform(User::findOrFail($id));
     }
@@ -28,7 +28,7 @@ class UserSharpForm extends SharpForm
      * @param array $data
      * @return mixed the instance id
      */
-    function update($id, array $data)
+    public function update($id, array $data)
     {
         $instance = $id ? User::findOrFail($id) : new User;
 
@@ -40,7 +40,7 @@ class UserSharpForm extends SharpForm
     /**
      * @param $id
      */
-    function delete($id)
+    public function delete($id)
     {
         // TODO: Implement delete() method.
     }
@@ -50,7 +50,7 @@ class UserSharpForm extends SharpForm
      *
      * @return void
      */
-    function buildFormFields()
+    public function buildFormFields()
     {
         $this->addField(
             SharpFormTextField::make('display_name')
@@ -63,7 +63,7 @@ class UserSharpForm extends SharpForm
      *
      * @return void
      */
-    function buildFormLayout()
+    public function buildFormLayout()
     {
         $this->addColumn(6, function (FormLayoutColumn $column) {
             $column->withSingleField('display_name');
