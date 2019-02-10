@@ -8,6 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/beyondcode/laravel-dump-server" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/beyondcode/laravel-self-diagnosis" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/cakephp/chronos" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/code16/sharp" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/deployer/deployer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/deployer/phar-update" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/event-manager" />

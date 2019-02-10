@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f25030cab3bff2a94dd2d888a8c3f29",
+    "content-hash": "1183a54241a12f72c3876c1d4b3528ad",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -290,6 +290,62 @@
                 "tracking"
             ],
             "time": "2018-02-16T16:51:45+00:00"
+        },
+        {
+            "name": "code16/sharp",
+            "version": "v4.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/code16/sharp.git",
+                "reference": "e8856232b4f3abff2fc9d86721c30dea18cf9f90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/code16/sharp/zipball/e8856232b4f3abff2fc9d86721c30dea18cf9f90",
+                "reference": "e8856232b4f3abff2fc9d86721c30dea18cf9f90",
+                "shasum": ""
+            },
+            "require": {
+                "intervention/image": "^2.3",
+                "laravel/framework": "5.4.*|5.5.*|5.6.*|5.7.*",
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "doctrine/dbal": "~2.5",
+                "fzaninotto/faker": "~1.4",
+                "mockery/mockery": "0.9.*",
+                "orchestra/testbench": "~3.4|~3.5|~3.6|~3.7",
+                "phpunit/phpunit": "~6.0|~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Code16\\Sharp\\SharpServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/sharp_helper.php"
+                ],
+                "psr-4": {
+                    "Code16\\Sharp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Philippe Lonchampt",
+                    "email": "philippe@code16.fr"
+                },
+                {
+                    "name": "Antoine Guingand",
+                    "email": "antoine@code16.fr"
+                }
+            ],
+            "description": "Let's call it a Laravel Content Management Framework",
+            "time": "2019-01-24T09:01:24+00:00"
         },
         {
             "name": "composer/ca-bundle",
