@@ -24,10 +24,6 @@ class ShareSelectedDominion
 
     public function handle($request, Closure $next)
     {
-        if (starts_with($request->path(), 'nova')) {
-            return $next($request);
-        }
-
         if ($this->dominionSelectorService->hasUserSelectedDominion()) {
             try {
                 $dominion = $this->dominionSelectorService->getUserSelectedDominion();
