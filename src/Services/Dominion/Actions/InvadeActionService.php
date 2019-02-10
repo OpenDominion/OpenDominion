@@ -230,7 +230,7 @@ class InvadeActionService
                 foreach ($units as $slot => $amount) {
                     $slotTotalAmountPercentage = $amount / $totalUnitsSent;
                     $slotLost = ceil($unitsNeededToBreak * $slotTotalAmountPercentage);
-                    $offensiveUnitsLost[$slot] = $slotLost;
+                    $offensiveUnitsLost['military_unit' . $slot] = $slotLost;
 
                     if($unitsLostLeft < $slotLost) {
                         $slotLost = $unitsLostLeft;
@@ -243,6 +243,10 @@ class InvadeActionService
                     $lost = round($amount * $offensiveCasualtiesMultiplier);
                     $offensiveUnitsLost[$slot] = $lost;
                 }
+            }
+
+            foreach ($offensiveUnitsLost as $unit => $amount) {
+                $dominion->$unit -= $amount;
             }
 
             $tempLogObject['offensiveUnitsLost'] = $offensiveUnitsLost;
@@ -258,13 +262,17 @@ class InvadeActionService
                 if($unit->power_defense == 0) {
                     continue;
                 }
-
-                $slotLost = $target->{'military_unit' . $unit->slot} * $defensiveCasualtiesMultiplier;
-                $defensiveUnitsLost[$unit->slot] = $slotLost;
+                $unit = 'military_unit' . $unit->slot;
+                $slotLost = $target->$unit * $defensiveCasualtiesMultiplier;
+                $defensiveUnitsLost[$unit] = $slotLost;
             }
 
             $drafteesLost = $target->military_draftees * $defensiveCasualtiesMultiplier;
             $defensiveUnitsLost['draftees'] = $drafteesLost;
+
+            foreach ($defensiveUnitsLost as $unit => $amount) {
+                $target->$unit -= $amount;
+            }
 
             $tempLogObject['defensiveUnitsLost'] = $defensiveUnitsLost;
             // LAND GAINS/LOSSES
