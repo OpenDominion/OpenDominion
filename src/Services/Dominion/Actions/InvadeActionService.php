@@ -72,7 +72,9 @@ class InvadeActionService
      */
     public function invade(Dominion $dominion, Dominion $target, array $units): array
     {
-        DB::transaction(function () use ($dominion, $target, $units) {
+        $tempLogObject = [];
+
+        DB::transaction(function () use ($dominion, $target, $units, &$tempLogObject) {
 
             // CHECKS
 
@@ -145,7 +147,6 @@ class InvadeActionService
 
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-            $tempLogObject = [];
             $tempLogObject['success?'] = $isInvasionSuccessful;
             $tempLogObject['units'] = $units;
             $tempLogObject['net op'] = $netOP;
@@ -207,15 +208,73 @@ class InvadeActionService
 
             // CASUALTIES
 
-            $offensiveCasualties = 0; // 8.5% needed to break the target, on bounce 8.5% of total sent
+            // 8.5% needed to break the target, on bounce 8.5% of total sent
             // offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
             // offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
+
+            $offensiveCasualtiesMultiplier = $isRaze ? 0.17 : 0.085;
+            $offensiveUnitsLost = [];
+            if($isInvasionSuccessful) {
+                $totalUnitsSent = 0;
+                foreach ($units as $amount) {
+                    $totalUnitsSent += $amount;
+                }
+
+                $netOpPerUnitSent = $netOP / $totalUnitsSent;
+
+                $netOpNeededToBreak = $targetNetDP + 1;
+
+                $unitsNeededToBreak = round($netOpNeededToBreak / $netOpPerUnitSent);
+
+                $unitsLostLeft = $unitsNeededToBreak;
+                foreach ($units as $slot => $amount) {
+                    $slotTotalAmountPercentage = $amount / $totalUnitsSent;
+                    $slotLost = ceil($unitsNeededToBreak * $slotTotalAmountPercentage);
+                    $offensiveUnitsLost['military_unit' . $slot] = $slotLost;
+
+                    if($unitsLostLeft < $slotLost) {
+                        $slotLost = $unitsLostLeft;
+                    }
+
+                    $unitsLostLeft -= $slotLost;
+                }
+            } else {
+                foreach ($units as $slot => $amount) {
+                    $lost = round($amount * $offensiveCasualtiesMultiplier);
+                    $offensiveUnitsLost[$slot] = $lost;
+                }
+            }
+
+            foreach ($offensiveUnitsLost as $unit => $amount) {
+                $dominion->$unit -= $amount;
+            }
+
+            $tempLogObject['offensiveUnitsLost'] = $offensiveUnitsLost;
 
             $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
             // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
             // defensive casualty modifiers (reduction based on recent invasion: 100%, 80%, 60%, 55%, 45%, 35%)
             // (note: defensive casualties are spread out in ratio between all units that help def (have DP), including draftees)
+            $landRatioDiff = $landRatio - 1;
+            $defensiveCasualtiesMultiplier = 0.065 + ($landRatioDiff * 0.05);
+            $defensiveUnitsLost = [];
+            foreach ($target->race->units as $unit) {
+                if($unit->power_defense == 0) {
+                    continue;
+                }
+                $unit = 'military_unit' . $unit->slot;
+                $slotLost = $target->$unit * $defensiveCasualtiesMultiplier;
+                $defensiveUnitsLost[$unit] = $slotLost;
+            }
 
+            $drafteesLost = $target->military_draftees * $defensiveCasualtiesMultiplier;
+            $defensiveUnitsLost['draftees'] = $drafteesLost;
+
+            foreach ($defensiveUnitsLost as $unit => $amount) {
+                $target->$unit -= $amount;
+            }
+
+            $tempLogObject['defensiveUnitsLost'] = $defensiveUnitsLost;
             // LAND GAINS/LOSSES
 
             // if $invasionSuccessful
@@ -281,8 +340,11 @@ class InvadeActionService
                     // Destroy buildings
                     foreach($buildingsLostForLandType as $buildingType => $buildingsLost) {
                         $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
-                        $target->{'building_' . $buildingType} -= $builtBuildingsToDestroy;
-                        // TODO: Remove buildings from queue
+                        $resourceName = "building_{$buildingType}";
+                        $target->$resourceName -= $builtBuildingsToDestroy;
+
+                        $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
+                        $this->queueService->dequeueResource('construction', $target, $resourceName, $buildingsInQueueToRemove);
                     }
 
                     $landGained = round($landLost * $bonusLandRatio);
@@ -301,6 +363,15 @@ class InvadeActionService
             // >= 75%+ size: reduce -5% self morale
             // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
             // if $invasionSuccessful: reduce target morale by -5%
+            $dominion->morale -= 5;
+            if($landRatio < 0.75) {
+                $additionalMoraleLoss = max(round(((($landRatio - 0.4) * 100) / 7) - 5), -5);
+                $dominion->morale += $additionalMoraleLoss;
+            }
+
+            if($isInvasionSuccessful) {
+                $target->morale -= 5;
+            }
 
             // MISC
 
@@ -321,9 +392,10 @@ class InvadeActionService
 
             // todo: add battle reports table/mechanic
             // todo: add 'boats needed'/'boats total' on invade page
+            $target->save();
+            $dominion->save();
 
         });
-
         dd($tempLogObject);
 
         return [];
