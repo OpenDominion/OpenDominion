@@ -39,6 +39,7 @@ class InvadeActionService
     /**
      * InvadeActionService constructor.
      *
+     * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
