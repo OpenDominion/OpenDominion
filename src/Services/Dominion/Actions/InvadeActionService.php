@@ -144,7 +144,7 @@ class InvadeActionService
             $targetRange = $this->rangeCalculator->getDominionRange($dominion, $target);
 
             $isInvasionSuccessful = ($netOP > $targetNetDP);
-            $isRaze = (1 - $netOP / $targetNetDP) >= 0.15;
+            $isOverwhelmed = (1 - $netOP / $targetNetDP) >= 0.15;
 
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
@@ -176,7 +176,7 @@ class InvadeActionService
                     // $targetPrestigeLoss = 5% target->prestige
             $attackerPrestigeChange = 0;
             $targetPrestigeChange = 0;
-            if($isRaze || $landRatio < 0.66) {
+            if($isOverwhelmed || $landRatio < 0.66) {
                 $attackerPrestigeLossPercentage = -0.05;
                 $attackerPrestigeChange = $dominion->prestige * $attackerPrestigeLossPercentage;
             } elseif($isInvasionSuccessful && $landRatio >= 0.75 && $landRatio <= 1.20) {
@@ -213,7 +213,7 @@ class InvadeActionService
             // offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
             // offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
 
-            $offensiveCasualtiesMultiplier = $isRaze ? 0.17 : 0.085;
+            $offensiveCasualtiesMultiplier = $isOverwhelmed ? 0.17 : 0.085;
             $offensiveUnitsLost = [];
             if($isInvasionSuccessful) {
                 $totalUnitsSent = 0;
