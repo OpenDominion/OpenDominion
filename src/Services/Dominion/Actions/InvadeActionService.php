@@ -130,7 +130,11 @@ class InvadeActionService
             // todo: test
             $DPNeededToLeaveAtHome = (int)floor($netOP / 3);
             if ($totalNetDPWithoutAttackingUnits < $DPNeededToLeaveAtHome) {
-                throw new RuntimeException('You need to leave more defensive units at home (33% rule)');
+                throw new RuntimeException(sprintf(
+                    'You were trying to send %s DP, but you need to leave at least %s DP at home (33%% rule)',
+                    number_format($totalNetDP),
+                    number_format($DPNeededToLeaveAtHome)
+                ));
             }
 
             // 5:4 rule
