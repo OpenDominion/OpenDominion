@@ -45,9 +45,12 @@
                                     @continue;
                                 @endif
                                 <div class="form-group">
-                                    <label for="unit1">{{ $unitHelper->getUnitName(('unit'.  $slot), $selectedDominion->race) }}</label>
+                                    <label for="unit{{ $slot }}">
+                                        {{ $unitHelper->getUnitName(('unit'.  $slot), $selectedDominion->race) }}
+                                    </label>
                                     <input type="number"
                                            name="unit[{{ $slot }}]"
+                                           id="unit{{ $slot }}"
                                            class="form-control"
                                            placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}"
                                            min="0"
