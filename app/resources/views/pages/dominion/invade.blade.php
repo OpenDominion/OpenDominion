@@ -26,7 +26,9 @@
                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
                                     <option></option>
                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
-                                        <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                        <option value="{{ $dominion->id }}"
+                                                data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
+                                                data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
                                             {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                         </option>
                                     @endforeach
@@ -44,12 +46,43 @@
                                 @endif
                                 <div class="form-group">
                                     <label for="unit1">{{ $unitHelper->getUnitName(('unit'.  $slot), $selectedDominion->race) }}</label>
-                                    <input type="number" name="unit[{{ $slot }}]" class="form-control" placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}" min="0" max="{{ $selectedDominion->{'military_unit' . $slot} }}" data-op="{{ $unit->power_offense }}">
+                                    <input type="number"
+                                           name="unit[{{ $slot }}]"
+                                           class="form-control"
+                                           placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}"
+                                           min="0"
+                                           max="{{ $selectedDominion->{'military_unit' . $slot} }}"
+                                           data-amount="{{ $selectedDominion->{'military_unit' . $slot} }}"
+                                           data-op="{{ $unit->power_offense }}"
+                                           data-dp="{{ $unit->power_defense }}">
                                 </div>
                             @endforeach
 
-                            <label for="total_op">Total raw OP</label>
-                            <p class="form-control-static" id="total-op">0</p>
+                            <p>
+                                <b>Invasion force</b>:
+                                <br>
+                                <b>OP</b>:
+                                <span id="invasion-force-op">0</span> / <span id="invasion-force-max-op">0</span>
+                                <br>
+                                <b>DP</b>:
+                                <span id="invasion-force-dp">0</span>
+                            </p>
+
+                            <p>
+                                <b>Home forces</b> (after invading):
+                                <br>
+                                <b>OP</b>:
+                                <span id="home-forces-op"
+                                      data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}">
+                                    {{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}
+                                </span>
+                                <br>
+                                <b>DP</b>:
+                                <span id="home-forces-dp"
+                                      data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}">
+                                    {{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}
+                                </span> (min: <span id="home-forces-max-dp">0</span>)
+                            </p>
                             
                         </div>
 
@@ -57,7 +90,7 @@
                             @if ($selectedDominion->morale < 70)
                                 Your military needs at least 70% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
                             @else
-                                <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Invade</button>
+                                <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }} id="invade-button">Invade</button>
                             @endif
                         </div>
                     </form>
@@ -99,22 +132,67 @@
             });
 
             $('input[name^=\'unit\']').change(function (e) {
-                var input = $(this);
+                // var input = $(this);
+                var invasionForceOPElement = $('#invasion-force-op');
+                var homeForcesOPElement = $('#home-forces-op');
+                var homeForcesDPElement = $('#home-forces-dp');
+                var invadeButtonElement = $('#invade-button');
                 var allUnitInputs = $('input[name^=\'unit\']');
 
-                var totalOP = 0;
+                var invadingForceOP = 0;
+                var invadingForceDP = 0;
+                var originalHomeForcesOP = parseInt(homeForcesOPElement.data('original'));
+                var originalHomeForcesDP = parseInt(homeForcesDPElement.data('original'));
+                var newHomeForcesOP;
+                var newHomeForcesDP;
+
+                var DPNeededToLeaveAtHome; // 33% rule
+                var allowedMaxOP; // 5:4 rule
 
                 allUnitInputs.each(function () {
-                    var amount = $(this).val();
+                    // var unitAmount = parseInt($(this).data('amount')); // total amount at home before invading
+                    var unitOP = parseFloat($(this).data('op'));
+                    var unitDP = parseFloat($(this).data('dp'));
+                    var amountToSend = parseInt($(this).val() || 0);
 
-                    if (amount === '') {
+                    if (amountToSend === 0) {
                         return true; // continue
                     }
 
-                    totalOP += (parseInt(amount) * parseFloat($(this).data('op')));
+                    invadingForceOP += (amountToSend * unitOP);
+                    invadingForceDP += (amountToSend * unitDP);
                 });
 
-                $('#total-op').text(totalOP.toLocaleString());
+                DPNeededToLeaveAtHome = Math.floor(invadingForceOP / 3);
+                allowedMaxOP = Math.floor((originalHomeForcesDP - invadingForceDP) * 1.25);
+
+                newHomeForcesOP = originalHomeForcesOP - invadingForceOP;
+                newHomeForcesDP = originalHomeForcesDP - invadingForceDP;
+
+                invasionForceOPElement.text(invadingForceOP.toLocaleString());
+                $('#invasion-force-max-op').text(allowedMaxOP.toLocaleString());
+                $('#invasion-force-dp').text(invadingForceDP.toLocaleString());
+                homeForcesOPElement.text(newHomeForcesOP.toLocaleString());
+                homeForcesDPElement.text(newHomeForcesDP.toLocaleString());
+                $('#home-forces-max-dp').text(DPNeededToLeaveAtHome.toLocaleString());
+
+                // 33% rule
+                if (newHomeForcesDP < DPNeededToLeaveAtHome) {
+                    homeForcesDPElement.addClass('text-danger');
+                    invadeButtonElement.attr('disabled', 'disabled');
+                } else {
+                    homeForcesDPElement.removeClass('text-danger');
+                    invadeButtonElement.removeAttr('disabled');
+                }
+
+                // 5:4 rule
+                if (invadingForceOP > allowedMaxOP) {
+                    invasionForceOPElement.addClass('text-danger');
+                    invadeButtonElement.attr('disabled', 'disabled');
+                } else {
+                    invasionForceOPElement.removeClass('text-danger');
+                    invadeButtonElement.removeAttr('disabled');
+                }
             });
         })(jQuery);
 
