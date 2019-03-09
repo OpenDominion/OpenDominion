@@ -149,6 +149,9 @@
                 var newHomeForcesOP;
                 var newHomeForcesDP;
 
+                var OPMultiplier = parseFloat('{{ $militaryCalculator->getOffensivePowerMultiplier($selectedDominion) }}');
+                var DPMultiplier = parseFloat('{{ $militaryCalculator->getDefensivePowerMultiplier($selectedDominion) }}');
+
                 var DPNeededToLeaveAtHome; // 33% rule
                 var allowedMaxOP; // 5:4 rule
 
@@ -162,8 +165,8 @@
                         return true; // continue
                     }
 
-                    invadingForceOP += (amountToSend * unitOP);
-                    invadingForceDP += (amountToSend * unitDP);
+                    invadingForceOP += (amountToSend * unitOP) * OPMultiplier;
+                    invadingForceDP += (amountToSend * unitDP) * DPMultiplier;
                 });
 
                 DPNeededToLeaveAtHome = Math.floor(invadingForceOP / 3);
