@@ -167,6 +167,15 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="box-footer">
+                                    <button type="submit"
+                                            class="btn btn-danger"
+                                            {{ $selectedDominion->isLocked() ? 'disabled' : null }}
+                                            id="invade-button">
+                                        <i class="ra ra-crossed-swords"></i>
+                                        Invade
+                                    </button>
+                                </div>
                             </div>
 
                         </div>
@@ -222,13 +231,6 @@
 
                         </div>
                     </div>
-
-                    <button type="submit"
-                            class="btn btn-primary"
-                            {{ $selectedDominion->isLocked() ? 'disabled' : null }}
-                            id="invade-button">
-                        Invade
-                    </button>
 
                 </form>
             @endif
