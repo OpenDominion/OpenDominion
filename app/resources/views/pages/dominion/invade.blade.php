@@ -108,7 +108,8 @@
                                                        data-slot="{{ $unitSlot }}"
                                                        data-amount="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
                                                        data-op="{{ $unit->power_offense }}"
-                                                       data-dp="{{ $unit->power_defense }}">
+                                                       data-dp="{{ $unit->power_defense }}"
+                                                       data-needBoat="{{ (int)$unit->need_boat }}">
                                             </td>
                                             <td class="text-center" id="unit{{ $unitSlot }}_stats">
                                                 <span class="op">0</span> / <span class="dp">0</span>
@@ -143,6 +144,14 @@
                                             <tr>
                                                 <td>Net DP:</td>
                                                 <td id="invasion-force-dp">0</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Boats:</td>
+                                                <td>
+                                                    <span id="invasion-force-boats">0</span>
+                                                    /
+                                                    {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -183,6 +192,12 @@
                                                 <td>Net DP:</td>
                                                 <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}">
                                                     {{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Boats:</td>
+                                                <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}">
+                                                    {{ number_format(floor($selectedDominion->resource_boats)) }}
                                                 </td>
                                             </tr>
                                             <tr>
