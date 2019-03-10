@@ -65,10 +65,10 @@
                                 <thead>
                                     <tr>
                                         <th>Unit</th>
-                                        <th class="text-center">OP / DP</th>
+                                        <th class="text-center">Raw OP / DP</th>
                                         <th class="text-center">Trained</th>
                                         <th class="text-center">Send</th>
-                                        <th class="text-center">Total OP / DP</th>
+                                        <th class="text-center">Net OP / DP</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -135,11 +135,13 @@
                                         </colgroup>
                                         <tbody>
                                             <tr>
-                                                <td>OP:</td>
-                                                <td id="invasion-force-op">0</td>
+                                                <td>Net OP:</td>
+                                                <td>
+                                                    <strong id="invasion-force-op">0</strong>
+                                                </td>
                                             </tr>
                                             <tr>
-                                                <td>DP:</td>
+                                                <td>Net DP:</td>
                                                 <td id="invasion-force-dp">0</td>
                                             </tr>
                                             <tr>
@@ -172,13 +174,13 @@
                                         </colgroup>
                                         <tbody>
                                             <tr>
-                                                <td>OP:</td>
+                                                <td>Net OP:</td>
                                                 <td id="home-forces-op" data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}">
                                                     {{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>DP:</td>
+                                                <td>Net DP:</td>
                                                 <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}">
                                                     {{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}
                                                 </td>
