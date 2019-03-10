@@ -86,6 +86,7 @@
                                         <tr>
                                             <td>
                                                 {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
+                                                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}"></i>
                                             </td>
                                             <td class="text-center">
                                                 {{ number_format($unit->power_offense) }}
