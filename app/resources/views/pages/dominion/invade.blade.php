@@ -20,7 +20,6 @@
                         @csrf
 
                         <div class="box-body">
-
                             <div class="form-group">
                                 <label for="target_dominion">Select a target</label>
                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
@@ -34,6 +33,21 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                units to send
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                target information
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">units to send</div>
+                            <div class="col-sm-12 col-md-6">units at home</div>
+                        </div>
 
                             @foreach (range(1, 4) as $slot)
                                 @php
@@ -41,23 +55,35 @@
                                         return ($unit->slot === $slot);
                                     })->first();
                                 @endphp
+
                                 @if ($unit->power_offense == 0)
                                     @continue;
                                 @endif
+
                                 <div class="form-group">
                                     <label for="unit{{ $slot }}">
                                         {{ $unitHelper->getUnitName(('unit'.  $slot), $selectedDominion->race) }}
                                     </label>
-                                    <input type="number"
-                                           name="unit[{{ $slot }}]"
-                                           id="unit{{ $slot }}"
-                                           class="form-control"
-                                           placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}"
-                                           min="0"
-                                           max="{{ $selectedDominion->{'military_unit' . $slot} }}"
-                                           data-amount="{{ $selectedDominion->{'military_unit' . $slot} }}"
-                                           data-op="{{ $unit->power_offense }}"
-                                           data-dp="{{ $unit->power_defense }}">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-8">
+                                            <input type="number"
+                                                   name="unit[{{ $slot }}]"
+                                                   id="unit{{ $slot }}"
+                                                   class="form-control"
+                                                   placeholder="0 / {{ number_format($selectedDominion->{'military_unit' . $slot}) }}"
+                                                   min="0"
+                                                   max="{{ $selectedDominion->{'military_unit' . $slot} }}"
+                                                   data-slot="{{ $slot }}"
+                                                   data-amount="{{ $selectedDominion->{'military_unit' . $slot} }}"
+                                                   data-op="{{ $unit->power_offense }}"
+                                                   data-dp="{{ $unit->power_defense }}">
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <p class="form-control-static" id="unit{{ $slot }}_stats">
+                                                OP: <span class="op">0</span> / DP: <span class="dp">0</span>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
 
@@ -141,6 +167,7 @@
                 var homeForcesDPElement = $('#home-forces-dp');
                 var invadeButtonElement = $('#invade-button');
                 var allUnitInputs = $('input[name^=\'unit\']');
+                var unitSlot = parseInt($(this).data('slot'));
 
                 var invadingForceOP = 0;
                 var invadingForceDP = 0;
@@ -155,6 +182,12 @@
                 var DPNeededToLeaveAtHome; // 33% rule
                 var allowedMaxOP; // 5:4 rule
 
+                // Calculate total unit OP / DP
+                var unitStatsElement = $('#unit' + unitSlot + '_stats');
+                unitStatsElement.find('.op').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('op')) * OPMultiplier)).toLocaleString());
+                unitStatsElement.find('.dp').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('dp')) * DPMultiplier)).toLocaleString());
+
+                // Calculate invading force OP / DP
                 allUnitInputs.each(function () {
                     // var unitAmount = parseInt($(this).data('amount')); // total amount at home before invading
                     var unitOP = parseFloat($(this).data('op'));
