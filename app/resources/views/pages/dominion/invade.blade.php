@@ -66,7 +66,7 @@
                                     <tr>
                                         <th>Unit</th>
                                         <th class="text-center">Raw OP / DP</th>
-                                        <th class="text-center">Trained</th>
+                                        <th class="text-center">Available</th>
                                         <th class="text-center">Send</th>
                                         <th class="text-center">Net OP / DP</th>
                                     </tr>
