@@ -110,7 +110,7 @@
                                                        data-amount="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
                                                        data-op="{{ $unit->power_offense }}"
                                                        data-dp="{{ $unit->power_defense }}"
-                                                       data-needBoat="{{ (int)$unit->need_boat }}">
+                                                       data-need-boat="{{ (int)$unit->need_boat }}">
                                             </td>
                                             <td class="text-center" id="unit{{ $unitSlot }}_stats">
                                                 <span class="op">0</span> / <span class="dp text-muted">0</span>
@@ -312,7 +312,7 @@
                     var unitOP = parseFloat($(this).data('op'));
                     var unitDP = parseFloat($(this).data('dp'));
                     var amountToSend = parseInt($(this).val() || 0);
-                    var needBoats = !!$(this).data('needBoats');
+                    var needBoat = !!$(this).data('need-boat');
 
                     if (amountToSend === 0) {
                         return true; // continue
@@ -321,7 +321,7 @@
                     invadingForceOP += (amountToSend * unitOP) * OPMultiplier;
                     invadingForceDP += (amountToSend * unitDP) * DPMultiplier;
 
-                    if (needBoats) {
+                    if (needBoat) {
                         invadingForceBoats += amountToSend;
                     }
                 });
@@ -366,28 +366,33 @@
                 if (invadingForceBoats > originalHomeForcesBoats) {
                     invasionForceBoatsElement.addClass('text-danger');
                     homeForcesBoatsElement.addClass('text-danger');
-                    invadeButtonElement.attr('disabled', 'disabled');
                 } else {
                     invasionForceBoatsElement.removeClass('text-danger');
                     homeForcesBoatsElement.removeClass('text-danger');
-                    invadeButtonElement.removeAttr('disabled');
                 }
 
                 // 33% rule
                 if (newHomeForcesDP < DPNeededToLeaveAtHome) {
                     homeForcesDPElement.addClass('text-danger');
-                    invadeButtonElement.attr('disabled', 'disabled');
                 } else {
                     homeForcesDPElement.removeClass('text-danger');
-                    invadeButtonElement.removeAttr('disabled');
                 }
 
                 // 5:4 rule
                 if (invadingForceOP > allowedMaxOP) {
                     invasionForceOPElement.addClass('text-danger');
-                    invadeButtonElement.attr('disabled', 'disabled');
                 } else {
                     invasionForceOPElement.removeClass('text-danger');
+                }
+
+                // Check if invade button should be disabled
+                if (
+                    (invadingForceBoats > originalHomeForcesBoats) ||
+                    (newHomeForcesDP < DPNeededToLeaveAtHome) ||
+                    (invadingForceOP > allowedMaxOP)
+                ) {
+                    invadeButtonElement.attr('disabled', 'disabled');
+                } else {
                     invadeButtonElement.removeAttr('disabled');
                 }
             });
