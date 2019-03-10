@@ -113,7 +113,7 @@
                                                        data-needBoat="{{ (int)$unit->need_boat }}">
                                             </td>
                                             <td class="text-center" id="unit{{ $unitSlot }}_stats">
-                                                <span class="op">0</span> / <span class="dp">0</span>
+                                                <span class="op">0</span> / <span class="dp text-muted">0</span>
                                             </td>
                                         </tr>
                                     @endforeach
