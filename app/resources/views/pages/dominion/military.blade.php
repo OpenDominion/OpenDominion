@@ -49,13 +49,13 @@
                                                 })->first();
                                                 @endphp
                                                 @if ($unit->power_offense == 0)
-                                                    <span class="text-muted">{{ number_format($unit->power_offense) }}</span>
+                                                    <span class="text-muted">0</span>
                                                 @else
                                                     {{ number_format($unit->power_offense) }}
                                                 @endif
                                                 /
                                                 @if ($unit->power_defense == 0)
-                                                    <span class="text-muted">{{ number_format($unit->power_defense) }}</span>
+                                                    <span class="text-muted">0</span>
                                                 @else
                                                     {{ number_format($unit->power_defense) }}
                                                 @endif
