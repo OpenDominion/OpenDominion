@@ -222,7 +222,9 @@
                                             </tr>
                                             <tr>
                                                 <td>DPA:</td>
-                                                <td>0</td>
+                                                <td id="home-forces-dpa">
+                                                    {{ number_format($militaryCalculator->getDefensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion), 3) }}
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -269,22 +271,30 @@
                 templateSelection: select2Template,
             });
 
+            // please forgive me for this monstrosity
             $('input[name^=\'unit\']').change(function (e) {
                 // var input = $(this);
                 var invasionForceOPElement = $('#invasion-force-op');
+                var invasionForceBoatsElement = $('#invasion-force-boats');
                 var homeForcesOPElement = $('#home-forces-op');
                 var homeForcesDPElement = $('#home-forces-dp');
+                var homeForcesBoatsElement = $('#home-forces-boats');
                 var invadeButtonElement = $('#invade-button');
                 var allUnitInputs = $('input[name^=\'unit\']');
                 var unitSlot = parseInt($(this).data('slot'));
 
                 var invadingForceOP = 0;
                 var invadingForceDP = 0;
+                var invadingForceBoats = 0;
                 var originalHomeForcesOP = parseInt(homeForcesOPElement.data('original'));
                 var originalHomeForcesDP = parseInt(homeForcesDPElement.data('original'));
+                var originalHomeForcesBoats = parseInt(homeForcesBoatsElement.data('original'));
                 var newHomeForcesOP;
                 var newHomeForcesDP;
+                var newHomeForcesBoats;
+                var newDPA;
 
+                var landSize = parseInt('{{ $landCalculator->getTotalLand($selectedDominion) }}');
                 var OPMultiplier = parseFloat('{{ $militaryCalculator->getOffensivePowerMultiplier($selectedDominion) }}');
                 var DPMultiplier = parseFloat('{{ $militaryCalculator->getDefensivePowerMultiplier($selectedDominion) }}');
 
@@ -293,8 +303,8 @@
 
                 // Calculate total unit OP / DP
                 var unitStatsElement = $('#unit' + unitSlot + '_stats');
-                unitStatsElement.find('.op').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('op')) * OPMultiplier)).toLocaleString());
-                unitStatsElement.find('.dp').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('dp')) * DPMultiplier)).toLocaleString());
+                unitStatsElement.find('.op').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('op')) * OPMultiplier)).toLocaleString(undefined, {maximumFractionDigits: 2}));
+                unitStatsElement.find('.dp').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('dp')) * DPMultiplier)).toLocaleString(undefined, {maximumFractionDigits: 2}));
 
                 // Calculate invading force OP / DP
                 allUnitInputs.each(function () {
@@ -302,6 +312,7 @@
                     var unitOP = parseFloat($(this).data('op'));
                     var unitDP = parseFloat($(this).data('dp'));
                     var amountToSend = parseInt($(this).val() || 0);
+                    var needBoats = !!$(this).data('needBoats');
 
                     if (amountToSend === 0) {
                         return true; // continue
@@ -309,20 +320,58 @@
 
                     invadingForceOP += (amountToSend * unitOP) * OPMultiplier;
                     invadingForceDP += (amountToSend * unitDP) * DPMultiplier;
+
+                    if (needBoats) {
+                        invadingForceBoats += amountToSend;
+                    }
                 });
 
                 DPNeededToLeaveAtHome = Math.floor(invadingForceOP / 3);
-                allowedMaxOP = Math.floor((originalHomeForcesDP - invadingForceDP) * 1.25);
+                allowedMaxOP = Math.ceil((originalHomeForcesDP - invadingForceDP) * 1.25);
 
-                newHomeForcesOP = originalHomeForcesOP - invadingForceOP;
-                newHomeForcesDP = originalHomeForcesDP - invadingForceDP;
+                newHomeForcesOP = Math.round(originalHomeForcesOP - invadingForceOP);
+                newHomeForcesDP = Math.round(originalHomeForcesDP - invadingForceDP);
+                newHomeForcesBoats = originalHomeForcesBoats - invadingForceBoats;
+                newDPA = newHomeForcesDP / landSize;
 
-                invasionForceOPElement.text(invadingForceOP.toLocaleString());
+                invasionForceOPElement.text(invadingForceOP.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                $('#invasion-force-dp').text(invadingForceDP.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                invasionForceBoatsElement.text(invadingForceBoats.toLocaleString());
                 $('#invasion-force-max-op').text(allowedMaxOP.toLocaleString());
-                $('#invasion-force-dp').text(invadingForceDP.toLocaleString());
                 homeForcesOPElement.text(newHomeForcesOP.toLocaleString());
                 homeForcesDPElement.text(newHomeForcesDP.toLocaleString());
+                homeForcesBoatsElement.text(newHomeForcesBoats.toLocaleString());
                 $('#home-forces-min-dp').text(DPNeededToLeaveAtHome.toLocaleString());
+                $('#home-forces-dpa').text(newDPA.toLocaleString(undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3}));
+
+                // Check if we have enough of these bad bois
+                /*                __--___
+                                 >_'--'__'
+                                _________!__________
+                               /   /   /   /   /   /
+                              /   /   /   /   /   /
+                             |   |   |   |   |   |
+                        __^  |   |   |   |   |   |
+                      _/@  \  \   \   \   \   \   \
+                     S__   |   \   \   \   \   \   \         __
+                    (   |  |    \___\___\___\___\___\       /  \
+                        |   \             |                |  |\|
+                        \    \____________!________________/  /
+                         \ _______OOOOOOOOOOOOOOOOOOO________/
+                          \________\\\\\\\\\\\\\\\\\\_______/
+                %%%^^^^^%%%%%^^^^!!^%%^^^^%%%%%!!!!^^^^^^!%^^^%%%%!!^^
+                ^^!!!!%%%%^^^^!!^^%%%%%^^!!!^^%%%%%!!!%%%%^^^!!^^%%%!!
+
+                Shamelessly stolen from http://www.asciiworld.com/-Boats-.html */
+                if (invadingForceBoats > originalHomeForcesBoats) {
+                    invasionForceBoatsElement.addClass('text-danger');
+                    homeForcesBoatsElement.addClass('text-danger');
+                    invadeButtonElement.attr('disabled', 'disabled');
+                } else {
+                    invasionForceBoatsElement.removeClass('text-danger');
+                    homeForcesBoatsElement.removeClass('text-danger');
+                    invadeButtonElement.removeAttr('disabled');
+                }
 
                 // 33% rule
                 if (newHomeForcesDP < DPNeededToLeaveAtHome) {
