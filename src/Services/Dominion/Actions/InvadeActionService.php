@@ -379,7 +379,7 @@ class InvadeActionService
         }
 
         if ($attackerPrestigeChange !== 0) {
-            $slowestTroopsReturnHours = 9; // 12
+            $slowestTroopsReturnHours = 9; // todo: implement this
 
             $this->queueService->queueResources(
                 'invasion',
