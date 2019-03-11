@@ -127,7 +127,6 @@ class InvadeActionService
             $totalNetDPWithoutAttackingUnits = ($totalNetDP - $this->getNetDP($dominion, $units));
 
             // 33% rule
-            // todo: test
             $DPNeededToLeaveAtHome = (int)floor($netOP / 3);
             if ($totalNetDPWithoutAttackingUnits < $DPNeededToLeaveAtHome) {
                 throw new RuntimeException(sprintf(
@@ -138,7 +137,6 @@ class InvadeActionService
             }
 
             // 5:4 rule
-            // todo: test
             $allowedMaxOP = (int)ceil($totalNetDPWithoutAttackingUnits * 1.25);
             if ($netOP > $allowedMaxOP) {
                 throw new RuntimeException('You need to leave more offensive units at home (5:4 rule)');
