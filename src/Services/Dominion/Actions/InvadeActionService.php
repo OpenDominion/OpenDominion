@@ -167,7 +167,6 @@ class InvadeActionService
 //            $tempLogObject['net dp w/o attackers'] = $newHomeForcesDP;
 //            $tempLogObject['target net dp'] = $targetDP;
 
-
             // CASUALTIES
 
             // 8.5% needed to break the target, on bounce 8.5% of total sent
@@ -360,7 +359,6 @@ class InvadeActionService
 
 //            dd($tempLogObject);
         });
-
 
         return [];
     }
