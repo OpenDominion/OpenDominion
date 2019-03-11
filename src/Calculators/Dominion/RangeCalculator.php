@@ -53,6 +53,8 @@ class RangeCalculator
      *
      * Return value is a percentage (eg 114.28~) used for displaying. For calculation purposes, divide this by 100.
      *
+     * @todo: should probably change this (and all its usages) to return without *100
+     *
      * @param Dominion $self
      * @param Dominion $target
      * @return float
