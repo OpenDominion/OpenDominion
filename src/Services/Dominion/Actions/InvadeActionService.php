@@ -523,7 +523,6 @@ class InvadeActionService
         return ($this->getRawDPForUnits($dominion, $units) * $this->militaryCalculator->getDefensivePowerMultiplier($dominion));
     }
 
-
     /**
      * Get the raw DP for an array of units for a dominion.
      *
