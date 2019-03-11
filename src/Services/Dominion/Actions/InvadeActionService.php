@@ -19,6 +19,7 @@ class InvadeActionService
     use DominionGuardsTrait;
 
     protected const MIN_MORALE = 70;
+    protected const OVERWHELMED_PERCENTAGE = 15;
     protected const UNITS_PER_BOAT = 30;
 
     /** @var BuildingCalculator */
@@ -139,9 +140,10 @@ class InvadeActionService
             $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
             $targetDP = $this->militaryCalculator->getDefensivePower($target);
 
-            $isInvasionSuccessful = ($attackingForceOP > $targetDP);
-            $isOverwhelmed = (!$isInvasionSuccessful && ((1 - $attackingForceOP / $targetDP) >= 0.15));
+            $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+            $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
+            $tempLogObject = [];
             $tempLogObject['success?'] = $isInvasionSuccessful;
             $tempLogObject['units'] = $units;
             $tempLogObject['net op'] = $attackingForceOP;
@@ -390,8 +392,10 @@ class InvadeActionService
             $target->save();
             $dominion->save();
 
+
+            dd($tempLogObject);
         });
-        dd($tempLogObject);
+
 
         return [];
     }
@@ -431,19 +435,44 @@ class InvadeActionService
 
     }
 
-
+    /**
+     * Check whether the invasion is successful.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @return bool
+     */
     protected function isInvasionSuccessful(Dominion $dominion, Dominion $target, array $units): bool
     {
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $targetDP = $this->militaryCalculator->getDefensivePower($target);
 
+        return ($attackingForceOP > $targetDP);
     }
 
+    /**
+     * Check whether the attackers got overwhelmed by the target's defending army.
+     *
+     * Overwhelmed attackers have increased casualties, while the defending
+     * party has reduced casualties.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @return bool
+     */
     protected function isOverwhelmed(Dominion $dominion, Dominion $target, array $units): bool
     {
+        // Never overwhelm on successful invasions
         if ($this->isInvasionSuccessful($dominion, $target, $units)) {
             return false;
         }
 
-        //
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+
+        return ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
     }
 
     /**
