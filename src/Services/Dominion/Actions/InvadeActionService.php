@@ -167,8 +167,8 @@ class InvadeActionService
             $this->handleLandGrabs($dominion, $target, $units);
             $this->handleLandLosses($dominion, $target, $units);
             $this->handleMoraleChanges($dominion, $target, $units);
-            // todo: conversions
-            // todo: additional unit-based stuff (plunder etc)
+            $this->handleConversions($dominion, $target, $units);
+            $this->handleUnitPerks($dominion, $target, $units);
             // todo: insert queues for returning units
 
             // todo: add notification for $target
@@ -480,6 +480,16 @@ class InvadeActionService
     }
 
     protected function handleMoraleChanges(Dominion $dominion, Dominion $target, array $units): void
+    {
+        //
+    }
+
+    protected function handleConversions(Dominion $dominion, Dominion $target, array $units): void
+    {
+        //
+    }
+
+    protected function handleUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
         //
     }
