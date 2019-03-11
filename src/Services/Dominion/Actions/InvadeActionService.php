@@ -117,49 +117,49 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough boats to send this many units');
             }
 
-            $netOP = $this->getNetOP($dominion, $units);
+            $attackingForceOP = $this->getOPForUnits($dominion, $units);
+            $attackingForceDP = $this->getDPForUnits($dominion, $units);
 
-            if ($netOP === 0.0) {
+            if ($attackingForceOP === 0.0) {
                 throw new RuntimeException('You need to send at least some units');
             }
 
-            $totalNetDP = $this->militaryCalculator->getDefensivePower($dominion);
-            $totalNetDPWithoutAttackingUnits = ($totalNetDP - $this->getNetDP($dominion, $units));
+            $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+            $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
             // 33% rule
-            $DPNeededToLeaveAtHome = (int)floor($netOP / 3);
-            if ($totalNetDPWithoutAttackingUnits < $DPNeededToLeaveAtHome) {
+            $minNewHomeForcesDP = (int)floor($attackingForceOP / 3);
+            if ($newHomeForcesDP < $minNewHomeForcesDP) {
                 throw new RuntimeException(sprintf(
-                    'You were trying to send %s DP, but you need to leave at least %s DP at home (33%% rule)',
-                    number_format($totalNetDP),
-                    number_format($DPNeededToLeaveAtHome)
+                    'You need to leave a minimum of %s DP at home, based on %s OP you were trying to send out. (33%% rule)',
+                    number_format($minNewHomeForcesDP),
+                    number_format($attackingForceOP)
+
                 ));
             }
 
             // 5:4 rule
-            $allowedMaxOP = (int)ceil($totalNetDPWithoutAttackingUnits * 1.25);
-            if ($netOP > $allowedMaxOP) {
+            $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
+            if ($attackingForceOP > $attackingForceMaxOP) {
                 throw new RuntimeException(sprintf(
-                    'You were trying to send %s OP, but you can only send %s OP (5:4 rule)',
-                    number_format($netOP),
-                    number_format($allowedMaxOP)
+                    'You were trying to send out %s OP, but you can only send %s OP based on your new home DP. (5:4 rule)',
+                    number_format($attackingForceOP),
+                    number_format($attackingForceMaxOP)
                 ));
             }
 
-            $targetNetDP = $this->militaryCalculator->getDefensivePower($target);
-            $targetRange = $this->rangeCalculator->getDominionRange($dominion, $target);
+            $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
+            $targetDP = $this->militaryCalculator->getDefensivePower($target);
 
-            $isInvasionSuccessful = ($netOP > $targetNetDP);
-            $isOverwhelmed = (1 - $netOP / $targetNetDP) >= 0.15;
-
-            $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+            $isInvasionSuccessful = ($attackingForceOP > $targetDP);
+            $isOverwhelmed = (!$isInvasionSuccessful && ((1 - $attackingForceOP / $targetDP) >= 0.15));
 
             $tempLogObject['success?'] = $isInvasionSuccessful;
             $tempLogObject['units'] = $units;
-            $tempLogObject['net op'] = $netOP;
-            $tempLogObject['net dp'] = $totalNetDP;
-            $tempLogObject['net dp w/o attackers'] = $totalNetDPWithoutAttackingUnits;
-            $tempLogObject['target net dp'] = $targetNetDP;
+            $tempLogObject['net op'] = $attackingForceOP;
+            $tempLogObject['net dp'] = $currentHomeForcesDP;
+            $tempLogObject['net dp w/o attackers'] = $newHomeForcesDP;
+            $tempLogObject['target net dp'] = $targetDP;
 
             // PRESTIGE
 
@@ -182,10 +182,10 @@ class InvadeActionService
                     // $targetPrestigeLoss = 5% target->prestige
             $attackerPrestigeChange = 0;
             $targetPrestigeChange = 0;
-            if($isOverwhelmed || $landRatio < 0.66) {
+            if ($isOverwhelmed || $landRatio < 0.66) {
                 $attackerPrestigeLossPercentage = -0.05;
                 $attackerPrestigeChange = $dominion->prestige * $attackerPrestigeLossPercentage;
-            } elseif($isInvasionSuccessful && $landRatio >= 0.75 && $landRatio <= 1.20) {
+            } elseif ($isInvasionSuccessful && $landRatio >= 0.75 && $landRatio <= 1.20) {
                 $attackerPrestigeChange = ($target->prestige * 0.05);
 
                 $targetPrestigeChange = ($target->prestige * -0.05);
@@ -227,9 +227,9 @@ class InvadeActionService
                     $totalUnitsSent += $amount;
                 }
 
-                $netOpPerUnitSent = $netOP / $totalUnitsSent;
+                $netOpPerUnitSent = $attackingForceOP / $totalUnitsSent;
 
-                $netOpNeededToBreak = $targetNetDP + 1;
+                $netOpNeededToBreak = $targetDP + 1;
 
                 $unitsNeededToBreak = round($netOpNeededToBreak / $netOpPerUnitSent);
 
@@ -477,7 +477,26 @@ class InvadeActionService
         return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $unitsPerBoat));
     }
 
-    protected function getRawOP(Dominion $dominion, array $units): float
+    /**
+     * Get the modded OP for an array of units for a dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return float
+     */
+    protected function getOPForUnits(Dominion $dominion, array $units): float
+    {
+        return ($this->getRawOPForUnits($dominion, $units) * $this->militaryCalculator->getOffensivePowerMultiplier($dominion));
+    }
+
+    /**
+     * Get the raw OP for an array of units for a dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return float
+     */
+    protected function getRawOPForUnits(Dominion $dominion, array $units): float
     {
         $op = 0;
 
@@ -492,12 +511,27 @@ class InvadeActionService
         return $op;
     }
 
-    protected function getNetOP(Dominion $dominion, array $units): float
+    /**
+     * Get the modded DP for an array of units for a dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return float
+     */
+    protected function getDPForUnits(Dominion $dominion, array $units): float
     {
-        return ($this->getRawOP($dominion, $units) * $this->militaryCalculator->getOffensivePowerMultiplier($dominion));
+        return ($this->getRawDPForUnits($dominion, $units) * $this->militaryCalculator->getDefensivePowerMultiplier($dominion));
     }
 
-    protected function getRawDP(Dominion $dominion, array $units): float
+
+    /**
+     * Get the raw DP for an array of units for a dominion.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return float
+     */
+    protected function getRawDPForUnits(Dominion $dominion, array $units): float
     {
         $op = 0;
 
@@ -510,10 +544,5 @@ class InvadeActionService
         }
 
         return $op;
-    }
-
-    protected function getNetDP(Dominion $dominion, array $units): float
-    {
-        return ($this->getRawDP($dominion, $units) * $this->militaryCalculator->getDefensivePowerMultiplier($dominion));
     }
 }
