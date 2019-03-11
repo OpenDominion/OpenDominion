@@ -395,7 +395,13 @@ class InvadeActionService
     }
 
     /**
-     * desc
+     * Handles offensive casualties for the attacking dominion.
+     *
+     * Offensive casualties are 8.5% of the units needed to break the target,
+     * regardless of how many you send.
+     *
+     * On unsuccessful invasions, offensive casualties are 8.5% of all units
+     * you send, doubled if the attacker is overwhelmed.
      *
      * @param Dominion $dominion
      * @param Dominion $target
