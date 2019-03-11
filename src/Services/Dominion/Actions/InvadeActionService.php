@@ -24,6 +24,11 @@ class InvadeActionService
     protected const MIN_MORALE = 70;
 
     /**
+     * @var float Base percentage of offensive casualties
+     */
+    protected const CASUALTIES_OFFENSIVE_BASE_PERCENTAGE = 8.5;
+
+    /**
      * @var int Failing an invasion by this percentage (or more) results in 'being overwhelmed'
      */
     protected const OVERWHELMED_PERCENTAGE = 15;
@@ -171,6 +176,8 @@ class InvadeActionService
             // todo: create event
             // todo: post to both TCs
 
+            dd('foo ');
+
             // todo: refactor everything below this line
 
             $attackingForceOP = $this->getOPForUnits($dominion, $units);
@@ -193,48 +200,6 @@ class InvadeActionService
 //            $tempLogObject['net dp w/o attackers'] = $newHomeForcesDP;
 //            $tempLogObject['target net dp'] = $targetDP;
 
-            // CASUALTIES
-
-            // 8.5% needed to break the target, on bounce 8.5% of total sent
-            // offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
-            // offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
-
-            $offensiveCasualtiesMultiplier = $isOverwhelmed ? 0.17 : 0.085;
-            $offensiveUnitsLost = [];
-            if($isInvasionSuccessful) {
-                $totalUnitsSent = 0;
-                foreach ($units as $amount) {
-                    $totalUnitsSent += $amount;
-                }
-
-                $netOpPerUnitSent = $attackingForceOP / $totalUnitsSent;
-
-                $netOpNeededToBreak = $targetDP + 1;
-
-                $unitsNeededToBreak = round($netOpNeededToBreak / $netOpPerUnitSent);
-
-                $unitsLostLeft = $unitsNeededToBreak;
-                foreach ($units as $slot => $amount) {
-                    $slotTotalAmountPercentage = $amount / $totalUnitsSent;
-                    $slotLost = ceil($unitsNeededToBreak * $slotTotalAmountPercentage);
-                    $offensiveUnitsLost['military_unit' . $slot] = $slotLost;
-
-                    if($unitsLostLeft < $slotLost) {
-                        $slotLost = $unitsLostLeft;
-                    }
-
-                    $unitsLostLeft -= $slotLost;
-                }
-            } else {
-                foreach ($units as $slot => $amount) {
-                    $lost = round($amount * $offensiveCasualtiesMultiplier);
-                    $offensiveUnitsLost[$slot] = $lost;
-                }
-            }
-
-            foreach ($offensiveUnitsLost as $unit => $amount) {
-                $dominion->$unit -= $amount;
-            }
 
 //            $tempLogObject['offensiveUnitsLost'] = $offensiveUnitsLost;
 
@@ -414,9 +379,9 @@ class InvadeActionService
      */
     protected function handlePrestigeChanges(Dominion $dominion, Dominion $target, array $units): void
     {
-        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
         $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
         $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
 
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
@@ -458,9 +423,68 @@ class InvadeActionService
         }
     }
 
+    /**
+     * desc
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     */
     protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
     {
-        //
+        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+        $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+        $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
+
+        $offensiveUnitsLost = [];
+
+        if ($isInvasionSuccessful) {
+            $totalUnitsSent = 0;
+            foreach ($units as $amount) {
+                $totalUnitsSent += $amount; // todo: refactor to array_sum($units)?
+            }
+
+            $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
+            $OPNeededToBreakTarget = ($targetDP + 1);
+            $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
+
+            $totalUnitsLeftToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
+
+            foreach ($units as $slot => $amount) {
+                $slotTotalAmountPercentage = ($amount / $totalUnitsSent);
+
+                if ($slotTotalAmountPercentage === 0) {
+                    continue;
+                }
+
+                $unitsToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage * $slotTotalAmountPercentage);
+                $offensiveUnitsLost[$slot] = $unitsToKill;
+
+                if ($totalUnitsLeftToKill < $unitsToKill) {
+                    $unitsToKill = $totalUnitsLeftToKill;
+                }
+
+                $totalUnitsLeftToKill -= $unitsToKill;
+            }
+        } else {
+            if ($isOverwhelmed) {
+                $offensiveCasualtiesPercentage *= 2;
+            }
+
+            foreach ($units as $slot => $amount) {
+                $unitsToKill = ceil($amount * $offensiveCasualtiesPercentage);
+                $offensiveUnitsLost[$slot] = $unitsToKill;
+            }
+        }
+
+        // todo: offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
+        // todo: offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
+
+        foreach ($offensiveUnitsLost as $slot => $amount) {
+            $dominion->{"military_unit{$slot}"} -= $amount;
+        }
     }
 
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
