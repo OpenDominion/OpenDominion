@@ -192,16 +192,6 @@ class InvadeActionService
             $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
             $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
-//            $tempLogObject = [];
-//            $tempLogObject['success?'] = $isInvasionSuccessful;
-//            $tempLogObject['units'] = $units;
-//            $tempLogObject['net op'] = $attackingForceOP;
-//            $tempLogObject['net dp'] = $currentHomeForcesDP;
-//            $tempLogObject['net dp w/o attackers'] = $newHomeForcesDP;
-//            $tempLogObject['target net dp'] = $targetDP;
-
-
-//            $tempLogObject['offensiveUnitsLost'] = $offensiveUnitsLost;
 
             $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
             // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
@@ -226,7 +216,6 @@ class InvadeActionService
                 $target->$unit -= $amount;
             }
 
-//            $tempLogObject['defensiveUnitsLost'] = $defensiveUnitsLost;
             // LAND GAINS/LOSSES
 
             // if $invasionSuccessful
@@ -304,10 +293,6 @@ class InvadeActionService
                 }
 
                 $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
-
-//                $tempLogObject['land losses'] = $landAndBuildingsLostPerLandType;
-//                $tempLogObject['land gain'] = $landGainedPerLandType;
-//                $tempLogObject['buildings etc'] = $buildingsLostTemp;
             }
 
             // MORALE
@@ -345,10 +330,6 @@ class InvadeActionService
             // todo: add battle reports table/mechanic
             $target->save();
             $dominion->save();
-
-            dd('todo');
-
-//            dd($tempLogObject);
         });
 
         return [];
