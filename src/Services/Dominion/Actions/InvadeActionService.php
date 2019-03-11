@@ -18,8 +18,34 @@ class InvadeActionService
 {
     use DominionGuardsTrait;
 
+    /**
+     * @var int The minimum morale required to initiate an invasion
+     */
     protected const MIN_MORALE = 70;
+
+    /**
+     * @var int Failing an invasion by this percentage (or more) results in 'being overwhelmed'
+     */
     protected const OVERWHELMED_PERCENTAGE = 15;
+
+    /**
+     * @var int Percentage of attacker prestige used to cap prestige gains (plus bonus)
+     */
+    protected const PRESTIGE_CAP_PERCENTAGE = 10;
+
+    /**
+     * @var int Bonus prestige when invading successfully
+     */
+    protected const PRESTIGE_CHANGE_ADD = 20;
+
+    /**
+     * @var int Base prestige % change for both parties when invading
+     */
+    protected const PRESTIGE_CHANGE_PERCENTAGE = 5;
+
+    /**
+     * @var int How many units can fit in a single boat
+     */
     protected const UNITS_PER_BOAT = 30;
 
     /** @var BuildingCalculator */
@@ -396,14 +422,14 @@ class InvadeActionService
         $targetPrestigeChange = 0;
 
         if ($isOverwhelmed || ($range < 66)) {
-            $attackerPrestigeChange = ($dominion->prestige * -0.05);
+            $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
         } elseif ($isInvasionSuccessful && ($range >= 75) && ($range < 120)) {
             $attackerPrestigeChange = min(
-                (($target->prestige * 0.05) + 20), // Gained through invading
-                (($dominion->prestige * 0.1) + 20) // But capped by 10%+20 of your own
+                (($target->prestige * (static::PRESTIGE_CHANGE_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
+                (($dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD) // But capped by depending on your current prestige
             );
-            $targetPrestigeChange = ($target->prestige * -0.05);
+            $targetPrestigeChange = ($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // todo: If target was successfully invaded recently (within 24 hours), multiply $attackerPrestigeChange by the following
             // 1 time: 75%
