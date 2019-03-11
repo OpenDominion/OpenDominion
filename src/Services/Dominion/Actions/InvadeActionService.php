@@ -139,7 +139,11 @@ class InvadeActionService
             // 5:4 rule
             $allowedMaxOP = (int)ceil($totalNetDPWithoutAttackingUnits * 1.25);
             if ($netOP > $allowedMaxOP) {
-                throw new RuntimeException('You need to leave more offensive units at home (5:4 rule)');
+                throw new RuntimeException(sprintf(
+                    'You were trying to send %s OP, but you can only send %s OP (5:4 rule)',
+                    number_format($netOP),
+                    number_format($allowedMaxOP)
+                ));
             }
 
             $targetNetDP = $this->militaryCalculator->getDefensivePower($target);
