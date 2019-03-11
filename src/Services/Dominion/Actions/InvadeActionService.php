@@ -129,7 +129,23 @@ class InvadeActionService
                 throw new RuntimeException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
-            // Handle invasion
+            // Handle invasion results
+            $this->handlePrestigeChanges($dominion, $target, $units);
+            $this->handleOffensiveCasualties($dominion, $target, $units);
+            $this->handleDefensiveCasualties($dominion, $target, $units);
+            $this->handleLandGrabs($dominion, $target, $units);
+            $this->handleLandLosses($dominion, $target, $units);
+            $this->handleMoraleChanges($dominion, $target, $units);
+            // todo: conversions
+            // todo: additional unit-based stuff (plunder etc)
+            // todo: insert queues for returning units
+
+            // todo: add notification for $target
+
+            // todo: create event
+            // todo: post to both TCs
+
+            // todo: refactor everything below this line
 
             $attackingForceOP = $this->getOPForUnits($dominion, $units);
             $attackingForceDP = $this->getDPForUnits($dominion, $units);
@@ -143,65 +159,14 @@ class InvadeActionService
             $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
             $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
-            $tempLogObject = [];
-            $tempLogObject['success?'] = $isInvasionSuccessful;
-            $tempLogObject['units'] = $units;
-            $tempLogObject['net op'] = $attackingForceOP;
-            $tempLogObject['net dp'] = $currentHomeForcesDP;
-            $tempLogObject['net dp w/o attackers'] = $newHomeForcesDP;
-            $tempLogObject['target net dp'] = $targetDP;
+//            $tempLogObject = [];
+//            $tempLogObject['success?'] = $isInvasionSuccessful;
+//            $tempLogObject['units'] = $units;
+//            $tempLogObject['net op'] = $attackingForceOP;
+//            $tempLogObject['net dp'] = $currentHomeForcesDP;
+//            $tempLogObject['net dp w/o attackers'] = $newHomeForcesDP;
+//            $tempLogObject['target net dp'] = $targetDP;
 
-            // PRESTIGE
-
-            // if range < 66
-                // $prestigeLoss = 5% (needs confirmation)
-            // else if range >= 75 && range < 120
-                // if !$invasionSuccesful
-                    // if 1 - $totalNetOP / $targetNetDP >= 0.15 (fail by 15%, aka raze)
-                        // $prestigeLoss = 5% (needs confirmation)
-                // else
-                    // $prestigeGain = 5% target->prestige + 20
-                    // todo: in tech ruleset, multiply base prestige gain (i.e. the 5%) by shrines bonus
-                    // if $target was successfully invaded recently (within 24 hrs), multiply $prestigeGain by: (needs confirmation)
-                        // 1 time: 75%
-                        // 2 times: 50%
-                        // 3 times: 25%
-                        // 4 times: -25% (i.e. losing prestige)
-                        // 5+ times: -50%
-                    // todo: if at war, increase $prestigeGain by +15%
-                    // $targetPrestigeLoss = 5% target->prestige
-            $attackerPrestigeChange = 0;
-            $targetPrestigeChange = 0;
-            if ($isOverwhelmed || $landRatio < 0.66) {
-                $attackerPrestigeLossPercentage = -0.05;
-                $attackerPrestigeChange = $dominion->prestige * $attackerPrestigeLossPercentage;
-            } elseif ($isInvasionSuccessful && $landRatio >= 0.75 && $landRatio <= 1.20) {
-                $attackerPrestigeChange = ($target->prestige * 0.05);
-
-                $targetPrestigeChange = ($target->prestige * -0.05);
-                // if $target was successfully invaded recently (within 24 hrs), multiply $prestigeGain by: (needs confirmation)
-                        // 1 time: 75%
-                        // 2 times: 50%
-                        // 3 times: 25%
-                        // 4 times: -25% (i.e. losing prestige)
-                        // 5+ times: -50%
-
-                // todo: if at war, increase $prestigeGain by +15%
-
-                $attackerMaxPrestigeChange = $target->prestige * 0.1;
-                $attackerPrestigeChange = min($attackerPrestigeChange, $attackerMaxPrestigeChange) + 20;
-            }
-
-            if($attackerPrestigeChange != 0) {
-                $this->queueService->queueResources('invasion', $dominion, ['prestige' => $attackerPrestigeChange]);
-            }
-
-            if($targetPrestigeChange != 0) {
-                $target->prestige += $targetPrestigeChange;
-            }
-
-            $tempLogObject['attackerPrestigeChange'] = $attackerPrestigeChange;
-            $tempLogObject['targetPrestigeChange'] = $targetPrestigeChange;
 
             // CASUALTIES
 
@@ -246,7 +211,7 @@ class InvadeActionService
                 $dominion->$unit -= $amount;
             }
 
-            $tempLogObject['offensiveUnitsLost'] = $offensiveUnitsLost;
+//            $tempLogObject['offensiveUnitsLost'] = $offensiveUnitsLost;
 
             $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
             // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
@@ -271,7 +236,7 @@ class InvadeActionService
                 $target->$unit -= $amount;
             }
 
-            $tempLogObject['defensiveUnitsLost'] = $defensiveUnitsLost;
+//            $tempLogObject['defensiveUnitsLost'] = $defensiveUnitsLost;
             // LAND GAINS/LOSSES
 
             // if $invasionSuccessful
@@ -350,9 +315,9 @@ class InvadeActionService
 
                 $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
 
-                $tempLogObject['land losses'] = $landAndBuildingsLostPerLandType;
-                $tempLogObject['land gain'] = $landGainedPerLandType;
-                $tempLogObject['buildings etc'] = $buildingsLostTemp;
+//                $tempLogObject['land losses'] = $landAndBuildingsLostPerLandType;
+//                $tempLogObject['land gain'] = $landGainedPerLandType;
+//                $tempLogObject['buildings etc'] = $buildingsLostTemp;
             }
 
             // MORALE
@@ -388,26 +353,85 @@ class InvadeActionService
                 // 5+ times: "This dominion has been invaded extremely heavily in recent times"
 
             // todo: add battle reports table/mechanic
-            // todo: add 'boats needed'/'boats total' on invade page
             $target->save();
             $dominion->save();
 
+            dd('todo');
 
-            dd($tempLogObject);
+//            dd($tempLogObject);
         });
 
 
         return [];
     }
 
-
-
-    protected function handlePrestige(Dominion $dominion, Dominion $target, array $units): void
+    /**
+     * Handles prestige changes for both dominions.
+     *
+     * Prestige gains and losses are based on several factors. The most
+     * important one is the range (aka relative land size percentage) of the
+     * target compared to the attacker.
+     *
+     * -   X -  65 equals a very weak target, and the attacker is penalized with a prestige loss, no matter the outcome
+     * -  66 -  74 equals a weak target, and incurs no prestige changes for either side, no matter the outcome
+     * -  75 - 119 equals an equal target, and gives full prestige changes, depending on if the invasion is successful
+     * - 120 - X   equals a strong target, and incurs no prestige changes for either side, no matter the outcome
+     *
+     * Due to the above, people are encouraged to hit targets in 75-119 range,
+     * and are discouraged to hit anything below 66.
+     *
+     * Failing an attack above 66% range only results in a prestige loss if the
+     * attacker is overwhelmed by the target defenses.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @throws Throwable
+     */
+    protected function handlePrestigeChanges(Dominion $dominion, Dominion $target, array $units): void
     {
+        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+        $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
 
-        //
+        if ($isOverwhelmed || ($range < 66)) {
+            $attackerPrestigeChange = ($dominion->prestige * -0.05);
+
+        } elseif ($isInvasionSuccessful && ($range >= 75) && ($range < 120)) {
+            $attackerPrestigeChange = min(
+                (($target->prestige * 0.05) + 20), // Gained through invading
+                (($dominion->prestige * 0.1) + 20) // But capped by 10%+20 of your own
+            );
+            $targetPrestigeChange = ($target->prestige * -0.05);
+
+            // todo: If target was successfully invaded recently (within 24 hours), multiply $attackerPrestigeChange by the following
+            // 1 time: 75%
+            // 2 times: 50%
+            // 3 times: 25%
+            // 4 times: -25% (i.e. losing prestige)
+            // 5+ times: -50%
+            // Also needs displaying on the invade page itself if a target got invaded (heavily etc) recently
+
+            // todo: if wat war, increase $attackerPrestigeChange by +15%
+        }
+
+        if ($attackerPrestigeChange !== 0) {
+            $slowestTroopsReturnHours = 9; // 12
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                ['prestige' => $attackerPrestigeChange],
+                $slowestTroopsReturnHours
+            );
+        }
+
+        if ($targetPrestigeChange !== 0) {
+            $target->prestige += $targetPrestigeChange;
+        }
     }
 
     protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
@@ -420,19 +444,19 @@ class InvadeActionService
         //
     }
 
-    protected function handleLandGrabs()
+    protected function handleLandGrabs(Dominion $dominion, Dominion $target, array $units): void
     {
 
     }
 
-    protected function handleLandLosses()
+    protected function handleLandLosses(Dominion $dominion, Dominion $target, array $units): void
     {
-
+        //
     }
 
-    protected function handleMorale()
+    protected function handleMoraleChanges(Dominion $dominion, Dominion $target, array $units): void
     {
-
+        //
     }
 
     /**
