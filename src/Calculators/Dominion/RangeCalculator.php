@@ -51,6 +51,8 @@ class RangeCalculator
     /**
      * Returns the $target dominion range compared to $self dominion.
      *
+     * Return value is a percentage (eg 114.28~) used for displaying. For calculation purposes, divide this by 100.
+     *
      * @param Dominion $self
      * @param Dominion $target
      * @return float
