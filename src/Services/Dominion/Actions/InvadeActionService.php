@@ -180,18 +180,8 @@ class InvadeActionService
 
             // todo: refactor everything below this line
 
-            $attackingForceOP = $this->getOPForUnits($dominion, $units);
-            $attackingForceDP = $this->getDPForUnits($dominion, $units);
-
-            $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
-            $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
-
             $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
-            $targetDP = $this->militaryCalculator->getDefensivePower($target);
-
             $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-            $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
-
 
             $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
             // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
