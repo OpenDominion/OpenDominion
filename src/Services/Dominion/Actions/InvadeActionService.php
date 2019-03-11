@@ -401,7 +401,7 @@ class InvadeActionService
      * regardless of how many you send.
      *
      * On unsuccessful invasions, offensive casualties are 8.5% of all units
-     * you send, doubled if the attacker is overwhelmed.
+     * you send, doubled if you are overwhelmed.
      *
      * @param Dominion $dominion
      * @param Dominion $target
