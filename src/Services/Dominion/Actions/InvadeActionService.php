@@ -18,6 +18,9 @@ class InvadeActionService
 {
     use DominionGuardsTrait;
 
+    protected const MIN_MORALE = 70;
+    protected const UNITS_PER_BOAT = 30;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -73,12 +76,8 @@ class InvadeActionService
      */
     public function invade(Dominion $dominion, Dominion $target, array $units): array
     {
-        $tempLogObject = [];
-
-        DB::transaction(function () use ($dominion, $target, $units, &$tempLogObject) {
-
-            // CHECKS
-
+        DB::transaction(function () use ($dominion, $target, $units) {
+            // Checks
             $this->guardLockedDominion($dominion);
 
             if ($this->protectionService->isUnderProtection($dominion)) {
@@ -101,6 +100,10 @@ class InvadeActionService
                 throw new RuntimeException('Nice try, but you cannot invade your realmies');
             }
 
+            if (!$this->hasAnyOP($dominion, $units)) {
+                throw new RuntimeException('You need to send at least some units');
+            }
+
             if (!$this->allUnitsHaveOP($dominion, $units)) {
                 throw new RuntimeException('You cannot send units that have no OP');
             }
@@ -109,44 +112,29 @@ class InvadeActionService
                 throw new RuntimeException('You don\'t have enough units at home to send this many units');
             }
 
-            if ($dominion->morale < 70) {
-                throw new RuntimeException('You do not have enough morale to invade others');
-            }
-
             if (!$this->hasEnoughBoats($dominion, $units)) {
                 throw new RuntimeException('You do not have enough boats to send this many units');
             }
 
+            if ($dominion->morale < static::MIN_MORALE) {
+                throw new RuntimeException('You do not have enough morale to invade others');
+            }
+
+            if (!$this->passes33PercentRule($dominion, $units)) {
+                throw new RuntimeException('You need to leave more DP units at home, based on the OP you\'re sending out (33% rule)');
+            }
+
+            if (!$this->passes54RatioRule($dominion, $units)) {
+                throw new RuntimeException('You are sending out too much OP, based on your new home DP (5:4 rule)');
+            }
+
+            // Handle invasion
+
             $attackingForceOP = $this->getOPForUnits($dominion, $units);
             $attackingForceDP = $this->getDPForUnits($dominion, $units);
 
-            if ($attackingForceOP === 0.0) {
-                throw new RuntimeException('You need to send at least some units');
-            }
-
             $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
             $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
-
-            // 33% rule
-            $minNewHomeForcesDP = (int)floor($attackingForceOP / 3);
-            if ($newHomeForcesDP < $minNewHomeForcesDP) {
-                throw new RuntimeException(sprintf(
-                    'You need to leave a minimum of %s DP at home, based on %s OP you were trying to send out. (33%% rule)',
-                    number_format($minNewHomeForcesDP),
-                    number_format($attackingForceOP)
-
-                ));
-            }
-
-            // 5:4 rule
-            $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
-            if ($attackingForceOP > $attackingForceMaxOP) {
-                throw new RuntimeException(sprintf(
-                    'You were trying to send out %s OP, but you can only send %s OP based on your new home DP. (5:4 rule)',
-                    number_format($attackingForceOP),
-                    number_format($attackingForceMaxOP)
-                ));
-            }
 
             $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
             $targetDP = $this->militaryCalculator->getDefensivePower($target);
@@ -408,6 +396,68 @@ class InvadeActionService
         return [];
     }
 
+
+
+    protected function handlePrestige(Dominion $dominion, Dominion $target, array $units): void
+    {
+        $attackerPrestigeChange = 0;
+        $targetPrestigeChange = 0;
+
+        //
+    }
+
+    protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
+    {
+        //
+    }
+
+    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
+    {
+        //
+    }
+
+    protected function handleLandGrabs()
+    {
+
+    }
+
+    protected function handleLandLosses()
+    {
+
+    }
+
+    protected function handleMorale()
+    {
+
+    }
+
+
+    protected function isInvasionSuccessful(Dominion $dominion, Dominion $target, array $units): bool
+    {
+
+    }
+
+    protected function isOverwhelmed(Dominion $dominion, Dominion $target, array $units): bool
+    {
+        if ($this->isInvasionSuccessful($dominion, $target, $units)) {
+            return false;
+        }
+
+        //
+    }
+
+    /**
+     * Check if dominion is sending out at least *some* OP.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return bool
+     */
+    protected function hasAnyOP(Dominion $dominion, array $units): bool
+    {
+        return ($this->getOPForUnits($dominion, $units) !== 0.0);
+    }
+
     /**
      * Check if all units being sent have positive OP.
      *
@@ -461,7 +511,6 @@ class InvadeActionService
      */
     protected function hasEnoughBoats(Dominion $dominion, array $units): bool
     {
-        $unitsPerBoat = 30;
         $unitsThatNeedBoats = 0;
 
         foreach ($dominion->race->units as $unit) {
@@ -474,7 +523,45 @@ class InvadeActionService
             }
         }
 
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $unitsPerBoat));
+        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / static::UNITS_PER_BOAT));
+    }
+
+    /**
+     * Check if an invasion passes the 33%-rule.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return bool
+     */
+    protected function passes33PercentRule(Dominion $dominion, array $units): bool
+    {
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $attackingForceDP = $this->getDPForUnits($dominion, $units);
+        $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+        $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
+
+        $minNewHomeForcesDP = (int)floor($attackingForceOP / 3);
+
+        return ($newHomeForcesDP >= $minNewHomeForcesDP);
+    }
+
+    /**
+     * Check if an invasion passes the 5:4-rule.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return bool
+     */
+    protected function passes54RatioRule(Dominion $dominion, array $units): bool
+    {
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $attackingForceDP = $this->getDPForUnits($dominion, $units);
+        $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+        $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
+
+        $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
+
+        return ($attackingForceOP <= $attackingForceMaxOP);
     }
 
     /**
