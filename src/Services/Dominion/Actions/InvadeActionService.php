@@ -19,9 +19,19 @@ class InvadeActionService
     use DominionGuardsTrait;
 
     /**
-     * @var int The minimum morale required to initiate an invasion
+     * @var float Base percentage of defensive casualties
      */
-    protected const MIN_MORALE = 70;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.5;
+
+    /**
+     * @var float Defensive casualties percentage addition for every 1% land difference
+     */
+    protected const CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD = 0.035;
+
+    /**
+     * @var float Max percentage of defensive casualties
+     */
+    protected const CASUALTIES_DEFENSIVE_MAX_PERCENTAGE = 6.0;
 
     /**
      * @var float Base percentage of offensive casualties
@@ -29,14 +39,19 @@ class InvadeActionService
     protected const CASUALTIES_OFFENSIVE_BASE_PERCENTAGE = 8.5;
 
     /**
-     * @var int Failing an invasion by this percentage (or more) results in 'being overwhelmed'
+     * @var int The minimum morale required to initiate an invasion
      */
-    protected const OVERWHELMED_PERCENTAGE = 15;
+    protected const MIN_MORALE = 70;
 
     /**
-     * @var int Percentage of attacker prestige used to cap prestige gains (plus bonus)
+     * @var float Failing an invasion by this percentage (or more) results in 'being overwhelmed'
      */
-    protected const PRESTIGE_CAP_PERCENTAGE = 10;
+    protected const OVERWHELMED_PERCENTAGE = 15.0;
+
+    /**
+     * @var float Percentage of attacker prestige used to cap prestige gains (plus bonus)
+     */
+    protected const PRESTIGE_CAP_PERCENTAGE = 10.0;
 
     /**
      * @var int Bonus prestige when invading successfully
@@ -44,9 +59,9 @@ class InvadeActionService
     protected const PRESTIGE_CHANGE_ADD = 20;
 
     /**
-     * @var int Base prestige % change for both parties when invading
+     * @var float Base prestige % change for both parties when invading
      */
-    protected const PRESTIGE_CHANGE_PERCENTAGE = 5;
+    protected const PRESTIGE_CHANGE_PERCENTAGE = 5.0;
 
     /**
      * @var int How many units can fit in a single boat
@@ -182,29 +197,6 @@ class InvadeActionService
 
             $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
             $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-
-            $targetDefensiveCasualties = 0; // 6.5% at 1.0 land size ratio (see issue #151)
-            // modify casualties by +0.5 for every 0.1 land size ratio, including negative (i.e. -0.5 at -0.1 etc)
-            // defensive casualty modifiers (reduction based on recent invasion: 100%, 80%, 60%, 55%, 45%, 35%)
-            // (note: defensive casualties are spread out in ratio between all units that help def (have DP), including draftees)
-            $landRatioDiff = $landRatio - 1;
-            $defensiveCasualtiesMultiplier = 0.065 + ($landRatioDiff * 0.05);
-            $defensiveUnitsLost = [];
-            foreach ($target->race->units as $unit) {
-                if($unit->power_defense == 0) {
-                    continue;
-                }
-                $unit = 'military_unit' . $unit->slot;
-                $slotLost = $target->$unit * $defensiveCasualtiesMultiplier;
-                $defensiveUnitsLost[$unit] = $slotLost;
-            }
-
-            $drafteesLost = $target->military_draftees * $defensiveCasualtiesMultiplier;
-            $defensiveUnitsLost['draftees'] = $drafteesLost;
-
-            foreach ($defensiveUnitsLost as $unit => $amount) {
-                $target->$unit -= $amount;
-            }
 
             // LAND GAINS/LOSSES
 
@@ -361,11 +353,11 @@ class InvadeActionService
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
         } elseif ($isInvasionSuccessful && ($range >= 75) && ($range < 120)) {
-            $attackerPrestigeChange = min(
+            $attackerPrestigeChange = (int)round(min(
                 (($target->prestige * (static::PRESTIGE_CHANGE_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
                 (($dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD) // But capped by depending on your current prestige
-            );
-            $targetPrestigeChange = ($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
+            ));
+            $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
 
             // todo: If target was successfully invaded recently (within 24 hours), multiply $attackerPrestigeChange by the following
             // 1 time: 75%
@@ -451,7 +443,7 @@ class InvadeActionService
             }
 
             foreach ($units as $slot => $amount) {
-                $unitsToKill = ceil($amount * $offensiveCasualtiesPercentage);
+                $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage);
                 $offensiveUnitsLost[$slot] = $unitsToKill;
             }
         }
@@ -464,9 +456,63 @@ class InvadeActionService
         }
     }
 
+    /**
+     * Handles defensive casualties for the defending dominion.
+     *
+     * Defensive casualties are base 4.5% across all units that help defending.
+     *
+     * This scales with relative land size, and invading OP compared to
+     * defending OP, up to max 6%.
+     *
+     * Unsuccessful invasions results in reduced defensive casualties, based on
+     * the invading force's OP.
+     *
+     * Defensive casualties are spread out in ratio between all units that help
+     * defend, including draftees. Being recently invaded reduces defensive
+     * casualties: 100%, 80%, 60%, 55%, 45%, 35%.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     */
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
     {
-        //
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+        $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
+        $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
+
+        // Modify casualties percentage based on relative land size
+        $landRatioDiff = clamp(($landRatio - 1), -0.5, 0.5);
+        $defensiveCasualtiesPercentage += ($landRatioDiff * static::CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD);
+
+        // Scale casualties further with invading OP vs target DP
+        $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+
+        // Cap max casualties
+        $defensiveCasualtiesPercentage = min(
+            $defensiveCasualtiesPercentage,
+            (static::CASUALTIES_DEFENSIVE_MAX_PERCENTAGE / 100)
+        );
+
+        $defensiveUnitsLost = [];
+
+        // Non-draftees
+        foreach ($target->race->units as $unit) {
+            if ($unit->power_defense === 0.0) {
+                continue;
+            }
+
+            $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage);
+            $defensiveUnitsLost[$unit->slot] = $slotLost;
+        }
+
+        foreach ($defensiveUnitsLost as $slot => $amount) {
+            $target->{"military_unit{$slot}"} -= $amount;
+        }
+
+        // Draftees
+        $target->military_draftees -= (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
     }
 
     protected function handleLandGrabs(Dominion $dominion, Dominion $target, array $units): void
