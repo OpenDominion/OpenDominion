@@ -407,6 +407,8 @@ class InvadeActionService
         $targetDP = $this->militaryCalculator->getDefensivePower($target);
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
+        // todo: unit reduce_combat_losses perk (eg dwarf cleric)
+
         $offensiveUnitsLost = [];
 
         if ($isInvasionSuccessful) {
@@ -486,8 +488,12 @@ class InvadeActionService
         $landRatioDiff = clamp(($landRatio - 1), -0.5, 0.5);
         $defensiveCasualtiesPercentage += ($landRatioDiff * static::CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD);
 
+        // todo: unit reduce_combat_losses perk (eg dwarf cleric)
+
         // Scale casualties further with invading OP vs target DP
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+
+        // todo: recent hit reduction
 
         // Cap max casualties
         $defensiveCasualtiesPercentage = min(
