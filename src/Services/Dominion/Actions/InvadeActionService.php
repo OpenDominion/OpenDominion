@@ -407,7 +407,8 @@ class InvadeActionService
         $targetDP = $this->militaryCalculator->getDefensivePower($target);
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
-        // todo: unit reduce_combat_losses perk (eg dwarf cleric)
+        // todo: offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
+        // todo: offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
 
         $offensiveUnitsLost = [];
 
@@ -430,6 +431,8 @@ class InvadeActionService
                     continue;
                 }
 
+                // todo: unit fewer_casualties perk (eg human knight)
+
                 $unitsToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage * $slotTotalAmountPercentage);
                 $offensiveUnitsLost[$slot] = $unitsToKill;
 
@@ -449,9 +452,6 @@ class InvadeActionService
                 $offensiveUnitsLost[$slot] = $unitsToKill;
             }
         }
-
-        // todo: offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
-        // todo: offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
 
         foreach ($offensiveUnitsLost as $slot => $amount) {
             $dominion->{"military_unit{$slot}"} -= $amount;
