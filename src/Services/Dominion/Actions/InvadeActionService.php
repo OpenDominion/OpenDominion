@@ -359,6 +359,7 @@ class InvadeActionService
             ));
             $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
 
+            // Reduce attacker prestige gain if the target was hit recently
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
 
             if ($recentlyInvadedCount === 1) {
