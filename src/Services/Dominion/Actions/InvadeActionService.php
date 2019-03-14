@@ -501,7 +501,20 @@ class InvadeActionService
         // Scale casualties further with invading OP vs target DP
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
 
-        // todo: recent hit reduction
+        // Reduce casualties if target has been hit recently
+        $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
+
+        if ($recentlyInvadedCount === 1) {
+            $defensiveCasualtiesPercentage *= 0.8;
+        } elseif ($recentlyInvadedCount === 2) {
+            $defensiveCasualtiesPercentage *= 0.6;
+        } elseif ($recentlyInvadedCount === 3) {
+            $defensiveCasualtiesPercentage *= 0.55;
+        } elseif ($recentlyInvadedCount === 4) {
+            $defensiveCasualtiesPercentage *= 0.45;
+        } elseif ($recentlyInvadedCount >= 5) {
+            $defensiveCasualtiesPercentage *= 0.35;
+        }
 
         // Cap max casualties
         $defensiveCasualtiesPercentage = min(
