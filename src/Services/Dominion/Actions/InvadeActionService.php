@@ -531,6 +531,8 @@ class InvadeActionService
                 continue;
             }
 
+            // todo: unit specific fewer_casualties perk (eg human knight)
+
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage);
             $defensiveUnitsLost[$unit->slot] = $slotLost;
         }
