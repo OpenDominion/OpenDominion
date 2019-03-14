@@ -406,4 +406,18 @@ class MilitaryCalculator
             $this->queueService->getInvasionQueueTotalByResource($dominion, "unit{$slot}")
         );
     }
+
+    /**
+     * Returns the number of time the Dominion was recently invaded.
+     *
+     * 'Recent' refers to the past 24 hours.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getRecentlyInvadedCount(Dominion $dominion): int
+    {
+        // todo
+        return 0;
+    }
 }
