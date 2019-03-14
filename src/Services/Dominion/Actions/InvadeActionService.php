@@ -359,13 +359,21 @@ class InvadeActionService
             ));
             $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
 
-            // todo: If target was successfully invaded recently (within 24 hours), multiply $attackerPrestigeChange by the following
-            // 1 time: 75%
-            // 2 times: 50%
-            // 3 times: 25%
-            // 4 times: -25% (i.e. losing prestige)
-            // 5+ times: -50%
-            // Also needs displaying on the invade page itself if a target got invaded (heavily etc) recently
+            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
+
+            if ($recentlyInvadedCount === 1) {
+                $attackerPrestigeChange *= 0.75;
+            } elseif ($recentlyInvadedCount === 2) {
+                $attackerPrestigeChange *= 0.5;
+            } elseif ($recentlyInvadedCount === 3) {
+                $attackerPrestigeChange *= 0.25;
+            } elseif ($recentlyInvadedCount === 4) {
+                $attackerPrestigeChange *= -0.25;
+            } elseif ($recentlyInvadedCount >= 5) {
+                $attackerPrestigeChange *= -0.5;
+            }
+
+            // todo: Also needs displaying on the invade page itself if a target got invaded (heavily etc) recently
 
             // todo: if wat war, increase $attackerPrestigeChange by +15%
         }
@@ -407,8 +415,8 @@ class InvadeActionService
         $targetDP = $this->militaryCalculator->getDefensivePower($target);
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
-        // todo: offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
-        // todo: offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
+        // todo: global offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
+        // todo: global offensive casualty reduction, step 2: unit bonuses (cleric/shaman, later firewalkers etc) (multiplicative with step 1)
 
         $offensiveUnitsLost = [];
 
@@ -431,7 +439,7 @@ class InvadeActionService
                     continue;
                 }
 
-                // todo: unit fewer_casualties perk (eg human knight)
+                // todo: unit specific fewer_casualties perk (eg human knight, firewalker salamander)
 
                 $unitsToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage * $slotTotalAmountPercentage);
                 $offensiveUnitsLost[$slot] = $unitsToKill;
