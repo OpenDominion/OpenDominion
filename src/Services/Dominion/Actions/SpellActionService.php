@@ -125,7 +125,6 @@ class SpellActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $manaCost, $spellKey, &$result, $target) {
-
             if ($this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $result = $this->castSelfSpell($dominion, $spellKey);
 
@@ -134,8 +133,10 @@ class SpellActionService
 
             } elseif ($this->spellHelper->isBlackOpSpell($spellKey)) {
                 throw new LogicException('Not yet implemented');
+
             } elseif ($this->spellHelper->isWarSpell($spellKey)) {
                 throw new LogicException('Not yet implemented');
+
             } else {
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
@@ -143,7 +144,6 @@ class SpellActionService
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
-
         });
 
         return [
