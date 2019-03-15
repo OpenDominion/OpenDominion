@@ -277,21 +277,6 @@ class InvadeActionService
                 $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
             }
 
-            // MORALE
-
-            // >= 75%+ size: reduce -5% self morale
-            // else < 75% size: reduce morale, linear scale from -5% morale at 75% size to -10%  morale at 40% size
-            // if $invasionSuccessful: reduce target morale by -5%
-            $dominion->morale -= 5;
-            if($landRatio < 0.75) {
-                $additionalMoraleLoss = max(round(((($landRatio - 0.4) * 100) / 7) - 5), -5);
-                $dominion->morale += $additionalMoraleLoss;
-            }
-
-            if($isInvasionSuccessful) {
-                $target->morale -= 5;
-            }
-
             // MISC
 
             // if $invasionSuccessful
@@ -550,7 +535,20 @@ class InvadeActionService
 
     protected function handleMoraleChanges(Dominion $dominion, Dominion $target, array $units): void
     {
-        //
+        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+
+        $dominion->morale -= 5;
+
+        // Increased morale drops for attacking weaker targets
+        if ($range < 75) {
+            $additionalMoraleChange = max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
+            $dominion->morale += $additionalMoraleChange;
+        }
+
+        if ($isInvasionSuccessful) {
+            $target->morale -= 5;
+        }
     }
 
     protected function handleConversions(Dominion $dominion, Dominion $target, array $units): void
