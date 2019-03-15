@@ -184,7 +184,6 @@ class InvadeActionService
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $this->handleDefensiveCasualties($dominion, $target, $units);
             $this->handleLandGrabs($dominion, $target, $units);
-            $this->handleLandLosses($dominion, $target, $units);
             $this->handleMoraleChanges($dominion, $target, $units);
             $this->handleConversions($dominion, $target, $units);
             $this->handleUnitPerks($dominion, $target, $units);
@@ -199,92 +198,6 @@ class InvadeActionService
             // todo: create battle report (from event?)
 
             dd('foo ');
-
-            // todo: refactor everything below this line
-
-            $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
-            $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-
-            // LAND GAINS/LOSSES
-
-            // if $invasionSuccessful
-                // landGrabRatio = 1.0
-                // if mutual war, landGrabRatio = 1.2
-                // if non-mutual war, landGrabRatio = 1.15
-                // if war and peace, landGrabRatio = 1
-                // if peace, landGrabRatio = 0.9
-
-                // calculate total acres of land lost. FORMULA:
-                /*
-                // max(
-                //     floor(
-                //         if(landRatio<0.55) then
-                //             (0.304*landRatio^2-0.227*landRatio+0.048)*attackerLand*landGrabRatio
-                //         elseif(landRatio<0.75) then
-                //             attackerLand*landGrabRatio*(0.154*landRatio - 0.069)
-                //         else
-                //             landGrabRatio*attackerLand*(0.129*landRatio-0.048)
-                //     ,1)
-                // ,10)
-                 */
-
-                // calculate target barren land losses (array)
-                // calculate target buildings destroyed (array), only if target does not have enough barren land buffer, in ratio of buildings constructed per land type
-                // calculate total conquered acres (same acres as target land lost)
-                // calculate land conquers (array) (= target land loss)
-                // calculate extra land generated (array) (always 50% of conquered land, even ratio across all 7 land types) (needs confirmation)
-
-            if($isInvasionSuccessful) {
-                $landGrabRatio = 1;
-                $bonusLandRatio = 1.5;
-                // TODO: check for war/peace
-                $attackerLandWithRatioModifier = $this->landCalculator->getTotalLand($dominion) * $landGrabRatio;
-
-                $landLossPercentage = 0;
-                if($landRatio < 0.55) {
-                    $landLossPercentage = (0.304 * $landRatio ^ 2 - 0.227 * $landRatio + 0.048) * $attackerLandWithRatioModifier;
-                } elseif($landRatio < 0.75) {
-                    $landLossPercentage = (0.154 * $landRatio - 0.069) * $attackerLandWithRatioModifier;
-                } else {
-                    $landLossPercentage = (0.129 * $landRatio - 0.048) * $attackerLandWithRatioModifier;
-                }
-
-                $landLossPercentage = floor($landLossPercentage);
-
-                $landLossPercentage = min(max($landLossPercentage, 10), 15);
-
-                $landLossRatio = $landLossPercentage / 100;
-
-                $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
-
-                $buildingsLostTemp = [];
-                $landGainedPerLandType = [];
-                foreach($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
-                    $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
-                    $landLost = $landAndBuildingsLost['landLost'];
-                    $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
-                    $buildingsLostTemp[$landType] = $buildingsLostForLandType;
-
-                    // Remove land
-                    $target->{'land_' . $landType} -= $landLost;
-                    // Destroy buildings
-                    foreach($buildingsLostForLandType as $buildingType => $buildingsLost) {
-                        $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
-                        $resourceName = "building_{$buildingType}";
-                        $target->$resourceName -= $builtBuildingsToDestroy;
-
-                        $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
-                        $this->queueService->dequeueResource('construction', $target, $resourceName, $buildingsInQueueToRemove);
-                    }
-
-                    $landGained = round($landLost * $bonusLandRatio);
-                    $landGainedPerLandType["land_{$landType}"] = $landGained;
-                }
-
-                $this->queueService->queueResources('invasion', $dominion, $landGainedPerLandType);
-            }
-
-            // MISC
 
             // todo: add battle reports table/mechanic
             $target->save();
@@ -535,14 +448,84 @@ class InvadeActionService
         $target->military_draftees -= (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
     }
 
+    /**
+     * Handles land grabs and losses upon successful invasion.
+     *
+     * todo: description
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @throws Throwable
+     */
     protected function handleLandGrabs(Dominion $dominion, Dominion $target, array $units): void
     {
-        //
-    }
+        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
 
-    protected function handleLandLosses(Dominion $dominion, Dominion $target, array $units): void
-    {
-        //
+        // Nothing to grab if invasion isn't successful :^)
+        if (!$isInvasionSuccessful) {
+            return;
+        }
+
+        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+        $rangeMultiplier = ($range / 100);
+
+        $landGrabRatio = 1;
+        // todo: if mutual war, $landGrabRatio = 1.2
+        // todo: if non-mutual war, $landGrabRatio = 1.15
+        // todo: if peace, $landGrabRatio = 0.9
+        $bonusLandRatio = 1.5;
+
+        $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
+
+        if ($range < 55) {
+            $landLossPercentage = (0.304 * ($rangeMultiplier ^ 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
+        } elseif ($range < 75) {
+            $landLossPercentage = (0.154 * $rangeMultiplier - 0.069) * $attackerLandWithRatioModifier;
+        } else {
+            $landLossPercentage = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
+        }
+
+        $landLossPercentage = (int)floor($landLossPercentage);
+        $landLossPercentage = min(max($landLossPercentage, 10), 15);
+        // clamp 10-15%?
+
+        $landLossRatio = ($landLossPercentage / 100);
+        $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
+
+//        $buildingsLostTemp = [];
+        $landGainedPerLandType = [];
+        foreach ($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
+            $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
+            $landLost = $landAndBuildingsLost['landLost'];
+            $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
+//            $buildingsLostTemp[$landType] = $buildingsLostForLandType;
+
+            // Remove land
+            $target->{"land_$landType"} -= $landLost;
+
+            // Destroy buildings
+            foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
+                $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
+                $resourceName = "building_{$buildingType}";
+                $target->$resourceName -= $builtBuildingsToDestroy;
+
+                $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
+
+                if ($buildingsInQueueToRemove !== 0) {
+                    $this->queueService->dequeueResource('construction', $target, $resourceName, $buildingsInQueueToRemove);
+                }
+            }
+
+            $landGained = (int)round($landLost * $bonusLandRatio);
+            $landGainedPerLandType["land_{$landType}"] = $landGained;
+        }
+
+        $this->queueService->queueResources(
+            'invasion',
+            $dominion,
+            $landGainedPerLandType
+        );
     }
 
     /**
