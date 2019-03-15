@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Clear Sight now mentions if the target was invaded recently, plus roughly how severely
 
 ## [0.5.2-1] - 2019-01-27
 ### Fixed
