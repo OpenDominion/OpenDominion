@@ -177,14 +177,15 @@ class InvadeActionService
 
             // Handle invasion results
             $this->handlePrestigeChanges($dominion, $target, $units);
-            $this->handleOffensiveCasualties($dominion, $target, $units);
+            $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $this->handleDefensiveCasualties($dominion, $target, $units);
             $this->handleLandGrabs($dominion, $target, $units);
             $this->handleLandLosses($dominion, $target, $units);
             $this->handleMoraleChanges($dominion, $target, $units);
             $this->handleConversions($dominion, $target, $units);
             $this->handleUnitPerks($dominion, $target, $units);
-            // todo: insert queues for returning units
+
+            $this->handleReturningUnits($dominion, $survivingUnits);
 
             // todo: add notification for $target
 
@@ -358,7 +359,8 @@ class InvadeActionService
         }
 
         if ($attackerPrestigeChange !== 0) {
-            $slowestTroopsReturnHours = 9; // todo: implement this
+            // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, since $units is input, not surviving units. fix?
+            $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
 
             $this->queueService->queueResources(
                 'invasion',
@@ -385,8 +387,9 @@ class InvadeActionService
      * @param Dominion $dominion
      * @param Dominion $target
      * @param array $units
+     * @return array All the units that survived and will return home
      */
-    protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
+    protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): array
     {
         $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
         $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
@@ -443,6 +446,16 @@ class InvadeActionService
         foreach ($offensiveUnitsLost as $slot => $amount) {
             $dominion->{"military_unit{$slot}"} -= $amount;
         }
+
+        $survivingUnits = $units;
+
+        foreach ($units as $slot => $amount) {
+            if (isset($offensiveUnitsLost[$slot])) {
+                $survivingUnits[$slot] -= $offensiveUnitsLost[$slot];
+            }
+        }
+
+        return $survivingUnits;
     }
 
     /**
@@ -559,6 +572,29 @@ class InvadeActionService
     protected function handleUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
         //
+    }
+
+    /**
+     * Handles the surviving units returning home.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @throws Throwable
+     */
+    protected function handleReturningUnits(Dominion $dominion, array $units): void
+    {
+        foreach ($units as $slot => $amount) {
+            $unitKey = "military_unit{$slot}";
+
+            $dominion->$unitKey -= $amount;
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                [$unitKey => $amount],
+                $this->getUnitReturnHoursForSlot($dominion, $slot)
+            );
+        }
     }
 
     /**
@@ -785,5 +821,45 @@ class InvadeActionService
         }
 
         return $op;
+    }
+
+    /**
+     * Returns the amount of hours a military unit (with a specific slot) takes
+     * to return home after battle.
+     *
+     * @param Dominion $dominion
+     * @param int $slot
+     * @return int
+     */
+    protected function getUnitReturnHoursForSlot(Dominion $dominion, int $slot): int
+    {
+        // todo: impl me
+        return 12;
+    }
+
+    /**
+     * Gets the amount of hours for the slowest unit from an array of units
+     * takes to return home.
+     *
+     * Primarily used to bring prestige home earlier if you send only 9hr
+     * attackers. (Land always takes 12 hrs)
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return int
+     */
+    protected function getSlowestUnitReturnHours(Dominion $dominion, array $units): int
+    {
+        $hours = 12;
+
+        foreach ($units as $slot => $amount) {
+            $hoursForUnit = $this->getUnitReturnHoursForSlot($dominion, $slot);
+
+            if ($hoursForUnit < $hours) {
+                $hours = $hoursForUnit;
+            }
+        }
+
+        return $hours;
     }
 }
