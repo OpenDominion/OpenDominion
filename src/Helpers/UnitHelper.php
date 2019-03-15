@@ -74,4 +74,33 @@ class UnitHelper
 
         return $helpStrings[$unitType] ?: null;
     }
-}
+
+    public function getUnitTypeIconHtml(string $unitType): string
+    {
+        switch ($unitType) {
+            case 'unit1':
+                return '<i class="ra ra-sword text-green"></i>';
+
+            case 'unit2':
+                return '<i class="ra ra-shield text-green"></i>';
+
+            case 'unit3':
+                return '<i class="ra ra-shield text-light-blue"></i>';
+
+            case 'unit4':
+                return '<i class="ra ra-sword text-light-blue"></i>';
+
+            case 'spies':
+                return '<i class="fa fa-user-secret text-green"></i>';
+
+            case 'wizards':
+                return '<i class="ra ra-fairy-wand text-green"></i>';
+
+            case 'archmages':
+                return '<i class="ra ra-fairy-wand text-light-blue"></i>';
+
+            default:
+                return '';
+        }
+    }
+    }

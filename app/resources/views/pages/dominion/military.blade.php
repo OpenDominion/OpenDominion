@@ -38,8 +38,10 @@
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                                     <tr>
                                         <td>
-                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
-                                            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}"></i>
+                                            {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                                {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                            </span>
                                         </td>
                                         <td class="text-center">
                                             @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))

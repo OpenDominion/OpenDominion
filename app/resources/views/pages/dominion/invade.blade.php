@@ -65,10 +65,10 @@
                                 <thead>
                                     <tr>
                                         <th>Unit</th>
-                                        <th class="text-center">Raw OP / DP</th>
+                                        <th class="text-center">OP / DP</th>
                                         <th class="text-center">Available</th>
                                         <th class="text-center">Send</th>
-                                        <th class="text-center">OP / DP</th>
+                                        <th class="text-center">Total OP / DP</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,8 +85,10 @@
 
                                         <tr>
                                             <td>
-                                                {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
-                                                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}"></i>
+                                                {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}") !!}
+                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
+                                                    {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
+                                                </span>
                                             </td>
                                             <td class="text-center">
                                                 {{ number_format($unit->power_offense) }}

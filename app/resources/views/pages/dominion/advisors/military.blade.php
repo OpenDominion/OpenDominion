@@ -33,7 +33,12 @@
                         <tbody>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
                                 <tr>
-                                    <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
+                                    <td>
+                                        {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                        </span>
+                                    </td>
                                     @for ($i = 1; $i <= 12; $i++)
                                         <td class="text-center">
                                             @if ($queueService->getTrainingQueueAmount($selectedDominion, "military_{$unitType}", $i) === 0)
@@ -82,7 +87,12 @@
                             @foreach (range(1, 4) as $slot)
                                 @php($unitType = ('unit' . $slot))
                                 <tr>
-                                    <td>{{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}</td>
+                                    <td>
+                                        {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                        </span>
+                                    </td>
                                     @for ($i = 1; $i <= 12; $i++)
                                         <td class="text-center">
                                             @if ($queueService->getInvasionQueueAmount($selectedDominion, "military_{$unitType}", $i) === 0)
