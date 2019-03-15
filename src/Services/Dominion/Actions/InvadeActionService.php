@@ -407,10 +407,7 @@ class InvadeActionService
         $offensiveUnitsLost = [];
 
         if ($isInvasionSuccessful) {
-            $totalUnitsSent = 0;
-            foreach ($units as $amount) {
-                $totalUnitsSent += $amount; // todo: refactor to array_sum($units)?
-            }
+            $totalUnitsSent = array_sum($units);
 
             $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
             $OPNeededToBreakTarget = ($targetDP + 1);
