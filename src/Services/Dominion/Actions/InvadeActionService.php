@@ -583,12 +583,12 @@ class InvadeActionService
 
     protected function handleConversions(Dominion $dominion, Dominion $target, array $units): void
     {
-        //
+        // todo for later when I add spud/lycan
     }
 
     protected function handleUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
-        //
+        // todo: plunder
     }
 
     /**
