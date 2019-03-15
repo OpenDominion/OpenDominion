@@ -148,6 +148,9 @@ class InvadeActionService
                 throw new RuntimeException('Nice try, but you cannot invade your realmies');
             }
 
+            // Sanitize input
+            $units = array_map('intval', array_filter($units));
+
             if (!$this->hasAnyOP($dominion, $units)) {
                 throw new RuntimeException('You need to send at least some units');
             }
