@@ -196,6 +196,8 @@ class InvadeActionService
             // todo: create event
             // todo: post to both TCs
 
+            // todo: create battle report (from event?)
+
             dd('foo ');
 
             // todo: refactor everything below this line
@@ -284,22 +286,18 @@ class InvadeActionService
 
             // MISC
 
-            // if $invasionSuccessful
-                // hobbos and other special units that trigger something upon invading
-                // later: converts
-
-            // insert queues for returning units, incoming land and incoming prestige
-            // send notification to $target
-            // todo: post to both TCs
-
-            // shit for elsewhere:
-
             // todo: add battle reports table/mechanic
             $target->save();
             $dominion->save();
         });
 
-        return [];
+        return [
+            'message' => '',
+            'data' => [
+                //
+            ],
+            'redirect' => null,
+        ];
     }
 
     /**
@@ -539,7 +537,7 @@ class InvadeActionService
 
     protected function handleLandGrabs(Dominion $dominion, Dominion $target, array $units): void
     {
-
+        //
     }
 
     protected function handleLandLosses(Dominion $dominion, Dominion $target, array $units): void
