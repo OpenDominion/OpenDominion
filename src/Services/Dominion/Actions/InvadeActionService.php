@@ -304,11 +304,6 @@ class InvadeActionService
 
             // shit for elsewhere:
 
-            // todo: show message in Clear Sight at the bottom for dominions that have been invaded too much recently:
-                // 1-2 times: "This dominion has been invaded in recent times"
-                // 3-4 times: "This dominion has been invaded heavily in recent times"
-                // 5+ times: "This dominion has been invaded extremely heavily in recent times"
-
             // todo: add battle reports table/mechanic
             $target->save();
             $dominion->save();
@@ -373,8 +368,6 @@ class InvadeActionService
             } elseif ($recentlyInvadedCount >= 5) {
                 $attackerPrestigeChange *= -0.5;
             }
-
-            // todo: Also needs displaying on the invade page itself if a target got invaded (heavily etc) recently
 
             // todo: if wat war, increase $attackerPrestigeChange by +15%
         }

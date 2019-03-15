@@ -307,6 +307,8 @@ class SpellActionService
                     'military_unit3' => $this->militaryCalculator->getTotalUnitsForSlot($target, 3),
                     'military_unit4' => $this->militaryCalculator->getTotalUnitsForSlot($target, 4),
 
+                    'recently_invaded_count' => $this->militaryCalculator->getRecentlyInvadedCount($target),
+
                 ];
                 break;
 
