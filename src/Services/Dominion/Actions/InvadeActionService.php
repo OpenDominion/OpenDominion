@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
@@ -846,8 +847,18 @@ class InvadeActionService
      */
     protected function getUnitReturnHoursForSlot(Dominion $dominion, int $slot): int
     {
-        // todo: impl me
-        return 12;
+        $hours = 12;
+
+        /** @var Unit $unit */
+        $unit = $dominion->race->units->filter(function ($unit) use ($slot) {
+            return ($unit->slot === $slot);
+        })->first();
+
+        if (($unit->perkType !== null) && ($unit->perkType->key === 'faster_return')) {
+            $hours -= (int)$unit->unit_perk_type_values;
+        }
+
+        return $hours;
     }
 
     /**
@@ -866,6 +877,10 @@ class InvadeActionService
         $hours = 12;
 
         foreach ($units as $slot => $amount) {
+            if ($amount === 0) {
+                continue;
+            }
+
             $hoursForUnit = $this->getUnitReturnHoursForSlot($dominion, $slot);
 
             if ($hoursForUnit < $hours) {
