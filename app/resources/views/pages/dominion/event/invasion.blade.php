@@ -68,29 +68,37 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($event->data['defender']['unitsLost'] as $unitSlot => $amount)
-                                        @if ($amount === 0)
-                                            @continue
-                                        @endif
-                                        @php
-                                            $unitType = (($unitSlot !== 'draftees') ? "unit{$unitSlot}" : 'draftees');
-                                        @endphp
+                                    @if (array_sum($event->data['defender']['unitsLost']) === 0)
                                         <tr>
-                                            <td>
-                                                {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->target->race) }}">
-                                                    @if ($unitType === 'draftees')
-                                                        Draftees
-                                                    @else
-                                                        {{ $event->target->race->units()->where('slot', $unitSlot)->first()->name }}
-                                                    @endif
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {{ number_format($amount) }}
+                                            <td colspan="2" class="text-center">
+                                                <em>None</em>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @else
+                                        @foreach ($event->data['defender']['unitsLost'] as $unitSlot => $amount)
+                                            @if ($amount === 0)
+                                                @continue
+                                            @endif
+                                            @php
+                                                $unitType = (($unitSlot !== 'draftees') ? "unit{$unitSlot}" : 'draftees');
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                                    <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->target->race) }}">
+                                                        @if ($unitType === 'draftees')
+                                                            Draftees
+                                                        @else
+                                                            {{ $event->target->race->units()->where('slot', $unitSlot)->first()->name }}
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {{ number_format($amount) }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -109,15 +117,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($event->data['attacker']['landConquered'] as $landType => $amount)
-                                        @if ($amount === 0)
-                                            @continue
-                                        @endif
+                                    @if (!isset($event->data['attacker']['landConquered']))
                                         <tr>
-                                            <td>{{ ucfirst($landType) }}</td>
-                                            <td>{{ number_format($amount) }}</td>
+                                            <td colspan="2" class="text-center">
+                                                <em>None</em>
+                                            </td>
                                         </tr>
-                                    @endforeach
+                                    @else
+                                        @foreach ($event->data['attacker']['landConquered'] as $landType => $amount)
+                                            @if ($amount === 0)
+                                                @continue
+                                            @endif
+                                            <tr>
+                                                <td>{{ ucfirst($landType) }}</td>
+                                                <td>{{ number_format($amount) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
