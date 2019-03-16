@@ -78,6 +78,9 @@ class UnitHelper
     public function getUnitTypeIconHtml(string $unitType): string
     {
         switch ($unitType) {
+            case 'draftees':
+                return '<i class="fa fa-user text-light-blue"></i>';
+
             case 'unit1':
                 return '<i class="ra ra-sword text-green"></i>';
 

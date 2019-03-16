@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -91,6 +92,22 @@ class InvadeActionService
     /** @var QueueService */
     protected $queueService;
 
+    /** @var array Invasion result array. todo: Should probably be refactored later to its own class */
+    protected $invasionResult = [
+        'result' => [],
+        'attacker' => [
+            'unitsLost' => [],
+        ],
+        'defender' => [
+            'unitsLost' => [],
+        ],
+    ];
+
+    // todo: refactor
+    /** @var GameEvent */
+    protected $invasionEvent;
+
+    // todo: refactor to use $invasionResult instead
     /** @var int The amount of land lost during the invasion */
     protected $landLost = 0;
 
@@ -206,9 +223,24 @@ class InvadeActionService
             $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
             $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
-            // todo: create event
-            // todo: create battle report (from event?)
+            $this->invasionResult['result']['success'] = $isInvasionSuccessful;
 
+            if ($isOverwhelmed) {
+                $this->invasionResult['result']['overwhelmed'] = $isOverwhelmed;
+            }
+
+            // todo: move to GameEventService
+            $this->invasionEvent = GameEvent::create([
+                'round_id' => $dominion->round_id,
+                'source_type' => Dominion::class,
+                'source_id' => $dominion->id,
+                'target_type' => Dominion::class,
+                'target_id' => $target->id,
+                'type' => 'invasion',
+                'data' => $this->invasionResult,
+            ]);
+
+            // todo: move to its own method
             // Notification
             if ($isInvasionSuccessful) {
                 $this->notificationService->queueNotification('received_invasion', [
@@ -226,12 +258,12 @@ class InvadeActionService
                 ]);
             }
 
-            // todo: post to both TCs
+            // todo: post to both TCs?
 
             // todo: message:
             // Your army fights valiantly, and defeats the forces of Darth Vader, conquering 403 new acres of land! During the invasion, your troops also discovered 201 acres of land.
 
-            dd('foo ');
+//            dd('foo ');
 
 //            $target->save();
 //            $dominion->save();
@@ -239,12 +271,28 @@ class InvadeActionService
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
 
+        if ($this->invasionResult['result']['success']) {
+            $message = sprintf(
+                'Your army fights valiantly, and defeats the forces of %s (#%s), conquering %s new acres of land! During the invasion, your troops also discovered %s acres of land.',
+                $target->name,
+                $target->realm->number,
+                number_format(array_sum($this->invasionResult['attacker']['landConquered'])),
+                number_format(array_sum($this->invasionResult['attacker']['landGenerated']))
+            );
+        } else {
+            $message = sprintf(
+                'Your army fails to defeat the forces of %s (#%s).',
+                $target->name,
+                $target->realm->number,
+            );
+        }
+
         return [
-            'message' => '',
-            'data' => [
-                //
-            ],
-            'redirect' => null,
+            'message' => $message,
+//            'data' => [
+//                //
+//            ],
+            'redirect' => route('dominion.event', ['invasion', $this->invasionEvent->id])
         ];
     }
 
@@ -305,6 +353,8 @@ class InvadeActionService
                 $attackerPrestigeChange *= -0.5;
             }
 
+            $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
+
             // todo: if wat war, increase $attackerPrestigeChange by +15%
         }
 
@@ -318,10 +368,14 @@ class InvadeActionService
                 ['prestige' => $attackerPrestigeChange],
                 $slowestTroopsReturnHours
             );
+
+            $this->invasionResult['attacker']['prestigeChange'] = $attackerPrestigeChange;
         }
 
         if ($targetPrestigeChange !== 0) {
             $target->prestige += $targetPrestigeChange;
+
+            $this->invasionResult['defender']['prestigeChange'] = $targetPrestigeChange;
         }
     }
 
@@ -392,6 +446,8 @@ class InvadeActionService
 
         foreach ($offensiveUnitsLost as $slot => $amount) {
             $dominion->{"military_unit{$slot}"} -= $amount;
+
+            $this->invasionResult['attacker']['unitsLost'][$slot] = $amount;
         }
 
         $survivingUnits = $units;
@@ -463,6 +519,13 @@ class InvadeActionService
 
         $defensiveUnitsLost = [];
 
+        // Draftees
+        $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
+        $target->military_draftees -= $drafteesLost;
+
+        $this->unitsLost += $drafteesLost; // todo: refactor
+        $this->invasionResult['defender']['unitsLost']['draftees'] = $drafteesLost;
+
         // Non-draftees
         foreach ($target->race->units as $unit) {
             if ($unit->power_defense === 0.0) {
@@ -474,18 +537,14 @@ class InvadeActionService
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage);
             $defensiveUnitsLost[$unit->slot] = $slotLost;
 
-            $this->unitsLost += $slotLost;
+            $this->unitsLost += $slotLost; // todo: refactor
         }
 
         foreach ($defensiveUnitsLost as $slot => $amount) {
             $target->{"military_unit{$slot}"} -= $amount;
+
+            $this->invasionResult['defender']['unitsLost'][$slot] = $amount;
         }
-
-        // Draftees
-        $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
-        $target->military_draftees -= $drafteesLost;
-
-        $this->unitsLost += $drafteesLost;
     }
 
     /**
@@ -555,8 +614,23 @@ class InvadeActionService
                 }
             }
 
-            $landGained = (int)round($landLost * $bonusLandRatio);
+            $landConquered = (int)round($landLost);
+            $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
+            $landGained = ($landConquered + $landGenerated);
+
             $landGainedPerLandType["land_{$landType}"] = $landGained;
+
+            if (!isset($this->invasionResult['attacker']['landConquered'])) {
+                $this->invasionResult['attacker']['landConquered'] = [];
+            }
+
+            $this->invasionResult['attacker']['landConquered'][$landType] = $landConquered;
+
+            if (!isset($this->invasionResult['attacker']['landGenerated'])) {
+                $this->invasionResult['attacker']['landGenerated'] = [];
+            }
+
+            $this->invasionResult['attacker']['landGenerated'][$landType] = $landGenerated;
         }
 
         $this->landLost = $acresLost;

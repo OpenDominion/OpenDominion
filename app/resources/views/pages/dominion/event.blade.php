@@ -1,9 +1,9 @@
 @extends('layouts.master')
 
-@section('page-header', 'Battle Result')
+@section('page-header', 'Event')
 
 @section('content')
-    @if ($battleResult->result->success)
+    @if ($event->data['result']['success'])
         <div class="alert alert-success">
             <p>You successfully invaded {{ $defenderDominion->name }} (#{{ $defenderDominion->realm->number }}), conquering {{ number_format(collect($battleResult->attacker->landConquered)->sum()) }} acres of land.</p>
 
