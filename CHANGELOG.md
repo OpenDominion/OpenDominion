@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Clear Sight now mentions if the target was invaded recently, plus roughly how severely
 - Military units now have a role icon next to them
+- Added Temple building
 
 ### Changed
 - Unit description tooltips have been moved from the question mark icon behind their names, to on the unit name
