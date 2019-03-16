@@ -479,18 +479,16 @@ class InvadeActionService
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
 
         if ($range < 55) {
-            $landLossPercentage = (0.304 * ($rangeMultiplier ^ 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
+            $acresLost = (0.304 * ($rangeMultiplier ^ 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
         } elseif ($range < 75) {
-            $landLossPercentage = (0.154 * $rangeMultiplier - 0.069) * $attackerLandWithRatioModifier;
+            $acresLost = (0.154 * $rangeMultiplier - 0.069) * $attackerLandWithRatioModifier;
         } else {
-            $landLossPercentage = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
+            $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
 
-        $landLossPercentage = (int)floor($landLossPercentage);
-        $landLossPercentage = min(max($landLossPercentage, 10), 15);
-        // clamp 10-15%?
+        $acresLost = (int)max(floor($acresLost), 10);
 
-        $landLossRatio = ($landLossPercentage / 100);
+        $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
 //        $buildingsLostTemp = [];
