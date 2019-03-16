@@ -206,30 +206,33 @@ class InvadeActionService
             $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
             $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
+            // todo: create event
+            // todo: create battle report (from event?)
+
             // Notification
             if ($isInvasionSuccessful) {
                 $this->notificationService->queueNotification('received_invasion', [
                     'attackerDominionId' => $dominion->id,
                     'landLost' => $this->landLost,
                     'unitsLost' => $this->unitsLost,
+                    // todo: event/battlereport guid
                 ]);
             } else {
                 $this->notificationService->queueNotification('repelled_invasion', [
                     'attackerDominionId' => $dominion->id,
                     'attackerWasOverwhelmed' => $isOverwhelmed,
                     'unitsLost' => $this->unitsLost,
+                    // todo: event/battlereport guid
                 ]);
             }
 
-            // todo: create event
             // todo: post to both TCs
 
-            // todo: create battle report (from event?)
+            // todo: message:
             // Your army fights valiantly, and defeats the forces of Darth Vader, conquering 403 new acres of land! During the invasion, your troops also discovered 201 acres of land.
 
             dd('foo ');
 
-            // todo: add battle reports table/mechanic
 //            $target->save();
 //            $dominion->save();
         });
