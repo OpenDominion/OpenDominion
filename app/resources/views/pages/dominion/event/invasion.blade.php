@@ -26,6 +26,7 @@
                                 <thead>
                                     <tr>
                                         <th colspan="2" class="text-center">
+                                            {{-- todo: if $event->source === $selectedDominion then show 'Your Losses', same with $event->target in 2nd column and 'Land Lost' in 3rd --}}
                                             {{ $event->source->name }} (#{{ $event->source->realm->number }})'s Losses
                                         </th>
                                     </tr>
