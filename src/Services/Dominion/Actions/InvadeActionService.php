@@ -295,7 +295,7 @@ class InvadeActionService
 //            'data' => [
 //                //
 //            ],
-            'redirect' => route('dominion.event', ['invasion', $this->invasionEvent->id])
+            'redirect' => route('dominion.event', [$this->invasionEvent->id])
         ];
     }
 
