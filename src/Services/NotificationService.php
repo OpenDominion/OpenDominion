@@ -57,7 +57,6 @@ class NotificationService
             switch ($category) {
                 case 'general':
                     throw new \LogicException('todo');
-
                 case 'hourly_dominion':
                     $dominion->notify(new HourlyEmailDigestNotification($emailNotifications));
                     break;
