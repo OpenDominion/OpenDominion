@@ -14,6 +14,16 @@ class Realm extends AbstractModel
         return $this->hasMany(Dominion::class);
     }
 
+//    public function gameEventsSource()
+//    {
+//        return $this->morphMany(GameEvent::class, 'source');
+//    }
+//
+//    public function gameEventsTarget()
+//    {
+//        return $this->morphMany(GameEvent::class, 'target');
+//    }
+
     public function infoOps()
     {
         return $this->hasMany(InfoOp::class, 'source_realm_id');

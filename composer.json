@@ -20,7 +20,8 @@
     "spatie/laravel-permission": "~2.9",
     "superbalist/laravel-google-cloud-storage": "^2.0",
     "symfony/yaml": "^4.1",
-    "thomaswelton/laravel-gravatar": "~1.0"
+    "thomaswelton/laravel-gravatar": "~1.0",
+    "webpatser/laravel-uuid": "^3.0"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "~3.1",
