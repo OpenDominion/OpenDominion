@@ -79,7 +79,7 @@ class UnitHelper
     {
         switch ($unitType) {
             case 'draftees':
-                return '<i class="fa fa-user text-light-blue"></i>';
+                return '<i class="fa fa-user text-green"></i>';
 
             case 'unit1':
                 return '<i class="ra ra-sword text-green"></i>';
