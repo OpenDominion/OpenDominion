@@ -134,10 +134,14 @@ class TickService
                     $dominion->$resource += $amount;
                 }
 
-                // todo: returning units from invasion
-                // if source = invasion and type contains military_unit, then queue notification returning_completed instead
-
-                $this->notificationService->queueNotification("{$source}_completed", $queueResult);
+                // todo: hacky hacky. refactor me pls
+                if ($source === 'invasion') {
+                    if (isset($resource) && starts_with($resource, 'military_unit')) {
+                        $this->notificationService->queueNotification('returning_completed', $queueResult);
+                    }
+                } else {
+                    $this->notificationService->queueNotification("{$source}_completed", $queueResult);
+                }
             }
         }
 

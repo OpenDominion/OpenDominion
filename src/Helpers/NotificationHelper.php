@@ -61,7 +61,7 @@ class NotificationHelper
                 'route' => route('dominion.military'),
                 'iconClass' => 'ra ra-muscle-up text-green',
             ],
-            'returning_completed' => [ // todo: was: invasion_completed. need refactor
+            'returning_completed' => [
                 'label' => 'Units returned from battle',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'route' => route('dominion.military'),
