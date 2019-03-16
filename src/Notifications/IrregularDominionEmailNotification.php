@@ -59,7 +59,7 @@ class IrregularDominionEmailNotification extends Notification implements ShouldQ
             ->subject('OpenDominion Dominion Event')
             ->greeting('Dominion Event at ' . $this->now->format('D, M j, Y H:00'))
             ->line('Hello ' . $dominion->user->display_name . '!')
-            ->line('The following events just occurred in your dominion *' . $dominion->name . '*:');
+            ->line('The following dominion event just occurred in your dominion *' . $dominion->name . '*:');
 
         foreach ($this->notifications as $notification) {
             $mailMessage = $mailMessage->line('- ' . $this->notificationHelper->getNotificationMessage(
