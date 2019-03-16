@@ -486,6 +486,21 @@ class InvadeActionService
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
 
+        // Reduce amount of acres lost/grabbed if target was hit recently
+        $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
+
+        if ($recentlyInvadedCount === 1) {
+            $acresLost *= 0.8;
+        } elseif ($recentlyInvadedCount === 2) {
+            $acresLost *= 0.6;
+        } elseif ($recentlyInvadedCount === 3) {
+            $acresLost *= 0.55;
+        } elseif ($recentlyInvadedCount === 4) {
+            $acresLost *= 0.45;
+        } elseif ($recentlyInvadedCount >= 5) {
+            $acresLost *= 0.35;
+        }
+
         $acresLost = (int)max(floor($acresLost), 10);
 
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
