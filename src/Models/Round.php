@@ -17,6 +17,11 @@ class Round extends AbstractModel
         return $this->hasManyThrough(Dominion::class, Realm::class);
     }
 
+    public function gameEvents()
+    {
+        return $this->hasMany(GameEvent::class);
+    }
+
     public function league()
     {
         return $this->hasOne(RoundLeague::class, 'id', 'round_league_id');

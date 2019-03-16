@@ -80,6 +80,16 @@ class Dominion extends AbstractModel
 
     // todo: info op target/source?
 
+    public function gameEventsSource()
+    {
+        return $this->morphMany(GameEvent::class, 'source');
+    }
+
+    public function gameEventsTarget()
+    {
+        return $this->morphMany(GameEvent::class, 'target');
+    }
+
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
