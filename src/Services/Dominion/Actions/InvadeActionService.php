@@ -210,19 +210,21 @@ class InvadeActionService
             }
 
             // Handle invasion results
+            $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+            $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+
             $this->handlePrestigeChanges($dominion, $target, $units);
-            $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
-            $this->handleDefensiveCasualties($dominion, $target, $units);
             $this->handleLandGrabs($dominion, $target, $units);
             $this->handleMoraleChanges($dominion, $target, $units);
             $this->handleConversions($dominion, $target, $units);
             $this->handleUnitPerks($dominion, $target, $units);
 
+            $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
+            $this->handleDefensiveCasualties($dominion, $target, $units);
+
             $this->handleReturningUnits($dominion, $survivingUnits);
 
-            $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-            $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
-
+            // todo: refactor
             $this->invasionResult['result']['success'] = $isInvasionSuccessful;
 
             if ($isOverwhelmed) {
@@ -260,15 +262,13 @@ class InvadeActionService
 
             // todo: post to both TCs?
 
-            // todo: message:
-            // Your army fights valiantly, and defeats the forces of Darth Vader, conquering 403 new acres of land! During the invasion, your troops also discovered 201 acres of land.
-
 //            dd('foo ');
 
 //            $target->save();
 //            $dominion->save();
         });
 
+//        $this->notificationService->sendNotifications($dominion, 'irregular_dominion'); // todo: remove me
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
 
         if ($this->invasionResult['result']['success']) {
@@ -279,16 +279,19 @@ class InvadeActionService
                 number_format(array_sum($this->invasionResult['attacker']['landConquered'])),
                 number_format(array_sum($this->invasionResult['attacker']['landGenerated']))
             );
+            $alertType = 'success';
         } else {
             $message = sprintf(
                 'Your army fails to defeat the forces of %s (#%s).',
                 $target->name,
                 $target->realm->number,
             );
+            $alertType = 'danger';
         }
 
         return [
             'message' => $message,
+            'alert-type' => $alertType,
 //            'data' => [
 //                //
 //            ],
