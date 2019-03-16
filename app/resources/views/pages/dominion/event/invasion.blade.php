@@ -142,6 +142,13 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
+                            {{-- todo: target recently invaded message? --}}
+
+                            @if (isset($event->data['result']['overwhelmed']))
+                                <p class="text-center text-red">
+                                    Because you were severely outmatched, you suffered extra casualties.
+                                </p>
+                            @endif
 
                             @if (isset($event->data['attacker']['prestigeChange']))
                                 @php
@@ -157,14 +164,6 @@
                                     </p>
                                 @endif
                             @endif
-
-                            @if (isset($event->data['result']['overwhelmed']))
-                                <p class="text-center text-red">
-                                    Because you were severely outmatched, you suffered extra casualties.
-                                </p>
-                            @endif
-
-                            {{-- todo: target recently invaded message? --}}
                         </div>
                     </div>
                 </div>
