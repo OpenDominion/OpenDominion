@@ -3,6 +3,7 @@
 namespace OpenDominion\Helpers;
 
 use LogicException;
+use OpenDominion\Models\Dominion;
 
 class NotificationHelper
 {
@@ -11,7 +12,7 @@ class NotificationHelper
         return [
             'general' => $this->getGeneralTypes(),
             'hourly_dominion' => $this->getHourlyDominionTypes(),
-//            'irregular_dominion' => $this->getIrregularDominionTypes(),
+            'irregular_dominion' => $this->getIrregularDominionTypes(),
 //            'irregular_realm' => $this->getIrregularRealmTypes(),
         ];
     }
@@ -21,7 +22,7 @@ class NotificationHelper
         return [
             'general' => 'General Notifications',
             'hourly_dominion' => 'Hourly Dominion Notifications',
-//            'irregular_dominion' => 'Irregular Dominion Notifications',
+            'irregular_dominion' => 'Irregular Dominion Notifications',
 //            'irregular_realm' => 'Irregular Realm Notifications',
         ][$key];
     }
@@ -60,8 +61,8 @@ class NotificationHelper
                 'route' => route('dominion.military'),
                 'iconClass' => 'ra ra-muscle-up text-green',
             ],
-            'invasion_completed' => [
-                'label' => 'Invasion completed',
+            'returning_completed' => [ // todo: was: invasion_completed. need refactor
+                'label' => 'Units returned from battle',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'route' => route('dominion.military'),
                 'iconClass' => 'ra ra-player-dodge text-green',
@@ -92,31 +93,35 @@ class NotificationHelper
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-crossed-swords text-red',
             ],
             'repelled_invasion' => [
                 'label' => 'Your dominion repelled an invasion',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-crossed-swords text-orange',
             ],
-            'received_spy_op' => [
-                'label' => 'Hostile spy operation received',
-                'defaults' => ['email' => false, 'ingame' => true],
-            ],
+//            'received_spy_op' => [
+//                'label' => 'Hostile spy operation received',
+//                'defaults' => ['email' => false, 'ingame' => true],
+//            ],
             'repelled_spy_op' => [
                 'label' => 'Hostile spy operation repelled',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'fa fa-user-secret text-orange',
             ],
-            'received_hostile_spell' => [
-                'label' => 'Hostile spell received',
-                'defaults' => ['email' => false, 'ingame' => true],
-            ],
+//            'received_hostile_spell' => [
+//                'label' => 'Hostile spell received',
+//                'defaults' => ['email' => false, 'ingame' => true],
+//            ],
             'repelled_hostile_spell' => [
                 'label' => 'Hostile spell deflected',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-fairy-wand text-orange',
             ],
-            'scripted' => [
-                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
-                'defaults' => ['email' => false, 'ingame' => true],
-            ],
+//            'scripted' => [
+//                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
+//                'defaults' => ['email' => false, 'ingame' => true],
+//            ],
         ];
     }
 
@@ -246,7 +251,34 @@ class NotificationHelper
                     str_plural('unit', $units)
                 );
 
-            // todo: irregular etc
+            case 'irregular_dominion.received_invasion':
+                $attackerDominion = Dominion::with('realm')->findOrFail($data['attackerDominionId']);
+
+                return sprintf(
+                    'An army from %s (#%s) invaded our lands, conquering %s acres of land! We lost %s units during the battle.',
+                    $attackerDominion->name,
+                    $attackerDominion->realm->number,
+                    number_format($data['landLost']),
+                    number_format($data['unitsLost'])
+                );
+
+            case 'irregular_dominion.repelled_invasion':
+                $attackerDominion = Dominion::with('realm')->findOrFail($data['attackerDominionId']);
+
+                return sprintf(
+                    'Forces from %s (#%s) invaded our lands, but our army drove them back! We lost %s units during the battle.',
+                    $attackerDominion->name,
+                    $attackerDominion->realm->number,
+                    number_format($data['unitsLost'])
+                );
+
+//            case 'irregular_dominion.repelled_spy_op':
+//                return sprintf();
+
+//            case 'irregular_dominion.repelled_hostile_spell':
+//                return sprintf();
+
+            // todo: other irregular etc
 
             default:
                 throw new LogicException("Unknown WebNotification message for {$category}.{$type}");

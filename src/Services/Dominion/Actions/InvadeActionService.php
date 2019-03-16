@@ -11,6 +11,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -78,6 +79,9 @@ class InvadeActionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var NotificationService */
+    protected $notificationService;
+
     /** @var ProtectionService */
     protected $protectionService;
 
@@ -87,12 +91,19 @@ class InvadeActionService
     /** @var QueueService */
     protected $queueService;
 
+    /** @var int The amount of land lost during the invasion */
+    protected $landLost = 0;
+
+    /** @var int The amount of units lost during the invasion */
+    protected $unitsLost = 0;
+
     /**
      * InvadeActionService constructor.
      *
      * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param NotificationService $notificationService
      * @param ProtectionService $protectionService
      * @param RangeCalculator $rangeCalculator
      * @param QueueService $queueService
@@ -101,6 +112,7 @@ class InvadeActionService
         BuildingCalculator $buildingCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
+        NotificationService $notificationService,
         ProtectionService $protectionService,
         RangeCalculator $rangeCalculator,
         QueueService $queueService)
@@ -108,6 +120,7 @@ class InvadeActionService
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->notificationService = $notificationService;
         $this->protectionService = $protectionService;
         $this->rangeCalculator = $rangeCalculator;
         $this->queueService = $queueService;
@@ -190,19 +203,38 @@ class InvadeActionService
 
             $this->handleReturningUnits($dominion, $survivingUnits);
 
-            // todo: add notification for $target
+            $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+            $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+
+            // Notification
+            if ($isInvasionSuccessful) {
+                $this->notificationService->queueNotification('received_invasion', [
+                    'attackerDominionId' => $dominion->id,
+                    'landLost' => $this->landLost,
+                    'unitsLost' => $this->unitsLost,
+                ]);
+            } else {
+                $this->notificationService->queueNotification('repelled_invasion', [
+                    'attackerDominionId' => $dominion->id,
+                    'attackerWasOverwhelmed' => $isOverwhelmed,
+                    'unitsLost' => $this->unitsLost,
+                ]);
+            }
 
             // todo: create event
             // todo: post to both TCs
 
             // todo: create battle report (from event?)
+            // Your army fights valiantly, and defeats the forces of Darth Vader, conquering 403 new acres of land! During the invasion, your troops also discovered 201 acres of land.
 
             dd('foo ');
 
             // todo: add battle reports table/mechanic
-            $target->save();
-            $dominion->save();
+//            $target->save();
+//            $dominion->save();
         });
+
+        $this->notificationService->sendNotifications($target, 'irregular_dominion');
 
         return [
             'message' => '',
@@ -438,6 +470,8 @@ class InvadeActionService
 
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage);
             $defensiveUnitsLost[$unit->slot] = $slotLost;
+
+            $this->unitsLost += $slotLost;
         }
 
         foreach ($defensiveUnitsLost as $slot => $amount) {
@@ -445,7 +479,10 @@ class InvadeActionService
         }
 
         // Draftees
-        $target->military_draftees -= (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
+        $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
+        $target->military_draftees -= $drafteesLost;
+
+        $this->unitsLost += $drafteesLost;
     }
 
     /**
@@ -486,21 +523,6 @@ class InvadeActionService
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
 
-        // Reduce amount of acres lost/grabbed if target was hit recently
-        $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
-
-        if ($recentlyInvadedCount === 1) {
-            $acresLost *= 0.8;
-        } elseif ($recentlyInvadedCount === 2) {
-            $acresLost *= 0.6;
-        } elseif ($recentlyInvadedCount === 3) {
-            $acresLost *= 0.55;
-        } elseif ($recentlyInvadedCount === 4) {
-            $acresLost *= 0.45;
-        } elseif ($recentlyInvadedCount >= 5) {
-            $acresLost *= 0.35;
-        }
-
         $acresLost = (int)max(floor($acresLost), 10);
 
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
@@ -533,6 +555,8 @@ class InvadeActionService
             $landGained = (int)round($landLost * $bonusLandRatio);
             $landGainedPerLandType["land_{$landType}"] = $landGained;
         }
+
+        $this->landLost = $acresLost;
 
         $this->queueService->queueResources(
             'invasion',

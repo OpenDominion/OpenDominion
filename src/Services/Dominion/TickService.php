@@ -134,6 +134,8 @@ class TickService
                     $dominion->$resource += $amount;
                 }
 
+                // todo: returning units from invasion
+
                 $this->notificationService->queueNotification("{$source}_completed", $queueResult);
             }
         }

@@ -4,6 +4,7 @@ namespace OpenDominion\Services;
 
 use OpenDominion\Models\Dominion;
 use OpenDominion\Notifications\HourlyEmailDigestNotification;
+use OpenDominion\Notifications\IrregularDominionEmailNotification;
 use OpenDominion\Notifications\WebNotification;
 
 class NotificationService
@@ -39,11 +40,11 @@ class NotificationService
         $emailNotifications = [];
 
         foreach ($this->notifications as $type => $data) {
-            if ($user->getSetting("notifications.hourly_dominion.{$type}.ingame")) {
+            if ($user->getSetting("notifications.{$category}.{$type}.ingame")) {
                 $dominion->notify(new WebNotification($category, $type, $data));
             }
 
-            if ($user->getSetting("notifications.hourly_dominion.{$type}.email")) {
+            if ($user->getSetting("notifications.{$category}.{$type}.email")) {
                 $emailNotifications[] = [
                     'category' => $category,
                     'type' => $type,
@@ -53,7 +54,23 @@ class NotificationService
         }
 
         if (!empty($emailNotifications)) {
-            $dominion->notify(new HourlyEmailDigestNotification($emailNotifications));
+            switch ($category) {
+                case 'general':
+                    throw new \LogicException('todo');
+
+                case 'hourly_dominion':
+                    $dominion->notify(new HourlyEmailDigestNotification($emailNotifications));
+                    break;
+
+                case 'irregular_dominion':
+                    $dominion->notify(new IrregularDominionEmailNotification($emailNotifications));
+                    break;
+
+//                case 'irregular_realm':
+//                    $dominion->notify(new IrregularRealmEmailNotification($emailNotifications));
+//                    break;
+            }
+
         }
 
         $this->notifications = [];
