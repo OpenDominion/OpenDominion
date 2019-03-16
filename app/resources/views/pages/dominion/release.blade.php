@@ -29,8 +29,10 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        Draftees
-                                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $selectedDominion->race) }}"></i>
+                                        {!! $unitHelper->getUnitTypeIconHtml('draftees') !!}
+                                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $selectedDominion->race) }}">
+                                            Draftees
+                                        </span>
                                     </td>
                                     <td class="text-center">{{ number_format($selectedDominion->military_draftees) }}</td>
                                     <td class="text-center">
@@ -40,8 +42,10 @@
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                                     <tr>
                                         <td>
-                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
-                                            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}"></i>
+                                            {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                                {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                            </span>
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
                                         <td class="text-center">
