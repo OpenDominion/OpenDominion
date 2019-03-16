@@ -92,7 +92,7 @@ class BuildingHelper
             'gryphon_nest' => 2,
             'tower' => 2,
             'wizard_guild' => 2,
-            'temple' => 1, // reduce defensive bonuses of target dominion during invasion
+            'temple' => 2,
             'diamond_mine' => 2,
             'school' => 0, // produces research points
             'lumberyard' => 2,

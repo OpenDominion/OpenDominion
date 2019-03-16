@@ -143,11 +143,12 @@ class MilitaryCalculator
      * Returns the Dominion's defensive power.
      *
      * @param Dominion $dominion
+     * @param float $multiplierReduction
      * @return float
      */
-    public function getDefensivePower(Dominion $dominion): float
+    public function getDefensivePower(Dominion $dominion, float $multiplierReduction = 0): float
     {
-        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
+        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion, $multiplierReduction));
 
         return ($dp * $this->getMoraleMultiplier($dominion));
     }
@@ -192,9 +193,10 @@ class MilitaryCalculator
      * Returns the Dominion's defensive power multiplier.
      *
      * @param Dominion $dominion
+     * @param float $multiplierReduction
      * @return float
      */
-    public function getDefensivePowerMultiplier(Dominion $dominion): float
+    public function getDefensivePowerMultiplier(Dominion $dominion, float $multiplierReduction = 0): float
     {
         $multiplier = 0;
 
@@ -222,6 +224,10 @@ class MilitaryCalculator
 
         // Spell: Ares' Call (+10%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
+
+        // Multiplier reduction when we want to factor in temples from another
+        // dominion
+        $multiplier = max(($multiplier - $multiplierReduction), 0);
 
         return (1 + $multiplier);
     }

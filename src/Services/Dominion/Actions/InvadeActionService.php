@@ -344,7 +344,7 @@ class InvadeActionService
         $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
         $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
         $attackingForceOP = $this->getOPForUnits($dominion, $units);
-        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
         // todo: global offensive casualty reduction, step 1: non-unit bonuses (Healer hero, shrines, tech, wonders) (capped at -80% casualties)
@@ -427,7 +427,7 @@ class InvadeActionService
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
     {
         $attackingForceOP = $this->getOPForUnits($dominion, $units);
-        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
@@ -643,7 +643,7 @@ class InvadeActionService
     protected function isInvasionSuccessful(Dominion $dominion, Dominion $target, array $units): bool
     {
         $attackingForceOP = $this->getOPForUnits($dominion, $units);
-        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         return ($attackingForceOP > $targetDP);
     }
@@ -667,7 +667,7 @@ class InvadeActionService
         }
 
         $attackingForceOP = $this->getOPForUnits($dominion, $units);
-        $targetDP = $this->militaryCalculator->getDefensivePower($target);
+        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         return ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
     }
@@ -910,5 +910,19 @@ class InvadeActionService
         }
 
         return $hours;
+    }
+
+    protected function getDefensivePowerWithTemples(Dominion $dominion, Dominion $target): float
+    {
+        // Values (percentages)
+        $dpReductionPerTemple = 1.5;
+        $templeMaxDpReduction = 25;
+
+        $dpMultiplierReduction = min(
+            (($dpReductionPerTemple * $dominion->building_temple) / $this->landCalculator->getTotalLand($dominion)),
+            ($templeMaxDpReduction / 100)
+        );
+
+        return $this->militaryCalculator->getDefensivePower($target, $dpMultiplierReduction);
     }
 }
