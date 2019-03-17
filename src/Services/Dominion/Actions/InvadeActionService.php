@@ -246,17 +246,17 @@ class InvadeActionService
             // Notification
             if ($isInvasionSuccessful) {
                 $this->notificationService->queueNotification('received_invasion', [
+                    '_routeParams' => [(string)$this->invasionEvent->id],
                     'attackerDominionId' => $dominion->id,
                     'landLost' => $this->landLost,
                     'unitsLost' => $this->unitsLost,
-                    // todo: event/battlereport guid
                 ]);
             } else {
                 $this->notificationService->queueNotification('repelled_invasion', [
+                    '_routeParams' => [(string)$this->invasionEvent->id],
                     'attackerDominionId' => $dominion->id,
                     'attackerWasOverwhelmed' => $isOverwhelmed,
                     'unitsLost' => $this->unitsLost,
-                    // todo: event/battlereport guid
                 ]);
             }
 

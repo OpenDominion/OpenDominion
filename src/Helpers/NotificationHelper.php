@@ -93,11 +93,17 @@ class NotificationHelper
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => function (array $routeParams){
+                    return route('dominion.event', $routeParams);
+                },
                 'iconClass' => 'ra ra-crossed-swords text-red',
             ],
             'repelled_invasion' => [
                 'label' => 'Your dominion repelled an invasion',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'route' => function (array $routeParams) {
+                    return route('dominion.event', $routeParams);
+                },
                 'iconClass' => 'ra ra-crossed-swords text-orange',
             ],
 //            'received_spy_op' => [
