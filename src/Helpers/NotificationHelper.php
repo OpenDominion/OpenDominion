@@ -93,7 +93,7 @@ class NotificationHelper
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
                 'defaults' => ['email' => false, 'ingame' => true],
-                'route' => function (array $routeParams){
+                'route' => function (array $routeParams) {
                     return route('dominion.event', $routeParams);
                 },
                 'iconClass' => 'ra ra-crossed-swords text-red',
