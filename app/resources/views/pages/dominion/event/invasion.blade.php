@@ -142,7 +142,15 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            {{-- todo: target recently invaded message? --}}
+                            @php
+                                $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($event->target);
+                            @endphp
+
+                            @if ($recentlyInvadedCount > 0)
+                                <p class="text-center">
+                                    Because the target was recently invaded, your prestige gains and their defensive losses are reduced.
+                                </p>
+                            @endif
 
                             @if (isset($event->data['result']['overwhelmed']))
                                 <p class="text-center text-red">

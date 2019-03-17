@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\GameEvent;
 
@@ -17,6 +18,7 @@ class EventController
         return view("pages.dominion.event.{$event->type}", [
             'event' => $event, // todo: compact()
             'unitHelper' => app(UnitHelper::class), // todo: only load if event->type == 'invasion'
+            'militaryCalculator' => app(MilitaryCalculator::class), // todo: same thing here
         ]);
     }
 }
