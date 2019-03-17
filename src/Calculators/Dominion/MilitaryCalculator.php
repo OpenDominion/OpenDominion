@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Services\Dominion\QueueService;
 
 class MilitaryCalculator
@@ -423,7 +424,24 @@ class MilitaryCalculator
      */
     public function getRecentlyInvadedCount(Dominion $dominion): int
     {
-        // todo
-        return 0;
+        // todo: this touches the db. should probably be in invasion or military service instead
+        $invasionEvents = GameEvent::query()
+            ->where('created_at', '>=', now()->subDay(1))
+            ->where([
+                'target_type' => Dominion::class,
+                'target_id' => $dominion->id,
+                'type' => 'invasion',
+            ])
+            ->get();
+
+        if ($invasionEvents->isEmpty()) {
+            return 0;
+        }
+
+        $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+            return $event->data['result']['success'];
+        });
+
+        return $invasionEvents->count();
     }
 }
