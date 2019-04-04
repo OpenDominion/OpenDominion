@@ -92,6 +92,9 @@ class InvadeActionService
     /** @var QueueService */
     protected $queueService;
 
+    // todo: use InvasionRequest class with op, dp, mods etc etc. Since now it's
+    // a bit hacky with getting new data between $dominion/$target->save()s
+
     /** @var array Invasion result array. todo: Should probably be refactored later to its own class */
     protected $invasionResult = [
         'result' => [],
