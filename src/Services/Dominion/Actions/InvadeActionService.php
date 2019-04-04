@@ -428,10 +428,11 @@ class InvadeActionService
                     continue;
                 }
 
-                // todo: unit specific fewer_casualties perk (eg human knight, firewalker salamander)
+                $unitsToKillMultiplier = 1;
+                $unitsToKillMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
 
                 $unitsToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage * $slotTotalAmountPercentage);
-                $offensiveUnitsLost[$slot] = $unitsToKill;
+                $offensiveUnitsLost[$slot] = ($unitsToKill * $unitsToKillMultiplier); // Use fewer_casualties perk here, since we don't want it on $totalUnitsLeftToKill through $unitsToKill
 
                 if ($totalUnitsLeftToKill < $unitsToKill) {
                     $unitsToKill = $totalUnitsLeftToKill;
@@ -445,7 +446,10 @@ class InvadeActionService
             }
 
             foreach ($units as $slot => $amount) {
-                $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage);
+                $unitsToKillMultiplier = 1;
+                $unitsToKillMultiplier -= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
+
+                $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage * $unitsToKillMultiplier);
                 $offensiveUnitsLost[$slot] = $unitsToKill;
             }
         }

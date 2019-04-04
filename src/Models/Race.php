@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Support\Collection;
+
 class Race extends AbstractModel
 {
     public function dominions()
@@ -37,5 +39,40 @@ class Race extends AbstractModel
         }
 
         return ((float)$perks->first()->value / 100);
+    }
+
+    /**
+     * Try to get a unit perk value with provided key for a specific slot.
+     *
+     * @param int $slot
+     * @param string|string[] $unitPerkTypes
+     * @param mixed $default
+     * @return int|int[]
+     */
+    public function getUnitPerkValueForUnitSlot(int $slot, $unitPerkTypes, $default = 0)
+    {
+        if (!is_array($unitPerkTypes)) {
+            $unitPerkTypes = [$unitPerkTypes];
+        }
+
+        /** @var Collection|Unit[] $unitCollection */
+        $unitCollection = $this->units->filter(function (Unit $unit) use ($slot, $unitPerkTypes) {
+            return (
+                ($unit->slot === $slot) &&
+                in_array($unit->perkType->key, $unitPerkTypes, true)
+            );
+        });
+
+        if ($unitCollection->isEmpty()) {
+            return $default;
+        }
+
+        $perkValue = $unitCollection->first()->unit_perk_type_values;
+
+        if (str_contains($perkValue, ',')) {
+            $perkValue = explode(',', $perkValue);
+        }
+
+        return $perkValue;
     }
 }
