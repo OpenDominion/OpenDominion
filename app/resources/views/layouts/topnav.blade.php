@@ -51,9 +51,9 @@
                         @include('partials.wiki-nav')
                         @auth
                             @if ($selectorService->hasUserSelectedDominion())
-                                <li><a href="{{ route('dominion.status') }}">Play</a></li>
+                                <li><a href="{{ route('dominion.status') }}"><b>Play</b></a></li>
                             @else
-                                <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                <li><a href="{{ route('dashboard') }}"><b>Dashboard</b></a></li>
                             @endif
                         @endauth
                     </ul>
