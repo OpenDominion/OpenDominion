@@ -287,7 +287,7 @@ class InvadeActionService
             $message = sprintf(
                 'Your army fails to defeat the forces of %s (#%s).',
                 $target->name,
-                $target->realm->number,
+                $target->realm->number
             );
             $alertType = 'danger';
         }
