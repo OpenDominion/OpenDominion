@@ -34,7 +34,7 @@ return [
     |
     */
 
-    'write_model_magic_where' => false,
+    'write_model_magic_where' => true,
 
     /*
     |--------------------------------------------------------------------------
