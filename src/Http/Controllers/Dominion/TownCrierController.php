@@ -15,9 +15,9 @@ class TownCrierController extends AbstractDominionController
 
         $realm = $dominion->realm;
         $realmieDominionIds = $realm->dominions
-//            ->filter(function ($realmieDominion) use ($dominion) {
-//                return ($realmieDominion->id !== $dominion->id);
-//            })
+            ->filter(function ($realmieDominion) use ($dominion) {
+                return ($realmieDominion->id !== $dominion->id);
+            })
             ->pluck('id')
             ->toArray();
 
@@ -47,12 +47,15 @@ class TownCrierController extends AbstractDominionController
             ->get()
             // Filter out unsuccessful invasions against realmies
             ->filter(function (GameEvent $gameEvent) use ($realmieDominionIds) {
-                return (
+                if (
                     ($gameEvent->type === 'invasion') &&
                     ($gameEvent->target_type === Dominion::class) &&
-                    in_array($gameEvent->target_id, $realmieDominionIds, true) &&
-                    $gameEvent->data['result']['success']
-                );
+                    in_array($gameEvent->target_id, $realmieDominionIds, true)
+                ) {
+                    return $gameEvent->data['result']['success'];
+                }
+
+                return true;
             });
 
         return view('pages.dominion.town-crier', compact(
