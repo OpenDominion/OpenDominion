@@ -48,7 +48,7 @@ class CasualtiesCalculator
 
         } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
             // todo: check more immortal_except_vs_*
-            // todo: icekin isn't implemneted yet. Once I do, refactor this
+            // todo: icekin isn't implemented yet. Once I do, refactor this
             $multiplier = 0;
         }
 
