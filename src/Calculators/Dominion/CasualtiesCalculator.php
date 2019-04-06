@@ -25,6 +25,15 @@ class CasualtiesCalculator
         $this->unitHelper = $unitHelper;
     }
 
+    /**
+     * Get the offensive casualty multiplier for a dominion for a specific unit
+     * slot.
+     *
+     * @param Dominion $dominion
+     * @param int $slot
+     * @param bool $isOverwhelmed
+     * @return float
+     */
     public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, bool $isOverwhelmed): float
     {
         $multiplier = 1;
