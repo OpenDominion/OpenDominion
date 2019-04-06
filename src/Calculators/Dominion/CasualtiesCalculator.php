@@ -129,60 +129,76 @@ class CasualtiesCalculator
     {
         $multiplier = 1;
 
-        // Non-unit bonuses (hero, tech, wonders), capped at -80%
-//        $nonUnitBonusMultiplier = 0;
-
-        // todo: Heroes
-
-        // todo: Tech
-
-        // todo: Wonders
-
-        // Cap at -80% and apply to multiplier (additive)
-//        $multiplier -= min(0.8, $nonUnitBonusMultiplier);
-
-        // Unit bonuses (multiplicative with non-unit bonuses)
-        $unitBonusMultiplier = 0;
-
-        // Unit Perk: Fewer Casualties (only on military units with a slot, draftees don't have this perk)
+        // First check immortality, so we can skip the other checks on immortal
+        // units
         if ($slot) {
-            $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_defense']) / 100);
-        }
+            if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // todo: check HuNo's Crusader vs SPUD
+                $multiplier = 0;
 
-        // Unit Perk: Reduce Combat Losses
-        $unitsAtHomePerSlot = [];
-        $unitsAtHomeRCLSlot = null;
-        $reducedCombatLossesMultiplierAddition = 0;
-
-        // todo: inefficient to do run this code per slot. needs refactoring
-        foreach ($dominion->race->units as $unit) {
-            $slot = $unit->slot;
-            $unitKey = "military_unit{$slot}";
-
-            $unitsAtHomePerSlot[$slot] = $dominion->$unitKey;
-
-            if ($unit->perkType === null) {
-                continue;
-            }
-
-            if (($unit->perkType->key === 'reduced_combat_losses')) {
-                $unitsAtHomeRCLSlot = $slot;
+            } elseif ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
+                // todo: check more immortal_except_vs_*
+                // todo: icekin isn't implemented yet. Once I do, refactor this
+                $multiplier = 0;
             }
         }
 
-        // We have a unit with RCL!
-        if ($unitsAtHomeRCLSlot !== null) {
-            $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
+        if ($multiplier !== 0) {
+            // Non-unit bonuses (hero, tech, wonders), capped at -80%
+//            $nonUnitBonusMultiplier = 0;
 
-            $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+            // todo: Heroes
+
+            // todo: Tech
+
+            // todo: Wonders
+
+            // Cap at -80% and apply to multiplier (additive)
+//            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
+
+            // Unit bonuses (multiplicative with non-unit bonuses)
+            $unitBonusMultiplier = 0;
+
+            // Unit Perk: Fewer Casualties (only on military units with a slot, draftees don't have this perk)
+            if ($slot) {
+                $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_defense']) / 100);
+            }
+
+            // Unit Perk: Reduce Combat Losses
+            $unitsAtHomePerSlot = [];
+            $unitsAtHomeRCLSlot = null;
+            $reducedCombatLossesMultiplierAddition = 0;
+
+            // todo: inefficient to do run this code per slot. needs refactoring
+            foreach ($dominion->race->units as $unit) {
+                $slot = $unit->slot;
+                $unitKey = "military_unit{$slot}";
+
+                $unitsAtHomePerSlot[$slot] = $dominion->$unitKey;
+
+                if ($unit->perkType === null) {
+                    continue;
+                }
+
+                if (($unit->perkType->key === 'reduced_combat_losses')) {
+                    $unitsAtHomeRCLSlot = $slot;
+                }
+            }
+
+            // We have a unit with RCL!
+            if ($unitsAtHomeRCLSlot !== null) {
+                $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
+
+                $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+            }
+
+            $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
+
+            // todo: Troll/Orc unit perks, possibly other perks elsewhere too
+
+            // Apply to multiplier (multiplicative)
+            $multiplier *= (1 - $unitBonusMultiplier);
         }
-
-        $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
-
-        // todo: Troll/Orc unit perks, possibly other perks elsewhere too
-
-        // Apply to multiplier (multiplicative)
-        $multiplier *= (1 - $unitBonusMultiplier);
 
         return $multiplier;
     }
