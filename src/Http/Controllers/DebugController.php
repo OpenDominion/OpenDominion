@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
@@ -68,8 +67,12 @@ class DebugController extends AbstractDominionController
                 $value = $class->$method();
                 $label = ('[REFACTOR] ' . $label);
 
+            } elseif (in_array($reflectionMethod->getName(), ['getDefensivePower', 'getDefensivePowerMultiplier'])) {
+                // Exception for methods which have more than 1 arguments
+                $value = $class->$method(static::$selectedDominion);
+
             } else {
-                throw new \Exception('welp');
+                throw new \Exception("Error with method: {$method}");
             }
 
             $type = gettype($value);

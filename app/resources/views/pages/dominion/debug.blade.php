@@ -87,9 +87,12 @@
                             'getSpyRatio',
                             'getSpyRatioRaw',
                             'getSpyRatioMultiplier',
+                            'getSpyStrengthRegen',
                             'getWizardRatio',
                             'getWizardRatioRaw',
                             'getWizardRatioMultiplier',
+                            'getWizardStrengthRegen',
+                            'getRecentlyInvadedCount',
                         ]) !!}
                     </p>
                 </div>
