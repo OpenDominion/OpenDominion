@@ -61,6 +61,7 @@
                             'getTotalLand',
                             'getTotalBarrenLand',
                             'getBarrenLandByLandType',
+                            'getLandByLandType',
                         ]) !!}
                     </p>
                 </div>
