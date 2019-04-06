@@ -154,6 +154,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
             // Debug
+            // todo: remove me later
             $router->get('debug')->uses('DebugController@getIndex');
             $router->get('debug/dump')->uses('DebugController@getDump');
 
