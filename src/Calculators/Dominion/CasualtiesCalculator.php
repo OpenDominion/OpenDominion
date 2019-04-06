@@ -94,7 +94,7 @@ class CasualtiesCalculator
                     continue;
                 }
 
-                if (($unit->perkType->key === 'reduced_combat_losses')) {
+                if (($unit->perkType->key === 'reduce_combat_losses')) {
                     $unitsAtHomeRCLSlot = $slot;
                 }
             }
@@ -180,7 +180,7 @@ class CasualtiesCalculator
                     continue;
                 }
 
-                if (($unit->perkType->key === 'reduced_combat_losses')) {
+                if (($unit->perkType->key === 'reduce_combat_losses')) {
                     $unitsAtHomeRCLSlot = $slot;
                 }
             }
