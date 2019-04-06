@@ -144,8 +144,10 @@ class CasualtiesCalculator
         // Unit bonuses (multiplicative with non-unit bonuses)
         $unitBonusMultiplier = 0;
 
-        // Unit Perk: Fewer Casualties
-        $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_defense']) / 100);
+        // Unit Perk: Fewer Casualties (only on military units with a slot, draftees don't have this perk)
+        if ($slot) {
+            $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_defense']) / 100);
+        }
 
         // Unit Perk: Reduce Combat Losses
         $unitsAtHomePerSlot = [];

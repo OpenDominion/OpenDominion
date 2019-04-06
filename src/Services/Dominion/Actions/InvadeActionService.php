@@ -540,10 +540,12 @@ class InvadeActionService
 
         // Draftees
         $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage * $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, null));
-        $target->military_draftees -= $drafteesLost;
+        if ($drafteesLost > 0) {
+            $target->military_draftees -= $drafteesLost;
 
-        $this->unitsLost += $drafteesLost; // todo: refactor
-        $this->invasionResult['defender']['unitsLost']['draftees'] = $drafteesLost;
+            $this->unitsLost += $drafteesLost; // todo: refactor
+            $this->invasionResult['defender']['unitsLost']['draftees'] = $drafteesLost;
+        }
 
         // Non-draftees
         foreach ($target->race->units as $unit) {
@@ -552,9 +554,11 @@ class InvadeActionService
             }
 
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage * $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $unit->slot));
-            $defensiveUnitsLost[$unit->slot] = $slotLost;
+            if ($slotLost > 0) {
+                $defensiveUnitsLost[$unit->slot] = $slotLost;
 
-            $this->unitsLost += $slotLost; // todo: refactor
+                $this->unitsLost += $slotLost; // todo: refactor
+            }
         }
 
         foreach ($defensiveUnitsLost as $slot => $amount) {

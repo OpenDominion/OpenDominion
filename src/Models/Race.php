@@ -59,6 +59,7 @@ class Race extends AbstractModel
         $unitCollection = $this->units->filter(function (Unit $unit) use ($slot, $unitPerkTypes) {
             return (
                 ($unit->slot === $slot) &&
+                ($unit->unit_perk_type_id !== null) &&
                 in_array($unit->perkType->key, $unitPerkTypes, true)
             );
         });
