@@ -416,7 +416,6 @@ class InvadeActionService
 
         $offensiveUnitsLost = [];
 
-        // Calculate raw casualties
         if ($isInvasionSuccessful) {
             $totalUnitsSent = array_sum($units);
 
@@ -453,87 +452,10 @@ class InvadeActionService
             }
         }
 
-        // Calculate net casualties with reductions and immortality
-
-        // Special Unit Perk: Reduced Combat Losses (aka RCL, for eg Dwarf Cleric and Goblin Shaman)
-        $unitsAtHomePerSlot = [];
-        $unitsAtHomeRCLSlot = null;
-        $reducedCombatLossesMultiplierAddition = 0;
-
-        foreach ($dominion->race->units as $unit) {
-            $slot = $unit->slot;
-            $unitKey = "military_unit{$slot}";
-
-            $totalUnitAmount = $dominion->$unitKey;
-
-            $unitsAtHome = ($totalUnitAmount - ($units[$slot] ?? 0));
-            $unitsAtHomePerSlot[$slot] = $unitsAtHome;
-
-            if ($unit->perkType === null) {
-                continue;
-            }
-
-            if (($unit->perkType->key === 'reduced_combat_losses')) {
-                $unitsAtHomeRCLSlot = $slot;
-            }
-        }
-
-        // We have a unit with RCL!
-        if ($unitsAtHomeRCLSlot !== null) {
-            $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
-
-            $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
-        }
-
         foreach ($offensiveUnitsLost as $slot => &$amount) {
-            // todo: Inefficient shit code below. Needs refactoring later
+            // Reduce amount of units to kill by further multipliers
+            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $slot, $isOverwhelmed);
 
-            $unitsToKillMultiplier = 1;
-
-            // Quick check for immortality, so we can skip the rest of the casualty reduction calculations
-            // Note: Immortality only works if you're NOT overwhelmed, regardless if invasion is successful or not
-            if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // todo: check HuNo Crusade vs SPUD
-                $unitsToKillMultiplier = 0;
-
-            } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
-                // todo: check more immortal_except_vs_*
-                // todo: icekin isn't implemented yet. Once I do, refactor this
-                $unitsToKillMultiplier = 0;
-            }
-
-            if ($unitsToKillMultiplier !== 0) {
-                // Non-unit bonuses (hero, shrines, tech, wonders, capped at -80% or 0.2)
-                $unitsToKillMultiplierNonUnits = 0;
-
-                // todo: Heroes
-
-                // Shrines
-                $unitsToKillMultiplierNonUnits += $this->casualtiesCalculator->getOffensiveCasualtiesReductionFromShrines($dominion);
-
-                // todo: Tech (Tactical Battle etc)
-
-                // todo: Wonders
-
-                // Cap at -80% and apply to multiplier (additive)
-                $unitsToKillMultiplier -= min(0.8, $unitsToKillMultiplierNonUnits);
-
-                // Unit bonuses (multiplicative with non-unit bonuses)
-                $unitsToKillMultiplierUnits = 0;
-
-                // Unit Perks: Fewer Casualties (unit with perk only)
-                $unitsToKillMultiplierUnits += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
-
-                // Unit Perk: Reduce Combat Losses (all units)
-                $unitsToKillMultiplierUnits += $reducedCombatLossesMultiplierAddition;
-
-                // todo: troll/orc unit perks. possibly others too
-
-                // Apply to multiplier (multiplicative)
-                $unitsToKillMultiplier *= (1 - $unitsToKillMultiplierUnits);
-            }
-
-            // Reduce amount of units to kill by multiplier
             if ($unitsToKillMultiplier !== 1) {
                 $amount = (int)ceil($amount * $unitsToKillMultiplier);
             }

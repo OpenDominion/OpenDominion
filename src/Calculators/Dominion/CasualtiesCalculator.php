@@ -25,6 +25,93 @@ class CasualtiesCalculator
         $this->unitHelper = $unitHelper;
     }
 
+    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, bool $isOverwhelmed): float
+    {
+        $multiplier = 1;
+
+        // First check immortality, so we can skip the other checks on immortal
+        // units
+        // Note: Immortality only works if you're NOT overwhelmed, regardless if
+        // invasion is successful or not
+        if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+            // todo: check HuNo's Crusader vs SPUD
+            $multiplier = 0;
+
+        } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
+            // todo: check more immortal_except_vs_*
+            // todo: icekin isn't implemneted yet. Once I do, refactor this
+            $multiplier = 0;
+        }
+
+        if ($multiplier !== 0) {
+            // Non-unit bonuses (hero, shrines, tech, wonders), capped at -80%
+            $nonUnitBonusMultiplier = 0;
+
+            // todo: Heroes
+
+            // Shrines
+            $nonUnitBonusMultiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
+
+            // todo: Tech (eg Tactical Battle)
+
+            // todo: Wonders
+
+            // Cap at -80% and apply to multiplier (additive)
+            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
+
+            // Unit bonuses (multiplicative with non-unit bonuses)
+            $unitBonusMultiplier = 0;
+
+            // Unit Perk: Fewer Casualties
+            $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
+
+            // Unit Perk: Reduce Combat Losses
+            $unitsAtHomePerSlot = [];
+            $unitsAtHomeRCLSlot = null;
+            $reducedCombatLossesMultiplierAddition = 0;
+
+            // todo: inefficient to do run this code per slot. needs refactoring
+            foreach ($dominion->race->units as $unit) {
+                $slot = $unit->slot;
+                $unitKey = "military_unit{$slot}";
+
+                $totalUnitAmount = $dominion->$unitKey;
+
+                $unitsAtHome = ($totalUnitAmount - ($units[$slot] ?? 0));
+                $unitsAtHomePerSlot[$slot] = $unitsAtHome;
+
+                if ($unit->perkType === null) {
+                    continue;
+                }
+
+                if (($unit->perkType->key === 'reduced_combat_losses')) {
+                    $unitsAtHomeRCLSlot = $slot;
+                }
+            }
+
+            // We have a unit with RCL!
+            if ($unitsAtHomeRCLSlot !== null) {
+                $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
+
+                $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+            }
+
+            $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
+
+            // todo: Troll/Orc unit perks, possibly other perks elsewhere too
+
+            // Apply to multiplier (multiplicative)
+            $multiplier *= (1 - $unitBonusMultiplier);
+        }
+
+        return $multiplier;
+    }
+
+    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot): float
+    {
+        return 1;
+    }
+
     /**
      * Returns the Dominion's offensive casualties reduction from shrines.
      *
