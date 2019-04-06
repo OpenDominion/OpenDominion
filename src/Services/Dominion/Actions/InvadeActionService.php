@@ -454,7 +454,7 @@ class InvadeActionService
 
         foreach ($offensiveUnitsLost as $slot => &$amount) {
             // Reduce amount of units to kill by further multipliers
-            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $slot, $isOverwhelmed);
+            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $slot, $units, $isOverwhelmed);
 
             if ($unitsToKillMultiplier !== 1) {
                 $amount = (int)ceil($amount * $unitsToKillMultiplier);

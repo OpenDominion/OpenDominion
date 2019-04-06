@@ -31,10 +31,11 @@ class CasualtiesCalculator
      *
      * @param Dominion $dominion
      * @param int $slot
+     * @param array $units Units being sent out on invasion
      * @param bool $isOverwhelmed
      * @return float
      */
-    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, bool $isOverwhelmed): float
+    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, array $units, bool $isOverwhelmed): float
     {
         $multiplier = 1;
 
