@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
+- Added invasions!
+- Also added Town Crier
 - Clear Sight now mentions if the target was invaded recently, plus roughly how severely
 - Military units now have a role icon next to them
 - Added Temple building
