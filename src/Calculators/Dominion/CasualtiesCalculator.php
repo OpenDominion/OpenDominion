@@ -7,17 +7,43 @@ use OpenDominion\Models\Dominion;
 
 class CasualtiesCalculator
 {
+    /** @var LandCalculator */
+    protected $landCalculator;
+
     /** @var UnitHelper */
-    private $unitHelper;
+    protected $unitHelper;
 
     /**
      * CasualtiesCalculator constructor.
      *
+     * @param LandCalculator $landCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(UnitHelper $unitHelper)
+    public function __construct(LandCalculator $landCalculator, UnitHelper $unitHelper)
     {
+        $this->landCalculator = $landCalculator;
         $this->unitHelper = $unitHelper;
+    }
+
+    /**
+     * Returns the Dominion's offensive casualties reduction from shrines.
+     *
+     * This number is in the 0 - 0.8 range, where 0 is no casualty reduction
+     * (0%) and 0.8 is full (-80%). Used additive in a multiplier formula.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOffensiveCasualtiesReductionFromShrines(Dominion $dominion): float
+    {
+        // Values (percentage)
+        $casualtyReductionPerShrine = 4;
+        $maxCasualtyReductionFromShrines = 80;
+
+        return min(
+            (($casualtyReductionPerShrine * $dominion->building_shrine) / $this->landCalculator->getTotalLand($dominion)),
+            ($maxCasualtyReductionFromShrines / 100)
+        );
     }
 
     /**

@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
@@ -74,6 +75,9 @@ class InvadeActionService
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
+    /** @var CasualtiesCalculator */
+    protected $casualtiesCalculator;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -121,6 +125,7 @@ class InvadeActionService
      * InvadeActionService constructor.
      *
      * @param BuildingCalculator $buildingCalculator
+     * @param CasualtiesCalculator $casualtiesCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
@@ -130,6 +135,7 @@ class InvadeActionService
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
+        CasualtiesCalculator $casualtiesCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
@@ -138,6 +144,7 @@ class InvadeActionService
         QueueService $queueService)
     {
         $this->buildingCalculator = $buildingCalculator;
+        $this->casualtiesCalculator = $casualtiesCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
@@ -448,15 +455,6 @@ class InvadeActionService
 
         // Calculate net casualties with reductions and immortality
 
-        // Building: Shrine
-        $casualtyReductionPerShrine = 4;
-        $maxCasualtyReductionFromShrines = 80;
-
-        $casualtyReductionFromShrines = min(
-            (($casualtyReductionPerShrine * $dominion->building_shrine) / $this->landCalculator->getTotalLand($dominion)),
-            ($maxCasualtyReductionFromShrines / 100)
-        );
-
         // Special Unit Perk: Reduced Combat Losses (aka RCL, for eg Dwarf Cleric and Goblin Shaman)
         $unitsAtHomePerSlot = [];
         $unitsAtHomeRCLSlot = null;
@@ -511,7 +509,7 @@ class InvadeActionService
                 // todo: Heroes
 
                 // Shrines
-                $unitsToKillMultiplierNonUnits += $casualtyReductionFromShrines;
+                $unitsToKillMultiplierNonUnits += $this->casualtiesCalculator->getOffensiveCasualtiesReductionFromShrines($dominion);
 
                 // todo: Tech (Tactical Battle etc)
 
