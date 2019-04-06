@@ -153,6 +153,9 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
+            // Town Crier
+            $router->get('town-crier')->uses('Dominion\TownCrierController@getIndex')->name('town-crier');
+
             // Debug
             // todo: remove me later
             $router->get('debug')->uses('DebugController@getIndex');

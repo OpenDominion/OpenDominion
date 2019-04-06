@@ -54,6 +54,7 @@
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy ra-fw"></i> <span>Rankings</span></a></li>
+                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}"><a href="{{ route('dominion.town-crier') }}"><i class="fa fa-newspaper-o ra-fw"></i> <span>Town Crier</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
 
                 {{--<li class="header">MISC</li>--}}
 
