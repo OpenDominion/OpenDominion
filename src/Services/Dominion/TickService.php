@@ -71,6 +71,8 @@ class TickService
     {
         Log::debug('Hourly tick started');
 
+        $start = now();
+
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
                 // Ignore hour 0
@@ -84,7 +86,9 @@ class TickService
             }
         });
 
-        Log::info('Ticked X dominions in Y seconds');
+        $end = now();
+
+        Log::info('Ticked in ' . number_format($start->diffInSeconds($end)) . ' seconds');
     }
 
     /**
