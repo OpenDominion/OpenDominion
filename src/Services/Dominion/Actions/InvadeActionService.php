@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
@@ -90,11 +91,14 @@ class InvadeActionService
     /** @var ProtectionService */
     protected $protectionService;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
-    /** @var QueueService */
-    protected $queueService;
+    /** @var SpellCalculator */
+    protected $spellCalculator;
 
     // todo: use InvasionRequest class with op, dp, mods etc etc. Since now it's
     // a bit hacky with getting new data between $dominion/$target->save()s
@@ -130,8 +134,9 @@ class InvadeActionService
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
      * @param ProtectionService $protectionService
-     * @param RangeCalculator $rangeCalculator
      * @param QueueService $queueService
+     * @param RangeCalculator $rangeCalculator
+     * @param SpellCalculator $spellCalculator
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
@@ -140,8 +145,10 @@ class InvadeActionService
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
         ProtectionService $protectionService,
+        QueueService $queueService,
         RangeCalculator $rangeCalculator,
-        QueueService $queueService)
+        SpellCalculator $spellCalculator
+        )
     {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
@@ -149,8 +156,9 @@ class InvadeActionService
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
         $this->protectionService = $protectionService;
-        $this->rangeCalculator = $rangeCalculator;
         $this->queueService = $queueService;
+        $this->rangeCalculator = $rangeCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     /**
@@ -587,6 +595,14 @@ class InvadeActionService
             return;
         }
 
+        if (!isset($this->invasionResult['attacker']['landConquered'])) {
+            $this->invasionResult['attacker']['landConquered'] = [];
+        }
+
+        if (!isset($this->invasionResult['attacker']['landGenerated'])) {
+            $this->invasionResult['attacker']['landGenerated'] = [];
+        }
+
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
         $rangeMultiplier = ($range / 100);
 
@@ -611,13 +627,19 @@ class InvadeActionService
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
-//        $buildingsLostTemp = [];
         $landGainedPerLandType = [];
         foreach ($landAndBuildingsLostPerLandType as $landType => $landAndBuildingsLost) {
+            if (!isset($this->invasionResult['attacker']['landConquered'][$landType])) {
+                $this->invasionResult['attacker']['landConquered'][$landType] = 0;
+            }
+
+            if (!isset($this->invasionResult['attacker']['landGenerated'][$landType])) {
+                $this->invasionResult['attacker']['landGenerated'][$landType] = 0;
+            }
+
             $buildingsToDestroy = $landAndBuildingsLost['buildingsToDestroy'];
             $landLost = $landAndBuildingsLost['landLost'];
             $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
-//            $buildingsLostTemp[$landType] = $buildingsLostForLandType;
 
             // Remove land
             $target->{"land_$landType"} -= $landLost;
@@ -636,22 +658,50 @@ class InvadeActionService
             }
 
             $landConquered = (int)round($landLost);
+
+            // Racial Spell: Erosion (Lizardfolk)
+            if ($this->spellCalculator->isSpellActive($dominion, 'erosion')) {
+                // todo: needs a more generic solution later
+                $landRezoneType = 'water';
+                $landRezonePercentage = 20;
+
+                $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
+
+                if (!isset($landGainedPerLandType["land_{$landRezoneType}"])) {
+                    $landGainedPerLandType["land_{$landRezoneType}"] = 0;
+                }
+
+                $landGainedPerLandType["land_{$landRezoneType}"] += $landRezonedConquered;
+
+                // todo: hacky hacky, fixmepls
+                if (!isset($this->invasionResult['attacker']['landConquered'][$landRezoneType])) {
+                    $this->invasionResult['attacker']['landConquered'][$landRezoneType] = 0;
+                }
+
+                $this->invasionResult['attacker']['landConquered'][$landRezoneType] += $landRezonedConquered;
+
+                $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
+
+                if (!isset($this->invasionResult['attacker']['landGenerated'][$landRezoneType])) {
+                    $this->invasionResult['attacker']['landGenerated'][$landRezoneType] = 0;
+                }
+
+                $this->invasionResult['attacker']['landGenerated'][$landRezoneType] += $landRezonedGenerated;
+
+                $landConquered -= $landRezonedConquered;
+            }
+
             $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
             $landGained = ($landConquered + $landGenerated);
 
-            $landGainedPerLandType["land_{$landType}"] = $landGained;
-
-            if (!isset($this->invasionResult['attacker']['landConquered'])) {
-                $this->invasionResult['attacker']['landConquered'] = [];
+            if (!isset($landGainedPerLandType["land_{$landType}"])) {
+                $landGainedPerLandType["land_{$landType}"] = 0;
             }
 
-            $this->invasionResult['attacker']['landConquered'][$landType] = $landConquered;
+            $landGainedPerLandType["land_{$landType}"] += $landGained;
 
-            if (!isset($this->invasionResult['attacker']['landGenerated'])) {
-                $this->invasionResult['attacker']['landGenerated'] = [];
-            }
-
-            $this->invasionResult['attacker']['landGenerated'][$landType] = $landGenerated;
+            $this->invasionResult['attacker']['landConquered'][$landType] += $landConquered;
+            $this->invasionResult['attacker']['landGenerated'][$landType] += $landGenerated;
         }
 
         $this->landLost = $acresLost;
