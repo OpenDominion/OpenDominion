@@ -278,15 +278,10 @@ class InvadeActionService
                 ]);
             }
 
-            // todo: post to both TCs?
-
-//            dd('foo ');
-
-//            $target->save();
-//            $dominion->save();
+            $target->save();
+            $dominion->save();
         });
 
-//        $this->notificationService->sendNotifications($dominion, 'irregular_dominion'); // todo: remove me
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
 
         if ($this->invasionResult['result']['success']) {
@@ -310,9 +305,6 @@ class InvadeActionService
         return [
             'message' => $message,
             'alert-type' => $alertType,
-//            'data' => [
-//                //
-//            ],
             'redirect' => route('dominion.event', [$this->invasionEvent->id])
         ];
     }
