@@ -38,22 +38,22 @@
                                             @if ($gameEvent->type === 'invasion')
                                                 @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->source_id, $realmieDominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
-                                                        Victorious on the battlefield,
+                                                        Victorious on the battlefield, realmie
                                                         <span class="text-green">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
                                                         conquered
                                                         {{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}
                                                         land from
                                                         <span class="text-red">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>.
                                                     @else
-                                                        Sadly, the forces of
+                                                        Sadly, the forces of realmie
                                                         <span class="text-green">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
                                                         were beaten back by
                                                         <span class="text-red">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>.
                                                     @endif
                                                 @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->target_id, $realmieDominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
-                                                        <span class="text-red">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>.
-                                                        invaded
+                                                        <span class="text-red">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
+                                                        invaded our realmie
                                                         <span class="text-green">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>
                                                         and captured
                                                         {{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}
