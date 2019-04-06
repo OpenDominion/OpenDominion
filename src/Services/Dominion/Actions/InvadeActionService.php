@@ -539,7 +539,7 @@ class InvadeActionService
         $defensiveUnitsLost = [];
 
         // Draftees
-        $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage);
+        $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage * $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, null));
         $target->military_draftees -= $drafteesLost;
 
         $this->unitsLost += $drafteesLost; // todo: refactor
@@ -551,9 +551,7 @@ class InvadeActionService
                 continue;
             }
 
-            // todo: unit specific fewer_casualties perk (eg human knight)
-
-            $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage);
+            $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage * $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $unit->slot));
             $defensiveUnitsLost[$unit->slot] = $slotLost;
 
             $this->unitsLost += $slotLost; // todo: refactor
