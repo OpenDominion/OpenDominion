@@ -213,7 +213,6 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
         $router->resource('users', 'Staff\Administrator\UserController');
 
-
         // view all users
         // view all council boards
 
