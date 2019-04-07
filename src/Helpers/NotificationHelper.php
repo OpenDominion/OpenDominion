@@ -7,6 +7,14 @@ use OpenDominion\Models\Dominion;
 
 class NotificationHelper
 {
+    /** @var SpellHelper */
+    protected $spellHelper;
+
+    public function __construct()
+    {
+        $this->spellHelper = app(SpellHelper::class);
+    }
+
     public function getNotificationCategories(): array
     {
         return [
@@ -281,8 +289,15 @@ class NotificationHelper
 //            case 'irregular_dominion.repelled_spy_op':
 //                return sprintf();
 
-//            case 'irregular_dominion.repelled_hostile_spell':
-//                return sprintf();
+            case 'irregular_dominion.repelled_hostile_spell':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                return sprintf(
+                    'Our wizards have repelled a %s spell attempt by %s (#%s)!',
+                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number
+                );
 
             // todo: other irregular etc
 
