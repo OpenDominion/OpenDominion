@@ -19,10 +19,13 @@ class NotificationService
      *
      * @param string $type
      * @param array $data
+     * @return NotificationService
      */
-    public function queueNotification(string $type, array $data = []): void
+    public function queueNotification(string $type, array $data = []): NotificationService
     {
         $this->notifications[$type] = $data;
+
+        return $this;
     }
 
     /**
