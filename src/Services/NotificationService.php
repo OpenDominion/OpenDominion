@@ -21,7 +21,7 @@ class NotificationService
      * @param array $data
      * @return NotificationService
      */
-    public function queueNotification(string $type, array $data = []): NotificationService
+    public function queueNotification(string $type, array $data = []): self
     {
         $this->notifications[$type] = $data;
 
