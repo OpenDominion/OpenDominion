@@ -20,7 +20,7 @@ class NotificationService
      * @param string $type
      * @param array $data
      */
-    public function queueNotification(string $type, array $data)
+    public function queueNotification(string $type, array $data = []): void
     {
         $this->notifications[$type] = $data;
     }
@@ -33,7 +33,7 @@ class NotificationService
      * @param Dominion $dominion
      * @param string $category
      */
-    public function sendNotifications(Dominion $dominion, string $category)
+    public function sendNotifications(Dominion $dominion, string $category): void
     {
         $user = $dominion->user;
 
@@ -75,18 +75,18 @@ class NotificationService
         $this->notifications = [];
     }
 
-    public function addIrregularNotification(Dominion $dominion, string $notificationType, array $notificationData)
-    {
-        // add notification to the db (notification_queue?)
-    }
-
-    public function processIrregularNotifications()
-    {
-        // ...
-    }
-
-    protected function sendIrregularNotification($notifiable /* ... */)
-    {
-        // ...
-    }
+//    public function addIrregularNotification(Dominion $dominion, string $notificationType, array $notificationData): void
+//    {
+//        // add notification to the db (notification_queue?)
+//    }
+//
+//    public function processIrregularNotifications(): void
+//    {
+//        // ...
+//    }
+//
+//    protected function sendIrregularNotification($notifiable /* ... */): void
+//    {
+//        // ...
+//    }
 }
