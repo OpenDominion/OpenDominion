@@ -46,7 +46,7 @@ class RealmFactory
             'name' => $realmName
         ]);
 
-        if($pack !== null){
+        if ($pack !== null) {
             $pack->update(['realm_id' => $realm->id]);
             $pack->load('realm');
         }
