@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use CoreDataSeeder;
 use OpenDominion\Console\Commands\Game\DataSyncCommand;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -19,7 +20,7 @@ trait CreatesData
     /**
      * Seeds the database with core data (races, units etc).
      */
-    public function seedDatabase()
+    public function seedDatabase(): void
     {
         $this->seed(CoreDataSeeder::class);
 
@@ -33,7 +34,7 @@ trait CreatesData
      * @param array $attributes
      * @return User
      */
-    protected function createUser($password = null, array $attributes = [])
+    protected function createUser(?string $password = null, array $attributes = []): User
     {
         if ($password !== null) {
             $attributes['password'] = bcrypt($password);
@@ -49,7 +50,7 @@ trait CreatesData
      * @param array $attributes
      * @return User
      */
-    protected function createAndImpersonateUser($password = null, array $attributes = [])
+    protected function createAndImpersonateUser(?string $password = null, array $attributes = []): User
     {
         $user = $this->createUser($password, $attributes);
         $this->be($user);
@@ -63,7 +64,7 @@ trait CreatesData
      * @param string $endDate Carbon-parsable string
      * @return Round
      */
-    protected function createRound($startDate = 'today', $endDate = '+50 days')
+    protected function createRound(string $startDate = 'today', string $endDate = '+50 days'): Round
     {
         // todo: RoundFactory
 
@@ -81,11 +82,13 @@ trait CreatesData
     }
 
     /**
+     * Creates a realm for testing purposes.
+     *
      * @param Round $round
      * @param string $alignment 'good' or 'evil'
      * @return Realm
      */
-    protected function createRealm(Round $round, $alignment = 'good')
+    protected function createRealm(Round $round, string $alignment = 'good'): Realm
     {
         // todo: RealmFactory
 
@@ -100,34 +103,49 @@ trait CreatesData
     }
 
     /**
+     * Creates a dominion for testing purposes.
+     *
      * @param User $user
      * @param Round $round
-     * @param Race $race
+     * @param Race|null $race
+     * @param Realm|null $realm
      * @return Dominion
      */
-    protected function createDominion(User $user, Round $round, Race $race = null)
+    protected function createDominion(User $user, Round $round, ?Race $race = null, ?Realm $realm = null): Dominion
     {
+        $faker = \Faker\Factory::create();
+
+        /** @var DominionFactory $dominionFactory */
         $dominionFactory = $this->app->make(DominionFactory::class);
 
-        $dominion = $dominionFactory->create(
-            $user,
-            $round,
-            ($race ?: Race::where('name', 'Human')->firstOrFail()),
-            'random',
-            str_random(),
-            str_random(),
-            null
-        );
+        if ($realm === null) {
+            /** @var RealmFactory $realmFactory */
+            $realmFactory = $this->app->make(RealmFactory::class);
 
-        return $dominion;
+            $realm = $realmFactory->create(
+                $round,
+                $race->alignment ?? 'good'
+            );
+        }
+
+        return $dominionFactory->create(
+            $user,
+            $realm,
+            $race ?? Race::where('name', 'Human')->firstOrFail(),
+            $faker->name,
+            $faker->company
+        );
     }
 
     /**
+     * Selects a dominion for testing purposes.
+     *
      * @param Dominion $dominion
      * @return Dominion
      */
-    protected function selectDominion(Dominion $dominion)
+    protected function selectDominion(Dominion $dominion): Dominion
     {
+        /** @var SelectorService $dominionSelectorService */
         $dominionSelectorService = $this->app->make(SelectorService::class);
 
         $dominionSelectorService->selectUserDominion($dominion);
@@ -136,14 +154,16 @@ trait CreatesData
     }
 
     /**
+     * Creates and selects a dominion for testing purposes.
+     *
      * @param User $user
      * @param Round $round
-     * @param Race $race
+     * @param Race|null $race
      * @return Dominion
      */
-    protected function createAndSelectDominion(User $user, Round $round, Race $race = null)
+    protected function createAndSelectDominion(User $user, Round $round, ?Race $race = null, ?Realm $realm = null): Dominion
     {
-        $dominion = $this->createDominion($user, $round, $race);
+        $dominion = $this->createDominion($user, $round, $race, $realm);
         return $this->selectDominion($dominion);
     }
 }

@@ -34,7 +34,7 @@ class PruneUnactivatedUsers1 extends Migration
             $usersCount = $users->count();
 
             if ($usersCount > 0) {
-                $output->writeln("Pruned {$users->count()} users");
+                $output->writeln("Pruned {$users->count()} unactivated users");
             }
 
             // Second pass: Delete all users with no dominions
@@ -63,7 +63,7 @@ class PruneUnactivatedUsers1 extends Migration
                 });
 
             if ($usersPrunedCount > 0) {
-                $output->writeln("Pruned {$usersPrunedCount} users");
+                $output->writeln("Pruned {$usersPrunedCount} users with no dominions");
             }
         });
     }

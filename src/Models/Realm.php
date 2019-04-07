@@ -48,6 +48,11 @@ class Realm extends AbstractModel
 //        return $this->hasOne(Dominion::class, 'id', 'monarch_dominion_id');
     }
 
+    public function packs()
+    {
+        return $this->hasMany(Pack::class);
+    }
+
     public function round()
     {
         return $this->belongsTo(Round::class);

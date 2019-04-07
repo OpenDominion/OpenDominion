@@ -14,6 +14,7 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\PackService;
+use OpenDominion\Services\RealmFinderService;
 use RuntimeException;
 
 class RoundController extends AbstractController
@@ -28,6 +29,7 @@ class RoundController extends AbstractController
      * RoundController constructor.
      *
      * @param DominionFactory $dominionFactory
+     * @param PackService $packService
      */
     public function __construct(DominionFactory $dominionFactory, PackService $packService)
     {
@@ -60,6 +62,27 @@ class RoundController extends AbstractController
             'pack_password' => ('string|min:3|max:50|' . ($request->get('realm_type') !== 'random' ? 'required_if:realm,join_pack,create_pack' : 'nullable')),
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
         ]);
+
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        // round
+        $race = Race::findOrFail($request->get('race'));
+
+        $realmFinderService = app(RealmFinderService::class);
+
+        $realm = $realmFinderService->findRandomRealm($round, $race, 1);
+
+        switch ($request->get('realm_type')) {
+            case 'random':
+                break;
+
+            case 'join_pack':
+                break;
+
+            case 'create_pack':
+                break;
+        }
 
         $realmType = $request->get('realm_type');
         $joinRandomRealm = ($realmType === 'random');
@@ -110,11 +133,15 @@ class RoundController extends AbstractController
         $request->session()->flash('alert-success',
             "You have successfully registered to round {$round->number} ({$round->league->description}).");
 
+        // todo: add text to alert: You are placed in realm #realmnumber (realmname) with X other dominions in it
+
         return redirect()->route('dominion.status');
     }
 
     protected function guardAgainstUserAlreadyHavingDominionInRound(Round $round)
     {
+        // todo: make this a route middleware instead
+
         $dominions = Dominion::where([
             'user_id' => Auth::user()->id,
             'round_id' => $round->id,

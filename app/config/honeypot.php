@@ -9,21 +9,21 @@ return [
      * value for this name will be discarded. Make sure this name does not
      * collide with a form field that is actually used.
      */
-    'name_field_name' => 'poneyhot',
+    'name_field_name' => 'email_confirmation',
 
     /*
      * When this is activated there will be a random string added
      * to the name_field_name. This improves the
      * protection against bots.
      */
-    'randomize_name_field_name' => true,
+    'randomize_name_field_name' => false,
 
     /*
      * This field contains the name of a form field that will be use to verify
      * if the form wasn't submitted too quickly. Make sure this name does not
      * collide with a form field that is actually used.
      */
-    'valid_from_field_name' => 'valid_from',
+    'valid_from_field_name' => 'country',
 
     /*
      * If the form is submitted faster then this amount of seconds

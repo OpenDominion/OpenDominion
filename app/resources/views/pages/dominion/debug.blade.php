@@ -197,6 +197,7 @@
                             'getLumberCostRaw',
                             'getLumberCostMultiplier',
                             'getMaxAfford',
+                            'getCostMultiplier',
                         ]) !!}
                     </p>
                 </div>
