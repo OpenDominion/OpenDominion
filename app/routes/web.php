@@ -122,9 +122,11 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military/release')->uses('Dominion\MilitaryController@getRelease')->name('military.release');
             $router->post('military/release')->uses('Dominion\MilitaryController@postRelease');
 
+            // Invade
             $router->get('invade')->uses('Dominion\InvasionController@getInvade')->name('invade');
             $router->post('invade')->uses('Dominion\InvasionController@postInvade');
 
+            // Event result
             $router->get('event/{uuid}')->uses('Dominion\EventController@index')->name('event');
 
             // Magic
