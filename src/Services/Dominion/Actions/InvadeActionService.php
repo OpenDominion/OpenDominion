@@ -372,15 +372,21 @@ class InvadeActionService
         }
 
         if ($attackerPrestigeChange !== 0) {
-            // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, since $units is input, not surviving units. fix?
-            $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+            if (!$isInvasionSuccessful) {
+                // Unsuccessful invasions (bounces) give negative prestige immediately
+                $dominion->prestige += $attackerPrestigeChange;
 
-            $this->queueService->queueResources(
-                'invasion',
-                $dominion,
-                ['prestige' => $attackerPrestigeChange],
-                $slowestTroopsReturnHours
-            );
+            } else {
+                // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
+                $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+
+                $this->queueService->queueResources(
+                    'invasion',
+                    $dominion,
+                    ['prestige' => $attackerPrestigeChange],
+                    $slowestTroopsReturnHours
+                );
+            }
 
             $this->invasionResult['attacker']['prestigeChange'] = $attackerPrestigeChange;
         }
