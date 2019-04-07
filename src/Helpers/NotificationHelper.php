@@ -286,8 +286,39 @@ class NotificationHelper
                     number_format($data['unitsLost'])
                 );
 
-//            case 'irregular_dominion.repelled_spy_op':
-//                return sprintf();
+            case 'irregular_dominion.repelled_spy_op':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                switch ($data['operationKey']) {
+                    case 'barracks_spy':
+                        $where = 'within our barracks';
+                        break;
+
+                    case 'castle_spy':
+                        $where = 'within our castle';
+                        break;
+
+                    case 'survey_dominion':
+                        $where = 'amongst our buildings';
+                        break;
+
+                    case 'land_spy':
+                        $where = 'amongst our lands';
+                        break;
+
+                    default:
+                        throw new \LogicException("Repelled spy op notification for spell key {$data['spellKey']} not yet implemented");
+//                        $where = 'around our domain';
+                }
+
+                return sprintf(
+                    'Spies from %s (#%s) were discovered %s! We executed %s %s.',
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number,
+                    $where,
+                    number_format($data['spiesKilled']),
+                    str_plural('spy', $data['spiesKilled'])
+                );
 
             case 'irregular_dominion.repelled_hostile_spell':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);

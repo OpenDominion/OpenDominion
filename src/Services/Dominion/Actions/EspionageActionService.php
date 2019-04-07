@@ -22,6 +22,7 @@ use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -51,6 +52,9 @@ class EspionageActionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var NotificationService */
+    protected $notificationService;
+
     /** @var ProtectionService */
     protected $protectionService;
 
@@ -72,6 +76,7 @@ class EspionageActionService
         $this->landCalculator = app(LandCalculator::class);
         $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
+        $this->notificationService = app(NotificationService::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
         $this->rangeCalculator = app(RangeCalculator::class);
@@ -201,6 +206,14 @@ class EspionageActionService
                 $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
 
                 $dominion->military_spies -= $spiesKilled;
+
+                $this->notificationService
+                    ->queueNotification('repelled_spy_op', [
+                        'sourceDominionId' => $dominion->id,
+                        'operationKey' => $operationKey,
+                        'spiesKilled' => $spiesKilled,
+                    ])
+                    ->sendNotifications($target, 'irregular_dominion');
 
                 return [
                     'success' => false,
