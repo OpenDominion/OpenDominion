@@ -56,10 +56,10 @@ class IrregularDominionEmailNotification extends Notification implements ShouldQ
     {
         $mailMessage = (new MailMessage)
             ->replyTo('email@wavehack.net', 'WaveHack')
-            ->subject('OpenDominion Dominion Event')
-            ->greeting('Dominion Event at ' . $this->now->format('D, M j, Y H:00'))
+            ->subject($this->getSubject())
+            ->greeting('Irregular Dominion Event(s) at ' . $this->now->format('D, M j, Y H:00'))
             ->line('Hello ' . $dominion->user->display_name . '!')
-            ->line('The following dominion event just occurred in your dominion *' . $dominion->name . '*:');
+            ->line('The following dominion event(s) just occurred in your dominion *' . $dominion->name . '*:');
 
         foreach ($this->notifications as $notification) {
             $mailMessage = $mailMessage->line('- ' . $this->notificationHelper->getNotificationMessage(
@@ -74,5 +74,26 @@ class IrregularDominionEmailNotification extends Notification implements ShouldQ
             ->salutation('-OpenDominion');
 
         return $mailMessage;
+    }
+
+    // todo: move to parent abstract class
+    protected function getSubject(): string
+    {
+        $subjectParts[] = '[OD]';
+
+        $amountNotifications = count($this->notifications);
+        if ($amountNotifications > 1) {
+            $subjectParts[] = ('(+' . ($amountNotifications - 1) . ')');
+        }
+
+        $firstNotification = array_first($this->notifications);
+
+        $subjectParts[] = $this->notificationHelper->getNotificationMessage(
+            $firstNotification['category'],
+            $firstNotification['type'],
+            $firstNotification['data']
+        );
+
+        return implode(' ', $subjectParts);
     }
 }
