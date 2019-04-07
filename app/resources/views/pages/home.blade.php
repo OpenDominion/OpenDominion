@@ -3,11 +3,62 @@
 @section('content')
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-
             <div style="margin-bottom: 20px;">
                 <img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-responsive" alt="OpenDominion">
             </div>
+        </div>
+    </div>
 
+    <div class="row">
+
+        <div class="col-sm-3">
+            <div class="box">
+                <div class="box-header with-border text-center">
+                    <h3 class="box-title">Current Round</h3>
+                </div>
+                @if ($currentRound === null)
+                    <div class="box-body text-center">
+                        <p class="text-red"><strong>There is no ongoing round.</strong></p>
+                        @if ($discordInviteLink = config('app.discord_invite_link'))
+                            <p>Check the Discord for more information.</p>
+
+                            <p style="padding: 0 20px;">
+                                <a href="{{ $discordInviteLink }}" target="_blank">
+                                    <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive">
+                                </a>
+                            </p>
+                        @endif
+                    </div>
+                @else
+                    <div class="box-body no-padding">
+                        <table class="table">
+                            <colgroup>
+                                <col width="50%">
+                                <col width="50%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">Day:</td>
+                                    <td class="text-center">
+                                        {{ number_format($currentRound->start_date->subDays(1)->diffInDays(now())) }} / {{ number_format($currentRound->durationInDays()) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">Players:</td>
+                                    <td class="text-center">{{ number_format($currentRound->dominions->count()) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">Realms:</td>
+                                    <td class="text-center">{{ number_format($currentRound->realms->count()) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="col-sm-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Welcome to OpenDominion!</h3>
@@ -35,7 +86,11 @@
                     <p>OpenDominion is open source software and can be found on <a href="https://github.com/WaveHack/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>.</p>
                 </div>
             </div>
-
         </div>
+
+        <div class="col-sm-3">
+            <img src="{{ asset('assets/app/images/elf.png') }}" class="img-responsive" alt="">
+        </div>
+
     </div>
 @endsection

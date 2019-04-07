@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
+use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class HomeController extends AbstractController
@@ -20,6 +21,11 @@ class HomeController extends AbstractController
             return redirect()->route('dashboard');
         }
 
-        return view('pages.home');
+        $currentRound = Round::query()
+            ->with(['dominions', 'realms'])
+            ->active()
+            ->first();
+
+        return view('pages.home', compact('currentRound'));
     }
 }

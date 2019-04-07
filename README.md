@@ -38,13 +38,13 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | System         | Status                                    |
 | -------------- | ----------------------------------------- |
 | Authentication | ![Progress](http://progressed.io/bar/100) |
-| Buildings      | ![Progress](http://progressed.io/bar/80)  |
+| Buildings      | ![Progress](http://progressed.io/bar/90)  |
 | Land           | ![Progress](http://progressed.io/bar/100) |
 | Heroes         | ![Progress](http://progressed.io/bar/0)   |
-| Notifications  | ![Progress](http://progressed.io/bar/30)  |
+| Notifications  | ![Progress](http://progressed.io/bar/50)  |
 | Population     | ![Progress](http://progressed.io/bar/100) |
-| Races & Units  | ![Progress](http://progressed.io/bar/10)  |
-| Resources      | ![Progress](http://progressed.io/bar/90)  |
+| Races & Units  | ![Progress](http://progressed.io/bar/20)  |
+| Resources      | ![Progress](http://progressed.io/bar/95)  |
 | Tech           | ![Progress](http://progressed.io/bar/0)   |
 
 ### Pages
@@ -64,17 +64,17 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | National Bank       | ![Progress](http://progressed.io/bar/100) |
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
-| Invading            | ![Progress](http://progressed.io/bar/0)   |
+| Invading            | ![Progress](http://progressed.io/bar/100) |
 | Magic               | ![Progress](http://progressed.io/bar/60)  |
 | Espionage           | ![Progress](http://progressed.io/bar/35)  |
 | Messages            | ![Progress](http://progressed.io/bar/0)   |
 | Realm Council       | ![Progress](http://progressed.io/bar/50)  |
-| Op Center           | ![Progress](http://progressed.io/bar/75)  |
+| Op Center           | ![Progress](http://progressed.io/bar/95)  |
 | Government          | ![Progress](http://progressed.io/bar/0)   |
 | Diplomacy           | ![Progress](http://progressed.io/bar/0)   |
 | Realm Page          | ![Progress](http://progressed.io/bar/100) |
 | Rankings            | ![Progress](http://progressed.io/bar/80)  |
-| Town Crier          | ![Progress](http://progressed.io/bar/0)   |
+| Town Crier          | ![Progress](http://progressed.io/bar/95)  |
 | Valhalla            | ![Progress](http://progressed.io/bar/20)  |
 | Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   |
 
@@ -119,6 +119,7 @@ All rights belong to their respective owners.
 - Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala's Crypt and Mickles from DomHQ
 - All the contributors to the OpenDominion project
 - All the people who are participating in the open beta or otherwise being involved with the OpenDominion project
+- Mevnie from Discord for creating the amazing Elf drawing on the homepage
 
 
 ## Notes
