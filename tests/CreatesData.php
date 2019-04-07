@@ -14,6 +14,7 @@ use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\RealmFinderService;
 
 trait CreatesData
 {
@@ -115,23 +116,35 @@ trait CreatesData
     {
         $faker = \Faker\Factory::create();
 
-        /** @var DominionFactory $dominionFactory */
-        $dominionFactory = $this->app->make(DominionFactory::class);
+        if ($race === null) {
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+            $race = Race::where('name', 'Human')->firstOrFail();
+        }
 
         if ($realm === null) {
-            /** @var RealmFactory $realmFactory */
-            $realmFactory = $this->app->make(RealmFactory::class);
+            /** @var RealmFinderService $realmFinderService */
+            $realmFinderService = $this->app->make(RealmFinderService::class);
 
-            $realm = $realmFactory->create(
-                $round,
-                $race->alignment ?? 'good'
-            );
+            $realm = $realmFinderService->findRandomRealm($round, $race);
+
+            if ($realm === null) {
+                /** @var RealmFactory $realmFactory */
+                $realmFactory = $this->app->make(RealmFactory::class);
+
+                $realm = $realmFactory->create(
+                    $round,
+                    $race->alignment
+                );
+            }
         }
+
+        /** @var DominionFactory $dominionFactory */
+        $dominionFactory = $this->app->make(DominionFactory::class);
 
         return $dominionFactory->create(
             $user,
             $realm,
-            $race ?? Race::where('name', 'Human')->firstOrFail(),
+            $race,
             $faker->name,
             $faker->company
         );
