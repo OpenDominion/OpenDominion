@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.0-1] - 2019-04-09
+### Fixed
+- Fixed an error when registering to a round and creating a new pack
+
 ## [0.6.0] - 2019-04-08
 ### Added
 - Added invasions!
@@ -134,6 +138,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - This CHANGELOG file.
 
 [Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...HEAD
+[0.6.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...0.6.0-1
 [0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
 [0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
 [0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2

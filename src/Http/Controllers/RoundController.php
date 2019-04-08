@@ -124,7 +124,7 @@ class RoundController extends AbstractController
         if ($request->get('realm_type') === 'create_pack') {
             $pack = $this->packService->createPack(
                 $dominion,
-                $request-get('pack_name'),
+                $request->get('pack_name'),
                 $request->get('pack_password'),
                 $request->get('pack_size')
             );
