@@ -31,9 +31,10 @@
             @foreach ($buildingTypes as $buildingType)
                 <tr>
                     <td>
-                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
+                            {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                        </span>
                         {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
-                        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                     </td>
                     <td class="text-center">
                         {{ $selectedDominion->{'building_' . $buildingType} }}
