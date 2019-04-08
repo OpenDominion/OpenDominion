@@ -130,7 +130,8 @@
                     <a href="{{ route('dominion.advisors.magic') }}" class="pull-right">Magic Advisor</a>
                 </div>
                 <div class="box-body">
-                    <p>Here you may cast spells which temporarily benefit your dominion or hinder opposing dominions.</p>
+                    <p>Here you may cast spells which temporarily benefit your dominion or hinder opposing dominions. You can also perform information gathering operations with magic.</p>
+                    <p>Non-information gathering spells last for <b>12 hours</b>, unless stated otherwise.</p>
                     <p>Any obtained data after successfully casting an information gathering spell gets posted to the <a href="{{ route('dominion.op-center') }}">Op Center</a> for your realmies.</p>
                     <p>Casting spells spends some wizard strength, but it regenerates a bit every hour. You may only cast spells above 30% strength.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
