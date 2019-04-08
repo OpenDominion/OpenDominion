@@ -80,9 +80,24 @@ class Dominion extends AbstractModel
 
     // todo: info op target/source?
 
+    public function gameEventsSource()
+    {
+        return $this->morphMany(GameEvent::class, 'source');
+    }
+
+    public function gameEventsTarget()
+    {
+        return $this->morphMany(GameEvent::class, 'target');
+    }
+
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
+    }
+
+    public function pack()
+    {
+        return $this->belongsTo(Pack::class);
     }
 
     public function race()
@@ -105,11 +120,6 @@ class Dominion extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
-    public function pack()
-    {
-        return $this->belongsTo(Pack::class);
-    }
-
     // Eloquent Query Scopes
 
     public function scopeActive(Builder $query)
@@ -122,6 +132,7 @@ class Dominion extends AbstractModel
 
     // Methods
 
+    // todo: move to eloquent events, see $dispatchesEvents
     public function save(array $options = [])
     {
         $recordChanges = isset($options['event']);

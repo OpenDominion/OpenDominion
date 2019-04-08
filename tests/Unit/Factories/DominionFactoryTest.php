@@ -26,6 +26,9 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
     /** @var Race */
     protected $race;
 
+    /** @var Realm */
+    protected $realm;
+
     /** @var DominionFactory */
     protected $dominionFactory;
 
@@ -44,6 +47,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
         $this->user = $this->createUser();
         $this->round = $this->createRound();
         $this->race = Race::firstOrFail();
+        $this->realm = $this->createRealm($this->round, $this->race->alignment);
 
         $this->dominionFactory = $this->app->make(DominionFactory::class);
         $this->packService =  $this->app->make(PackService::class);
@@ -52,40 +56,17 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
 
     public function testCreate()
     {
-        $this->assertEquals(0, Realm::count());
         $this->assertEquals(0, Dominion::count());
 
-        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'random', 'Ruler Name', 'Dominion Name', null);
+        $dominion = $this->dominionFactory->create(
+            $this->user,
+            $this->realm,
+            $this->race,
+            'Ruler Name',
+            'Dominion Name'
+        );
 
-        $this->assertEquals(1, Realm::count());
         $this->assertEquals(1, Dominion::count());
         $this->assertEquals($dominion->id, Dominion::first()->id);
     }
-
-    public function testCreateReturnsEligibleRealmIfAlreadyFilledWithPack()
-    {
-//        $existingRealm = $this->realmFactory->create($this->round, 'good');
-
-        $otherUser = $this->createUser();
-        $otherDominion = $this->dominionFactory->create($otherUser, $this->round, $this->race, 'random', 'ruler', 'dominion');
-
-        $realm = $otherDominion->realm;
-
-        $this->assertEquals(1, $realm->dominions()->count());
-        $this->assertEquals(0, $realm->has_pack);
-        $this->assertEquals(0, $realm->reserved_slots);
-
-        // Create a new pack
-        $this->be($this->user);
-        $pack = $this->packService->getOrCreatePack($this->round, $this->race, 'pack name', 'pack password', 3, true);
-
-        $dominion = $this->dominionFactory->create($this->user, $this->round, $this->race, 'join_pack', 'ruler 2', 'dominion 2', $pack);
-        $realm->refresh();
-
-        $this->assertEquals(2, $realm->dominions()->count());
-        $this->assertEquals(1, $realm->has_pack);
-        $this->assertEquals(5, $realm->reserved_slots);
-    }
-
-    // todo: test realmType / multiple dominions in realm?
 }

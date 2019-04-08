@@ -7,6 +7,7 @@ use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 /**
@@ -31,6 +32,7 @@ class BuildingCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(BuildingCalculator::class, [
             $this->app->make(BuildingHelper::class),
+            $this->app->make(QueueService::class),
         ])->makePartial();
     }
 

@@ -16,6 +16,7 @@ use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -32,6 +33,9 @@ class SpellActionService
 
     /** @var NetworthCalculator */
     protected $networthCalculator;
+
+    /** @var NotificationService */
+    protected $notificationService;
 
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -59,6 +63,7 @@ class SpellActionService
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
+        $this->notificationService = app(NotificationService::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -125,7 +130,6 @@ class SpellActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $manaCost, $spellKey, &$result, $target) {
-
             if ($this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $result = $this->castSelfSpell($dominion, $spellKey);
 
@@ -143,7 +147,6 @@ class SpellActionService
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
-
         });
 
         return [
@@ -254,6 +257,14 @@ class SpellActionService
             );
 
             if (!random_chance($successRate)) {
+                // Inform target that they repelled a hostile spell
+                $this->notificationService
+                    ->queueNotification('repelled_hostile_spell', [
+                        'sourceDominionId' => $dominion->id,
+                        'spellKey' => $spellKey,
+                    ])
+                    ->sendNotifications($target, 'irregular_dominion');
+
                 // Return here, thus completing the spell cast and reducing the caster's mana
                 return [
                     'success' => false,
@@ -306,6 +317,8 @@ class SpellActionService
                     'military_unit2' => $this->militaryCalculator->getTotalUnitsForSlot($target, 2),
                     'military_unit3' => $this->militaryCalculator->getTotalUnitsForSlot($target, 3),
                     'military_unit4' => $this->militaryCalculator->getTotalUnitsForSlot($target, 4),
+
+                    'recently_invaded_count' => $this->militaryCalculator->getRecentlyInvadedCount($target),
 
                 ];
                 break;

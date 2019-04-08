@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.0] - 2019-04-08
+### Added
+- Added invasions!
+- Added Town Crier page
+- Clear Sight now mentions if the target was invaded recently, plus roughly how severely 
+- Military units now have a role icon next to them
+- Temples are now fully implemented, also reducing DP bonuses of targets you're invading
+- Added current round information to the home page
+
+### Changed
+- Unit and building tooltips have been moved from the question mark icon, to on the name itself
+
+### Fixed
+- Fixed not getting a notification when preventing a hostile spell or spy operation
+
 ## [0.5.2-1] - 2019-01-27
 ### Fixed
 - Fixed racial spells for Firewalker and Lizardfolk
@@ -118,7 +133,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
 [0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
 [0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2
 [0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8

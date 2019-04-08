@@ -172,6 +172,22 @@
                             </table>
                         </div>
                     </div>
+
+                    @php
+                        $recentlyInvadedCount = (isset($infoOp->data['recently_invaded_count']) ? (int)$infoOp->data['recently_invaded_count'] : 0);
+                    @endphp
+
+                    @if ($recentlyInvadedCount > 0)
+                        <p class="text-center" style="margin-bottom: 0.5em;">
+                            @if ($recentlyInvadedCount >= 5)
+                                This dominion has been invaded <strong><em>extremely heavily</em></strong> in recent times.
+                            @elseif ($recentlyInvadedCount >= 3)
+                                This dominion has been invaded <strong>heavily</strong> in recent times.
+                            @else
+                                This dominion has been invaded in recent times.
+                            @endif
+                        </p>
+                    @endif
                 @endif
 
                 @slot('boxFooter')

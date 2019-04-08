@@ -22,4 +22,13 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    public function takeOver(User $user)
+    {
+        auth()->login($user);
+
+        // todo: disable analytics
+
+        return redirect()->route('dashboard');
+    }
 }

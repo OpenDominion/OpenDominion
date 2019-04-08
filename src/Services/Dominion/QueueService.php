@@ -36,11 +36,11 @@ class QueueService
      * @param Dominion $dominion
      * @return Collection
      */
-    public function getQueue(string $source, Dominion $dominion): Collection
+    public function getQueue(string $source, Dominion $dominion, bool $force = false): Collection
     {
         $cacheKey = "{$source}.{$dominion->id}";
 
-        if (array_has($this->queueCache, $cacheKey)) {
+        if (!$force && array_has($this->queueCache, $cacheKey)) {
             return collect(array_get($this->queueCache, $cacheKey));
         }
 
@@ -105,6 +105,49 @@ class QueueService
             })->sum('amount');
     }
 
+    public function dequeueResource(string $source, Dominion $dominion, string $resource, int $amount): void
+    {
+        $queue = $this->getQueue($source, $dominion, true)
+            ->filter(function ($row) use ($resource) {
+                return ($row->resource === $resource);
+            })->sortByDesc('hours');
+
+        $leftToDequeue = $amount;
+
+        foreach ($queue as $value) {
+            $amountEnqueued = $value->amount;
+            $amountDequeued = $leftToDequeue;
+
+            if($amountEnqueued < $leftToDequeue) {
+                $amountDequeued = $amountEnqueued;
+            }
+
+            $leftToDequeue -= $amountDequeued;
+            $newAmount = $amountEnqueued - $amountDequeued;
+
+            if($newAmount == 0) {
+                DB::table('dominion_queue')->where([
+                    'dominion_id' => $dominion->id,
+                    'source' => $source,
+                    'resource' => $resource,
+                    'hours' => $value->hours,
+                ])->delete();
+            } else {
+                DB::table('dominion_queue')->where([
+                    'dominion_id' => $dominion->id,
+                    'source' => $source,
+                    'resource' => $resource,
+                    'hours' => $value->hours,
+                ])->update([
+                    'amount' => $newAmount,
+                ]);
+            }
+        }
+
+        // Update queue in cache!
+        $this->getQueue($source, $dominion, true);
+    }
+
     /**
      * Queues new resources for a dominion.
      *
@@ -124,12 +167,12 @@ class QueueService
                 if ($amount === 0) {
                     continue;
                 }
-
-                $existingQueueRow = $this->getQueue($source, $dominion)
-                    ->filter(function ($row) use ($resource, $hours) {
+                $q = $this->getQueue($source, $dominion, true);
+                $existingQueueRow =
+                    $q->filter(function ($row) use ($resource, $hours) {
                         return (
                             ($row->resource === $resource) &&
-                            ($row->hours === $hours)
+                            ((int)$row->hours === $hours)
                         );
                     })->first();
 
@@ -155,6 +198,9 @@ class QueueService
                 }
             }
         });
+
+        // // Update queue in cache!
+        // $this->getQueue($source, $dominion, true);
     }
 
     /**

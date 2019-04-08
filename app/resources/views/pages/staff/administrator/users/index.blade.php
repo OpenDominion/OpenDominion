@@ -15,6 +15,7 @@
                     <col width="200">
                     <col width="200">
                     <col width="50">
+                    <col width="50">
                 </colgroup>
                 <thead>
                     <tr>
@@ -23,6 +24,7 @@
                         <th class="text-center">Last Online</th>
                         <th class="text-center">Registered</th>
                         <th class="text-center">Activated</th>
+                        <th class="text-center">Take Over</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +47,9 @@
                                 <span title="{{ $user->created_at }}">{{ $user->created_at->diffForHumans() }}</span>
                             </td>
                             <td class="text-center" data-search="">{{ $user->activated ? 'Yes' : 'No' }}</td>
+                            <td class="text-center" data-search="">
+                                <a href="{{ route('staff.administrator.users.take-over', $user) }}">Yoink</a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

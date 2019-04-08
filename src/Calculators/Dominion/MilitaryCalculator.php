@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Services\Dominion\QueueService;
 
 class MilitaryCalculator
@@ -143,11 +144,12 @@ class MilitaryCalculator
      * Returns the Dominion's defensive power.
      *
      * @param Dominion $dominion
+     * @param float $multiplierReduction
      * @return float
      */
-    public function getDefensivePower(Dominion $dominion): float
+    public function getDefensivePower(Dominion $dominion, float $multiplierReduction = 0): float
     {
-        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion));
+        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion, $multiplierReduction));
 
         return ($dp * $this->getMoraleMultiplier($dominion));
     }
@@ -192,9 +194,10 @@ class MilitaryCalculator
      * Returns the Dominion's defensive power multiplier.
      *
      * @param Dominion $dominion
+     * @param float $multiplierReduction
      * @return float
      */
-    public function getDefensivePowerMultiplier(Dominion $dominion): float
+    public function getDefensivePowerMultiplier(Dominion $dominion, float $multiplierReduction = 0): float
     {
         $multiplier = 0;
 
@@ -222,6 +225,10 @@ class MilitaryCalculator
 
         // Spell: Ares' Call (+10%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
+
+        // Multiplier reduction when we want to factor in temples from another
+        // dominion
+        $multiplier = max(($multiplier - $multiplierReduction), 0);
 
         return (1 + $multiplier);
     }
@@ -405,5 +412,36 @@ class MilitaryCalculator
             $dominion->{'military_unit' . $slot} +
             $this->queueService->getInvasionQueueTotalByResource($dominion, "unit{$slot}")
         );
+    }
+
+    /**
+     * Returns the number of time the Dominion was recently invaded.
+     *
+     * 'Recent' refers to the past 24 hours.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getRecentlyInvadedCount(Dominion $dominion): int
+    {
+        // todo: this touches the db. should probably be in invasion or military service instead
+        $invasionEvents = GameEvent::query()
+            ->where('created_at', '>=', now()->subDay(1))
+            ->where([
+                'target_type' => Dominion::class,
+                'target_id' => $dominion->id,
+                'type' => 'invasion',
+            ])
+            ->get();
+
+        if ($invasionEvents->isEmpty()) {
+            return 0;
+        }
+
+        $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+            return $event->data['result']['success'];
+        });
+
+        return $invasionEvents->count();
     }
 }

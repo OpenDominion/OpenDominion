@@ -48,11 +48,12 @@
                     <ul class="nav navbar-nav">
                         <li class="{{ Route::is('home') ? 'active' : null }}"><a href="{{ route('home') }}">Home</a></li>
                         <li class="{{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}">Valhalla</a></li>
+                        @include('partials.wiki-nav')
                         @auth
                             @if ($selectorService->hasUserSelectedDominion())
-                                <li><a href="{{ route('dominion.status') }}">Play</a></li>
+                                <li><a href="{{ route('dominion.status') }}"><b>Play</b></a></li>
                             @else
-                                <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                <li><a href="{{ route('dashboard') }}"><b>Dashboard</b></a></li>
                             @endif
                         @endauth
                     </ul>

@@ -16,15 +16,19 @@ class TickTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
+    // todo: add test: dominion shouldnt tick on hour 0
+
     public function testMoraleTick()
     {
         $this->seedDatabase();
         $user = $this->createUser();
-        $round = $this->createRound();
+        $round = $this->createRound('yesterday'); // todo: check why develop branch works w/o this x_x
         $dominion = $this->createDominion($user, $round);
 
         $dominion->morale = 64;
         $dominion->save();
+
+        // todo: call tickservice instead for tickHourly (so it doesnt trigger tickDaily when tests run at 00:00 UTC)
 
         // Test +6 morale below 70
         Artisan::call('game:tick');

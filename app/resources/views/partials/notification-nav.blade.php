@@ -16,8 +16,20 @@
                 <li>
                     <ul class="menu">
                         @foreach ($selectedDominion->unreadNotifications as $notification)
+                            @php
+                                $route = array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#');
+
+                                if (is_callable($route)) {
+                                    if (isset($notification->data['data']['_routeParams'])) {
+                                        $route = $route($notification->data['data']['_routeParams']);
+                                    } else {
+                                        // fallback
+                                        $route = '#';
+                                    }
+                                }
+                            @endphp
                             <li>
-                                <a href="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#') }}">
+                                <a href="{{ $route }}">
                                     <i class="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.iconClass", 'fa fa-question') }}"></i>
                                     {{ $notification->data['message'] }}<br>
                                     <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
@@ -28,7 +40,7 @@
                 </li>
                 <li class="footer">
                     <a href="#" id="clear-notifications">Clear Notifications</a>
-                    <form action="{{ url('tmp/clear-notifications') }}" method="post" id="clear-notifications-form">
+                    <form action="{{ route('dominion.misc.clear-notifications') }}" method="post" id="clear-notifications-form">
                         @csrf
                     </form>
                 </li>

@@ -61,6 +61,7 @@
                             'getTotalLand',
                             'getTotalBarrenLand',
                             'getBarrenLandByLandType',
+                            'getLandByLandType',
                         ]) !!}
                     </p>
                 </div>
@@ -87,9 +88,12 @@
                             'getSpyRatio',
                             'getSpyRatioRaw',
                             'getSpyRatioMultiplier',
+                            'getSpyStrengthRegen',
                             'getWizardRatio',
                             'getWizardRatioRaw',
                             'getWizardRatioMultiplier',
+                            'getWizardStrengthRegen',
+                            'getRecentlyInvadedCount',
                         ]) !!}
                     </p>
                 </div>

@@ -22,10 +22,6 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
-            <exclude>
-                <directory suffix=".php">./src/Nova</directory>
-                <file>./src/Providers/NovaServiceProvider.php</file>
-            </exclude>
         </whitelist>
     </filter>
     <php>
@@ -36,5 +32,6 @@
         <env name="MAIL_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="TELESCOPE_ENABLED" value="false" />
     </php>
 </phpunit>

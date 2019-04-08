@@ -17,6 +17,11 @@ class Round extends AbstractModel
         return $this->hasManyThrough(Dominion::class, Realm::class);
     }
 
+    public function gameEvents()
+    {
+        return $this->hasMany(GameEvent::class);
+    }
+
     public function league()
     {
         return $this->hasOne(RoundLeague::class, 'id', 'round_league_id');
@@ -71,7 +76,7 @@ class Round extends AbstractModel
             ->limit(1)
             ->get();
 
-        return (count($results) === 1);
+        return (\count($results) === 1);
     }
 
     /**

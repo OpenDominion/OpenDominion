@@ -2,117 +2,52 @@
 
 namespace OpenDominion\Factories;
 
+use LogicException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
-use OpenDominion\Services\RealmFinderService;
-use RuntimeException;
 
 class DominionFactory
 {
-    /** @var RealmFinderService */
-    protected $realmFinderService;
-
-    /** @var RealmFactory */
-    protected $realmFactory;
-
     /**
-     * DominionFactory constructor.
-     *
-     * @param RealmFinderService $realmFinderService
-     * @param RealmFactory $realmFactory
-     */
-    public function __construct(RealmFinderService $realmFinderService, RealmFactory $realmFactory)
-    {
-        $this->realmFinderService = $realmFinderService;
-        $this->realmFactory = $realmFactory;
-    }
-
-    /**
-     * Creates and returns a new Dominion in a valid Realm for the current Round.
-     *
-     * @see RealmFinderService::findRandomRealm()
+     * Creates and returns a new Dominion instance.
      *
      * @param User $user
-     * @param Round $round
+     * @param Realm $realm
      * @param Race $race
-     * @param string $realmType Currently only 'random'. Future will support packs
      * @param string $rulerName
      * @param string $dominionName
-     * @param null|Pack $pack
-     *
+     * @param Pack|null $pack
      * @return Dominion
+     * @throws LogicException
      */
     public function create(
         User $user,
-        Round $round,
+        Realm $realm,
         Race $race,
-        string $realmType,
         string $rulerName,
         string $dominionName,
         ?Pack $pack = null
     ): Dominion {
-        // todo: check if user already has a dominion in this round
-        // todo: refactor $realmType into Realm $realm, generate new realm in RealmService from controller instead
-
-        // Try to find a vacant realm
-        switch ($realmType) {
-            case 'random':
-                $realm = $this->realmFinderService->findRandomRealm($round, $race);
-                break;
-            case 'join_pack':
-            case 'create_pack':
-                $realm = $pack->realm;
-                if ($realm === null) {
-                    $realm = $this->realmFinderService->findRandomRealmForPack($round, $race, $pack);
-                }
-                break;
-            default:
-                throw new RuntimeException("Realm type '{$realmType}' not supported");
-        }
-
-        // No vacant realm. Create a new one instead
-        if ($realm === null) {
-            $realm = $this->realmFactory->create($round, $race->alignment, $pack);
-        }
+        $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
+        $this->guardAgainstMismatchedAlignments($race, $realm);
 
         // todo: get starting values from config
 
-        $startingBarrenLand = [
-            'plain' => 40,
-            'mountain' => 20,
-            'swamp' => 20,
-            'cavern' => 20,
-            'forest' => 20,
-            'hill' => 20,
-            'water' => 20,
-        ];
+        $startingBuildings = $this->getStartingBuildings();
 
-        $startingBuildings = [
-            'home' => 10,
-            'alchemy' => 30,
-            'farm' => 30,
-            'lumberyard' => 20,
-        ];
+        $startingLand = $this->getStartingLand(
+            $race,
+            $this->getStartingBarrenLand(),
+            $startingBuildings
+        );
 
-        $startingLand = [
-            'plain' => $startingBarrenLand['plain'] + $startingBuildings['alchemy'] + $startingBuildings['farm'],
-            'mountain' => $startingBarrenLand['mountain'],
-            'swamp' => $startingBarrenLand['swamp'],
-            'cavern' => $startingBarrenLand['cavern'],
-            'forest' => $startingBarrenLand['forest'] + $startingBuildings['lumberyard'],
-            'hill' => $startingBarrenLand['hill'],
-            'water' => $startingBarrenLand['water'],
-        ];
-
-        $startingLand[$race->home_land_type] += $startingBuildings['home'];
-
-        // Create dominion
-        $dominion = Dominion::create([
+        return Dominion::create([
             'user_id' => $user->id,
-            'round_id' => $round->id,
+            'round_id' => $realm->round->id,
             'realm_id' => $realm->id,
             'race_id' => $race->id,
             'pack_id' => $pack->id ?? null,
@@ -182,12 +117,95 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
+    }
 
-        if ($pack !== null) {
-            $realm->reserved_slots--;
-            $realm->save();
+    /**
+     * @param User $user
+     * @param Round $round
+     * @throws LogicException
+     */
+    protected function guardAgainstMultipleDominionsInARound(User $user, Round $round): void
+    {
+        $dominionCount = Dominion::query()
+            ->where([
+                'user_id' => $user->id,
+                'round_id' => $round->id,
+            ])
+            ->count();
+
+        if ($dominionCount > 0) {
+            throw new LogicException('User already has a dominion in this round');
         }
+    }
 
-        return $dominion;
+    /**
+     * @param Race $race
+     * @param Realm $realm
+     * @throws LogicException
+     */
+    protected function guardAgainstMismatchedAlignments(Race $race, Realm $realm): void
+    {
+        if ($race->alignment !== $realm->alignment) {
+            throw new LogicException('Race and realm alignment do not match');
+        }
+    }
+
+    /**
+     * Get amount of barren land a new Dominion starts with.
+     *
+     * @return array
+     */
+    protected function getStartingBarrenLand(): array
+    {
+        return [
+            'plain' => 40,
+            'mountain' => 20,
+            'swamp' => 20,
+            'cavern' => 20,
+            'forest' => 20,
+            'hill' => 20,
+            'water' => 20,
+        ];
+    }
+
+    /**
+     * Get amount of buildings a new Dominion starts with.
+     *
+     * @return array
+     */
+    protected function getStartingBuildings(): array
+    {
+        return [
+            'home' => 10,
+            'alchemy' => 30,
+            'farm' => 30,
+            'lumberyard' => 20,
+        ];
+    }
+
+    /**
+     * Get amount of total starting land a new Dominion starts with, factoring
+     * in both buildings and barren land.
+     *
+     * @param Race $race
+     * @param array $startingBarrenLand
+     * @param array $startingBuildings
+     * @return array
+     */
+    protected function getStartingLand(Race $race, array $startingBarrenLand, array $startingBuildings): array
+    {
+        $startingLand = [
+            'plain' => $startingBarrenLand['plain'] + $startingBuildings['alchemy'] + $startingBuildings['farm'],
+            'mountain' => $startingBarrenLand['mountain'],
+            'swamp' => $startingBarrenLand['swamp'],
+            'cavern' => $startingBarrenLand['cavern'],
+            'forest' => $startingBarrenLand['forest'] + $startingBuildings['lumberyard'],
+            'hill' => $startingBarrenLand['hill'],
+            'water' => $startingBarrenLand['water'],
+        ];
+
+        $startingLand[$race->home_land_type] += $startingBuildings['home'];
+
+        return $startingLand;
     }
 }
