@@ -6,14 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Added
 - Added invasions!
-- Also added Town Crier
-- Clear Sight now mentions if the target was invaded recently, plus roughly how severely
-- You now get a notification whenever you prevent a hostile spell or spy operation against you (check your notification settings!) 
+- Added Town Crier page
+- Clear Sight now mentions if the target was invaded recently, plus roughly how severely 
 - Military units now have a role icon next to them
 - Temples are now fully implemented, also reducing DP bonuses of targets you're invading
 
 ### Changed
 - Unit and building tooltips have been moved from the question mark icon, to on the name itself
+
+### Fixed
+- Fixed not getting a notification when preventing a hostile spell or spy operation
 
 ## [0.5.2-1] - 2019-01-27
 ### Fixed
