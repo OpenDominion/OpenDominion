@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.6.0] - 2019-04-08
 ### Added
 - Added invasions!
 - Added Town Crier page
 - Clear Sight now mentions if the target was invaded recently, plus roughly how severely 
 - Military units now have a role icon next to them
 - Temples are now fully implemented, also reducing DP bonuses of targets you're invading
+- Added current round information to the home page
 
 ### Changed
 - Unit and building tooltips have been moved from the question mark icon, to on the name itself
@@ -25,7 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Added new races: Firewalker and Lizardfolk.
 
-## [0.5.1-4] and [0.5.1-8] - 2018-10-04
+## [0.5.1-4] to [0.5.1-8] - 2018-10-04
 ### Fixed
 - Fix user IP resolving when behind Cloudflare DNS with trusted proxies.
 - Dominion numbering on the realm page now correctly starts at 1, instead of 0.
@@ -130,7 +133,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
 [0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
 [0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2
 [0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8
