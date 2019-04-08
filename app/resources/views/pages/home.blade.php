@@ -16,9 +16,12 @@
                 <div class="box-header with-border text-center">
                     <h3 class="box-title">Current Round</h3>
                 </div>
-                @if ($currentRound === null)
+                @if ($currentRound === null || $currentRound->hasEnded())
+                    <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                        <p style="font-size: 1.5em;" class="text-red">Inactive</p>
+                    </div>
                     <div class="box-body text-center">
-                        <p class="text-red"><strong>There is no ongoing round.</strong></p>
+                        <p><strong>There is no ongoing round.</strong></p>
                         @if ($discordInviteLink = config('app.discord_invite_link'))
                             <p>Check the Discord for more information.</p>
 
@@ -29,7 +32,18 @@
                             </p>
                         @endif
                     </div>
+                @elseif (!$currentRound->hasStarted() && $currentRound->openForRegistration())
+                    <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                        <p style="font-size: 1.5em;" class="text-yellow">Open for Registration</p>
+                    </div>
+                    <div class="box-body text-center">
+                        <p>Registration for round {{ $currentRound->number }} is open.</p>
+                        <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date->diffForHumans() }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                    </div>
                 @else
+                    <div class="box-body text-center" style="padding: 0;">
+                        <p style="font-size: 1.5em;" class="text-green">Active</p>
+                    </div>
                     <div class="box-body no-padding">
                         <table class="table">
                             <colgroup>
@@ -53,6 +67,17 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="box-footer text-center">
+                        @if ($currentRound->daysUntilEnd() < 7)
+                            <p>
+                                <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }}.</em>
+                            </p>
+                        @else
+                            <p>
+                                <em>Register to join the ongoing round!</em>
+                            </p>
+                        @endif
                     </div>
                 @endif
             </div>

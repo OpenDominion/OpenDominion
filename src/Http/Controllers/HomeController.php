@@ -21,9 +21,10 @@ class HomeController extends AbstractController
             return redirect()->route('dashboard');
         }
 
+        // Always assume last round is the most active one
         $currentRound = Round::query()
             ->with(['dominions', 'realms'])
-            ->active()
+            ->orderBy('created_at', 'desc')
             ->first();
 
         return view('pages.home', compact('currentRound'));
