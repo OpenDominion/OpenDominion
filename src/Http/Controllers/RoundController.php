@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers;
 
 use Auth;
 use DB;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use LogicException;
 use OpenDominion\Factories\DominionFactory;
@@ -112,14 +113,22 @@ class RoundController extends AbstractController
             $realm = $realmFactory->create($round, $race->alignment);
         }
 
-        $dominion = $this->dominionFactory->create(
-            $user,
-            $realm,
-            $race,
-            ($request->get('ruler_name') ?: Auth::user()->display_name),
-            $request->get('dominion_name'),
-            $pack
-        );
+        $dominionName = $request->get('dominion_name');
+
+        try {
+            $dominion = $this->dominionFactory->create(
+                $user,
+                $realm,
+                $race,
+                ($request->get('ruler_name') ?: Auth::user()->display_name),
+                $dominionName,
+                $pack
+            );
+        } catch (QueryException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(["Someone already registered a dominion with the name '{$dominionName}' for this round."]);
+        }
 
         if ($request->get('realm_type') === 'create_pack') {
             $pack = $this->packService->createPack(
