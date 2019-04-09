@@ -68,7 +68,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Magic               | ![Progress](http://progressed.io/bar/60)  | Black ops
 | Espionage           | ![Progress](http://progressed.io/bar/35)  | Black ops
 | Messages            | ![Progress](http://progressed.io/bar/0)   | Everything
-| Realm Council       | ![Progress](http://progressed.io/bar/50)  | Needs refactorng, editing posts, and moderation
+| Realm Council       | ![Progress](http://progressed.io/bar/50)  | Needs refactoring, editing posts, and moderation
 | Op Center           | ![Progress](http://progressed.io/bar/95)  | Calculations for (estimate) DP
 | Government          | ![Progress](http://progressed.io/bar/0)   | Everything
 | Diplomacy           | ![Progress](http://progressed.io/bar/0)   | Everything
