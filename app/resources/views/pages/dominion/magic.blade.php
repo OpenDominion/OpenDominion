@@ -31,18 +31,23 @@
                                                     <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn {{ $buttonStyle }} btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
                                                         {{ $spell['name'] }}
                                                     </button>
-                                                    <p>{{ $spell['description'] }}</p>
-                                                    <small>
-                                                        @if ($isActive)
-                                                            ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hours remaining)
-                                                        @else
-                                                            @if ($canCast)
-                                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                    <p style="margin: 5px 0;">{{ $spell['description'] }}</p>
+                                                    <p>
+                                                        <small>
+                                                            @if ($isActive)
+                                                                ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hours remaining)
                                                             @else
-                                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                @if ($canCast)
+                                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                @else
+                                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                    </small>
+                                                            @if (isset($spell['races']))
+                                                                <br>Racial
+                                                            @endif
+                                                        </small>
+                                                    </p>
                                                 </div>
                                             </div>
                                         @endforeach
