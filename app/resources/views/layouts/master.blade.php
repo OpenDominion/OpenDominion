@@ -7,6 +7,7 @@
 
     <title>@yield('title', 'OpenDominion')</title>
 
+    <link rel="author" href="{{ asset('humans.txt') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
