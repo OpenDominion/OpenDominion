@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.1] - 2019-04-09
+### Added
+- Added the following races to Valhalla: Dwarves, Goblins, Firewalkers, and Lizardmen
+- Added largest/strongest packs to Valhalla
+
+### Changed
+- Moved the 'Join the Discord'-button from status page to daily bonuses page
+
+### Fixed
+- Removed "round not yet started"-alert from homepage
+- Fixed a bug where creating a pack is placed in a new realm, instead of an already existing and eligible realm
+- Minor text fixes
+
 ## [0.6.0-2] - 2019-04-09
 ### Changed
 - Updated info box on the magic page
@@ -147,8 +160,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...HEAD
-[0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.0-2
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...HEAD
+[0.6.1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.1
+[0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-1...0.6.0-2
 [0.6.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...0.6.0-1
 [0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
 [0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1

@@ -8,7 +8,7 @@
             <h3 class="box-title">{{ ucwords(str_replace('-', ' ', $type)) }} in round {{ number_format($round->number) }}: {{ $round->name }}</h3>
         </div>
 
-        @if (!empty($data))
+        @if (!$data->isEmpty())
             <div class="box-body table-responsive no-padding">
                 @php($headersPrinted = false)
                 <table class="table table-striped">
@@ -23,7 +23,7 @@
                                 <tr>
                                     @foreach (array_keys($row) as $column)
                                         <th{!! (isset($headers[$column]['align-center']) && $headers[$column]['align-center']) ? ' class="text-center"' : null !!}>
-                                            {{ ucwords($column) }}
+                                            {{ ucwords(str_replace('_', ' ', $column)) }}
                                         </th>
                                     @endforeach
                                 </tr>
@@ -45,7 +45,9 @@
                 </table>
             </div>
         @else
-            <div class="box-body">No records found.</div>
+            <div class="box-body">
+                <p>No records found.</p>
+            </div>
         @endif
     </div>
 @endsection

@@ -227,5 +227,6 @@ return [
     // Custom config vars
 
     'discord_invite_link' => env('DISCORD_INVITE_LINK'),
+    'patreon_pledge_link' => env('PATREON_PLEDGE_LINK'),
 
 ];

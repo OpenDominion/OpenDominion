@@ -35,48 +35,49 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 
 ### Systems
 
-| System         | Status                                    |
-| -------------- | ----------------------------------------- |
-| Authentication | ![Progress](http://progressed.io/bar/100) |
-| Buildings      | ![Progress](http://progressed.io/bar/90)  |
+| System         | Status                                    | To do
+| -------------- | ----------------------------------------- | -----
+| Authentication | ![Progress](http://progressed.io/bar/95)  | 2FA
+| Buildings      | ![Progress](http://progressed.io/bar/90)  | Schools, and black-op bonuses for Masonry, Forest Haven and Dock
 | Land           | ![Progress](http://progressed.io/bar/100) |
-| Heroes         | ![Progress](http://progressed.io/bar/0)   |
-| Notifications  | ![Progress](http://progressed.io/bar/50)  |
+| Heroes         | ![Progress](http://progressed.io/bar/0)   | Everything
+| Notifications  | ![Progress](http://progressed.io/bar/50)  | Needs refactoring and email digests
 | Population     | ![Progress](http://progressed.io/bar/100) |
-| Races & Units  | ![Progress](http://progressed.io/bar/20)  |
-| Resources      | ![Progress](http://progressed.io/bar/95)  |
-| Tech           | ![Progress](http://progressed.io/bar/0)   |
+| Races & Units  | ![Progress](http://progressed.io/bar/20)  | Most races
+| Resources      | ![Progress](http://progressed.io/bar/95)  | Tech points
+| Wonders        | ![Progress](http://progressed.io/bar/0)   | Everything
+| Tech           | ![Progress](http://progressed.io/bar/0)   | Everything
 
 ### Pages
 
 This indicates which pages are functional. Some pages will be restyled or revisited upon building different functionality later. 
 
-| Page                | Status                                    |
-| ------------------- | ----------------------------------------- |
+| Page                | Status                                    | To do
+| ------------------- | ----------------------------------------- | -----
 | Status              | ![Progress](http://progressed.io/bar/100) |
-| Advisors            | ![Progress](http://progressed.io/bar/90)  |
+| Advisors            | ![Progress](http://progressed.io/bar/90)  | Rankings advisor
 | Daily Bonuses       | ![Progress](http://progressed.io/bar/100) |
 | Exploration         | ![Progress](http://progressed.io/bar/100) |
 | Construction        | ![Progress](http://progressed.io/bar/100) |
 | Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
 | Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
-| Castle Improvements | ![Progress](http://progressed.io/bar/95)  |
+| Castle Improvements | ![Progress](http://progressed.io/bar/95)  | Towers spell damage reduction
 | National Bank       | ![Progress](http://progressed.io/bar/100) |
 | Military Training   | ![Progress](http://progressed.io/bar/100) |
 | Release Troops      | ![Progress](http://progressed.io/bar/100) |
 | Invading            | ![Progress](http://progressed.io/bar/100) |
-| Magic               | ![Progress](http://progressed.io/bar/60)  |
-| Espionage           | ![Progress](http://progressed.io/bar/35)  |
-| Messages            | ![Progress](http://progressed.io/bar/0)   |
-| Realm Council       | ![Progress](http://progressed.io/bar/50)  |
-| Op Center           | ![Progress](http://progressed.io/bar/95)  |
-| Government          | ![Progress](http://progressed.io/bar/0)   |
-| Diplomacy           | ![Progress](http://progressed.io/bar/0)   |
+| Magic               | ![Progress](http://progressed.io/bar/60)  | Black ops
+| Espionage           | ![Progress](http://progressed.io/bar/35)  | Black ops
+| Messages            | ![Progress](http://progressed.io/bar/0)   | Everything
+| Realm Council       | ![Progress](http://progressed.io/bar/50)  | Needs refactoring, editing posts, and moderation
+| Op Center           | ![Progress](http://progressed.io/bar/95)  | Calculations for (estimate) DP
+| Government          | ![Progress](http://progressed.io/bar/0)   | Everything
+| Diplomacy           | ![Progress](http://progressed.io/bar/0)   | Everything
 | Realm Page          | ![Progress](http://progressed.io/bar/100) |
-| Rankings            | ![Progress](http://progressed.io/bar/80)  |
-| Town Crier          | ![Progress](http://progressed.io/bar/95)  |
-| Valhalla            | ![Progress](http://progressed.io/bar/20)  |
-| Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   |
+| Rankings            | ![Progress](http://progressed.io/bar/100) | 
+| Town Crier          | ![Progress](http://progressed.io/bar/95)  | Black ops reports
+| Valhalla            | ![Progress](http://progressed.io/bar/20)  | More categories
+| Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   | Everything
 
 
 ## Contributing
@@ -111,16 +112,16 @@ OpenDominion aims to be a free and open source remake, closely based on the orig
 
 All rights belong to their respective owners.
 
-### Shoutouts / Thanks
+### Shout-outs / Thanks
 
 - Ross from Kamikaze Games Inc., for creating and running Dominion
 - RedFox for creating [DomSim](http://web.archive.org/web/20150918011332/http://dominion.lykanthropos.com:80/DomSim)
 - BlackReign for his OOP sim
 - All the people who contributed to the [Dominion Encyclopedia](http://web.archive.org/web/20141017235815/http://dominion.lykanthropos.com/wiki/index.php/Main_Page)
+- Mevnie from Discord for creating the amazing Elf drawing on the homepage
 - Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala's Crypt and Mickles from DomHQ
 - All the contributors to the OpenDominion project
 - All the people who are participating in the open beta or otherwise being involved with the OpenDominion project
-- Mevnie from Discord for creating the amazing Elf drawing on the homepage
 
 
 ## Notes

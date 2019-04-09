@@ -27,6 +27,11 @@ class Round extends AbstractModel
         return $this->hasOne(RoundLeague::class, 'id', 'round_league_id');
     }
 
+    public function packs()
+    {
+        return $this->hasMany(Pack::class);
+    }
+
     public function realms()
     {
         return $this->hasMany(Realm::class);

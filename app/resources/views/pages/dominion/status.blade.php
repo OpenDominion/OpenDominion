@@ -163,14 +163,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            @if ($discordInviteLink = config('app.discord_invite_link'))
-                <div style="margin-bottom: 20px;">
-                    <a href="{{ $discordInviteLink }}" target="_blank">
-                        <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive">
-                    </a>
-                </div>
-            @endif
-
             {{-- todo: message about black ops not being enabled until 8th day in the round --}}
 
             <div class="box">
@@ -192,8 +184,6 @@
                     <div class="box-body">
                         <p>You are under a magical state of protection for <b>{{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> {{ str_plural('hour', $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion)) }}.</p>
                         <p>During protection you cannot be attacked or attack other dominions. You can neither cast any offensive spells or engage in espionage.</p>
-                        {{-- todo: remove line below once those things have been developed --}}
-                        <p><i>You can't do that regardless yet because OpenDominion is still in development and those features haven't been built yet.</i></p>
                         <p>You will leave protection on {{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}.</p>
                         @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
                             <p>No production occurs until you have less than 71 hours of protection remaining.</p>
