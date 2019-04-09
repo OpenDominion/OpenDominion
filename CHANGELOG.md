@@ -5,7 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
-- Added races to Valhalla: Dwarves, Goblins, Firewalkers, Lizardmen
+- Added the following races to Valhalla: Dwarves, Goblins, Firewalkers, and Lizardmen
+- Added largest/strongest packs to Valhalla
+
+### Changed
+- Moved the 'Join the Discord'-button from status page to daily bonuses page
+
+### Fixed
+- Removed "round not yet started"-alert from homepage
+- Minor text fixes
 
 ## [0.6.0-2] - 2019-04-09
 ### Changed
