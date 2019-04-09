@@ -54,7 +54,7 @@
 
                         <div class="col-md-4 text-center">
                             <h4>Rate on PBBG.com</h4>
-                            <p><a href="https://pbbg.com" target="_blank">PBBG.com</a> is a directory listing of Persistant Browser-Based Games (or PBBG for short), like OpenDominion is!</p>
+                            <p><a href="https://pbbg.com" target="_blank">PBBG.com</a> is a directory listing of Persistent Browser-Based Games (or PBBG for short), like OpenDominion is!</p>
                             <p>Consider <a href="https://pbbg.com/games/opendominion" target="_blank">rating the project on PBBG.com</a> and share your experience with it, so other people (including potentially new players) know what to expect!</p>
                         </div>
 
