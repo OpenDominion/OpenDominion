@@ -45,6 +45,7 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | Population     | ![Progress](http://progressed.io/bar/100) |
 | Races & Units  | ![Progress](http://progressed.io/bar/20)  | Most races
 | Resources      | ![Progress](http://progressed.io/bar/95)  | Tech points
+| Wonders        | ![Progress](http://progressed.io/bar/0)   | Everything
 | Tech           | ![Progress](http://progressed.io/bar/0)   | Everything
 
 ### Pages
