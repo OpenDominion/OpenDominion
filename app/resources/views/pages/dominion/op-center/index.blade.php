@@ -13,7 +13,7 @@
                 <div class="box-header">
                     <h3 class="box-title">Op Center</h3>
                 </div>
-                <div class="box-body">
+                <div class="box-body table-responsive">
                     <table class="table table-hover" id="dominions-table">
                         <colgroup>
                             <col>
