@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Updated info box on the magic page
+- Added indicator for racial spells on magic page
+
 ### Fixed
 - Fixed error when registering to a round with duplicate dominion name
 - Fixed table data in Valhalla not displaying properly on mobile
