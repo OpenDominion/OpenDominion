@@ -40,12 +40,12 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | Authentication | ![Progress](http://progressed.io/bar/95)  | 2FA
 | Buildings      | ![Progress](http://progressed.io/bar/90)  | Schools, and black-op bonuses for Masonry, Forest Haven and Dock
 | Land           | ![Progress](http://progressed.io/bar/100) |
-| Heroes         | ![Progress](http://progressed.io/bar/0)   | Whole hero system
-| Notifications  | ![Progress](http://progressed.io/bar/50)  | Needs refactoring
+| Heroes         | ![Progress](http://progressed.io/bar/0)   | Everything
+| Notifications  | ![Progress](http://progressed.io/bar/50)  | Needs refactoring and email digests
 | Population     | ![Progress](http://progressed.io/bar/100) |
 | Races & Units  | ![Progress](http://progressed.io/bar/20)  | Most races
 | Resources      | ![Progress](http://progressed.io/bar/95)  | Tech points
-| Tech           | ![Progress](http://progressed.io/bar/0)   | Whole tech system
+| Tech           | ![Progress](http://progressed.io/bar/0)   | Everything
 
 ### Pages
 
@@ -67,16 +67,16 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Invading            | ![Progress](http://progressed.io/bar/100) |
 | Magic               | ![Progress](http://progressed.io/bar/60)  | Black ops
 | Espionage           | ![Progress](http://progressed.io/bar/35)  | Black ops
-| Messages            | ![Progress](http://progressed.io/bar/0)   | Whole messaging system
+| Messages            | ![Progress](http://progressed.io/bar/0)   | Everything
 | Realm Council       | ![Progress](http://progressed.io/bar/50)  | Needs refactorng, editing posts, and moderation
 | Op Center           | ![Progress](http://progressed.io/bar/95)  | Calculations for (estimate) DP
-| Government          | ![Progress](http://progressed.io/bar/0)   | Whole government system
-| Diplomacy           | ![Progress](http://progressed.io/bar/0)   | Whole diplomacy system
+| Government          | ![Progress](http://progressed.io/bar/0)   | Everything
+| Diplomacy           | ![Progress](http://progressed.io/bar/0)   | Everything
 | Realm Page          | ![Progress](http://progressed.io/bar/100) |
 | Rankings            | ![Progress](http://progressed.io/bar/100) | 
 | Town Crier          | ![Progress](http://progressed.io/bar/95)  | Black ops reports
 | Valhalla            | ![Progress](http://progressed.io/bar/20)  | More categories
-| Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   | Whole
+| Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   | Everything
 
 
 ## Contributing
