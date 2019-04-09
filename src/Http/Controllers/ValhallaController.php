@@ -43,6 +43,7 @@ class ValhallaController extends AbstractController
 
         $headers = [
             '#' => ['width' => 50, 'align-center' => true],
+            'player' => ['width' => 150, 'align-center' => true],
             'race' => ['width' => 100, 'align-center' => true],
             'realm' => ['width' => 100, 'align-center' => true],
             'number' => ['width' => 50, 'align-center' => true],
@@ -109,7 +110,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->dominions()
-            ->with(['realm', 'race.units'])
+            ->with(['realm', 'race.units', 'user'])
             ->limit(100);
 
         if ($race !== null) {
@@ -121,6 +122,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
+                    'player' => $dominion->user->display_name,
                 ];
 
                 if ($race === null) {
@@ -176,7 +178,7 @@ class ValhallaController extends AbstractController
         $landCalculator = app(LandCalculator::class);
 
         $builder = $round->dominions()
-            ->with(['realm', 'race.units'])
+            ->with(['realm', 'race.units', 'user'])
             ->limit(100);
 
         if ($race !== null) {
@@ -188,6 +190,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
+                    'player' => $dominion->user->display_name,
                 ];
 
                 if ($race === null) {
