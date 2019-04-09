@@ -712,10 +712,7 @@ class InvadeActionService
     }
 
     /**
-     * Handles morale changes for both attacker and defender.
-     *
-     * Target morale gets reduced by 5% after being on the receiving end of a
-     * successful invasion.
+     * Handles morale changes for attacker.
      *
      * Attacker morale gets reduced by 5%, more so if they attack a target below
      * 75% range (up to 10% reduction at 40% target range).
@@ -726,7 +723,6 @@ class InvadeActionService
      */
     protected function handleMoraleChanges(Dominion $dominion, Dominion $target, array $units): void
     {
-        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
 
         $dominion->morale -= 5;
@@ -735,10 +731,6 @@ class InvadeActionService
         if ($range < 75) {
             $additionalMoraleChange = max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
             $dominion->morale += $additionalMoraleChange;
-        }
-
-        if ($isInvasionSuccessful) {
-            $target->morale -= 5;
         }
     }
 
