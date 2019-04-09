@@ -28,7 +28,7 @@ class RealmFinderService
     {
         // Get a list of realms which are not full, disregarding pack status for now
         $realms = Realm::query()
-            ->with('packs.dominions')
+            ->with('packs.dominions') // todo: can probably be just with('packs')
             ->withCount('dominions')
             ->where([
                 'realms.round_id' => $round->id,
