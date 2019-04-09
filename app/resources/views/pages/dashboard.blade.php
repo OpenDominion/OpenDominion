@@ -31,7 +31,7 @@
 
                 @else
 
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col>
@@ -111,7 +111,7 @@
 
                 @else
 
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="40">

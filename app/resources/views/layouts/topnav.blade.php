@@ -9,6 +9,14 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <meta property="og:title" content="OpenDominion">
+    <meta property="og:description" content="OpenDominion is a free online text-based multiplayer strategy game in a medieval fantasy setting. Take control over your dominion with land, buildings, and your army, and compete against other players for a spot in the leaderboards!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ config('app.url') }}" />
+    <meta property="og:image" content="{{ asset('assets/app/images/opendominion.png') }}" />
+    <meta property="og:image:width" content="1222" />
+    <meta property="og:image:height" content="243" />
+
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">

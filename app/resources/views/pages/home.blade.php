@@ -44,7 +44,7 @@
                     <div class="box-body text-center" style="padding: 0;">
                         <p style="font-size: 1.5em;" class="text-green">Active</p>
                     </div>
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">

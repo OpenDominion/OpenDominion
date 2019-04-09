@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.0-2] - 2019-04-09
+### Changed
+- Updated info box on the magic page
+- Added indicator for racial spells on magic page
+
+### Fixed
+- Fixed error when registering to a round with duplicate dominion name
+- Fixed several tables with data not displaying properly on mobile
+- Fixed rankings change column not visible on mobile
+
 ## [0.6.0-1] - 2019-04-09
 ### Fixed
 - Fixed an error when registering to a round and creating a new pack
@@ -137,7 +147,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...HEAD
+[0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.0-2
 [0.6.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...0.6.0-1
 [0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
 [0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1

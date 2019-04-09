@@ -35,7 +35,7 @@
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="target_dominion">Select a target</label>
-                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
+                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     <option></option>
                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
                                         <option value="{{ $dominion->id }}"
@@ -112,7 +112,8 @@
                                                        data-amount="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
                                                        data-op="{{ $unit->power_offense }}"
                                                        data-dp="{{ $unit->power_defense }}"
-                                                       data-need-boat="{{ (int)$unit->need_boat }}">
+                                                       data-need-boat="{{ (int)$unit->need_boat }}"
+                                                       {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             </td>
                                             <td class="text-center" id="unit{{ $unitSlot }}_stats">
                                                 <span class="op">0</span> / <span class="dp text-muted">0</span>
@@ -131,7 +132,7 @@
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
                                 </div>
-                                <div class="box-body no-padding">
+                                <div class="box-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -187,7 +188,7 @@
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
                                 </div>
-                                <div class="box-body no-padding">
+                                <div class="box-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">

@@ -12,7 +12,7 @@
                 </div>
                 <form action="{{ route('dominion.improvements') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="150">
