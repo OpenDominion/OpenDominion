@@ -16,17 +16,21 @@
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-dominions']) }}">The Strongest Dominions</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-realms']) }}">The Strongest Realms</a>
-                    {{-- strongest good dominions --}}
-                    {{-- strongest evil dominions --}}
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-good-dominions']) }}">The Strongest Dominions (Good)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-dominions']) }}">The Strongest Dominions (Evil)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-realms']) }}">The Strongest Realms</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-good-realms']) }}">The Strongest Realms (Good)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-realms']) }}">The Strongest Realms (Evil)</a>
                     {{-- strongest monarchs --}}
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Largest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-dominions']) }}">The Largest Dominions</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-realms']) }}">The Largest Realms</a>
-                    {{-- largest good dominions --}}
-                    {{-- largest evil dominions --}}
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-good-dominions']) }}">The Largest Dominions (Good)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-dominions']) }}">The Largest Dominions (Evil)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-realms']) }}">The Largest Realms</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-good-realms']) }}">The Largest Realms (Good)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-realms']) }}">The Largest Realms (Evil)</a>
                     {{-- largest monarchs --}}
                 </div>
             </div>
