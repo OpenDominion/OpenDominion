@@ -23,7 +23,7 @@
                                 <tr>
                                     @foreach (array_keys($row) as $column)
                                         <th{!! (isset($headers[$column]['align-center']) && $headers[$column]['align-center']) ? ' class="text-center"' : null !!}>
-                                            {{ ucwords($column) }}
+                                            {{ ucwords(str_replace('_', ' ', $column)) }}
                                         </th>
                                     @endforeach
                                 </tr>

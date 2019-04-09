@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -44,12 +45,15 @@ class ValhallaController extends AbstractController
         $headers = [
             '#' => ['width' => 50, 'align-center' => true],
             'player' => ['width' => 150, 'align-center' => true],
+            'players' => ['align-center' => true],
             'race' => ['width' => 100, 'align-center' => true],
             'realm' => ['width' => 100, 'align-center' => true],
             'alignment' => ['width' => 100, 'align-center' => true],
             'number' => ['width' => 50, 'align-center' => true],
             'networth' => ['width' => 150, 'align-center' => true],
+            'avg_networth' => ['width' => 150, 'align-center' => true],
             'land' => ['width' => 150, 'align-center' => true],
+            'avg_land' => ['width' => 150, 'align-center' => true],
         ];
 
         switch ($type) {
@@ -59,12 +63,14 @@ class ValhallaController extends AbstractController
             case 'strongest-realms': $data = $this->getStrongestRealms($round); break;
             case 'strongest-good-realms': $data = $this->getStrongestRealms($round, 'good'); break;
             case 'strongest-evil-realms': $data = $this->getStrongestRealms($round, 'evil'); break;
+            case 'strongest-packs': $data = $this->getStrongestPacks($round); break;
             case 'largest-dominions': $data = $this->getLargestDominions($round); break;
             case 'largest-good-dominions': $data = $this->getLargestDominions($round, null, 'good'); break;
             case 'largest-evil-dominions': $data = $this->getLargestDominions($round, null, 'evil'); break;
             case 'largest-realms': $data = $this->getLargestRealms($round); break;
             case 'largest-good-realms': $data = $this->getLargestRealms($round, 'good'); break;
             case 'largest-evil-realms': $data = $this->getLargestRealms($round, 'evil'); break;
+            case 'largest-packs': $data = $this->getLargestPacks($round); break;
 
             default:
                 if (!preg_match('/(strongest|largest)-(\w+)/', $type, $matches)) {
@@ -197,6 +203,48 @@ class ValhallaController extends AbstractController
             });
     }
 
+    protected function getStrongestPacks(Round $round)
+    {
+        $networthCalculator = app(NetworthCalculator::class);
+
+        $builder = $round->packs()
+            ->with(['dominions.user', 'realm', 'user'])
+            ->limit(100);
+
+        $builder->has('dominions', '>', 1);
+
+        return $builder->get()
+            ->map(function (Pack $pack) use ($networthCalculator) {
+                $data = [
+                    '#' => null,
+                    'pack' => $pack->name,
+                    'players' => implode(', ', $pack->dominions
+                        ->sortBy('user.display_name')
+                        ->pluck('user.display_name')
+                        ->all()),
+                    'realm' => $pack->realm->number,
+                    'avg_networth' => round($pack->dominions
+                            ->map(function (Dominion $dominion) use ($networthCalculator) {
+                                return $networthCalculator->getDominionNetworth($dominion);
+                            })
+                            ->reduce(function ($carry, $item) {
+                                return ($carry + $item);
+                            }) / $pack->dominions->count()),
+                ];
+
+                return $data;
+            })
+            ->sortByDesc(function ($row) {
+                return $row['avg_networth'];
+            })
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['avg_networth'] = number_format($row['avg_networth']);
+                return $row;
+            });
+    }
+
     protected function getLargestDominions(Round $round, Race $race = null, ?string $alignment = null)
     {
         $landCalculator = app(LandCalculator::class);
@@ -278,6 +326,48 @@ class ValhallaController extends AbstractController
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
                 $row['land'] = number_format($row['land']);
+                return $row;
+            });
+    }
+
+    protected function getLargestPacks(Round $round)
+    {
+        $landCalculator = app(LandCalculator::class);
+
+        $builder = $round->packs()
+            ->with(['dominions.user', 'realm', 'user'])
+            ->limit(100);
+
+        $builder->has('dominions', '>', 1);
+
+        return $builder->get()
+            ->map(function (Pack $pack) use ($landCalculator) {
+                $data = [
+                    '#' => null,
+                    'pack' => $pack->name,
+                    'players' => implode(', ', $pack->dominions
+                        ->sortBy('user.display_name')
+                        ->pluck('user.display_name')
+                        ->all()),
+                    'realm' => $pack->realm->number,
+                    'avg_land' => round($pack->dominions
+                            ->map(function (Dominion $dominion) use ($landCalculator) {
+                                return $landCalculator->getTotalLand($dominion);
+                            })
+                            ->reduce(function ($carry, $item) {
+                                return ($carry + $item);
+                            }) / $pack->dominions->count()),
+                ];
+
+                return $data;
+            })
+            ->sortByDesc(function ($row) {
+                return $row['avg_land'];
+            })
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['avg_land'] = number_format($row['avg_land']);
                 return $row;
             });
     }

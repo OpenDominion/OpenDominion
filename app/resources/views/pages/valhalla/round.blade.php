@@ -20,7 +20,8 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-dominions']) }}">The Strongest Dominions (Evil)</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-realms']) }}">The Strongest Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-good-realms']) }}">The Strongest Realms (Good)</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-realms']) }}">The Strongest Realms (Evil)</a>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-realms']) }}">The Strongest Realms (Evil)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-packs']) }}">The Strongest Packs</a>
                     {{-- strongest monarchs --}}
                 </div>
                 <div class="col-sm-6 text-center">
@@ -30,7 +31,8 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-dominions']) }}">The Largest Dominions (Evil)</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-realms']) }}">The Largest Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-good-realms']) }}">The Largest Realms (Good)</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-realms']) }}">The Largest Realms (Evil)</a>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-realms']) }}">The Largest Realms (Evil)</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'largest-packs']) }}">The Largest Packs</a>
                     {{-- largest monarchs --}}
                 </div>
             </div>
