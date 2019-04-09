@@ -11,8 +11,8 @@
         <div class="box-header with-border">
             <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla</h3>
         </div>
-        <div class="box-body no-padding">
-            <table class="table table-hover">
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-striped">
                 <colgroup>
                     <col width="50">
                     <col>

@@ -9,9 +9,9 @@
         </div>
 
         @if (!empty($data))
-            <div class="box-body no-padding">
+            <div class="box-body table-responsive no-padding">
                 @php($headersPrinted = false)
-                <table class="table">
+                <table class="table table-striped">
                     <colgroup>
                         @foreach (array_keys($data[0]) as $column)
                             <col{!! isset($headers[$column]['width']) ? (' width="' . $headers[$column]['width'] . '"') : null !!}>
