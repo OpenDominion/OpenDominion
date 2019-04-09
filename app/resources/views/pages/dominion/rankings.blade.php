@@ -17,7 +17,7 @@
                     </span>
                     <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col width="50">

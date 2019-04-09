@@ -132,7 +132,7 @@
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
                                 </div>
-                                <div class="box-body no-padding">
+                                <div class="box-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">
@@ -188,7 +188,7 @@
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
                                 </div>
-                                <div class="box-body no-padding">
+                                <div class="box-body table-responsive no-padding">
                                     <table class="table">
                                         <colgroup>
                                             <col width="50%">

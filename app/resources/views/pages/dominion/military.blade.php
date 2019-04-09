@@ -130,7 +130,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Statistics</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col width="50%">
@@ -168,7 +168,7 @@
                 </div>
                 <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">

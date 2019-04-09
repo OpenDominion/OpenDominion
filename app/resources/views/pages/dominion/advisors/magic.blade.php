@@ -12,7 +12,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-burning-embers"></i> Spells affecting your dominion</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <colgroup>
                             <col width="150">

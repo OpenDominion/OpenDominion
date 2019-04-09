@@ -12,7 +12,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-home"></i> Construction Advisor</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col>
