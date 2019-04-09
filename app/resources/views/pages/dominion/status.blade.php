@@ -163,14 +163,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            @if ($discordInviteLink = config('app.discord_invite_link'))
-                <div style="margin-bottom: 20px;">
-                    <a href="{{ $discordInviteLink }}" target="_blank">
-                        <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive">
-                    </a>
-                </div>
-            @endif
-
             {{-- todo: message about black ops not being enabled until 8th day in the round --}}
 
             <div class="box">
