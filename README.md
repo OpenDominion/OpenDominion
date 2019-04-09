@@ -93,6 +93,7 @@ Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 - [Discord](https://discord.gg/mFk2wZT)
   - This will be the main place for out of game communication, development talk and game announcements.
 - [Issue tracker](https://github.com/WaveHack/OpenDominion/issues)
+- [Wiki](https://opendominion.miraheze.org)
 
 
 ## License
