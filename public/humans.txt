@@ -5,7 +5,7 @@
     Created:        2013-02-04
     Languages:      PHP, MySQL, JavaScript, HTML, CSS
     Components:     Laravel, AdminLTE, jQuery
-    Services:       Scaleway, NameCheap, CloudFlare, Bugsnag, Travis, StyleCI, Scrutinizer
+    Services:       Scaleway, NameCheap, CloudFlare, Bugsnag, Zabbix, Travis, StyleCI, Scrutinizer
     Editors:        PhpStorm, VS Code
 
 /* TEAM */
