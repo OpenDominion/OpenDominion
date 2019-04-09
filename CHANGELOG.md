@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Removed "round not yet started"-alert from homepage
+- Fixed a bug where creating a pack is placed in a new realm, instead of an already existing and eligible realm
 - Minor text fixes
 
 ## [0.6.0-2] - 2019-04-09
