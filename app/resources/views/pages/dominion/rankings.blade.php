@@ -34,7 +34,7 @@
                                 <th class="text-center">Realm</th>
                                 <th class="text-center">Race</th>
                                 <th class="text-center">{{ ucfirst($type) }}</th>
-                                <th class="text-center hidden-xs">Change</th>
+                                <th class="text-center">Change</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,7 +53,7 @@
                                     </td>
                                     <td class="text-center">{{ $row->race_name }}</td>
                                     <td class="text-center">{{ number_format($row->$type) }}</td>
-                                    <td class="text-center hidden-xs">
+                                    <td class="text-center">
                                         @php
                                             $rankChange = (int)$row->{$type . '_rank_change'};
                                         @endphp
