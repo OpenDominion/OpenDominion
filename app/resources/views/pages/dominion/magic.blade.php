@@ -73,7 +73,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="target_dominion">Select a target</label>
-                                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion">
+                                                <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
                                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
                                                         <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
