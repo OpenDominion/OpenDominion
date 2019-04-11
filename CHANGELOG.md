@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Rankings now update every 6 hours (down from 24 hours)
 
 ## [0.6.1-1] - 2019-04-11
 ### Added
