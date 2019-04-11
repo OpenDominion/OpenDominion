@@ -84,8 +84,11 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>This page shows you the daily rankings of all the dominions in this round.</p>
-                    <p>Rankings are updated every day. Current displayed rankings are from {{ today()->diffForHumans() }}.</p>
+                    <p>This page shows you the rankings of all the dominions in this round.</p>
+                    <p>Rankings are updated every 6 hours.</p>
+                    @if (!empty($rankings))
+                        <p>Current displayed rankings are from {{ today()->diffForHumans() }}.</p>
+                    @endif
                     <p><a href="{{ route('dominion.rankings', request('type')) }}">My Ranking</a></p>
                 </div>
             </div>
