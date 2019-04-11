@@ -19,11 +19,13 @@
                                 <col width="100">
                                 <col width="100">
                                 <col width="100">
+                                <col width="100">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th>Terrain</th>
                                     <th class="text-center">Owned</th>
+                                    <th class="text-center">Barren</th>
                                     <th class="text-center">Exploring</th>
                                     <th class="text-center">Explore For</th>
                                 </tr>
@@ -44,6 +46,7 @@
                                                 ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
                                             </small>
                                         </td>
+                                        <td class="text-center">{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</td>
                                         <td class="text-center">{{ number_format($queueService->getExplorationQueueTotalByResource($selectedDominion, "land_{$landType}")) }}</td>
                                         <td class="text-center">
                                             <input type="number" name="explore[land_{{ $landType }}]" class="form-control text-center" placeholder="0" min="0" max="{{ $explorationCalculator->getMaxAfford($selectedDominion) }}" value="{{ old('explore.' . $landType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>

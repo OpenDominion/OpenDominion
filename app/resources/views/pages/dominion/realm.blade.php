@@ -28,7 +28,7 @@
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
                                 @if ($isOwnRealm)
-                                    <th class="text-center">Player</th>
+                                    <th class="text-center">Ruler Name</th>
                                 @endif
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>

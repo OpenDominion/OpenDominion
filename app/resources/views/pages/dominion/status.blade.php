@@ -224,12 +224,14 @@
                         </p>
                         @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
                             <p>Your pack will automatically close in <strong>{{ $selectedDominion->pack->getClosingDate()->diffForHumans() }}</strong> to make space for random players in your realm.</p>
-                            <p>
-                                <form action="{{ route('dominion.misc.close-pack') }}" method="post">
-                                    @csrf
-                                    <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
-                                </form>
-                            </p>
+                            @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
+                                <p>
+                                    <form action="{{ route('dominion.misc.close-pack') }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
+                                    </form>
+                                </p>
+                            @endif
                         @endif
                     </div>
                 </div>

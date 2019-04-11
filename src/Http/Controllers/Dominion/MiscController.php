@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use OpenDominion\Models\Pack;
+use LogicException;
 
 // misc functions, probably could use a refactor later
 class MiscController extends AbstractDominionController
@@ -15,10 +15,17 @@ class MiscController extends AbstractDominionController
 
     public function postClosePack()
     {
-        /** @var Pack $pack */
-        $pack = $this->getSelectedDominion()->pack;
+        $dominion = $this->getSelectedDominion();
+        $pack = $dominion->pack;
+
+        // Only pack creator can manually close it
+        if ($pack->creator_dominion_id !== $dominion->id) {
+            throw new LogicException('Pack may only be closed by the creator');
+        }
+
         $pack->closed_at = now();
         $pack->save();
+
         return redirect()->back();
     }
 }

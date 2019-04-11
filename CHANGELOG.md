@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.1-1] - 2019-04-11
+### Added
+- Added barren land column to explore page
+
+### Changed
+- The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23
+- Dominions on the realm page are now also sorted by networth if land sizes are the same
+
+### Fixed
+- Fixed a bug where packies can close the pack they're in. Now only the pack creator can close it
+
 ## [0.6.1] - 2019-04-09
 ### Added
 - Added the following races to Valhalla: Dwarves, Goblins, Firewalkers, and Lizardmen
@@ -160,7 +171,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...HEAD
+[0.6.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...0.6.1-1
 [0.6.1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.1
 [0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-1...0.6.0-2
 [0.6.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...0.6.0-1
