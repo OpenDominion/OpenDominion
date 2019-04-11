@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23
 - Dominions on the realm page are now also sorted by networth if land sizes are the same
 
+### Fixed
+- Fixed a bug where packies can close the pack they're in. Now only the pack creator can close it
+
 ## [0.6.1] - 2019-04-09
 ### Added
 - Added the following races to Valhalla: Dwarves, Goblins, Firewalkers, and Lizardmen
