@@ -89,6 +89,13 @@ class TickService
         $end = now();
 
         Log::info('Ticked in ' . number_format($start->diffInSeconds($end)) . ' seconds');
+
+        if($this->now->hour % 6 === 0) {
+            Log::debug('Rank update started');
+            DB::transaction(function () {
+                $this->updateDailyRankings($dominionIds);
+            });
+        }
     }
 
     /**
@@ -117,8 +124,6 @@ class TickService
 
                     $dominion->save(['event' => 'tick']);
                 }
-
-                $this->updateDailyRankings($dominionIds);
             }
         });
 
