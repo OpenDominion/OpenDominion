@@ -28,7 +28,7 @@
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
                                 @if ($isOwnRealm && $selectedDominion->pack !== null)
-                                    <th class="text-center">Player</th>
+                                    <th class="text-center">Player from Pack</th>
                                 @endif
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>
