@@ -16,7 +16,7 @@
                         <colgroup>
                             <col width="50">
                             <col>
-                            @if ($isOwnRealm)
+                            @if ($isOwnRealm && $selectedDominion->pack !== null)
                                 <col width="200">
                             @endif
                             <col width="100">
@@ -27,8 +27,8 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
-                                @if ($isOwnRealm)
-                                    <th class="text-center">Ruler Name</th>
+                                @if ($isOwnRealm && $selectedDominion->pack !== null)
+                                    <th class="text-center">User name</th>
                                 @endif
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>
@@ -44,7 +44,7 @@
                                 @if ($dominion === null)
                                     <tr>
                                         <td>&nbsp;</td>
-                                        @if ($isOwnRealm)
+                                        @if ($isOwnRealm && $selectedDominion->pack !== null)
                                             <td colspan="5"><i>Vacant</i></td>
                                         @else
                                             <td colspan="4"><i>Vacant</i></td>
@@ -78,8 +78,12 @@
                                                 <span class="label label-success">Online</span>
                                             @endif
                                         </td>
-                                        @if ($isOwnRealm)
-                                            <td class="text-center">{{ $dominion->ruler_name }}</td>
+                                        @if ($isOwnRealm && $selectedDominion->pack !== null)
+                                            @if ($isOwnRealm && $dominion->pack->id === $selectedDominion->pack->id)
+                                                <td class="text-center">{{ $dominion->ruler_name }}</td>
+                                            @else
+                                                <td class="text-center"></td>
+                                            @endif
                                         @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}
