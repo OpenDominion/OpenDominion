@@ -10,8 +10,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added barren land column to explore page
 
 ### Changed
-- The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23
+- The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23. This should also help out with BR's OOP sim to match the hours
 - Dominions on the realm page are now also sorted by networth if land sizes are the same
+- Removed invasion morale drop for defenders
+- Changed column label 'Player' to 'Ruler Name' on your own realm page
+- Minor text changes
 
 ### Fixed
 - Fixed a bug where packies can close the pack they're in. Now only the pack creator can close it
