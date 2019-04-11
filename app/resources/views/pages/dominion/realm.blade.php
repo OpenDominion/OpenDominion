@@ -87,10 +87,6 @@
                                         @endif
                                         <td class="text-center">
                                             {{ $dominion->race->name }}
-                                            {{--
-                                            todo: fix above statement which generates this query:
-                                            select * from "units" where "units"."race_id" = '1' and "units"."race_id" is not null order by "slot" asc limit 4
-                                            --}}
                                         </td>
                                         <td class="text-center">{{ number_format($landCalculator->getTotalLand($dominion)) }}</td>
                                         <td class="text-center">{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}</td>
