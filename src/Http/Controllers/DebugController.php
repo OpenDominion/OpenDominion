@@ -20,10 +20,6 @@ class DebugController extends AbstractDominionController
 
     public function getIndex()
     {
-        if (app()->environment() === 'production') {
-            return redirect()->route('dominion.status');
-        }
-
         static::$selectedDominion = $this->getSelectedDominion();
 
         return view('pages.dominion.debug', [
