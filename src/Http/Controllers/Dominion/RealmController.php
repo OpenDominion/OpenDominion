@@ -47,9 +47,11 @@ class RealmController extends AbstractDominionController
 
         // todo: still duplicate queries on this page. investigate later
 
-        $dominions = $realm->dominions->sortByDesc(function (Dominion $dominion) use ($landCalculator) {
-            return $landCalculator->getTotalLand($dominion);
-        })->values();
+        $dominions = $realm->dominions
+            ->sortByDesc(function (Dominion $dominion) use ($landCalculator, $networthCalculator) {
+                return ($landCalculator->getTotalLand($dominion) . '#' . $networthCalculator->getDominionNetworth($dominion));
+            })
+            ->values();
 
         // Todo: refactor this hacky hacky navigation stuff
         $prevRealm = DB::table('realms')

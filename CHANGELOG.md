@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23
+- Dominions on the realm page are now also sorted by networth if land sizes are the same
 
 ## [0.6.1] - 2019-04-09
 ### Added
