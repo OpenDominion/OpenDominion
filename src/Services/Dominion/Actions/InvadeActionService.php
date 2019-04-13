@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
@@ -278,8 +279,8 @@ class InvadeActionService
                 ]);
             }
 
-            $target->save();
-            $dominion->save();
+            $target->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
         });
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
