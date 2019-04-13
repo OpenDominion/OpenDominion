@@ -198,7 +198,7 @@
                                         </p>
                                     @elseif ($prestigeChange > 0)
                                         <p class="text-center text-green">
-                                            You gained <b>{{ number_format($prestigeChange) }}</b> prestige.
+                                            You gain <b>{{ number_format($prestigeChange) }}</b> prestige.
                                         </p>
                                     @endif
                                 @endif
