@@ -742,7 +742,51 @@ class InvadeActionService
 
     protected function handleUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
-        // todo: plunder
+        // todo: just hobgoblin plunder atm, need a refactor later to take into
+        //       account more post-combat unit-perk-related stuff
+
+        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+
+        if (!$isInvasionSuccessful) {
+            return; // nothing to plunder on unsuccessful invasions
+        }
+
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
+
+        // todo: refactor this hardcoded hacky mess
+        // Check if we sent hobbos out
+        if (($dominion->race->name === 'Goblin') && isset($units[3]) && ($units[3] > 0)) {
+            $hobbos = $units[3];
+            $totalUnitsSent = array_sum($units);
+
+            $hobbosPercentage = $hobbos / $totalUnitsSent;
+
+            $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
+            $OPNeededToBreakTarget = ($targetDP + 1);
+            $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
+
+            $hobbosToPlunderWith = (int)ceil($unitsNeededToBreakTarget * $hobbosPercentage);
+
+            // reduce by 8.5% now to take into account offensive casualties
+            // todo: get real offensive casualties
+            $hobbosToPlunderWith = (int)ceil($hobbosToPlunderWith * (1 - 0.085));
+
+            $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
+            $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
+
+            $target->resource_platinum -= $plunderPlatinum;
+            $target->resource_gems -= $plunderGems;
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                [
+                    'resource_platinum' => $plunderPlatinum,
+                    'resource_gems' => $plunderGems,
+                ]
+            );
+        }
     }
 
     /**
