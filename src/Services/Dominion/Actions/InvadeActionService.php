@@ -707,7 +707,7 @@ class InvadeActionService
         $this->queueService->queueResources(
             'invasion',
             $dominion,
-            $landGainedPerLandType
+            $landGainedPerLandType + ['discounted_land' => array_sum($landGainedPerLandType)] // Also include discounted land count to attacker
         );
     }
 
