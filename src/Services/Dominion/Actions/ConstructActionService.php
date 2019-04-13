@@ -117,13 +117,10 @@ class ConstructActionService
             $lumberCost -= $lumberDiscount;
         }
 
-        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
-        $newLumber = ($dominion->resource_lumber - $lumberCost);
-
-        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newLumber, $discountedBuildings) {
+        DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $discountedBuildings) {
             $dominion->fill([
-                'resource_platinum' => $newPlatinum,
-                'resource_lumber' => $newLumber,
+                'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
+                'resource_lumber' => ($dominion->resource_lumber - $lumberCost),
                 'discounted_land' => ($dominion->discounted_land - $discountedBuildings),
             ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
 
