@@ -233,6 +233,11 @@ class InvadeActionService
             $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
             $this->handlePrestigeChanges($dominion, $target, $units);
+
+            // todo: probably move to handleLandGrabs()
+            $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
+            $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
+
             $this->handleLandGrabs($dominion, $target, $units);
             $this->handleMoraleChanges($dominion, $target, $units);
             $this->handleConversions($dominion, $target, $units);
@@ -249,6 +254,8 @@ class InvadeActionService
             if ($isOverwhelmed) {
                 $this->invasionResult['result']['overwhelmed'] = $isOverwhelmed;
             }
+
+            $this->invasionResult['attacker']['unitsSent'] = $units;
 
             // todo: move to GameEventService
             $this->invasionEvent = GameEvent::create([
