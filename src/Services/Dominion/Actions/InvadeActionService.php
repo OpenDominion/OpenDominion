@@ -778,6 +778,13 @@ class InvadeActionService
             $target->resource_platinum -= $plunderPlatinum;
             $target->resource_gems -= $plunderGems;
 
+            if (!isset($this->invasionResult['attacker']['plunder'])) {
+                $this->invasionResult['attacker']['plunder'] = [
+                    'platinum' => $plunderPlatinum,
+                    'gems' => $plunderGems,
+                ];
+            }
+
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
