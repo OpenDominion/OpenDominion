@@ -795,7 +795,7 @@ class InvadeActionService
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
-                ['source_boats' => $boatsByReturnHourGroup],
+                ['resource_boats' => $boatsByReturnHourGroup],
                 $hours
             );
         }
