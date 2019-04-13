@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.1-3] - 2019-04-14
+### Fixed
+- Fix packie name on realm page
+
 ## [0.6.1-2] - 2019-04-14
 ### Added
 - Added username to realm page for dominions you pack with
@@ -186,7 +190,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...HEAD
+[0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3
 [0.6.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...0.6.1-2
 [0.6.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...0.6.1-1
 [0.6.1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.1
