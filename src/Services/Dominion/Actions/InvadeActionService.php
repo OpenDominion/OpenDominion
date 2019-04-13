@@ -753,6 +753,7 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units): void
     {
+        // Units
         foreach ($units as $slot => $amount) {
             $unitKey = "military_unit{$slot}";
 
@@ -763,6 +764,39 @@ class InvadeActionService
                 $dominion,
                 [$unitKey => $amount],
                 $this->getUnitReturnHoursForSlot($dominion, $slot)
+            );
+        }
+
+        // Boats
+        // todo: move me in my own method
+        $unitsThatNeedsBoatsByReturnHours = [];
+
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            if ($unit->need_boat) {
+                $hours = $this->getUnitReturnHoursForSlot($dominion, $unit->slot);
+
+                if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {
+                    $unitsThatNeedsBoatsByReturnHours[$hours] = 0;
+                }
+
+                $unitsThatNeedsBoatsByReturnHours[$hours] += (int)$units[$unit->slot];
+            }
+        }
+
+        foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
+            $boatsByReturnHourGroup = (int)floor($amountUnits / 30);
+
+            $dominion->resource_boats -= $boatsByReturnHourGroup;
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                ['source_boats' => $boatsByReturnHourGroup],
+                $hours
             );
         }
     }
