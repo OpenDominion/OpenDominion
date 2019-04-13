@@ -80,7 +80,7 @@
                                         </td>
                                         @if ($isOwnRealm && $selectedDominion->pack !== null)
                                             @if (($dominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id))
-                                                <td class="text-center">{{ $dominion->ruler_name }}</td>
+                                                <td class="text-center">{{ $dominion->user->display_name }}</td>
                                             @else
                                                 <td class="text-center"></td>
                                             @endif
