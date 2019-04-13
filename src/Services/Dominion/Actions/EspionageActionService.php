@@ -340,7 +340,11 @@ class EspionageActionService
                 $this->queueService->getExplorationQueue($target)->each(function ($row) use (&$data) {
                     $landType = str_replace('land_', '', $row->resource);
 
-                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                    array_set(
+                        $data,
+                        "incoming.{$landType}.{$row->hours}",
+                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                    );
                 });
 
                 $this->queueService->getInvasionQueue($target)->each(function ($row) use (&$data) {
@@ -350,7 +354,11 @@ class EspionageActionService
 
                     $landType = str_replace('land_', '', $row->resource);
 
-                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                    array_set(
+                        $data,
+                        "incoming.{$landType}.{$row->hours}",
+                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                    );
                 });
 
                 $infoOp->data = $data;
