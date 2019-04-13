@@ -71,9 +71,10 @@ class TickService
     {
         Log::debug('Hourly tick started');
 
-        $start = now();
+        $activeDominionIds = [];
 
-        DB::transaction(function () {
+        DB::transaction(function () use (&$activeDominionIds) {
+            // Hourly tick
             foreach (Round::with('dominions')->active()->get() as $round) {
                 // Ignore hour 0
                 if ($this->now->diffInHours($round->start_date) === 0) {
@@ -82,13 +83,22 @@ class TickService
 
                 foreach ($round->dominions as $dominion) {
                     $this->tickDominion($dominion);
+                    $activeDominionIds[] = $dominion->id;
                 }
+            }
+
+            // Update rankings (every 6 hours)
+            if($this->now->hour % 6 === 0) {
+                Log::debug('Update rankings started');
+                $this->updateDailyRankings($activeDominionIds);
             }
         });
 
-        $end = now();
-
-        Log::info('Ticked in ' . number_format($start->diffInSeconds($end)) . ' seconds');
+        Log::info(sprintf(
+            'Ticked %s dominions in %s seconds',
+            number_format(count($activeDominionIds)),
+            number_format($this->now->diffInSeconds(now()))
+        ));
     }
 
     /**
@@ -117,8 +127,6 @@ class TickService
 
                     $dominion->save(['event' => 'tick']);
                 }
-
-                $this->updateDailyRankings($dominionIds);
             }
         });
 

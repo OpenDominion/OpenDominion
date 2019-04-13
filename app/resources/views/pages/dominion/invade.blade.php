@@ -329,6 +329,8 @@
                     }
                 });
 
+                invadingForceBoats = Math.ceil(invadingForceBoats / 30);
+
                 DPNeededToLeaveAtHome = Math.floor(invadingForceOP / 3);
                 allowedMaxOP = Math.ceil((originalHomeForcesDP - invadingForceDP) * 1.25);
 

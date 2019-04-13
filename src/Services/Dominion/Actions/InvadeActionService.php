@@ -12,6 +12,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
@@ -232,6 +233,11 @@ class InvadeActionService
             $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
 
             $this->handlePrestigeChanges($dominion, $target, $units);
+
+            // todo: probably move to handleLandGrabs()
+            $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
+            $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
+
             $this->handleLandGrabs($dominion, $target, $units);
             $this->handleMoraleChanges($dominion, $target, $units);
             $this->handleConversions($dominion, $target, $units);
@@ -248,6 +254,8 @@ class InvadeActionService
             if ($isOverwhelmed) {
                 $this->invasionResult['result']['overwhelmed'] = $isOverwhelmed;
             }
+
+            $this->invasionResult['attacker']['unitsSent'] = $units;
 
             // todo: move to GameEventService
             $this->invasionEvent = GameEvent::create([
@@ -278,8 +286,8 @@ class InvadeActionService
                 ]);
             }
 
-            $target->save();
-            $dominion->save();
+            $target->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
         });
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
@@ -707,7 +715,7 @@ class InvadeActionService
         $this->queueService->queueResources(
             'invasion',
             $dominion,
-            $landGainedPerLandType
+            $landGainedPerLandType + ['discounted_land' => array_sum($landGainedPerLandType)] // Also include discounted land count to attacker
         );
     }
 
@@ -741,7 +749,58 @@ class InvadeActionService
 
     protected function handleUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
-        // todo: plunder
+        // todo: just hobgoblin plunder atm, need a refactor later to take into
+        //       account more post-combat unit-perk-related stuff
+
+        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+
+        if (!$isInvasionSuccessful) {
+            return; // nothing to plunder on unsuccessful invasions
+        }
+
+        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
+
+        // todo: refactor this hardcoded hacky mess
+        // Check if we sent hobbos out
+        if (($dominion->race->name === 'Goblin') && isset($units[3]) && ($units[3] > 0)) {
+            $hobbos = $units[3];
+            $totalUnitsSent = array_sum($units);
+
+            $hobbosPercentage = $hobbos / $totalUnitsSent;
+
+            $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
+            $OPNeededToBreakTarget = ($targetDP + 1);
+            $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
+
+            $hobbosToPlunderWith = (int)ceil($unitsNeededToBreakTarget * $hobbosPercentage);
+
+            // reduce by 8.5% now to take into account offensive casualties
+            // todo: get real offensive casualties
+            $hobbosToPlunderWith = (int)ceil($hobbosToPlunderWith * (1 - 0.085));
+
+            $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
+            $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
+
+            $target->resource_platinum -= $plunderPlatinum;
+            $target->resource_gems -= $plunderGems;
+
+            if (!isset($this->invasionResult['attacker']['plunder'])) {
+                $this->invasionResult['attacker']['plunder'] = [
+                    'platinum' => $plunderPlatinum,
+                    'gems' => $plunderGems,
+                ];
+            }
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                [
+                    'resource_platinum' => $plunderPlatinum,
+                    'resource_gems' => $plunderGems,
+                ]
+            );
+        }
     }
 
     /**
@@ -753,6 +812,7 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units): void
     {
+        // Units
         foreach ($units as $slot => $amount) {
             $unitKey = "military_unit{$slot}";
 
@@ -763,6 +823,39 @@ class InvadeActionService
                 $dominion,
                 [$unitKey => $amount],
                 $this->getUnitReturnHoursForSlot($dominion, $slot)
+            );
+        }
+
+        // Boats
+        // todo: move me in my own method
+        $unitsThatNeedsBoatsByReturnHours = [];
+
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            if ($unit->need_boat) {
+                $hours = $this->getUnitReturnHoursForSlot($dominion, $unit->slot);
+
+                if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {
+                    $unitsThatNeedsBoatsByReturnHours[$hours] = 0;
+                }
+
+                $unitsThatNeedsBoatsByReturnHours[$hours] += (int)$units[$unit->slot];
+            }
+        }
+
+        foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
+            $boatsByReturnHourGroup = (int)floor($amountUnits / 30);
+
+            $dominion->resource_boats -= $boatsByReturnHourGroup;
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                ['resource_boats' => $boatsByReturnHourGroup],
+                $hours
             );
         }
     }

@@ -5,13 +5,28 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.1-2] - 2019-04-14
+### Added
+- Added username to realm page for dominions you pack with
+
+### Changed
+- Rankings now update every 6 hours (down from 24 hours)
+- Remove ruler name from realm page
+
+### Fixed
+- Fixed certain realms not getting filled properly
+- Several last-minute invasion-related fixes
+
 ## [0.6.1-1] - 2019-04-11
 ### Added
 - Added barren land column to explore page
 
 ### Changed
-- The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23
+- The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23. This should also help out with BR's OOP sim to match the hours
 - Dominions on the realm page are now also sorted by networth if land sizes are the same
+- Removed invasion morale drop for defenders
+- Changed column label 'Player' to 'Ruler Name' on your own realm page
+- Minor text changes
 
 ### Fixed
 - Fixed a bug where packies can close the pack they're in. Now only the pack creator can close it
@@ -171,7 +186,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...HEAD
+[0.6.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...0.6.1-2
 [0.6.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...0.6.1-1
 [0.6.1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.1
 [0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-1...0.6.0-2

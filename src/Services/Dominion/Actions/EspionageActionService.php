@@ -180,12 +180,12 @@ class EspionageActionService
 
             // todo: copied from spell success ratio. needs looking into later
             // todo: factor in spy strength
-            $successRate = (
+            $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
                 + (0.6767 * $ratio)
                 - 0.0134
-            );
+            ), 0.0, 1.0);
 
             if (!random_chance($successRate)) {
                 // todo: move to CasualtiesCalculator
@@ -202,6 +202,8 @@ class EspionageActionService
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
                 $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
+
+                // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
                 $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
 
@@ -338,7 +340,11 @@ class EspionageActionService
                 $this->queueService->getExplorationQueue($target)->each(function ($row) use (&$data) {
                     $landType = str_replace('land_', '', $row->resource);
 
-                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                    array_set(
+                        $data,
+                        "incoming.{$landType}.{$row->hours}",
+                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                    );
                 });
 
                 $this->queueService->getInvasionQueue($target)->each(function ($row) use (&$data) {
@@ -348,7 +354,11 @@ class EspionageActionService
 
                     $landType = str_replace('land_', '', $row->resource);
 
-                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                    array_set(
+                        $data,
+                        "incoming.{$landType}.{$row->hours}",
+                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                    );
                 });
 
                 $infoOp->data = $data;

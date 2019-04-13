@@ -198,9 +198,23 @@
                                         </p>
                                     @elseif ($prestigeChange > 0)
                                         <p class="text-center text-green">
-                                            You gained <b>{{ number_format($prestigeChange) }}</b> prestige.
+                                            You gain <b>{{ number_format($prestigeChange) }}</b> prestige.
                                         </p>
                                     @endif
+                                @endif
+                            @endif
+
+                            @if (isset($event->data['attacker']['plunder']))
+                                @if ($event->source->id === $selectedDominion->id)
+                                    <p class="text-center text-green">
+                                        {{-- todo: remove hardcoded Hobgoblin mention? --}}
+                                        Your Hobgoblins plunder {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems.
+                                    </p>
+                                @else
+                                    <p class="text-center text-red">
+                                        {{-- todo: remove hardcoded Hobgoblin mention? --}}
+                                        You lost {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems due to plundering.
+                                    </p>
                                 @endif
                             @endif
                         </div>

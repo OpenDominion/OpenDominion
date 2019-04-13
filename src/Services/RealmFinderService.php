@@ -49,7 +49,7 @@ class RealmFinderService
                     continue;
                 }
 
-                $availableSlots -= ($pack->size - 1); // minus pack creator, which already exists in the realm
+                $availableSlots -= ($pack->size - $pack->dominions->count());
             }
 
             if ($availableSlots >= $slotsNeeded) {
