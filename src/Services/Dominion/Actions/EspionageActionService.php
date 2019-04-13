@@ -180,12 +180,12 @@ class EspionageActionService
 
             // todo: copied from spell success ratio. needs looking into later
             // todo: factor in spy strength
-            $successRate = (
+            $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
                 + (0.6767 * $ratio)
                 - 0.0134
-            );
+            ), 0.0, 1.0);
 
             if (!random_chance($successRate)) {
                 // todo: move to CasualtiesCalculator
