@@ -195,7 +195,9 @@ class CasualtiesCalculator
             if ($unitsAtHomeRCLSlot !== null) {
                 $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
 
-                $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+                if ($totalUnitsAtHome > 0) {
+                    $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+                }
             }
 
             $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
