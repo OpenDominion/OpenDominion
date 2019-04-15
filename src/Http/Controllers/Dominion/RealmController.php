@@ -53,11 +53,11 @@ class RealmController extends AbstractDominionController
                 return $landCalculator->getTotalLand($dominion);
             })
             ->sortKeysDesc()
-            ->map(function (Collection $collection) use ($networthCalculator) { 
+            ->map(function (Collection $collection) use ($networthCalculator) {
                 return $collection->sortByDesc(
-                    function (Dominion $dominion) use ($networthCalculator) { 
-                        return $networthCalculator->getDominionNetworth($dominion); 
-                    }); 
+                    function (Dominion $dominion) use ($networthCalculator) {
+                        return $networthCalculator->getDominionNetworth($dominion);
+                    });
             })
             ->flatten();
 
