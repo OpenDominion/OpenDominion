@@ -410,7 +410,7 @@ class MilitaryCalculator
     {
         return (
             $dominion->{'military_unit' . $slot} +
-            $this->queueService->getInvasionQueueTotalByResource($dominion, "unit{$slot}")
+            $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}")
         );
     }
 
