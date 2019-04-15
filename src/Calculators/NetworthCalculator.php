@@ -28,8 +28,8 @@ class NetworthCalculator
      * @param QueueService $queueService
      */
     public function __construct(
-        BuildingCalculator $buildingCalculator, 
-        LandCalculator $landCalculator, 
+        BuildingCalculator $buildingCalculator,
+        LandCalculator $landCalculator,
         QueueService $queueService)
     {
         $this->buildingCalculator = $buildingCalculator;
