@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\QueueService;
 
 class NetworthCalculator
 {
@@ -16,16 +17,24 @@ class NetworthCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * NetworthCalculator constructor.
      *
      * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
+     * @param QueueService $queueService
      */
-    public function __construct(BuildingCalculator $buildingCalculator, LandCalculator $landCalculator)
+    public function __construct(
+        BuildingCalculator $buildingCalculator, 
+        LandCalculator $landCalculator, 
+        QueueService $queueService)
     {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -65,7 +74,9 @@ class NetworthCalculator
         $networthPerBuilding = 5;
 
         foreach ($dominion->race->units as $unit) {
-            $networth += ($dominion->{'military_unit' . $unit->slot} * $this->getUnitNetworth($unit));
+            $totalUnitsOfType = $dominion->{'military_unit' . $unit->slot};
+            $totalUnitsOfType += $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit$unit->slot");
+            $networth += $totalUnitsOfType * $this->getUnitNetworth($unit);
         }
 
         $networth += ($dominion->military_spies * $networthPerSpy);
