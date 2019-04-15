@@ -43,13 +43,15 @@
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
                                             </span>
                                         </td>
+                                        @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
+                                        @php
+                                        $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
+                                            return ($unit->slot == (int)str_replace('unit', '', $unitType));
+                                        })->first();
+                                        @endphp
                                         <td class="text-center">
-                                            @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
-                                                @php
-                                                $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
-                                                    return ($unit->slot == (int)str_replace('unit', '', $unitType));
-                                                })->first();
-                                                @endphp
+                                            
+                                                
                                                 @if ($unit->power_offense == 0)
                                                     <span class="text-muted">0</span>
                                                 @else
@@ -61,9 +63,14 @@
                                                 @else
                                                     {{ number_format($unit->power_defense) }}
                                                 @endif
-                                            @endif
+                                            
+                                        </td>
+                                        <td class="text-center">{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, $unit->slot)) }}</td>
+                                        @else
+                                        <td class="text-center">
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
+                                        @endif
                                         <td class="text-center">{{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}</td>
                                         <td class="text-center">
                                             @php

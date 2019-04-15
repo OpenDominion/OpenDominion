@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
@@ -22,6 +23,7 @@ class MilitaryController extends AbstractDominionController
     public function getMilitary()
     {
         return view('pages.dominion.military', [
+            'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'queueService' => app(QueueService::class),
             'trainingCalculator' => app(TrainingCalculator::class),
