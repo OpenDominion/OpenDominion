@@ -85,6 +85,9 @@ class PopulationCalculator
             + $dominion->military_wizards
             + $dominion->military_archmages
             + $this->queueService->getTrainingQueueTotal($dominion)
+            + $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit1")
+            + $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit3")
+            + $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit4")
         );
     }
 
