@@ -4,10 +4,10 @@ namespace OpenDominion\Calculators;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
-use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 
 class NetworthCalculator
 {
