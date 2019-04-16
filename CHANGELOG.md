@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Reduced failed espionage operation spy casualties from 1% to 0.1%
 
 ### Fixed
-- Fixed dominion sorting in realm page on land sizes larger than 1k 
+- Fixed dominion sorting in realm page on land sizes larger than 1k
+- Units returning from battle are now included in networth calculations
 
 ## [0.6.1-3] - 2019-04-14
 ### Fixed
