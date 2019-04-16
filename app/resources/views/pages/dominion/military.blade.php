@@ -44,14 +44,12 @@
                                             </span>
                                         </td>
                                         @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
-                                        @php
-                                        $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
-                                            return ($unit->slot == (int)str_replace('unit', '', $unitType));
-                                        })->first();
-                                        @endphp
-                                        <td class="text-center">
-                                            
-                                                
+                                            @php
+                                                $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
+                                                    return ($unit->slot == (int)str_replace('unit', '', $unitType));
+                                                })->first();
+                                            @endphp
+                                            <td class="text-center">
                                                 @if ($unit->power_offense == 0)
                                                     <span class="text-muted">0</span>
                                                 @else
@@ -63,15 +61,19 @@
                                                 @else
                                                     {{ number_format($unit->power_defense) }}
                                                 @endif
-                                            
-                                        </td>
-                                        <td class="text-center">{{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, $unit->slot)) }}</td>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, $unit->slot)) }}
+                                            </td>
                                         @else
-                                        <td class="text-center">
-                                        </td>
-                                        <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
+                                            <td class="text-center">&nbsp;</td>
+                                            <td class="text-center">
+                                                {{ number_format($selectedDominion->{'military_' . $unitType}) }}
+                                            </td>
                                         @endif
-                                        <td class="text-center">{{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}</td>
+                                        <td class="text-center">
+                                            {{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}
+                                        </td>
                                         <td class="text-center">
                                             @php
                                                 // todo: move this shit to view presenter or something
@@ -99,7 +101,9 @@
                                                 echo implode(', ', $labelParts);
                                             @endphp
                                         </td>
-                                        <td class="text-center">{{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}</td>
+                                        <td class="text-center">
+                                            {{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}
+                                        </td>
                                         <td class="text-center">
                                             <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         </td>
