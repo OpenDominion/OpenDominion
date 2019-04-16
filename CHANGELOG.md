@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Reduced failed espionage operation spy casualties from 1% to 0.1%
+
+### Fixed
+- Fixed dominion sorting in realm page on land sizes larger than 1k 
 
 ## [0.6.1-3] - 2019-04-14
 ### Fixed
