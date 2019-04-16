@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -48,10 +49,17 @@ class RealmController extends AbstractDominionController
         // todo: still duplicate queries on this page. investigate later
 
         $dominions = $realm->dominions
-            ->sortByDesc(function (Dominion $dominion) use ($landCalculator, $networthCalculator) {
-                return ($landCalculator->getTotalLand($dominion) . '#' . $networthCalculator->getDominionNetworth($dominion));
+            ->groupBy(function (Dominion $dominion) use ($landCalculator) {
+                return $landCalculator->getTotalLand($dominion);
             })
-            ->values();
+            ->sortKeysDesc()
+            ->map(function (Collection $collection) use ($networthCalculator) {
+                return $collection->sortByDesc(
+                    function (Dominion $dominion) use ($networthCalculator) {
+                        return $networthCalculator->getDominionNetworth($dominion);
+                    });
+            })
+            ->flatten();
 
         // Todo: refactor this hacky hacky navigation stuff
         $prevRealm = DB::table('realms')
