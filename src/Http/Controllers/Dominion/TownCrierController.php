@@ -15,9 +15,6 @@ class TownCrierController extends AbstractDominionController
 
         $realm = $dominion->realm;
         $realmieDominionIds = $realm->dominions
-            ->filter(function ($realmieDominion) use ($dominion) {
-                return ($realmieDominion->id !== $dominion->id);
-            })
             ->pluck('id')
             ->toArray();
 
