@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed dominion sorting in realm page on land sizes larger than 1k
 - Units returning from battle are now included in population calculations
 - Units returning from battle are now included in networth calculations
+- Units returning from battle are now included on the military page under the Trained column
 
 ## [0.6.1-3] - 2019-04-14
 ### Fixed
