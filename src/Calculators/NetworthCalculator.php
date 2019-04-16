@@ -4,6 +4,7 @@ namespace OpenDominion\Calculators;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
@@ -16,16 +17,24 @@ class NetworthCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
     /**
      * NetworthCalculator constructor.
      *
      * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator
      */
-    public function __construct(BuildingCalculator $buildingCalculator, LandCalculator $landCalculator)
-    {
+    public function __construct(
+        BuildingCalculator $buildingCalculator,
+        LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator
+    ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
     }
 
     /**
@@ -65,7 +74,8 @@ class NetworthCalculator
         $networthPerBuilding = 5;
 
         foreach ($dominion->race->units as $unit) {
-            $networth += ($dominion->{'military_unit' . $unit->slot} * $this->getUnitNetworth($unit));
+            $totalUnitsOfType = $this->militaryCalculator->getTotalUnitsForSlot($dominion, $unit->slot);
+            $networth += $totalUnitsOfType * $this->getUnitNetworth($unit);
         }
 
         $networth += ($dominion->military_spies * $networthPerSpy);
