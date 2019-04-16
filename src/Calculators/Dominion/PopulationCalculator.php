@@ -18,6 +18,9 @@ class PopulationCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
     /** @var QueueService */
     protected $queueService;
 
@@ -33,6 +36,7 @@ class PopulationCalculator
      * @param BuildingHelper $buildingHelper
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
@@ -41,6 +45,7 @@ class PopulationCalculator
         BuildingHelper $buildingHelper,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         UnitHelper $unitHelper
@@ -48,6 +53,7 @@ class PopulationCalculator
         $this->buildingHelper = $buildingHelper;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
@@ -77,10 +83,10 @@ class PopulationCalculator
     {
         return (
             $dominion->military_draftees
-            + $dominion->military_unit1
-            + $dominion->military_unit2
-            + $dominion->military_unit3
-            + $dominion->military_unit4
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1)
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2)
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3)
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4)
             + $dominion->military_spies
             + $dominion->military_wizards
             + $dominion->military_archmages
