@@ -36,6 +36,7 @@ class PopulationCalculator
      * @param BuildingHelper $buildingHelper
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
