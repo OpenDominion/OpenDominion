@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.1-4] - 2019-04-16
+### Changed
+- Reduced failed espionage operation spy casualties from 1% to 0.1%
+
+### Fixed
+- Fixed dominion sorting in realm page on land sizes larger than 1k
+- Units returning from battle are now included in population calculations
+- Units returning from battle are now included in networth calculations
+- Units returning from battle are now included on the military page under the Trained column
+
 ## [0.6.1-3] - 2019-04-14
 ### Fixed
 - Fix packie name on realm page
@@ -190,7 +200,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...HEAD
+[0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4
 [0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3
 [0.6.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...0.6.1-2
 [0.6.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...0.6.1-1
