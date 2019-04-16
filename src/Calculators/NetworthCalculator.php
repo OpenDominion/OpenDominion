@@ -25,13 +25,13 @@ class NetworthCalculator
      *
      * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
-     * @param QueueService $queueService
+     * @param MilitaryCalculator $militaryCalculator
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
         LandCalculator $landCalculator,
-        MilitaryCalculator $militaryCalculator)
-    {
+        MilitaryCalculator $militaryCalculator
+    ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
