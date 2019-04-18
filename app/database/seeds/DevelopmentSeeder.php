@@ -91,7 +91,7 @@ INFO
         $race = Race::where('name', 'Human')->firstOrFail();
         $league = RoundLeague::where('key', "standard")->firstOrFail();
         $startDate = new Carbon('now');
-        $round = $roundFactory->create($league, $startDate, 12, 1);
+        $round = Round::where('id', 1)->firstOrFail();
         $realm = $realmFactory->create($round, $race->alignment);
 
         return $this->dominionFactory->create(
