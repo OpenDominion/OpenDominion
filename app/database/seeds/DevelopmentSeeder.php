@@ -1,7 +1,9 @@
 <?php
-
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Factories\RealmFactory;
+use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -36,7 +38,7 @@ class DevelopmentSeeder extends Seeder
         DB::transaction(function () {
             $user = $this->createUser();
             $round = $this->createRound();
-            $this->createRealmAndDominion($user, $round);
+            $this->createRealmAndDominion($user);
 
             $this->command->info(<<<INFO
 
@@ -81,17 +83,24 @@ INFO
         ]);
     }
 
-    protected function createRealmAndDominion(User $user, Round $round): Dominion
+    protected function createRealmAndDominion(User $user): Dominion
     {
+        $realmFactory = app(RealmFactory::class);
+        $roundFactory = app(RoundFactory::class);
         $this->command->info('Creating realm and dominion');
+        $race = Race::where('name', 'Human')->firstOrFail();
+        $league = RoundLeague::where('key', "standard")->firstOrFail();
+        $startDate = new Carbon('now');
+        $round = $roundFactory->create($league, $startDate, 12, 1);
+        $realm = $realmFactory->create($round, $race->alignment);
 
         return $this->dominionFactory->create(
             $user,
-            $round,
-            Race::where('name', 'Human')->firstOrFail(),
+            $realm,
+            $race,
             'random',
             'Developer',
-            'Dev Dominion'
+            null
         );
     }
 }
