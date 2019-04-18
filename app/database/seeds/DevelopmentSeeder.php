@@ -89,7 +89,7 @@ INFO
         $roundFactory = app(RoundFactory::class);
         $this->command->info('Creating realm and dominion');
         $race = Race::where('name', 'Human')->firstOrFail();
-        $league = RoundLeague::where('key', "standard")->firstOrFail();
+        $league = RoundLeague::where('key', 'standard')->firstOrFail();
         $startDate = new Carbon('now');
         $round = Round::where('id', 1)->firstOrFail();
         $realm = $realmFactory->create($round, $race->alignment);
