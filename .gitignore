@@ -6,17 +6,14 @@
 /.idea/vcs.xml
 /.idea/workspace.xml
 /.vagrant/
-/app/.DS_Store
 /app/routes/web.local.php
 /node_modules/
 /public/assets/
 /public/hot/
 /public/storage
 /public/mix-manifest.json
-/storage/.DS_Store
 /storage/*.key
 /vendor/
-/.DS_Store
 /.env
 /.phpstorm.meta.php
 /_ide_helper.php
@@ -24,4 +21,5 @@
 /auth.json
 /composer.phar
 /phpunit.xml
+.DS_Store
 npm-debug.log
