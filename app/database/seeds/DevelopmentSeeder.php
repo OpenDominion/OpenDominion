@@ -1,4 +1,5 @@
 <?php
+
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
