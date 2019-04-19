@@ -58,7 +58,7 @@ It doesn't matter if you're a Dominion veteran or if you're new, feel free to:
 
 - [Participate in the beta](#participate-in-the-beta)!
 - Join the [Discord](https://discord.gg/mFk2wZT) 
-- Spread the word of those you know might be interested.
+- Spread the word to those you know might be interested.
 - Praise the project by starring it on GitHub.
 
 ### Participate in the beta
