@@ -127,7 +127,7 @@ If you don't want to hassle too much with setting the aforementioned up, there's
 ##### Cloning the repository:
 
 ```bash
-$ git clone https://github.com/WaveHack/OpenDominion.git OpenDominion
+$ git clone https://github.com/WaveHack/OpenDominion
 $ cd OpenDominion
 ```
 
