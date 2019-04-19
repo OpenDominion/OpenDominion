@@ -19,8 +19,5 @@
     "lodash": "^4.17.10",
     "rpg-awesome": "^0.1.1",
     "select2": "^4.0.5"
-  },
-  "devDependencies": {
-    "babel-preset-react": "^6.24.1"
   }
 }
