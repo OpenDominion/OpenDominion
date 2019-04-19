@@ -22,5 +22,6 @@
 /_ide_helper.php
 /_ide_helper_models.php
 /auth.json
+/composer.phar
 /phpunit.xml
 npm-debug.log
