@@ -339,4 +339,4 @@ Please add relevant unit tests or feature tests if possible.
 
 ## Resources
 
-You can find resources that we use to help me develop OpenDominion in the [resources branch](https://github.com/WaveHack/OpenDominion/tree/resources). See its readme for more info.
+You can find resources that we use to help us develop OpenDominion in the [resources branch](https://github.com/WaveHack/OpenDominion/tree/resources). See its readme for more info.
