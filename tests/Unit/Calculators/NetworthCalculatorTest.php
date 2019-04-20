@@ -6,6 +6,7 @@ use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -24,6 +25,9 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
+    /** @var Mock|MilitaryCalculator */
+    protected $militaryCalculator;
+
     /** @var Mock|NetworthCalculator */
     protected $sut;
 
@@ -37,6 +41,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->sut = m::mock(NetworthCalculator::class, [
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
+            $this->militaryCalculator = m::mock(MilitaryCalculator::class),
         ])->makePartial();
     }
 
@@ -104,8 +109,12 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
 
-        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
+        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
+        $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, 1)->andReturn(100);
+        $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, 2)->andReturn(100);
+        $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, 3)->andReturn(100);
+        $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, 4)->andReturn(100);
 
         $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion));
     }

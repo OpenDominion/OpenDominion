@@ -48,42 +48,42 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $mockRandomChance = true;
     }
 
-    public function testPerformOperation_SameSpa_LoseOnePercent()
+    public function testPerformOperation_SameSpa_LoseOnePermille()
     {
         // Arrange
-        $this->dominion->military_spies = 1000;
-        $this->target->military_spies = 1000;
+        $this->dominion->military_spies = 10000;
+        $this->target->military_spies = 10000;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals($this->dominion->military_spies, 990);
+        $this->assertEquals(9990, $this->dominion->military_spies);
     }
 
-    public function testPerformOperation_MuchLowerSpa_LoseMaxOneAndAHalfPercent()
+    public function testPerformOperation_MuchLowerSpa_LoseMaxAHalfPercent()
     {
         // Arrange
-        $this->dominion->military_spies = 1000;
-        $this->target->military_spies = 100000;
+        $this->dominion->military_spies = 10000;
+        $this->target->military_spies = 10000000;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals($this->dominion->military_spies, 985);
+        $this->assertEquals(9950, $this->dominion->military_spies);
     }
 
-    public function testPerformOperation_MuchHigherSpa_LoseMaxAHalfPercent()
+    public function testPerformOperation_MuchHigherSpa_LoseHalfAPermille()
     {
         // Arrange
-        $this->dominion->military_spies = 1000;
-        $this->target->military_spies = 1;
+        $this->dominion->military_spies = 10000;
+        $this->target->military_spies = 100;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals($this->dominion->military_spies, 995);
+        $this->assertEquals(9995, $this->dominion->military_spies);
     }
 }
