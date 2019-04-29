@@ -1046,7 +1046,7 @@ class InvadeActionService
                 continue;
             }
 
-            $powerOffense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, "offense");
+            $powerOffense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, 'offense');
 
             $op += ($powerOffense * (int)$units[$unit->slot]);
         }
@@ -1082,7 +1082,7 @@ class InvadeActionService
                 continue;
             }
 
-            $powerDefense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, "defense");
+            $powerDefense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, 'defense');
 
             $op += ($powerDefense * (int)$units[$unit->slot]);
         }
