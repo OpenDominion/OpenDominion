@@ -1080,7 +1080,33 @@ class InvadeActionService
                 continue;
             }
 
-            $op += ($unit->power_defense * (int)$units[$unit->slot]);
+            $powerDefense = $unit->power_defense;
+
+            // Race perk
+            $landDpPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'dp_land');
+            if($landDpPerkData) {
+
+                $landType = $landDpPerkData[0];
+                $ratio = $landDpPerkData[1];
+                $max = (int)$landDpPerkData[2];
+                $constructedOnly = $landDpPerkData[3];
+                $totalLand = $this->landCalculator->getTotalLand($dominion);
+
+                if(!$constructedOnly)
+                {
+                    $landPercentage = ($dominion->{"land_{$landType}"} / $totalLand) * 100;
+                }
+                else
+                {
+                    $buildingsForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
+
+                    $landPercentage = ($buildingsForLandType / $totalLand) * 100;
+                }
+
+                $dpFromLand = $landPercentage / $ratio;
+                $powerDefense += min($dpFromLand, $max);
+            }
+            $op += ($powerDefense * (int)$units[$unit->slot]);
         }
 
         return $op;
