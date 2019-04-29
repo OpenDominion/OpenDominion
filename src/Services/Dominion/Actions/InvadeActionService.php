@@ -1046,7 +1046,9 @@ class InvadeActionService
                 continue;
             }
 
-            $op += ($unit->power_offense * (int)$units[$unit->slot]);
+            $powerOffense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, "offense");
+
+            $op += ($powerOffense * (int)$units[$unit->slot]);
         }
 
         return $op;
@@ -1080,36 +1082,44 @@ class InvadeActionService
                 continue;
             }
 
-            $powerDefense = $unit->power_defense;
+            $powerDefense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, "defense");
 
-            // Race perk
-            $landDpPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'dp_land');
-            if($landDpPerkData) {
-
-                $landType = $landDpPerkData[0];
-                $ratio = $landDpPerkData[1];
-                $max = (int)$landDpPerkData[2];
-                $constructedOnly = $landDpPerkData[3];
-                $totalLand = $this->landCalculator->getTotalLand($dominion);
-
-                if(!$constructedOnly)
-                {
-                    $landPercentage = ($dominion->{"land_{$landType}"} / $totalLand) * 100;
-                }
-                else
-                {
-                    $buildingsForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
-
-                    $landPercentage = ($buildingsForLandType / $totalLand) * 100;
-                }
-
-                $dpFromLand = $landPercentage / $ratio;
-                $powerDefense += min($dpFromLand, $max);
-            }
             $op += ($powerDefense * (int)$units[$unit->slot]);
         }
 
         return $op;
+    }
+
+    protected function getUnitPowerWithLandBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    {
+        $unitPower = $unit->{"power_$powerType"};
+        $landPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_land");
+
+        if(!$landPerkData) {
+            return $unitPower;
+        }
+
+        $landType = $landPerkData[0];
+        $ratio = $landPerkData[1];
+        $max = (int)$landPerkData[2];
+        $constructedOnly = $landPerkData[3];
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+
+        if(!$constructedOnly)
+        {
+            $landPercentage = ($dominion->{"land_{$landType}"} / $totalLand) * 100;
+        }
+        else
+        {
+            $buildingsForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
+
+            $landPercentage = ($buildingsForLandType / $totalLand) * 100;
+        }
+
+        $opFromLand = $landPercentage / $ratio;
+        $unitPower += min($opFromLand, $max);
+
+        return $unitPower;
     }
 
     /**
