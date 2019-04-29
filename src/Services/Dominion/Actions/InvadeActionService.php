@@ -1093,7 +1093,7 @@ class InvadeActionService
     protected function getUnitPowerWithLandBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
     {
         $unitPower = $unit->{"power_$powerType"};
-        $landPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_land");
+        $landPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_land");
 
         if(!$landPerkData) {
             return $unitPower;
