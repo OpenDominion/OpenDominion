@@ -1116,8 +1116,8 @@ class InvadeActionService
             $landPercentage = ($buildingsForLandType / $totalLand) * 100;
         }
 
-        $opFromLand = $landPercentage / $ratio;
-        $unitPower += min($opFromLand, $max);
+        $powerFromLand = $landPercentage / $ratio;
+        $unitPower += min($powerFromLand, $max);
 
         return $unitPower;
     }
