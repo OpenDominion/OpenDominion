@@ -456,6 +456,13 @@ class InvadeActionService
                 }
 
                 $totalUnitsLeftToKill -= $unitsToKill;
+
+                $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
+                if($fixedCasualtiesPerk) {
+                    $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
+                    $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
+                    $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
+                }
             }
         } else {
             if ($isOverwhelmed) {
@@ -463,6 +470,14 @@ class InvadeActionService
             }
 
             foreach ($units as $slot => $amount) {
+                $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
+                if($fixedCasualtiesPerk) {
+                    $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
+                    $unitsToKill = (int)ceil($amount * $fixedCasualtiesRatio);
+                    $offensiveUnitsLost[$slot] = $unitsToKill;
+                    continue;
+                }
+
                 $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage);
                 $offensiveUnitsLost[$slot] = $unitsToKill;
             }

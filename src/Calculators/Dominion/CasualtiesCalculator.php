@@ -53,6 +53,10 @@ class CasualtiesCalculator
             $multiplier = 0;
         }
 
+        if($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties')) {
+            return 1;
+        }
+
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, shrines, tech, wonders), capped at -80%
             $nonUnitBonusMultiplier = 0;
