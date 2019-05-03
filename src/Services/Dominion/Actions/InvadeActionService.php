@@ -1046,7 +1046,7 @@ class InvadeActionService
                 continue;
             }
 
-            $powerOffense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, 'offense');
+            $powerOffense = $this->getUnitPowerWithPerks($dominion, $unit, 'offense');
 
             $op += ($powerOffense * (int)$units[$unit->slot]);
         }
@@ -1082,7 +1082,7 @@ class InvadeActionService
                 continue;
             }
 
-            $powerDefense = $this->getUnitPowerWithLandBasedPerk($dominion, $unit, 'defense');
+            $powerDefense = $this->getUnitPowerWithPerks($dominion, $unit, 'defense');
 
             $op += ($powerDefense * (int)$units[$unit->slot]);
         }
@@ -1090,17 +1090,26 @@ class InvadeActionService
         return $op;
     }
 
-    protected function getUnitPowerWithLandBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    protected function getUnitPowerWithPerks(Dominion $dominion, Unit $unit, string $powerType): float
     {
         $unitPower = $unit->{"power_$powerType"};
+
+        $unitPower += $this->getUnitPowerWithLandBasedPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerWithRawWizardRatioPerk($dominion, $unit, $powerType);
+
+        return $unitPower;
+    }
+
+    protected function getUnitPowerWithLandBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    {
         $landPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_land", null);
 
         if(!$landPerkData) {
-            return $unitPower;
+            return 0;
         }
 
         $landType = $landPerkData[0];
-        $ratio = $landPerkData[1];
+        $ratio = (int)$landPerkData[1];
         $max = (int)$landPerkData[2];
         $constructedOnly = $landPerkData[3];
         $totalLand = $this->landCalculator->getTotalLand($dominion);
@@ -1117,9 +1126,27 @@ class InvadeActionService
         }
 
         $powerFromLand = $landPercentage / $ratio;
-        $unitPower += min($powerFromLand, $max);
+        $powerFromPerk = min($powerFromLand, $max);
 
-        return $unitPower;
+        return $powerFromPerk;
+    }
+
+    protected function getUnitPowerWithRawWizardRatioPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    {
+        $wizardRatioPerk = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_raw_wizard_ratio");
+
+        if(!$wizardRatioPerk) {
+            return 0;
+        }
+
+        $ratio = (float)$wizardRatioPerk[0];
+        $max = (int)$wizardRatioPerk[1];
+
+        $wizardRawRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
+        $powerFromWizardRatio = $wizardRawRatio * $ratio;
+        $powerFromPerk = min($powerFromWizardRatio, $max);
+
+        return $powerFromPerk;
     }
 
     /**

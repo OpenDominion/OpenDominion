@@ -1,0 +1,43 @@
+name: Icekin
+alignment: evil
+home_land_type: mountain
+perks:
+  food_consumption: -50
+  lumber_production: -10
+  platinum_production: 5
+  archmage_cost: -150
+units:
+  - name: Icebeast
+    cost:
+      platinum: 300
+      ore: 0
+    power:
+      offense: 3
+      defense: 0
+  - name: Snow Witch
+    cost:
+      platinum: 350
+      ore: 25
+    power:
+      offense: 0
+      defense: 3
+    perks:
+      reduce_combat_losses: 1
+  - name: Frost Mage
+    cost:
+      platinum: 850
+      ore: 100
+    power:
+      offense: 3
+      defense: 3
+    perks:
+      defense_from_land: mountain,20,3 # land type, ratio%, max
+  - name: Ice Elemental
+    cost:
+      platinum: 1100
+      ore: 0
+    power:
+      offense: 4
+      defense: 2
+    perks:
+      offense_raw_wizard_ratio: 0.85,3 # ratio%, max
