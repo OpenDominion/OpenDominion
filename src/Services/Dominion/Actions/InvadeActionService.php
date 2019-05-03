@@ -199,8 +199,9 @@ class InvadeActionService
 
             // Sanitize input
             $units = array_map('intval', array_filter($units));
+            $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-            if (!$this->hasAnyOP($dominion, $units)) {
+            if (!$this->hasAnyOP($dominion, $landRatio, $units)) {
                 throw new RuntimeException('You need to send at least some units');
             }
 
@@ -220,11 +221,11 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough morale to invade others');
             }
 
-            if (!$this->passes33PercentRule($dominion, $units)) {
+            if (!$this->passes33PercentRule($dominion, $landRatio, $units)) {
                 throw new RuntimeException('You need to leave more DP units at home, based on the OP you\'re sending out (33% rule)');
             }
 
-            if (!$this->passes54RatioRule($dominion, $units)) {
+            if (!$this->passes54RatioRule($dominion, $landRatio, $units)) {
                 throw new RuntimeException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
@@ -424,7 +425,8 @@ class InvadeActionService
     {
         $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
         $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
@@ -515,9 +517,9 @@ class InvadeActionService
      */
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
     {
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
-        $landRatio = ($this->rangeCalculator->getDominionRange($dominion, $target) / 100);
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
         // Modify casualties percentage based on relative land size
@@ -758,7 +760,8 @@ class InvadeActionService
             return; // nothing to plunder on unsuccessful invasions
         }
 
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         // todo: refactor this hardcoded hacky mess
@@ -870,7 +873,8 @@ class InvadeActionService
      */
     protected function isInvasionSuccessful(Dominion $dominion, Dominion $target, array $units): bool
     {
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         return ($attackingForceOP > $targetDP);
@@ -894,7 +898,9 @@ class InvadeActionService
             return false;
         }
 
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
+        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         return ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
@@ -907,9 +913,9 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function hasAnyOP(Dominion $dominion, array $units): bool
+    protected function hasAnyOP(Dominion $dominion, float $landRatio, array $units): bool
     {
-        return ($this->getOPForUnits($dominion, $units) !== 0.0);
+        return ($this->getOPForUnits($dominion, $landRatio, $units) !== 0.0);
     }
 
     /**
@@ -987,10 +993,10 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function passes33PercentRule(Dominion $dominion, array $units): bool
+    protected function passes33PercentRule(Dominion $dominion, float $landRatio, array $units): bool
     {
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
-        $attackingForceDP = $this->getDPForUnits($dominion, $units);
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
+        $attackingForceDP = $this->getDPForUnits($dominion, $landRatio, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
@@ -1006,10 +1012,10 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function passes54RatioRule(Dominion $dominion, array $units): bool
+    protected function passes54RatioRule(Dominion $dominion, float $landRatio, array $units): bool
     {
-        $attackingForceOP = $this->getOPForUnits($dominion, $units);
-        $attackingForceDP = $this->getDPForUnits($dominion, $units);
+        $attackingForceOP = $this->getOPForUnits($dominion, $landRatio, $units);
+        $attackingForceDP = $this->getDPForUnits($dominion, $landRatio, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
@@ -1025,9 +1031,9 @@ class InvadeActionService
      * @param array $units
      * @return float
      */
-    protected function getOPForUnits(Dominion $dominion, array $units): float
+    protected function getOPForUnits(Dominion $dominion, float $landRatio, array $units): float
     {
-        return ($this->getRawOPForUnits($dominion, $units) * $this->militaryCalculator->getOffensivePowerMultiplier($dominion));
+        return ($this->getRawOPForUnits($dominion, $landRatio, $units) * $this->militaryCalculator->getOffensivePowerMultiplier($dominion));
     }
 
     /**
@@ -1037,7 +1043,7 @@ class InvadeActionService
      * @param array $units
      * @return float
      */
-    protected function getRawOPForUnits(Dominion $dominion, array $units): float
+    protected function getRawOPForUnits(Dominion $dominion, float $landRatio, array $units): float
     {
         $op = 0;
 
@@ -1046,7 +1052,7 @@ class InvadeActionService
                 continue;
             }
 
-            $powerOffense = $this->getUnitPowerWithPerks($dominion, $unit, 'offense');
+            $powerOffense = $this->getUnitPowerWithPerks($dominion, $landRatio, $unit, 'offense');
 
             $op += ($powerOffense * (int)$units[$unit->slot]);
         }
@@ -1061,9 +1067,9 @@ class InvadeActionService
      * @param array $units
      * @return float
      */
-    protected function getDPForUnits(Dominion $dominion, array $units): float
+    protected function getDPForUnits(Dominion $dominion, float $landRatio, array $units): float
     {
-        return ($this->getRawDPForUnits($dominion, $units) * $this->militaryCalculator->getDefensivePowerMultiplier($dominion));
+        return ($this->getRawDPForUnits($dominion, $landRatio, $units) * $this->militaryCalculator->getDefensivePowerMultiplier($dominion));
     }
 
     /**
@@ -1073,7 +1079,7 @@ class InvadeActionService
      * @param array $units
      * @return float
      */
-    protected function getRawDPForUnits(Dominion $dominion, array $units): float
+    protected function getRawDPForUnits(Dominion $dominion, float $landRatio, array $units): float
     {
         $op = 0;
 
@@ -1082,7 +1088,7 @@ class InvadeActionService
                 continue;
             }
 
-            $powerDefense = $this->getUnitPowerWithPerks($dominion, $unit, 'defense');
+            $powerDefense = $this->getUnitPowerWithPerks($dominion, $landRatio, $unit, 'defense');
 
             $op += ($powerDefense * (int)$units[$unit->slot]);
         }
@@ -1090,12 +1096,13 @@ class InvadeActionService
         return $op;
     }
 
-    protected function getUnitPowerWithPerks(Dominion $dominion, Unit $unit, string $powerType): float
+    protected function getUnitPowerWithPerks(Dominion $dominion, float $landRatio, Unit $unit, string $powerType): float
     {
         $unitPower = $unit->{"power_$powerType"};
 
         $unitPower += $this->getUnitPowerWithLandBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerWithRawWizardRatioPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerWithStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
 
         return $unitPower;
     }
@@ -1133,7 +1140,9 @@ class InvadeActionService
 
     protected function getUnitPowerWithRawWizardRatioPerk(Dominion $dominion, Unit $unit, string $powerType): float
     {
-        $wizardRatioPerk = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_raw_wizard_ratio");
+        $wizardRatioPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+            $unit->slot,
+            "{$powerType}_raw_wizard_ratio");
 
         if(!$wizardRatioPerk) {
             return 0;
@@ -1145,6 +1154,32 @@ class InvadeActionService
         $wizardRawRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
         $powerFromWizardRatio = $wizardRawRatio * $ratio;
         $powerFromPerk = min($powerFromWizardRatio, $max);
+
+        return $powerFromPerk;
+    }
+
+    protected function getUnitPowerWithStaggeredLandRangePerk(Dominion $dominion, float $landRatio, Unit $unit, string $powerType): float
+    {
+        $staggeredLandRangePerk = $dominion->race->getUnitPerkValueForUnitSlot(
+            $unit->slot,
+            "{$powerType}_staggered_land_range");
+
+        if(!$staggeredLandRangePerk) {
+            return 0;
+        }
+
+        $powerFromPerk = 0;
+
+        foreach ($staggeredLandRangePerk as $rangePerk) {
+            $range = ((int)$rangePerk[0]) / 100;
+            $power = (int)$rangePerk[1];
+
+            if($range > $landRatio) {
+                continue;
+            }
+
+            $powerFromPerk = $power;
+        }
 
         return $powerFromPerk;
     }
