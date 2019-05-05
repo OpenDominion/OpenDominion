@@ -67,7 +67,7 @@ class TickService
      *
      * @throws Exception|Throwable
      */
-    public function tickHourly()
+    public function tickHourly(): array
     {
         Log::debug('Hourly tick started');
 
@@ -86,12 +86,6 @@ class TickService
                     $activeDominionIds[] = $dominion->id;
                 }
             }
-
-            // Update rankings (every 6 hours)
-            if($this->now->hour % 6 === 0) {
-                Log::debug('Update rankings started');
-                $this->updateDailyRankings($activeDominionIds);
-            }
         });
 
         Log::info(sprintf(
@@ -99,6 +93,8 @@ class TickService
             number_format(count($activeDominionIds)),
             number_format($this->now->diffInSeconds(now()))
         ));
+
+        return $activeDominionIds;
     }
 
     /**
@@ -131,6 +127,97 @@ class TickService
         });
 
         Log::info('Daily tick finished');
+    }
+
+    public function updateDailyRankings(array $dominionIds)
+    {
+        // todo: needs a rewrite. haven't been able to do it due to time constraints
+
+        // First pass: Saving land and networth
+        Dominion::with(['race', 'realm'])->whereIn('id', $dominionIds)->chunk(50, function ($dominions) {
+            foreach ($dominions as $dominion) {
+                $where = [
+                    'round_id' => (int)$dominion->round_id,
+                    'dominion_id' => $dominion->id,
+                ];
+
+                $data = [
+                    'dominion_name' => $dominion->name,
+                    'race_name' => $dominion->race->name,
+                    'realm_number' => $dominion->realm->number,
+                    'realm_name' => $dominion->realm->name,
+                    'land' => $this->landCalculator->getTotalLand($dominion),
+                    'networth' => $this->networthCalculator->getDominionNetworth($dominion),
+                ];
+
+                $result = DB::table('daily_rankings')->where($where)->get();
+
+                if ($result->isEmpty()) {
+                    $row = $where + $data + [
+                            'created_at' => $dominion->created_at,
+                            'updated_at' => $this->now,
+                        ];
+
+                    DB::table('daily_rankings')->insert($row);
+                } else {
+                    $row = $data + [
+                            'updated_at' => $this->now,
+                        ];
+
+                    DB::table('daily_rankings')->where($where)->update($row);
+                }
+            }
+        });
+
+        // Second pass: Calculating ranks
+        $result = DB::table('daily_rankings')
+            ->orderBy('land', 'desc')
+            ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
+            ->get();
+
+        //Getting all rounds
+        $rounds = DB::table('rounds')
+            ->where('start_date', '<=', $this->now)
+            ->where('end_date', '>', $this->now)
+            ->get();
+
+        foreach ($rounds as $round) {
+            $rank = 1;
+
+            foreach ($result as $row) {
+                if ($row->round_id == (int)$round->id) {
+                    DB::table('daily_rankings')
+                        ->where('id', $row->id)
+                        ->where('round_id', $round->id)
+                        ->update([
+                            'land_rank' => $rank,
+                            'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
+                        ]);
+
+                    $rank++;
+                }
+            }
+
+            $result = DB::table('daily_rankings')
+                ->orderBy('networth', 'desc')
+                ->orderBy(DB::raw('COALESCE(networth_rank, created_at)'))
+                ->get();
+
+            $rank = 1;
+
+            foreach ($result as $row) {
+                if ($row->round_id == (int)$round->id) {
+                    DB::table('daily_rankings')
+                        ->where('id', $row->id)
+                        ->update([
+                            'networth_rank' => $rank,
+                            'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_rank - $rank) : 0),
+                        ]);
+
+                    $rank++;
+                }
+            }
+        }
     }
 
     protected function tickDominion(Dominion $dominion)
@@ -318,96 +405,5 @@ class TickService
             ->where('dominion_id', $dominion->id)
             ->where('duration', 0)
             ->delete();
-    }
-
-    protected function updateDailyRankings(array $dominionIds)
-    {
-        // todo: needs a rewrite. haven't been able to do it due to time constraints
-
-        // First pass: Saving land and networth
-        Dominion::with(['race', 'realm'])->whereIn('id', $dominionIds)->chunk(50, function ($dominions) {
-            foreach ($dominions as $dominion) {
-                $where = [
-                    'round_id' => (int)$dominion->round_id,
-                    'dominion_id' => $dominion->id,
-                ];
-
-                $data = [
-                    'dominion_name' => $dominion->name,
-                    'race_name' => $dominion->race->name,
-                    'realm_number' => $dominion->realm->number,
-                    'realm_name' => $dominion->realm->name,
-                    'land' => $this->landCalculator->getTotalLand($dominion),
-                    'networth' => $this->networthCalculator->getDominionNetworth($dominion),
-                ];
-
-                $result = DB::table('daily_rankings')->where($where)->get();
-
-                if ($result->isEmpty()) {
-                    $row = $where + $data + [
-                            'created_at' => $dominion->created_at,
-                            'updated_at' => $this->now,
-                        ];
-
-                    DB::table('daily_rankings')->insert($row);
-                } else {
-                    $row = $data + [
-                            'updated_at' => $this->now,
-                        ];
-
-                    DB::table('daily_rankings')->where($where)->update($row);
-                }
-            }
-        });
-
-        // Second pass: Calculating ranks
-        $result = DB::table('daily_rankings')
-            ->orderBy('land', 'desc')
-            ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
-            ->get();
-
-        //Getting all rounds
-        $rounds = DB::table('rounds')
-            ->where('start_date', '<=', $this->now)
-            ->where('end_date', '>', $this->now)
-            ->get();
-
-        foreach ($rounds as $round) {
-            $rank = 1;
-
-            foreach ($result as $row) {
-                if ($row->round_id == (int)$round->id) {
-                    DB::table('daily_rankings')
-                        ->where('id', $row->id)
-                        ->where('round_id', $round->id)
-                        ->update([
-                            'land_rank' => $rank,
-                            'land_rank_change' => (($row->land_rank !== null) ? ($row->land_rank - $rank) : 0),
-                        ]);
-
-                    $rank++;
-                }
-            }
-
-            $result = DB::table('daily_rankings')
-                ->orderBy('networth', 'desc')
-                ->orderBy(DB::raw('COALESCE(networth_rank, created_at)'))
-                ->get();
-
-            $rank = 1;
-
-            foreach ($result as $row) {
-                if ($row->round_id == (int)$round->id) {
-                    DB::table('daily_rankings')
-                        ->where('id', $row->id)
-                        ->update([
-                            'networth_rank' => $rank,
-                            'networth_rank_change' => (($row->networth_rank !== null) ? ($row->networth_rank - $rank) : 0),
-                        ]);
-
-                    $rank++;
-                }
-            }
-        }
     }
 }
