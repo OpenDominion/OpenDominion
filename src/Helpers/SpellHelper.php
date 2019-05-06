@@ -167,7 +167,23 @@ class SpellHelper
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Lizardfolk']),
-            ]
+            ],
+            [
+                'name' => 'Blizzard',
+                'description' => '+15% defensive strength (not cumulative with Ares Call)',
+                'key' => 'blizzard',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Icekin']),
+            ],
+            [
+                'name' => 'Mechanical Genius',
+                'description' => '30% reduction of re-zoning costs',
+                'key' => 'mechanical_genius',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Gnome']),
+            ],
         ]);
     }
 

@@ -205,6 +205,7 @@ class MilitaryCalculator
         $dpPerGuardTower = 1.75;
         $guardTowerMaxDp = 35;
         $spellAresCall = 10;
+        $spellBlizzard = 15;
 
         // Guard Towers
         $multiplier += min(
@@ -219,12 +220,18 @@ class MilitaryCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
 
         // Spell: Frenzy (Halfling) (+20%)
-        // Spell: Blizzard (+15%)
         // Spell: Howling (+10%)
         // todo
 
+        // Spell: Blizzard (+15%)
+        $multiplierFromBlizzard = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'blizzard', $spellBlizzard);
+        $multiplier += $multiplierFromBlizzard;
+
         // Spell: Ares' Call (+10%)
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
+        if($multiplierFromBlizzard === 0) {
+            $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call',
+                $spellAresCall);
+        }
 
         // Multiplier reduction when we want to factor in temples from another
         // dominion
