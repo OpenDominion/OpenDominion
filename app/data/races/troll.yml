@@ -1,0 +1,49 @@
+name: Troll
+alignment: evil
+home_land_type: plain
+perks:
+  max_population: -5
+  spy_strenght: -10
+  food_consumption: 5
+  offense: 5
+units:
+  - name: Brute
+    cost:
+      platinum: 350
+      ore: 25
+    power:
+      offense: 4
+      defense: 0
+  - name: Ogre
+    cost:
+      platinum: 300
+      ore: 25
+    power:
+      offense: 0
+      defense: 3
+  - name: Basher
+    cost:
+      platinum: 1000
+      ore: 100
+    power:
+      offense: 5
+      defense: 2
+    perks:
+      reduce_combat_losses: 1
+      defense_vs_goblin: 1
+      defense_vs_wood_elf: 1
+      defense_vs_kobold: 1
+      offense_vs_goblin: 1
+      offense_vs_wood_elf: 1
+      offense_vs_kobold: 1
+  - name: Smasher
+    cost:
+      platinum: 1450
+      ore: 150
+    power:
+      offense: 7
+      defense: 7
+    perks:
+      offense_vs_goblin: 1
+      offense_vs_wood_elf: 1
+      offense_vs_kobold: 1

@@ -2,7 +2,7 @@ name: Gnome
 alignment: good
 home_land_type: mountain
 perks:
-  attack_strenght: 5
+  offense: 7.5
   max_population: -5
   food_consumption: -20
   gem_production: 5

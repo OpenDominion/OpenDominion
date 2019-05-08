@@ -1115,14 +1115,15 @@ class InvadeActionService
     {
         $unitPower = $unit->{"power_$powerType"};
 
-        $unitPower += $this->getUnitPowerWithLandBasedPerk($dominion, $unit, $powerType);
-        $unitPower += $this->getUnitPowerWithRawWizardRatioPerk($dominion, $unit, $powerType);
-        $unitPower += $this->getUnitPowerWithStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromLandBasedPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, "TODO: ADD RACE NAME HERE", $unit, $powerType);
 
         return $unitPower;
     }
 
-    protected function getUnitPowerWithLandBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromLandBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
     {
         $landPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_land", null);
 
@@ -1153,7 +1154,7 @@ class InvadeActionService
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerWithRawWizardRatioPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromRawWizardRatioPerk(Dominion $dominion, Unit $unit, string $powerType): float
     {
         $wizardRatioPerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
@@ -1173,7 +1174,7 @@ class InvadeActionService
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerWithStaggeredLandRangePerk(Dominion $dominion, float $landRatio, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, float $landRatio, Unit $unit, string $powerType): float
     {
         $staggeredLandRangePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
@@ -1197,6 +1198,18 @@ class InvadeActionService
         }
 
         return $powerFromPerk;
+    }
+
+    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, string $raceName, Unit $unit, string $powerType): float
+    {
+        $raceNameFormatted = strtolower($raceName);
+        $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
+
+        $versusRacePerk = $dominion->race->getUnitPerkValueForUnitSlot(
+            $unit->slot,
+            "{$powerType}_vs_{$raceNameFormatted}");
+
+        return $versusRacePerk;
     }
 
     /**
