@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.1-5] - 2019-05-14
+### Fixed
+- Fix a bug with checking whether certain spells are active
+- Amount of boats on status page and Clear Sight now also include returning boats from invasion
+
+### Changed
+- "Remember Me" on login page is now checked by default
+
 ## [0.6.1-4] - 2019-04-16
 ### Changed
 - Reduced failed espionage operation spy casualties from 1% to 0.1%
@@ -200,7 +208,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...HEAD
+[0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5
 [0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4
 [0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3
 [0.6.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...0.6.1-2
