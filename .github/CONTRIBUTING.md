@@ -1,21 +1,18 @@
 # Contributing to OpenDominion
 
-Thank you for considering contributing to OpenDominion. This document contains some guidelines to explain the contributing process and hopefully answer some common questions.
-
-Do note that almost nothing is set in stone. Feel free to even contribute to this document!
-
+Thank you for considering contributing to OpenDominion! This document contains some guidelines to explain the contributing process and hopefully answer some common questions.
 
 #### Table of Contents
 
 - [Before getting started](#before-getting-started)
   - [Prerequisites](#prerequisites)
   - [Vision](#vision)
-- [How can I contribute?](#how-can-i-contribute?)
-  - [Joining the community](#joining-the-community)
-  - [Participating in the beta](#participating-in-the-beta)
-  - [Providing info](#providing-info)
-  - [Reporting bugs](#reporting-bugs)
-  - [Collaborating with development](#collaborating-with-development)
+- [How can I contribute?](#how-can-i-contribute)
+  - [Join the community](#join-the-community)
+  - [Participate in the beta](#participate-in-the-beta)
+  - [Provide info](#provide-info)
+  - [Report bugs](#report-bugs)
+  - [Collaborate with development](#collaborate-with-development)
 - [Local development](#local-development)
   - [Setting up](#setting-up)
   - [Directory structure](#directory-structure)
@@ -27,130 +24,114 @@ Do note that almost nothing is set in stone. Feel free to even contribute to thi
   - [Style guide and standards](#style-guide-and-standards)
 - [Resources](#resources)
 
-
 ## Before getting started
 
 ### Prerequisites
 
-- For code contributions, make sure you have a [GitHub account](https://github.com/signup/free)
-- Make sure you read, understand and agree to the [Code of Conduct](CODE_OF_CONDUCT.md)
+- For code contributions, make sure you have a [GitHub account](https://github.com/signup/free).
+- Make sure you read, understand and agree to the [Code of Conduct](CODE_OF_CONDUCT.md).
+- The project's development is governed BDFL-style. See [Governance](GOVERNANCE.md) for more details.
+- Join the [OpenDominion Discord server](https://discord.gg/mFk2wZT).
 
-Collaboration and contributing will be primarily done through GitHub.
-
-If possible, join the [OpenDominion Discord server](https://discord.gg/mFk2wZT) for asking questions and a general easy method of communication.
-
+The Discord is used for both for the playerbase community, as well as development-related communication, announcements and game updates.
 
 ### Vision
 
-OpenDominion aims to be an open source clone of Dominion (round 70 ruleset), with a few changes and improvements:
+OpenDominion is an open source clone of Dominion (round 70-74 ruleset), with a few key changes and improvements:
 
-- An open source project with well-written, documented and (unit-)tested code.
+- An open source project with (hopefully) well-written, documented and (unit-)tested code.
 - A modern and responsive design, developed and tested for desktop, tablet and mobile.
-- Free to play. No premium accounts or features.
-- No advertisements.
-- Lifetime accounts by default.
-
-This means that pretty much all of vanilla Dominion's content (land, buildings, races, units, spells, wonders etc) and mechanics *are* set in stone.
- 
+- Full free to play. Meaning: no premium accounts or features, no microtransactions, no lootboxes, and no advertisements either.
+- Lifetime accounts by default. Meaning you can use the same user account across multiple rounds, instead of having to re-register for each round.
  
 ## How can I contribute?
 
-### Joining the community
+### Join the community
 
 While the original Dominion community back in the day was quite sizable, the OpenDominion project started a few years after Dominion closed down and the when the original community had already dwindled to a fraction of its former size. When starting OpenDominion, the goal was to code and work on the project as much as possible, before trying to gain popularity and build a community.
 
-By time of writing, a few years of hard work have passed and significant progress has been made. Though still incomplete and under development, OpenDominion is slowly gaining GitHub followers, people on Discord and beta testers.
+By time of writing, a few years of hard work have passed and significant progress has been made. Though still incomplete and under development, OpenDominion is slowly gaining players, code contributions, and people on Discord (players, developers, and people otherwise interested in the project).
 
-As author of the OpenDominion project, I'd like to personally invite **you** (yes you, you're reading this, after all) to join us in the journey if you're interested in the project. Which I assume you somewhat are, since you're reading this! 
+As authors of the OpenDominion project, we'd like to personally invite **you** (yes you, you're reading this, after all) to join us in the journey if you're interested in the project! Which we assume you somewhat are, since you're reading this! 
 
-It doesn't matter if you're a Dominion veteran or if you're new, feel free and be welcomed to:
+It doesn't matter if you're a Dominion veteran or if you're new, feel free to:
 
-- [Participate in the beta](#participating-in-the-beta)!
-- Joining the [Discord](https://discord.gg/mFk2wZT) 
-- Spread the word of those you know might be interested.
-- Keeping an eye on the project by watching it on GitHub.
+- [Participate in the beta](#participate-in-the-beta)!
+- Join the [Discord](https://discord.gg/mFk2wZT) 
+- Spread the word to those you know might be interested.
 - Praise the project by starring it on GitHub.
 
-
-### Participating in the beta
+### Participate in the beta
 
 The beta of OpenDominion is currently running at [https://beta.opendominion.net](https://beta.opendominion.net).
 
-Feel free to register and play around!
+Feel free to register and play around! On the website homepage are links to help you get started if you're new to the game.
 
+### Provide info
 
-### Providing info
+At time of creating this contributing document, quite some key information was still missing about the game. Notably how invasions worked, amongst other miscellaneous things. Nowadays most information has been recovered bit by bit, and reconstructed into either working features implemented in OpenDominion, or issues on the issue tracker.
 
-The original Dominion has been dead for quite a while now. Even links and resources like [The Dominion Encyclopedia](http://dominion.lykanthropos.com/wiki/) and [RedFox Dominion Protection Simulator](http://dominion.lykanthropos.com/DomSim/) are broken and slowly deteriorating over time. The IRC channels are empty and owners and maintainers of the aforementioned resources are nowhere to be found.
+There's still a few open issues which require investigation or are up for discussion. If possible, browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["discussion"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A"discussion") and feel free to reply with your thoughts. Or hop onto the Discord and communicate with us there.
 
-Even though I've played Dominion myself, I can't remember how everything looked or worked. If you're a veteran player, please get in contact with me and share any knowledge, screenshots/drawings, info or anything relevant to the original Dominion that you want to share! I started this project alone, but I need **your** help to make it the great game it once was.
+Not every issue that we require help with is related to coding, like [design](https://github.com/WaveHack/OpenDominion/issues/63), and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)).
 
-Feel free to browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["discussion"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A"discussion") and reply with your thoughts if you feel like it. Not everything is related to the original Dominion gameplay and I could use some help with other things, like [design](https://github.com/WaveHack/OpenDominion/issues/63) and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)) at time of writing.
+Additionally, if want to bring up a topic that you think should get looked into that's not on the issue list, don't hesitate to poke us on Discord or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
 
-Also if want to bring up a topic that you think should get looked into, don't hesitate to poke me on Discord or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
+### Report bugs
 
-
-### Reporting bugs
-
-You can report bugs to the [issue tracker](https://github.com/WaveHack/OpenDominion/issues).
+You can report bugs to the [issue tracker](https://github.com/WaveHack/OpenDominion/issues) or on Discord in the #bug-reports channel. Since you're reading this on GitHub (probably), it's preferred to raise an issue on the tracker instead, as the Discord bug report channel is used primarily by players and most don't have a GitHub account.
 
 Please search the issue tracker first if the particular bug already has an open issue. If it does, add your message to the existing issue instead of opening a new issue.
 
-If a closed or resolved issue exists for your particular bug, reopen it. If in doubt, just open a new issue.
+If a closed or resolved issue exists for your particular bug, reopen it. If in doubt, ask us on Discord, or just feel free to open a new issue anyway.
 
-
-### Collaborating with development
+### Collaborate with development
 
 First, make sure the changes you're going to do adhere to the [vision of OpenDominion](#vision).
 
-Fork the repository on GitHub, make a new branch off develop and start from there. Separate features isolated from each other should go in their own branch. Branch names should preferably adhere to the Git Flow workflow using a `feature/FeatureName` or `hotfix/HotfixName` notation. 
+Fork the repository on GitHub, make a new branch off develop and start from there. When making changes, try to add or modify relevant tests with your changes if it involves game mechanic-related code (like calculators or services).
 
-When making changes, add or modify relevant tests with your changes if it involves game mechanic-related code (like calculators or services).
+Once you're satisfied with your modifications, raise a pull request and we will review it, edit it as needed, and merge it with the develop branch.
 
-Once you're satisfied with your modifications, send me a pull request. I will review it, edit it as needed and merge it with the develop branch.
+Most of the stuff that needs coding is domain logic, meaning you have to know the ins and outs of the game (except if you're someone who played Dominion in the past). If the project seems interesting to you and you want to help with the project, play the game and join us on Discord. If you want to learn, we (both devs and players) will gladly help you out to get accustomed to things and explain how Dominion worked.
 
+There's also some non-domain coding issues open from time to time. We'll try to label these as "[good first issue](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22)". This mostly consists of refactoring and UI stuff, however. If you need more info or something, feel free to request more information on the issue. Or as always, poke us on Discord.
 
 ## Local development
  
 ### Setting up
 
+##### Tech stack
+
+OpenDominion is built on the Laravel 5.8 PHP framework, using PHP 7.2 as the main programming language.
+
+The frontend is based off the [AdminLTE](https://adminlte.io/themes/AdminLTE/index2.html) open source dashboard theme, using [Font Awesome](https://fontawesome.com/) and [RPG Awesome](https://nagoshiashumari.github.io/Rpg-Awesome/) as font icons, alongside some additional NPM packages like Select2 for improved UX. It's built with Laravel's Blade templating language to serve static HTML responses.
+
+If you're going to use PhpStorm to tinker around in the code, there's a partially gitignored `.idea` directory in Git with some sensible default project configuration.
+
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 7.1 or higher installed and in your path.
-- Your PHP has the extensions: curl, fileinfo, gd OR imagick, mbstring, openssl, pdo_sqlite and optionally [xdebug](https://xdebug.org/).
+- You have [PHP](http://www.php.net/) 7.2 or higher installed and in your path.
+- Your PHP has the extensions: curl, fileinfo, gd OR imagick, mbstring, openssl, pdo_mysql and optionally [xdebug](https://xdebug.org/).
 - You have [Composer](https://getcomposer.org/) installed and in your path.
-- You have [NPM](https://nodejs.org/en/) 5 or higher installed and in your path.
+- You have [NPM](https://nodejs.org/en/) 10 or higher installed and in your path.
+- You have a [MySQL](https://www.mysql.com/) 5.7+ or [MariaDB](https://mariadb.org/) 10.0+ SQL database server installed.
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
-In addition:
+Notes:
+- Previously there was support for Sqlite for local development. This has since been dropped (due to reasons I forgot at time of updating this document).
+- If you're not going to use the internal PHP webserver, you need to have a webserver like Nginx or Apache setup according to the [Laravel documentation](https://laravel.com/docs/5.8/installation#pretty-urls).
 
-- If you want to use MySQL as your database engine, you have a server setup. In in doubt, just follow the instructions for Sqlite below.
-- If not going to use the internal PHP webserver, you need to have a webserver like Nginx or Apache setup according to the [Laravel documentation](https://laravel.com/docs/5.6/installation#pretty-urls).
-
-As a replacement for both of these there's Docker Compose and [Homestead](https://laravel.com/docs/5.6/homestead) configuration files available. 
-
-##### Languages, frameworks, libraries and tools
-
-OpenDominion is built on the Laravel 5.6 PHP framework, using PHP 7.1 as language and Laravel's Blade as view/templating language.
-
-Composer production packages include Haikunator (to generate random realm names) and Guzzle. For development I'm using PHPUnit with Mockery for testing, Laravel Debugbar and Laravel IDE Helper as debug helper packages.
-
-Node packages include Laravel Mix, AdminLTE dashboard theme, Font Awesome and RPG Awesome.
-
-I'm developing OpenDominion in PhpStorm myself, but you're of course free to use whatever you see fit. But there's a partially gitignored `.idea` directory for you if you do use PhpStorm.
-
+If you don't want to hassle too much with setting the aforementioned up, there's [Laravel Homestead](https://laravel.com/docs/5.8/homestead) configuration files available for your convenience. Docker Compose files are also present in the repository, but these are currently unmaintained and untested, and might potentially not work in their current state. 
 
 ##### Cloning the repository:
 
 ```bash
-$ git clone https://github.com/WaveHack/OpenDominion.git OpenDominion
+$ git clone https://github.com/WaveHack/OpenDominion
 $ cd OpenDominion
 ```
 
-
 ##### Setting up after cloning:
-
-**Note:** The `bin/init.sh` script that was previously available has been removed. These commands will now have to be entered manually.
 
 Install PHP dependencies:
 
@@ -165,9 +146,7 @@ $ cp .env.example .env
 $ php artisan key:generate
 ```
 
-Now is the time to decide if you want to setup a MySQL database, or use Sqlite instead.
-
-Edit the `.env` file and set the correct `DB_*` fields. If you want to use Sqlite, set `DB_CONNECTION=local`, comment out `DB_DATABASE=` and run `touch storage/databases/local.sqlite`.
+Edit the `.env` file and set the correct database configuration in the `DB_*` fields. If in doubt, consult the [Laravel documentation](https://laravel.com/docs/5.8/database#configuration) for this.
 
 After this, migrate the database and seed development testing data:
 
@@ -177,7 +156,7 @@ $ php artisan migrate --seed
 
 If your database is setup correctly then the migrations and seeders will run without errors, and you will receive user credentials for an automatically generated user account and dominion. 
 
-Now [link the storage directory](https://laravel.com/docs/5.6/filesystem#the-public-disk):
+Now [link the storage directory](https://laravel.com/docs/5.8/filesystem#the-public-disk):
 
 ```bash
 $ php artisan storage:link
@@ -207,7 +186,7 @@ $ npm run dev
 
 Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
 
-Optional: You can run a self-diagnostic check to see if everything was setup correctly.
+Optional but recommended: Run a self-diagnostic check to see if everything was setup correctly.
 
 ```bash
 $ php artisan self-diagnosis
@@ -215,10 +194,9 @@ $ php artisan self-diagnosis
 
 It should pass most checks and you're good to go! Note that the following checks might fail in certain conditions, which you can safely ignore:
 
-- Locale check on Windows, which are not supported there.
-- If using Sqlite, the example environmental variables not being set. Most notably `DB_DATABASE` (and optionally any other `DB_*` that are not `DB_CONNECTION`).
+- Locale check on Windows, which is not supported on that platform.
 
-Run the internal PHP webserver with a helper command through Artisan:
+Setup your webserver of choice, or run the internal PHP webserver with a helper command through Artisan:
 
 ```bash
 $ php artisan serve
@@ -228,12 +206,13 @@ Open your web browser, navigate to [localhost:8000](http://localhost:8000) and l
 
 If you want to tinker with stuff through the command-line with an interactive shell (i.e. a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)), you can run `php artisan tinker`. Note that you need to restart the tinker process every time you make a change in the code.
 
-For more info about Artisan and Tinker, consult the [documentation](https://laravel.com/docs/5.6/artisan#introduction).
+For more info about Artisan and Tinker, consult the [documentation](https://laravel.com/docs/5.8/artisan#introduction).
 
 **Note:** If you want to use an SMTP server like Mailtrap.io for testing emails, change the `MAIL_*` fields accordingly in `.env`. By default emails are logged in the Laravel log file at `storage/logs/laravel*.log`. 
 
-
 ### Directory structure
+
+OpenDominion uses an experimental Laravel project structure. This *might* be reverted back in the future to use the standard Laravel project boilerplate layout (PHP source in app/, resources in the project root etc).
 
 ```bash
 .
@@ -272,7 +251,6 @@ For more info about Artisan and Tinker, consult the [documentation](https://lara
 
 The rest should be pretty self-explanatory, assuming you're at least somewhat comfortable with the Laravel framework.
 
-
 ### Deviation from Laravel
 
 OpenDominion is built with the Laravel [*framework*](https://github.com/laravel/framework), but doesn't necessarily follow the Laravel [boiler plate](https://github.com/laravel/laravel) layout.
@@ -285,22 +263,20 @@ With that said, here are some things to keep in mind if you're used to the Larav
 
 This is experimental and is subject to change. Please keep an eye on the #dev-announcements channel in the Discord server.
 
-
 ### Things to keep in mind
 
 - The most exciting game-related code are in calculator classes (`src/Calculators`), most of which operate on a Dominion instance without any interactions with database, sessions etc, and service classes (`src/Services`).
 - Classes for actions that a user takes with a dominion (e.g. exploring, invading) are called 'action services' and reside in `src/Services/Actions`.
 - Misc code that doesn't belong in a calculator or factory should generally go in a service class.
-- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.6/container) for all the calculator and service classes.
+- This project heavily relies on Laravel's [service container](https://laravel.com/docs/5.8/container) for all the calculator and service classes.
 - Also see `AppServiceProvider.php` for this.
 - There's a concept of a 'selected Dominion', which is the Dominion instance the user is currently 'playing'. A user can have multiple Dominions, but he/she can play only one at a time. It's initialized and shared to the views in the `ShareSelectedDominion` middleware.
 - The `Game\TickCommand` command is executed every hour at xx:00 from the console kernel.
 - Slim controllers, slim models, many slim services.
 
-
 ### How to run tests
 
-Tests are ran in an in-memory Sqlite database. Even if you use MySQL, you need to have the `php-sqlite3` installed for this.
+Tests are ran in an in-memory Sqlite database. You need to have the `php-sqlite3` extension installed for this.
 
 You can run the full test suite with:
 
@@ -323,11 +299,9 @@ Unit test classes are tests that generally correspond to a single source class t
 
 Consult [PHPUnit's manual](https://phpunit.de/manual/5.7/en/index.html) for running specific test suites or individual files.
 
-
 ### How to update
 
 For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `npm install` and/or `npm run dev`, depending on which files have changed.
-
 
 ### How to reset
 
@@ -337,7 +311,7 @@ If you want to reset the database, run the following:
 $ php artisan migrate:fresh --seed
 ```
 
-If that doesn't work, remove the `storage/databases/local.sqlite` file, create a new one and then run:
+If that doesn't work, empty your database which you use for OpenDominion, and then rerun the migrations and seeders:
 
 ```bash
 $ php artisan migrate --seed
@@ -352,11 +326,10 @@ You can activate newly created users by either:
 3. Using Tinker to manually set the activated field to 1. For example (using `php artisan tinker`):
 
 ```php
->>> $u = User::find(2)
->>> $u->activated =  1
->>> $u->save()
+>>> $u = User::find(2);
+>>> $u->activated = 1;
+>>> $u->save();
 ```
-
 
 ### Style guide and standards
 
@@ -364,7 +337,6 @@ PHP code should be in PSR2-style with a few additional rules. See [.styleci.yml]
 
 Please add relevant unit tests or feature tests if possible.
 
-
 ## Resources
 
-You can find resources that I use to help me develop OpenDominion in the [resources branch](https://github.com/WaveHack/OpenDominion/tree/resources). See its readme for more info.
+You can find resources that we use to help us develop OpenDominion in the [resources branch](https://github.com/WaveHack/OpenDominion/tree/resources). See its readme for more info.

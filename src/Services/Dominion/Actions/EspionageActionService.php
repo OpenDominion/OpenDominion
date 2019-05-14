@@ -201,6 +201,7 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.05, 0.5);
 
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 

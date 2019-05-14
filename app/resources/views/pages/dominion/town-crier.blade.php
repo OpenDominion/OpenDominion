@@ -36,7 +36,7 @@
                                     <tr>
                                         <td>
                                             @if ($gameEvent->type === 'invasion')
-                                                @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->source_id, $realmieDominionIds, true))
+                                                @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->source_id, $dominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
                                                         Victorious on the battlefield, realmie
                                                         <span class="text-green">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
@@ -50,7 +50,7 @@
                                                         were beaten back by
                                                         <span class="text-red">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>.
                                                     @endif
-                                                @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->target_id, $realmieDominionIds, true))
+                                                @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->target_id, $dominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
                                                         <span class="text-red">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
                                                         invaded our realmie

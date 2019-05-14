@@ -18,6 +18,6 @@ Decisions will be made by trying to reach consensus in discussions between the B
 
 ## Contribution process
 
-Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 

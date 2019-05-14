@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -35,8 +36,8 @@ class DevelopmentSeeder extends Seeder
     {
         DB::transaction(function () {
             $user = $this->createUser();
-            $round = $this->createRound();
-            $this->createRealmAndDominion($user, $round);
+            $this->createRound();
+            $this->createRealmAndDominion($user);
 
             $this->command->info(<<<INFO
 
@@ -81,17 +82,25 @@ INFO
         ]);
     }
 
-    protected function createRealmAndDominion(User $user, Round $round): Dominion
+    protected function createRealmAndDominion(User $user): Dominion
     {
-        $this->command->info('Creating realm and dominion');
+        $this->command->info('Creating realm');
+
+        $realmFactory = app(RealmFactory::class);
+
+        $round = Round::firstOrFail();
+        $humanRace = Race::where('name', 'Human')->firstOrFail();
+
+        $realm = $realmFactory->create($round, $humanRace->alignment);
+
+        $this->command->info('Creating dominion');
 
         return $this->dominionFactory->create(
             $user,
-            $round,
-            Race::where('name', 'Human')->firstOrFail(),
-            'random',
-            'Developer',
-            'Dev Dominion'
+            $realm,
+            $humanRace,
+            'Test Ruler Name',
+            'Test Dominion Name'
         );
     }
 }
