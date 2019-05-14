@@ -70,7 +70,7 @@ class SpellCalculator
      */
     public function getActiveSpells(Dominion $dominion, bool $forceRefresh = false): Collection
     {
-        $cacheKey = "{$dominion->id}";
+        $cacheKey = $dominion->id;
 
         if (!$forceRefresh && array_has($this->activeSpells, $cacheKey)) {
             return collect(array_get($this->activeSpells, $cacheKey));
