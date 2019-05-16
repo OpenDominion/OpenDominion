@@ -17,15 +17,6 @@ units:
       platinum: 300
     power:
       defense: 3
-  - name: Staff Master
-    cost:
-      platinum: 900
-      ore: 25
-    power:
-      offense: 5
-      defense: 3
-    perks:
-      fewer_casualties: 40
   - name: Master Thief
     cost:
       platinum: 900
@@ -36,3 +27,12 @@ units:
     perks:
       counts_as_spy_offense: 0.2
       counts_as_spy_defense: 0.333
+  - name: Staff Master
+    cost:
+      platinum: 900
+      ore: 25
+    power:
+      offense: 5
+      defense: 3
+    perks:
+      fewer_casualties: 40
