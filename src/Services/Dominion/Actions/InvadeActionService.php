@@ -1279,12 +1279,17 @@ class InvadeActionService
         // Values (percentages)
         $dpReductionPerTemple = 1.5;
         $templeMaxDpReduction = 25;
+        $ignoreDraftees = false;
 
         $dpMultiplierReduction = min(
             (($dpReductionPerTemple * $dominion->building_temple) / $this->landCalculator->getTotalLand($dominion)),
             ($templeMaxDpReduction / 100)
         );
 
-        return $this->militaryCalculator->getDefensivePower($target, $dpMultiplierReduction);
+        if($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+            $ignoreDraftees = true;
+        }
+
+        return $this->militaryCalculator->getDefensivePower($target, $dpMultiplierReduction, $ignoreDraftees);
     }
 }

@@ -147,9 +147,9 @@ class MilitaryCalculator
      * @param float $multiplierReduction
      * @return float
      */
-    public function getDefensivePower(Dominion $dominion, float $multiplierReduction = 0): float
+    public function getDefensivePower(Dominion $dominion, float $multiplierReduction = 0, bool $ignoreDraftees = false): float
     {
-        $dp = ($this->getDefensivePowerRaw($dominion) * $this->getDefensivePowerMultiplier($dominion, $multiplierReduction));
+        $dp = ($this->getDefensivePowerRaw($dominion, $ignoreDraftees) * $this->getDefensivePowerMultiplier($dominion, $multiplierReduction));
 
         return ($dp * $this->getMoraleMultiplier($dominion));
     }
@@ -160,7 +160,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getDefensivePowerRaw(Dominion $dominion): float
+    public function getDefensivePowerRaw(Dominion $dominion, bool $ignoreDraftees = false): float
     {
         $dp = 0;
 
@@ -176,7 +176,9 @@ class MilitaryCalculator
         }
 
         // Draftees
-        $dp += ($dominion->military_draftees * $dpPerDraftee);
+        if(!$ignoreDraftees) {
+            $dp += ($dominion->military_draftees * $dpPerDraftee);
+        }
 
         // Forest Havens
         $dp += min(
