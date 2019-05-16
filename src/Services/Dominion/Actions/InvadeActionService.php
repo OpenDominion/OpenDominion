@@ -1116,6 +1116,7 @@ class InvadeActionService
         $unitPower = $unit->{"power_$powerType"};
 
         $unitPower += $this->getUnitPowerWithLandBasedPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerWithBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerWithRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerWithStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
 
@@ -1149,6 +1150,26 @@ class InvadeActionService
 
         $powerFromLand = $landPercentage / $ratio;
         $powerFromPerk = min($powerFromLand, $max);
+
+        return $powerFromPerk;
+    }
+
+    protected function getUnitPowerWithBuildingBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    {
+        $buildingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_building", null);
+
+        if(!$buildingPerkData) {
+            return 0;
+        }
+
+        $buildingType = $buildingPerkData[0];
+        $ratio = (int)$landPerkData[1];
+        $max = (int)$landPerkData[2];
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        $landPercentage = ($dominion->{"building_{$buildingType}"} / $totalLand) * 100;
+
+        $powerFromBuilding = $landPercentage / $ratio;
+        $powerFromPerk = min($powerFromBuilding, $max);
 
         return $powerFromPerk;
     }
