@@ -62,11 +62,20 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Spy Ratio:</td>
+                                        <td>Spy Ratio (Offense):</td>
                                         <td>
-                                            {{ number_format($militaryCalculator->getSpyRatio($selectedDominion), 3) }}
+                                            {{ number_format($militaryCalculator->getSpyRatio($selectedDominion, 'offense'), 3) }}
                                             @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion), 3) }})</small>
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion, 'offense'), 3) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spy Ratio (Defense):</td>
+                                        <td>
+                                            {{ number_format($militaryCalculator->getSpyRatio($selectedDominion, 'defense'), 3) }}
+                                            @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion, 'defense'), 3) }})</small>
                                             @endif
                                         </td>
                                     </tr>

@@ -184,6 +184,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Gnome']),
             ],
+            [
+                'name' => 'Defensive Frenzy',
+                'description' => '+20% defensive strength (not cumulative with Ares Call)',
+                'key' => 'defensive_frenzy',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Halfling']),
+            ]
         ]);
     }
 
