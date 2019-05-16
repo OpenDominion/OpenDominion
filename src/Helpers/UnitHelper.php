@@ -59,7 +59,8 @@ class UnitHelper
             'reduce_combat_losses' => 'Reduces combat losses.',
             'immortal_except_vs_icekin' => 'Immortal (except vs Icekin).',
             'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
-            'counts_as_spy' => 'Each unit count as %s of a spy.',
+            'counts_as_spy_offense' => 'Each unit counts as %s of a spy on offense.',
+            'counts_as_spy_defense' => 'Each unit counts as %s of a spy on defense.',
         ];
 
         foreach ($race->units as $unit) {
