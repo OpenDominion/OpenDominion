@@ -46,6 +46,15 @@ FIREWALKER;
 
         // Evil races
 
+        $descriptions['darkelf'] = <<<DARKELF
+<p>Placeholder description.</p>
+<p class="text-green">
+    Increased mana population<br>
+    Increased gem production<br>
+    Increase wizard strength
+</p>
+DARKELF;
+
         $descriptions['goblin'] = <<<GOBLIN
 <p>What they lack in intelligence, they make up for in sheer numbers. They love slaughtering other living things as much as they love shiny gems.</p>
 <p>Short, cunning, and gnarling, they hate anything that smells like Dwarf.</p>

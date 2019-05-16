@@ -37,8 +37,8 @@ units:
       platinum: 1050
       ore: 55
     power:
-      offense: 4
-      defense: 2
+      offense: 5.5
+      defense: 0
     perks:
       immortal_vs_land_range: 75
       offense_staggered_land_range: 95;1,75;0.5
