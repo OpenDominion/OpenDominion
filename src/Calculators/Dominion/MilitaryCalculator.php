@@ -350,9 +350,9 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatio(Dominion $dominion): float
+    public function getWizardRatio(Dominion $dominion, string $type): float
     {
-        return ($this->getWizardRatioRaw($dominion) * $this->getWizardRatioMultiplier($dominion));
+        return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion));
     }
 
     /**
@@ -361,9 +361,26 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatioRaw(Dominion $dominion): float
+    public function getWizardRatioRaw(Dominion $dominion, string $type): float
     {
-        return (($dominion->military_wizards + ($dominion->military_archmages * 2)) / $this->landCalculator->getTotalLand($dominion));
+        $wizards = $dominion->military_wizards + ($dominion->military_archmages * 2);
+
+        // Add units which count as (partial) spies (Dark Elf Adept)
+        foreach ($dominion->race->units as $unit) {
+            if ($unit->perkType === null) {
+                continue;
+            }
+
+            if ($type === 'offense' && $unit->perkType->key === 'counts_as_wizard_offense') {
+                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            }
+
+            if ($type === 'defense' && $unit->perkType->key === 'counts_as_wizard_defense') {
+                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            }
+        }
+
+        return ($wizards / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**

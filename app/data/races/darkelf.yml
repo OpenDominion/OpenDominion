@@ -1,0 +1,45 @@
+name: Dark Elf
+alignment: evil
+home_land_type: cavern
+perks:
+  wizard_strength: 10
+  mana_production: 5
+  gem_production: 5
+units:
+  - name: Swordsman
+    cost:
+      platinum: 325
+      ore: 25
+    power:
+      offense: 4
+      defense: 0
+  - name: Gargoyle
+    cost:
+      platinum: 300
+      ore: 15
+    power:
+      offense: 0
+      defense: 3
+  - name: Adept
+    cost:
+      platinum: 1000
+      ore: 55
+    power:
+      offense: 2
+      defense: 4
+    perks:
+      counts_as_wizard_offense: 0.2
+      counts_as_wizard_defense: 0.5
+      offense_from_building: wizard_guild,10,5 # building type, ratio%, max
+      defense_from_buildling: wizard_guild,10,5 # building type, ratio%, max
+  - name: Spirit Warrior
+    cost:
+      platinum: 1050
+      ore: 55
+    power:
+      offense: 4
+      defense: 2
+    perks:
+      never_dies: 0.75
+      offense_staggered_land_range: 95;1,75;0.5
+      need_boat: false

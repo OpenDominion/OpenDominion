@@ -1166,7 +1166,7 @@ class InvadeActionService
         $ratio = (float)$wizardRatioPerk[0];
         $max = (int)$wizardRatioPerk[1];
 
-        $wizardRawRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
+        $wizardRawRatio = $this->militaryCalculator->getWizardRatioRaw($dominion, 'offense');
         $powerFromWizardRatio = $wizardRawRatio * $ratio;
         $powerFromPerk = min($powerFromWizardRatio, $max);
 
