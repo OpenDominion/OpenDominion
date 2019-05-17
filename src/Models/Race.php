@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class Race extends AbstractModel
@@ -13,7 +14,7 @@ class Race extends AbstractModel
 
     public function perks()
     {
-        return $this->hasMany(RacePerk::class);
+        return $this->belongsToMany(RacePerkType::class, 'race_perks', 'race_id', 'race_perk_type_id')->withTimestamps();
     }
 
     public function units()
@@ -30,8 +31,8 @@ class Race extends AbstractModel
      */
     public function getPerkMultiplier(string $key): float
     {
-        $perks = $this->perks->filter(function (RacePerk $racePerk) use ($key) {
-            return ($racePerk->type->key === $key);
+        $perks = $this->perks->filter(function (RacePerkType $racePerkType) use ($key) {
+            return ($racePerkType->key === $key);
         });
 
         if ($perks->isEmpty()) {
@@ -59,8 +60,9 @@ class Race extends AbstractModel
         $unitCollection = $this->units->filter(function (Unit $unit) use ($slot, $unitPerkTypes) {
             return (
                 ($unit->slot === $slot) &&
-                ($unit->unit_perk_type_id !== null) &&
-                in_array($unit->perkType->key, $unitPerkTypes, true)
+                ($unit->whereHas('perks', function(Builder $query) use ($unitPerkTypes) {
+                    $query->whereIn('key', $unitPerkTypes);
+                })->count() > 0)
             );
         });
 
@@ -68,7 +70,9 @@ class Race extends AbstractModel
             return $default;
         }
 
-        $perkValue = $unitCollection->first()->unit_perk_type_values;
+        $perkValue = $unitCollection->first()->perks->filter(function(UnitPerkType $unitPerkType) use ($unitPerkTypes) {
+            return in_array($unitPerkType->key, $unitPerkTypes);
+        })->first()->pivot->value;
 
         if (str_contains($perkValue, ',')) {
             $perkValue = explode(',', $perkValue);

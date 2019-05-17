@@ -13,9 +13,9 @@ class Unit extends AbstractModel
         'need_boat' => 'boolean',
     ];
 
-    public function perkType()
+    public function perks()
     {
-        return $this->hasOne(UnitPerkType::class, 'id', 'unit_perk_type_id');
+        return $this->belongsToMany(UnitPerkType::class, 'unit_perks', 'unit_id', 'unit_perk_type_id')->withTimestamps()->withPivot('value');
     }
 
     public function race()
