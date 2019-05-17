@@ -14,7 +14,7 @@ class Race extends AbstractModel
 
     public function perks()
     {
-        return $this->belongsToMany(RacePerkType::class, 'race_perks', 'race_id', 'race_perk_type_id')->withTimestamps();
+        return $this->belongsToMany(RacePerkType::class, 'race_perks', 'race_id', 'race_perk_type_id')->withTimestamps()->withPivot('value');
     }
 
     public function units()
@@ -39,7 +39,7 @@ class Race extends AbstractModel
             return 0;
         }
 
-        return ((float)$perks->first()->value / 100);
+        return ((float)$perks->first()->pivot->value / 100);
     }
 
     /**
