@@ -23,7 +23,7 @@ class Unit extends AbstractModel
         return $this->hasOne(Race::class);
     }
 
-    public function getPerkValue(string $key): string
+    public function getPerkValue(string $key)
     {
         $perks = $this->perks->filter(function (UnitPerkType $unitPerkType) use ($key) {
             return ($unitPerkType->key === $key);
