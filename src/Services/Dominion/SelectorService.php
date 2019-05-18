@@ -70,7 +70,6 @@ class SelectorService
             $this->selectedDominion = Dominion::with([
                 'realm',
                 'race.perks',
-                'race.perks.type',
                 'race',
                 'race.units',
                 'race.units.perks'
