@@ -205,12 +205,8 @@ class Dominion extends AbstractModel
         $bonus = 0;
 
         foreach ($this->race->units as $unit) {
-            if ($unit->perkType === null) {
-                continue;
-            }
-
-            if ($unit->perkType->key === $resourceType) {
-                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$unit->unit_perk_type_values);
+            if ($unit->getPerkValue($resourceType) !== 0) {
+                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$unit->getPerkValue($resourceType));
             }
         }
 

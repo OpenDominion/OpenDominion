@@ -90,11 +90,7 @@ class CasualtiesCalculator
                 $unitsAtHome = ($totalUnitAmount - ($units[$slot] ?? 0));
                 $unitsAtHomePerSlot[$slot] = $unitsAtHome;
 
-                if ($unit->perkType === null) {
-                    continue;
-                }
-
-                if (($unit->perkType->key === 'reduce_combat_losses')) {
+                if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
                     // todo: hacky workaround for not allowing RCL for gobbos (feedback from Gabbe)
                     //  Needs to be refactored later; unit perk should be renamed in the yml to reduce_combat_losses_defense
                     if ($dominion->race->name === 'Goblin') {
@@ -182,11 +178,7 @@ class CasualtiesCalculator
 
                 $unitsAtHomePerSlot[$slot] = $dominion->$unitKey;
 
-                if ($unit->perkType === null) {
-                    continue;
-                }
-
-                if (($unit->perkType->key === 'reduce_combat_losses')) {
+                if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
                     $unitsAtHomeRCLSlot = $slot;
                 }
             }

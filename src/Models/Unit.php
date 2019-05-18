@@ -22,4 +22,17 @@ class Unit extends AbstractModel
     {
         return $this->hasOne(Race::class);
     }
+
+    public function getPerkValue(string $key): string
+    {
+        $perks = $this->perks->filter(function (UnitPerkType $unitPerkType) use ($key) {
+            return ($unitPerkType->key === $key);
+        });
+
+        if ($perks->isEmpty()) {
+            return 0;
+        }
+
+        return $perks->first()->pivot->value;
+    }
 }

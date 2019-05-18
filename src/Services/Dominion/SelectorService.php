@@ -73,7 +73,7 @@ class SelectorService
                 'race.perks.type',
                 'race',
                 'race.units',
-                'race.units.perkType'
+                'race.units.perks'
             ])->findOrFail($dominionId);
         }
 

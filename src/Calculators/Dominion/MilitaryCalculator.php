@@ -291,12 +291,8 @@ class MilitaryCalculator
 
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {
-            if ($unit->perkType === null) {
-                continue;
-            }
-
-            if ($unit->perkType->key === 'counts_as_spy') {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            if ($unit->getPerkValue('counts_as_spy') !== 0) {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->getPerkValue('counts_as_spy'));
             }
         }
 
