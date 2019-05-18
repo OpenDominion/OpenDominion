@@ -56,24 +56,17 @@ class Race extends AbstractModel
             $unitPerkTypes = [$unitPerkTypes];
         }
 
-        /** @var Collection|Unit[] $unitCollection */
-        $unitCollection = $this->units->filter(function (Unit $unit) use ($slot, $unitPerkTypes) {
-            return (
-                ($unit->slot === $slot) &&
-                ($unit->whereHas('perks', function(Builder $query) use ($unitPerkTypes) {
-                    $query->whereIn('key', $unitPerkTypes);
-                })->count() > 0)
-            );
-        });
-
+        $unitCollection = $this->units->where('slot', '=', $slot);
         if ($unitCollection->isEmpty()) {
             return $default;
         }
 
-        $perkValue = $unitCollection->first()->perks->filter(function(UnitPerkType $unitPerkType) use ($unitPerkTypes) {
-            return in_array($unitPerkType->key, $unitPerkTypes);
-        })->first()->pivot->value;
+        $perkCollection = $unitCollection->first()->perks->whereIn('key', $unitPerkTypes);
+        if ($perkCollection->isEmpty()) {
+            return $default;
+        }
 
+        $perkValue = $perkCollection->first()->pivot->value;
         if (str_contains($perkValue, ',')) {
             $perkValue = explode(',', $perkValue);
         }
