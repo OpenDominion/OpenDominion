@@ -1119,7 +1119,7 @@ class InvadeActionService
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
-        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, "TODO: ADD RACE NAME HERE", $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, 'TODO: ADD RACE NAME HERE', $unit, $powerType);
 
         return $unitPower;
     }
