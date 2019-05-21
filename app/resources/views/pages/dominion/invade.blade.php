@@ -91,10 +91,10 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                {{ number_format($unit->power_offense) }}
+                                                {{ (strpos($unit->power_offense, ".") !== false) ? number_format($unit->power_offense, 1) : number_format($unit->power_offense) }}
                                                 /
                                                 <span class="text-muted">
-                                                    {{ number_format($unit->power_defense) }}
+                                                    {{ (strpos($unit->power_defense, ".") !== false) ? number_format($unit->power_defense, 1) : number_format($unit->power_defense) }}
                                                 </span>
                                             </td>
                                             <td class="text-center">

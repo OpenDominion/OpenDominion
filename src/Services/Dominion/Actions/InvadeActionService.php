@@ -485,7 +485,7 @@ class InvadeActionService
 
         foreach ($offensiveUnitsLost as $slot => &$amount) {
             // Reduce amount of units to kill by further multipliers
-            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $slot, $units, $isOverwhelmed);
+            $unitsToKillMultiplier = $this->casualtiesCalculator->getOffensiveCasualtiesMultiplierForUnitSlot($dominion, $slot, $units, $landRatio, $isOverwhelmed);
 
             if ($unitsToKillMultiplier !== 1) {
                 $amount = (int)ceil($amount * $unitsToKillMultiplier);
@@ -1116,6 +1116,7 @@ class InvadeActionService
         $unitPower = $unit->{"power_$powerType"};
 
         $unitPower += $this->getUnitPowerWithLandBasedPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerWithBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerWithRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerWithStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
 
@@ -1153,6 +1154,26 @@ class InvadeActionService
         return $powerFromPerk;
     }
 
+    protected function getUnitPowerWithBuildingBasedPerk(Dominion $dominion, Unit $unit, string $powerType): float
+    {
+        $buildingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_building", null);
+
+        if(!$buildingPerkData) {
+            return 0;
+        }
+
+        $buildingType = $buildingPerkData[0];
+        $ratio = (int)$landPerkData[1];
+        $max = (int)$landPerkData[2];
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        $landPercentage = ($dominion->{"building_{$buildingType}"} / $totalLand) * 100;
+
+        $powerFromBuilding = $landPercentage / $ratio;
+        $powerFromPerk = min($powerFromBuilding, $max);
+
+        return $powerFromPerk;
+    }
+
     protected function getUnitPowerWithRawWizardRatioPerk(Dominion $dominion, Unit $unit, string $powerType): float
     {
         $wizardRatioPerk = $dominion->race->getUnitPerkValueForUnitSlot(
@@ -1166,7 +1187,7 @@ class InvadeActionService
         $ratio = (float)$wizardRatioPerk[0];
         $max = (int)$wizardRatioPerk[1];
 
-        $wizardRawRatio = $this->militaryCalculator->getWizardRatioRaw($dominion);
+        $wizardRawRatio = $this->militaryCalculator->getWizardRatioRaw($dominion, 'offense');
         $powerFromWizardRatio = $wizardRawRatio * $ratio;
         $powerFromPerk = min($powerFromWizardRatio, $max);
 
@@ -1258,12 +1279,17 @@ class InvadeActionService
         // Values (percentages)
         $dpReductionPerTemple = 1.5;
         $templeMaxDpReduction = 25;
+        $ignoreDraftees = false;
 
         $dpMultiplierReduction = min(
             (($dpReductionPerTemple * $dominion->building_temple) / $this->landCalculator->getTotalLand($dominion)),
             ($templeMaxDpReduction / 100)
         );
 
-        return $this->militaryCalculator->getDefensivePower($target, $dpMultiplierReduction);
+        if($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+            $ignoreDraftees = true;
+        }
+
+        return $this->militaryCalculator->getDefensivePower($target, $dpMultiplierReduction, $ignoreDraftees);
     }
 }
