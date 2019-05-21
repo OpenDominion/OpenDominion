@@ -1250,8 +1250,8 @@ class InvadeActionService
             return ($unit->slot === $slot);
         })->first();
 
-        if (($unit->perkType !== null) && ($unit->perkType->key === 'faster_return')) {
-            $hours -= (int)$unit->unit_perk_type_values;
+        if ($unit->getPerkValue('faster_return') !== 0) {
+            $hours -= (int)$unit->getPerkValue('faster_return');
         }
 
         return $hours;

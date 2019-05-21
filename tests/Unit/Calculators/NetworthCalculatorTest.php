@@ -89,7 +89,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         $units = [];
         for ($slot = 1; $slot <= 4; $slot++) {
-            $dominion->shouldReceive('getAttribute')->with("military_unit{$slot}")->andReturn(100);
+            $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, $slot)->andReturn(100);
 
             /** @var Mock|Unit $unit */
             $unit = m::mock(Unit::class);

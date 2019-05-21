@@ -10,6 +10,7 @@ use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
 use OpenDominion\Models\Unit;
+use OpenDominion\Models\UnitPerk;
 use OpenDominion\Models\UnitPerkType;
 use Symfony\Component\Yaml\Yaml;
 
@@ -97,27 +98,13 @@ class DataSyncCommand extends Command implements CommandInterface
                     ->first();
 
                 if ($racePerk === null) {
-                    $this->info("[Add Perk] {$perk}: {$value}");
+                    $this->info("[Add Race Perk] {$perk}: {$value}");
                 } elseif ($racePerk->value !== $value) {
-                    $this->info("[Change Perk] {$perk}: {$racePerk->value} -> {$value}");
+                    $this->info("[Change Race Perk] {$perk}: {$racePerk->value} -> {$value}");
                 }
             }
 
-            // todo: needs refactoring so we can use this: (issue #227).
-//            $race->perks()->sync($racePerksToSync);
-
-            // Delete from race_perks where race_id = $race->id
-            RacePerk::query()
-                ->where('race_id', $race->id)
-                ->delete();
-
-            foreach ($racePerksToSync as $racePerkTypeId => $racePerkData) {
-                RacePerk::create([
-                    'race_id' => $race->id,
-                    'race_perk_type_id' => $racePerkTypeId,
-                    'value' => $racePerkData['value'],
-                ]);
-            }
+            $race->perks()->sync($racePerksToSync);
 
             // Units
             foreach (object_get($data, 'units', []) as $slot => $unitData) {
@@ -147,21 +134,6 @@ class DataSyncCommand extends Command implements CommandInterface
                     'need_boat' => (int)object_get($unitData, 'need_boat', true),
                 ]);
 
-                // Unit perks
-                foreach (object_get($unitData, 'perks', []) as $perk => $value) {
-                    $value = (string)$value; // Can have multiple values for a perk, comma separated. todo: Probably needs a refactor later to JSON
-
-                    $unitPerkType = UnitPerkType::firstOrCreate(['key' => $perk]);
-
-                    $unit->fill([
-                        'unit_perk_type_id' => $unitPerkType->id,
-                        'unit_perk_type_values' => $value,
-                    ]);
-
-                    // todo: unit can have only 1 perk atm. needs refactor later to many to many (issue #227)
-                    break;
-                }
-
                 if ($unit->exists) {
                     $newValues = $unit->getDirty();
 
@@ -173,6 +145,31 @@ class DataSyncCommand extends Command implements CommandInterface
                 }
 
                 $unit->save();
+                $unit->refresh();
+
+                // Unit perks
+                $unitPerksToSync = [];
+
+                foreach (object_get($unitData, 'perks', []) as $perk => $value) {
+                    $value = (string)$value; // Can have multiple values for a perk, comma separated. todo: Probably needs a refactor later to JSON
+
+                    $unitPerkType = UnitPerkType::firstOrCreate(['key' => $perk]);
+
+                    $unitPerksToSync[$unitPerkType->id] = ['value' => $value];
+
+                    $unitPerk = UnitPerk::query()
+                        ->where('unit_id', $unit->id)
+                        ->where('unit_perk_type_id', $unitPerkType->id)
+                        ->first();
+
+                    if ($unitPerk === null) {
+                        $this->info("[Add Unit Perk] {$perk}: {$value}");
+                    } elseif ($unitPerk->value != $value) {
+                        $this->info("[Change Unit Perk] {$perk}: {$unitPerk->value} -> {$value}");
+                    }
+                }
+
+                $unit->perks()->sync($unitPerksToSync);
             }
         }
     }

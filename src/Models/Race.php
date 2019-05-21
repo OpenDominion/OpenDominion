@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class Race extends AbstractModel
@@ -13,7 +14,7 @@ class Race extends AbstractModel
 
     public function perks()
     {
-        return $this->hasMany(RacePerk::class);
+        return $this->belongsToMany(RacePerkType::class, 'race_perks', 'race_id', 'race_perk_type_id')->withTimestamps()->withPivot('value');
     }
 
     public function units()
@@ -30,15 +31,15 @@ class Race extends AbstractModel
      */
     public function getPerkMultiplier(string $key): float
     {
-        $perks = $this->perks->filter(function (RacePerk $racePerk) use ($key) {
-            return ($racePerk->type->key === $key);
+        $perks = $this->perks->filter(function (RacePerkType $racePerkType) use ($key) {
+            return ($racePerkType->key === $key);
         });
 
         if ($perks->isEmpty()) {
             return 0;
         }
 
-        return ((float)$perks->first()->value / 100);
+        return ((float)$perks->first()->pivot->value / 100);
     }
 
     /**
@@ -55,21 +56,17 @@ class Race extends AbstractModel
             $unitPerkTypes = [$unitPerkTypes];
         }
 
-        /** @var Collection|Unit[] $unitCollection */
-        $unitCollection = $this->units->filter(function (Unit $unit) use ($slot, $unitPerkTypes) {
-            return (
-                ($unit->slot === $slot) &&
-                ($unit->unit_perk_type_id !== null) &&
-                in_array($unit->perkType->key, $unitPerkTypes, true)
-            );
-        });
-
+        $unitCollection = $this->units->where('slot', '=', $slot);
         if ($unitCollection->isEmpty()) {
             return $default;
         }
 
-        $perkValue = $unitCollection->first()->unit_perk_type_values;
+        $perkCollection = $unitCollection->first()->perks->whereIn('key', $unitPerkTypes);
+        if ($perkCollection->isEmpty()) {
+            return $default;
+        }
 
+        $perkValue = $perkCollection->first()->pivot->value;
         if (str_contains($perkValue, ',')) {
             $perkValue = explode(',', $perkValue);
 

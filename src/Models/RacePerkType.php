@@ -4,13 +4,8 @@ namespace OpenDominion\Models;
 
 class RacePerkType extends AbstractModel
 {
-    public function perks()
-    {
-        return $this->hasMany(RacePerk::class);
-    }
-
     public function races()
     {
-        return $this->hasManyThrough(Race::class, RacePerk::class, null, 'id');
+        return $this->belongsToMany(Race::class, 'race_perks', 'race_perk_type_id', 'race_id')->withTimestamps();
     }
 }

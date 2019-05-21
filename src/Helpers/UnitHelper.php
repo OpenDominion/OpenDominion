@@ -66,13 +66,9 @@ class UnitHelper
         ];
 
         foreach ($race->units as $unit) {
-            $perkType = $unit->perkType;
-
-            if ($perkType === null) {
-                continue;
+            foreach ($unit->perks->whereIn('key', array_keys($perkTypeStrings)) as $perk) {
+                $helpStrings['unit' . $unit->slot] .= ('<br><br>' . sprintf($perkTypeStrings[$perk->key], $perk->pivot->value));
             }
-
-            $helpStrings['unit' . $unit->slot] .= ('<br><br>' . sprintf($perkTypeStrings[$perkType->key], $unit->unit_perk_type_values));
         }
 
         return $helpStrings[$unitType] ?: null;
