@@ -208,6 +208,7 @@ class MilitaryCalculator
         $guardTowerMaxDp = 35;
         $spellAresCall = 10;
         $spellBlizzard = 15;
+        $spellFrenzy = 20;
 
         // Guard Towers
         $multiplier += min(
@@ -221,7 +222,6 @@ class MilitaryCalculator
         // Improvement: Walls
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
 
-        // Spell: Frenzy (Halfling) (+20%)
         // Spell: Howling (+10%)
         // todo
 
@@ -229,8 +229,12 @@ class MilitaryCalculator
         $multiplierFromBlizzard = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'blizzard', $spellBlizzard);
         $multiplier += $multiplierFromBlizzard;
 
+        // Spell: Frenzy (Halfling) (+20%)
+        $multiplierFromFrenzy = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'defensive_frenzy', $spellFrenzy);
+        $multiplier += $multiplierFromFrenzy;
+
         // Spell: Ares' Call (+10%)
-        if($multiplierFromBlizzard === 0) {
+        if($multiplierFromBlizzard === 0 && $multiplierFromFrenzy === 0) {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call',
                 $spellAresCall);
         }
@@ -283,9 +287,9 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatio(Dominion $dominion): float
+    public function getSpyRatio(Dominion $dominion, string $type): float
     {
-        return ($this->getSpyRatioRaw($dominion) * $this->getSpyRatioMultiplier($dominion));
+        return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion));
     }
 
     /**
@@ -294,14 +298,22 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatioRaw(Dominion $dominion): float
+    public function getSpyRatioRaw(Dominion $dominion, string $type): float
     {
         $spies = $dominion->military_spies;
 
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {
-            if ($unit->getPerkValue('counts_as_spy') !== 0) {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->getPerkValue('counts_as_spy'));
+            if ($unit->perkType === null) {
+                continue;
+            }
+
+            if ($type === 'offense' && $unit->perkType->key === 'counts_as_spy_offense') {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            }
+
+            if ($type === 'defense' && $unit->perkType->key === 'counts_as_spy_defense') {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
             }
         }
 
