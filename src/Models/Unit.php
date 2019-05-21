@@ -2,6 +2,27 @@
 
 namespace OpenDominion\Models;
 
+/**
+ * OpenDominion\Models\Unit
+ *
+ * @property int $id
+ * @property int $race_id
+ * @property int $slot
+ * @property string $name
+ * @property int $cost_platinum
+ * @property int $cost_ore
+ * @property float $power_offense
+ * @property float $power_defense
+ * @property bool $need_boat
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UnitPerkType[] $perks
+ * @property-read \OpenDominion\Models\Race $race
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Unit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Unit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Unit query()
+ * @mixin \Eloquent
+ */
 class Unit extends AbstractModel
 {
     protected $casts = [
