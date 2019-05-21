@@ -2,9 +2,6 @@
 
 namespace OpenDominion\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-
 class Race extends AbstractModel
 {
     public function dominions()
@@ -14,7 +11,14 @@ class Race extends AbstractModel
 
     public function perks()
     {
-        return $this->belongsToMany(RacePerkType::class, 'race_perks', 'race_id', 'race_perk_type_id')->withTimestamps()->withPivot('value');
+        return $this->belongsToMany(
+            RacePerkType::class,
+            'race_perks',
+            'race_id',
+            'race_perk_type_id'
+        )
+            ->withTimestamps()
+            ->withPivot('value');
     }
 
     public function units()

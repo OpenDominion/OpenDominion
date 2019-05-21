@@ -15,7 +15,14 @@ class Unit extends AbstractModel
 
     public function perks()
     {
-        return $this->belongsToMany(UnitPerkType::class, 'unit_perks', 'unit_id', 'unit_perk_type_id')->withTimestamps()->withPivot('value');
+        return $this->belongsToMany(
+            UnitPerkType::class,
+            'unit_perks',
+            'unit_id',
+            'unit_perk_type_id'
+        )
+            ->withTimestamps()
+            ->withPivot('value');
     }
 
     public function race()
