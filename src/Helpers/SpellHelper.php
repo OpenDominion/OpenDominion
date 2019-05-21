@@ -184,6 +184,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Gnome']),
             ],
+            [
+                'name' => 'Unholy Ghost',
+                'description' => 'Enemy draftees do not participate in battle due to extreme fear',
+                'key' => 'unholy_ghost',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Dark Elf']),
+            ],
         ]);
     }
 
