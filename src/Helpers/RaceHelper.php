@@ -22,6 +22,15 @@ class RaceHelper
 </p>
 DWARF;
 
+        $descriptions['halfling'] = <<<HALFLING
+<p>Placeholder description.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased spy strength<br>
+    Reduced food consumption
+</p>
+HALFLING;
+
         $descriptions['human'] = <<<HUMAN
 <p>These noble and religious Humans hail from fallen city of Brimstone Keep.</p>
 <p>Proficient at everything but excelling at nothing, they are a well-balanced and self-sufficient race.</p>
