@@ -12,6 +12,7 @@ use OpenDominion\Models\RacePerkType;
 use OpenDominion\Models\Unit;
 use OpenDominion\Models\UnitPerk;
 use OpenDominion\Models\UnitPerkType;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class DataSyncCommand extends Command implements CommandInterface
@@ -112,7 +113,7 @@ class DataSyncCommand extends Command implements CommandInterface
 
                 $unitName = object_get($unitData, 'name');
 
-                $this->info("Unit {$slot}: {$unitName}");
+                $this->info("Unit {$slot}: {$unitName}", OutputInterface::VERBOSITY_VERBOSE);
 
                 $where = [
                     'race_id' => $race->id,
