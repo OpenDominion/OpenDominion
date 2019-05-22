@@ -87,7 +87,14 @@
                     <p>This page shows you the rankings of all the dominions in this round.</p>
                     <p>Rankings are updated every 6 hours.</p>
                     @if (!empty($rankings))
-                        <p>Current displayed rankings are from {{ today()->diffForHumans() }}.</p>
+                        @php
+                            $rankingsUpdatedHoursAgo = (now()->hour % 6);
+                        @endphp
+                        @if ($rankingsUpdatedHoursAgo === 0)
+                            <p>Current displayed rankings are from this hour.</p>
+                        @else
+                            <p>Current displayed rankings are from {{ $rankingsUpdatedHoursAgo }} {{ str_plural('hour', $rankingsUpdatedHoursAgo) }} ago.</p>
+                        @endif
                     @endif
                     <p><a href="{{ route('dominion.rankings', request('type')) }}">My Ranking</a></p>
                 </div>
