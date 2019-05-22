@@ -112,20 +112,19 @@ class TickService
 
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
-                // Ignore hour 0
+                // Ignore the first hour 0 of the round
                 if ($this->now->diffInHours($round->start_date) === 0) {
                     continue;
                 }
 
-                $dominionIds = [];
-
                 foreach ($round->dominions as $dominion) {
-                    $dominionIds[] = $dominion->id;
-
-                    $dominion->daily_platinum = false;
-                    $dominion->daily_land = false;
-
-                    $dominion->save(['event' => 'tick']);
+                    /** @var Dominion $dominion */
+                    $dominion->update([
+                        'daily_platinum' => false,
+                        'daily_land' => false,
+                    ], [
+                        'event' => 'tick',
+                    ]);
                 }
             }
         });
