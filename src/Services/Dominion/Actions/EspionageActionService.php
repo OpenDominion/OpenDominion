@@ -206,6 +206,7 @@ class EspionageActionService
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                $spiesKilled = min($spiesKilled, $dominion->military_spies); // Cap to amount of spies we have to prevent negatives, see issue #486
 
                 $dominion->military_spies -= $spiesKilled;
 
