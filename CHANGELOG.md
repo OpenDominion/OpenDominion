@@ -5,11 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
+- Changed realm size to 6 (from 12)
+- Changed max pack size to 3 (from 6)
+- Only one pack can now exist per realm
 - Invasion reports can now only be viewed by people in the same realm as the invader and defender
 - Changed relative land size percentage colors to make more sense
+- Minor text changes
 
 ### Fixed
 - Fixed unit OP/DP rounding display issue in case of non-integer numbers (Firewalker Phoenix)
+- Fixed an issue where failing an info op tried to kill off more spies than you had
+- Fixed text when last rankings are updated
 
 ## [0.6.1-5] - 2019-05-14
 ### Changed
