@@ -105,13 +105,13 @@ class TickService
 //                    }
                 }
             }
-
-            // Update rankings (every 6 hours)
-            if($this->now->hour % 6 === 0) {
-                Log::debug('Update rankings started');
-                $this->updateDailyRankings($activeDominionIds);
-            }
         });
+
+        // Update rankings
+        if (($this->now->hour % 6) === 0) {
+            Log::debug('Update rankings started');
+            $this->updateDailyRankings($activeDominionIds);
+        }
 
         Log::info(sprintf(
             'Ticked %s dominions in %s seconds',
