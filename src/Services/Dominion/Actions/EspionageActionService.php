@@ -217,9 +217,15 @@ class EspionageActionService
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
+                if ($spiesKilled > 0) {
+                    $message = ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.');
+                } else {
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
+                }
+
                 return [
                     'success' => false,
-                    'message' => ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.'),
+                    'message' => $message,
                     'alert-type' => 'warning',
                 ];
             }
