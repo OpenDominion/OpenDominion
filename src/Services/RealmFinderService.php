@@ -11,6 +11,11 @@ use OpenDominion\Models\Round;
 class RealmFinderService
 {
     /**
+     * Maximum number of packs that can exist in a single realm.
+     */
+    private const MAX_PACKS_PER_REALM = 1;
+
+    /**
      * Finds and returns the first best realm for a new Dominion to settle in.
      *
      * Up to 12 Dominions can exist in a realm.
@@ -42,6 +47,10 @@ class RealmFinderService
 
         // Iterate over suspected eligible realms and check pack status
         foreach ($realms as $realm) {
+            if ($realm->packs->count() >= static::MAX_PACKS_PER_REALM) {
+                continue;
+            }
+
             $availableSlots = ($round->realm_size - $realm->dominions_count);
 
             foreach ($realm->packs as $pack) {
