@@ -8,15 +8,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Invasion reports can now only be viewed by people in the same realm as the invader and defender
 - Changed relative land size percentage colors to make more sense
 
+### Fixed
+- Fixed unit OP/DP rounding display issue in case of non-integer numbers (Firewalker Phoenix)
+
 ## [0.6.1-5] - 2019-05-14
+### Changed
+- "Remember Me" on login page is now checked by default
+- Spy losses from failed ops now fluctuate slightly based on relative land size
+
 ### Fixed
 - Fix a bug with checking whether certain spells are active, fixes the notorious 'Ares Call/DP bug'
 - Town Crier page now shows invasions from/to your own dominion
 - Amount of boats on status page and Clear Sight now also include returning boats from invasion
-
-### Changed
-- "Remember Me" on login page is now checked by default
-- Spy losses from failed ops now fluctuate slightly based on relative land size
 
 ## [0.6.1-4] - 2019-04-16
 ### Changed
