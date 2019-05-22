@@ -55,7 +55,7 @@
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
                                                 <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->source->race) }}">
-                                                    {{ $event->source->race->units()->where('slot', $unitSlot)->first()->name }}
+                                                    {{ $event->source->race->units->where('slot', $unitSlot)->first()->name }}
                                                 </span>
                                             </td>
                                             <td>
@@ -106,7 +106,7 @@
                                                         @if ($unitType === 'draftees')
                                                             Draftees
                                                         @else
-                                                            {{ $event->target->race->units()->where('slot', $unitSlot)->first()->name }}
+                                                            {{ $event->target->race->units->where('slot', $unitSlot)->first()->name }}
                                                         @endif
                                                     </span>
                                                 </td>
