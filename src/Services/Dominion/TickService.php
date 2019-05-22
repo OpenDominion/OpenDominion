@@ -105,19 +105,24 @@ class TickService
 //                    }
                 }
             }
+
+            Log::info(sprintf(
+                'Ticked %s dominions in %s seconds',
+                number_format(count($activeDominionIds)),
+                number_format($this->now->diffInSeconds(now()))
+            ));
         });
 
         // Update rankings
         if (($this->now->hour % 6) === 0) {
+            $now = now();
             Log::debug('Update rankings started');
             $this->updateDailyRankings($activeDominionIds);
+            Log::info(sprintf(
+                'Ticked rankings in %s seconds',
+                $now->diffInSeconds(now())
+            ));
         }
-
-        Log::info(sprintf(
-            'Ticked %s dominions in %s seconds',
-            number_format(count($activeDominionIds)),
-            number_format($this->now->diffInSeconds(now()))
-        ));
     }
 
     /**
