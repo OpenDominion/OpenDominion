@@ -78,23 +78,19 @@ class RangeCalculator
     {
         $range = $this->getDominionRange($self, $target);
 
-        if ($range >= 133) {
+        if ($range >= 120) {
             return 'text-red';
         }
 
-        if ($range >= 120) {
-            return 'text-orange';
-        }
-
         if ($range >= 75) {
-            return 'text-yellow';
-        }
-
-        if ($range >= 66) {
             return 'text-green';
         }
 
-        return 'text-muted';
+        if ($range >= 66) {
+            return 'text-muted';
+        }
+
+        return 'text-gray';
     }
 
     /**
