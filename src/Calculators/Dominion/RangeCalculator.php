@@ -38,12 +38,13 @@ class RangeCalculator
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
 
-        $selfModifier = $this->getRangeModifier($self);
+        $upperModifier = 0.6;
+        $lowerModifier = $this->getRangeModifier($self);
 //        $targetModifier = $this->getRangeModifier($target);
 
         return (
-            ($targetLand >= ($selfLand * $selfModifier)) &&
-            ($targetLand <= ($selfLand / $selfModifier))
+            ($targetLand >= ($selfLand * $lowerModifier)) &&
+            ($targetLand <= ($selfLand / $upperModifier))
             // todo: selfland .. targetLand * targetModifier
         );
     }
@@ -102,7 +103,7 @@ class RangeCalculator
     public function getRangeModifier(Dominion $dominion): float
     {
         // todo: if EG then $modifier = 0.75, else if RG then $modifier = 0.6, else $modifier = 0.4
-        return 0.6;
+        return 0.75;
     }
 
     /**
