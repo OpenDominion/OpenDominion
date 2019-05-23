@@ -45,12 +45,6 @@
                                 @if ($lastInfoOp->isInvalid())
                                     @continue
                                 @endif
-                                @if (!$rangeCalculator->isInRange($selectedDominion, $dominion))
-                                    @php
-                                        $dominionsOutsideMyRange++;
-                                    @endphp
-                                    @continue
-                                @endif
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
