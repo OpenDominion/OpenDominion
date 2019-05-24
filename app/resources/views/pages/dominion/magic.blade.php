@@ -162,6 +162,9 @@
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
+            @if (session('target_dominion'))
+                $('.select2').val('{{ session('target_dominion') }}').trigger('change.select2');
+            @endif
         })(jQuery);
 
         function select2Template(state) {
