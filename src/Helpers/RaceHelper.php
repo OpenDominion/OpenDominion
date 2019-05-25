@@ -39,6 +39,14 @@ HALFLING;
 </p>
 HUMAN;
 
+        $descriptions['sylvan'] = <<<SYLVAN
+<p>Placeholder description.</p>
+<p class="text-green">
+    Increased lumber production<br/>
+    Increased food production
+</p>
+SYLVAN;
+
         $descriptions['firewalker'] = <<<FIREWALKER
 <p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
 <p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
@@ -47,7 +55,7 @@ HUMAN;
     Increased gem production<br>
     Reduced construction costs<br>
     <span class="text-red">
-        Reduced lumber production    
+        Reduced lumber production
     </span>
 </p>
 FIREWALKER;

@@ -85,6 +85,7 @@ class MilitaryCalculator
         $gryphonNestMaxOp = 35;
         $spellCrusade = 5;
         $spellKillingRage = 10;
+        $spellWarsong = 10;
 
         // Gryphon Nests
         $multiplier += min(
@@ -100,12 +101,12 @@ class MilitaryCalculator
 
         // Racial Spell
         // todo
-        // Spell: Warsong (Sylvan) (+10%)
         // Spell: Howling (+10%)
         // Spell: Nightfall (+5%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'crusade' => $spellCrusade,
             'killing_rage' => $spellKillingRage,
+            'warsong' => $spellWarsong,
         ]);
 
         // Prestige
