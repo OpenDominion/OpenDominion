@@ -165,9 +165,15 @@ class MilitaryCalculator
      * @param float $multiplierReduction
      * @return float
      */
-    public function getDefensivePower(Dominion $dominion, float $multiplierReduction = 0, bool $ignoreDraftees = false): float
+    public function getDefensivePower(
+        Dominion $dominion,
+        float $landRatio = null,
+        array $units = null,
+        float $multiplierReduction = 0,
+        bool $ignoreDraftees = false): float
     {
-        $dp = ($this->getDefensivePowerRaw($dominion, $ignoreDraftees) * $this->getDefensivePowerMultiplier($dominion, $multiplierReduction));
+        $dp = $this->getDefensivePowerRaw($dominion, $landRatio, $units, $ignoreDraftees);
+        $dp *= $this->getDefensivePowerMultiplier($dominion, $multiplierReduction);
 
         return ($dp * $this->getMoraleMultiplier($dominion));
     }
@@ -178,7 +184,11 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getDefensivePowerRaw(Dominion $dominion, bool $ignoreDraftees = false): float
+    public function getDefensivePowerRaw(
+        Dominion $dominion,
+        float $landRatio = null,
+        array $units = null,
+        bool $ignoreDraftees = false): float
     {
         $dp = 0;
 
@@ -191,6 +201,20 @@ class MilitaryCalculator
         // Military
         foreach ($dominion->race->units as $unit) {
             $dp += ($dominion->{'military_unit' . $unit->slot} * $unit->power_defense);
+        }
+
+        foreach ($dominion->race->units as $unit) {
+            $powerDefense = $this->getUnitPowerWithPerks($dominion, $landRatio, $unit, 'defense');
+
+            $numberOfUnits = 0;
+
+            if($units === null ) {
+                $numberOfUnits = (int)$dominion->{'military_unit' . $unit->slot};
+            } else if (isset($units[$unit->slot]) && ((int)$units[$unit->slot] !== 0)) {
+                $numberOfUnits = (int)$units[$unit->slot];
+            }
+
+            $dp += ($powerDefense * $numberOfUnits);
         }
 
         // Draftees
