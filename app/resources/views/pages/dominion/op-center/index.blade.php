@@ -3,9 +3,6 @@
 @section('page-header', 'Op Center')
 
 @section('content')
-    @php
-        $dominionsOutsideMyRange = 0;
-    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
@@ -107,9 +104,6 @@
                     <p>Whenever you or someone else in your realm performs an information gathering espionage operation or magic spell, the information gathered is posted in the Op Center.</p>
                     <p>Through this page, you can help one another find targets and scout threats to one another.</p>
                     <p>You are only able to see dominions that are within your range.</p>
-                    @if ($dominionsOutsideMyRange > 0)
-                        <p>Your realmies have recently performed info ops against <b>{{ $dominionsOutsideMyRange }} dominions</b> that are out of your range, and are not visible for you here.</p>
-                    @endif
                 </div>
             </div>
         </div>
