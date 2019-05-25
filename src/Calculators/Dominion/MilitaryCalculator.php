@@ -53,9 +53,9 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getOffensivePower(Dominion $dominion, float $landRatio = null, array $units = null): float
+    public function getOffensivePower(Dominion $dominion, string $opposingForceRaceName = null, float $landRatio = null, array $units = null): float
     {
-        $op = ($this->getOffensivePowerRaw($dominion, $landRatio, $units) * $this->getOffensivePowerMultiplier($dominion));
+        $op = ($this->getOffensivePowerRaw($dominion, $opposingForceRaceName, $landRatio, $units) * $this->getOffensivePowerMultiplier($dominion));
 
         return ($op * $this->getMoraleMultiplier($dominion));
     }
@@ -66,12 +66,12 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getOffensivePowerRaw(Dominion $dominion, float $landRatio = null, array $units = null): float
+    public function getOffensivePowerRaw(Dominion $dominion, string $opposingForceRaceName = null, float $landRatio = null, array $units = null): float
     {
         $op = 0;
 
         foreach ($dominion->race->units as $unit) {
-            $powerOffense = $this->getUnitPowerWithPerks($dominion, $landRatio, $unit, 'offense');
+            $powerOffense = $this->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'offense');
 
             $numberOfUnits = 0;
 
@@ -167,12 +167,13 @@ class MilitaryCalculator
      */
     public function getDefensivePower(
         Dominion $dominion,
+        string $opposingForceRaceName = null,
         float $landRatio = null,
         array $units = null,
         float $multiplierReduction = 0,
         bool $ignoreDraftees = false): float
     {
-        $dp = $this->getDefensivePowerRaw($dominion, $landRatio, $units, $ignoreDraftees);
+        $dp = $this->getDefensivePowerRaw($dominion, $opposingForceRaceName, $landRatio, $units, $ignoreDraftees);
         $dp *= $this->getDefensivePowerMultiplier($dominion, $multiplierReduction);
 
         return ($dp * $this->getMoraleMultiplier($dominion));
@@ -186,6 +187,7 @@ class MilitaryCalculator
      */
     public function getDefensivePowerRaw(
         Dominion $dominion,
+        string $opposingForceRaceName = null,
         float $landRatio = null,
         array $units = null,
         bool $ignoreDraftees = false): float
@@ -204,7 +206,7 @@ class MilitaryCalculator
         }
 
         foreach ($dominion->race->units as $unit) {
-            $powerDefense = $this->getUnitPowerWithPerks($dominion, $landRatio, $unit, 'defense');
+            $powerDefense = $this->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'defense');
 
             $numberOfUnits = 0;
 
@@ -288,7 +290,29 @@ class MilitaryCalculator
         return (1 + $multiplier);
     }
 
-    protected function getUnitPowerWithPerks(Dominion $dominion, float $landRatio, Unit $unit, string $powerType): float
+    /**
+     * Returns the Dominion's defensive power ratio per acre of land.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefensivePowerRatio(Dominion $dominion): float
+    {
+        return ($this->getDefensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
+    }
+
+    /**
+     * Returns the Dominion's raw defensive power ratio per acre of land.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefensivePowerRatioRaw(Dominion $dominion): float
+    {
+        return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
+    }
+
+    protected function getUnitPowerWithPerks(Dominion $dominion, string $opposingForceRaceName, float $landRatio, Unit $unit, string $powerType): float
     {
         $unitPower = $unit->{"power_$powerType"};
 
@@ -296,7 +320,7 @@ class MilitaryCalculator
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
-        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, 'TODO: ADD RACE NAME HERE', $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $opposingForceRaceName, $unit, $powerType);
 
         return $unitPower;
     }
@@ -402,9 +426,9 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, string $raceName, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, string $opposingForceRaceName, Unit $unit, string $powerType): float
     {
-        $raceNameFormatted = strtolower($raceName);
+        $raceNameFormatted = strtolower($opposingForceRaceName);
         $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
 
         $versusRacePerk = $dominion->race->getUnitPerkValueForUnitSlot(
@@ -412,28 +436,6 @@ class MilitaryCalculator
             "{$powerType}_vs_{$raceNameFormatted}");
 
         return $versusRacePerk;
-    }
-
-    /**
-     * Returns the Dominion's defensive power ratio per acre of land.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getDefensivePowerRatio(Dominion $dominion): float
-    {
-        return ($this->getDefensivePower($dominion) / $this->landCalculator->getTotalLand($dominion));
-    }
-
-    /**
-     * Returns the Dominion's raw defensive power ratio per acre of land.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getDefensivePowerRatioRaw(Dominion $dominion): float
-    {
-        return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
     /**

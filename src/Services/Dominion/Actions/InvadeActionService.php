@@ -426,7 +426,7 @@ class InvadeActionService
         $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
         $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
@@ -533,7 +533,7 @@ class InvadeActionService
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): void
     {
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
@@ -775,7 +775,7 @@ class InvadeActionService
         }
 
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         // todo: refactor this hardcoded hacky mess
@@ -888,7 +888,7 @@ class InvadeActionService
     protected function isInvasionSuccessful(Dominion $dominion, Dominion $target, array $units): bool
     {
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         return ($attackingForceOP > $targetDP);
@@ -914,7 +914,7 @@ class InvadeActionService
 
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
 
         return ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
@@ -927,9 +927,9 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function hasAnyOP(Dominion $dominion, float $landRatio, array $units): bool
+    protected function hasAnyOP(Dominion $dominion, array $units): bool
     {
-        return ($this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units) !== 0.0);
+        return ($this->militaryCalculator->getOffensivePower($dominion, null, null, $units) !== 0.0);
     }
 
     /**
@@ -1007,10 +1007,10 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function passes33PercentRule(Dominion $dominion, float $landRatio, array $units): bool
+    protected function passes33PercentRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
     {
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
-        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
+        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
@@ -1026,10 +1026,10 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function passes54RatioRule(Dominion $dominion, float $landRatio, array $units): bool
+    protected function passes54RatioRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
     {
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $landRatio, $units);
-        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
+        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
 
@@ -1108,6 +1108,6 @@ class InvadeActionService
             $ignoreDraftees = true;
         }
 
-        return $this->militaryCalculator->getDefensivePower($target, null, null, $dpMultiplierReduction, $ignoreDraftees);
+        return $this->militaryCalculator->getDefensivePower($target, $dominion->race->name, null, null, $dpMultiplierReduction, $ignoreDraftees);
     }
 }
