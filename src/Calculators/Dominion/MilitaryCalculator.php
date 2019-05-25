@@ -75,9 +75,9 @@ class MilitaryCalculator
 
             $numberOfUnits = 0;
 
-            if($units === null ) {
+            if($units === null) {
                 $numberOfUnits = (int)$dominion->{'military_unit' . $unit->slot};
-            } else if (isset($units[$unit->slot]) && ((int)$units[$unit->slot] !== 0)) {
+            } elseif (isset($units[$unit->slot]) && ((int)$units[$unit->slot] !== 0)) {
                 $numberOfUnits = (int)$units[$unit->slot];
             }
 
@@ -210,9 +210,9 @@ class MilitaryCalculator
 
             $numberOfUnits = 0;
 
-            if($units === null ) {
+            if($units === null) {
                 $numberOfUnits = (int)$dominion->{'military_unit' . $unit->slot};
-            } else if (isset($units[$unit->slot]) && ((int)$units[$unit->slot] !== 0)) {
+            } elseif (isset($units[$unit->slot]) && ((int)$units[$unit->slot] !== 0)) {
                 $numberOfUnits = (int)$units[$unit->slot];
             }
 
