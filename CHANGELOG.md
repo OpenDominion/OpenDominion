@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Only one pack can now exist per realm
 - Changed invasion range from 60-166% to 75-166% (until guards are implemented)
 - Invasion reports can now only be viewed by people in the same realm as the invader and defender
-- Failing a spell/spy info operation now keeps the target selected in the dropdown 
+- Data in the Op Center is now shown to the whole realm, regardless of range
+- Failing a spell/spy info operation now keeps the target selected in the dropdown
 - Changed relative land size percentage colors to make more sense
 - Discounted acres after invasion are now only gained upon hitting 75%+ targets
 - Minor text changes
