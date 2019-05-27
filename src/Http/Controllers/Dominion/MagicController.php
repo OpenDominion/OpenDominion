@@ -55,6 +55,9 @@ class MagicController extends AbstractDominionController
         ));
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
-        return redirect()->to($result['redirect'] ?? route('dominion.magic'))->with('target_dominion', $request->get('target_dominion'));
+
+        return redirect()
+            ->to($result['redirect'] ?? route('dominion.magic'))
+            ->with('target_dominion', $request->get('target_dominion'));
     }
 }
