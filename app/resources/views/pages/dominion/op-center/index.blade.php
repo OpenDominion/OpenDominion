@@ -103,7 +103,6 @@
                 <div class="box-body">
                     <p>Whenever you or someone else in your realm performs an information gathering espionage operation or magic spell, the information gathered is posted in the Op Center.</p>
                     <p>Through this page, you can help one another find targets and scout threats to one another.</p>
-                    <p>You are only able to see dominions that are within your range.</p>
                 </div>
             </div>
         </div>
