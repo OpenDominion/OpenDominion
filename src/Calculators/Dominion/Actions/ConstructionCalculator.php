@@ -77,6 +77,27 @@ class ConstructionCalculator
     }
 
     /**
+     * Returns the Dominion's construction platinum cost for a given number of acres.
+     * 
+     * @param Dominion $dominion
+     * @param int $acres
+     * @return int
+     */
+    public function getTotalPlatinumCost(Dominion $dominion, int $acres): int
+    {
+        $platinumCost = $this->getPlatinumCost($dominion);
+        $totalPlatinumCost =  $platinumCost * $acres;
+
+        // Check for discounted acres after invasion
+        $discountedAcres = min($dominion->discounted_land, $acres);
+        if ($discountedAcres > 0) {
+            $totalPlatinumCost -= (int)ceil(($platinumCost * $discountedAcres) / 2);
+        }
+
+        return $totalPlatinumCost;
+    }
+
+    /**
      * Returns the Dominion's construction lumber cost (per building).
      *
      * @param Dominion $dominion
@@ -123,6 +144,27 @@ class ConstructionCalculator
     }
 
     /**
+     * Returns the Dominion's construction lumber cost for a given number of acres.
+     * 
+     * @param Dominion $dominion
+     * @param int $acres
+     * @return int
+     */
+    public function getTotalLumberCost(Dominion $dominion, int $acres): int
+    {
+        $lumberCost = $this->getLumberCost($dominion);
+        $totalLumberCost =  $lumberCost * $acres;
+
+        // Check for discounted acres after invasion
+        $discountedAcres = min($dominion->discounted_land, $acres);
+        if ($discountedAcres > 0) {
+            $totalLumberCost -= (int)ceil(($lumberCost * $discountedAcres) / 2);
+        }
+
+        return $totalLumberCost;
+    }
+
+    /**
      * Returns the maximum number of building a Dominion can construct.
      *
      * @param Dominion $dominion
@@ -151,8 +193,6 @@ class ConstructionCalculator
             // Subtract discounted building cost from available resources
             $platinumToSpend -= (int)ceil(($platinumCost * $discountedBuildings) / 2);
             $lumberToSpend -= (int)ceil(($lumberCost * $discountedBuildings) / 2);
-            // Avoid division by zero in return statement
-            if($platinumToSpend == 0 || $lumberToSpend == 0) return $discountedBuildings;
         }
 
         return $discountedBuildings + min(

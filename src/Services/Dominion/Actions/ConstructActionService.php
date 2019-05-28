@@ -100,22 +100,8 @@ class ConstructActionService
             }
         }
 
-        $platinumCost = ($this->constructionCalculator->getPlatinumCost($dominion) * $totalBuildingsToConstruct);
-        $lumberCost = ($this->constructionCalculator->getLumberCost($dominion) * $totalBuildingsToConstruct);
-
-        // Check for discounted acres after invasion
-        $discountedBuildings = min($dominion->discounted_land, $totalBuildingsToConstruct);
-        $platinumDiscount = 0;
-        $lumberDiscount = 0;
-
-        if ($discountedBuildings > 0) {
-            // Calculate half cost
-            $platinumDiscount = (int)ceil(($this->constructionCalculator->getPlatinumCost($dominion) * $discountedBuildings) / 2); // todo: constant this with -50% or something
-            $lumberDiscount = (int)ceil(($this->constructionCalculator->getLumberCost($dominion) * $discountedBuildings) / 2);
-
-            $platinumCost -= $platinumDiscount;
-            $lumberCost -= $lumberDiscount;
-        }
+        $platinumCost = $this->constructionCalculator->getTotalPlatinumCost($dominion, $totalBuildingsToConstruct);
+        $lumberCost = $this->constructionCalculator->getTotalLumberCost($dominion, $totalBuildingsToConstruct);
 
         DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $discountedBuildings) {
             $dominion->fill([
