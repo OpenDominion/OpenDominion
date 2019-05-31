@@ -38,8 +38,8 @@ class MilitaryCalculator
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         QueueService $queueService,
-        SpellCalculator $spellCalculator
-    ) {
+        SpellCalculator $spellCalculator)
+    {
         $this->buildingCalculator = $buildingCalculator;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
@@ -51,9 +51,16 @@ class MilitaryCalculator
      * Returns the Dominion's offensive power.
      *
      * @param Dominion $dominion
+     * @param string|null $opposingForceRaceName
+     * @param float|null $landRatio
+     * @param array|null $units
      * @return float
      */
-    public function getOffensivePower(Dominion $dominion, string $opposingForceRaceName = null, float $landRatio = null, array $units = null): float
+    public function getOffensivePower(
+        Dominion $dominion,
+        string $opposingForceRaceName = null,
+        float $landRatio = null,
+        array $units = null): float
     {
         $op = ($this->getOffensivePowerRaw($dominion, $opposingForceRaceName, $landRatio, $units) * $this->getOffensivePowerMultiplier($dominion));
 
@@ -64,9 +71,16 @@ class MilitaryCalculator
      * Returns the Dominion's raw offensive power.
      *
      * @param Dominion $dominion
+     * @param string|null $opposingForceRaceName
+     * @param float|null $landRatio
+     * @param array|null $units
      * @return float
      */
-    public function getOffensivePowerRaw(Dominion $dominion, string $opposingForceRaceName = null, float $landRatio = null, array $units = null): float
+    public function getOffensivePowerRaw(
+        Dominion $dominion,
+        string $opposingForceRaceName = null,
+        float $landRatio = null,
+        array $units = null): float
     {
         $op = 0;
 
@@ -162,7 +176,11 @@ class MilitaryCalculator
      * Returns the Dominion's defensive power.
      *
      * @param Dominion $dominion
+     * @param string|null $opposingForceRaceName
+     * @param float|null $landRatio
+     * @param array|null $units
      * @param float $multiplierReduction
+     * @param bool $ignoreDraftees
      * @return float
      */
     public function getDefensivePower(
@@ -183,6 +201,10 @@ class MilitaryCalculator
      * Returns the Dominion's raw defensive power.
      *
      * @param Dominion $dominion
+     * @param string|null $opposingForceRaceName
+     * @param float|null $landRatio
+     * @param array|null $units
+     * @param bool $ignoreDraftees
      * @return float
      */
     public function getDefensivePowerRaw(
