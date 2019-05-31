@@ -113,23 +113,12 @@ class ConstructActionService
             $this->queueService->queueResources('construction', $dominion, $data);
         });
 
-        $message = sprintf(
-            'Construction started at a cost of %s platinum and %s lumber.',
-            number_format($platinumCost),
-            number_format($lumberCost)
-        );
-
-        if ($discountedBuildings > 0) {
-            $message .= sprintf(
-                ' Because of %s acres of conquered land, you saved %s platinum and %s lumber.',
-                number_format($discountedBuildings),
-                number_format($platinumDiscount),
-                number_format($lumberDiscount)
-            );
-        }
-
         return [
-            'message' => $message,
+            'message' => sprintf(
+                'Construction started at a cost of %s platinum and %s lumber.',
+                number_format($platinumCost),
+                number_format($lumberCost)
+            ),
             'data' => [
                 'platinumCost' => $platinumCost,
                 'lumberCost' => $lumberCost,
