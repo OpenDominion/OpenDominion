@@ -44,10 +44,9 @@ class QueueService
             return collect(array_get($this->queueCache, $cacheKey));
         }
 
-        $data = DB::table('dominion_queue')->where([
-            'dominion_id' => $dominion->id,
-            'source' => $source,
-        ])->get();
+        $data = $dominion->queue->filter(function ($row) use ($source) {
+            return $row->source === $source;
+        });
 
         array_set($this->queueCache, $cacheKey, $data->toArray());
 

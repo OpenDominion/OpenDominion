@@ -75,7 +75,7 @@ class TickService
 
         // Hourly tick
         DB::transaction(function () use (&$activeDominionIds) {
-//            DB::connection()->enableQueryLog();
+            //DB::connection()->enableQueryLog();
 
             foreach (Round::active()->get() as $round) {
                 // Ignore hour 0
@@ -90,6 +90,7 @@ class TickService
                         'race.perks',
                         'race.units',
                         'race.units.perks',
+                        'queue'
                     ])
                     ->get();
 
@@ -97,12 +98,9 @@ class TickService
                     $this->tickDominion($dominion);
                     $activeDominionIds[] = $dominion->id;
 
-//                    if (count($activeDominionIds) === 10) {
-//                        $queries = DB::getQueryLog();
-//                        Log::debug(count($queries) . ' queries executed');
-//
-//                        return; // todo: tmp
-//                    }
+                    //$queries = DB::getQueryLog();
+                    //dd($queries);
+                    //break;
                 }
             }
 
@@ -158,25 +156,21 @@ class TickService
 
     protected function tickDominion(Dominion $dominion)
     {
-        // todo: split up in their own methods
-
         // Queues
-        foreach (['exploration', 'construction', 'training', 'invasion'] as $source) {
-            $queueResult = $this->tickQueue($dominion, $source);
+        $queueResult = $this->tickQueues($dominion);
 
-            if (!empty($queueResult)) {
-                foreach ($queueResult as $resource => $amount) {
-                    $dominion->$resource += $amount;
-                }
+        if (!empty($queueResult)) {
+            foreach ($queueResult as $resource => $item) {
+                $dominion->$resource += $item['amount'];
+            }
 
-                // todo: hacky hacky. refactor me pls
-                if ($source === 'invasion') {
-                    if (isset($resource) && starts_with($resource, 'military_unit')) {
-                        $this->notificationService->queueNotification('returning_completed', $queueResult);
-                    }
-                } else {
-                    $this->notificationService->queueNotification("{$source}_completed", $queueResult);
+            // todo: hacky hacky. refactor me pls
+            if ($item['source'] === 'invasion') {
+                if (isset($resource) && starts_with($resource, 'military_unit')) {
+                    $this->notificationService->queueNotification('returning_completed', $queueResult);
                 }
+            } else {
+                $this->notificationService->queueNotification("{$item['source']}_completed", $queueResult);
             }
         }
 
@@ -249,14 +243,13 @@ class TickService
         $dominion->save(['event' => HistoryService::EVENT_TICK]);
     }
 
-    protected function tickQueue(Dominion $dominion, string $source): array
+    protected function tickQueues(Dominion $dominion): array
     {
         // Two-step process to avoid getting UNIQUE constraint integrity errors
         // since we can't reliably use deferred transactions, deferred update
         // queries or update+orderby cross-database vendors
         DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
-            ->where('source', $source)
             ->where('hours', '>', 0)
             ->update([
                 'hours' => DB::raw('-(`hours` - 1)'),
@@ -264,7 +257,6 @@ class TickService
 
         DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
-            ->where('source', $source)
             ->where('hours', '<', 0)
             ->update([
                 'hours' => DB::raw('-`hours`'),
@@ -273,19 +265,17 @@ class TickService
 
         $finished = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
-            ->where('source', $source)
             ->where('hours', 0)
             ->get();
 
         $return = [];
 
         foreach ($finished as $row) {
-            $return[$row->resource] = $row->amount;
+            $return[$row->resource] = array('amount' => $row->amount, 'source' => $row->source);
 
             // Cleanup
             DB::table('dominion_queue')
                 ->where('dominion_id', $dominion->id)
-                ->where('source', $source)
                 ->where('resource', $row->resource)
                 ->where('hours', 0)
                 ->delete();

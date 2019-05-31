@@ -182,6 +182,11 @@ class Dominion extends AbstractModel
         return $this->hasMany(Dominion\History::class);
     }
 
+    public function queue()
+    {
+        return $this->hasMany(Dominion\Queue::class);
+    }
+
     public function pack()
     {
         return $this->belongsTo(Pack::class);
