@@ -331,11 +331,11 @@ class SpellActionService
                 $infoOp->data = $this->spellCalculator->getActiveSpells($target);
                 break;
 
-//            case 'clairvoyance':
-//                $infoOp->data = [
-            // tc
-//                ];
-//                break;
+            case 'clairvoyance':
+                $infoOp->data = [
+                    'targetRealmId' => $target->realm->id
+                ];
+                break;
 
 //            case 'disclosure':
 //                $infoOp->data = [];
@@ -348,6 +348,10 @@ class SpellActionService
         // Always force update updated_at on infoops to know when the last infoop was cast
         $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
+
+        if($spellKey === 'clairvoyance') {
+            // redirect somewhere else :D
+        }
 
         return [
             'success' => true,

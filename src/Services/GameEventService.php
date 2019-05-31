@@ -58,8 +58,8 @@ class GameEventService
             ->get();
 
         return [
-            "dominionIds" => $dominionIds,
-            "gameEvents" =>  $gameEvents
+            'dominionIds' => $dominionIds,
+            'gameEvents' =>  $gameEvents
         ];
     }
 }
