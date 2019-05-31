@@ -78,7 +78,7 @@ class ConstructionCalculator
 
     /**
      * Returns the Dominion's construction platinum cost for a given number of acres.
-     * 
+     *
      * @param Dominion $dominion
      * @param int $acres
      * @return int
@@ -145,7 +145,7 @@ class ConstructionCalculator
 
     /**
      * Returns the Dominion's construction lumber cost for a given number of acres.
-     * 
+     *
      * @param Dominion $dominion
      * @param int $acres
      * @return int
@@ -184,7 +184,7 @@ class ConstructionCalculator
             $maxFromDiscountedPlatinum = (int)floor($platinumToSpend / ($platinumCost / 2));
             $maxFromDiscountedLumber = (int)floor($lumberToSpend / ($lumberCost / 2));
             // Set the number of afforded discounted buildings
-            $discountedBuildings = min (
+            $discountedBuildings = min(
                 $maxFromDiscountedPlatinum,
                 $maxFromDiscountedLumber,
                 $dominion->discounted_land,
