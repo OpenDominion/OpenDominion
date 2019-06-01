@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OpenDominion\Services;
-
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
