@@ -45,5 +45,4 @@ units:
       defense: 7
     perks:
       offense_vs_goblin: 1
-      offense_vs_wood_elf: 1
       offense_vs_kobold: 1

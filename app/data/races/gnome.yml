@@ -28,8 +28,8 @@ units:
       platinum: 675
       ore: 330
     power:
-      offense: 3
-      defense: 3
+      offense: 2
+      defense: 4
     perks:
       defense_from_land: mountain,20,2 # land type, ratio%, max
   - name: Juggernaut
