@@ -11,7 +11,9 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\InfoOpService;
+use OpenDominion\Services\GameEventService;
 
 class OpCenterController extends AbstractDominionController
 {
@@ -26,7 +28,7 @@ class OpCenterController extends AbstractDominionController
             'infoOpService' => app(InfoOpService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellHelper' => app(SpellHelper::class),
-            'targetDominions' => $dominion->realm->infoOpTargetDominions,
+            'targetDominions' => $dominion->realm->infoOpTargetDominions
         ]);
     }
 
@@ -50,5 +52,33 @@ class OpCenterController extends AbstractDominionController
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
         ]);
+    }
+
+    public function getClairvoyance(int $realmId)
+    {
+        $targetRealm = Realm::find($realmId);
+
+        $infoOpService = app(InfoOpService::class);
+
+        $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm($this->getSelectedDominion()->realm, $targetRealm, 'clairvoyance');
+
+        if($clairvoyanceInfoOp == null)
+        {
+            // throw?
+        }
+
+        $gameEventService = app(GameEventService::class);
+
+        $clairvoyanceUpdateAt = $clairvoyanceInfoOp->updated_at;
+        $clairvoyanceData = $gameEventService->getClairvoyance($targetRealm, $clairvoyanceUpdateAt);
+
+        $gameEvents = $clairvoyanceData['gameEvents'];
+        $dominionIds = $clairvoyanceData['dominionIds'];
+
+        return view('pages.dominion.town-crier', compact(
+            'gameEvents',
+            'targetRealm',
+            'dominionIds'
+        ));
     }
 }
