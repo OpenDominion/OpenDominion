@@ -21,14 +21,12 @@ class OpCenterController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
 
-        // todo: filter $targetDominions by $dominion range
-        // todo: keep track of how many dominions are filtered due to range? to see if upper/lower end of realm is active much
-
         return view('pages.dominion.op-center.index', [
             'infoOpService' => app(InfoOpService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellHelper' => app(SpellHelper::class),
-            'targetDominions' => $dominion->realm->infoOpTargetDominions
+            'targetDominions' => $dominion->realm->infoOpTargetDominions,
+            'clairvoyanceRealms' =>
         ]);
     }
 
@@ -54,10 +52,8 @@ class OpCenterController extends AbstractDominionController
         ]);
     }
 
-    public function getClairvoyance(int $realmId)
+    public function getClairvoyance(Realm $targetRealm)
     {
-        $targetRealm = Realm::find($realmId);
-
         $infoOpService = app(InfoOpService::class);
 
         $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm($this->getSelectedDominion()->realm, $targetRealm, 'clairvoyance');
