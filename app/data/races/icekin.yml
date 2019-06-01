@@ -23,7 +23,7 @@ units:
       defense: 3
     perks:
       reduce_combat_losses: 1
-  - name: Frost Mage
+  - name: FrostMage # Leave the space out, for nostalgic reasons
     cost:
       platinum: 850
       ore: 100
