@@ -36,7 +36,7 @@ units:
       ore: 90
     power:
       offense: 5
-      defense: 3
+      defense: 2
     perks:
       faster_return: 3
       fewer_casualties: 15
