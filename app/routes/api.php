@@ -3,7 +3,7 @@
 use Illuminate\Routing\Router;
 
 /** @var Router $router */
-$router->group(['prefix' => 'v1'], function (Router $router) {
+$router->group(['prefix' => 'v1', 'as' => 'api.'], function (Router $router) {
 
     $router->get('pbbg', function () {
         return [
@@ -28,6 +28,10 @@ $router->group(['prefix' => 'v1'], function (Router $router) {
                 'github' => 'https://github.com/WaveHack/OpenDominion',
             ],
         ];
+    });
+
+    $router->group(['prefix' => 'dominion', 'middleware' => ['web', 'auth'], 'as' => 'dominion.'], function (Router $router) {
+        $router->get('invasion')->uses('Dominion\APIController@calculateInvasion')->name('invasion');
     });
 
 });
