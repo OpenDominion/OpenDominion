@@ -145,4 +145,9 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 
         $this->assertEquals($realm->id, $this->realmFinderService->findRandomRealm($this->round, $this->goodRace)->id);
     }
+
+    public function testFindRandomRealmReturnsNullWhenMaxPacksPerRealmIsReached()
+    {
+        $this->markTestIncomplete();
+    }
 }

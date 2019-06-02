@@ -86,7 +86,7 @@ class ConstructionCalculator
     public function getTotalPlatinumCost(Dominion $dominion, int $acres): int
     {
         $platinumCost = $this->getPlatinumCost($dominion);
-        $totalPlatinumCost =  $platinumCost * $acres;
+        $totalPlatinumCost = $platinumCost * $acres;
 
         // Check for discounted acres after invasion
         $discountedAcres = min($dominion->discounted_land, $acres);
@@ -153,7 +153,7 @@ class ConstructionCalculator
     public function getTotalLumberCost(Dominion $dominion, int $acres): int
     {
         $lumberCost = $this->getLumberCost($dominion);
-        $totalLumberCost =  $lumberCost * $acres;
+        $totalLumberCost = $lumberCost * $acres;
 
         // Check for discounted acres after invasion
         $discountedAcres = min($dominion->discounted_land, $acres);
@@ -196,10 +196,10 @@ class ConstructionCalculator
         }
 
         return $discountedBuildings + min(
-            floor($platinumToSpend / $platinumCost),
-            floor($lumberToSpend / $lumberCost),
-            ($barrenLand - $discountedBuildings)
-        );
+                floor($platinumToSpend / $platinumCost),
+                floor($lumberToSpend / $lumberCost),
+                ($barrenLand - $discountedBuildings)
+            );
     }
 
     /**
