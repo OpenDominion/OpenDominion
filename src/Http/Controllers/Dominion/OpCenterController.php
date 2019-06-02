@@ -20,13 +20,22 @@ class OpCenterController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
+        $clairvoyanceRealms = $dominion->realm->infoOps()
+            ->where('type', 'clairvoyance')
+            ->get()
+            ->map(
+                function ($infoOp)
+                {
+                    return $infoOp->realm;
+                }
+            );
 
         return view('pages.dominion.op-center.index', [
             'infoOpService' => app(InfoOpService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellHelper' => app(SpellHelper::class),
             'targetDominions' => $dominion->realm->infoOpTargetDominions,
-            'clairvoyanceRealms' =>
+            'clairvoyanceRealms' => $clairvoyanceRealms
         ]);
     }
 

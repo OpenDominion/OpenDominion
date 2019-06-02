@@ -85,16 +85,6 @@ class InfoOpService
         })->first();
     }
 
-    public function getRealmsWithInfoOp(Realm $sourceRealm, string $type): Collection
-    {
-        return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($type) {
-            return (
-                !$infoOp->isInvalid() &&
-                ($infoOp->type === $type)
-            );
-        });
-    }
-
     public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
         // mag: clear sight (units raw value, racial op bonus & prestige)

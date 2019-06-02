@@ -45,6 +45,11 @@ class InfoOp extends AbstractModel
         //
     }
 
+    public function targetRealm()
+    {
+        return $this->belongsTo(Realm::class, 'target_realm_id');
+    }
+
 //    public function scopeNotInvalid(Builder $query): Builder
 //    {
 //        return $query->where('updated_at', '>=', now()->parse('-12 hours')->toDateTimeString());
