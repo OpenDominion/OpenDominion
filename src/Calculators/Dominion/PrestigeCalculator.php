@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OpenDominion\Calculators\Dominion;
-
 
 use OpenDominion\Models\Dominion;
 
