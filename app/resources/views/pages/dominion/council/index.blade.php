@@ -37,7 +37,7 @@
                                         <td>
                                             <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                             <small class="text-muted">
-                                                Created {{ $thread->created_at->diffForHumans() }} by <b>{{ $thread->dominion->name }}</b>
+                                                Created {{ $thread->created_at }} by <b>{{ $thread->dominion->name }}</b>
                                                 @if ($thread->dominion->name !== $thread->dominion->ruler_name)
                                                     ({{ $thread->dominion->ruler_name }})
                                                 @endif
@@ -51,7 +51,7 @@
                                         </td>--}}
                                         <td class="text-center align-middle">
                                             @if (!$thread->posts->isEmpty())
-                                                {{ $thread->posts->last()->created_at->diffForHumans() }}<br>
+                                                {{ $thread->posts->last()->created_at }}<br>
                                                 <small class="text-muted">
                                                     by <b>{{ $thread->posts->last()->dominion->name }}</b>
                                                     @if ($thread->posts->last()->dominion->name !== $thread->posts->last()->dominion->ruler_name)

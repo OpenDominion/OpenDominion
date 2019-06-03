@@ -66,7 +66,7 @@
                                             <a href="{{ route('dominion.event', [$gameEvent->id]) }}">Link</a>
                                         </td>
                                         <td class="text-center">
-                                            <span title="{{ $gameEvent->created_at }}">{{ $gameEvent->created_at->diffForHumans() }}</span>
+                                            <span title="{{ $gameEvent->created_at }}">{{ $gameEvent->created_at }}</span>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -38,7 +38,7 @@
                     </div>
                     <div class="box-body text-center">
                         <p>Registration for round {{ $currentRound->number }} is open.</p>
-                        <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date->diffForHumans() }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date-> }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
                 @else
                     <div class="box-body text-center" style="padding: 0;">

@@ -53,7 +53,7 @@
                                 {{ number_format($networth) }}
                             </td>
                             <td class="text-center" data-order="{{ $dominion->created_at->getTimestamp() }}" data-search="">
-                                <span title="{{ $dominion->created_at }}">{{ $dominion->created_at->diffForHumans() }}</span>
+                                <span title="{{ $dominion->created_at }}">{{ $dominion->created_at }}</span>
                             </td>
                         </tr>
                     @endforeach
