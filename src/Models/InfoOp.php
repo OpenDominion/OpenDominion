@@ -42,7 +42,7 @@ class InfoOp extends AbstractModel
 
     public function targetDominion()
     {
-        //
+        return $this->belongsTo(Dominion::class, 'target_dominion_id');
     }
 
     public function targetRealm()

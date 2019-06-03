@@ -161,7 +161,7 @@ class SpellActionService
                 ],
                 'redirect' =>
                     $this->spellHelper->isInfoOpSpell($spellKey) && $result['success']
-                        ? route('dominion.op-center.show', $target->id)
+                        ? $result['redirect']
                         : null,
             ] + $result;
     }
@@ -363,15 +363,16 @@ class SpellActionService
         $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
 
+        $redirect = route('dominion.op-center.show', $target);
         if($spellKey === 'clairvoyance') {
-            // redirect somewhere else :D
+            $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);
         }
 
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
             'wizardStrengthCost' => 2,
-            'redirect' => route('dominion.op-center.show', $target),
+            'redirect' => $redirect,
         ];
     }
 

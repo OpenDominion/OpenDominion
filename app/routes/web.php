@@ -141,6 +141,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
+            $router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');

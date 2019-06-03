@@ -26,7 +26,7 @@ class OpCenterController extends AbstractDominionController
             ->map(
                 function ($infoOp)
                 {
-                    return $infoOp->realm;
+                    return $infoOp->targetRealm;
                 }
             );
 
@@ -61,29 +61,28 @@ class OpCenterController extends AbstractDominionController
         ]);
     }
 
-    public function getClairvoyance(Realm $targetRealm)
+    public function getClairvoyance(int $realmNumber)
     {
         $infoOpService = app(InfoOpService::class);
+        $targetRealm = Realm::findOrFail($realmNumber);
 
         $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm($this->getSelectedDominion()->realm, $targetRealm, 'clairvoyance');
 
         if($clairvoyanceInfoOp == null)
         {
-            // throw?
+            abort(404);
         }
 
         $gameEventService = app(GameEventService::class);
-
-        $clairvoyanceUpdateAt = $clairvoyanceInfoOp->updated_at;
-        $clairvoyanceData = $gameEventService->getClairvoyance($targetRealm, $clairvoyanceUpdateAt);
+        $clairvoyanceData = $gameEventService->getClairvoyance($targetRealm, $clairvoyanceInfoOp->updated_at);
 
         $gameEvents = $clairvoyanceData['gameEvents'];
         $dominionIds = $clairvoyanceData['dominionIds'];
 
         return view('pages.dominion.town-crier', compact(
             'gameEvents',
-            'targetRealm',
-            'dominionIds'
-        ));
+            'dominionIds',
+            'clairvoyanceInfoOp'
+        ))->with('realm', $targetRealm)->with('fromOpCenter', true);
     }
 }

@@ -63,7 +63,7 @@ class SpellHelper
             return $spell['races']->contains($raceName);
         })->first();
 
-        return collect([
+        return collect(array_filter([
             [
                 'name' => 'Gaia\'s Watch',
                 'description' => '+10% food production',
@@ -122,7 +122,7 @@ class SpellHelper
 //                'cooldown' => 22, // todo
 //            ],
             $racialSpell
-        ]);
+        ]));
     }
 
     public function getRacialSelfSpells(): Collection

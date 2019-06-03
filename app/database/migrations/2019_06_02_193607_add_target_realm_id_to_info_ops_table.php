@@ -14,6 +14,7 @@ class AddTargetRealmIdToInfoOpsTable extends Migration
     public function up()
     {
         Schema::table('info_ops', function (Blueprint $table) {
+            $table->integer('target_realm_id')->unsigned()->nullable();
             $table->foreign('target_realm_id')->references('id')->on('realms');
         });
     }

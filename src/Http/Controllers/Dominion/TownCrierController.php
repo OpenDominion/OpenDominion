@@ -11,6 +11,7 @@ class TownCrierController extends AbstractDominionController
         $gameEventService = app(GameEventService::class);
 
         $dominion = $this->getSelectedDominion();
+        $realm = $dominion->realm;
 
         $townCrierData = $gameEventService->getTownCrier($dominion);
 
@@ -21,6 +22,6 @@ class TownCrierController extends AbstractDominionController
             'gameEvents',
             'realm',
             'dominionIds'
-        ));
+        ))->with('fromOpCenter', false);
     }
 }
