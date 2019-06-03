@@ -5,7 +5,7 @@ use Illuminate\Routing\Router;
 /** @var Router $router */
 $router->group(['prefix' => 'v1', 'as' => 'api.'], function (Router $router) {
 
-    $router->group(['middleware' => ['throttle:60,1']], function (Router $router) {
+    $router->group(['middleware' => ['bindings', 'throttle:60,1']], function (Router $router) {
         $router->get('pbbg', function () {
             return [
                 'name' => 'OpenDominion',
@@ -32,7 +32,7 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], function (Router $router) {
         });
     });
 
-    $router->group(['prefix' => 'dominion', 'middleware' => ['web', 'auth', 'dominionselected'], 'as' => 'dominion.'], function (Router $router) {
+    $router->group(['prefix' => 'dominion', 'middleware' => ['api', 'auth', 'dominionselected'], 'as' => 'dominion.'], function (Router $router) {
         $router->get('invasion')->uses('Dominion\APIController@calculateInvasion')->name('invasion');
     });
 

@@ -25,7 +25,7 @@
                     </div>
                 </div>
             @else
-                <form action="{{ route('dominion.invade') }}" method="post" role="form" id ="invade_form">
+                <form action="{{ route('dominion.invade') }}" method="post" role="form" id="invade_form">
                     @csrf
 
                     <div class="box box-primary">
