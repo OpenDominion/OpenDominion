@@ -5,24 +5,32 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 /*use OpenDominion\Calculators\Dominion\RangeCalculator;
-use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Helpers\UnitHelper;*/
 use OpenDominion\Models\Dominion;
-use OpenDominion\Services\Dominion\Actions\InvadeActionService;
-use OpenDominion\Services\Dominion\ProtectionService;*/
+use OpenDominion\Services\Dominion\API\InvadeCalculationService;
+use OpenDominion\Http\Requests\Dominion\API\InvadeCalculationRequest;
 use Throwable;
 
 class APIController extends AbstractDominionController
 {
-    public function calculateInvasion(Request $request)
+    public function calculateInvasion(InvadeCalculationRequest $request)
     {
-        $input = [
-            'target' => $request->get('target_dominion'),
-            'unit1' => $request->get('unit1'),
-            'unit2' => $request->get('unit2'),
-            'unit3' => $request->get('unit3'),
-            'unit4' => $request->get('unit4')
-        ];
+        $dominion = $this->getSelectedDominion();
+        $invadeCalculationService = app(InvadeCalculationService::class);
 
-        return $input;
+        try {
+            $result = $invadeCalculationService->calculate(
+                $dominion,
+                Dominion::find($request->get('target_dominion')),
+                $request->get('unit')
+            );
+        } catch (Throwable $e) {
+            return [
+                'result' => 'error',
+                'errors' => [$e->getMessage()]
+            ];
+        }
+
+        return $result;
     }
 }
