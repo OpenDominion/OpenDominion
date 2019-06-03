@@ -20,17 +20,22 @@ class MilitaryCalculator
     /** @var SpellCalculator */
     protected $spellCalculator;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /**
      * MilitaryCalculator constructor.
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      */
     public function __construct(
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
+        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator
     ) {
@@ -38,6 +43,7 @@ class MilitaryCalculator
         $this->landCalculator = $landCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
     }
 
     /**
@@ -109,7 +115,7 @@ class MilitaryCalculator
         ]);
 
         // Prestige
-        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
         // Tech: Military (+5%)
         // Tech: Magical Weaponry (+10%)

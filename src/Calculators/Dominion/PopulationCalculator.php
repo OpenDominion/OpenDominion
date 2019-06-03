@@ -30,6 +30,9 @@ class PopulationCalculator
     /** @var UnitHelper */
     protected $unitHelper;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /**
      * PopulationCalculator constructor.
      *
@@ -37,6 +40,7 @@ class PopulationCalculator
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
@@ -46,6 +50,7 @@ class PopulationCalculator
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
+        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         UnitHelper $unitHelper
@@ -57,6 +62,7 @@ class PopulationCalculator
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
+        $this->prestigeCalculator = $prestigeCalculator;
     }
 
     /**
@@ -185,10 +191,6 @@ class PopulationCalculator
         // todo
 
         // Prestige Bonus
-        // todo: $prestige / 10000?
-        $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
-        // todo: re-check this vs other prestige formulae
 
         /*
         todo: cleanup
@@ -203,7 +205,10 @@ class PopulationCalculator
         + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
         */
 
-        return (1 + $multiplier);
+        $prestigeBonus = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
+        $totalMultiplierWithPrestige = (1 + $multiplier) * (1 + $prestigeBonus);
+
+        return $totalMultiplierWithPrestige;
     }
 
     /**
