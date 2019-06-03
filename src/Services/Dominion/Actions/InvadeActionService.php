@@ -570,7 +570,7 @@ class InvadeActionService
         $defensiveUnitsLost = [];
 
         // Draftees
-        if ($dominion->isSpellActive('unholy_ghost')) {
+        if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
             $drafteesLost = 0;
         } else {
             $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage * $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, null));
