@@ -113,6 +113,8 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 
     public function testFindRandomRealmReturnsRealmWithClosedPacksSlots()
     {
+        $this->realmFinderService->maxPacksPerRealm = null;
+
         // Dominion slot 1
         $user = $this->createUser();
         $dominion = $this->createDominion($user, $this->round, $this->goodRace);
@@ -142,5 +144,10 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         $dominion->refresh();
 
         $this->assertEquals($realm->id, $this->realmFinderService->findRandomRealm($this->round, $this->goodRace)->id);
+    }
+
+    public function testFindRandomRealmReturnsNullWhenMaxPacksPerRealmIsReached()
+    {
+        $this->markTestIncomplete();
     }
 }

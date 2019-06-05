@@ -15,10 +15,10 @@ class RoundOpenCommand extends Command implements CommandInterface
     protected $signature = 'game:round:open
                              {--now : Start the round right now (dev & testing only)}
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
-                             {--days= : Start the round in +DAYS days midnight, allowing for more finetuning}
+                             {--days= : Start the round in +DAYS days midnight, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
-                             {--realmSize=12 : Maximum number of dominions in one realm}
-                             {--packSize=6 : Maximum number of players in a pack}';
+                             {--realmSize=6 : Maximum number of dominions in one realm}
+                             {--packSize=3 : Maximum number of players in a pack}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';

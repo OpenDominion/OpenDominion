@@ -21,6 +21,9 @@ class PopulationCalculator
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /** @var QueueService */
     protected $queueService;
 
@@ -37,6 +40,7 @@ class PopulationCalculator
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
@@ -46,6 +50,7 @@ class PopulationCalculator
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
+        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         UnitHelper $unitHelper
@@ -54,6 +59,7 @@ class PopulationCalculator
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
@@ -185,25 +191,9 @@ class PopulationCalculator
         // todo
 
         // Prestige Bonus
-        // todo: $prestige / 10000?
-        $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
-        // todo: re-check this vs other prestige formulae
+        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
-        /*
-        todo: cleanup
-        = ($Overview.$I$15
-            + $Imps.Z3
-            + MAX(
-                $Constants.$M$38 * $Techs.AE3;
-                $Constants.$M$50 * $Techs.AQ3
-            )
-        )
-        * (1 + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100)
-        + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
-        */
-
-        return (1 + $multiplier);
+        return (1 + $multiplier) * (1 + $prestigeMultiplier);
     }
 
     /**

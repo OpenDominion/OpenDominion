@@ -8,8 +8,8 @@ $router->get('/test', function () {
         redirect()->route('auth.login');
     }
 
-    $user = auth()->user();
-    $dominion = $user->dominions->first();
+    $selectorService = app(\OpenDominion\Services\Dominion\SelectorService::class);
+    $dominion = $selectorService->getUserSelectedDominion();
 
     // ...
 

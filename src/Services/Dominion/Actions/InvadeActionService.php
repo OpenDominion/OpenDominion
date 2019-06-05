@@ -712,10 +712,19 @@ class InvadeActionService
 
         $this->landLost = $acresLost;
 
+        $queueData = $landGainedPerLandType;
+
+        // Only gain discounted acres at or above prestige range
+        if ($range >= 75) {
+            $queueData += [
+                'discounted_land' => array_sum($landGainedPerLandType)
+            ];
+        }
+
         $this->queueService->queueResources(
             'invasion',
             $dominion,
-            $landGainedPerLandType + ['discounted_land' => array_sum($landGainedPerLandType)] // Also include discounted land count to attacker
+            $queueData
         );
     }
 
@@ -1103,8 +1112,8 @@ class InvadeActionService
             return ($unit->slot === $slot);
         })->first();
 
-        if (($unit->perkType !== null) && ($unit->perkType->key === 'faster_return')) {
-            $hours -= (int)$unit->unit_perk_type_values;
+        if ($unit->getPerkValue('faster_return') !== 0) {
+            $hours -= (int)$unit->getPerkValue('faster_return');
         }
 
         return $hours;

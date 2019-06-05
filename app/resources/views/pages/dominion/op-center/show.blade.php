@@ -141,19 +141,19 @@
                                         <td>{{ number_format($infoOp->data['military_draftees']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(0)->name }}</td>
+                                        <td>{{ $race->units->get(0)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit1']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(1)->name }}</td>
+                                        <td>{{ $race->units->get(1)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit2']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(2)->name }}</td>
+                                        <td>{{ $race->units->get(2)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit3']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(3)->name }}</td>
+                                        <td>{{ $race->units->get(3)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit4']) }}</td>
                                     </tr>
                                     <tr>
@@ -527,7 +527,7 @@
                                     @endfor
                                     <td class="text-center">
                                         @if ($amountTraining = array_get($infoOp->data, "units.returning.{$unitType}"))
-                                            {{ number_format(array_sum($amountTraining)) }}
+                                            ~{{ number_format(array_sum($amountTraining)) }}
                                         @else
                                             0
                                         @endif

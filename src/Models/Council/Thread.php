@@ -6,6 +6,24 @@ use OpenDominion\Models\AbstractModel;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 
+/**
+ * OpenDominion\Models\Council\Thread
+ *
+ * @property int $id
+ * @property int $realm_id
+ * @property int $dominion_id
+ * @property string $title
+ * @property string $body
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \OpenDominion\Models\Dominion $dominion
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Post[] $posts
+ * @property-read \OpenDominion\Models\Realm $realm
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Council\Thread newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Council\Thread newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Council\Thread query()
+ * @mixin \Eloquent
+ */
 class Thread extends AbstractModel
 {
     protected $table = 'council_threads';

@@ -14,7 +14,13 @@
         <div class="col-sm-3">
             <div class="box">
                 <div class="box-header with-border text-center">
-                    <h3 class="box-title">Current Round</h3>
+                    <h3 class="box-title">
+                        @if ($currentRound === null)
+                            Current Round
+                        @else
+                            {{ $currentRound->hasStarted() ? 'Current' : 'Next' }} Round: <strong>{{ $currentRound->number }}</strong>
+                        @endif
+                    </h3>
                 </div>
                 @if ($currentRound === null || $currentRound->hasEnded())
                     <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
@@ -38,6 +44,14 @@
                     </div>
                     <div class="box-body text-center">
                         <p>Registration for round {{ $currentRound->number }} is open.</p>
+                        <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date->diffForHumans() }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                    </div>
+                @elseif (!$currentRound->hasStarted())
+                    <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                        <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
+                    </div>
+                    <div class="box-body text-center">
+                        <p>Registration for round {{ $currentRound->number }} opens <abbr title="{{ $currentRound->start_date->subDays(3) }}">{{ $currentRound->start_date->subDays(3)->diffForHumans() }}</abbr>.</p>
                         <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date->diffForHumans() }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
                 @else
@@ -89,7 +103,7 @@
                     <h3 class="box-title">Welcome to OpenDominion!</h3>
                 </div>
                 <div class="box-body">
-                    <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with up to 11 other dominions and you must work together to make your realm the wealthiest and most powerful in the current round!</p>
+                    <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the current round!</p>
 
                     <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="https://dominion.opendominion.net/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
 

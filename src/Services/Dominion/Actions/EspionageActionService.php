@@ -206,6 +206,7 @@ class EspionageActionService
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                $spiesKilled = min($spiesKilled, $dominion->military_spies); // Cap to amount of spies we have to prevent negatives, see issue #486
 
                 $dominion->military_spies -= $spiesKilled;
 
@@ -217,9 +218,15 @@ class EspionageActionService
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
+                if ($spiesKilled > 0) {
+                    $message = ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.');
+                } else {
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
+                }
+
                 return [
                     'success' => false,
-                    'message' => ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.'),
+                    'message' => $message,
                     'alert-type' => 'warning',
                 ];
             }

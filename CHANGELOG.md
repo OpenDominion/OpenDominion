@@ -5,13 +5,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [0.6.1-5] - 2019-05-14
-### Fixed
-- Fix a bug with checking whether certain spells are active
-- Amount of boats on status page and Clear Sight now also include returning boats from invasion
+## [0.6.2] - 2019-06-05
+### Changed
+- Changed realm size to 6 (from 12)
+- Changed max pack size to 3 (from 6)
+- Only one pack can now exist per realm
+- Changed invasion range from 60-166% to 75-166% (until guards are implemented)
+- Invasion reports can now only be viewed by people in the same realm as the invader and defender
+- Data in the Op Center is now shown to the whole realm, regardless of range
+- Failing a spell/spy info operation now keeps the target selected in the dropdown
+- Changed relative land size percentage colors to make more sense
+- Discounted acres after invasion are now only gained upon hitting 75%+ targets
+- Minor text changes
 
+### Fixed
+- Fixed unit OP/DP rounding display issue in case of non-integer numbers (Firewalker Phoenix)
+- Fixed an issue where failing an info op tried to kill off more spies than you had
+- Fixed text when last rankings are updated
+
+## [0.6.1-5] - 2019-05-14
 ### Changed
 - "Remember Me" on login page is now checked by default
+- Spy losses from failed ops now fluctuate slightly based on relative land size
+
+### Fixed
+- Fix a bug with checking whether certain spells are active, fixes the notorious 'Ares Call/DP bug'
+- Town Crier page now shows invasions from/to your own dominion
+- Amount of boats on status page and Clear Sight now also include returning boats from invasion
 
 ## [0.6.1-4] - 2019-04-16
 ### Changed
@@ -208,7 +228,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...HEAD
+[0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
 [0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5
 [0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4
 [0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3

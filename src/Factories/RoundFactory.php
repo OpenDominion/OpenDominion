@@ -9,7 +9,7 @@ use OpenDominion\Models\RoundLeague;
 class RoundFactory
 {
     // todo: move to config somewhere?
-    const ROUND_DURATION_IN_DAYS = 50;
+    private const ROUND_DURATION_IN_DAYS = 50;
 
     /**
      * Creates and returns a new Round in a RoundLeague.

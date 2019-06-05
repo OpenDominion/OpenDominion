@@ -6,6 +6,30 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * OpenDominion\Models\Round
+ *
+ * @property int $id
+ * @property int $round_league_id
+ * @property int $number
+ * @property string $name
+ * @property int $realm_size
+ * @property int $pack_size
+ * @property \Illuminate\Support\Carbon $start_date
+ * @property \Illuminate\Support\Carbon $end_date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEvents
+ * @property-read \OpenDominion\Models\RoundLeague $league
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Pack[] $packs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm[] $realms
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round active()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round query()
+ * @mixin \Eloquent
+ */
 class Round extends AbstractModel
 {
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];

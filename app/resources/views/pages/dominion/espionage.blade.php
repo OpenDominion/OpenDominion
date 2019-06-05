@@ -97,6 +97,9 @@
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
+            @if (session('target_dominion'))
+                $('.select2').val('{{ session('target_dominion') }}').trigger('change.select2');
+            @endif
         })(jQuery);
 
         function select2Template(state) {
@@ -108,16 +111,14 @@
             const percentage = state.element.dataset.percentage;
             let difficultyClass;
 
-            if (percentage >= 133) {
+            if (percentage >= 120) {
                 difficultyClass = 'text-red';
-            } else if (percentage >= 120) {
-                difficultyClass = 'text-orange';
             } else if (percentage >= 75) {
-                difficultyClass = 'text-yellow';
-            } else if (percentage >= 66) {
                 difficultyClass = 'text-green';
-            } else {
+            } else if (percentage >= 66) {
                 difficultyClass = 'text-muted';
+            } else {
+                difficultyClass = 'text-gray';
             }
 
             return $(`

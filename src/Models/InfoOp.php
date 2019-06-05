@@ -3,8 +3,24 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * OpenDominion\Models\InfoOp
+ *
+ * @property int $id
+ * @property int $source_realm_id
+ * @property int $source_dominion_id
+ * @property int $target_dominion_id
+ * @property string $type
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \OpenDominion\Models\Dominion $sourceDominion
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\InfoOp newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\InfoOp newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\InfoOp query()
+ * @mixin \Eloquent
+ */
 class InfoOp extends AbstractModel
 {
     protected $casts = [

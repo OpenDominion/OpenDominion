@@ -91,10 +91,10 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                {{ number_format($unit->power_offense) }}
+                                                {{ $unit->power_offense }}
                                                 /
                                                 <span class="text-muted">
-                                                    {{ number_format($unit->power_defense) }}
+                                                    {{ $unit->power_defense }}
                                                 </span>
                                             </td>
                                             <td class="text-center">
@@ -412,16 +412,14 @@
             const percentage = state.element.dataset.percentage;
             let difficultyClass;
 
-            if (percentage >= 133) {
+            if (percentage >= 120) {
                 difficultyClass = 'text-red';
-            } else if (percentage >= 120) {
-                difficultyClass = 'text-orange';
             } else if (percentage >= 75) {
-                difficultyClass = 'text-yellow';
-            } else if (percentage >= 66) {
                 difficultyClass = 'text-green';
-            } else {
+            } else if (percentage >= 66) {
                 difficultyClass = 'text-muted';
+            } else {
+                difficultyClass = 'text-gray';
             }
 
             return $(`

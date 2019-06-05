@@ -43,7 +43,7 @@
 
                 <li class="header">BLACK OPS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
-                <li class="{{ Route::is('dominion.invade') ? 'active' : null }}"><a href="{{ route('dominion.invade') }}"><i class="ra ra-crossed-swords ra-fw"></i> <span>Invade</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.invade') ? 'active' : null }}"><a href="{{ route('dominion.invade') }}"><i class="ra ra-crossed-swords ra-fw"></i> <span>Invade</span></a></li>
                 <li class="{{ Route::is('dominion.magic') ? 'active' : null }}"><a href="{{ route('dominion.magic') }}"><i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span></a></li>
                 <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}"><a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a></li>
 
@@ -54,7 +54,7 @@
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy ra-fw"></i> <span>Rankings</span></a></li>
-                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}"><a href="{{ route('dominion.town-crier') }}"><i class="fa fa-newspaper-o ra-fw"></i> <span>Town Crier</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}"><a href="{{ route('dominion.town-crier') }}"><i class="fa fa-newspaper-o ra-fw"></i> <span>Town Crier</span></a></li>
 
                 {{--<li class="header">MISC</li>--}}
 

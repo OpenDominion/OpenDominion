@@ -14,6 +14,9 @@ class MilitaryCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /** @var QueueService */
     protected $queueService;
 
@@ -25,17 +28,20 @@ class MilitaryCalculator
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      */
     public function __construct(
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
+        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator
     ) {
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
     }
@@ -109,7 +115,7 @@ class MilitaryCalculator
         ]);
 
         // Prestige
-        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
+        $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
         // Tech: Military (+5%)
         // Tech: Magical Weaponry (+10%)
@@ -291,12 +297,8 @@ class MilitaryCalculator
 
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {
-            if ($unit->perkType === null) {
-                continue;
-            }
-
-            if ($unit->perkType->key === 'counts_as_spy') {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            if ($unit->getPerkValue('counts_as_spy') !== 0) {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->getPerkValue('counts_as_spy'));
             }
         }
 
