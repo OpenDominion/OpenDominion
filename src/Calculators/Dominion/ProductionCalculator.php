@@ -12,11 +12,11 @@ class ProductionCalculator
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
-    /** @var SpellCalculator */
-    protected $spellCalculator;
-
     /** @var PrestigeCalculator */
     private $prestigeCalculator;
+
+    /** @var SpellCalculator */
+    protected $spellCalculator;
 
     /**
      * ProductionCalculator constructor.
@@ -34,8 +34,8 @@ class ProductionCalculator
     {
         $this->improvementCalculator = $improvementCalculator;
         $this->populationCalculator = $populationCalculator;
-        $this->spellCalculator = $spellCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     //<editor-fold desc="Platinum">
@@ -207,10 +207,9 @@ class ProductionCalculator
         // todo
 
         // Prestige Bonus
-        $prestigeBonus = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
-        $totalMultiplierWithPrestige = (1 + $multiplier) * (1 + $prestigeBonus);
+        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
-        return $totalMultiplierWithPrestige;
+        return (1 + $multiplier) * (1 + $prestigeMultiplier);
     }
 
     /**
