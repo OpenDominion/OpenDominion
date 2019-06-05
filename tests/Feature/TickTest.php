@@ -247,18 +247,20 @@ class TickTest extends AbstractBrowserKitTestCase
         // Refresh active spells
         $spellCalculator->getActiveSpells($dominion, true);
 
-        // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7544 food
-        $this->assertEquals(7544, $productionCalculator->getFoodProduction($dominion));
+        // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7543 food
+        // Note: Prestige calc got changed around 2019-06-05, calculation for
+        // food production multiplier and max pop is slightly different now
+        $this->assertEquals(7543, $productionCalculator->getFoodProduction($dominion));
         $this->assertEquals(7553, $productionCalculator->getFoodConsumption($dominion));
         $this->assertEquals(275, round($productionCalculator->getFoodDecay($dominion)));
 
-        // 7544 - 7553 - 275 = -284
-        $this->assertEquals(-284, $productionCalculator->getFoodNetChange($dominion));
+        // 7543 - 7553 - 275 = -285
+        $this->assertEquals(-285, $productionCalculator->getFoodNetChange($dominion));
 
         Artisan::call('game:tick');
         $dominion->refresh();
 
-        // 27487 food - 284 net change = 27203 food
-        $this->assertEquals(27203, $dominion->resource_food);
+        // 27487 food - 285 net change = 27202 food
+        $this->assertEquals(27202, $dominion->resource_food);
     }
 }
