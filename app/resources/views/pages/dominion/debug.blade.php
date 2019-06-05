@@ -255,6 +255,7 @@
                 <div class="box-body">
                     <p>
                         {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($guardMembershipService, [
+                            'canJoinGuards',
                             'isRoyalGuardApplicant',
                             'isEliteGuardApplicant',
                             'isRoyalGuardMember',
