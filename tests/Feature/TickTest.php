@@ -216,7 +216,9 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
-        $dominion = $this->createDominion($user, $round);
+        // don't use a race that has food-related perks
+        $race = \OpenDominion\Models\Race::where('name', 'Human')->first();
+        $dominion = $this->createDominion($user, $round, $race);
 
         $productionCalculator = $this->app->make(ProductionCalculator::class);
         $spellActionService = $this->app->make(SpellActionService::class);

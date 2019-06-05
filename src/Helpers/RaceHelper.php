@@ -75,7 +75,7 @@ SYLVAN;
 
         // Evil races
 
-        $descriptions['darkelf'] = <<<DARKELF
+        $descriptions['dark elf'] = <<<DARKELF
 <p>Placeholder description.</p>
 <p class="text-green">
     Increased mana population<br>
