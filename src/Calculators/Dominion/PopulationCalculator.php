@@ -21,6 +21,9 @@ class PopulationCalculator
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /** @var QueueService */
     protected $queueService;
 
@@ -29,9 +32,6 @@ class PopulationCalculator
 
     /** @var UnitHelper */
     protected $unitHelper;
-
-    /** @var PrestigeCalculator */
-    private $prestigeCalculator;
 
     /**
      * PopulationCalculator constructor.
@@ -59,10 +59,10 @@ class PopulationCalculator
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
-        $this->prestigeCalculator = $prestigeCalculator;
     }
 
     /**
@@ -191,24 +191,9 @@ class PopulationCalculator
         // todo
 
         // Prestige Bonus
+        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
-        /*
-        todo: cleanup
-        = ($Overview.$I$15
-            + $Imps.Z3
-            + MAX(
-                $Constants.$M$38 * $Techs.AE3;
-                $Constants.$M$50 * $Techs.AQ3
-            )
-        )
-        * (1 + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100)
-        + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
-        */
-
-        $prestigeBonus = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
-        $totalMultiplierWithPrestige = (1 + $multiplier) * (1 + $prestigeBonus);
-
-        return $totalMultiplierWithPrestige;
+        return (1 + $multiplier) * (1 + $prestigeMultiplier);
     }
 
     /**

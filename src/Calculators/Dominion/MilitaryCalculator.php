@@ -14,14 +14,14 @@ class MilitaryCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /** @var QueueService */
     protected $queueService;
 
     /** @var SpellCalculator */
     protected $spellCalculator;
-
-    /** @var PrestigeCalculator */
-    private $prestigeCalculator;
 
     /**
      * MilitaryCalculator constructor.
@@ -41,9 +41,9 @@ class MilitaryCalculator
     ) {
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
-        $this->prestigeCalculator = $prestigeCalculator;
     }
 
     /**
