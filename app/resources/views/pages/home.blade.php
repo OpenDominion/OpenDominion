@@ -40,6 +40,14 @@
                         <p>Registration for round {{ $currentRound->number }} is open.</p>
                         <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date->diffForHumans() }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
+                @elseif (!$currentRound->hasStarted())
+                    <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
+                        <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
+                    </div>
+                    <div class="box-body text-center">
+                        <p>Registration for round {{ $currentRound->number }} opens <abbr title="{{ $currentRound->start_date->subDays(3) }}">{{ $currentRound->start_date->subDays(3)->diffForHumans() }}</abbr>.</p>
+                        <p>The round starts in <abbr title="{{ $currentRound->start_date }}">{{ $currentRound->start_date->diffForHumans() }}</abbr> and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                    </div>
                 @else
                     <div class="box-body text-center" style="padding: 0;">
                         <p style="font-size: 1.5em;" class="text-green">Active</p>
