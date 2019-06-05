@@ -208,7 +208,7 @@ class ConstructionCalculator
      * @param Dominion $dominion
      * @return float
      */
-    protected function getCostMultiplier(Dominion $dominion): float
+    public function getCostMultiplier(Dominion $dominion): float
     {
         $multiplier = 0;
 
