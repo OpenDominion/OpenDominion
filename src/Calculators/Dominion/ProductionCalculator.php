@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class ProductionCalculator
 {
@@ -18,6 +19,9 @@ class ProductionCalculator
     /** @var PrestigeCalculator */
     private $prestigeCalculator;
 
+    /** @var GuardMembershipService */
+    private $guardMembershipService;
+
     /**
      * ProductionCalculator constructor.
      *
@@ -25,17 +29,20 @@ class ProductionCalculator
      * @param PopulationCalculator $populationCalculator
      * @param PrestigeCalculator $prestigeCalculator
      * @param SpellCalculator $spellCalculator
+     * @param GuardMembershipService $guardMembershipService
      */
     public function __construct(
         ImprovementCalculator $improvementCalculator,
         PopulationCalculator $populationCalculator,
         PrestigeCalculator $prestigeCalculator,
-        SpellCalculator $spellCalculator)
+        SpellCalculator $spellCalculator,
+        GuardMembershipService $guardMembershipService)
     {
         $this->improvementCalculator = $improvementCalculator;
         $this->populationCalculator = $populationCalculator;
         $this->spellCalculator = $spellCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
+        $this->guardMembershipService = $guardMembershipService;
     }
 
     //<editor-fold desc="Platinum">
@@ -105,7 +112,7 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellMidasTouch = 10;
-//        $guardTax = -2;
+        $guardTax = -2;
 //        $techBankersForesight = 5;
 //        $techTreasureHunt = 12.5;
 
@@ -119,7 +126,9 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
 
         // Guard Tax
-        // todo
+        if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            $multiplier += ($guardTax / 100);
+        }
 
         // Tech: Treasure Hunt or Banker's Foresight
         // todo
