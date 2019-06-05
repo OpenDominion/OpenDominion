@@ -140,7 +140,7 @@ class GuardService
     {
         if ($this->isRoyalGuardMember($dominion)) {
             $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
-            $leaveDate = $modifiedJoinDate->add(self::GUARD_LEAVE_WAIT_IN_HOURS);
+            $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
             return $leaveDate->diffInHours(now()->format('Y-m-d H:00:00'));
         }
         return 0;
@@ -156,7 +156,7 @@ class GuardService
     {
         if ($this->isEliteGuardMember($dominion)) {
             $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
-            $leaveDate = $modifiedJoinDate->add(self::GUARD_LEAVE_WAIT_IN_HOURS);
+            $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
             return $leaveDate->diffInHours(now()->format('Y-m-d H:00:00'));
         }
         return 0;

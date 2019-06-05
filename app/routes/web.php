@@ -131,6 +131,13 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
+            // Guard Membership
+            $router->get('guard-membership')->uses('Dominion\GuardController@getGuardMembership')->name('guard-membership');
+            $router->post('guard-membership/join/royal')->uses('Dominion\GuardController@postJoinRoyalGuard')->name('guard-membership.join.royal');
+            $router->post('guard-membership/join/elite')->uses('Dominion\GuardController@postJoinEliteGuard')->name('guard-membership.join.elite');
+            $router->post('guard-membership/leave/royal')->uses('Dominion\GuardController@postLeaveRoyalGuard')->name('guard-membership.leave.royal');
+            $router->post('guard-membership/leave/elite')->uses('Dominion\GuardController@postLeaveEliteGuard')->name('guard-membership.leave.elite');
+
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
             $router->get('council/create')->uses('Dominion\CouncilController@getCreate')->name('council.create');

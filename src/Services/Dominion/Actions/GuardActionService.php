@@ -58,7 +58,7 @@ class GuardActionService
      */
     public function joinEliteGuard(Dominion $dominion): array
     {
-        if($this->guardService->isRoyalGuardMember($dominion)) {
+        if(!$this->guardService->isRoyalGuardMember($dominion)) {
             throw new RuntimeException('You must already be a member of the Emperor\'s Royal Guard.');
         } elseif ($this->guardService->isEliteGuardMember($dominion)) {
             throw new RuntimeException('You are already a member of the Emperor\'s Elite Guard.');
