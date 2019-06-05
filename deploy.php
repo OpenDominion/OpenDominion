@@ -40,7 +40,7 @@ task('artisan:version:update', function () {
 
 desc('Reload php-fpm');
 task('php-fpm:reload', function () {
-    run('sudo service php7.2-fpm reload');
+    run('sudo service php7.3-fpm reload');
 });
 
 desc('Restart supervisor workers');
