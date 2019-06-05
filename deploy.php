@@ -48,6 +48,11 @@ task('supervisorctl:restart', function () {
     run('sudo supervisorctl restart all');
 });
 
+desc('Syncing game data');
+task('artisan:game:data:sync', function () {
+    run('cd {{release_path}} && {{bin/php}} artisan game:data:sync');
+});
+
 // Execute tasks
 
 task('deploy', [
@@ -68,6 +73,7 @@ task('deploy', [
     'artisan:optimize',
     'artisan:down', //
     'artisan:migrate', //
+    'artisan:game:data:sync', //
     'artisan:version:update', //
     'deploy:symlink',
     'php-fpm:reload', //
