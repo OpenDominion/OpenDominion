@@ -14,7 +14,13 @@
         <div class="col-sm-3">
             <div class="box">
                 <div class="box-header with-border text-center">
-                    <h3 class="box-title">Current Round</h3>
+                    <h3 class="box-title">
+                        @if ($currentRound === null)
+                            Current Round
+                        @else
+                            {{ $currentRound->hasStarted() ? 'Current' : 'Next' }} Round: <strong>{{ $currentRound->number }}</strong>
+                        @endif
+                    </h3>
                 </div>
                 @if ($currentRound === null || $currentRound->hasEnded())
                     <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
