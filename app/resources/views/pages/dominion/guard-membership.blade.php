@@ -39,7 +39,7 @@
                             @endif
                         </div>
                         <div class="col-xs-6 text-center">
-                            <h4 class="text-orange">The Emperor's Elite Guard</h4>
+                            <h4 class="text-yellow">The Emperor's Elite Guard</h4>
                             <ul class="text-left" style="padding: 0px 50px;">
                                 <li>Exploration cost increased by 25%</li>
                                 <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="box-body">
                     @if ($isEliteGuardMember)
-                        <p>You are a member of the <span class="text-orange">Emperor's Elite Guard</span>.</p>
+                        <p>You are a member of the <span class="text-yellow">Emperor's Elite Guard</span>.</p>
                         @if ($hoursBeforeLeaveEliteGuard)
                             <p>You cannot leave for {{ $hoursBeforeLeaveEliteGuard }} hours.</p>
                         @endif
