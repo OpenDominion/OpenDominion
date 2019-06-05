@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 
-class GuardService
+class GuardMembershipService
 {
     public const GUARD_JOIN_WAIT_IN_HOURS = 24;
 

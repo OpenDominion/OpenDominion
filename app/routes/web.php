@@ -132,11 +132,11 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
             // Guard Membership
-            $router->get('guard-membership')->uses('Dominion\GuardController@getGuardMembership')->name('guard-membership');
-            $router->post('guard-membership/join/royal')->uses('Dominion\GuardController@postJoinRoyalGuard')->name('guard-membership.join.royal');
-            $router->post('guard-membership/join/elite')->uses('Dominion\GuardController@postJoinEliteGuard')->name('guard-membership.join.elite');
-            $router->post('guard-membership/leave/royal')->uses('Dominion\GuardController@postLeaveRoyalGuard')->name('guard-membership.leave.royal');
-            $router->post('guard-membership/leave/elite')->uses('Dominion\GuardController@postLeaveEliteGuard')->name('guard-membership.leave.elite');
+            $router->get('guard-membership')->uses('Dominion\GuardMembershipController@getGuardMembership')->name('guard-membership');
+            $router->post('guard-membership/join/royal')->uses('Dominion\GuardMembershipController@postJoinRoyalGuard')->name('guard-membership.join.royal');
+            $router->post('guard-membership/join/elite')->uses('Dominion\GuardMembershipController@postJoinEliteGuard')->name('guard-membership.join.elite');
+            $router->post('guard-membership/leave/royal')->uses('Dominion\GuardMembershipController@postLeaveRoyalGuard')->name('guard-membership.leave.royal');
+            $router->post('guard-membership/leave/elite')->uses('Dominion\GuardMembershipController@postLeaveEliteGuard')->name('guard-membership.leave.elite');
 
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
