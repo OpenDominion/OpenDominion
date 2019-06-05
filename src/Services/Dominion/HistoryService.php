@@ -22,6 +22,10 @@ class HistoryService
     public const EVENT_ACTION_CAST_SPELL = 'cast spell';
     public const EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION = 'perform espionage operation';
     public const EVENT_ACTION_INVADE = 'invade';
+    public const EVENT_ACTION_JOIN_ROYAL_GUARD = 'join royal guard';
+    public const EVENT_ACTION_JOIN_ELITE_GUARD = 'join elite guard';
+    public const EVENT_ACTION_LEAVE_ROYAL_GUARD = 'leave royal guard';
+    public const EVENT_ACTION_LEAVE_ELITE_GUARD = 'leave elite guard';
 
     /**
      * Returns a cloned dominion instance with state at a certain time.

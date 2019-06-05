@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use Carbon\Carbon;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\HistoryService;
 
 class GuardService
 {
@@ -167,10 +168,10 @@ class GuardService
      * @param Dominion $dominion
      * @return void
      */
-    public function setRoyalGuardApplication(Dominion $dominion)
+    public function joinRoyalGuard(Dominion $dominion)
     {
         $dominion->royal_guard = now()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ROYAL_GUARD]);
     }
 
     /**
@@ -179,10 +180,10 @@ class GuardService
      * @param Dominion $dominion
      * @return void
      */
-    public function setEliteGuardApplication(Dominion $dominion)
+    public function joinEliteGuard(Dominion $dominion)
     {
         $dominion->elite_guard = now()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ELITE_GUARD]);
     }
 
     /**
@@ -194,7 +195,7 @@ class GuardService
     public function leaveRoyalGuard(Dominion $dominion)
     {
         $dominion->royal_guard = null;
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_ROYAL_GUARD]);
     }
 
     /**
@@ -206,6 +207,6 @@ class GuardService
     public function leaveEliteGuard(Dominion $dominion)
     {
         $dominion->elite_guard = null;
-        $dominion->save();
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_LEAVE_ELITE_GUARD]);
     }
 }
