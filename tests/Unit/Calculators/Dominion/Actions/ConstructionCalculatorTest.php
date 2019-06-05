@@ -86,17 +86,20 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
         int $totalBarrenLand,
         int $platinum,
         int $lumber,
+        int $discountedLand,
         int $expectedMaxAfford
     ) {
-        $this->sut->shouldReceive('getPlatinumCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
-        $this->sut->shouldReceive('getLumberCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
-
         $this->dominionMock->shouldReceive('getAttribute')->with('resource_platinum')->andReturn($platinum)->byDefault();
         $this->dominionMock->shouldReceive('getAttribute')->with('resource_lumber')->andReturn($lumber)->byDefault();
+        $this->dominionMock->shouldReceive('getAttribute')->with('discounted_land')->andReturn($discountedLand)->byDefault();
 
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalBuildings)->byDefault();
-        $this->landCalculator->shouldReceive('getTotalLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalLand)->byDefault();
+
         $this->landCalculator->shouldReceive('getTotalBarrenLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalBarrenLand)->byDefault();
+        $this->landCalculator->shouldReceive('getTotalLand')->with($this->dominionMock)->atLeast($this->once())->andReturn($totalLand)->byDefault();
+
+        $this->sut->shouldReceive('getPlatinumCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
+        $this->sut->shouldReceive('getLumberCostMultiplier')->with($this->dominionMock)->atLeast($this->once())->andReturn(1);
 
         $this->assertEquals($expectedMaxAfford, $this->sut->getMaxAfford($this->dominionMock));
 
@@ -111,6 +114,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'totalBarrenLand' => 160,
                 'platinum' => 100000,
                 'lumber' => 15000,
+                'discounted_land' => 0,
                 'expectedMaxAfford' => 117,
             ],
             [
@@ -119,6 +123,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'totalBarrenLand' => 3000,
                 'platinum' => 1000000,
                 'lumber' => 150000,
+                'discounted_land' => 0,
                 'expectedMaxAfford' => 114,
             ],
             [
@@ -127,8 +132,10 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
                 'totalBarrenLand' => 4000,
                 'platinum' => 10000000,
                 'lumber' => 1500000,
+                'discounted_land' => 0,
                 'expectedMaxAfford' => 714,
             ],
+            // todo: add test case for discounted_land
         ];
     }
 }
