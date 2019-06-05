@@ -12,6 +12,11 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
+                        @if (!$canJoinGuards)
+                            <div class="col-xs-12 text-center">
+                                <p class="text-red">You cannot join the Emperor's Royal Guard for the first five days of the round.</p>
+                            </div>
+                        @endif
                         <div class="col-xs-6 text-center">
                             <h4 class="text-green">The Emperor's Royal Guard</h4>
                             <ul class="text-left" style="padding: 0px 50px;">
@@ -32,7 +37,7 @@
                             @else
                                 <form action="{{ route('dominion.guard-membership.join.royal') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Join Royal Guard
                                     </button>
                                 </form>
@@ -58,7 +63,7 @@
                             @else
                                 <form action="{{ route('dominion.guard-membership.join.elite') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$isRoyalGuardMember ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
                                         Join Elite Guard
                                     </button>
                                 </form>

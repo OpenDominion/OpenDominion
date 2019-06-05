@@ -8,9 +8,27 @@ use OpenDominion\Services\Dominion\HistoryService;
 
 class GuardMembershipService
 {
+    public const GUARD_DAYS_AFTER_ROUND_START = 5;
+
     public const GUARD_JOIN_WAIT_IN_HOURS = 24;
 
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
+
+    // todo: use these constants in views/messages
+
+    /** 
+     * Returns guard availability for a Dominion.
+     * 
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function canJoinGuards(Dominion $dominion): bool
+    {
+        if (now()->diffInDays($dominion->round->start_date) < self::GUARD_DAYS_AFTER_ROUND_START) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Returns the Dominion's royal guard join time.

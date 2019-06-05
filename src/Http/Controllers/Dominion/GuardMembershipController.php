@@ -15,6 +15,7 @@ class GuardMembershipController extends AbstractDominionController
         $guardMembershipService = app(GuardMembershipService::class);
 
         return view('pages.dominion.guard-membership', [
+            'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),
             'isEliteGuardApplicant' => $guardMembershipService->isEliteGuardApplicant($dominion),
             'isRoyalGuardMember' => $guardMembershipService->isRoyalGuardMember($dominion),

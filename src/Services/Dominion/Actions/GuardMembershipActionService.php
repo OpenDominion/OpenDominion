@@ -33,7 +33,9 @@ class GuardMembershipActionService
      */
     public function joinRoyalGuard(Dominion $dominion): array
     {
-        // todo: cannot join for first 5 days
+        if (!$this->guardMembershipService->canJoinGuards($dominion)) {
+            throw new RuntimeException('You cannot join the Emperor\'s Royal Guard for the first five days of the round.');
+        }
         if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
             throw new RuntimeException('You are already a member of the Emperor\'s Royal Guard.');
         } elseif ($this->guardMembershipService->isRoyalGuardApplicant($dominion)) {
