@@ -13,6 +13,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\Dominion\AbstractDominionController;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class DebugController extends AbstractDominionController
 {
@@ -34,6 +35,7 @@ class DebugController extends AbstractDominionController
             'explorationCalculator' => app(ExplorationCalculator::class),
             'rezoningCalculator'  => app(RezoningCalculator::class),
             'trainingCalculator'  => app(TrainingCalculator::class),
+            'guardMembershipService' => app(GuardMembershipService::class),
         ]);
     }
 
