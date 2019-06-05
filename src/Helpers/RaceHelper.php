@@ -22,6 +22,32 @@ class RaceHelper
 </p>
 DWARF;
 
+        $descriptions['firewalker'] = <<<FIREWALKER
+<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
+<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+<p class="text-green">
+    Increased max population<br>
+    Increased gem production<br>
+    Reduced construction costs<br>
+    <span class="text-red">
+        Reduced lumber production
+    </span>
+</p>
+FIREWALKER;
+        // todo: ^ span in p? hacky hacky, move to yml pls
+
+        $descriptions['gnome'] = <<<GNOME
+<p>Placeholder description.</p>
+<p class="text-green">
+    Increased attack strength<br>
+    Decreased food consumption<br>
+    Increased gem production<br>
+    <span class="text-red">
+        Decreased max population
+    </span>
+</p>
+GNOME;
+
         $descriptions['halfling'] = <<<HALFLING
 <p>Placeholder description.</p>
 <p class="text-green">
@@ -47,20 +73,6 @@ HUMAN;
 </p>
 SYLVAN;
 
-        $descriptions['firewalker'] = <<<FIREWALKER
-<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
-<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
-<p class="text-green">
-    Increased max population<br>
-    Increased gem production<br>
-    Reduced construction costs<br>
-    <span class="text-red">
-        Reduced lumber production
-    </span>
-</p>
-FIREWALKER;
-        // todo: ^ span in p? hacky hacky, move to yml pls
-
         // Evil races
 
         $descriptions['darkelf'] = <<<DARKELF
@@ -82,13 +94,17 @@ DARKELF;
 </p>
 GOBLIN;
 
-        $descriptions['nomad'] = <<<NOMAD
-<p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
-<p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
+        $descriptions['icekin'] = <<<ICEKIN
+<p>Placeholder description.</p>
 <p class="text-green">
-    Increased mana production
+    Increased platinum production<br>
+    Decreased food consumption<br>
+    Decreased Archmage cost<br>
+    <span class="text-red">
+        Decreased lumber production
+    </span>
 </p>
-NOMAD;
+ICEKIN;
 
         $descriptions['lizardfolk'] = <<<LIZARDFOLK
 <p>These amphibious creatures hail from the depths of the seas, having remained mostly hidden for decades before resurfacing and joining the war.</p>
@@ -100,6 +116,26 @@ NOMAD;
     No boats needed
 </p>
 LIZARDFOLK;
+
+        $descriptions['nomad'] = <<<NOMAD
+<p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
+<p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
+<p class="text-green">
+    Increased mana production
+</p>
+NOMAD;
+
+        $descriptions['troll'] = <<<TROLL
+<p>Placeholder description.</p>
+<p class="text-green">
+    Increased attack strength<br>
+    <span class="text-red">
+        Reduced max population<br>
+        Increased food consumption<br>
+        Decreased spy strength
+    </span>
+</p>
+TROLL;
 
         $key = strtolower($race->name);
 
