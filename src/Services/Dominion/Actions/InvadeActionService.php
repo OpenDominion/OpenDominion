@@ -310,6 +310,8 @@ class InvadeActionService
             $alertType = 'danger';
         }
 
+        $this->rangeCalculator->checkGuardApplications($dominion, $target);
+
         return [
             'message' => $message,
             'alert-type' => $alertType,

@@ -149,6 +149,8 @@ class SpellActionService
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
         });
 
+        $this->rangeCalculator->checkGuardApplications($dominion, $target);
+
         return [
                 'message' => $result['message'], /* sprintf(
                     $this->getReturnMessageString($dominion), // todo

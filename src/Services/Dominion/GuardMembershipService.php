@@ -8,13 +8,13 @@ use OpenDominion\Services\Dominion\HistoryService;
 
 class GuardMembershipService
 {
+    // todo: use these constants in views/messages
     public const GUARD_DAYS_AFTER_ROUND_START = 5;
-
     public const GUARD_JOIN_WAIT_IN_HOURS = 24;
-
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
 
-    // todo: use these constants in views/messages
+    public const ROYAL_GUARD_RANGE = 0.6;
+    public const ELITE_GUARD_RANGE = 0.75;
 
     /** 
      * Returns guard availability for a Dominion.

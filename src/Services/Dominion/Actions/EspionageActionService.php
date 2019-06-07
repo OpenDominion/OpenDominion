@@ -128,7 +128,6 @@ class EspionageActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $operationKey, &$result, $target) {
-
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
 
@@ -144,8 +143,9 @@ class EspionageActionService
 
             $dominion->spy_strength -= 2; // todo: different values for different kind of ops (info ops 2%, rest 5%)
             $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION]);
-
         });
+
+        $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
         return [
                 'message' => $result['message'],
