@@ -39,8 +39,7 @@ class RealmFinderService
             ])
             ->groupBy('realms.id')
             ->having('dominions_count', '<', $round->realm_size)
-            ->orderBy('number')// Start from realm 1 to n, to fill the early realms first. Could be refactored later to
-            // sort on dominions_count asc, to fill more empty realms first
+            ->inRandomOrder()// Could be refactored later to sort on dominions_count asc, to fill more empty realms first
             ->get();
 
         // Iterate over suspected eligible realms and check pack status
