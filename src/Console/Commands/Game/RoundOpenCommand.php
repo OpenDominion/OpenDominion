@@ -5,6 +5,7 @@ namespace OpenDominion\Console\Commands\Game;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use OpenDominion\Console\Commands\CommandInterface;
+use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\RoundLeague;
 use RuntimeException;
@@ -26,16 +27,22 @@ class RoundOpenCommand extends Command implements CommandInterface
     /** @var RoundFactory */
     protected $roundFactory;
 
+    /** @var RealmFactory */
+    protected $realmFactory;
+
     /**
      * RoundOpenCommand constructor.
      *
      * @param RoundFactory $roundFactory
      */
-    public function __construct(RoundFactory $roundFactory)
+    public function __construct(
+        RoundFactory $roundFactory,
+        RealmFactory $realmFactory)
     {
         parent::__construct();
 
         $this->roundFactory = $roundFactory;
+        $this->realmFactory = $realmFactory;
     }
 
     /**
@@ -95,5 +102,13 @@ class RoundOpenCommand extends Command implements CommandInterface
         $round = $this->roundFactory->create($roundLeague, $startDate, $realmSize, $packSize);
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
+
+        // Prepopulate round with 5 good and 5 evil realms
+        for($i=1; $i<=5; $i++) {
+            $realm = $this->realmFactory->create($round, 'good');
+            $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
+            $realm = $this->realmFactory->create($round, 'evil');
+            $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
+        }
     }
 }
