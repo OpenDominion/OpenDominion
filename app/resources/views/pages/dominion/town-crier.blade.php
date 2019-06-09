@@ -92,7 +92,11 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>All the news for your realm can be seen here. The town crier gives you news for a 2 day period.</p>
+                    @if ($fromOpCenter)
+                        <p>All the news for the target's realm will be shown here. The town crier presents news for a 2 day period.</p>
+                    @else
+                        <p>All the news for your realm can be seen here. The town crier gives you news for a 2 day period.</p>
+                    @endif
                     <p>You will see only military operations, as well as death messages{{-- and important messages regarding Wonders of the World--}}. Magical and Spy attacks are not known to the Town Crier, and you will have to inquire in the council as to those types of attacks.</p>
                 </div>
             </div>
