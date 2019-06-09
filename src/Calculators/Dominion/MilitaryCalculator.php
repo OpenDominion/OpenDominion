@@ -334,7 +334,7 @@ class MilitaryCalculator
         return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
-    protected function getUnitPowerWithPerks(
+    public function getUnitPowerWithPerks(
         Dominion $dominion,
         ?string $opposingForceRaceName,
         ?float $landRatio,
