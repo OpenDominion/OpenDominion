@@ -15,7 +15,7 @@ units:
       offense: 4
       defense: 0
     perks:
-        fixed_casualties: 50
+      fixed_casualties: 50
   - name: Tinker
     cost:
       platinum: 300
