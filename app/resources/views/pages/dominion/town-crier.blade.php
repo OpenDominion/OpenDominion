@@ -70,7 +70,7 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <span title="{{ $gameEvent->created_at }}">{{ $gameEvent->created_at->diffForHumans() }}</span>
+                                            <span>{{ $gameEvent->created_at }}</span>
                                         </td>
                                     </tr>
                                 @endforeach

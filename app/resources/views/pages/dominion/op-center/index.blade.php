@@ -81,7 +81,7 @@
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $lastInfoOp->updated_at->diffForHumans() }}
+                                            {{ $lastInfoOp->updated_at }}
                                         </span>
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}">

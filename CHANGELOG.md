@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.6.2] - 2019-06-05
 ### Changed
 - Changed realm size to 6 (from 12)
 - Changed max pack size to 3 (from 6)
@@ -14,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Failing a spell/spy info operation now keeps the target selected in the dropdown
 - Changed relative land size percentage colors to make more sense
 - Discounted acres after invasion are now only gained upon hitting 75%+ targets
+- Changed timestamp displays from relative server time (eg '13 hours ago') to absolute server time (eg '2019-06-19 13:33:37'). A setting will be added in the future for this, including round time (eg 'Day 12 Hour 23')
 - Minor text changes
 
 ### Fixed
@@ -226,7 +229,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...HEAD
+[0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
 [0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5
 [0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4
 [0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3

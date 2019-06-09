@@ -32,7 +32,7 @@
                                 <a href="{{ $route }}">
                                     <i class="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.iconClass", 'fa fa-question') }}"></i>
                                     {{ $notification->data['message'] }}<br>
-                                    <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                    <small class="text-muted">{{ $notification->created_at }}</small>
                                 </a>
                             </li>
                         @endforeach
