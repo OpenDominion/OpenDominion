@@ -25,8 +25,7 @@ class CreateUnitPerksTable extends Migration
         });
 
         Schema::table('units', function (Blueprint $table) {
-            $table->dropColumn('unit_perk_type_id');
-            $table->dropColumn('unit_perk_type_values');
+            $table->dropColumn(['unit_perk_type_id', 'unit_perk_type_values']);
         });
     }
 

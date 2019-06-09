@@ -19,6 +19,21 @@ class RaceHelper
 <p>Short and grumpy, they harbor an intense hatred towards Goblins.</p>
 DWARF;
 
+        $descriptions['firewalker'] = <<<FIREWALKER
+<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
+<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+FIREWALKER;
+        // todo: ^ span in p? hacky hacky, move to yml pls
+
+        $descriptions['firewalker'] = <<<FIREWALKER
+<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
+<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+FIREWALKER;
+      
+        $descriptions['gnome'] = <<<GNOME
+<p>Placeholder description.</p>
+GNOME;
+
         $descriptions['halfling'] = <<<HALFLING
 <p>Placeholder description.</p>
 HALFLING;
@@ -32,14 +47,9 @@ HUMAN;
 <p>Placeholder description.</p>
 SYLVAN;
 
-        $descriptions['firewalker'] = <<<FIREWALKER
-<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
-<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
-FIREWALKER;
-
         // Evil races
 
-        $descriptions['darkelf'] = <<<DARKELF
+        $descriptions['dark elf'] = <<<DARKELF
 <p>Placeholder description.</p>
 DARKELF;
 
@@ -48,15 +58,23 @@ DARKELF;
 <p>Short, cunning, and gnarling, they hate anything that smells like Dwarf.</p>
 GOBLIN;
 
-        $descriptions['nomad'] = <<<NOMAD
-<p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
-<p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
-NOMAD;
+        $descriptions['icekin'] = <<<ICEKIN
+<p>Placeholder description.</p>
+ICEKIN;
 
         $descriptions['lizardfolk'] = <<<LIZARDFOLK
 <p>These amphibious creatures hail from the depths of the seas, having remained mostly hidden for decades before resurfacing and joining the war.</p>
 <p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
 LIZARDFOLK;
+
+        $descriptions['nomad'] = <<<NOMAD
+<p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
+<p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
+NOMAD;
+
+        $descriptions['troll'] = <<<TROLL
+<p>Placeholder description.</p>
+TROLL;
 
         $key = strtolower($race->name);
 

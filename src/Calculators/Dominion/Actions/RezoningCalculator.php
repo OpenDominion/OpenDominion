@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 
 class RezoningCalculator
@@ -10,14 +11,20 @@ class RezoningCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * RezoningCalculator constructor.
      *
      * @param LandCalculator $landCalculator
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(
+        LandCalculator $landCalculator,
+        SpellCalculator $spellCalculator)
     {
         $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     /**

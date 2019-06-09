@@ -48,8 +48,9 @@ class CasualtiesCalculator
             $multiplier = 0;
         } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) {
             // todo: refactor to combine with except_vs_{race}
-            if($landRatio >= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['immortal_vs_land_range']) / 100))
+            if ($landRatio >= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['immortal_vs_land_range']) / 100)) {
                 $multiplier = 0;
+            }
         } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
             // todo: check more immortal_except_vs_*
             // todo: icekin isn't implemented yet. Once I do, refactor this
