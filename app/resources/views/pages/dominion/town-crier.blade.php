@@ -4,11 +4,12 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-newspaper-o"></i> Town Crier for {{ $realm->name }} (#{{ $realm->number }})</h3>
+                    <h3 class="box-title">
+                        <i class="fa fa-newspaper-o"></i> Town Crier for {{ $realm->name }} (#{{ $realm->number }})
+                    </h3>
                 </div>
 
                 @if ($gameEvents->isEmpty())
@@ -17,7 +18,6 @@
                     </div>
                 @else
                     <div class="box-body table-responsive no-padding">
-
                         <table class="table table-striped">
                             <colgroup>
                                 <col>
@@ -63,7 +63,11 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ route('dominion.event', [$gameEvent->id]) }}">Link</a>
+                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id)
+                                                <a href="{{ route('dominion.event', [$gameEvent->id]) }}">Link</a>
+                                            @else
+                                                --
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <span title="{{ $gameEvent->created_at }}">{{ $gameEvent->created_at->diffForHumans() }}</span>
@@ -72,7 +76,11 @@
                                 @endforeach
                             </tbody>
                         </table>
-
+                        @if ($fromOpCenter)
+                            <div class="box-footer">
+                                <em>Revealed <abbr title="{{ $clairvoyanceInfoOp->updated_at }}">{{ $clairvoyanceInfoOp->updated_at->diffForHumans() }}</abbr> by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
+                            </div>
+                        @endif
                     </div>
                 @endif
             </div>

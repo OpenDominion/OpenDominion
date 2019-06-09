@@ -80,7 +80,7 @@ class InfoOpService
             return (
                 !$infoOp->isInvalid() &&
                 ($infoOp->type === $type) &&
-                $infoOp['targetRealmId'] == $targetRealm->id
+                $infoOp->target_realm_id == $targetRealm->id
             );
         })->first();
     }
@@ -189,7 +189,7 @@ class InfoOpService
     public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): InfoOp
     {
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion) {
-            return ($infoOp->target_dominion_id === $targetDominion->id);
+            return ($infoOp->target_dominion_id === $targetDominion->id && $infoOp->type != 'clairvoyance');
         })
             ->sortByDesc('updated_at')
             ->first();
@@ -207,12 +207,22 @@ class InfoOpService
             ->first()['name'];
     }
 
+    public function getLastClairvoyance(Realm $sourceRealm, Realm $targetRealm): InfoOp
+    {
+        return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetRealm) {
+            return ($infoOp->target_realm_id === $targetRealm->id && $infoOp->type == 'clairvoyance');
+        })
+            ->sortByDesc('updated_at')
+            ->first();
+    }
+
     public function getNumberOfActiveInfoOps(Realm $sourceRealm, Dominion $targetDominion): int
     {
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
             ->filter(function ($op) use ($sourceRealm, $targetDominion) {
-                return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
+                if ($op['key'] != 'clairvoyance') // refactor: Removes Clairvoyance from count
+                    return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
             })
             ->count();
     }
@@ -221,6 +231,6 @@ class InfoOpService
     {
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
-            ->count();
+            ->count() - 1; // refactor: Removes Clairvoyance from count
     }
 }
