@@ -38,7 +38,8 @@ HALFLING;
 HUMAN;
 
         $descriptions['sylvan'] = <<<SYLVAN
-<p>Placeholder description.</p>
+<p>Mythical forest-dwelling creatures, which have banded together to combat the forces of evil.</p>
+<p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
 SYLVAN;
 
         // Evil races
