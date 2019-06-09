@@ -43,6 +43,18 @@ class BuildingCalculator
         return $totalBuildings;
     }
 
+    public function getTotalBuildingsForLandType(Dominion $dominion, string $landType): int
+    {
+        $totalBuildings = 0;
+        $buildingTypesForLandType = $this->buildingHelper->getBuildingTypesByRace($dominion->race)[$landType];
+
+        foreach ($buildingTypesForLandType as $buildingType) {
+            $totalBuildings += $dominion->{"building_{$buildingType}"};
+        }
+
+        return $totalBuildings;
+    }
+
     public function getBuildingTypesToDestroy(
         Dominion $dominion, int $totalBuildingsToDestroy, string $landType): array
     {

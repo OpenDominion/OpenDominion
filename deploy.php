@@ -33,6 +33,11 @@ task('npm run prod', function () {
     run('cd {{release_path}} && npm run prod');
 });
 
+desc('Syncing game data');
+task('artisan:game:data:sync', function () {
+    run('cd {{release_path}} && {{bin/php}} artisan game:data:sync');
+});
+
 desc('Update version');
 task('artisan:version:update', function () {
     run('cd {{release_path}} && {{bin/php}} artisan version:update');
@@ -40,7 +45,7 @@ task('artisan:version:update', function () {
 
 desc('Reload php-fpm');
 task('php-fpm:reload', function () {
-    run('sudo service php7.2-fpm reload');
+    run('sudo service php7.3-fpm reload');
 });
 
 desc('Restart supervisor workers');
@@ -68,6 +73,7 @@ task('deploy', [
     'artisan:optimize',
     'artisan:down', //
     'artisan:migrate', //
+    'artisan:game:data:sync', //
     'artisan:version:update', //
     'deploy:symlink',
     'php-fpm:reload', //

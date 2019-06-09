@@ -90,6 +90,14 @@ class Race extends AbstractModel
         $perkValue = $perkCollection->first()->pivot->value;
         if (str_contains($perkValue, ',')) {
             $perkValue = explode(',', $perkValue);
+
+            foreach($perkValue as $key => $value) {
+                if (!str_contains($value, ';')) {
+                    continue;
+                }
+
+                $perkValue[$key] = explode(';', $value);
+            }
         }
 
         return $perkValue;

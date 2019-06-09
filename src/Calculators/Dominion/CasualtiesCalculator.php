@@ -35,7 +35,7 @@ class CasualtiesCalculator
      * @param bool $isOverwhelmed
      * @return float
      */
-    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, array $units, bool $isOverwhelmed): float
+    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
     {
         $multiplier = 1;
 
@@ -46,11 +46,19 @@ class CasualtiesCalculator
         if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
             // todo: check HuNo's Crusader vs SPUD
             $multiplier = 0;
-
+        } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) {
+            // todo: refactor to combine with except_vs_{race}
+            if ($landRatio >= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['immortal_vs_land_range']) / 100)) {
+                $multiplier = 0;
+            }
         } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
             // todo: check more immortal_except_vs_*
             // todo: icekin isn't implemented yet. Once I do, refactor this
             $multiplier = 0;
+        }
+
+        if($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties')) {
+            return 1;
         }
 
         if ($multiplier !== 0) {

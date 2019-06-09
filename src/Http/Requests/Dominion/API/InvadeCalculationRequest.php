@@ -1,10 +1,10 @@
 <?php
 
-namespace OpenDominion\Http\Requests\Dominion\Actions;
+namespace OpenDominion\Http\Requests\Dominion\API;
 
 use OpenDominion\Http\Requests\Dominion\AbstractDominionRequest;
 
-class InvadeActionRequest extends AbstractDominionRequest
+class InvadeCalculationRequest extends AbstractDominionRequest
 {
     /**
      * {@inheritdoc}
@@ -12,7 +12,7 @@ class InvadeActionRequest extends AbstractDominionRequest
     public function rules()
     {
         return [
-            'target_dominion' => 'required|integer',
+            'target_dominion' => 'nullable|integer',
             'unit' => 'nullable|array',
         ];
     }

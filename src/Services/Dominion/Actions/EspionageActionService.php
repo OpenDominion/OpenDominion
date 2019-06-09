@@ -163,8 +163,8 @@ class EspionageActionService
     {
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
-        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion);
-        $targetSpa = $this->militaryCalculator->getSpyRatio($target);
+        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+        $targetSpa = $this->militaryCalculator->getSpyRatio($target, 'defense');
 
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa === 0.0) {
