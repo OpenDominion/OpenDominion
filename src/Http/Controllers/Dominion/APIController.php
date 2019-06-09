@@ -4,11 +4,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
-/*use OpenDominion\Calculators\Dominion\RangeCalculator;
-use OpenDominion\Helpers\UnitHelper;*/
+use OpenDominion\Http\Requests\Dominion\API\InvadeCalculationRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\API\InvadeCalculationService;
-use OpenDominion\Http\Requests\Dominion\API\InvadeCalculationRequest;
 use Throwable;
 
 class APIController extends AbstractDominionController
