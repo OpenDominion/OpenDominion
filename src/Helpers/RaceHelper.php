@@ -45,7 +45,8 @@ SYLVAN;
         // Evil races
 
         $descriptions['dark elf'] = <<<DARKELF
-<p>Placeholder description.</p>
+<p>Dark elves are known for their aggression, deceit, and stealth. They are very brutal and cruel by nature, having little regard for mercy.</p>
+<p>They lurk in dark places and love the shadows. They have a natural inclination towards magic and the dark arts.</p>
 DARKELF;
 
         $descriptions['goblin'] = <<<GOBLIN
