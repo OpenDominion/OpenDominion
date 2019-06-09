@@ -334,15 +334,27 @@ class MilitaryCalculator
         return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
-    public function getUnitPowerWithPerks(Dominion $dominion, string $opposingForceRaceName = null, float $landRatio = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerWithPerks(
+        Dominion $dominion,
+        ?string $opposingForceRaceName,
+        ?float $landRatio,
+        Unit $unit,
+        string $powerType
+    ): float
     {
         $unitPower = $unit->{"power_$powerType"};
 
         $unitPower += $this->getUnitPowerFromLandBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
-        $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
-        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $opposingForceRaceName, $unit, $powerType);
+
+        if ($landRatio !== null) {
+            $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
+        }
+
+        if ($opposingForceRaceName !== null) {
+            $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $opposingForceRaceName, $unit, $powerType);
+        }
 
         return $unitPower;
     }
