@@ -23,12 +23,6 @@ DWARF;
 <p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
 <p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
 FIREWALKER;
-        // todo: ^ span in p? hacky hacky, move to yml pls
-
-        $descriptions['firewalker'] = <<<FIREWALKER
-<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
-<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
-FIREWALKER;
 
         $descriptions['gnome'] = <<<GNOME
 <p>Placeholder description.</p>
