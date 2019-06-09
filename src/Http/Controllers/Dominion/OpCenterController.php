@@ -23,12 +23,9 @@ class OpCenterController extends AbstractDominionController
         $clairvoyanceRealms = $dominion->realm->infoOps()
             ->where('type', 'clairvoyance')
             ->get()
-            ->map(
-                function ($infoOp)
-                {
-                    return $infoOp->targetRealm;
-                }
-            );
+            ->map(static function ($infoOp) {
+                return $infoOp->targetRealm;
+            });
 
         return view('pages.dominion.op-center.index', [
             'infoOpService' => app(InfoOpService::class),
@@ -66,10 +63,13 @@ class OpCenterController extends AbstractDominionController
         $infoOpService = app(InfoOpService::class);
         $targetRealm = Realm::findOrFail($realmNumber);
 
-        $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm($this->getSelectedDominion()->realm, $targetRealm, 'clairvoyance');
+        $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm(
+            $this->getSelectedDominion()->realm,
+            $targetRealm,
+            'clairvoyance'
+        );
 
-        if($clairvoyanceInfoOp == null)
-        {
+        if ($clairvoyanceInfoOp === null) {
             abort(404);
         }
 
