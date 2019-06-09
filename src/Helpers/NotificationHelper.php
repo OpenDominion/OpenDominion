@@ -369,6 +369,8 @@ class NotificationHelper
             // Page: Town Crier
             'Realmie invaded another dominion',
             // Victorious on the battlefield, Priapus (# 16) conquered 64 land from Black Whirling (# 26).
+            'Dominion failed to invade realmie',
+            // Fellow dominion Jupiter (# 11) fended of an attack from Miss Piggy (# 31).
             'Realmie failed to invade another dominion',
             // Sadly, the forces of Starscream (# 31) were beaten back by Myself Yourself (# 44).
             'A dominion invaded realmie',
