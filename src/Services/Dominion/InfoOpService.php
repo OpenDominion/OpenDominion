@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Services\Dominion;
 
-use Illuminate\Database\Eloquent\Collection;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
@@ -221,8 +220,11 @@ class InfoOpService
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
             ->filter(function ($op) use ($sourceRealm, $targetDominion) {
-                if ($op['key'] != 'clairvoyance') // refactor: Removes Clairvoyance from count
+                if ($op['key'] !== 'clairvoyance') { // refactor: Removes Clairvoyance from count
                     return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
+                }
+
+                return null;
             })
             ->count();
     }
@@ -230,7 +232,7 @@ class InfoOpService
     public function getMaxInfoOps(): int
     {
         return $this->espionageHelper->getInfoGatheringOperations()
-            ->merge($this->spellHelper->getInfoOpSpells())
-            ->count() - 1; // refactor: Removes Clairvoyance from count
+                ->merge($this->spellHelper->getInfoOpSpells())
+                ->count() - 1; // refactor: Removes Clairvoyance from count
     }
 }
