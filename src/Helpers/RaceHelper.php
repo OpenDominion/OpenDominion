@@ -67,7 +67,7 @@ LIZARDFOLK;
 NOMAD;
 
         $descriptions['troll'] = <<<TROLL
-<p>Clans of dumb brutes, hulking in stature, originally thought to have evolved from the elves.</p>
+<p>Clans of dumb brutes, hulking in stature, originally thought to have evolved from the elves long ago.</p>
 <p>Trolls are excellent at smashing others, especially things smaller than themselves. <em>[Urg smash puny gnome!]</em></p>
 TROLL;
 
