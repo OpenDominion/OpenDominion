@@ -54,7 +54,8 @@ DARKELF;
 GOBLIN;
 
         $descriptions['icekin'] = <<<ICEKIN
-<p>Placeholder description.</p>
+<p>These icy creatures come from the cold mountains, up in the far north.</p>
+<p>Icekin are a slow race that make for excellent explorers and late-game attacking.</p>
 ICEKIN;
 
         $descriptions['lizardfolk'] = <<<LIZARDFOLK
