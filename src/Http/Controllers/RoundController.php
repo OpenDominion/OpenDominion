@@ -48,7 +48,7 @@ class RoundController extends AbstractController
         return view('pages.round.register', [
             'raceHelper' => app(RaceHelper::class),
             'round' => $round,
-            'races' => Race::all(),
+            'races' => Race::orderBy('name')->get(),
         ]);
     }
 
