@@ -11,6 +11,7 @@ class HomeController extends AbstractController
     public function getIndex()
     {
         // Only redirect to status/dashboard if we have no referer
+        // todo: this shit is still wonky. either fix or remove
         if (Auth::check() && (request()->server('HTTP_REFERER') !== '') && (url()->previous() === url()->current())) {
             $dominionSelectorService = app(SelectorService::class);
 

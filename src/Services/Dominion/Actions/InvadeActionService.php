@@ -733,10 +733,19 @@ class InvadeActionService
 
         $this->landLost = $acresLost;
 
+        $queueData = $landGainedPerLandType;
+
+        // Only gain discounted acres at or above prestige range
+        if ($range >= 75) {
+            $queueData += [
+                'discounted_land' => array_sum($landGainedPerLandType)
+            ];
+        }
+
         $this->queueService->queueResources(
             'invasion',
             $dominion,
-            $landGainedPerLandType + ['discounted_land' => array_sum($landGainedPerLandType)] // Also include discounted land count to attacker
+            $queueData
         );
     }
 

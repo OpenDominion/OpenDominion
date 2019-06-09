@@ -12,6 +12,9 @@ class ProductionCalculator
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
 
@@ -20,12 +23,18 @@ class ProductionCalculator
      *
      * @param ImprovementCalculator $improvementCalculator
      * @param PopulationCalculator $populationCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param SpellCalculator $spellCalculator
      */
-    public function __construct(ImprovementCalculator $improvementCalculator, PopulationCalculator $populationCalculator, SpellCalculator $spellCalculator)
+    public function __construct(
+        ImprovementCalculator $improvementCalculator,
+        PopulationCalculator $populationCalculator,
+        PrestigeCalculator $prestigeCalculator,
+        SpellCalculator $spellCalculator)
     {
         $this->improvementCalculator = $improvementCalculator;
         $this->populationCalculator = $populationCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->spellCalculator = $spellCalculator;
     }
 
@@ -198,10 +207,9 @@ class ProductionCalculator
         // todo
 
         // Prestige Bonus
-        $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
+        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
-        return (1 + $multiplier);
+        return (1 + $multiplier) * (1 + $prestigeMultiplier);
     }
 
     /**
