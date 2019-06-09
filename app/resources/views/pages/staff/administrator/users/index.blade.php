@@ -40,7 +40,7 @@
                                 <td class="text-center" data-order="0" data-search="">Never</td>
                             @else
                                 <td class="text-center" data-order="{{ $user->last_online->getTimestamp() }}" data-search="">
-                                    <span title="{{ $user->last_online }}">{{ $user->last_online }}</span>
+                                    <span title="{{ $user->last_online }}">{{ $user->last_online->diffForHumans() }}</span>
                                 </td>
                             @endif
                             <td class="text-center" data-order="{{ $user->created_at->getTimestamp() }}" data-search="">
