@@ -277,7 +277,7 @@ class SpellActionService
 
         // todo: take Energy Mirror into account with 20% spell reflect (either show your info or give the infoop to the target)
 
-        if($spellKey === 'clairvoyance') {
+        if ($spellKey === 'clairvoyance') {
             $infoOp = InfoOp::firstOrNew([
                 'source_realm_id' => $dominion->realm->id,
                 'target_realm_id' => $target->realm->id,
@@ -286,8 +286,7 @@ class SpellActionService
                 'source_dominion_id' => $dominion->id,
                 'target_dominion_id' => $target->id,
             ]);
-        }
-        else {
+        } else {
             $infoOp = InfoOp::firstOrNew([
                 'source_realm_id' => $dominion->realm->id,
                 'target_dominion_id' => $target->id,
@@ -323,7 +322,10 @@ class SpellActionService
                     'resource_ore' => $target->resource_ore,
                     'resource_gems' => $target->resource_gems,
                     'resource_tech' => $target->resource_tech,
-                    'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource($dominion, 'resource_boats'),
+                    'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource(
+                            $dominion,
+                            'resource_boats'
+                        ),
 
                     'morale' => $target->morale,
                     'military_draftees' => $target->military_draftees,
@@ -364,7 +366,7 @@ class SpellActionService
         $infoOp->save();
 
         $redirect = route('dominion.op-center.show', $target);
-        if($spellKey === 'clairvoyance') {
+        if ($spellKey === 'clairvoyance') {
             $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);
         }
 
