@@ -17,7 +17,7 @@ class GameEventService
         return $this->getGameEventsForRealm($realm, now());
     }
 
-    public function getClairvoyance(Realm $realm, Carbon $clairvoyanceUpdateAt)
+    public function getClairvoyance(Realm $realm, Carbon $clairvoyanceUpdateAt): array
     {
         return $this->getGameEventsForRealm($realm, $clairvoyanceUpdateAt);
     }
