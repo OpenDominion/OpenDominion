@@ -30,7 +30,8 @@ FIREWALKER;
 GNOME;
 
         $descriptions['halfling'] = <<<HALFLING
-<p>Placeholder description.</p>
+<p>A cheerful and adventurous race known for their diminutive stature and furry, bare feetses. They are exceptionally stealthy due to their size rather than grace.</p>
+<p>Fiercely loyal to family and friends, they will defend their homeland with surprising fortitude.</p>
 HALFLING;
 
         $descriptions['human'] = <<<HUMAN
