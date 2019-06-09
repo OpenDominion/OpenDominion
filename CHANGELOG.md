@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 
 ## [0.6.2] - 2019-06-05
+### Added
+- Added Clairvoyance spell
+
 ### Changed
 - Changed realm size to 6 (from 12)
 - Changed max pack size to 3 (from 6)
