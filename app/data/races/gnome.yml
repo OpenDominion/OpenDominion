@@ -40,4 +40,4 @@ units:
       offense: 5
       defense: 3
     perks:
-      offense_staggered_land_range: 85;2,75;1
+      offense_staggered_land_range: 75;1,85;2

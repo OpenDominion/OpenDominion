@@ -334,7 +334,7 @@ class MilitaryCalculator
         return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
-    protected function getUnitPowerWithPerks(Dominion $dominion, string $opposingForceRaceName, float $landRatio, Unit $unit, string $powerType): float
+    public function getUnitPowerWithPerks(Dominion $dominion, string $opposingForceRaceName = null, float $landRatio = null, Unit $unit, string $powerType): float
     {
         $unitPower = $unit->{"power_$powerType"};
 
@@ -418,7 +418,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, float $landRatio, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromStaggeredLandRangePerk(Dominion $dominion, float $landRatio = null, Unit $unit, string $powerType): float
     {
         $staggeredLandRangePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
@@ -436,7 +436,7 @@ class MilitaryCalculator
 
         foreach ($staggeredLandRangePerk as $rangePerk) {
             $range = ((int)$rangePerk[0]) / 100;
-            $power = (int)$rangePerk[1];
+            $power = (float)$rangePerk[1];
 
             if($range > $landRatio) { // TODO: Check this, might be a bug here
                 continue;
@@ -448,7 +448,7 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, string $opposingForceRaceName, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusRacePerk(Dominion $dominion, string $opposingForceRaceName = null, Unit $unit, string $powerType): float
     {
         $raceNameFormatted = strtolower($opposingForceRaceName);
         $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
@@ -479,7 +479,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatio(Dominion $dominion, string $type): float
+    public function getSpyRatio(Dominion $dominion, string $type = 'offense'): float
     {
         return ($this->getSpyRatioRaw($dominion, $type) * $this->getSpyRatioMultiplier($dominion));
     }
@@ -490,7 +490,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getSpyRatioRaw(Dominion $dominion, string $type): float
+    public function getSpyRatioRaw(Dominion $dominion, string $type = 'offense'): float
     {
         $spies = $dominion->military_spies;
 
@@ -552,7 +552,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatio(Dominion $dominion, string $type): float
+    public function getWizardRatio(Dominion $dominion, string $type = 'offense'): float
     {
         return ($this->getWizardRatioRaw($dominion, $type) * $this->getWizardRatioMultiplier($dominion));
     }
@@ -563,7 +563,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getWizardRatioRaw(Dominion $dominion, string $type): float
+    public function getWizardRatioRaw(Dominion $dominion, string $type = 'offense'): float
     {
         $wizards = $dominion->military_wizards + ($dominion->military_archmages * 2);
 

@@ -31,7 +31,7 @@ units:
       counts_as_wizard_offense: 0.2
       counts_as_wizard_defense: 0.5
       offense_from_building: wizard_guild,10,5 # building type, ratio%, max
-      defense_from_buildling: wizard_guild,10,5 # building type, ratio%, max
+      defense_from_building: wizard_guild,10,5 # building type, ratio%, max
   - name: Spirit Warrior
     cost:
       platinum: 1050
@@ -41,5 +41,5 @@ units:
       defense: 0
     perks:
       immortal_vs_land_range: 75
-      offense_staggered_land_range: 95;1,75;0.5
-      need_boat: false
+      offense_staggered_land_range: 75;0.5,95;1
+    need_boat: false
