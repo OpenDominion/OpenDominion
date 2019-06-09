@@ -96,7 +96,7 @@
 
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">Town Crier</h3>
+                    <h3 class="box-title">Clairvoyance Realms</h3>
                 </div>
                 <div class="box-body table-responsive">
                     <table class="table table-hover" id="dominions-table">
