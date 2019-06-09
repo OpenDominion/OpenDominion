@@ -78,7 +78,7 @@
                         </table>
                         @if ($fromOpCenter)
                             <div class="box-footer">
-                                <em>Revealed <abbr title="{{ $clairvoyanceInfoOp->updated_at }}">{{ $clairvoyanceInfoOp->updated_at->diffForHumans() }}</abbr> by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
+                                <em>Revealed {{ $clairvoyanceInfoOp->updated_at }} by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
                             </div>
                         @endif
                     </div>
