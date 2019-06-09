@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [0.6.2] - 2019-06-05
 ### Added
 - Added Clairvoyance spell
+- Added new races: Dark Elf, Gnome, Halfling, Icekin, Sylvan, and Troll
 
 ### Changed
 - Changed realm size to 6 (from 12)
