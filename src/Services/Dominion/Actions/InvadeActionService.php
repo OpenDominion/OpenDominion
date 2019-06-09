@@ -201,7 +201,7 @@ class InvadeActionService
             $units = array_map('intval', array_filter($units));
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-            if (!$this->hasAnyOP($dominion, $landRatio, $units)) {
+            if (!$this->hasAnyOP($dominion, $units)) {
                 throw new RuntimeException('You need to send at least some units');
             }
 
@@ -221,11 +221,11 @@ class InvadeActionService
                 throw new RuntimeException('You do not have enough morale to invade others');
             }
 
-            if (!$this->passes33PercentRule($dominion, $landRatio, $units)) {
+            if (!$this->passes33PercentRule($dominion, $target, null, $units)) {
                 throw new RuntimeException('You need to leave more DP units at home, based on the OP you\'re sending out (33% rule)');
             }
 
-            if (!$this->passes54RatioRule($dominion, $landRatio, $units)) {
+            if (!$this->passes54RatioRule($dominion, $target, $landRatio, $units)) {
                 throw new RuntimeException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
@@ -1008,10 +1008,12 @@ class InvadeActionService
      * Check if an invasion passes the 33%-rule.
      *
      * @param Dominion $dominion
+     * @param Dominion $target
+     * @param float $landRatio
      * @param array $units
      * @return bool
      */
-    protected function passes33PercentRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
+    protected function passes33PercentRule(Dominion $dominion, Dominion $target, ?float $landRatio, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
