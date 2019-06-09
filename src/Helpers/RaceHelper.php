@@ -25,7 +25,8 @@ DWARF;
 FIREWALKER;
 
         $descriptions['gnome'] = <<<GNOME
-<p>Placeholder description.</p>
+<p>These ingenious little people are the masters of invention and tinkering technology.</p>
+<p>Although slow and expensive due their metallic augments, their powerful machinery can turn the tide of battles in the late game.</p>
 GNOME;
 
         $descriptions['halfling'] = <<<HALFLING
