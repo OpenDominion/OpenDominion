@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Failing a spell/spy info operation now keeps the target selected in the dropdown
 - Changed relative land size percentage colors to make more sense
 - Discounted acres after invasion are now only gained upon hitting 75%+ targets
+- Changed timestamps displays from relative server time to absolute server time. A setting will be added in the future for this, including round time (eg 'Day 12 Hour 23')
 - Minor text changes
 
 ### Fixed
