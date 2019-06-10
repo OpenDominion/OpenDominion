@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -73,7 +72,7 @@ class ConstructionController extends AbstractDominionController
         try {
             $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
