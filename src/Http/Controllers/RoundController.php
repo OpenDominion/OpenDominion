@@ -106,7 +106,8 @@ class RoundController extends AbstractController
                 $realm = $realmFinderService->findRandomRealm(
                     $round,
                     $race,
-                    $request->get('pack_size')
+                    $request->get('pack_size'),
+                    true
                 );
                 break;
 
