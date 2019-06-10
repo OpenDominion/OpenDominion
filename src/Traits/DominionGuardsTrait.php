@@ -13,7 +13,7 @@ trait DominionGuardsTrait
      * @param Dominion $dominion
      * @throws RuntimeException
      */
-    public function guardLockedDominion(Dominion $dominion)
+    public function guardLockedDominion(Dominion $dominion): void
     {
         if ($dominion->isLocked()) {
             throw new RuntimeException("Dominion {$dominion->name} is locked");
