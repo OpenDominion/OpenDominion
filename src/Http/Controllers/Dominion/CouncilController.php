@@ -3,11 +3,9 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use Illuminate\Support\Facades\DB;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\CouncilService;
 use RuntimeException;
 
@@ -18,8 +16,10 @@ class CouncilController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $councilService = app(CouncilService::class);
 
+        $threads = $councilService->getThreads($dominion->realm);
+
         return view('pages.dominion.council.index', [
-            'councilThreads' => $councilService->getThreads($dominion->realm),
+            'councilThreads' => $threads,
             'realm' => $dominion->realm,
         ]);
     }
