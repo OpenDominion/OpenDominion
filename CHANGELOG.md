@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.2-2] - 2019-06-10
+### Fixed
+- Fixed error on construction page
+- Fixed realms not filling up properly with new dominions
+
 ## [0.6.2-1] - 2019-06-10
 ### Added
 - Added Clairvoyance spell
@@ -236,7 +241,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...HEAD
+[0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
 [0.6.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...0.6.2-1
 [0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
 [0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5

@@ -24,10 +24,11 @@ class RealmFinderService
      * @param Round $round
      * @param Race $race
      * @param int $slotsNeeded
+     * @param bool $forPack
      *
      * @return Realm|null
      */
-    public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1): ?Realm
+    public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
         // Get a list of realms which are not full, disregarding pack status for now
         $realms = Realm::query()
@@ -45,7 +46,7 @@ class RealmFinderService
 
         // Iterate over suspected eligible realms and check pack status
         foreach ($realms as $realm) {
-            if (($this->maxPacksPerRealm !== null) && ($realm->packs->count() >= $this->maxPacksPerRealm)) {
+            if ($forPack && ($this->maxPacksPerRealm !== null) && ($realm->packs->count() >= $this->maxPacksPerRealm)) {
                 continue;
             }
 
@@ -70,7 +71,7 @@ class RealmFinderService
     public function findRandomRealmForPack(Round $round, Race $race, Pack $pack): ?Realm
     {
         // todo: move this to dominionfactory instead
-        $realm = $this->findRandomRealm($round, $race, $pack->size);
+        $realm = $this->findRandomRealm($round, $race, $pack->size, true);
 
         if ($realm !== null) {
             $pack->realm_id = $realm->id;
