@@ -76,7 +76,7 @@ class RoundController extends AbstractController
         // todo: make this its own FormRequest class? Might be hard due to depending on $round->pack_size, needs investigating
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->validate($request, [
-            'dominion_name' => 'required|string|max:50',
+            'dominion_name' => 'required|string|min:3|max:50',
             'ruler_name' => 'nullable|string|max:50',
             'race' => 'required|exists:races,id',
             'realm_type' => 'in:random,join_pack,create_pack',
