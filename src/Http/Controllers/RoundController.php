@@ -45,10 +45,15 @@ class RoundController extends AbstractController
     {
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
+        $races = Race::query()
+            ->with(['perks'])
+            ->orderBy('name')
+            ->get();
+
         return view('pages.round.register', [
             'raceHelper' => app(RaceHelper::class),
             'round' => $round,
-            'races' => Race::orderBy('name')->get(),
+            'races' => $races,
         ]);
     }
 
