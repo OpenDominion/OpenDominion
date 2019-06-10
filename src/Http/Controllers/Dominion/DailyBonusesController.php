@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesLandActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DailyBonusesPlatinumActionRequest;
 use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
@@ -21,9 +21,8 @@ class DailyBonusesController extends AbstractDominionController
 
         try {
             $result = $dailyBonusesActionService->claimPlatinum($dominion);
-        } catch (Exception $e) {
-            return redirect()
-                ->back()
+        } catch (GameException $e) {
+            return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
@@ -39,9 +38,8 @@ class DailyBonusesController extends AbstractDominionController
 
         try {
             $result = $dailyBonusesActionService->claimLand($dominion);
-        } catch (Exception $e) {
-            return redirect()
-                ->back()
+        } catch (GameException $e) {
+            return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
