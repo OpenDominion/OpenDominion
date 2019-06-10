@@ -47,10 +47,10 @@ class PackService
      * @param string $alignment
      * @param string $packName
      * @param string $packPassword
-     * @return Pack|null
+     * @return Pack
      * @throws GameException
      */
-    public function getPack(Round $round, string $alignment, string $packName, string $packPassword): ?Pack
+    public function getPack(Round $round, string $alignment, string $packName, string $packPassword): Pack
     {
         $pack = Pack::where([
             'round_id' => $round->id,
