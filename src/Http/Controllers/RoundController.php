@@ -144,7 +144,7 @@ class RoundController extends AbstractController
                     $user,
                     $realm,
                     $race,
-                    ($request->get('ruler_name') ?: Auth::user()->display_name),
+                    ($request->get('ruler_name') ?: $user->display_name),
                     $dominionName,
                     $pack
                 );
