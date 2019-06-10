@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use LogicException;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Helpers\RaceHelper;
@@ -19,7 +20,6 @@ use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Services\RealmFinderService;
-use RuntimeException;
 
 class RoundController extends AbstractController
 {
@@ -43,7 +43,13 @@ class RoundController extends AbstractController
 
     public function getRegister(Round $round)
     {
-        $this->guardAgainstUserAlreadyHavingDominionInRound($round);
+        try {
+            $this->guardAgainstUserAlreadyHavingDominionInRound($round);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dashboard')
+                ->withErrors([$e->getMessage()]);
+        }
 
         $races = Race::query()
             ->with(['perks'])
@@ -59,7 +65,13 @@ class RoundController extends AbstractController
 
     public function postRegister(Request $request, Round $round)
     {
-        $this->guardAgainstUserAlreadyHavingDominionInRound($round);
+        try {
+            $this->guardAgainstUserAlreadyHavingDominionInRound($round);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dashboard')
+                ->withErrors([$e->getMessage()]);
+        }
 
         // todo: make this its own FormRequest class
         $this->validate($request, [
@@ -186,7 +198,7 @@ class RoundController extends AbstractController
         ])->get();
 
         if (!$dominions->isEmpty()) {
-            throw new RuntimeException("User already has a dominion in round {$round->number}");
+            throw new GameException("You already have a dominion in round {$round->number}");
         }
     }
 }
