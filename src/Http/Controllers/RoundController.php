@@ -73,7 +73,8 @@ class RoundController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
-        // todo: make this its own FormRequest class
+        // todo: make this its own FormRequest class? Might be hard due to depending on $round->pack_size, needs investigating
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->validate($request, [
             'dominion_name' => 'required|string|max:50',
             'ruler_name' => 'nullable|string|max:50',
