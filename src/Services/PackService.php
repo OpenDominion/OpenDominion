@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Round;
-use RuntimeException;
 
 class PackService
 {
@@ -17,12 +17,12 @@ class PackService
      * @param string $packPassword
      * @param int $packSize
      * @return Pack
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function createPack(Dominion $dominion, string $packName, string $packPassword, int $packSize): Pack
     {
         if (($packSize < 2) || ($packSize > $dominion->round->pack_size)) {
-            throw new RuntimeException("Pack size must be between 2 and {$dominion->round->pack_size}.");
+            throw new GameException("Pack size must be between 2 and {$dominion->round->pack_size}.");
         }
 
         // todo: check if pack already exists with same name and password, and
@@ -48,7 +48,7 @@ class PackService
      * @param string $packName
      * @param string $packPassword
      * @return Pack|null
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function getPack(Round $round, string $alignment, string $packName, string $packPassword): ?Pack
     {
@@ -59,15 +59,15 @@ class PackService
         ])->withCount('dominions')->first();
 
         if (!$pack) {
-            return null;
+            throw new GameException('Pack with specified name/password was not found.');
         }
 
         if ($pack->dominions_count >= $pack->size) {
-            throw new RuntimeException('Pack is already full');
+            throw new GameException('Pack is already full.');
         }
 
         if ($pack->realm->alignment !== $alignment) {
-            throw new RuntimeException('Race has wrong alignment to the rest of pack.');
+            throw new GameException("Selected race has wrong alignment to the rest of pack. Pack requires a {$pack->realm->alignment} aligned race.");
         }
 
         return $pack;

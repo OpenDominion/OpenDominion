@@ -13,6 +13,7 @@ use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
@@ -85,88 +86,95 @@ class RoundController extends AbstractController
             'pack_size' => "integer|min:2|max:{$round->pack_size}|required_if:realm,create_pack",
         ]);
 
-        $realmFinderService = app(RealmFinderService::class);
-        $realmFactory = app(RealmFactory::class);
+        /** @var Realm $realm */
+        $realm = null;
 
-        DB::beginTransaction();
+        /** @var Dominion $dominion */
+        $dominion = null;
 
-        /** @var User $user */
-        $user = Auth::user();
-        $race = Race::findOrFail($request->get('race'));
-        $pack = null;
-
-        switch ($request->get('realm_type')) {
-            case 'random':
-                $realm = $realmFinderService->findRandomRealm($round, $race);
-                break;
-
-            case 'join_pack':
-                $pack = $this->packService->getPack(
-                    $round,
-                    $race->alignment,
-                    $request->get('pack_name'),
-                    $request->get('pack_password')
-                );
-
-                if (!$pack) {
-                    return redirect()->back()
-                        ->withInput($request->all())
-                        ->withErrors(['The pack you specified was not found.']);
-                }
-
-                $realm = $pack->realm;
-                break;
-
-            case 'create_pack':
-                $realm = $realmFinderService->findRandomRealm(
-                    $round,
-                    $race,
-                    $request->get('pack_size'),
-                    true
-                );
-                break;
-
-            default:
-                throw new LogicException('Unsupported realm type');
-        }
-
-        if (!$realm) {
-            $realm = $realmFactory->create($round, $race->alignment);
-        }
-
-        $dominionName = $request->get('dominion_name');
+        /** @var string $dominionName */
+        $dominionName = null;
 
         try {
-            $dominion = $this->dominionFactory->create(
-                $user,
-                $realm,
-                $race,
-                ($request->get('ruler_name') ?: Auth::user()->display_name),
-                $dominionName,
-                $pack
-            );
+            DB::transaction(function () use ($request, $round, &$realm, &$dominion, &$dominionName) {
+                $realmFinderService = app(RealmFinderService::class);
+                $realmFactory = app(RealmFactory::class);
+
+                /** @var User $user */
+                $user = Auth::user();
+                $race = Race::findOrFail($request->get('race'));
+                $pack = null;
+
+                switch ($request->get('realm_type')) {
+                    case 'random':
+                        $realm = $realmFinderService->findRandomRealm($round, $race);
+                        break;
+
+                    case 'join_pack':
+                        $pack = $this->packService->getPack(
+                            $round,
+                            $race->alignment,
+                            $request->get('pack_name'),
+                            $request->get('pack_password')
+                        );
+
+                        $realm = $pack->realm;
+                        break;
+
+                    case 'create_pack':
+                        $realm = $realmFinderService->findRandomRealm(
+                            $round,
+                            $race,
+                            $request->get('pack_size'),
+                            true
+                        );
+                        break;
+
+                    default:
+                        throw new LogicException('Unsupported realm type');
+                }
+
+                if (!$realm) {
+                    $realm = $realmFactory->create($round, $race->alignment);
+                }
+
+                $dominionName = $request->get('dominion_name');
+
+                $dominion = $this->dominionFactory->create(
+                    $user,
+                    $realm,
+                    $race,
+                    ($request->get('ruler_name') ?: Auth::user()->display_name),
+                    $dominionName,
+                    $pack
+                );
+
+                if ($request->get('realm_type') === 'create_pack') {
+                    $pack = $this->packService->createPack(
+                        $dominion,
+                        $request->get('pack_name'),
+                        $request->get('pack_password'),
+                        $request->get('pack_size')
+                    );
+
+                    $dominion->pack_id = $pack->id;
+                    $dominion->save();
+
+                    $pack->realm_id = $realm->id;
+                    $pack->save();
+                }
+            });
+
         } catch (QueryException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors(["Someone already registered a dominion with the name '{$dominionName}' for this round."]);
+
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
         }
-
-        if ($request->get('realm_type') === 'create_pack') {
-            $pack = $this->packService->createPack(
-                $dominion,
-                $request->get('pack_name'),
-                $request->get('pack_password'),
-                $request->get('pack_size')
-            );
-
-            $dominion->pack_id = $pack->id;
-            $dominion->save();
-
-            $pack->realm_id = $realm->id;
-            $pack->save();
-        }
-
-        DB::commit();
 
         if ($round->isActive()) {
             $dominionSelectorService = app(SelectorService::class);
