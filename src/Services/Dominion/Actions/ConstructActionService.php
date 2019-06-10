@@ -5,14 +5,13 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
-use Throwable;
 
 class ConstructActionService
 {
@@ -51,7 +50,7 @@ class ConstructActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws Throwable
+     * @throws GameException
      */
     public function construct(Dominion $dominion, array $data): array
     {
@@ -66,13 +65,13 @@ class ConstructActionService
         $totalBuildingsToConstruct = array_sum($data);
 
         if ($totalBuildingsToConstruct === 0) {
-            throw new RuntimeException('Construction was not started due to bad input.');
+            throw new GameException('Construction was not started due to bad input.');
         }
 
         $maxAfford = $this->constructionCalculator->getMaxAfford($dominion);
 
         if ($totalBuildingsToConstruct > $maxAfford) {
-            throw new RuntimeException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings.");
+            throw new GameException("You do not have enough platinum and/or lumber to construct {$totalBuildingsToConstruct} buildings.");
         }
 
         $buildingsByLandType = [];
@@ -96,7 +95,7 @@ class ConstructActionService
 
         foreach ($buildingsByLandType as $landType => $amount) {
             if ($amount > $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)) {
-                throw new RuntimeException("You do not have enough barren land to construct {$totalBuildingsToConstruct} buildings.");
+                throw new GameException("You do not have enough barren land to construct {$totalBuildingsToConstruct} buildings.");
             }
         }
 
