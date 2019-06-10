@@ -43,7 +43,7 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | Heroes         | ![Progress](http://progressed.io/bar/0)   | Everything
 | Notifications  | ![Progress](http://progressed.io/bar/50)  | Needs refactoring and email digests
 | Population     | ![Progress](http://progressed.io/bar/100) |
-| Races & Units  | ![Progress](http://progressed.io/bar/60)  | Most races
+| Races & Units  | ![Progress](http://progressed.io/bar/60)  |
 | Resources      | ![Progress](http://progressed.io/bar/95)  | Tech points
 | Wonders        | ![Progress](http://progressed.io/bar/0)   | Everything
 | Tech           | ![Progress](http://progressed.io/bar/0)   | Everything
