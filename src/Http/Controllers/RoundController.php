@@ -188,7 +188,13 @@ class RoundController extends AbstractController
         return redirect()->route('dominion.status');
     }
 
-    protected function guardAgainstUserAlreadyHavingDominionInRound(Round $round)
+    /**
+     * Throws exception if logged in user already has a dominion a round.
+     *
+     * @param Round $round
+     * @throws GameException
+     */
+    protected function guardAgainstUserAlreadyHavingDominionInRound(Round $round): void
     {
         // todo: make this a route middleware instead
 
