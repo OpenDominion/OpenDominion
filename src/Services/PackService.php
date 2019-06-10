@@ -67,7 +67,11 @@ class PackService
         }
 
         if ($pack->realm->alignment !== $alignment) {
-            throw new GameException("Selected race has wrong alignment to the rest of pack. Pack requires a {$pack->realm->alignment} aligned race.");
+            throw new GameException(sprintf(
+                'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
+                (($pack->realm->alignment === 'evil') ? 'an' : 'a'),
+                $pack->realm->alignment
+            ));
         }
 
         return $pack;
