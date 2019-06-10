@@ -96,7 +96,9 @@ class RoundController extends AbstractController
                 );
 
                 if (!$pack) {
-                    throw new RuntimeException('Pack not found');
+                    return redirect()->back()
+                        ->withInput($request->all())
+                        ->withErrors(['The pack you specified was not found.']);
                 }
 
                 $realm = $pack->realm;
