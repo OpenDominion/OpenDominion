@@ -208,6 +208,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Sylvan']),
             ],
+            [
+                'name' => 'Regeneration',
+                'description' => 'Reduces combat losses by 25%',
+                'key' => 'regeneration',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Troll']),
+            ],
         ]);
     }
 
