@@ -336,6 +336,11 @@ class CasualtiesCalculator
 
         $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($slot, "immortal_except_vs");
 
+        if(!$perkValue)
+        {
+            return false;
+        }
+
         return $perkValue !== $raceNameFormatted;
     }
 }
