@@ -26,7 +26,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 
     /** @var Mock|ImprovementCalculator */
     protected $improvementCalculator;
-    
+
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
@@ -38,7 +38,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 
     /** @var Mock|SpellCalculator */
     protected $spellCalculator;
-        
+
     /** @var Mock|MilitaryCalculator */
     protected $sut;
 
@@ -138,7 +138,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             /** @var Mock|Unit $unit */
             $race = m::mock(Race::class);
 
-            $perk_type = $test['attributes']['power_type']."_from_land";
+            $perk_type = $test['attributes']['power_type'] . '_from_land';
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type, null)->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
@@ -284,7 +284,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             /** @var Mock|Unit $unit */
             $race = m::mock(Race::class);
 
-            $perk_type = $test['attributes']['power_type']."_from_building";
+            $perk_type = $test['attributes']['power_type'] . '_from_building';
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type, null)->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
@@ -358,7 +358,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             /** @var Mock|Unit $unit */
             $race = m::mock(Race::class);
 
-            $perk_type = $test['attributes']['power_type']."_raw_wizard_ratio";
+            $perk_type = $test['attributes']['power_type'] . '_raw_wizard_ratio';
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type)->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
@@ -451,7 +451,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             /** @var Mock|Unit $unit */
             $race = m::mock(Race::class);
 
-            $perk_type = $test['attributes']['power_type']."_staggered_land_range";
+            $perk_type = $test['attributes']['power_type'] . '_staggered_land_range';
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type)->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
@@ -462,7 +462,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nLand Ratio: %s",
                     $test['attributes']['power_type'],
-                    implode($test['attributes']['perk_value'][0], ';').",".implode($test['attributes']['perk_value'][1], ';'),
+                    implode($test['attributes']['perk_value'][0], ';') . ',' . implode($test['attributes']['perk_value'][1], ';'),
                     number_format($test['attributes']['ratio'])
                 )
             );
@@ -524,7 +524,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             /** @var Mock|Unit $unit */
             $race = m::mock(Race::class);
 
-            $perk_type = $test['attributes']['power_type']."_vs_".$test['attributes']['race'];
+            $perk_type = $test['attributes']['power_type'] . '_vs_' . $test['attributes']['race'];
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type)->andReturn(0)->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $test['attributes']['perk_name'])->andReturn($test['attributes']['perk_value'])->byDefault();
