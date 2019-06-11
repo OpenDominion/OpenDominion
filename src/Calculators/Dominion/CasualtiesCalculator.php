@@ -30,12 +30,14 @@ class CasualtiesCalculator
      * slot.
      *
      * @param Dominion $dominion
+     * @param Dominion $target
      * @param int $slot
      * @param array $units Units being sent out on invasion
+     * @param float $landRatio
      * @param bool $isOverwhelmed
      * @return float
      */
-    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
+    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $target, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
     {
         $multiplier = 1;
 
@@ -51,9 +53,7 @@ class CasualtiesCalculator
             if ($landRatio >= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['immortal_vs_land_range']) / 100)) {
                 $multiplier = 0;
             }
-        } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
-            // todo: check more immortal_except_vs_*
-            // todo: icekin isn't implemented yet. Once I do, refactor this
+        } elseif (!$isOverwhelmed && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
             $multiplier = 0;
         }
 
@@ -132,10 +132,11 @@ class CasualtiesCalculator
      * slot.
      *
      * @param Dominion $dominion
+     * @param Dominion $attacker
      * @param int|null $slot Null is for non-racial units and thus used as draftees casualties multiplier
      * @return float
      */
-    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, ?int $slot): float
+    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot): float
     {
         $multiplier = 1;
 
@@ -146,9 +147,7 @@ class CasualtiesCalculator
                 // todo: check HuNo's Crusader vs SPUD
                 $multiplier = 0;
 
-            } elseif ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
-                // todo: check more immortal_except_vs_*
-                // todo: icekin isn't implemented yet. Once I do, refactor this
+            } elseif ($this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
                 $multiplier = 0;
             }
         }
@@ -322,5 +321,19 @@ class CasualtiesCalculator
             ),
             ['military_draftees']
         );
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param string $opposingForceRaceName
+     * @param int $slot
+     * @return bool
+     */
+    protected function isImmortalVersusRacePerk(Dominion $dominion, string $opposingForceRaceName, int $slot): bool
+    {
+        $raceNameFormatted = strtolower($opposingForceRaceName);
+        $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
+
+        return !($dominion->race->getUnitPerkValueForUnitSlot($slot, "immortal_except_vs_{$raceNameFormatted}"));
     }
 }
