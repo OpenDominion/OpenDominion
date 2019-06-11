@@ -334,6 +334,8 @@ class CasualtiesCalculator
         $raceNameFormatted = strtolower($opposingForceRaceName);
         $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
 
-        return !($dominion->race->getUnitPerkValueForUnitSlot($slot, "immortal_except_vs_{$raceNameFormatted}"));
+        $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($slot, "immortal_except_vs");
+
+        return $perkValue !== $raceNameFormatted;
     }
 }
