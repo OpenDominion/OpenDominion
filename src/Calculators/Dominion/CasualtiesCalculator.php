@@ -26,8 +26,8 @@ class CasualtiesCalculator
     public function __construct(LandCalculator $landCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
     {
         $this->landCalculator = $landCalculator;
-        $this->unitHelper = $unitHelper;
         $this->spellCalculator = $spellCalculator;
+        $this->unitHelper = $unitHelper;
     }
 
     /**
