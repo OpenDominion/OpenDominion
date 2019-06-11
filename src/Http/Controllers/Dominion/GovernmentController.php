@@ -7,14 +7,14 @@ use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
 
-class GuardMembershipController extends AbstractDominionController
+class GovernmentController extends AbstractDominionController
 {
-    public function getGuardMembership()
+    public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
         $guardMembershipService = app(GuardMembershipService::class);
 
-        return view('pages.dominion.guard-membership', [
+        return view('pages.dominion.government', [
             'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),
             'isEliteGuardApplicant' => $guardMembershipService->isEliteGuardApplicant($dominion),
@@ -42,7 +42,7 @@ class GuardMembershipController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', $result['message']);
-        return redirect()->route('dominion.guard-membership');
+        return redirect()->route('dominion.government');
     }
 
     public function postLeaveRoyalGuard(GuardMembershipActionRequest $request)
@@ -60,7 +60,7 @@ class GuardMembershipController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', $result['message']);
-        return redirect()->route('dominion.guard-membership');
+        return redirect()->route('dominion.government');
     }
 
     public function postJoinEliteGuard(GuardMembershipActionRequest $request)
@@ -78,7 +78,7 @@ class GuardMembershipController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', $result['message']);
-        return redirect()->route('dominion.guard-membership');
+        return redirect()->route('dominion.government');
     }
 
     public function postLeaveEliteGuard(GuardMembershipActionRequest $request)
@@ -96,6 +96,6 @@ class GuardMembershipController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', $result['message']);
-        return redirect()->route('dominion.guard-membership');
+        return redirect()->route('dominion.government');
     }
 }

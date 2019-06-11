@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-heavy-shield"></i> Guard Membership</h3>
+                    <h3 class="box-title"><i class="fa fa-capitol"></i> Government</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
@@ -24,7 +24,7 @@
                                 <li>Cannot interact with Dominions less than 60% or greater than 166% of your land size.</li>
                             </ul>
                             @if ($isRoyalGuardApplicant || $isRoyalGuardMember)
-                                <form action="{{ route('dominion.guard-membership.leave.royal') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember ? 'disabled' : null }}>
                                         @if ($isRoyalGuardMember)
@@ -35,7 +35,7 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('dominion.guard-membership.join.royal') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.royal-guard.join') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Join Royal Guard
@@ -50,7 +50,7 @@
                                 <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
                             </ul>
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
-                                <form action="{{ route('dominion.guard-membership.leave.elite') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-lg" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @if ($isEliteGuardMember)
@@ -61,7 +61,7 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('dominion.guard-membership.join.elite') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
                                         Join Elite Guard
