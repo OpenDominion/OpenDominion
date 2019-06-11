@@ -376,7 +376,8 @@ class MilitaryCalculator
         $landType = $landPerkData[0];
         $ratio = (int)$landPerkData[1];
         $max = (int)$landPerkData[2];
-        $constructedOnly = $landPerkData[3];
+        $constructedOnly = false;
+        //$constructedOnly = $landPerkData[3]; todo: implement for Nox?
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         if(!$constructedOnly)
