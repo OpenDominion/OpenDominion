@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Added ability to delete your pack once during registration
+
 ### Fixed
 - Fixed server error when trying to join a pack with invalid credentials
 - Fixed missing unit perk help texts
