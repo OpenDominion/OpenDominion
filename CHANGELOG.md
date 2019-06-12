@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.6.2-3] - 2019-06-12
 ### Added
 - Added ability to delete your pack once during registration
 
@@ -248,7 +250,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...HEAD
+[0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
 [0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
 [0.6.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...0.6.2-1
 [0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
