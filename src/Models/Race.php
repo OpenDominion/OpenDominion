@@ -52,6 +52,15 @@ class Race extends AbstractModel
      */
     public function getPerkMultiplier(string $key): float
     {
+        return ($this->getPerkValue($key) / 100);
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getPerkValue(string $key): float
+    {
         $perks = $this->perks->filter(function (RacePerkType $racePerkType) use ($key) {
             return ($racePerkType->key === $key);
         });
@@ -60,7 +69,7 @@ class Race extends AbstractModel
             return 0;
         }
 
-        return ((float)$perks->first()->pivot->value / 100);
+        return (float)$perks->first()->pivot->value;
     }
 
     /**
