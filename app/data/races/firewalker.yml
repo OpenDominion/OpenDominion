@@ -23,7 +23,7 @@ units:
     power:
       defense: 4.5
     perks:
-      immortal_except_vs_icekin: true
+      immortal_except_vs: icekin
   - name: Salamander
     cost:
       platinum: 925

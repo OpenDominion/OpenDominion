@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.2-4] - 2019-06-12
+### Fixed
+- Fixed Firewalker's Phoenix immortal except vs Icekin perk
+- Fixed ArchMage cost reduction for Icekin
+
 ## [0.6.2-3] - 2019-06-12
 ### Added
 - Added ability to delete your pack once during registration
@@ -12,7 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Fixed server error when trying to join a pack with invalid credentials
 - Fixed missing unit perk help texts
-- Fixed Regeneration racial spell for trolls 
+- Fixed Regeneration racial spell for trolls
 
 ## [0.6.2-2] - 2019-06-10
 ### Fixed
@@ -250,7 +255,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...HEAD
+[0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
 [0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
 [0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
 [0.6.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...0.6.2-1

@@ -53,12 +53,17 @@ class ManualEmailCommand extends Command implements CommandInterface
 
         $usersNotified = 0;
 
+        $users = User::where('id', 1)->get(); // todo: temp
+
         foreach ($users as $user) {
             $shouldSendGenericNotification = array_get($user->settings['notifications'], 'general.generic.email', false);
 
             if (!$shouldSendGenericNotification) {
+                $this->info("Skipping user {$user->display_name} because of notification settings");
                 continue;
             }
+
+            $this->info("Mailing user {$user->display_name}");
 
             $user->notify(new ManualEmailNotification(
                 'OpenDominion Round 13 is about to start!',
@@ -72,6 +77,8 @@ class ManualEmailCommand extends Command implements CommandInterface
             ));
 
             $usersNotified++;
+
+//            usleep(200000); // 200ms
         }
 
         $this->info("{$usersNotified} users will be emailed");
