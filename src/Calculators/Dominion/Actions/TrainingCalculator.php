@@ -36,7 +36,7 @@ class TrainingCalculator
     {
         $costsPerUnit = [];
         $archmageBaseCost = 1000;
-        $archmageBaseCost -= $dominion->race->getPerkValue('archmage_cost');
+        $archmageBaseCost += $dominion->race->getPerkValue('archmage_cost');
 
         $wizardCostMultiplier = $this->getWizardCostMultiplier($dominion);
 
