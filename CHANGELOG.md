@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Fixed server error when trying to join a pack with invalid credentials
 - Fixed missing unit perk help texts
-- Fixed Regeneration racial spell for trolls 
+- Fixed Regeneration racial spell for trolls
 
 ## [0.6.2-2] - 2019-06-10
 ### Fixed
