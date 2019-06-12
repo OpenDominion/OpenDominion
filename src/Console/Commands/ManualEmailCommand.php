@@ -65,7 +65,7 @@ class ManualEmailCommand extends Command implements CommandInterface
                 "Hello {$user->display_name}!",
                 [
                     "How are you doing, {$user->display_name}? We hope you enjoyed playing OpenDominion in round 12!",
-                    'Round 13 is currently open for registration, and starts in approximately a day (Thursday, 13th of June, 00:00 UTC).',
+                    'Round 13 is currently open for registration, and starts in less than a day (on Thursday, 13th of June, 00:00 UTC).',
                     'We\'d like to invite you to come play another round! Several new things have been added for this round, including a whopping six new races to choose from!',
                 ],
                 ['Play OpenDominion' => $url]
