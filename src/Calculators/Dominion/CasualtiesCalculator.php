@@ -10,6 +10,9 @@ class CasualtiesCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    private $spellCalculator;
+
     /** @var UnitHelper */
     protected $unitHelper;
 
@@ -17,11 +20,13 @@ class CasualtiesCalculator
      * CasualtiesCalculator constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, UnitHelper $unitHelper)
+    public function __construct(LandCalculator $landCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
     {
         $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
     }
 
@@ -32,13 +37,13 @@ class CasualtiesCalculator
      * @param Dominion $dominion
      * @param int $slot
      * @param array $units Units being sent out on invasion
+     * @param float $landRatio
      * @param bool $isOverwhelmed
      * @return float
      */
     public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
     {
         $multiplier = 1;
-
         // First check immortality, so we can skip the other checks on immortal
         // units
         // Note: Immortality only works if you're NOT overwhelmed, regardless if
@@ -63,12 +68,18 @@ class CasualtiesCalculator
 
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, shrines, tech, wonders), capped at -80%
+            // Values (percentages)
+            $spellRegeneration = 25;
+
             $nonUnitBonusMultiplier = 0;
 
             // todo: Heroes
 
             // Shrines
             $nonUnitBonusMultiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
+
+            // Spells
+            $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
             // todo: Tech (eg Tactical Battle)
 
@@ -155,7 +166,11 @@ class CasualtiesCalculator
 
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, tech, wonders), capped at -80%
-//            $nonUnitBonusMultiplier = 0;
+
+            // Values (percentages)
+            $spellRegeneration = 25;
+
+            $nonUnitBonusMultiplier = 0;
 
             // todo: Heroes
 
@@ -163,8 +178,11 @@ class CasualtiesCalculator
 
             // todo: Wonders
 
+            // Spells
+            $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+
             // Cap at -80% and apply to multiplier (additive)
-//            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
+            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;

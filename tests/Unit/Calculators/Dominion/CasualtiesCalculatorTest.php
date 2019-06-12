@@ -6,6 +6,7 @@ use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -32,7 +33,8 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(CasualtiesCalculator::class, [
             $this->app->make(LandCalculator::class),
-            $this->app->make(UnitHelper::class),
+            $this->app->make(SpellCalculator::class),
+            $this->app->make(UnitHelper::class)
         ])->makePartial();
     }
 
