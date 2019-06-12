@@ -30,10 +30,10 @@ class ManualEmailCommand extends Command implements CommandInterface
 
         $users = User::query()
             ->whereHas('dominions', function ($query) {
-                return $query->where('round_id', 12);
+                return $query->where('round_id', 12); // Round 12
             })
             ->whereDoesntHave('dominions', function ($query) {
-                return $query->where('round_id', 16);
+                return $query->where('round_id', 16); // Round 13
             })
             ->orderBy('id')
             ->get()
