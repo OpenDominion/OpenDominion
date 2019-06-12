@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Fixed
+- Fixed Firewalker's Phoenix immortal except vs Icekin perk
+- Fixed ArchMage cost reduction for Icekin
 
 ## [0.6.2-3] - 2019-06-12
 ### Added
