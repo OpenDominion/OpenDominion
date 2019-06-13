@@ -75,6 +75,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_shrine
  * @property int $building_barracks
  * @property int $building_dock
+ * @property \Illuminate\Support\Carbon|null $council_last_read
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $pack_id

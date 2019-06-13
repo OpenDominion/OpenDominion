@@ -3,11 +3,10 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use Illuminate\Support\Facades\DB;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
-use OpenDominion\Services\Analytics\AnalyticsEvent;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Services\CouncilService;
 use RuntimeException;
 
@@ -16,6 +15,7 @@ class CouncilController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
+        $this->updateDominionCouncilLastRead($dominion);
         $councilService = app(CouncilService::class);
 
         return view('pages.dominion.council.index', [
@@ -69,6 +69,9 @@ class CouncilController extends AbstractDominionController
     {
         $this->guardAgainstCrossRealm($thread);
 
+        $dominion = $this->getSelectedDominion();
+        $this->updateDominionCouncilLastRead($dominion);
+
         $thread->load(['dominion.user', 'posts.dominion.user']);
 
         return view('pages.dominion.council.thread', compact(
@@ -111,5 +114,11 @@ class CouncilController extends AbstractDominionController
         if ($this->getSelectedDominion()->realm->id !== (int)$thread->realm_id) {
             throw new RuntimeException('No permission to view thread'); // todo: modelnotfoundexception?
         }
+    }
+
+    protected function updateDominionCouncilLastRead(Dominion $dominion): void
+    {
+        $dominion->council_last_read = now();
+        $dominion->save();
     }
 }
