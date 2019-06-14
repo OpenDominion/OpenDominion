@@ -87,12 +87,12 @@ class GuardMembershipService
     }
 
     /**
-     * Returns the Dominion's royal guard membership status.
+     * Returns the Dominion's guard membership status.
      *
      * @param Dominion $dominion
      * @return bool
      */
-    public function isRoyalGuardMember(Dominion $dominion): bool
+    public function isGuardMember(Dominion $dominion): bool
     {
         if ($dominion->royal_guard != null) {
             $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
@@ -100,6 +100,17 @@ class GuardMembershipService
                 return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the Dominion's royal guard membership status.
+     *
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function isRoyalGuardMember(Dominion $dominion): bool
+    {
+        return $this->isGuardMember($dominion) && !$this->isEliteGuardMember($dominion);
     }
 
     /**

@@ -126,7 +126,7 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
 
         // Guard Tax
-        if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
+        if ($this->guardMembershipService->isGuardMember($dominion)) {
             $multiplier += ($guardTax / 100);
         }
 
