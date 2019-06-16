@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+### [0.6.2-5] - 2019-06-16
 ### Added
 - Added unread count badge to the council page menu item in the sidebar to indicate new messages since your last council visit
 
 ### Fixed
 - Fixed unit OP/DP on military training page to show with including certain bonuses
+- Fixed error where military DP was counted twice
+- Fixed code refactor with SPA/WPA perks
+- Fixed error in Op Center with Clairvoyance
 
 ## [0.6.2-4] - 2019-06-12
 ### Fixed
@@ -260,7 +265,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...HEAD
+[0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
 [0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
 [0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
 [0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
