@@ -243,6 +243,10 @@ class MilitaryCalculator
             $dp += ($powerDefense * $numberOfUnits);
         }
 
+        // Attacking Forces skip draftees and land-based defenses
+        if ($units !== null)
+            return $dp;
+
         // Draftees
         if(!$ignoreDraftees) {
             $dp += ($dominion->military_draftees * $dpPerDraftee);
