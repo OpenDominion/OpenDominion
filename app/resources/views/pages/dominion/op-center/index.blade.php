@@ -122,7 +122,7 @@
                                 @endif
                                 <tr>
                                     <td data-order="{{ $realm->number }}">
-                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->number) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
+                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->id) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
                                     </td>
                                     <td data-order="{{ $lastInfoOp->targetDominion->name }}">
                                         <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
