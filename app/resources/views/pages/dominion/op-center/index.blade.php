@@ -39,7 +39,7 @@
                                 @php
                                     $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
                                 @endphp
-                                @if ($lastInfoOp->isInvalid())
+                                @if ($lastInfoOp == null || $lastInfoOp->isInvalid())
                                     @continue
                                 @endif
                                 <tr>
@@ -117,7 +117,7 @@
                                 @php
                                     $lastInfoOp = $infoOpService->getLastClairvoyance($selectedDominion->realm, $realm);
                                 @endphp
-                                @if ($lastInfoOp->isInvalid())
+                                @if ($lastInfoOp == null || $lastInfoOp->isInvalid())
                                     @continue
                                 @endif
                                 <tr>

@@ -230,10 +230,6 @@ class MilitaryCalculator
 
         // Military
         foreach ($dominion->race->units as $unit) {
-            $dp += ($dominion->{'military_unit' . $unit->slot} * $unit->power_defense);
-        }
-
-        foreach ($dominion->race->units as $unit) {
             $powerDefense = $this->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'defense');
 
             $numberOfUnits = 0;

@@ -185,7 +185,7 @@ class InfoOpService
         return $return;
     }
 
-    public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): InfoOp
+    public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): ?InfoOp
     {
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion) {
             return ($infoOp->target_dominion_id === $targetDominion->id && $infoOp->type != 'clairvoyance');
@@ -206,7 +206,7 @@ class InfoOpService
             ->first()['name'];
     }
 
-    public function getLastClairvoyance(Realm $sourceRealm, Realm $targetRealm): InfoOp
+    public function getLastClairvoyance(Realm $sourceRealm, Realm $targetRealm): ?InfoOp
     {
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetRealm) {
             return ($infoOp->target_realm_id === $targetRealm->id && $infoOp->type == 'clairvoyance');
