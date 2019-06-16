@@ -302,7 +302,7 @@ class MilitaryCalculator
         $multiplier += $multiplierFromFrenzy;
 
         // Spell: Ares' Call (+10%)
-        if($multiplierFromBlizzard === 0 && $multiplierFromFrenzy === 0) {
+        if($multiplierFromBlizzard == 0 && $multiplierFromFrenzy == 0) {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call',
                 $spellAresCall);
         }
