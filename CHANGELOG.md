@@ -5,7 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-### [0.6.2-5] - 2019-06-16
+## [0.6.2-6] - 2019-06-16
+### Fixed
+- Fixed Ares call not working properly sometimes
+
+## [0.6.2-5] - 2019-06-16
 ### Added
 - Added unread count badge to the council page menu item in the sidebar to indicate new messages since your last council visit
 
@@ -265,7 +269,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...HEAD
+[0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
 [0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
 [0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
 [0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
