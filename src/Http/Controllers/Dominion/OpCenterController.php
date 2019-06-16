@@ -58,10 +58,10 @@ class OpCenterController extends AbstractDominionController
         ]);
     }
 
-    public function getClairvoyance(int $realmNumber)
+    public function getClairvoyance(int $realmId)
     {
         $infoOpService = app(InfoOpService::class);
-        $targetRealm = Realm::findOrFail($realmNumber);
+        $targetRealm = Realm::findOrFail($realmId);
 
         $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm(
             $this->getSelectedDominion()->realm,
