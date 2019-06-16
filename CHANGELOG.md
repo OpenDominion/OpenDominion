@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.2-7] - 2019-06-16
+### Fixed
+- Fix Clairvoyance reports on Op Center page
+- Fix 5:4 check on the invasion page
+
 ## [0.6.2-6] - 2019-06-16
 ### Fixed
 - Fixed Ares call not working properly sometimes
@@ -269,7 +274,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...HEAD
+[0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
 [0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
 [0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
 [0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
