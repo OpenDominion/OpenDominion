@@ -83,6 +83,18 @@
                                             @continue
                                         @endif
 
+                                        @php
+                                            $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
+                                            $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
+
+                                            $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
+                                                return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
+                                            })->count() > 0;
+                                            $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
+                                                return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
+                                            })->count() > 0;
+                                        @endphp
+
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}") !!}
@@ -91,13 +103,9 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                <span id="unit{{ $unitSlot }}_op">
-                                                    {{ (strpos($unit->power_offense, ".") !== false) ? number_format($unit->power_offense, 1) : number_format($unit->power_offense) }}
-                                                </span>
+                                                <span id="unit{{ $unitSlot }}_op">{{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}</span>{{ $hasDynamicOffensivePower ? '*' : null }}
                                                 /
-                                                <span id="unit{{ $unitSlot }}_dp" class="text-muted">
-                                                    {{ (strpos($unit->power_defense, ".") !== false) ? number_format($unit->power_defense, 1) : number_format($unit->power_defense) }}
-                                                </span>
+                                                <span id="unit{{ $unitSlot }}_dp" class="text-muted">{{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}</span><span class="text-muted">{{ $hasDynamicDefensivePower ? '*' : null }}</span>
                                             </td>
                                             <td class="text-center">
                                                 {{ number_format($selectedDominion->{"military_unit{$unitSlot}"}) }}

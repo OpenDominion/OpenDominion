@@ -511,16 +511,12 @@ class MilitaryCalculator
 
         // Add units which count as (partial) spies (Lizardfolk Chameleon)
         foreach ($dominion->race->units as $unit) {
-            if ($unit->perkType === null) {
-                continue;
+            if ($type === 'offense' && $unit->getPerkValue('counts_as_spy_offense')) {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_offense'));
             }
 
-            if ($type === 'offense' && $unit->perkType->key === 'counts_as_spy_offense') {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
-            }
-
-            if ($type === 'defense' && $unit->perkType->key === 'counts_as_spy_defense') {
-                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            if ($type === 'defense' && $unit->getPerkValue('counts_as_spy_defense')) {
+                $spies += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_spy_defense'));
             }
         }
 
@@ -584,16 +580,12 @@ class MilitaryCalculator
 
         // Add units which count as (partial) spies (Dark Elf Adept)
         foreach ($dominion->race->units as $unit) {
-            if ($unit->perkType === null) {
-                continue;
+            if ($type === 'offense' && $unit->getPerkValue('counts_as_wizard_offense')) {
+                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_offense'));
             }
 
-            if ($type === 'offense' && $unit->perkType->key === 'counts_as_wizard_offense') {
-                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
-            }
-
-            if ($type === 'defense' && $unit->perkType->key === 'counts_as_wizard_defense') {
-                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float)$unit->unit_perk_type_values);
+            if ($type === 'defense' && $unit->getPerkValue('counts_as_wizard_defense')) {
+                $wizards += floor($dominion->{"military_unit{$unit->slot}"} * (float) $unit->getPerkValue('counts_as_wizard_defense'));
             }
         }
 
