@@ -63,7 +63,7 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id)
+                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id || $gameEvent->target->realm_id == $selectedDominion->realm->id)
                                                 <a href="{{ route('dominion.event', [$gameEvent->id]) }}">Link</a>
                                             @else
                                                 --
