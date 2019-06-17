@@ -58,6 +58,11 @@
                                                         and captured
                                                         {{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}
                                                         land.
+                                                    @else
+                                                        Fellow realmie
+                                                        <span class="text-green">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>
+                                                        fended of an attack from
+                                                        <span class="text-red">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>.
                                                     @endif
                                                 @endif
                                             @endif
