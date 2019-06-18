@@ -239,15 +239,14 @@ class InvadeActionService
             $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
             $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
 
-            $this->handleLandGrabs($dominion, $target, $units);
-            $this->handleMoraleChanges($dominion, $target);
-            $this->handleConversions($dominion, $target, $units);
-            $this->handleAfterInvasionUnitPerks($dominion, $target, $units);
-
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $this->handleDefensiveCasualties($dominion, $target, $units);
-
             $this->handleReturningUnits($dominion, $survivingUnits);
+            $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
+
+            $this->handleMoraleChanges($dominion, $target);
+            $this->handleConversions($dominion, $target, $units);
+            $this->handleLandGrabs($dominion, $target, $units);
 
             // todo: refactor
             $this->invasionResult['result']['success'] = $isInvasionSuccessful;
@@ -805,10 +804,6 @@ class InvadeActionService
             $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
 
             $hobbosToPlunderWith = (int)ceil($unitsNeededToBreakTarget * $hobbosPercentage);
-
-            // reduce by 8.5% now to take into account offensive casualties
-            // todo: get real offensive casualties
-            $hobbosToPlunderWith = (int)ceil($hobbosToPlunderWith * (1 - 0.085));
 
             $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
             $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
