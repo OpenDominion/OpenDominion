@@ -104,8 +104,8 @@ class NetworthCalculator
             return 5;
         }
 
-        $unitOffense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, "offense");
-        $unitDefense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, "defense");
+        $unitOffense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'offense');
+        $unitDefense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'defense');
 
         return (
             (1.8 * min(6, max($unitOffense, $unitDefense)))
