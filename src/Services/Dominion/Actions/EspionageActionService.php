@@ -142,7 +142,7 @@ class EspionageActionService
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
-            $dominion->spy_strength -= 2; // todo: different values for different kind of ops (info ops 2%, rest 5%)
+            $dominion->decrement('spy_strength', 2); // todo: different values for different kind of ops (info ops 2%, rest 5%)
             $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION]);
 
         });

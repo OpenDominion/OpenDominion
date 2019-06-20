@@ -56,9 +56,8 @@ class BankActionService
 
         $targetAmount = floor($amount * $sourceResource['sell'] * $targetResource['buy']);
 
-        $dominion->{$source} -= $amount;
-        $dominion->{$target} += $targetAmount;
-
+        $dominion->decrement($source, $amount);
+        $dominion->increment($target, $targetAmount);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_BANK]);
 
         return [
