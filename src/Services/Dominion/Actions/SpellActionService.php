@@ -323,7 +323,7 @@ class SpellActionService
                     'resource_gems' => $target->resource_gems,
                     'resource_tech' => $target->resource_tech,
                     'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource(
-                            $dominion,
+                            $target,
                             'resource_boats'
                         ),
 
