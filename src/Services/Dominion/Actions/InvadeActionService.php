@@ -492,7 +492,7 @@ class InvadeActionService
 
             if ($amount > 0) {
                 // Actually kill the units. RIP in peace, glorious warriors ;_;7
-                $dominion->decrement("military_unit{$slot}",  $amount);
+                $dominion->decrement("military_unit{$slot}", $amount);
 
                 $this->invasionResult['attacker']['unitsLost'][$slot] = $amount;
             }
