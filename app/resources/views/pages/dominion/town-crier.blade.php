@@ -58,12 +58,17 @@
                                                         and captured
                                                         {{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}
                                                         land.
+                                                    @else
+                                                        Fellow realmie
+                                                        <span class="text-green">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>
+                                                        fended of an attack from
+                                                        <span class="text-red">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>.
                                                     @endif
                                                 @endif
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id)
+                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id || $gameEvent->target->realm_id == $selectedDominion->realm->id)
                                                 <a href="{{ route('dominion.event', [$gameEvent->id]) }}">Link</a>
                                             @else
                                                 --
