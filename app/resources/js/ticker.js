@@ -2,21 +2,27 @@
 // todo: there's probably a more elegant way to implement this :)
 
 function ticker() {
-    tick();
     setInterval(tick, 1000);
 }
 
 function tick() {
-    const now = new Date();
-    const nextHour = new Date();
-    nextHour.setHours(now.getHours() + 1);
-    nextHour.setMinutes(0);
-    nextHour.setSeconds(0);
     const el = document.getElementById('tickers');
+
     if (el != null) {
-        // el.getElementsByClassName('ticker-local')[0].innerHTML = hms(now);
-        el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(now));
-        el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - now);
+        const currentServerTime = el.getElementsByClassName('ticker-server')[0].innerHTML;
+        const dateNow = new Date('1970-01-01T' + currentServerTime + 'Z');
+        dateNow.setUTCSeconds(dateNow.getUTCSeconds() + 1);
+
+        const nextHour = new Date(dateNow);
+        nextHour.setUTCHours(dateNow.getUTCHours() + 1);
+        nextHour.setMinutes(0);
+        nextHour.setSeconds(0);
+
+        el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(dateNow));
+        console.log(nextHour);
+        console.log(dateNow);
+        console.log(nextHour - dateNow);
+        el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - dateNow);
     }
 }
 
