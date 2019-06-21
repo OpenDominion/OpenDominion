@@ -37,7 +37,7 @@
                                                         Victorious on the battlefield,
                                                         <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
                                                         conquered
-                                                        <span class="text-lime">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
+                                                        <span class="text-green text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land from
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>
                                                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
@@ -55,7 +55,7 @@
                                                         invaded
                                                         <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
                                                         and captured
-                                                        <span class="text-red">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
+                                                        <span class="text-red text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land.
                                                     @else
                                                         Fellow dominion
