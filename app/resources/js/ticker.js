@@ -1,6 +1,8 @@
 
 // todo: there's probably a more elegant way to implement this :)
 
+let currentDateNow = null;
+
 function ticker() {
     setInterval(tick, 1000);
 }
@@ -9,20 +11,24 @@ function tick() {
     const el = document.getElementById('tickers');
 
     if (el != null) {
-        const currentServerTime = el.getElementsByClassName('ticker-server')[0].innerHTML;
-        const dateNow = new Date('1970-01-01T' + currentServerTime + 'Z');
-        dateNow.setUTCSeconds(dateNow.getUTCSeconds() + 1);
+        if(currentDateNow == null)
+        {
+            const currentServerTime = el.getElementsByClassName('ticker-server')[0].innerHTML;
+            currentDateNow = new Date('1970-01-01T' + currentServerTime + 'Z');
+        }
 
-        const nextHour = new Date(dateNow);
-        nextHour.setUTCHours(dateNow.getUTCHours() + 1);
+        currentDateNow.setUTCSeconds(currentDateNow.getUTCSeconds() + 1);
+
+        const nextHour = new Date(currentDateNow);
+        nextHour.setUTCHours(currentDateNow.getUTCHours() + 1);
         nextHour.setMinutes(0);
         nextHour.setSeconds(0);
 
-        el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(dateNow));
+        el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(currentDateNow));
         console.log(nextHour);
-        console.log(dateNow);
-        console.log(nextHour - dateNow);
-        el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - dateNow);
+        console.log(currentDateNow);
+        console.log(nextHour - currentDateNow);
+        el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - currentDateNow);
     }
 }
 
