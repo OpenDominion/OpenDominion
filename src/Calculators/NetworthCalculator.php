@@ -75,7 +75,7 @@ class NetworthCalculator
 
         foreach ($dominion->race->units as $unit) {
             $totalUnitsOfType = $this->militaryCalculator->getTotalUnitsForSlot($dominion, $unit->slot);
-            $networth += $totalUnitsOfType * $this->getUnitNetworth($unit, $dominion);
+            $networth += $totalUnitsOfType * $this->getUnitNetworth($dominion, $unit);
         }
 
         $networth += ($dominion->military_spies * $networthPerSpy);
