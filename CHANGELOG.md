@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.6.2-8] - 2019-06-23
 ### Changed
 - Server and tick timers on pages are now based on server time, not browser time
 - Changed texts and colors on Town Crier page
@@ -286,7 +288,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...HEAD
+[0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
 [0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
 [0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
 [0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
