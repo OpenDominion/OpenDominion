@@ -239,15 +239,14 @@ class InvadeActionService
             $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
             $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
 
-            $this->handleLandGrabs($dominion, $target, $units);
-            $this->handleMoraleChanges($dominion, $target);
-            $this->handleConversions($dominion, $target, $units);
-            $this->handleAfterInvasionUnitPerks($dominion, $target, $units);
-
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $this->handleDefensiveCasualties($dominion, $target, $units);
-
             $this->handleReturningUnits($dominion, $survivingUnits);
+            $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
+
+            $this->handleMoraleChanges($dominion, $target);
+            $this->handleConversions($dominion, $target, $units);
+            $this->handleLandGrabs($dominion, $target, $units);
 
             // todo: refactor
             $this->invasionResult['result']['success'] = $isInvasionSuccessful;
@@ -383,8 +382,7 @@ class InvadeActionService
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
                 // Unsuccessful invasions (bounces) give negative prestige immediately
-                $dominion->prestige += $attackerPrestigeChange;
-
+                $dominion->increment('prestige', $attackerPrestigeChange);
             } else {
                 // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
                 $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
@@ -401,7 +399,7 @@ class InvadeActionService
         }
 
         if ($targetPrestigeChange !== 0) {
-            $target->prestige += $targetPrestigeChange;
+            $target->increment('prestige', $targetPrestigeChange);
 
             $this->invasionResult['defender']['prestigeChange'] = $targetPrestigeChange;
         }
@@ -493,7 +491,7 @@ class InvadeActionService
 
             if ($amount > 0) {
                 // Actually kill the units. RIP in peace, glorious warriors ;_;7
-                $dominion->{"military_unit{$slot}"} -= $amount;
+                $dominion->decrement("military_unit{$slot}", $amount);
 
                 $this->invasionResult['attacker']['unitsLost'][$slot] = $amount;
             }
@@ -575,7 +573,7 @@ class InvadeActionService
                 $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null));
         }
         if ($drafteesLost > 0) {
-            $target->military_draftees -= $drafteesLost;
+            $target->decrement('military_draftees', $drafteesLost);
 
             $this->unitsLost += $drafteesLost; // todo: refactor
             $this->invasionResult['defender']['unitsLost']['draftees'] = $drafteesLost;
@@ -598,7 +596,7 @@ class InvadeActionService
         }
 
         foreach ($defensiveUnitsLost as $slot => $amount) {
-            $target->{"military_unit{$slot}"} -= $amount;
+            $target->decrement("military_unit{$slot}", $amount);
 
             $this->invasionResult['defender']['unitsLost'][$slot] = $amount;
         }
@@ -670,13 +668,13 @@ class InvadeActionService
             $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
 
             // Remove land
-            $target->{"land_$landType"} -= $landLost;
+            $target->decrement("land_$landType", $landLost);
 
             // Destroy buildings
             foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
                 $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
                 $resourceName = "building_{$buildingType}";
-                $target->$resourceName -= $builtBuildingsToDestroy;
+                $target->decrement($resourceName, $builtBuildingsToDestroy);
 
                 $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
 
@@ -763,13 +761,13 @@ class InvadeActionService
     {
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
 
-        $dominion->morale -= 5;
+        $moraleChange = -5;
 
         // Increased morale drops for attacking weaker targets
         if ($range < 75) {
-            $additionalMoraleChange = max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
-            $dominion->morale += $additionalMoraleChange;
+            $moraleChange += max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
         }
+        $dominion->increment('morale', $moraleChange);
     }
 
     protected function handleConversions(Dominion $dominion, Dominion $target, array $units): void
@@ -806,15 +804,11 @@ class InvadeActionService
 
             $hobbosToPlunderWith = (int)ceil($unitsNeededToBreakTarget * $hobbosPercentage);
 
-            // reduce by 8.5% now to take into account offensive casualties
-            // todo: get real offensive casualties
-            $hobbosToPlunderWith = (int)ceil($hobbosToPlunderWith * (1 - 0.085));
-
             $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
             $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
 
-            $target->resource_platinum -= $plunderPlatinum;
-            $target->resource_gems -= $plunderGems;
+            $target->decrement('resource_platinum', $plunderPlatinum);
+            $target->decrement('resource_gems', $plunderGems);
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
@@ -847,7 +841,7 @@ class InvadeActionService
         foreach ($units as $slot => $amount) {
             $unitKey = "military_unit{$slot}";
 
-            $dominion->$unitKey -= $amount;
+            $dominion->decrement($unitKey, $amount);
 
             $this->queueService->queueResources(
                 'invasion',
@@ -880,7 +874,7 @@ class InvadeActionService
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
             $boatsByReturnHourGroup = (int)floor($amountUnits / 30);
 
-            $dominion->resource_boats -= $boatsByReturnHourGroup;
+            $dominion->decrement('resource_boats', $boatsByReturnHourGroup);
 
             $this->queueService->queueResources(
                 'invasion',

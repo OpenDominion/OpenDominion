@@ -166,7 +166,7 @@
                                 $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($event->target);
                             @endphp
 
-                            @if ($recentlyInvadedCount > 0)
+                            @if ($recentlyInvadedCount > 0 && $event->data['result']['success'])
                                 <p class="text-center">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because the target was recently invaded, your prestige gains and their defensive losses are reduced.

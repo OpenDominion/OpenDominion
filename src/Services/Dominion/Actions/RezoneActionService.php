@@ -77,13 +77,13 @@ class RezoneActionService
         }
 
         // All fine, perform changes.
-        $dominion->resource_platinum -= $platinumCost;
+        $dominion->decrement('resource_platinum', $platinumCost);
 
         foreach ($remove as $landType => $amount) {
-            $dominion->{'land_' . $landType} -= $amount;
+            $dominion->decrement('land_' . $landType, $amount);
         }
         foreach ($add as $landType => $amount) {
-            $dominion->{'land_' . $landType} += $amount;
+            $dominion->increment('land_' . $landType, $amount);
         }
 
         $dominion->save(['event' => HistoryService::EVENT_ACTION_REZONE]);

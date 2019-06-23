@@ -20,57 +20,57 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-striped">
                             <colgroup>
+                                <col width="140">
                                 <col>
                                 <col width="50">
-                                <col width="200">
                             </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Event</th>
-                                    <th class="text-center">Link</th>
-                                    <th class="text-center">Date</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 @foreach ($gameEvents as $gameEvent)
                                     <tr>
                                         <td>
+                                            <span>{{ $gameEvent->created_at }}</span>
+                                        </td>
+                                        <td>
                                             @if ($gameEvent->type === 'invasion')
                                                 @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->source_id, $dominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
-                                                        Victorious on the battlefield, realmie
-                                                        <span class="text-green">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
+                                                        Victorious on the battlefield,
+                                                        <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
                                                         conquered
-                                                        {{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}
+                                                        <span class="text-green text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land from
-                                                        <span class="text-red">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>.
+                                                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                                     @else
-                                                        Sadly, the forces of realmie
-                                                        <span class="text-green">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
+                                                        Sadly, the forces of
+                                                        <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
                                                         were beaten back by
-                                                        <span class="text-red">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>.
+                                                        <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                                     @endif
                                                 @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->target_id, $dominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
-                                                        <span class="text-red">{{ $gameEvent->source->name }} (#{{ $gameEvent->source->realm->number }})</span>
-                                                        invaded our realmie
-                                                        <span class="text-green">{{ $gameEvent->target->name }} (#{{ $gameEvent->target->realm->number }})</span>
+                                                        <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                        invaded
+                                                        <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
                                                         and captured
-                                                        {{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}
+                                                        <span class="text-red text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land.
+                                                    @else
+                                                        Fellow dominion
+                                                        <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
+                                                        fended of an attack from
+                                                        <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
                                                     @endif
                                                 @endif
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id)
-                                                <a href="{{ route('dominion.event', [$gameEvent->id]) }}">Link</a>
-                                            @else
-                                                --
+                                            @if ($gameEvent->source->realm_id == $selectedDominion->realm->id || $gameEvent->target->realm_id == $selectedDominion->realm->id)
+                                                <a href="{{ route('dominion.event', [$gameEvent->id]) }}"><i class="ra ra-crossed-swords ra-fw"></i></a>
                                             @endif
-                                        </td>
-                                        <td class="text-center">
-                                            <span>{{ $gameEvent->created_at }}</span>
                                         </td>
                                     </tr>
                                 @endforeach

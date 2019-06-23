@@ -144,8 +144,8 @@ class SpellActionService
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
 
-            $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
+            $dominion->decrement('resource_mana', $manaCost);
+            $dominion->decrement('wizard_strength', ($result['wizardStrengthCost'] ?? 5));
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
         });
 
@@ -323,7 +323,7 @@ class SpellActionService
                     'resource_gems' => $target->resource_gems,
                     'resource_tech' => $target->resource_tech,
                     'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource(
-                            $dominion,
+                            $target,
                             'resource_boats'
                         ),
 

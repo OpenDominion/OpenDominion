@@ -1,9 +1,23 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+All notable changes relevant to players in this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.6.2-8] - 2019-06-23
+### Changed
+- Server and tick timers on pages are now based on server time, not browser time
+- Changed texts and colors on Town Crier page
+
+### Fixed
+- Fixed race condition bug around hour change, sometimes resulting in loss of resources when performing actions on the hour change
+- Changed invasions to calculate casualties before everything else, fixes bugs related to immortal range and Hobgoblin plunder
+- Fixed missing Wizard Guild spell mana cost reduction
+- Fixed missing text on Town Crier page where a realmie fended off an attack
+- Removed 'target was recently invaded'-text on invasion report on failed invasions
+- Fixed Clear Sight not including returning boats
+- Fixed networth calculation to include dynamic unit power values (e.g. increased op/dp from land ratio based perks)
 
 ## [0.6.2-7] - 2019-06-16
 ### Fixed
@@ -274,7 +288,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...HEAD
+[0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
 [0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
 [0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
 [0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
