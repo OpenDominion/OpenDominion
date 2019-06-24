@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use Illuminate\Support\Collection;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
@@ -82,6 +83,17 @@ class InfoOpService
                 $infoOp->target_realm_id == $targetRealm->id
             );
         })->first();
+    }
+
+    public function getInfoOpArchive(Realm $sourceRealm, Dominion $targetDominion, string $type): Collection
+    {
+        return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
+            return (
+                !$infoOp->isArchived() &&
+                ($infoOp->target_dominion_id === $targetDominion->id) &&
+                ($infoOp->type === $type)
+            );
+        })->sortByDesc('created_at');
     }
 
     public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int

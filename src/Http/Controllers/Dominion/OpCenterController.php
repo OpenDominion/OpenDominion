@@ -58,6 +58,32 @@ class OpCenterController extends AbstractDominionController
         ]);
     }
 
+    public function getDominionArchive(Dominion $dominion, string $type)
+    {
+        $valid_types = ['clear_sight', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
+        $infoOpService = app(InfoOpService::class);
+
+        if (!in_array($type, $valid_types)) {
+            return redirect()->route('dominion.op-center.show', $dominion);
+        }
+
+        $infoOpArchive = $infoOpService->getInfoOpArchive($this->getSelectedDominion()->realm, $dominion, $type);
+
+        return view('pages.dominion.op-center.archive', [
+            'buildingHelper' => app(BuildingHelper::class),
+            'improvementHelper' => app(ImprovementHelper::class),
+            'infoOpService' => app(InfoOpService::class),
+            'landCalculator' => app(LandCalculator::class),
+            'landHelper' => app(LandHelper::class),
+            'rangeCalculator' => app(RangeCalculator::class),
+            'spellCalculator' => app(SpellCalculator::class),
+            'spellHelper' => app(SpellHelper::class),
+            'unitHelper' => app(UnitHelper::class),
+            'dominion' => $dominion,
+            'infoOpArchive' => $infoOpArchive
+        ]);
+    }
+
     public function getClairvoyance(int $realmId)
     {
         $infoOpService = app(InfoOpService::class);

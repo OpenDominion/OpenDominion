@@ -206,6 +206,11 @@
                             <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
                         </form>
                     </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'clear_sight']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -243,7 +248,7 @@
                 @endphp
 
                 @slot('title', 'Active Spells')
-                @slot('titleIconClass', 'ra ra-magic-wand')
+                @slot('titleIconClass', 'ra ra-fairy-wand')
 
                 @if ($infoOp === null)
                     <p>No recent data available.</p>
@@ -300,6 +305,11 @@
                             <input type="hidden" name="spell" value="revelation">
                             <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'revelation')) }} mana)</button>
                         </form>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'revelation']) }}">View Archives</a>
                     </div>
                 @endslot
             @endcomponent
@@ -369,6 +379,11 @@
                             <input type="hidden" name="operation" value="castle_spy">
                             <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
                         </form>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'castle_spy']) }}">View Archives</a>
                     </div>
                 @endslot
             @endcomponent
@@ -463,14 +478,19 @@
                         @endif
                     @endif
 
-                        <div class="pull-right">
-                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                                @csrf
-                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                                <input type="hidden" name="operation" value="barracks_spy">
-                                <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
-                            </form>
-                        </div>
+                    <div class="clearfix pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="barracks_spy">
+                            <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                        </form>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'barracks_spy']) }}">View Archives
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -609,6 +629,11 @@
                             <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
                         </form>
                     </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'survey_dominion']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -742,6 +767,11 @@
                             <input type="hidden" name="operation" value="land_spy">
                             <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
                         </form>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'land_spy']) }}">View Archives</a>
                     </div>
                 @endslot
             @endcomponent

@@ -69,4 +69,9 @@ class InfoOp extends AbstractModel
     {
         return ($this->updated_at < new Carbon('-12 hours'));
     }
+
+    public function isArchived(): bool
+    {
+        return ($this->updated_at < new Carbon('-72 hours'));
+    }
 }
