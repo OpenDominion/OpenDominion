@@ -1,0 +1,43 @@
+name: Wood Elf
+alignment: good
+home_land_type: forest
+perks:
+  wizard_strength: 10
+  spy_strength: 10
+  max_population: -5
+  lumber_production: 10
+  offense: 5
+units:
+  - name: Ranger
+    cost:
+      platinum: 275
+      ore: 25
+    power:
+      offense: 3
+      defense: 0
+  - name: Longbowman
+    cost:
+      platinum: 325
+      ore: 10
+    power:
+      offense: 0
+      defense: 4
+  - name: Mystic # Leave the space out, for nostalgic reasons
+    cost:
+      platinum: 1075
+      ore: 0
+    power:
+      offense: 0
+      defense: 4
+    perks:
+      defense_from_land: forest,20,5 # land type, ratio%, max
+  - name: Druid
+    cost:
+      platinum: 1100
+      ore: 0
+    power:
+      offense: 3
+      defense: 1
+    perks:
+      offense_from_land: forest,20,5 # land type, ratio%, max
+      defense_from_land: forest,20,5 # land type, ratio%, max
