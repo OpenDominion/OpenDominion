@@ -216,6 +216,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Troll']),
             ],
+            [
+                'name' => 'Parasitic Hunger',
+                'description' => 'Increases conversions by 3 percentage points',
+                'key' => 'parasitic_hunger',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Undead']),
+            ],
         ]);
     }
 
