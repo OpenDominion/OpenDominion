@@ -15,7 +15,7 @@ units:
       offense: 2.5
       defense: 0
     perks:
-      fixed_casualties: 50
+      immortal: 1
   - name: Ghoul
     cost:
       platinum: 225
@@ -23,6 +23,8 @@ units:
     power:
       offense: 0
       defense: 2.5
+    perks:
+      immortal: 1
   - name: Progeny
     cost:
       platinum: 900
@@ -31,6 +33,7 @@ units:
       offense: 2
       defense: 4
     perks:
+      immortal: 1
       conversion: 12 # slot 1 and slot 2 aka specs
   - name: Vampire
     cost:
@@ -40,4 +43,5 @@ units:
       offense: 4
       defense: 3
     perks:
+      immortal: 1
       staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above

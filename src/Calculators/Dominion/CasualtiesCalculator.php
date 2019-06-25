@@ -49,8 +49,8 @@ class CasualtiesCalculator
         // units
         // Note: Immortality only works if you're NOT overwhelmed, regardless if
         // invasion is successful or not
-        if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-            // todo: check HuNo's Crusader vs SPUD
+        if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')
+            && !($this->spellCalculator->getActiveSpellMultiplierBonus($target, 'crusade'))) {
             $multiplier = 0;
         } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) {
             // todo: refactor to combine with except_vs_{race}
@@ -153,8 +153,8 @@ class CasualtiesCalculator
         // First check immortality, so we can skip the other checks on immortal
         // units
         if ($slot) {
-            if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // todo: check HuNo's Crusader vs SPUD
+            if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')
+                && !($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade'))) {
                 $multiplier = 0;
 
             } elseif ($this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {

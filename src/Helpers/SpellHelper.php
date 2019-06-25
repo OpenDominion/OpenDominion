@@ -130,7 +130,7 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Crusade',
-                'description' => '+5% offensive power', // todo: add mention later that you can kill SPUD
+                'description' => '+5% offensive power, and allows you to kill Undead', // todo: add mention later that you can kill SPUD
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
