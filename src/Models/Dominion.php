@@ -305,7 +305,7 @@ class Dominion extends AbstractModel
      */
     public function monarchVote()
     {
-        return Dominion::find($this->monarch_dominion_id);
+        return self::find($this->monarch_dominion_id);
     }
 
     /**

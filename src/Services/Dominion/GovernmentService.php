@@ -9,9 +9,9 @@ use OpenDominion\Services\Dominion\HistoryService;
 
 class GovernmentService
 {
-    /** 
+    /**
      * Gets votes for Realm monarchy by Dominion.
-     * 
+     *
      * @param Realm $realm
      * @return array
      */
@@ -29,9 +29,9 @@ class GovernmentService
         return $results;
     }
 
-    /** 
+    /**
      * Check if a new monarch has been elected for a Realm.
-     * 
+     *
      * @param Realm $realm
      * @return bool
      */

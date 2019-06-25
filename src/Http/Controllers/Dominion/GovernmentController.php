@@ -3,8 +3,8 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
-use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Requests\Dominion\Actions\GovernmentActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
 use OpenDominion\Services\Dominion\Actions\GovernmentActionService;
