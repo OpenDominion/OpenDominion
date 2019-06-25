@@ -692,4 +692,11 @@
             @endif
         @endforeach
     </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="text-center">
+                {{ $infoOpArchive->links() }}
+            </div>
+        </div>
+    </div>
 @endsection

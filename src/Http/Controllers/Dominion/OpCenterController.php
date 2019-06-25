@@ -60,6 +60,7 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominionArchive(Dominion $dominion, string $type)
     {
+        $resultsPerPage = 20;
         $valid_types = ['clear_sight', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
         $infoOpService = app(InfoOpService::class);
 
@@ -67,7 +68,12 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center.show', $dominion);
         }
 
-        $infoOpArchive = $infoOpService->getInfoOpArchive($this->getSelectedDominion()->realm, $dominion, $type);
+        $infoOpArchive = $this->getSelectedDominion()->realm
+            ->infoOps()
+            ->where('target_dominion_id', '=', $dominion->id)
+            ->where('type', '=', $type)
+            ->orderBy('updated_at', 'desc')
+            ->paginate($resultsPerPage);
 
         return view('pages.dominion.op-center.archive', [
             'buildingHelper' => app(BuildingHelper::class),

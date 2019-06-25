@@ -71,7 +71,7 @@ class InfoOpService
                 ($infoOp->target_dominion_id === $targetDominion->id) &&
                 ($infoOp->type === $type)
             );
-        })->first();
+        })->sortByDesc('updated_at')->first();
     }
 
     public function getInfoOpForRealm(Realm $sourceRealm, Realm $targetRealm, string $type): ?InfoOp
@@ -82,18 +82,7 @@ class InfoOpService
                 ($infoOp->type === $type) &&
                 $infoOp->target_realm_id == $targetRealm->id
             );
-        })->first();
-    }
-
-    public function getInfoOpArchive(Realm $sourceRealm, Dominion $targetDominion, string $type): Collection
-    {
-        return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
-            return (
-                !$infoOp->isArchived() &&
-                ($infoOp->target_dominion_id === $targetDominion->id) &&
-                ($infoOp->type === $type)
-            );
-        })->sortByDesc('created_at');
+        })->sortByDesc('updated_at')->first();
     }
 
     public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
@@ -202,8 +191,8 @@ class InfoOpService
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion) {
             return ($infoOp->target_dominion_id === $targetDominion->id && $infoOp->type != 'clairvoyance');
         })
-            ->sortByDesc('updated_at')
-            ->first();
+        ->sortByDesc('updated_at')
+        ->first();
     }
 
     public function getLastInfoOpName(Realm $sourceRealm, Dominion $targetDominion): string
