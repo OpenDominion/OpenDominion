@@ -812,7 +812,8 @@ class InvadeActionService
             if($staggeredConversionPerk) {
 
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
-                    if($rangeConversionPerk <= $landRatio) {
+                    $range = ((int)$rangeConversionPerk[0]) / 100;
+                    if($rangeConversionPerk <= $range) {
                         return true;
                     }
                 }
