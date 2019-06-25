@@ -16,7 +16,10 @@
                             <col>
                             <col>
                             <col width="100">
+                            {{--
                             <col width="100">
+                            <col width="100">
+                            --}}
                             <col width="100">
                             <col width="100">
                             <col width="200">
@@ -26,8 +29,11 @@
                             <tr>
                                 <th>Dominion</th>
                                 <th>Realm</th>
+                                <th class="text-center">Race</th>
+                                {{--
                                 <th class="text-center">OP</th>
                                 <th class="text-center">DP</th>
+                                --}}
                                 <th class="text-center">Land</th>
                                 <th class="text-center">Networth</th>
                                 <th class="text-center">Last Op</th>
@@ -53,12 +59,17 @@
                                         <a href="{{ route('dominion.realm', $dominion->realm->number) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
                                         {{-- todo: highlight clicked dominion in realm page? --}}
                                     </td>
+                                    <td class="text-center" data-search="" data-order="{{ $dominion->race->name }}">
+                                        {{ $dominion->race->name }}
+                                    </td>
+                                    {{--
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getOffensivePower($selectedDominion->realm, $dominion) }}">
                                         {{ $infoOpService->getOffensivePowerString($selectedDominion->realm, $dominion) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getDefensivePower($selectedDominion->realm, $dominion) }}">
                                         {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $dominion) }}
                                     </td>
+                                    --}}
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $dominion) }}">
                                         {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}
                                         <br>
