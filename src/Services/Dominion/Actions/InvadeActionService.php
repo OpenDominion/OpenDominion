@@ -790,38 +790,75 @@ class InvadeActionService
 
         $convertedUnits = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
-        if($dominion->race->name !== 'Undead' || $totalDefensiveCasualties == 0)
-        {
+        if($dominion->race->name !== 'Undead' || $totalDefensiveCasualties == 0) {
             return $convertedUnits;
         }
 
-        $convertingUnits = 0;
+        $totalConvertingUnits = 0;
 
-        $unitsWithConversionPerk = $dominion->race->units->filter(function ($unit) {
-            return ($unit->getPerkValue('conversion'));
+        // Lycan
+        // conversion: 3
+
+        // SPUD:
+        // conversion: 12
+        // staggered_conversion: 50;12,65;3
+
+        $unitsWithConversionPerk = $dominion->race->units->filter(function ($unit) use ($landRatio, $units) {
+            if($units[$unit->slot] == 0) {
+                return false;
+            }
+
+            $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
+            if($staggeredConversionPerk) {
+
+                foreach ($staggeredConversionPerk as $rangeConversionPerk) {
+                    if($rangeConversionPerk <= $landRatio) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return $unit->getPerkValue('conversion');
         });
 
         foreach($unitsWithConversionPerk as $unit) {
-            $convertingUnits += $units[$unit->slot];
+            $totalConvertingUnits += $units[$unit->slot];
         }
 
         $conversionMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHunger);
 
-        $convertingUnitConversions = $convertingUnits * $conversionMultiplier * $landRatio;
+        $convertingUnitConversions = $totalConvertingUnits * $conversionMultiplier * $landRatio;
         $enemyCasualtyConversions = $totalDefensiveCasualties * $landRatio;
 
         $totalConverts = min($convertingUnitConversions, $enemyCasualtyConversions);
 
-        if($landRatio < 0.65) {
-            // Only spec 50/50
-            $convertsPerUnitType = floor($totalConverts / 2);
-            $convertedUnits[1] = $convertsPerUnitType;
-            $convertedUnits[2] = $convertsPerUnitType;
-        }
-        else {
-            // TODO: Add support for Progeny here
+        foreach($unitsWithConversionPerk as $unit) {
+            $conversionPerk = $unit->getPerkValue('conversion');
+            $convertingUnitsForSlot = $units[$unit->slot];
+            $convertingUnitsRatio = $convertingUnitsForSlot / $totalConvertingUnits;
+            $totalConversionsForUnit = floor($totalConverts * $convertingUnitsRatio);
 
-            $convertedUnits[3] = $totalConverts;
+            if(!$conversionPerk) {
+                $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
+
+                foreach ($staggeredConversionPerk as $rangeConversionPerk) {
+                    $range = ((int)$rangeConversionPerk[0]) / 100;
+                    $slots = $rangeConversionPerk[1];
+                    if($range > $landRatio) {
+                        continue;
+                    }
+
+                    $conversionPerk = $slots;
+                }
+            }
+
+            $slotsToConvertTo = strlen($conversionPerk);
+            $totalConvertsForSlot = floor($totalConversionsForUnit / $slotsToConvertTo);
+            foreach (str_split($conversionPerk) as $slot) {
+                $convertedUnits[(int)$slot] += $totalConvertsForSlot;
+            }
         }
 
         return $convertedUnits;
