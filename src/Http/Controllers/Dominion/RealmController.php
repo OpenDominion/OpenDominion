@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
 class RealmController extends AbstractDominionController
@@ -18,6 +19,7 @@ class RealmController extends AbstractDominionController
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
         $protectionService = app(ProtectionService::class);
+        $guardMembershipService = app(GuardMembershipService::class);
 
         $dominion = $this->getSelectedDominion();
         $round = $dominion->round;
@@ -83,6 +85,7 @@ class RealmController extends AbstractDominionController
             'round',
             'dominions',
             'prevRealm',
+            'guardMembershipService',
             'protectionService',
             'nextRealm',
             'isOwnRealm'

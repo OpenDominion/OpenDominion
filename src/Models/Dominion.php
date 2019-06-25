@@ -157,6 +157,8 @@ class Dominion extends AbstractModel
         'building_dock' => 'integer',
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
+        'royal_guard' => 'datetime',
+        'eltie_guard' => 'datetime',
     ];
 
     // Relations

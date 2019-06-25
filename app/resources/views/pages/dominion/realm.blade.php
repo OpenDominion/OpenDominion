@@ -58,10 +58,14 @@
                                                 <i class="ra ra-shield ra-lg text-aqua" title="Under protection"></i>
                                             @endif
 
+                                            @if ($guardMembershipService->isEliteGuardMember($dominion))
+                                                <i class="ra ra-heavy-shield ra-lg text-yellow"></i>
+                                            @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
+                                                <i class="ra ra-heavy-shield ra-lg text-green"></i>
+                                            @endif
+
                                             {{--
 
-                                            RG: <i class="ra ra-crossed-swords ra-lg text-green"></i>
-                                            EG: <i class="ra ra-crossed-swords ra-lg text-yellow"></i>
                                             Monarch: <i class="ra ra-queen-crown ra-lg"></i>
                                                 RG: text-green
                                                 EG: text-yellow

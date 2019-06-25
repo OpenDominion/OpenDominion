@@ -4,15 +4,21 @@ namespace OpenDominion\Calculators\Dominion;
 
 use Illuminate\Support\Collection;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
 class RangeCalculator
 {
+    public const MINIMUM_RANGE = 0.4;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
     /** @var ProtectionService */
     protected $protectionService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
 
     /**
      * RangeCalculator constructor.
@@ -20,10 +26,14 @@ class RangeCalculator
      * @param LandCalculator $landCalculator
      * @param ProtectionService $protectionService
      */
-    public function __construct(LandCalculator $landCalculator, ProtectionService $protectionService)
+    public function __construct(
+        LandCalculator $landCalculator,
+        ProtectionService $protectionService,
+        GuardMembershipService $guardMembershipService)
     {
         $this->landCalculator = $landCalculator;
         $this->protectionService = $protectionService;
+        $this->guardMembershipService = $guardMembershipService;
     }
 
     /**
@@ -38,15 +48,46 @@ class RangeCalculator
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
 
-        $upperModifier = 0.6;
-        $lowerModifier = $this->getRangeModifier($self);
-//        $targetModifier = $this->getRangeModifier($target);
+        $selfModifier = $this->getRangeModifier($self);
+        $targetModifier = $this->getRangeModifier($target);
 
         return (
-            ($targetLand >= ($selfLand * $lowerModifier)) &&
-            ($targetLand <= ($selfLand / $upperModifier))
-            // todo: selfland .. targetLand * targetModifier
+            ($targetLand >= ($selfLand * $selfModifier)) &&
+            ($targetLand <= ($selfLand / $selfModifier)) &&
+            ($selfLand >= ($targetLand * $targetModifier)) &&
+            ($selfLand <= ($targetLand / $targetModifier))
         );
+    }
+
+    /**
+     * Resets guard application status of $self dominion if $target dominion is out of guard range.
+     *
+     * @param Dominion $self
+     * @param Dominion $target
+     */
+    public function checkGuardApplications(Dominion $self, Dominion $target)
+    {
+        $isRoyalGuardApplicant = $this->guardMembershipService->isRoyalGuardApplicant($self);
+        $isEliteGuardApplicant = $this->guardMembershipService->isEliteGuardApplicant($self);
+
+        if ($isRoyalGuardApplicant || $isEliteGuardApplicant) {
+            $selfLand = $this->landCalculator->getTotalLand($self);
+            $targetLand = $this->landCalculator->getTotalLand($target);
+            // Reset Royal Guard application if out of range
+            if($isRoyalGuardApplicant) {
+                $guardModifier = $this->guardMembershipService::ROYAL_GUARD_RANGE;
+                if(($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
+                    $this->guardMembershipService->joinRoyalGuard($self);
+                }
+            }
+            // Reset Elite Guard application if out of range
+            if($isEliteGuardApplicant) {
+                $guardModifier = $this->guardMembershipService::ELITE_GUARD_RANGE;
+                if(($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
+                    $this->guardMembershipService->joinEliteGuard($self);
+                }
+            }
+        }
     }
 
     /**
@@ -102,8 +143,13 @@ class RangeCalculator
      */
     public function getRangeModifier(Dominion $dominion): float
     {
-        // todo: if EG then $modifier = 0.75, else if RG then $modifier = 0.6, else $modifier = 0.4
-        return 0.75;
+        if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+            return $this->guardMembershipService::ELITE_GUARD_RANGE;
+        } elseif ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            return $this->guardMembershipService::ROYAL_GUARD_RANGE;
+        } else {
+            return self::MINIMUM_RANGE;
+        }
     }
 
     /**
@@ -122,7 +168,6 @@ class RangeCalculator
                 return (
                     ($dominion->realm->id !== $self->realm->id) &&
                     $this->isInRange($self, $dominion) &&
-//                    $this->isInRange($dominion, $self) && // todo: needed?
                     !$this->protectionService->isUnderProtection($dominion)
                 );
             })
