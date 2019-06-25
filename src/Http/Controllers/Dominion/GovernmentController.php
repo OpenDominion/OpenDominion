@@ -4,8 +4,8 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Exception;
 use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
-use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class GovernmentController extends AbstractDominionController
 {
