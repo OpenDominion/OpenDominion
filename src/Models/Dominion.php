@@ -76,9 +76,12 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_barracks
  * @property int $building_dock
  * @property \Illuminate\Support\Carbon|null $council_last_read
+ * @property \Illuminate\Support\Carbon|null $royal_guard
+ * @property \Illuminate\Support\Carbon|null $elite_guard
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $pack_id
+ * @property int|null $monarch_dominion_id
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsSource
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsTarget
@@ -158,7 +161,7 @@ class Dominion extends AbstractModel
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
         'royal_guard' => 'datetime',
-        'eltie_guard' => 'datetime',
+        'elite_guard' => 'datetime',
     ];
 
     // Relations
@@ -282,6 +285,27 @@ class Dominion extends AbstractModel
     public function isLocked()
     {
         return (now() >= $this->round->end_date);
+    }
+
+    /**
+     * Returns whether this Dominion is the monarch for its realm.
+     *
+     * @return bool
+     */
+    public function isMonarch()
+    {
+        $monarch = $this->realm->monarch;
+        return ($monarch !== null && $this->id == $monarch->id);
+    }
+
+    /**
+     * Returns the choice for monarch of a Dominion.
+     *
+     * @return Dominion
+     */
+    public function monarchVote()
+    {
+        return Dominion::find($this->monarch_dominion_id);
     }
 
     /**

@@ -54,6 +54,10 @@
                                     <tr>
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
+                                            @if ($dominion->isMonarch())
+                                                <i class="ra ra-queen-crown ra-lg text-red"></i>
+                                            @endif
+
                                             @if ($protectionService->isUnderProtection($dominion))
                                                 <i class="ra ra-shield ra-lg text-aqua" title="Under protection"></i>
                                             @endif
@@ -63,14 +67,6 @@
                                             @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
                                                 <i class="ra ra-heavy-shield ra-lg text-green"></i>
                                             @endif
-
-                                            {{--
-
-                                            Monarch: <i class="ra ra-queen-crown ra-lg"></i>
-                                                RG: text-green
-                                                EG: text-yellow
-
-                                            --}}
 
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
