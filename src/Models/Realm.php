@@ -67,7 +67,7 @@ class Realm extends AbstractModel
 
     public function monarch()
     {
-//        return $this->hasOne(Dominion::class, 'id', 'monarch_dominion_id');
+        return $this->hasOne(Dominion::class, 'id', 'monarch_dominion_id');
     }
 
     public function packs()
