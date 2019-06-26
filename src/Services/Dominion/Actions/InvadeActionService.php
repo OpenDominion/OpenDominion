@@ -241,7 +241,7 @@ class InvadeActionService
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target, $units);
-            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties);
+            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties, $isInvasionSuccessful);
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
@@ -779,9 +779,10 @@ class InvadeActionService
      * @param float $landRatio
      * @param array $units
      * @param int $totalDefensiveCasualties
+     * @param bool $isInvasionSuccessful
      * @return array
      */
-    protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties): array
+    protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties, bool $isInvasionSuccessful): array
     {
         $conversionBaseMultiplier = 0.06;
         $spellParasiticHunger = 0.03;
@@ -790,7 +791,7 @@ class InvadeActionService
 
         $convertedUnits = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
-        if($dominion->race->name !== 'Undead' || $totalDefensiveCasualties == 0) {
+        if(!$isInvasionSuccessful || $dominion->race->name !== 'Undead' || $totalDefensiveCasualties == 0) {
             return $convertedUnits;
         }
 
