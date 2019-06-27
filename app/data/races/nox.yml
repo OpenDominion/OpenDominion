@@ -19,8 +19,6 @@ units:
     power:
       offense: 0
       defense: 3
-    perks:
-      reduce_combat_losses: 1
   - name: Nightshade
     cost:
       platinum: 875
