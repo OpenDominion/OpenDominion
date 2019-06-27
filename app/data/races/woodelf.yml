@@ -22,7 +22,7 @@ units:
     power:
       offense: 0
       defense: 4
-  - name: Mystic # Leave the space out, for nostalgic reasons
+  - name: Mystic
     cost:
       platinum: 1075
       ore: 0
