@@ -21,7 +21,7 @@ units:
       defense: 3
   - name: Nightshade
     cost:
-      platinum: 875
+      platinum: 925
       ore: 100
     power:
       offense: 0
@@ -30,7 +30,7 @@ units:
       defense_from_land: swamp,10,4 # land type, ratio%, max
   - name: Lich
     cost:
-      platinum: 1050
+      platinum: 1000
       ore: 0
     power:
       offense: 5
