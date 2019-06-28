@@ -35,6 +35,7 @@ units:
     perks:
       immortal: 1
       conversion: 12 # slot 1 and slot 2 aka specs
+    need_boat: false
   - name: Vampire
     cost:
       platinum: 1000
@@ -45,3 +46,4 @@ units:
     perks:
       immortal: 1
       staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above
+    need_boat: false
