@@ -368,7 +368,15 @@
                     }
                 });
 
-                invadingForceBoats = Math.ceil(invadingForceBoats / 30);
+                // todo: move all this boat logic to invasionCalcualtorService
+                @php
+                    $boatCapacity = 30;
+                    $boatCapacityPerk = $selectedDominion->race->getPerkValue('boat_capacity');
+                    if ($boatCapacityPerk) $boatCapacity += $boatCapacityPerk;
+                @endphp
+
+                var boatCapacity = {{ $boatCapacity }};
+                invadingForceBoats = Math.ceil(invadingForceBoats / boatCapacity);
 
                 DPNeededToLeaveAtHome = Math.floor(invadingForceOP / 3);
                 allowedMaxOP = Math.ceil((originalHomeForcesDP - invadingForceDP) * 1.25);
