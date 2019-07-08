@@ -201,6 +201,14 @@ class SpellHelper
                 'races' => collect(['Halfling']),
             ],
             [
+                'name' => 'Howling',
+                'description' => '+10% offensive strength, +10% defensive strength (not cumulative with Ares Call)',
+                'key' => 'howling',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Kobold']),
+            ],
+            [
                 'name' => 'Warsong',
                 'description' => '+10% offensive power',
                 'key' => 'warsong',

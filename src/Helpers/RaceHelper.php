@@ -39,6 +39,11 @@ HALFLING;
 <p>Proficient at everything but excelling at nothing, they are a well-balanced and self-sufficient race.</p>
 HUMAN;
 
+        $descriptions['kobold'] = <<<KOBOLD
+<p>A bunch of annoying little shits.</p>
+<p>You no take candle!</p>
+KOBOLD;
+
         $descriptions['sylvan'] = <<<SYLVAN
 <p>Mythical forest-dwelling creatures, which have banded together to combat the forces of evil.</p>
 <p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
