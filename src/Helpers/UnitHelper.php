@@ -108,6 +108,9 @@ class UnitHelper
                     $helpStrings['unit' . $unit->slot] .= ('<br><br>' . sprintf($perkTypeStrings[$perk->key], $perkValue));
                 }
             }
+
+            if ($unit->need_boat == false)
+                $helpStrings['unit' . $unit->slot] .= ('<br><br>No boats needed.');
         }
 
         return $helpStrings[$unitType] ?: null;
