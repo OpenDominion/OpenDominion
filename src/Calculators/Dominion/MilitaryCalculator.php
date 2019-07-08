@@ -355,6 +355,7 @@ class MilitaryCalculator
         $unitPower += $this->getUnitPowerFromLandBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromBuildingBasedPerk($dominion, $unit, $powerType);
         $unitPower += $this->getUnitPowerFromRawWizardRatioPerk($dominion, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromPrestigePerk($dominion, $unit, $powerType);
 
         if ($landRatio !== null) {
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
@@ -435,6 +436,24 @@ class MilitaryCalculator
         $wizardRawRatio = $this->getWizardRatioRaw($dominion, 'offense');
         $powerFromWizardRatio = $wizardRawRatio * $ratio;
         $powerFromPerk = min($powerFromWizardRatio, $max);
+
+        return $powerFromPerk;
+    }
+
+    protected function getUnitPowerFromPrestigePerk(Dominion $dominion, Unit $unit, string $powerType): float
+    {
+        $prestigePerk = $dominion->race->getUnitPerkValueForUnitSlot(
+            $unit->slot,
+            "{$powerType}_from_prestige");
+
+        if(!$prestigePerk) {
+            return 0;
+        }
+
+        $amount = (float)$prestigePerk[0];
+        $max = (int)$prestigePerk[1];
+
+        $powerFromPerk = min($dominion->prestige / $amount, $max);
 
         return $powerFromPerk;
     }
