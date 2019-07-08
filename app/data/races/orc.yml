@@ -1,0 +1,39 @@
+name: Orc
+alignment: evil
+home_land_type: forest
+perks:
+  food_consumption: 20
+  lumber_production: 50
+units:
+  - name: Savage
+    cost:
+      platinum: 375
+      ore: 0
+    power:
+      offense: 4
+      defense: 0
+  - name: Guard
+    cost:
+      platinum: 300
+      ore: 25
+    power:
+      offense: 0
+      defense: 3
+  - name: Voodoo Mage
+    cost:
+      platinum: 800
+      ore: 0
+    power:
+      offense: 0
+      defense: 3
+    perks:
+      defense_from_prestige: 600,2 # amount, max
+  - name: Bone Breaker
+    cost:
+      platinum: 1050
+      ore: 105
+    power:
+      offense: 7
+      defense: 2
+    perks:
+      offense_vs_building: guard_tower,10,-2 # building type, ratio%, max

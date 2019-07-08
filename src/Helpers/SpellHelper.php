@@ -185,6 +185,14 @@ class SpellHelper
                 'races' => collect(['Gnome']),
             ],
             [
+                'name' => 'Bloodrage',
+                'description' => '+10% offensive strength, +10% offensive casualties',
+                'key' => 'bloodrage',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Orc']),
+            ],
+            [
                 'name' => 'Unholy Ghost',
                 'description' => 'Enemy draftees do not participate in battle due to extreme fear',
                 'key' => 'unholy_ghost',
