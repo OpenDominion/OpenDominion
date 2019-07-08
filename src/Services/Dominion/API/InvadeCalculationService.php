@@ -96,18 +96,16 @@ class InvadeCalculationService
         if($target) {
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
             $this->calculationResult['land_ratio'] = $landRatio;
-            $opposingForceRaceName = $target->race->name;
         } else {
             $landRatio = 0.5;
-            $opposingForceRaceName = null;
         }
 
         $this->calculationResult['dp_multiplier'] = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
         $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
 
         foreach ($dominion->race->units as $unit) {
-            $this->calculationResult['units'][$unit->slot]['dp'] = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'defense');
-            $this->calculationResult['units'][$unit->slot]['op'] = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'offense');
+            $this->calculationResult['units'][$unit->slot]['dp'] = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'defense');
+            $this->calculationResult['units'][$unit->slot]['op'] = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense');
         }
 
         return $this->calculationResult;

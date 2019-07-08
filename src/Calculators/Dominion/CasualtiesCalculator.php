@@ -344,13 +344,13 @@ class CasualtiesCalculator
 
     /**
      * @param Dominion $dominion
-     * @param string $opposingForceRaceName
+     * @param Dominion $target
      * @param int $slot
      * @return bool
      */
-    protected function isImmortalVersusRacePerk(Dominion $dominion, string $opposingForceRaceName, int $slot): bool
+    protected function isImmortalVersusRacePerk(Dominion $dominion, Dominion $target, int $slot): bool
     {
-        $raceNameFormatted = strtolower($opposingForceRaceName);
+        $raceNameFormatted = strtolower($target->race->name);
         $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
 
         $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs');
