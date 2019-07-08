@@ -120,6 +120,7 @@ class MilitaryCalculator
         // Values (percentages)
         $opPerGryphonNest = 1.75;
         $gryphonNestMaxOp = 35;
+        $spellBloodrage = 10;
         $spellCrusade = 5;
         $spellKillingRage = 10;
         $spellWarsong = 10;
@@ -141,6 +142,7 @@ class MilitaryCalculator
         // Spell: Howling (+10%)
         // Spell: Nightfall (+5%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
+            'bloodrage' => $spellBloodrage,
             'crusade' => $spellCrusade,
             'killing_rage' => $spellKillingRage,
             'warsong' => $spellWarsong,

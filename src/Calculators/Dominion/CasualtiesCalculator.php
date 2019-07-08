@@ -68,6 +68,7 @@ class CasualtiesCalculator
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, shrines, tech, wonders), capped at -80%
             // Values (percentages)
+            $spellBloodrage = 10;
             $spellRegeneration = 25;
 
             $nonUnitBonusMultiplier = 0;
@@ -78,6 +79,7 @@ class CasualtiesCalculator
             $nonUnitBonusMultiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
 
             // Spells
+            $nonUnitBonusMultiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'bloodrage', $spellBloodrage);
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
             // todo: Tech (eg Tactical Battle)
