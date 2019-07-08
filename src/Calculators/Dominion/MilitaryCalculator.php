@@ -101,6 +101,11 @@ class MilitaryCalculator
                 $numberOfUnits = (int)$units[$unit->slot];
             }
 
+            if ($numberOfUnits !== 0) {
+                $bonusOffense = $this->getBonusPowerFromPairingPerk($dominion, $unit, 'offense', $units);
+                $powerOffense += $bonusOffense / $numberOfUnits;
+            }
+
             $op += ($powerOffense * $numberOfUnits);
         }
 
@@ -239,6 +244,11 @@ class MilitaryCalculator
                 $numberOfUnits = (int)$dominion->{'military_unit' . $unit->slot};
             } elseif (isset($units[$unit->slot]) && ((int)$units[$unit->slot] !== 0)) {
                 $numberOfUnits = (int)$units[$unit->slot];
+            }
+
+            if ($numberOfUnits !== 0) {
+                $bonusDefense = $this->getBonusPowerFromPairingPerk($dominion, $unit, 'defense', $units);
+                $powerDefense += $bonusDefense / $numberOfUnits;
             }
 
             $dp += ($powerDefense * $numberOfUnits);
@@ -480,6 +490,26 @@ class MilitaryCalculator
             "{$powerType}_vs_{$raceNameFormatted}");
 
         return $versusRacePerk;
+    }
+
+    protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, array $units = null): float
+    {
+        $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
+
+        if(!$pairingPerkData) {
+            return 0;
+        }
+
+        $unitSlot = (int)$pairingPerkData[0];
+        $amount = (int)$pairingPerkData[1];
+
+        $powerFromPerk = 0;
+        if (isset($units[$unitSlot]) && ((int)$units[$unitSlot] !== 0)) {
+            $numberPaired = min($units[$unit->slot], (int)$units[$unitSlot]);
+            $powerFromPerk = $numberPaired * $amount;
+        }
+
+        return $powerFromPerk;
     }
 
     /**
