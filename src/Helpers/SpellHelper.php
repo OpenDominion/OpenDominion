@@ -232,14 +232,6 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Wood Elf']),
             ],
-            [
-                'name' => 'Nightfall',
-                'description' => '+5% offensive power',
-                'key' => 'nightfall',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Nox']),
-            ],
         ]);
     }
 

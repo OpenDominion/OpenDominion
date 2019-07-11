@@ -86,11 +86,6 @@ TROLL;
 <p>They are always on the offensive, increasing their number by reanimating fallen enemies.</p>
 UNDEAD;
 
-        $descriptions['Nox'] = <<<NOX
-<p>The children of the night lurk in the shadows, striking terror in even the most powerful of rulers.</p>
-<p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
-NOX;
-
         $key = strtolower($race->name);
 
         if (!isset($descriptions[$key])) {
