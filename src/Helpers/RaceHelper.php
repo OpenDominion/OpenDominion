@@ -96,6 +96,11 @@ UNDEAD;
 <p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
 NOX;
 
+        $descriptions['Lycanthrope'] = <<<LYCANTHROPE
+<p>Nocturnal shapeshifters, stalking their pray from deep within the caves of the land.</p>
+<p>Falling to their bite, will make even their fiercest enemies turn.</p>
+LYCANTHROPE;
+
         $key = strtolower($race->name);
 
         if (!isset($descriptions[$key])) {

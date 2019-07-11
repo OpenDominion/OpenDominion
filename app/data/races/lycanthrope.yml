@@ -1,0 +1,42 @@
+name: Lycanthrope
+alignment: evil
+home_land_type: cavern
+perks:
+  max_population: 10
+  defense: 5
+units:
+  - name: Scavenger
+    cost:
+      platinum: 300
+      ore: 25
+    power:
+      offense: 3
+      defense: 0
+    perks:
+  - name: Ratman
+    cost:
+      platinum: 250
+      ore: 0
+    power:
+      offense: 0
+      defense: 3
+    perks:
+  - name: Werewolf
+    cost:
+      platinum: 875
+      ore: 55
+    power:
+      offense: 3
+      defense: 4
+    perks:
+      fewer_casualties_offense: 25
+      fewer_casualties_defense: 50
+  - name: Garou
+    cost:
+      platinum: 1100
+      ore: 110
+    power:
+      offense: 6
+      defense: 0
+    perks:
+      conversion: 3 # slot 3
