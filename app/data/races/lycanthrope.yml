@@ -31,7 +31,6 @@ units:
     perks:
       fewer_casualties_offense: 25
       fewer_casualties_defense: 50
-    need_boat: false
   - name: Garou
     cost:
       platinum: 1100
@@ -41,4 +40,3 @@ units:
       defense: 0
     perks:
       conversion: 3 # slot 3
-    need_boat: false
