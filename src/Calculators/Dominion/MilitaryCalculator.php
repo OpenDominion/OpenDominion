@@ -123,7 +123,6 @@ class MilitaryCalculator
         $spellCrusade = 5;
         $spellKillingRage = 10;
         $spellWarsong = 10;
-        $spellNightfall = 5;
 
         // Gryphon Nests
         $multiplier += min(
@@ -145,7 +144,6 @@ class MilitaryCalculator
             'crusade' => $spellCrusade,
             'killing_rage' => $spellKillingRage,
             'warsong' => $spellWarsong,
-            'nightfall' => $spellNightfall,
         ]);
 
         // Prestige

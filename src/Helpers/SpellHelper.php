@@ -216,14 +216,6 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Troll']),
             ],
-            [
-                'name' => 'Nightfall',
-                'description' => '+5% offensive power',
-                'key' => 'nightfall',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Nox']),
-            ],
         ]);
     }
 
