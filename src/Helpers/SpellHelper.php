@@ -224,6 +224,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Undead']),
             ],
+            [
+                'name' => 'Gaia\'s Blessing',
+                'description' => '+20% food production (not cumulative with Gaia\'s Watch), +10% lumber production',
+                'key' => 'gaias_blessing',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Wood Elf']),
+            ],
         ]);
     }
 
