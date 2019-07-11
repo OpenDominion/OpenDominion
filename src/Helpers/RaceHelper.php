@@ -81,6 +81,11 @@ NOMAD;
 <p>Trolls are excellent at smashing others, especially things smaller than themselves. <em>[Urg smash puny gnome!]</em></p>
 TROLL;
 
+        $descriptions['undead'] = <<<UNDEAD
+<p>An unending horde of beings that have overcome death, the undead have an insatiable desire to destroy all living creatures.</p>
+<p>They are always on the offensive, increasing their number by reanimating fallen enemies.</p>
+UNDEAD;
+
         $key = strtolower($race->name);
 
         if (!isset($descriptions[$key])) {

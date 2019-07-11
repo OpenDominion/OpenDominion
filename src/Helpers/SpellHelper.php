@@ -130,7 +130,7 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Crusade',
-                'description' => '+5% offensive power', // todo: add mention later that you can kill SPUD
+                'description' => '+5% offensive power, and allows you to kill Undead',
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -215,6 +215,14 @@ class SpellHelper
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Troll']),
+            ],
+            [
+                'name' => 'Parasitic Hunger',
+                'description' => 'Increases conversions by 3 percentage points',
+                'key' => 'parasitic_hunger',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Undead']),
             ],
             [
                 'name' => 'Gaia\'s Blessing',

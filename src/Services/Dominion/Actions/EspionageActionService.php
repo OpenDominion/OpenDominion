@@ -387,4 +387,5 @@ class EspionageActionService
     }
 
     // todo: theft/black ops/war
+    // don't forget that undead has immortal wizards
 }
