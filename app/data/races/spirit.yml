@@ -1,13 +1,12 @@
-name: Undead
-alignment: evil
+name: Spirit
+alignment: good
 home_land_type: swamp
 perks:
   max_population: 12.5
-  mana_production: 5
-  food_consumption: -75
+  food_consumption: -90
   immortal_wizards: 1
 units:
-  - name: Skeleton
+  - name: Phantom
     cost:
       platinum: 225
       ore: 0
@@ -16,7 +15,7 @@ units:
       defense: 0
     perks:
       immortal: 1
-  - name: Ghoul
+  - name: Banshee
     cost:
       platinum: 225
       ore: 0
@@ -25,7 +24,7 @@ units:
       defense: 2.5
     perks:
       immortal: 1
-  - name: Progeny
+  - name: Ghost
     cost:
       platinum: 900
       ore: 0
@@ -36,7 +35,7 @@ units:
       immortal: 1
       conversion: 12 # slot 1 and slot 2 aka specs
       need_boat: false
-  - name: Vampire
+  - name: Spectre
     cost:
       platinum: 1000
       ore: 0
