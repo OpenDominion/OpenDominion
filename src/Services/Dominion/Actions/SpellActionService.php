@@ -95,7 +95,7 @@ class SpellActionService
             throw new RuntimeException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
         }
 
-        $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
+        $manaCost = $this->spellCalculator->getManaCost($dominion, $spellKey);
 
         if ($dominion->resource_mana < $manaCost) {
             throw new RuntimeException("You do not have enough mana to cast {$spellInfo['name']}.");

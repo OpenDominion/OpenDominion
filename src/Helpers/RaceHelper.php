@@ -39,6 +39,11 @@ HALFLING;
 <p>Proficient at everything but excelling at nothing, they are a well-balanced and self-sufficient race.</p>
 HUMAN;
 
+        $descriptions['merfolk'] = <<<MERFOLK
+<p>Amphibious creatures who live in isolated settlements within shallow seas and coral reefs where protection and food are abundant.</p>
+<p>They have trained aquatic animals to serve as their guardians. They typically avoid combat but are capable warriors should the need arise.</p>
+MERFOLK;
+
         $descriptions['sylvan'] = <<<SYLVAN
 <p>Mythical forest-dwelling creatures, which have banded together to combat the forces of evil.</p>
 <p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
