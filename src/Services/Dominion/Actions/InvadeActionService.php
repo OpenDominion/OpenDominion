@@ -518,7 +518,7 @@ class InvadeActionService
      * @param Dominion $target
      * @return int
      */
-    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $targe): int
+    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
     {
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
         $attackingForceOP = $this->invasionResult['attacker']['op'];
@@ -769,19 +769,23 @@ class InvadeActionService
      * @param float $landRatio
      * @param array $units
      * @param int $totalDefensiveCasualties
-     * @param bool $isInvasionSuccessful
      * @return array
      */
-    protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties, bool $isInvasionSuccessful): array
+    protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties): array
     {
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
+
         $conversionBaseMultiplier = 0.06;
         $spellParasiticHunger = 0.03;
         $conversionMultiplier = $conversionBaseMultiplier;
-        // TODO: Add Lycan
 
         $convertedUnits = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
 
-        if(!$isInvasionSuccessful || $dominion->race->name !== 'Undead' || $totalDefensiveCasualties == 0) {
+        if(!$isInvasionSuccessful ||
+            $totalDefensiveCasualties == 0 ||
+            ($dominion->race->name !== 'Undead' &&
+            $dominion->race->name !== 'Lycanthrope') ) {
+
             return $convertedUnits;
         }
 
