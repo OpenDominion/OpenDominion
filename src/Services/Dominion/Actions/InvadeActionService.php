@@ -784,7 +784,7 @@ class InvadeActionService
         if(!$isInvasionSuccessful ||
             $totalDefensiveCasualties == 0 ||
             ($dominion->race->name !== 'Undead' &&
-            $dominion->race->name !== 'Lycanthrope') ) {
+            $dominion->race->name !== 'Lycanthrope')) {
 
             return $convertedUnits;
         }
