@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed spell mana cost not being reduced by wizard guilds
 - Fixed a race condition during tick, where more resources could be deducted than intended
 - Fixed displayed WPA on statistics advisor page
+- Fixed a bug where unintended bounces could happen with the correct input
 
 ## [0.6.2-8] - 2019-06-23
 ### Changed
