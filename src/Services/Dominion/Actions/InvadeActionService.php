@@ -230,31 +230,20 @@ class InvadeActionService
             }
 
             // Handle invasion results
-            $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-            $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+            $this->checkInvasionSuccess($dominion, $target, $units);
+            $this->checkOverwhelmed();
 
             $this->handlePrestigeChanges($dominion, $target, $units);
 
-            // todo: probably move to handleLandGrabs()
-            $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
-            $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
-
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
-            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target, $units);
+            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target);
             $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties, $isInvasionSuccessful);
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
 
             $this->handleMoraleChanges($dominion, $target);
-            $this->handleLandGrabs($dominion, $target, $units);
-
-            // todo: refactor
-            $this->invasionResult['result']['success'] = $isInvasionSuccessful;
-
-            if ($isOverwhelmed) {
-                $this->invasionResult['result']['overwhelmed'] = $isOverwhelmed;
-            }
+            $this->handleLandGrabs($dominion, $target);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
@@ -271,7 +260,7 @@ class InvadeActionService
 
             // todo: move to its own method
             // Notification
-            if ($isInvasionSuccessful) {
+            if ($this->invasionResult['result']['success']) {
                 $this->notificationService->queueNotification('received_invasion', [
                     '_routeParams' => [(string)$this->invasionEvent->id],
                     'attackerDominionId' => $dominion->id,
@@ -282,7 +271,7 @@ class InvadeActionService
                 $this->notificationService->queueNotification('repelled_invasion', [
                     '_routeParams' => [(string)$this->invasionEvent->id],
                     'attackerDominionId' => $dominion->id,
-                    'attackerWasOverwhelmed' => $isOverwhelmed,
+                    'attackerWasOverwhelmed' => $this->invasionResult['result']['overwhelmed'],
                     'unitsLost' => $this->unitsLost,
                 ]);
             }
@@ -343,8 +332,8 @@ class InvadeActionService
      */
     protected function handlePrestigeChanges(Dominion $dominion, Dominion $target, array $units): void
     {
-        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-        $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
+        $isOverwhelmed = $this->invasionResult['result']['overwhelmed'];
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
 
         $attackerPrestigeChange = 0;
@@ -422,11 +411,11 @@ class InvadeActionService
      */
     protected function handleOffensiveCasualties(Dominion $dominion, Dominion $target, array $units): array
     {
-        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
-        $isOverwhelmed = $this->isOverwhelmed($dominion, $target, $units);
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
+        $isOverwhelmed = $this->invasionResult['result']['overwhelmed'];
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
-        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
+        $attackingForceOP = $this->invasionResult['attacker']['op'];
+        $targetDP = $this->invasionResult['defender']['dp'];
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
 
         $offensiveUnitsLost = [];
@@ -527,14 +516,13 @@ class InvadeActionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
-     * @param array $units
      * @return int
      */
-    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): int
+    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $targe): int
     {
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
-        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
+        $attackingForceOP = $this->invasionResult['attacker']['op'];
+        $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
         // Modify casualties percentage based on relative land size
@@ -613,12 +601,14 @@ class InvadeActionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
-     * @param array $units
      * @throws Throwable
      */
-    protected function handleLandGrabs(Dominion $dominion, Dominion $target, array $units): void
+    protected function handleLandGrabs(Dominion $dominion, Dominion $target): void
     {
-        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+        $this->invasionResult['attacker']['landSize'] = $this->landCalculator->getTotalLand($dominion);
+        $this->invasionResult['defender']['landSize'] = $this->landCalculator->getTotalLand($target);
+
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
 
         // Nothing to grab if invasion isn't successful :^)
         if (!$isInvasionSuccessful) {
@@ -871,15 +861,14 @@ class InvadeActionService
         // todo: just hobgoblin plunder atm, need a refactor later to take into
         //       account more post-combat unit-perk-related stuff
 
-        $isInvasionSuccessful = $this->isInvasionSuccessful($dominion, $target, $units);
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
 
         if (!$isInvasionSuccessful) {
             return; // nothing to plunder on unsuccessful invasions
         }
 
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
-        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
+        $attackingForceOP = $this->invasionResult['attacker']['op'];
+        $targetDP = $this->invasionResult['defender']['dp'];
 
         // todo: refactor this hardcoded hacky mess
         // Check if we sent hobbos out
@@ -989,13 +978,14 @@ class InvadeActionService
      * @param array $units
      * @return bool
      */
-    protected function isInvasionSuccessful(Dominion $dominion, Dominion $target, array $units): bool
+    protected function checkInvasionSuccess(Dominion $dominion, Dominion $target, array $units): void
     {
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
-
-        return ($attackingForceOP > $targetDP);
+        $this->invasionResult['attacker']['op'] = $attackingForceOP;
+        $this->invasionResult['defender']['dp'] = $targetDP;
+        $this->invasionResult['result']['success'] = ($attackingForceOP > $targetDP);
     }
 
     /**
@@ -1004,24 +994,20 @@ class InvadeActionService
      * Overwhelmed attackers have increased casualties, while the defending
      * party has reduced casualties.
      *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param array $units
-     * @return bool
      */
-    protected function isOverwhelmed(Dominion $dominion, Dominion $target, array $units): bool
+    protected function checkOverwhelmed(): void
     {
         // Never overwhelm on successful invasions
-        if ($this->isInvasionSuccessful($dominion, $target, $units)) {
-            return false;
+        $this->invasionResult['result']['overwhelmed'] = false;
+
+        if ($this->invasionResult['result']['success']) {
+            return;
         }
 
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $attackingForceOP = $this->invasionResult['attacker']['op'];
+        $targetDP = $this->invasionResult['defender']['dp'];
 
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
-        $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
-
-        return ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
+        $this->invasionResult['result']['overwhelmed'] = ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
     }
 
     /**
