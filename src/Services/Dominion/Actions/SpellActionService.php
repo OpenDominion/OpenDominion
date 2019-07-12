@@ -249,12 +249,12 @@ class SpellActionService
             $ratio = ($selfWpa / $targetWpa);
 
             // Exact formula from Dom is unknown. Thanks to mriswith on Discord for coming up with this formula <3
-            $successRate = (
+            $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
+                + (0.7777 * $ratio)
                 - 0.0134
-            );
+            ), 0.0, 1.0);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
