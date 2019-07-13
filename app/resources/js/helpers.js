@@ -10,6 +10,8 @@
 function formatBytes(bytes, decimals) {
     if (bytes === 0) {
         return '0 Bytes';
+    } else if (bytes === 1) {
+        return '1 Byte';
     }
 
     const k = 1024,
