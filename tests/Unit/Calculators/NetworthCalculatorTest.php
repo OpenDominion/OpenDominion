@@ -6,6 +6,7 @@ use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
@@ -24,6 +25,9 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|LandCalculator */
     protected $landCalculator;
 
+    /** @var Mock|MilitaryCalculator */
+    protected $militaryCalculator;
+
     /** @var Mock|NetworthCalculator */
     protected $sut;
 
@@ -37,6 +41,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $this->sut = m::mock(NetworthCalculator::class, [
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
+            $this->militaryCalculator = m::mock(MilitaryCalculator::class),
         ])->makePartial();
     }
 
@@ -84,13 +89,13 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
 
         $units = [];
         for ($slot = 1; $slot <= 4; $slot++) {
-            $dominion->shouldReceive('getAttribute')->with("military_unit{$slot}")->andReturn(100);
+            $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, $slot)->andReturn(100);
 
             /** @var Mock|Unit $unit */
             $unit = m::mock(Unit::class);
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($slot);
-            $unit->shouldReceive('getAttribute')->with('power_offense')->andReturn(5);
-            $unit->shouldReceive('getAttribute')->with('power_defense')->andReturn(5);
+            $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit, 'offense')->andReturn(5);
+            $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit, 'defense')->andReturn(5);
 
             $units[] = $unit;
         }
@@ -104,8 +109,8 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
 
-        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
+        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
 
         $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion));
     }
@@ -115,6 +120,8 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testGetUnitNetworth()
     {
+        $dominion = m::mock(Dominion::class);
+
         // Networth for units in slots 1 and 2 is always 5
 
         /** @var Mock|Unit $unit1 */
@@ -125,24 +132,24 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $unit2 = m::mock(Unit::class);
         $unit2->shouldReceive('getAttribute')->with('slot')->andReturn(2);
 
-        $this->assertEquals(5, $this->sut->getUnitNetworth($unit1));
-        $this->assertEquals(5, $this->sut->getUnitNetworth($unit2));
+        $this->assertEquals(5, $this->sut->getUnitNetworth($dominion, $unit1));
+        $this->assertEquals(5, $this->sut->getUnitNetworth($dominion, $unit2));
 
          // Networth for units in slots 2 and 3 is based on base offensive/defensive power
 
         /** @var Mock|Unit $unit3 */
         $unit3 = m::mock(Unit::class);
         $unit3->shouldReceive('getAttribute')->with('slot')->andReturn(3);
-        $unit3->shouldReceive('getAttribute')->with('power_offense')->andReturn(2);
-        $unit3->shouldReceive('getAttribute')->with('power_defense')->andReturn(6);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit3, 'offense')->andReturn(2);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit3, 'defense')->andReturn(6);
 
         /** @var Mock|Unit $unit4 */
         $unit4 = m::mock(Unit::class);
         $unit4->shouldReceive('getAttribute')->with('slot')->andReturn(4);
-        $unit4->shouldReceive('getAttribute')->with('power_offense')->andReturn(6);
-        $unit4->shouldReceive('getAttribute')->with('power_defense')->andReturn(3);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit4, 'offense')->andReturn(6);
+        $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit4, 'defense')->andReturn(3);
 
-        $this->assertEquals(11.7, $this->sut->getUnitNetworth($unit3));
-        $this->assertEquals(12.15, $this->sut->getUnitNetworth($unit4));
+        $this->assertEquals(11.7, $this->sut->getUnitNetworth($dominion, $unit3));
+        $this->assertEquals(12.15, $this->sut->getUnitNetworth($dominion, $unit4));
     }
 }

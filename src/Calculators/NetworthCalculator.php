@@ -4,6 +4,7 @@ namespace OpenDominion\Calculators;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Unit;
@@ -16,16 +17,24 @@ class NetworthCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
     /**
      * NetworthCalculator constructor.
      *
      * @param BuildingCalculator $buildingCalculator
      * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator
      */
-    public function __construct(BuildingCalculator $buildingCalculator, LandCalculator $landCalculator)
-    {
+    public function __construct(
+        BuildingCalculator $buildingCalculator,
+        LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator
+    ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
     }
 
     /**
@@ -65,7 +74,8 @@ class NetworthCalculator
         $networthPerBuilding = 5;
 
         foreach ($dominion->race->units as $unit) {
-            $networth += ($dominion->{'military_unit' . $unit->slot} * $this->getUnitNetworth($unit));
+            $totalUnitsOfType = $this->militaryCalculator->getTotalUnitsForSlot($dominion, $unit->slot);
+            $networth += $totalUnitsOfType * $this->getUnitNetworth($dominion, $unit);
         }
 
         $networth += ($dominion->military_spies * $networthPerSpy);
@@ -84,19 +94,23 @@ class NetworthCalculator
     /**
      * Returns a single Unit's networth.
      *
+     * @param Dominion $dominion
      * @param Unit $unit
      * @return float
      */
-    public function getUnitNetworth(Unit $unit): float
+    public function getUnitNetworth(Dominion $dominion, Unit $unit): float
     {
         if (in_array($unit->slot, [1, 2], false)) {
             return 5;
         }
 
+        $unitOffense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'offense');
+        $unitDefense = $this->militaryCalculator->getUnitPowerWithPerks($dominion, null, 1, $unit, 'defense');
+
         return (
-            (1.8 * min(6, max($unit->power_offense, $unit->power_defense)))
-            + (0.45 * min(6, min($unit->power_offense, $unit->power_defense)))
-            + (0.2 * (max(($unit->power_offense - 6), 0) + max(($unit->power_defense - 6), 0)))
+            (1.8 * min(6, max($unitOffense, $unitDefense)))
+            + (0.45 * min(6, min($unitOffense, $unitDefense)))
+            + (0.2 * (max(($unitOffense - 6), 0) + max(($unitDefense - 6), 0)))
         );
     }
 }

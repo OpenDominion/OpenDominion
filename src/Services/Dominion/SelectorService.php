@@ -68,12 +68,11 @@ class SelectorService
 
         if ($this->selectedDominion === null || ($dominionId !== $this->selectedDominion->id)) {
             $this->selectedDominion = Dominion::with([
-                'realm',
-                'race.perks',
-                'race.perks.type',
                 'race',
+                'race.perks',
                 'race.units',
-                'race.units.perkType'
+                'race.units.perks',
+                'realm',
             ])->findOrFail($dominionId);
         }
 

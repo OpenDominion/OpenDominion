@@ -13,7 +13,7 @@
         <div class="box-footer">
             <small>
                 <i>
-                    Posted {{ $thread->created_at->diffForHumans() }} by <b>{{ $thread->dominion->name }}</b>
+                    Posted {{ $thread->created_at }} by <b>{{ $thread->dominion->name }}</b>
                     @if ($thread->dominion->name !== $thread->dominion->ruler_name)
                         ({{ $thread->dominion->ruler_name }})
                     @endif
@@ -31,7 +31,7 @@
                 <div class="box-footer">
                     <small>
                         <i>
-                            Posted {{ $post->created_at->diffForHumans() }} by <b>{{ $post->dominion->name }}</b>
+                            Posted {{ $post->created_at }} by <b>{{ $post->dominion->name }}</b>
                             @if ($post->dominion->name !== $post->dominion->ruler_name)
                                 ({{ $post->dominion->ruler_name }})
                             @endif

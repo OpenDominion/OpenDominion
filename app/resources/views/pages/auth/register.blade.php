@@ -20,7 +20,7 @@
                             <div class="col-sm-9">
                                 <input type="text" name="display_name" id="display_name" class="form-control" placeholder="Display Name" value="{{ old('display_name') }}" required autofocus>
                                 <span class="help-block">
-                                    Your display name will be shown to your allies in your realm.
+                                    Your display name will be shown on your public profile and in Valhalla (leaderboards).
                                 </span>
                             </div>
                         </div>

@@ -11,7 +11,7 @@ class DailyBonusesController extends AbstractDominionController
 {
     public function getBonuses()
     {
-        return view('pages.dominion.bonuses', []);
+        return view('pages.dominion.bonuses');
     }
 
     public function postBonusesPlatinum(DailyBonusesPlatinumActionRequest $request)

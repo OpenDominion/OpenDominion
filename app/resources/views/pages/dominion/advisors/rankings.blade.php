@@ -19,7 +19,7 @@
                     </span>
                     <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings Advisor</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col width="50">
@@ -87,7 +87,7 @@
                 </div>
                 <div class="box-body">
                     <p>The rankings advisor tells you how well all the dominions are doing in the world.</p>
-                    <p>Rankings are updated every day. Current displayed rankings are from {{ today()->diffForHumans() }}.</p>
+                    <p>Rankings are updated every day. Current displayed rankings are from {{ today() }}.</p>
                     <p><a href="{{ route('dominion.advisors.rankings', request('type')) }}">My Ranking</a></p>
                 </div>
             </div>

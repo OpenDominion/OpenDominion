@@ -42,7 +42,7 @@ class BankController extends AbstractDominionController
         $analyticsService = app(AnalyticsService::class);
         $analyticsService->queueFlashEvent(new AnalyticsEvent(
             'dominion',
-            'Bank',
+            'bank',
             '', // todo: make null?
             $request->get('amount')
         ));

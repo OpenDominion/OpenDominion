@@ -99,7 +99,7 @@
                                     </tr>
                                     <tr>
                                         <td>Boats:</td>
-                                        <td>{{ number_format(floor($selectedDominion->resource_boats)) }}</td>
+                                        <td>{{ number_format(floor($selectedDominion->resource_boats + $queueService->getInvasionQueueTotalByResource($selectedDominion, "resource_boats"))) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -163,14 +163,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            @if ($discordInviteLink = config('app.discord_invite_link'))
-                <div style="margin-bottom: 20px;">
-                    <a href="{{ $discordInviteLink }}" target="_blank">
-                        <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive">
-                    </a>
-                </div>
-            @endif
-
             {{-- todo: message about black ops not being enabled until 8th day in the round --}}
 
             <div class="box">
@@ -192,8 +184,6 @@
                     <div class="box-body">
                         <p>You are under a magical state of protection for <b>{{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> {{ str_plural('hour', $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion)) }}.</p>
                         <p>During protection you cannot be attacked or attack other dominions. You can neither cast any offensive spells or engage in espionage.</p>
-                        {{-- todo: remove line below once those things have been developed --}}
-                        <p><i>You can't do that regardless yet because OpenDominion is still in development and those features haven't been built yet.</i></p>
                         <p>You will leave protection on {{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}.</p>
                         @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
                             <p>No production occurs until you have less than 71 hours of protection remaining.</p>
@@ -211,14 +201,57 @@
                         <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
                         <ul>
                             @foreach ($selectedDominion->pack->dominions as $dominion)
-                                <li>{{ $dominion->ruler_name }} of {{ $dominion->name }}
-                                @if($dominion->ruler_name !== $dominion->user->display_name)
-                                    ({{ $dominion->user->display_name }})
-                                @endif
+                                <li>
+                                    @if ($dominion->ruler_name === $dominion->name)
+                                        <strong>{{ $dominion->name }}</strong>
+                                    @else
+                                        {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
+                                    @endif
+
+                                    @if($dominion->ruler_name !== $dominion->user->display_name)
+                                        ({{ $dominion->user->display_name }})
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>
-                        <p>Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.</p>
+                        <p>
+                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
+                            @if ($selectedDominion->pack->isFull())
+                                (full)
+                            @elseif ($selectedDominion->pack->isClosed())
+                                (closed)
+                            @endif
+                        </p>
+                        @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
+                            <p>Your pack will automatically close on <strong>{{ $selectedDominion->pack->getClosingDate() }}</strong> to make space for random players in your realm.</p>
+                            @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
+                                <p>
+                                    <form action="{{ route('dominion.misc.close-pack') }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
+                                    </form>
+                                </p>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+            @endif
+
+            @if (!$selectedDominion->round->hasStarted() && ($selectedDominion->user->last_deleted_dominion_round < $selectedDominion->round->number))
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Delete</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You have the ability to delete your dominion <strong>once</strong> this round in case you don't want to play this round after all, you messed up your first hour, or you messed up your pack.</p>
+                        <p>This action can only be taken because the round has not yet started. Deleting or restarting your dominion during an active round is <em>not yet</em> possible.</p>
+                        <p class="text-red text-bold">Do note that this action is destructive, and your dominion can <u>not</u> be restored by the admins once deleted.</p>
+                    </div>
+                    <div class="box-footer">
+                        <form action="{{ route('dominion.misc.delete-dominion') }}" method="post" onsubmit="return confirm('Are you really sure you want to DELETE your dominion \'{{ $selectedDominion->name }}\' in round {{ $selectedDominion->round->number }}?');">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Delete Your Dominion</button>
+                        </form>
                     </div>
                 </div>
             @endif

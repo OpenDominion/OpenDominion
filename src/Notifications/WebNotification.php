@@ -62,6 +62,7 @@ class WebNotification extends Notification
                 $this->type,
                 $this->data
             ),
+            'data' => $this->data,
         ];
     }
 }

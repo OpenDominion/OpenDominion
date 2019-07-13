@@ -141,19 +141,19 @@
                                         <td>{{ number_format($infoOp->data['military_draftees']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(0)->name }}</td>
+                                        <td>{{ $race->units->get(0)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit1']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(1)->name }}</td>
+                                        <td>{{ $race->units->get(1)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit2']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(2)->name }}</td>
+                                        <td>{{ $race->units->get(2)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit3']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(3)->name }}</td>
+                                        <td>{{ $race->units->get(3)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit4']) }}</td>
                                     </tr>
                                     <tr>
@@ -172,11 +172,27 @@
                             </table>
                         </div>
                     </div>
+
+                    @php
+                        $recentlyInvadedCount = (isset($infoOp->data['recently_invaded_count']) ? (int)$infoOp->data['recently_invaded_count'] : 0);
+                    @endphp
+
+                    @if ($recentlyInvadedCount > 0)
+                        <p class="text-center" style="margin-bottom: 0.5em;">
+                            @if ($recentlyInvadedCount >= 5)
+                                This dominion has been invaded <strong><em>extremely heavily</em></strong> in recent times.
+                            @elseif ($recentlyInvadedCount >= 3)
+                                This dominion has been invaded <strong>heavily</strong> in recent times.
+                            @else
+                                This dominion has been invaded in recent times.
+                            @endif
+                        </p>
+                    @endif
                 @endif
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -271,7 +287,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -340,7 +356,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -441,7 +457,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -511,7 +527,7 @@
                                     @endfor
                                     <td class="text-center">
                                         @if ($amountTraining = array_get($infoOp->data, "units.returning.{$unitType}"))
-                                            {{ number_format(array_sum($amountTraining)) }}
+                                            ~{{ number_format(array_sum($amountTraining)) }}
                                         @else
                                             0
                                         @endif
@@ -579,7 +595,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -713,7 +729,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -796,6 +812,41 @@
                         </tbody>
                     </table>
                 @endif
+            @endcomponent
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-sm-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clairvoyance');
+                @endphp
+
+                @slot('title', 'Town Crier')
+                @slot('titleIconClass', 'fa fa-newspaper-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Cast magic spell 'Clairvoyance' to reveal information.</p>
+                @else
+                    <a href="{{ route('dominion.op-center.clairvoyance', $dominion->realm->id) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
+                    - <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                    @if ($infoOp->isStale())
+                        <span class="label label-warning">Stale</span>
+                    @endif
+                @endif
+
+                @slot('boxFooter')
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="spell" value="clairvoyance">
+                            <button type="submit" class="btn btn-sm btn-primary">Clairvoyance ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clairvoyance')) }} mana)</button>
+                        </form>
+                    </div>
+                @endslot
             @endcomponent
         </div>
 

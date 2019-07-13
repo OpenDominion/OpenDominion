@@ -92,14 +92,14 @@ class BuildingHelper
             'gryphon_nest' => 2,
             'tower' => 2,
             'wizard_guild' => 2,
-            'temple' => 1, // reduce defensive bonuses of target dominion during invasion
+            'temple' => 2,
             'diamond_mine' => 2,
             'school' => 0, // produces research points
             'lumberyard' => 2,
-            'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage, reduce plat stolemn
+            'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage, reduce plat stolen
             'factory' => 2,
             'guard_tower' => 2,
-            'shrine' => 0, // reduce casualties on offense, increases chance of hero level gain?, increase hero bonuses?
+            'shrine' => 2, // todo for later: increases chance of hero level gain and increase hero bonuses
             'barracks' => 2,
             'dock' => 1, // prevents boats being sunk
         ];

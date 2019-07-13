@@ -52,12 +52,6 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('settings')->uses('SettingsController@getIndex')->name('settings');
     $router->post('settings')->uses('SettingsController@postIndex');
 
-    // todo: refactor this to an api route with laravel passport
-    $router->post('tmp/clear-notifications', function () {
-        auth()->user()->dominions()->active()->first()->notifications()->delete();
-        return redirect()->back();
-    });
-
     // Round Register
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');
@@ -122,8 +116,12 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('military/release')->uses('Dominion\MilitaryController@getRelease')->name('military.release');
             $router->post('military/release')->uses('Dominion\MilitaryController@postRelease');
 
-//            $router->get('invade')->uses('Dominion\InvasionController@getInvade')->name('invade');
-//            $router->post('invade')->uses('Dominion\InvasionController@postInvade');
+            // Invade
+            $router->get('invade')->uses('Dominion\InvasionController@getInvade')->name('invade');
+            $router->post('invade')->uses('Dominion\InvasionController@postInvade');
+
+            // Event result
+            $router->get('event/{uuid}')->uses('Dominion\EventController@index')->name('event');
 
             // Magic
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
@@ -143,6 +141,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
+            $router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
@@ -151,7 +150,16 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             $router->get('realm/{realmNumber?}')->uses('Dominion\RealmController@getRealm')->name('realm');
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
+            // Town Crier
+            $router->get('town-crier')->uses('Dominion\TownCrierController@getIndex')->name('town-crier');
+
+            // Misc
+            $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
+            $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
+            $router->post('misc/delete-dominion')->uses('Dominion\MiscController@postDeleteDominion')->name('misc.delete-dominion');
+
             // Debug
+            // todo: remove me later
             $router->get('debug')->uses('DebugController@getIndex');
             $router->get('debug/dump')->uses('DebugController@getDump');
 
@@ -203,6 +211,8 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
     $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], function (Router $router) {
 
         $router->resource('dominions', 'Staff\Administrator\DominionController');
+
+        $router->get('users/{user}/take-over', 'Staff\Administrator\UserController@takeOver')->name('users.take-over');
         $router->resource('users', 'Staff\Administrator\UserController');
 
         // view all users

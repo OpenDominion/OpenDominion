@@ -38,18 +38,23 @@ class RangeCalculator
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
 
-        $selfModifier = $this->getRangeModifier($self);
+        $upperModifier = 0.6;
+        $lowerModifier = $this->getRangeModifier($self);
 //        $targetModifier = $this->getRangeModifier($target);
 
         return (
-            ($targetLand >= ($selfLand * $selfModifier)) &&
-            ($targetLand <= ($selfLand / $selfModifier))
+            ($targetLand >= ($selfLand * $lowerModifier)) &&
+            ($targetLand <= ($selfLand / $upperModifier))
             // todo: selfland .. targetLand * targetModifier
         );
     }
 
     /**
      * Returns the $target dominion range compared to $self dominion.
+     *
+     * Return value is a percentage (eg 114.28~) used for displaying. For calculation purposes, divide this by 100.
+     *
+     * @todo: should probably change this (and all its usages) to return without *100
      *
      * @param Dominion $self
      * @param Dominion $target
@@ -74,23 +79,19 @@ class RangeCalculator
     {
         $range = $this->getDominionRange($self, $target);
 
-        if ($range >= 133) {
+        if ($range >= 120) {
             return 'text-red';
         }
 
-        if ($range >= 120) {
-            return 'text-orange';
-        }
-
         if ($range >= 75) {
-            return 'text-yellow';
-        }
-
-        if ($range >= 66) {
             return 'text-green';
         }
 
-        return 'text-muted';
+        if ($range >= 66) {
+            return 'text-muted';
+        }
+
+        return 'text-gray';
     }
 
     /**
@@ -102,7 +103,7 @@ class RangeCalculator
     public function getRangeModifier(Dominion $dominion): float
     {
         // todo: if EG then $modifier = 0.75, else if RG then $modifier = 0.6, else $modifier = 0.4
-        return 0.6;
+        return 0.75;
     }
 
     /**

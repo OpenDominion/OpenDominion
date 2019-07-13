@@ -22,6 +22,7 @@ use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
 use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
 use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 use Throwable;
@@ -51,6 +52,9 @@ class EspionageActionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var NotificationService */
+    protected $notificationService;
+
     /** @var ProtectionService */
     protected $protectionService;
 
@@ -72,6 +76,7 @@ class EspionageActionService
         $this->landCalculator = app(LandCalculator::class);
         $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
+        $this->notificationService = app(NotificationService::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
         $this->rangeCalculator = app(RangeCalculator::class);
@@ -137,7 +142,7 @@ class EspionageActionService
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
-            $dominion->spy_strength -= 2; // todo: different values for different kind of ops (info ops 2%, rest 5%)
+            $dominion->decrement('spy_strength', 2); // todo: different values for different kind of ops (info ops 2%, rest 5%)
             $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION]);
 
         });
@@ -158,8 +163,8 @@ class EspionageActionService
     {
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
-        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion);
-        $targetSpa = $this->militaryCalculator->getSpyRatio($target);
+        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+        $targetSpa = $this->militaryCalculator->getSpyRatio($target, 'defense');
 
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa === 0.0) {
@@ -175,18 +180,18 @@ class EspionageActionService
 
             // todo: copied from spell success ratio. needs looking into later
             // todo: factor in spy strength
-            $successRate = (
+            $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
+                + (0.7777 * $ratio)
                 - 0.0134
-            );
+            ), 0.0, 1.0);
 
             if (!random_chance($successRate)) {
                 // todo: move to CasualtiesCalculator
 
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1;
+                $spiesKilledBasePercentage = 0.1; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -196,15 +201,32 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.05, 0.5);
 
-                $spiesKilled = (int)ceil(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
+
+                $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                $spiesKilled = min($spiesKilled, $dominion->military_spies); // Cap to amount of spies we have to prevent negatives, see issue #486
 
                 $dominion->military_spies -= $spiesKilled;
 
+                $this->notificationService
+                    ->queueNotification('repelled_spy_op', [
+                        'sourceDominionId' => $dominion->id,
+                        'operationKey' => $operationKey,
+                        'spiesKilled' => $spiesKilled,
+                    ])
+                    ->sendNotifications($target, 'irregular_dominion');
+
+                if ($spiesKilled > 0) {
+                    $message = ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.');
+                } else {
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
+                }
+
                 return [
                     'success' => false,
-                    'message' => ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.'),
+                    'message' => $message,
                     'alert-type' => 'warning',
                 ];
             }
@@ -325,7 +347,11 @@ class EspionageActionService
                 $this->queueService->getExplorationQueue($target)->each(function ($row) use (&$data) {
                     $landType = str_replace('land_', '', $row->resource);
 
-                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                    array_set(
+                        $data,
+                        "incoming.{$landType}.{$row->hours}",
+                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                    );
                 });
 
                 $this->queueService->getInvasionQueue($target)->each(function ($row) use (&$data) {
@@ -335,7 +361,11 @@ class EspionageActionService
 
                     $landType = str_replace('land_', '', $row->resource);
 
-                    array_set($data, "incoming.{$landType}.{$row->hours}", (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount));
+                    array_set(
+                        $data,
+                        "incoming.{$landType}.{$row->hours}",
+                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
+                    );
                 });
 
                 $infoOp->data = $data;

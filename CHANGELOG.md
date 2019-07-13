@@ -1,9 +1,189 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+All notable changes relevant to players in this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Slightly improved targeted espionage/magic spell success rate
+
+### Fixed
+- Fixed spell mana cost not being reduced by wizard guilds
+- Fixed a race condition during tick, where more resources could be deducted than intended
+- Fixed displayed WPA on statistics advisor page
+- Fixed a bug where unintended bounces could happen with the correct input
+- Fixed unable to scroll op center page tables on mobile
+- Fixed typo on Town Crier page
+
+## [0.6.2-8] - 2019-06-23
+### Changed
+- Server and tick timers on pages are now based on server time, not browser time
+- Changed texts and colors on Town Crier page
+
+### Fixed
+- Fixed race condition bug around hour change, sometimes resulting in loss of resources when performing actions on the hour change
+- Changed invasions to calculate casualties before everything else, fixes bugs related to immortal range and Hobgoblin plunder
+- Fixed missing Wizard Guild spell mana cost reduction
+- Fixed missing text on Town Crier page where a realmie fended off an attack
+- Removed 'target was recently invaded'-text on invasion report on failed invasions
+- Fixed Clear Sight not including returning boats
+- Fixed networth calculation to include dynamic unit power values (e.g. increased op/dp from land ratio based perks)
+
+## [0.6.2-7] - 2019-06-16
+### Fixed
+- Fix Clairvoyance reports on Op Center page
+- Fix 5:4 check on the invasion page
+
+## [0.6.2-6] - 2019-06-16
+### Fixed
+- Fixed Ares call not working properly sometimes
+
+## [0.6.2-5] - 2019-06-16
+### Added
+- Added unread count badge to the council page menu item in the sidebar to indicate new messages since your last council visit
+
+### Fixed
+- Fixed unit OP/DP on military training page to show with including certain bonuses
+- Fixed error where military DP was counted twice
+- Fixed code refactor with SPA/WPA perks
+- Fixed error in Op Center with Clairvoyance
+
+## [0.6.2-4] - 2019-06-12
+### Fixed
+- Fixed Firewalker's Phoenix immortal except vs Icekin perk
+- Fixed ArchMage cost reduction for Icekin
+
+## [0.6.2-3] - 2019-06-12
+### Added
+- Added ability to delete your pack once during registration
+
+### Fixed
+- Fixed server error when trying to join a pack with invalid credentials
+- Fixed missing unit perk help texts
+- Fixed Regeneration racial spell for trolls
+
+## [0.6.2-2] - 2019-06-10
+### Fixed
+- Fixed error on construction page
+- Fixed realms not filling up properly with new dominions
+
+## [0.6.2-1] - 2019-06-10
+### Added
+- Added Clairvoyance spell
+- Added new races: Dark Elf, Gnome, Halfling, Icekin, Sylvan, and Troll
+
+### Changed
+- Changed timestamp displays from relative server time (eg '13 hours ago') to absolute server time (eg '2019-06-19 13:33:37'). A setting will be added in the future for this, including round time (eg 'Day 12 Hour 23')
+
+## [0.6.2] - 2019-06-05
+### Changed
+- Changed realm size to 6 (from 12)
+- Changed max pack size to 3 (from 6)
+- Only one pack can now exist per realm
+- Changed invasion range from 60-166% to 75-166% (until guards are implemented)
+- Invasion reports can now only be viewed by people in the same realm as the invader and defender
+- Data in the Op Center is now shown to the whole realm, regardless of range
+- Failing a spell/spy info operation now keeps the target selected in the dropdown
+- Changed relative land size percentage colors to make more sense
+- Discounted acres after invasion are now only gained upon hitting 75%+ targets
+- Minor text changes
+
+### Fixed
+- Fixed unit OP/DP rounding display issue in case of non-integer numbers (Firewalker Phoenix)
+- Fixed an issue where failing an info op tried to kill off more spies than you had
+- Fixed text when last rankings are updated
+
+## [0.6.1-5] - 2019-05-14
+### Changed
+- "Remember Me" on login page is now checked by default
+- Spy losses from failed ops now fluctuate slightly based on relative land size
+
+### Fixed
+- Fix a bug with checking whether certain spells are active, fixes the notorious 'Ares Call/DP bug'
+- Town Crier page now shows invasions from/to your own dominion
+- Amount of boats on status page and Clear Sight now also include returning boats from invasion
+
+## [0.6.1-4] - 2019-04-16
+### Changed
+- Reduced failed espionage operation spy casualties from 1% to 0.1%
+
+### Fixed
+- Fixed dominion sorting in realm page on land sizes larger than 1k
+- Units returning from battle are now included in population calculations
+- Units returning from battle are now included in networth calculations
+- Units returning from battle are now included on the military page under the Trained column
+
+## [0.6.1-3] - 2019-04-14
+### Fixed
+- Fix packie name on realm page
+
+## [0.6.1-2] - 2019-04-14
+### Added
+- Added username to realm page for dominions you pack with
+
+### Changed
+- Rankings now update every 6 hours (down from 24 hours)
+- Remove ruler name from realm page
+
+### Fixed
+- Fixed certain realms not getting filled properly
+- Several last-minute invasion-related fixes
+
+## [0.6.1-1] - 2019-04-11
+### Added
+- Added barren land column to explore page
+
+### Changed
+- The 'current hour' counter in at the bottom now displays 1-24, instead of 0-23. This should also help out with BR's OOP sim to match the hours
+- Dominions on the realm page are now also sorted by networth if land sizes are the same
+- Removed invasion morale drop for defenders
+- Changed column label 'Player' to 'Ruler Name' on your own realm page
+- Minor text changes
+
+### Fixed
+- Fixed a bug where packies can close the pack they're in. Now only the pack creator can close it
+
+## [0.6.1] - 2019-04-09
+### Added
+- Added the following races to Valhalla: Dwarves, Goblins, Firewalkers, and Lizardmen
+- Added largest/strongest packs to Valhalla
+
+### Changed
+- Moved the 'Join the Discord'-button from status page to daily bonuses page
+
+### Fixed
+- Removed "round not yet started"-alert from homepage
+- Fixed a bug where creating a pack is placed in a new realm, instead of an already existing and eligible realm
+- Minor text fixes
+
+## [0.6.0-2] - 2019-04-09
+### Changed
+- Updated info box on the magic page
+- Added indicator for racial spells on magic page
+
+### Fixed
+- Fixed error when registering to a round with duplicate dominion name
+- Fixed several tables with data not displaying properly on mobile
+- Fixed rankings change column not visible on mobile
+
+## [0.6.0-1] - 2019-04-09
+### Fixed
+- Fixed an error when registering to a round and creating a new pack
+
+## [0.6.0] - 2019-04-08
+### Added
+- Added invasions!
+- Added Town Crier page
+- Clear Sight now mentions if the target was invaded recently, plus roughly how severely 
+- Military units now have a role icon next to them
+- Temples are now fully implemented, also reducing DP bonuses of targets you're invading
+- Added current round information to the home page
+
+### Changed
+- Unit and building tooltips have been moved from the question mark icon, to on the name itself
+
+### Fixed
+- Fixed not getting a notification when preventing a hostile spell or spy operation
 
 ## [0.5.2-1] - 2019-01-27
 ### Fixed
@@ -13,7 +193,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Added new races: Firewalker and Lizardfolk.
 
-## [0.5.1-4] and [0.5.1-8] - 2018-10-04
+## [0.5.1-4] to [0.5.1-8] - 2018-10-04
 ### Fixed
 - Fix user IP resolving when behind Cloudflare DNS with trusted proxies.
 - Dominion numbering on the realm page now correctly starts at 1, instead of 0.
@@ -118,7 +298,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...HEAD
+[0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
+[0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
+[0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
+[0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
+[0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
+[0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
+[0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
+[0.6.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...0.6.2-1
+[0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
+[0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5
+[0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4
+[0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3
+[0.6.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...0.6.1-2
+[0.6.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...0.6.1-1
+[0.6.1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.1
+[0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-1...0.6.0-2
+[0.6.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...0.6.0-1
+[0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
 [0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
 [0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2
 [0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8

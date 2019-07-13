@@ -29,7 +29,7 @@
                                 <label class="col-sm-3 control-label">Display Name</label>
                                 <div class="col-sm-9">
                                     <p class="form-control-static">{{ $user->display_name }}</p>
-                                    <p class="help-block">Visible on your <a href="#">public profile</a> and to other players in your realm.</p>
+                                    <p class="help-block">Visible on your <a href="#">public profile</a>.</p>
                                     <p class="help-block">Your display name cannot be changed.</p>
                                 </div>
                             </div>

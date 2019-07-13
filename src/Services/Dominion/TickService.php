@@ -71,20 +71,58 @@ class TickService
     {
         Log::debug('Hourly tick started');
 
-        DB::transaction(function () {
-            foreach (Round::with('dominions')->active()->get() as $round) {
+        $activeDominionIds = [];
+
+        // Hourly tick
+        DB::transaction(function () use (&$activeDominionIds) {
+//            DB::connection()->enableQueryLog();
+
+            foreach (Round::active()->get() as $round) {
                 // Ignore hour 0
                 if ($this->now->diffInHours($round->start_date) === 0) {
                     continue;
                 }
 
-                foreach ($round->dominions as $dominion) {
+                $dominions = $round
+                    ->dominions()
+                    ->with([
+                        'race',
+                        'race.perks',
+                        'race.units',
+                        'race.units.perks',
+                    ])
+                    ->get();
+
+                foreach ($dominions as $dominion) {
                     $this->tickDominion($dominion);
+                    $activeDominionIds[] = $dominion->id;
+
+//                    if (count($activeDominionIds) === 10) {
+//                        $queries = DB::getQueryLog();
+//                        Log::debug(count($queries) . ' queries executed');
+//
+//                        return; // todo: tmp
+//                    }
                 }
             }
+
+            Log::info(sprintf(
+                'Ticked %s dominions in %s seconds',
+                number_format(count($activeDominionIds)),
+                number_format($this->now->diffInSeconds(now()))
+            ));
         });
 
-        Log::info('Ticked X dominions in Y seconds');
+        // Update rankings
+        if (($this->now->hour % 6) === 0) {
+            $now = now();
+            Log::debug('Update rankings started');
+            $this->updateDailyRankings($activeDominionIds);
+            Log::info(sprintf(
+                'Ticked rankings in %s seconds',
+                $now->diffInSeconds(now())
+            ));
+        }
     }
 
     /**
@@ -98,23 +136,20 @@ class TickService
 
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
-                // Ignore hour 0
+                // Ignore the first hour 0 of the round
                 if ($this->now->diffInHours($round->start_date) === 0) {
                     continue;
                 }
 
-                $dominionIds = [];
-
                 foreach ($round->dominions as $dominion) {
-                    $dominionIds[] = $dominion->id;
-
-                    $dominion->daily_platinum = false;
-                    $dominion->daily_land = false;
-
-                    $dominion->save(['event' => 'tick']);
+                    /** @var Dominion $dominion */
+                    $dominion->update([
+                        'daily_platinum' => false,
+                        'daily_land' => false,
+                    ], [
+                        'event' => 'tick',
+                    ]);
                 }
-
-                $this->updateDailyRankings($dominionIds);
             }
         });
 
@@ -131,10 +166,17 @@ class TickService
 
             if (!empty($queueResult)) {
                 foreach ($queueResult as $resource => $amount) {
-                    $dominion->$resource += $amount;
+                    $dominion->increment($resource, $amount);
                 }
 
-                $this->notificationService->queueNotification("{$source}_completed", $queueResult);
+                // todo: hacky hacky. refactor me pls
+                if ($source === 'invasion') {
+                    if (isset($resource) && starts_with($resource, 'military_unit')) {
+                        $this->notificationService->queueNotification('returning_completed', $queueResult);
+                    }
+                } else {
+                    $this->notificationService->queueNotification("{$source}_completed", $queueResult);
+                }
             }
         }
 
@@ -142,46 +184,50 @@ class TickService
         $this->spellCalculator->getActiveSpells($dominion, true);
 
         // Resources
-        $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
-        $dominion->resource_food += $this->productionCalculator->getFoodNetChange($dominion);
-        $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
-        $dominion->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
-        $dominion->resource_ore += $this->productionCalculator->getOreProduction($dominion);
-        $dominion->resource_gems += $this->productionCalculator->getGemProduction($dominion);
-        $dominion->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
+        $dominion->increment('resource_platinum', $this->productionCalculator->getPlatinumProduction($dominion));
+        $dominion->increment('resource_lumber', $this->productionCalculator->getLumberNetChange($dominion));
+        $dominion->increment('resource_mana', $this->productionCalculator->getManaNetChange($dominion));
+        $dominion->increment('resource_ore', $this->productionCalculator->getOreProduction($dominion));
+        $dominion->increment('resource_gems', $this->productionCalculator->getGemProduction($dominion));
+        $dominion->increment('resource_boats', $this->productionCalculator->getBoatProduction($dominion));
+        // Check for starvation before adjusting food
+        $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
 
         // Starvation casualties
-        if ($dominion->resource_food < 0) {
-            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion);
+        if (($dominion->resource_food + $foodNetChange) < 0) {
+            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion, $dominion->resource_food + $foodNetChange);
 
             foreach ($casualties as $unitType => $unitCasualties) {
-                $dominion->{$unitType} -= $unitCasualties;
+                $dominion->decrement($unitType, $unitCasualties);
             }
 
-            $dominion->resource_food = 0;
+            // Decrement to zero
+            $dominion->decrement('resource_food', $dominion->resource_food);
 
             $this->notificationService->queueNotification('starvation_occurred', $casualties);
+        } else {
+            // Food production
+            $dominion->increment('resource_food', $foodNetChange);
         }
 
         // Population
         $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
-        $dominion->peasants += $populationPeasantGrowth;
+        $dominion->increment('peasants', $populationPeasantGrowth);
         $dominion->peasants_last_hour = $populationPeasantGrowth;
-        $dominion->military_draftees += $drafteesGrowthRate;
+        $dominion->increment('military_draftees', $drafteesGrowthRate);
 
         // Morale
         if ($dominion->morale < 70) {
-            $dominion->morale += 6;
-
+            $dominion->increment('morale', 6);
         } elseif ($dominion->morale < 100) {
-            $dominion->morale = min(($dominion->morale + 3), 100);
+            $dominion->increment('morale', min(3, 100 - $dominion->morale));
         }
 
         // Spy Strength
         if ($dominion->spy_strength < 100) {
-            $dominion->spy_strength = min(($dominion->spy_strength + 4), 100);
+            $dominion->increment('spy_strength', min(4, 100 - $dominion->spy_strength));
         }
 
         // Wizard Strength
@@ -196,7 +242,7 @@ class TickService
                 $wizardStrengthPerWizardGuildMax
             );
 
-            $dominion->wizard_strength = min(($dominion->wizard_strength + $wizardStrengthAdded), 100);
+            $dominion->increment('wizard_strength', min($wizardStrengthAdded, 100 - $dominion->wizard_strength));
         }
 
         // Active spells
@@ -306,40 +352,42 @@ class TickService
         // todo: needs a rewrite. haven't been able to do it due to time constraints
 
         // First pass: Saving land and networth
-        Dominion::with(['race', 'realm'])->whereIn('id', $dominionIds)->chunk(50, function ($dominions) {
-            foreach ($dominions as $dominion) {
-                $where = [
-                    'round_id' => (int)$dominion->round_id,
-                    'dominion_id' => $dominion->id,
-                ];
+        Dominion::with(['race', 'realm'])
+            ->whereIn('id', $dominionIds)
+            ->chunk(50, function ($dominions) {
+                foreach ($dominions as $dominion) {
+                    $where = [
+                        'round_id' => (int)$dominion->round_id,
+                        'dominion_id' => $dominion->id,
+                    ];
 
-                $data = [
-                    'dominion_name' => $dominion->name,
-                    'race_name' => $dominion->race->name,
-                    'realm_number' => $dominion->realm->number,
-                    'realm_name' => $dominion->realm->name,
-                    'land' => $this->landCalculator->getTotalLand($dominion),
-                    'networth' => $this->networthCalculator->getDominionNetworth($dominion),
-                ];
+                    $data = [
+                        'dominion_name' => $dominion->name,
+                        'race_name' => $dominion->race->name,
+                        'realm_number' => $dominion->realm->number,
+                        'realm_name' => $dominion->realm->name,
+                        'land' => $this->landCalculator->getTotalLand($dominion),
+                        'networth' => $this->networthCalculator->getDominionNetworth($dominion),
+                    ];
 
-                $result = DB::table('daily_rankings')->where($where)->get();
+                    $result = DB::table('daily_rankings')->where($where)->get();
 
-                if ($result->isEmpty()) {
-                    $row = $where + $data + [
-                            'created_at' => $dominion->created_at,
-                            'updated_at' => $this->now,
-                        ];
+                    if ($result->isEmpty()) {
+                        $row = $where + $data + [
+                                'created_at' => $dominion->created_at,
+                                'updated_at' => $this->now,
+                            ];
 
-                    DB::table('daily_rankings')->insert($row);
-                } else {
-                    $row = $data + [
-                            'updated_at' => $this->now,
-                        ];
+                        DB::table('daily_rankings')->insert($row);
+                    } else {
+                        $row = $data + [
+                                'updated_at' => $this->now,
+                            ];
 
-                    DB::table('daily_rankings')->where($where)->update($row);
+                        DB::table('daily_rankings')->where($where)->update($row);
+                    }
                 }
-            }
-        });
+            });
 
         // Second pass: Calculating ranks
         $result = DB::table('daily_rankings')

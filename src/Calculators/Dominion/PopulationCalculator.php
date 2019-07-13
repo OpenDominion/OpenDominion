@@ -18,6 +18,12 @@ class PopulationCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var PrestigeCalculator */
+    private $prestigeCalculator;
+
     /** @var QueueService */
     protected $queueService;
 
@@ -33,6 +39,8 @@ class PopulationCalculator
      * @param BuildingHelper $buildingHelper
      * @param ImprovementCalculator $improvementCalculator
      * @param LandCalculator $landCalculator
+     * @param MilitaryCalculator $militaryCalculator
+     * @param PrestigeCalculator $prestigeCalculator
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
@@ -41,6 +49,8 @@ class PopulationCalculator
         BuildingHelper $buildingHelper,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
+        MilitaryCalculator $militaryCalculator,
+        PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         UnitHelper $unitHelper
@@ -48,6 +58,8 @@ class PopulationCalculator
         $this->buildingHelper = $buildingHelper;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
+        $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
@@ -77,10 +89,10 @@ class PopulationCalculator
     {
         return (
             $dominion->military_draftees
-            + $dominion->military_unit1
-            + $dominion->military_unit2
-            + $dominion->military_unit3
-            + $dominion->military_unit4
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1)
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2)
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3)
+            + $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4)
             + $dominion->military_spies
             + $dominion->military_wizards
             + $dominion->military_archmages
@@ -179,25 +191,9 @@ class PopulationCalculator
         // todo
 
         // Prestige Bonus
-        // todo: $prestige / 10000?
-        $multiplier *= (1 + (($dominion->prestige / 250) * 2.5) / 100);
-        $multiplier += ((($dominion->prestige / 250) * 2.5) / 100);
-        // todo: re-check this vs other prestige formulae
+        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
-        /*
-        todo: cleanup
-        = ($Overview.$I$15
-            + $Imps.Z3
-            + MAX(
-                $Constants.$M$38 * $Techs.AE3;
-                $Constants.$M$50 * $Techs.AQ3
-            )
-        )
-        * (1 + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100)
-        + ROUNDDOWN($Production.O3 / 250 * $Constants.$B$90; 2) / 100
-        */
-
-        return (1 + $multiplier);
+        return (1 + $multiplier) * (1 + $prestigeMultiplier);
     }
 
     /**

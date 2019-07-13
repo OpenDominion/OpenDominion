@@ -3,9 +3,6 @@
 @section('page-header', 'Op Center')
 
 @section('content')
-    @php
-        $dominionsOutsideMyRange = 0;
-    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-9">
@@ -13,7 +10,7 @@
                 <div class="box-header">
                     <h3 class="box-title">Op Center</h3>
                 </div>
-                <div class="box-body">
+                <div class="box-body table-responsive">
                     <table class="table table-hover" id="dominions-table">
                         <colgroup>
                             <col>
@@ -42,13 +39,7 @@
                                 @php
                                     $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
                                 @endphp
-                                @if ($lastInfoOp->isInvalid())
-                                    @continue
-                                @endif
-                                @if (!$rangeCalculator->isInRange($selectedDominion, $dominion))
-                                    @php
-                                        $dominionsOutsideMyRange++;
-                                    @endphp
+                                @if ($lastInfoOp == null || $lastInfoOp->isInvalid())
                                     @continue
                                 @endif
                                 <tr>
@@ -90,7 +81,7 @@
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $lastInfoOp->updated_at->diffForHumans() }}
+                                            {{ $lastInfoOp->updated_at }}
                                         </span>
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}">
@@ -102,6 +93,61 @@
                     </table>
                 </div>
             </div>
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Clairvoyance Realms</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-hover" id="dominions-table">
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col width="200">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Realm</th>
+                                <th>Target</th>
+                                <th class="text-center">Taken</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($clairvoyanceRealms as $realm)
+                                @php
+                                    $lastInfoOp = $infoOpService->getLastClairvoyance($selectedDominion->realm, $realm);
+                                @endphp
+                                @if ($lastInfoOp == null || $lastInfoOp->isInvalid())
+                                    @continue
+                                @endif
+                                <tr>
+                                    <td data-order="{{ $realm->number }}">
+                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->id) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
+                                    </td>
+                                    <td data-order="{{ $lastInfoOp->targetDominion->name }}">
+                                        <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
+                                    </td>
+                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
+                                        Clairvoyance by
+                                        @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
+                                            <strong>
+                                                {{ $selectedDominion->name }}
+                                            </strong>
+                                        @else
+                                            {{ $lastInfoOp->sourceDominion->name }}
+                                        @endif
+                                        <br>
+                                        <span class="small">
+                                            {{ $lastInfoOp->updated_at->diffForHumans() }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
         <div class="col-sm-12 col-md-3">
@@ -112,10 +158,6 @@
                 <div class="box-body">
                     <p>Whenever you or someone else in your realm performs an information gathering espionage operation or magic spell, the information gathered is posted in the Op Center.</p>
                     <p>Through this page, you can help one another find targets and scout threats to one another.</p>
-                    <p>You are only able to see dominions that are within your range.</p>
-                    @if ($dominionsOutsideMyRange > 0)
-                        <p>Your realmies have recently performed info ops against <b>{{ $dominionsOutsideMyRange }} dominions</b> that are out of your range, and are not visible for you here.</p>
-                    @endif
                 </div>
             </div>
         </div>

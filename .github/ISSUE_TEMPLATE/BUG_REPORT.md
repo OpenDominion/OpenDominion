@@ -30,7 +30,6 @@ about: Create a report to help us improve
 
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
-* Version used:
+* OpenDominion version (bottom right in the game):
 * Browser Name and version:
 * Operating System and version (desktop or mobile):
-* Link to your project:

@@ -16,8 +16,8 @@ class SpellCalculator
     /** @var SpellHelper */
     protected $spellHelper;
 
-    /** @var Collection */
-    protected $activeSpells;
+    /** @var array */
+    protected $activeSpells = [];
 
     /**
      * SpellCalculator constructor.
@@ -41,7 +41,13 @@ class SpellCalculator
     public function getManaCost(Dominion $dominion, string $spell): int
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
-        return round($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+
+        // Cost reduction from wizard guilds (2x ratio, max 40%)
+        $wizardGuildRatio = ($dominion->building_wizard_guild / $totalLand);
+        $spellCostMultiplier = (1 - clamp(2 * $wizardGuildRatio, 0, 0.4));
+
+        return round($spellInfo['mana_cost'] * $totalLand * $spellCostMultiplier);
     }
 
     /**
@@ -70,21 +76,27 @@ class SpellCalculator
      */
     public function getActiveSpells(Dominion $dominion, bool $forceRefresh = false): Collection
     {
-        if ($this->activeSpells === null || $forceRefresh) {
-            $this->activeSpells = DB::table('active_spells')
-                ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
-                ->join('realms', 'realms.id', '=', 'dominions.realm_id')
-                ->where('dominion_id', $dominion->id)
-                ->orderBy('duration', 'desc')
-                ->orderBy('created_at')
-                ->get([
-                    'active_spells.*',
-                    'dominions.name AS cast_by_dominion_name',
-                    'realms.number AS cast_by_dominion_realm_number',
-                ]);
+        $cacheKey = $dominion->id;
+
+        if (!$forceRefresh && array_has($this->activeSpells, $cacheKey)) {
+            return collect(array_get($this->activeSpells, $cacheKey));
         }
 
-        return $this->activeSpells;
+        $data = DB::table('active_spells')
+            ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
+            ->join('realms', 'realms.id', '=', 'dominions.realm_id')
+            ->where('dominion_id', $dominion->id)
+            ->orderBy('duration', 'desc')
+            ->orderBy('created_at')
+            ->get([
+                'active_spells.*',
+                'dominions.name AS cast_by_dominion_name',
+                'realms.number AS cast_by_dominion_realm_number',
+            ]);
+
+        array_set($this->activeSpells, $cacheKey, $data->toArray());
+
+        return $data;
     }
 
     /**

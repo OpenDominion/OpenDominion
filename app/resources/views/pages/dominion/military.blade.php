@@ -38,31 +38,52 @@
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                                     <tr>
                                         <td>
-                                            {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
-                                            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}"></i>
+                                            {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
+                                                {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
+                                            </span>
                                         </td>
-                                        <td class="text-center">
-                                            @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
-                                                @php
+                                        @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
+                                            @php
                                                 $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
                                                     return ($unit->slot == (int)str_replace('unit', '', $unitType));
                                                 })->first();
-                                                @endphp
-                                                @if ($unit->power_offense == 0)
-                                                    <span class="text-muted">{{ number_format($unit->power_offense) }}</span>
+
+                                                $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
+                                                $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
+
+                                                $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
+                                                    return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
+                                                })->count() > 0;
+                                                $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
+                                                    return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
+                                                })->count() > 0;
+                                            @endphp
+                                            <td class="text-center">
+                                                @if ($offensivePower === 0)
+                                                    <span class="text-muted">0</span>
                                                 @else
-                                                    {{ number_format($unit->power_offense) }}
+                                                    {{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}{{ $hasDynamicOffensivePower ? '*' : null }}
                                                 @endif
                                                 /
-                                                @if ($unit->power_defense == 0)
-                                                    <span class="text-muted">{{ number_format($unit->power_defense) }}</span>
+                                                @if ($defensivePower === 0)
+                                                    <span class="text-muted">0</span>
                                                 @else
-                                                    {{ number_format($unit->power_defense) }}
+                                                    {{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}{{ $hasDynamicDefensivePower ? '*' : null }}
                                                 @endif
-                                            @endif
+                                            </td>
+                                            <td class="text-center">
+                                                {{ number_format($militaryCalculator->getTotalUnitsForSlot($selectedDominion, $unit->slot)) }}
+                                            </td>
+                                        @else
+                                            <td class="text-center">&nbsp;</td>
+                                            <td class="text-center">
+                                                {{ number_format($selectedDominion->{'military_' . $unitType}) }}
+                                            </td>
+                                        @endif
+                                        <td class="text-center">
+                                            {{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}
                                         </td>
-                                        <td class="text-center">{{ number_format($selectedDominion->{'military_' . $unitType}) }}</td>
-                                        <td class="text-center">{{ number_format($queueService->getTrainingQueueTotalByResource($selectedDominion, "military_{$unitType}")) }}</td>
                                         <td class="text-center">
                                             @php
                                                 // todo: move this shit to view presenter or something
@@ -90,7 +111,9 @@
                                                 echo implode(', ', $labelParts);
                                             @endphp
                                         </td>
-                                        <td class="text-center">{{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}</td>
+                                        <td class="text-center">
+                                            {{ number_format($trainingCalculator->getMaxTrainable($selectedDominion)[$unitType]) }}
+                                        </td>
                                         <td class="text-center">
                                             <input type="number" name="train[military_{{ $unitType }}]" class="form-control text-center" placeholder="0" min="0" max="" value="{{ old('train.' . $unitType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         </td>
@@ -128,7 +151,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Statistics</h3>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body table-responsive no-padding">
                     <table class="table">
                         <colgroup>
                             <col width="50%">
@@ -166,7 +189,7 @@
                 </div>
                 <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
                     @csrf
-                    <div class="box-body no-padding">
+                    <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
                                 <col width="50%">

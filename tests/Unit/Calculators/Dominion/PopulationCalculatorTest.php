@@ -6,7 +6,9 @@ use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -27,6 +29,12 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
 
     /** @var Mock|LandCalculator */
     protected $landCalculator;
+
+    /** @var Mock|MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var Mock|PrestigeCalculator */
+    protected $prestigeCalculator;
 
     /** @var Mock|QueueService */
     protected $queueService;
@@ -50,6 +58,8 @@ class PopulationCalculatorTest extends AbstractBrowserKitTestCase
             $this->app->make(BuildingHelper::class),
             $this->improvementsCalculator = m::mock(ImprovementCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
+            $this->militaryCalculator = m::mock(MilitaryCalculator::class),
+            $this->prestigeCalculator = m::mock(PrestigeCalculator::class),
             $this->queueService = m::mock(QueueService::class),
             $this->spellCalculator = m::mock(SpellCalculator::class),
             $this->app->make(UnitHelper::class)

@@ -6,6 +6,9 @@ use Cache;
 use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
+use OpenDominion\Models\Council\Post;
+use OpenDominion\Models\Council\Thread;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
@@ -19,6 +22,38 @@ class ComposerServiceProvider extends AbstractServiceProvider
     {
         view()->composer('layouts.topnav', function (View $view) {
             $view->with('selectorService', app(SelectorService::class));
+        });
+
+        view()->composer('partials.main-sidebar', function (View $view) {
+            $selectorService = app(SelectorService::class);
+
+            if (!$selectorService->hasUserSelectedDominion()) {
+                return;
+            }
+
+            /** @var Dominion $dominion */
+            $dominion = $selectorService->getUserSelectedDominion();
+
+            $lastRead = $dominion->council_last_read;
+
+            $councilUnreadCount = $dominion->realm
+                ->councilThreads()
+                ->with('posts')
+                ->get()
+                ->map(static function (Thread $thread) use ($lastRead) {
+                    $unreadCount = $thread->posts->filter(static function (Post $post) use ($lastRead) {
+                        return $post->created_at > $lastRead;
+                    })->count();
+
+                    if ($thread->created_at > $lastRead) {
+                        $unreadCount++;
+                    }
+
+                    return $unreadCount;
+                })
+                ->sum();
+
+            $view->with('councilUnreadCount', $councilUnreadCount);
         });
 
         view()->composer('partials.main-footer', function (View $view) {

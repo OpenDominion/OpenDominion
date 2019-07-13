@@ -124,40 +124,37 @@ class LandCalculator
     public function getLandLostByLandType(Dominion $dominion, float $landLossRatio): array
     {
         $targetLand = $this->getTotalLand($dominion);
-
-        $totalLandToLose = floor($targetLand * $landLossRatio);
-
+        $totalLandToLose = (int)floor($targetLand * $landLossRatio);
         $barrenLandByLandType = $this->getBarrenLandByLandType($dominion);
-
         $landPerType = $this->getLandByLandType($dominion);
 
         arsort($landPerType);
 
         $landLeftToLose = $totalLandToLose;
-        $totalLandLost = 0;
+//        $totalLandLost = 0;
         $landLostByLandType = [];
+
         foreach ($landPerType as $landType => $totalLandForType) {
-            if($landLeftToLose == 0) {
+            if ($landLeftToLose === 0) {
                 break;
             }
 
-            $landTypeLoss = $totalLandForType * $landLossRatio;
+            $landTypeLoss = ($totalLandForType * $landLossRatio);
 
             $totalLandTypeLoss = (int)ceil($landTypeLoss);
 
-            if($totalLandTypeLoss == 0) {
+            if ($totalLandTypeLoss === 0) {
                 continue;
             }
 
-            if($totalLandTypeLoss > $landLeftToLose) {
+            if ($totalLandTypeLoss > $landLeftToLose) {
                 $totalLandTypeLoss = $landLeftToLose;
             }
 
-            $totalLandLost += $totalLandTypeLoss;
+//            $totalLandLost += $totalLandTypeLoss;
             $barrenLandForLandType = $barrenLandByLandType[$landType];
 
-            $barrenLandLostForLandType = 0;
-            if($barrenLandForLandType <= $totalLandTypeLoss) {
+            if ($barrenLandForLandType <= $totalLandTypeLoss) {
                 $barrenLandLostForLandType = $barrenLandForLandType;
             } else {
                 $barrenLandLostForLandType = $totalLandTypeLoss;
@@ -167,7 +164,8 @@ class LandCalculator
             $landLostByLandType[$landType] = [
                 'landLost' => $totalLandTypeLoss,
                 'barrenLandLost' => $barrenLandLostForLandType,
-                'buildingsToDestroy' => $buildingsToDestroy];
+                'buildingsToDestroy' => $buildingsToDestroy
+            ];
 
             $landLeftToLose -= $totalLandTypeLoss;
         }

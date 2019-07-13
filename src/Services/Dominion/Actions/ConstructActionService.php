@@ -82,8 +82,10 @@ class ConstructActionService
                 continue;
             }
 
-            $landType = $this->landHelper->getLandTypeForBuildingByRace(str_replace('building_', '', $buildingType),
-                $dominion->race);
+            $landType = $this->landHelper->getLandTypeForBuildingByRace(
+                str_replace('building_', '', $buildingType),
+                $dominion->race
+            );
 
             if (!isset($buildingsByLandType[$landType])) {
                 $buildingsByLandType[$landType] = 0;
@@ -98,17 +100,15 @@ class ConstructActionService
             }
         }
 
-        $platinumCost = ($this->constructionCalculator->getPlatinumCost($dominion) * $totalBuildingsToConstruct);
-        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
+        $platinumCost = $this->constructionCalculator->getTotalPlatinumCost($dominion, $totalBuildingsToConstruct);
+        $lumberCost = $this->constructionCalculator->getTotalLumberCost($dominion, $totalBuildingsToConstruct);
+        $discountedLandUsed = min($dominion->discounted_land, $totalBuildingsToConstruct);
 
-        $lumberCost = ($this->constructionCalculator->getLumberCost($dominion) * $totalBuildingsToConstruct);
-        $newLumber = ($dominion->resource_lumber - $lumberCost);
-
-        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newLumber) {
-            $dominion->fill([
-                'resource_platinum' => $newPlatinum,
-                'resource_lumber' => $newLumber,
-            ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
+        DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $discountedLandUsed) {
+            $dominion->decrement('resource_platinum', $platinumCost);
+            $dominion->decrement('resource_lumber', $lumberCost);
+            $dominion->decrement('discounted_land', $discountedLandUsed);
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
 
             $this->queueService->queueResources('construction', $dominion, $data);
         });

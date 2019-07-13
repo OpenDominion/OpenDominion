@@ -73,6 +73,17 @@ class InfoOpService
         })->first();
     }
 
+    public function getInfoOpForRealm(Realm $sourceRealm, Realm $targetRealm, string $type): ?InfoOp
+    {
+        return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetRealm, $type) {
+            return (
+                !$infoOp->isInvalid() &&
+                ($infoOp->type === $type) &&
+                $infoOp->target_realm_id == $targetRealm->id
+            );
+        })->first();
+    }
+
     public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
         // mag: clear sight (units raw value, racial op bonus & prestige)
@@ -174,10 +185,10 @@ class InfoOpService
         return $return;
     }
 
-    public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): InfoOp
+    public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): ?InfoOp
     {
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion) {
-            return ($infoOp->target_dominion_id === $targetDominion->id);
+            return ($infoOp->target_dominion_id === $targetDominion->id && $infoOp->type != 'clairvoyance');
         })
             ->sortByDesc('updated_at')
             ->first();
@@ -195,12 +206,25 @@ class InfoOpService
             ->first()['name'];
     }
 
+    public function getLastClairvoyance(Realm $sourceRealm, Realm $targetRealm): ?InfoOp
+    {
+        return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetRealm) {
+            return ($infoOp->target_realm_id === $targetRealm->id && $infoOp->type == 'clairvoyance');
+        })
+            ->sortByDesc('updated_at')
+            ->first();
+    }
+
     public function getNumberOfActiveInfoOps(Realm $sourceRealm, Dominion $targetDominion): int
     {
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
             ->filter(function ($op) use ($sourceRealm, $targetDominion) {
-                return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
+                if ($op['key'] !== 'clairvoyance') { // refactor: Removes Clairvoyance from count
+                    return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
+                }
+
+                return null;
             })
             ->count();
     }
@@ -208,7 +232,7 @@ class InfoOpService
     public function getMaxInfoOps(): int
     {
         return $this->espionageHelper->getInfoGatheringOperations()
-            ->merge($this->spellHelper->getInfoOpSpells())
-            ->count();
+                ->merge($this->spellHelper->getInfoOpSpells())
+                ->count() - 1; // refactor: Removes Clairvoyance from count
     }
 }

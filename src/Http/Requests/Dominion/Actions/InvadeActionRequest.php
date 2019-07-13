@@ -13,10 +13,7 @@ class InvadeActionRequest extends AbstractDominionRequest
     {
         return [
             'target_dominion' => 'required|integer',
-            'unit1' => 'nullable|integer',
-            'unit2' => 'nullable|integer',
-            'unit3' => 'nullable|integer',
-            'unit4' => 'nullable|integer',
+            'unit' => 'nullable|array',
         ];
     }
 }

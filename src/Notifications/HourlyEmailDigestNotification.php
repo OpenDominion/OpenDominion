@@ -56,10 +56,10 @@ class HourlyEmailDigestNotification extends Notification implements ShouldQueue
     {
         $mailMessage = (new MailMessage)
             ->replyTo('email@wavehack.net', 'WaveHack')
-            ->subject('OpenDominion Hourly Report')
+            ->subject($this->getSubject())
             ->greeting('Hourly Report for ' . $this->now->format('D, M j, Y H:00'))
             ->line('Hello ' . $dominion->user->display_name . '!')
-            ->line('The following events occurred in your dominion *' . $dominion->name . '* last hour:');
+            ->line('The following hourly events just occurred in your dominion *' . $dominion->name . '*:');
 
         foreach ($this->notifications as $notification) {
             $mailMessage = $mailMessage->line('- ' . $this->notificationHelper->getNotificationMessage(
@@ -74,5 +74,26 @@ class HourlyEmailDigestNotification extends Notification implements ShouldQueue
             ->salutation('-OpenDominion');
 
         return $mailMessage;
+    }
+
+    // todo: move to parent abstract class
+    protected function getSubject(): string
+    {
+        $subjectParts[] = '[OD]';
+
+        $amountNotifications = count($this->notifications);
+        if ($amountNotifications > 1) {
+            $subjectParts[] = ('(+' . ($amountNotifications - 1) . ')');
+        }
+
+        $firstNotification = array_first($this->notifications);
+
+        $subjectParts[] = $this->notificationHelper->getNotificationMessage(
+            $firstNotification['category'],
+            $firstNotification['type'],
+            $firstNotification['data']
+        );
+
+        return implode(' ', $subjectParts);
     }
 }

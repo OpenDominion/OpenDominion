@@ -3,14 +3,13 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\PackService;
+use OpenDominion\Services\RealmFinderService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
-use RuntimeException;
-
-// todo: refactor manually test thrown exceptions to @expectedException annotation
 
 class PackServiceTest extends AbstractBrowserKitTestCase
 {
@@ -28,6 +27,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     /** @var Realm */
     protected $goodRealm;
 
+    /** @var Dominion */
+    protected $goodDominion;
+
     /** @var PackService */
     protected $packService;
 
@@ -41,174 +43,170 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
         $this->evilRace = Race::where('alignment', 'evil')->firstOrFail();
         $this->goodRealm = $this->createRealm($this->round, $this->goodRace->alignment);
-        $this->createAndImpersonateUser();
+        $user = $this->createAndImpersonateUser();
+        $this->goodDominion = $this->createDominion($user, $this->round, $this->goodRace);
 
         $this->packService = $this->app->make(PackService::class);
     }
 
-    public function testGetOrCreatePackWhenCreatePackIsTrueReturnsNewPack()
+    public function testCreatePackReturnsNewPack()
     {
         // Act
-        $result = $this->packService->getOrCreatePack(
-            $this->round,
-            $this->goodRace,
-            'name',
-            'password',
-            5,
-            true);
+        $pack = $this->packService->createPack(
+            $this->goodDominion,
+            'pack name',
+            'pack password',
+            3
+        );
 
         // Assert
-        $this->assertEquals($result->id, 1);
+        $this->assertEquals(1, $pack->id);
     }
 
-    public function testGetOrCreatePackWhenCreatePackIsTrueAndPackSizeIsLowerThan2Throws()
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCreatePackWhenPackSizeIsLowerThan2Throws()
+    {
+        // Act
+        $this->packService->createPack(
+            $this->goodDominion,
+            'pack name',
+            'pack password',
+            1
+        );
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCreatePackWhenPackSizeIsGreaterThanRoundPackSizeThrows()
+    {
+        // Act
+        $this->packService->createPack(
+            $this->goodDominion,
+            'pack name',
+            'pack password',
+            $this->round->pack_size + 1
+        );
+    }
+
+    /**
+     * Currently limited by UNIQUE-constraint in the database.
+     *
+     * @expectedException \Illuminate\Database\QueryException
+     */
+    public function testCreatePackWhenPackWithSameNameAndPasswordAlreadyExistsThrows()
+    {
+        // Act
+        for ($i = 0; $i < 2; $i++) {
+            $this->packService->createPack(
+                $this->createDominion($this->createUser(), $this->round, $this->goodRace),
+                'pack name',
+                'pack password',
+                3
+            );
+        }
+    }
+
+    public function testCreatePackCreatesPackInARealmWithAnotherExistingPack()
     {
         // Arrange
-        $thrown = false;
+        app(RealmFinderService::class)->maxPacksPerRealm = null;
+
+        $pack1 = $this->packService->createPack(
+            $this->createDominion($this->createUser(), $this->round, $this->goodRace),
+            'pack name 1',
+            'pack password',
+            3
+        );
 
         // Act
-        try {
-            $result = $this->packService->getOrCreatePack(
+        $pack2 = $this->packService->createPack(
+            $this->createDominion($this->createUser(), $this->round, $this->goodRace),
+            'pack name 2',
+            'pack password',
+            3
+        );
+
+        // Assert
+        $this->assertEquals($this->goodRealm->id, $pack1->realm_id);
+        $this->assertEquals($this->goodRealm->id, $pack2->realm_id);
+    }
+
+    public function testGetPackWhenNoPackExistsReturnsNull()
+    {
+        // Act
+        $pack = $this->packService->getPack(
+            $this->round,
+            'good',
+            'pack name',
+            'pack password'
+        );
+
+        // Assert
+        $this->assertNull($pack);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetPackWhenPackIsFullThrows()
+    {
+        // Arrange
+        $pack = $this->packService->createPack(
+            $this->goodDominion,
+            'pack name',
+            'pack password',
+            3
+        );
+
+        $this->goodDominion->pack_id = $pack->id;
+        $this->goodDominion->save();
+
+        for ($i = 0; $i < 2; $i++) {
+            $dominion = $this->createDominion(
+                $this->createUser(),
                 $this->round,
-                $this->goodRace,
-                'name',
-                'password',
-                1,
-                true);
-        } catch (RuntimeException $e) {
-            $thrown = true;
+                $this->goodRace
+            );
+
+            $dominion->pack_id = $pack->id;
+            $dominion->save();
         }
 
-        $this->assertTrue($thrown);
+        // Act
+        $this->packService->getPack(
+            $this->round,
+            'good',
+            'pack name',
+            'pack password'
+        );
+
+        // Assert
+        $this->assertEquals(3, $pack->dominions->count());
+        $this->assertTrue($pack->isFull());
     }
 
-    public function testGetOrCreatePackWhenCreatePackIsTrueAndPackSizeIsGreaterThan6Throws()
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetPackWhenRaceAlignmentMismatchThrows()
     {
         // Arrange
-        $thrown = false;
+        $this->packService->createPack(
+            $this->goodDominion,
+            'pack name',
+            'pack password',
+            3
+        );
 
         // Act
-        try {
-            $result = $this->packService->getOrCreatePack(
-                $this->round,
-                $this->goodRace,
-                'name',
-                'password',
-                7,
-                true);
-        } catch (RuntimeException $e) {
-            $thrown = true;
-        }
-
-        // Assert
-        $this->assertTrue($thrown);
-    }
-
-    public function testGetOrCreatePackWhenCreatePackIsFalseAndExistingPackReturnsExistingPack()
-    {
-        // Arrange
-        $existingPack = $this->packService->getOrCreatePack(
+        $this->packService->getPack(
             $this->round,
-            $this->goodRace,
-            'name',
-            'password',
-            5,
-            true);
-
-        $existingPack->update(['realm_id' => $this->goodRealm->id]);
-        $existingPack->load('realm');
-
-        // Act
-        $result = $this->packService->getOrCreatePack(
-            $this->round,
-            $this->goodRace,
-            'name',
-            'password',
-            0,
-            false);
-
-        // Assert
-        $this->assertEquals($result->id, $existingPack->id);
-    }
-
-    public function testGetOrCreatePackWhenCreatePackIsFalseAndExistingPackIsFullThrows()
-    {
-        // Arrange
-        $existingPack = $this->packService->getOrCreatePack(
-            $this->round,
-            $this->goodRace,
-            'name',
-            'password',
-            5,
-            true);
-
-        $existingPack->update(['size' => 0]);
-
-        $thrown = false;
-
-        // Act
-        try {
-            $result = $this->packService->getOrCreatePack(
-                $this->round,
-                $this->goodRace,
-                'name',
-                'password',
-                0,
-                false);
-
-        } catch (RuntimeException $e) {
-            $thrown = true;
-        }
-
-        // Assert
-        $this->assertTrue($thrown);
-    }
-
-    public function testGetOrCreatePackWhenCreatePackIsFalseAndExistingPackIsWrongAlignmentThrows()
-    {
-        // Arrange
-        $existingPack = $this->packService->getOrCreatePack(
-            $this->round,
-            $this->goodRace,
-            'name',
-            'password',
-            5,
-            true);
-
-        $existingPack->update(['realm_id' => $this->goodRealm->id]);
-        $existingPack->load('realm');
-
-        $thrown = false;
-
-        // Act
-        try {
-            $result = $this->packService->getOrCreatePack(
-                $this->round,
-                $this->evilRace,
-                'name',
-                'password',
-                0,
-                false);
-        } catch (RuntimeException $e) {
-            $thrown = true;
-        }
-
-        // Assert
-        $this->assertTrue($thrown);
-    }
-
-    public function testGetOrCreatePackWhenCreatePackIsFalseAndNoExistingPackReturnsNull()
-    {
-        // Act
-        $result = $this->packService->getOrCreatePack(
-            $this->round,
-            $this->goodRace,
-            'name',
-            'password',
-            0,
-            false);
-
-        // Assert
-        $this->assertNull($result);
+            'evil',
+            'pack name',
+            'pack password'
+        );
     }
 }

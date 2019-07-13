@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\QueueService;
 
 class StatusController extends AbstractDominionController
 {
@@ -18,6 +19,7 @@ class StatusController extends AbstractDominionController
             'militaryCalculator' => app(MilitaryCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
+            'queueService' => app(QueueService::class)
         ]);
     }
 }

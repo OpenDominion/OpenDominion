@@ -16,15 +16,19 @@ class TickTest extends AbstractBrowserKitTestCase
 {
     use DatabaseMigrations;
 
+    // todo: add test: dominion shouldnt tick on hour 0
+
     public function testMoraleTick()
     {
         $this->seedDatabase();
         $user = $this->createUser();
-        $round = $this->createRound();
+        $round = $this->createRound('yesterday'); // todo: check why develop branch works w/o this x_x
         $dominion = $this->createDominion($user, $round);
 
         $dominion->morale = 64;
         $dominion->save();
+
+        // todo: call tickservice instead for tickHourly (so it doesnt trigger tickDaily when tests run at 00:00 UTC)
 
         // Test +6 morale below 70
         Artisan::call('game:tick');
@@ -212,7 +216,9 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
-        $dominion = $this->createDominion($user, $round);
+        // don't use a race that has food-related perks
+        $race = \OpenDominion\Models\Race::where('name', 'Human')->first();
+        $dominion = $this->createDominion($user, $round, $race);
 
         $productionCalculator = $this->app->make(ProductionCalculator::class);
         $spellActionService = $this->app->make(SpellActionService::class);
@@ -243,18 +249,20 @@ class TickTest extends AbstractBrowserKitTestCase
         // Refresh active spells
         $spellCalculator->getActiveSpells($dominion, true);
 
-        // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7544 food
-        $this->assertEquals(7544, $productionCalculator->getFoodProduction($dominion));
+        // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7543 food
+        // Note: Prestige calc got changed around 2019-06-05, calculation for
+        // food production multiplier and max pop is slightly different now
+        $this->assertEquals(7543, $productionCalculator->getFoodProduction($dominion));
         $this->assertEquals(7553, $productionCalculator->getFoodConsumption($dominion));
         $this->assertEquals(275, round($productionCalculator->getFoodDecay($dominion)));
 
-        // 7544 - 7553 - 275 = -284
-        $this->assertEquals(-284, $productionCalculator->getFoodNetChange($dominion));
+        // 7543 - 7553 - 275 = -285
+        $this->assertEquals(-285, $productionCalculator->getFoodNetChange($dominion));
 
         Artisan::call('game:tick');
         $dominion->refresh();
 
-        // 27487 food - 284 net change = 27203 food
-        $this->assertEquals(27203, $dominion->resource_food);
+        // 27487 food - 285 net change = 27202 food
+        $this->assertEquals(27202, $dominion->resource_food);
     }
 }
