@@ -237,7 +237,7 @@ class InvadeActionService
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
             $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target);
-            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties, $isInvasionSuccessful);
+            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties);
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
