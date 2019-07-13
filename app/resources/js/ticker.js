@@ -25,9 +25,6 @@ function tick() {
         nextHour.setSeconds(0);
 
         el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(currentDateNow));
-        console.log(nextHour);
-        console.log(currentDateNow);
-        console.log(nextHour - currentDateNow);
         el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - currentDateNow);
     }
 }
