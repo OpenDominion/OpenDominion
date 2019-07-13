@@ -10,16 +10,21 @@ use Carbon\Carbon;
  * @property int $id
  * @property int $source_realm_id
  * @property int $source_dominion_id
+ * @property int|null $target_realm_id
  * @property int $target_dominion_id
  * @property string $type
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $sourceDominion
+ * @property-read \OpenDominion\Models\Dominion $targetDominion
+ * @property-read \OpenDominion\Models\Realm|null $targetRealm
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\InfoOp newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\InfoOp newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\InfoOp query()
  * @mixin \Eloquent
+
+
  */
 class InfoOp extends AbstractModel
 {
@@ -30,15 +35,16 @@ class InfoOp extends AbstractModel
         'data' => 'array',
     ];
 
-    public function sourceRealm()
-    {
-//        return $this->belongsTo(Realm::class);
-    }
-
     public function sourceDominion()
     {
         return $this->belongsTo(Dominion::class, 'source_dominion_id');
     }
+
+    // needs testing
+//    public function sourceRealm()
+//    {
+//        return $this->belongsTo(Realm::class);
+//    }
 
     public function targetDominion()
     {
@@ -50,6 +56,7 @@ class InfoOp extends AbstractModel
         return $this->belongsTo(Realm::class, 'target_realm_id');
     }
 
+    // todo: probably remove. check
 //    public function scopeNotInvalid(Builder $query): Builder
 //    {
 //        return $query->where('updated_at', '>=', now()->parse('-12 hours')->toDateTimeString());
