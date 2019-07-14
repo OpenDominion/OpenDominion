@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed spell mana cost not being reduced by wizard guilds
 - Fixed a race condition during tick, where more resources could be deducted than intended
 - Fixed displayed WPA on statistics advisor page
-- Fixed a bug where unintended bounces could happen with the correct input
+- Fixed a bug where unintended bounces could happen upon invading with correct input
 - Fixed unable to scroll op center page tables on mobile
 - Fixed typo on Town Crier page
 
