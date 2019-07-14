@@ -68,13 +68,14 @@ task('deploy', [
     'npm run prod', // custom made
     'deploy:writable',
     'artisan:storage:link',
-    'artisan:view:cache',
-    'artisan:config:cache',
-    'artisan:optimize',
     'artisan:down', // custom inserted
+    'artisan:view:clear',
+    'artisan:cache:clear',
+    'artisan:config:cache',
     'artisan:migrate', // custom inserted
     'artisan:game:data:sync', // custom made
     'artisan:version:update', // custom made
+    'artisan:optimize',
     'deploy:symlink',
     'php-fpm:reload', // custom made
     'supervisorctl:restart', // custom made
