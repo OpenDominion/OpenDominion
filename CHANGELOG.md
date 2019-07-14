@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.6.2-9] - 2019-07-14
+### Changed
+- Slightly improved targeted espionage/magic spell success rate
+
+### Fixed
+- Fixed spell mana cost not being reduced by wizard guilds
+- Fixed a race condition during tick, where more resources could be deducted than intended
+- Fixed displayed WPA on statistics advisor page
+- Fixed a bug where unintended bounces could happen upon invading with correct input
+- Fixed unable to scroll op center page tables on mobile
+- Fixed typo on Town Crier page
+
 ## [0.6.2-8] - 2019-06-23
 ### Changed
 - Server and tick timers on pages are now based on server time, not browser time
@@ -288,7 +300,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...HEAD
+[0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
 [0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
 [0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
 [0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6

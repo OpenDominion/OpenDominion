@@ -183,7 +183,7 @@ class EspionageActionService
             $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
+                + (0.7777 * $ratio)
                 - 0.0134
             ), 0.0, 1.0);
 
