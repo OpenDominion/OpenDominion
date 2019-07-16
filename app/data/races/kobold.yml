@@ -3,6 +3,7 @@ alignment: good
 home_land_type: hill
 perks:
   max_population: 40
+  extra_barren_max_population: 5
   population_growth: 20
   food_consumption: -30
   spy_strength: -10
