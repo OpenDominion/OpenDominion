@@ -7,7 +7,7 @@
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clear_sight');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'clear_sight');
                 @endphp
 
                 @slot('title', ('Status Screen (' . $dominion->name . ')'))
@@ -21,6 +21,7 @@
                         $race = OpenDominion\Models\Race::findOrFail($infoOp->data['race_id']);
                     @endphp
 
+                    @slot('tableResponsive', false)
                     @slot('noPadding', true)
 
                     <div class="row">
@@ -243,7 +244,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'revelation');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'revelation');
                 @endphp
 
                 @slot('title', 'Active Spells')
@@ -317,7 +318,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'castle_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'castle_spy');
                 @endphp
 
                 @slot('title', 'Improvements')
@@ -394,7 +395,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'barracks_spy');
                 @endphp
 
                 @slot('title', 'Units in training and home')
@@ -496,7 +497,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'barracks_spy');
                 @endphp
 
                 @slot('title', 'Units returning from battle')
@@ -565,7 +566,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'survey_dominion');
                 @endphp
 
                 @slot('title', 'Constructed Buildings')
@@ -640,7 +641,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'survey_dominion');
                 @endphp
 
                 @slot('title', 'Incoming building breakdown')
@@ -706,7 +707,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'land_spy');
                 @endphp
 
                 @slot('title', 'Explored Land')
@@ -779,7 +780,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'land_spy');
                 @endphp
 
                 @slot('title', 'Incoming land breakdown')

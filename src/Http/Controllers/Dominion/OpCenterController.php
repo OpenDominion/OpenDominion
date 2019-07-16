@@ -44,6 +44,13 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center');
         }
 
+        $latestInfoOps = $this->getSelectedDominion()->realm
+            ->infoOps()
+            ->with('sourceDominion')
+            ->where('target_dominion_id', '=', $dominion->id)
+            //->where('latest', '=', true);
+            ->get();
+
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
             'improvementHelper' => app(ImprovementHelper::class),
@@ -55,6 +62,7 @@ class OpCenterController extends AbstractDominionController
             'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
+            'latestInfoOps' => $latestInfoOps
         ]);
     }
 
@@ -70,6 +78,7 @@ class OpCenterController extends AbstractDominionController
 
         $infoOpArchive = $this->getSelectedDominion()->realm
             ->infoOps()
+            ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
             ->where('type', '=', $type)
             ->orderBy('updated_at', 'desc')

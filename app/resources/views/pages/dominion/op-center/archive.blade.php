@@ -49,6 +49,7 @@
                             $race = OpenDominion\Models\Race::findOrFail($infoOp->data['race_id']);
                         @endphp
 
+                        @slot('tableResponsive', false)
                         @slot('noPadding', true)
 
                         <div class="row">
