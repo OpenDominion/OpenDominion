@@ -638,7 +638,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Land Type</th>
+                                <th>Building Type</th>
                                 @for ($i = 1; $i <= 12; $i++)
                                     <th class="text-center">{{ $i }}</th>
                                 @endfor
