@@ -79,7 +79,7 @@ class ValhallaController extends AbstractController
                 }
 
                 list(, $prefix, $raceName) = $matches;
-                $raceName = str_replace("-", " ", $raceName);
+                $raceName = ucwords(str_replace("-", " ", $raceName));
 
                 $race = Race::where('name', $raceName)->firstOrFail();
 
