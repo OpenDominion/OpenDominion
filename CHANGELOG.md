@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Fixed
+- Fixed newlines sometimes not being properly applied in council posts
 
 ## [0.6.2-9] - 2019-07-14
 ### Changed
