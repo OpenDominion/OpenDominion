@@ -45,13 +45,12 @@
                                 @php
                                     $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
                                 @endphp
-                                @if ($lastInfoOp == null || $lastInfoOp->isInvalid())
-                                    @continue
-                                @endif
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
-                                        @if ($lastInfoOp->isStale())
+                                        @if ($lastInfoOp->isInvalid())
+                                            <span class="label label-danger">Invalid</span>
+                                        @elseif ($lastInfoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
                                     </td>
@@ -128,9 +127,6 @@
                                 @php
                                     $lastInfoOp = $infoOpService->getLastClairvoyance($selectedDominion->realm, $realm);
                                 @endphp
-                                @if ($lastInfoOp == null || $lastInfoOp->isInvalid())
-                                    @continue
-                                @endif
                                 <tr>
                                     <td data-order="{{ $realm->number }}">
                                         <a href="{{ route('dominion.op-center.clairvoyance', $realm->id) }}">{{ $realm->name }} (#{{ $realm->number }})</a>

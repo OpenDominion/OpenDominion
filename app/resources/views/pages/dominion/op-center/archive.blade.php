@@ -31,7 +31,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Recast your info ops before performing any offensive operations during this hour.</p>
+                <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old. Recast your info ops before performing any offensive operations during this hour.</p>
                 </div>
             </div>
         </div>
@@ -220,7 +220,9 @@
                         @slot('boxFooter')
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                                @if ($infoOp->isStale())
+                                @if ($infoOp->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
                             @endif
@@ -273,7 +275,9 @@
                         @slot('boxFooter')
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                                @if ($infoOp->isStale())
+                                @if ($infoOp->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
                             @endif
@@ -326,7 +330,9 @@
                         @slot('boxFooter')
                             @if ($infoOp !== null)
                                 <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                                @if ($infoOp->isStale())
+                                @if ($infoOp->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
                             @endif
@@ -410,7 +416,9 @@
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                                        @if ($infoOp->isStale())
+                                        @if ($infoOp->isInvalid())
+                                            <span class="label label-danger">Invalid</span>
+                                        @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
                                     @endif
@@ -524,7 +532,9 @@
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                                        @if ($infoOp->isStale())
+                                        @if ($infoOp->isInvalid())
+                                            <span class="label label-danger">Invalid</span>
+                                        @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
                                     @endif
@@ -634,7 +644,9 @@
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
                                         <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                                        @if ($infoOp->isStale())
+                                        @if ($infoOp->isInvalid())
+                                            <span class="label label-danger">Invalid</span>
+                                        @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
                                     @endif

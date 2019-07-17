@@ -34,12 +34,10 @@ class InfoOpService
 //        return ($sourceRealm
 //                ->infoOps()
 //                ->targetDominion($targetDominion)
-//                ->notInvalid()
 //                ->count() > 0);
 
         return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion) {
                 return (
-                    !$infoOp->isInvalid() &&
                     ($infoOp->target_dominion_id === $targetDominion->id)
                 );
             })->count() > 0);
@@ -51,12 +49,10 @@ class InfoOpService
 //                ->infoOps()
 //                ->targetDominion($targetDominion)
 //                ->whereType($type)
-//                ->notInvalid()
 //                ->count() === 1);
 
         return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
                 return (
-                    !$infoOp->isInvalid() &&
                     ($infoOp->target_dominion_id === $targetDominion->id) &&
                     ($infoOp->type === $type)
                 );
@@ -67,7 +63,6 @@ class InfoOpService
     {
         return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
             return (
-                !$infoOp->isInvalid() &&
                 ($infoOp->target_dominion_id === $targetDominion->id) &&
                 ($infoOp->type === $type)
             );
@@ -78,7 +73,6 @@ class InfoOpService
     {
         return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetRealm, $type) {
             return (
-                !$infoOp->isInvalid() &&
                 ($infoOp->type === $type) &&
                 $infoOp->target_realm_id == $targetRealm->id
             );
