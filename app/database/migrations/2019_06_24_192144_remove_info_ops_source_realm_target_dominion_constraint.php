@@ -14,17 +14,11 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
     public function up()
     {
         Schema::table('info_ops', function (Blueprint $table) {
-            $table->dropForeign(['source_realm_id']);
-            $table->dropForeign(['target_dominion_id']);
-            $table->dropUnique(['source_realm_id', 'target_dominion_id', 'type']);
-
-            $table->boolean('latest')->default(true);
-
-            $table->foreign('source_realm_id')->references('id')->on('realms');
-            $table->foreign('target_dominion_id')->references('id')->on('dominions');
-
             $table->index(['source_realm_id', 'target_dominion_id', 'type']);
             $table->index(['source_realm_id', 'target_dominion_id', 'latest']);
+            $table->boolean('latest')->default(true);
+
+            $table->dropUnique(['source_realm_id', 'target_dominion_id', 'type']);
         });
     }
 
@@ -36,16 +30,11 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
     public function down()
     {
         Schema::table('info_ops', function (Blueprint $table) {
-            $table->dropForeign(['source_realm_id']);
-            $table->dropForeign(['target_dominion_id']);
+            $table->unique(['source_realm_id', 'target_dominion_id', 'type']);
 
             $table->dropIndex(['source_realm_id', 'target_dominion_id', 'type']);
             $table->dropIndex(['source_realm_id', 'target_dominion_id', 'latest']);
             $table->dropColumn(['latest']);
-
-            $table->unique(['source_realm_id', 'target_dominion_id', 'type']);
-            $table->foreign('source_realm_id')->references('id')->on('realms');
-            $table->foreign('target_dominion_id')->references('id')->on('dominions');
         });
     }
 }
