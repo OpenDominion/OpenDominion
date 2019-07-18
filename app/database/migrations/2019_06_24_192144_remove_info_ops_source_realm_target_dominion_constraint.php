@@ -23,6 +23,7 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
             $table->foreign('source_realm_id')->references('id')->on('realms');
             $table->foreign('target_dominion_id')->references('id')->on('dominions');
 
+            $table->index(['source_realm_id', 'target_dominion_id', 'type']);
             $table->index(['source_realm_id', 'target_dominion_id', 'latest']);
         });
     }
@@ -38,6 +39,7 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
             $table->dropForeign(['source_realm_id']);
             $table->dropForeign(['target_dominion_id']);
 
+            $table->dropIndex(['source_realm_id', 'target_dominion_id', 'type']);
             $table->dropIndex(['source_realm_id', 'target_dominion_id', 'latest']);
             $table->dropColumn(['latest']);
 

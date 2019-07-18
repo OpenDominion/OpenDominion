@@ -41,46 +41,43 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($targetDominions as $dominion)
-                                @php
-                                    $lastInfoOp = $infoOpService->getLastInfoOp($selectedDominion->realm, $dominion);
-                                @endphp
+                            @foreach ($latestInfoOps as $lastInfoOp)
                                 <tr>
                                     <td>
-                                        <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                        <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
                                         @if ($lastInfoOp->isInvalid())
                                             <span class="label label-danger">Invalid</span>
                                         @elseif ($lastInfoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
                                     </td>
-                                    <td data-search="realm:{{ $dominion->realm->number }}">
-                                        <a href="{{ route('dominion.realm', $dominion->realm->number) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
+                                    <td data-search="realm:{{ $lastInfoOp->targetDominion->realm->number }}">
+                                        <a href="{{ route('dominion.realm', $lastInfoOp->targetDominion->realm->number) }}">{{ $lastInfoOp->targetDominion->realm->name }} (#{{ $lastInfoOp->targetDominion->realm->number }})</a>
                                         {{-- todo: highlight clicked dominion in realm page? --}}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $dominion->race->name }}">
-                                        {{ $dominion->race->name }}
+                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->targetDominion->race->name }}">
+                                        {{ $lastInfoOp->targetDominion->race->name }}
                                     </td>
                                     {{--
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getOffensivePower($selectedDominion->realm, $dominion) }}">
-                                        {{ $infoOpService->getOffensivePowerString($selectedDominion->realm, $dominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getOffensivePower($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
+                                        {{ $infoOpService->getOffensivePowerString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getDefensivePower($selectedDominion->realm, $dominion) }}">
-                                        {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $dominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getDefensivePower($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
+                                        {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                     </td>
                                     --}}
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $dominion) }}">
-                                        {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
+                                        {{ $infoOpService->getLandString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                         <br>
-                                        <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion) }}">
-                                            {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}%
+                                        <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $lastInfoOp->targetDominion) }}">
+                                            {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $lastInfoOp->targetDominion), 1) }}%
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $dominion) }}">
-                                        {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
+                                        {{ $infoOpService->getNetworthString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
-                                        {{ $infoOpService->getLastInfoOpName($selectedDominion->realm, $dominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
+                                        {{ $infoOpService->getLastInfoOpName($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                         by
                                         @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
                                             <strong>
@@ -91,11 +88,11 @@
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $lastInfoOp->updated_at }}
+                                            {{ $lastInfoOp->created_at }}
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}">
-                                        {{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $dominion) }}/{{ $infoOpService->getMaxInfoOps() }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
+                                        {{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $lastInfoOp->targetDominion) }}/{{ $infoOpService->getMaxInfoOps() }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -134,7 +131,7 @@
                                     <td data-order="{{ $lastInfoOp->targetDominion->name }}">
                                         <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->updated_at->getTimestamp() }}">
+                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
                                         Clairvoyance by
                                         @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
                                             <strong>
@@ -145,7 +142,7 @@
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $lastInfoOp->updated_at->diffForHumans() }}
+                                            {{ $lastInfoOp->created_at->diffForHumans() }}
                                         </span>
                                     </td>
                                 </tr>
@@ -185,7 +182,7 @@
     <script type="text/javascript">
         (function ($) {
             $('#dominions-table').DataTable({
-                order: [[6, 'desc']],
+                order: [[5, 'desc']],
             });
         })(jQuery);
     </script>

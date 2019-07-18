@@ -21,17 +21,25 @@ class OpCenterController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $clairvoyanceRealms = $dominion->realm->infoOps()
-            ->where('type', 'clairvoyance')
+            ->where('type', '=', 'clairvoyance')
             ->get()
             ->map(static function ($infoOp) {
                 return $infoOp->targetRealm;
             });
 
+        $latestInfoOps = $dominion->realm->infoOps()
+            ->with('targetDominion')
+            ->where('type', '!=', 'clairvoyance')
+            ->where('latest', '=', true)
+            ->orderBy('created_at', 'desc')
+            ->groupBy('target_dominion_id')
+            ->get();
+
         return view('pages.dominion.op-center.index', [
             'infoOpService' => app(InfoOpService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellHelper' => app(SpellHelper::class),
-            'targetDominions' => $dominion->realm->infoOpTargetDominions,
+            'latestInfoOps' => $latestInfoOps,
             'clairvoyanceRealms' => $clairvoyanceRealms
         ]);
     }
@@ -44,8 +52,7 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center');
         }
 
-        $latestInfoOps = $this->getSelectedDominion()->realm
-            ->infoOps()
+        $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
             ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
             ->where('latest', '=', true)

@@ -31,11 +31,6 @@ class InfoOpService
 
     public function hasInfoOps(Realm $sourceRealm, Dominion $targetDominion): bool
     {
-//        return ($sourceRealm
-//                ->infoOps()
-//                ->targetDominion($targetDominion)
-//                ->count() > 0);
-
         return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion) {
                 return (
                     ($infoOp->target_dominion_id === $targetDominion->id)
@@ -45,18 +40,12 @@ class InfoOpService
 
     public function hasInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): bool
     {
-//        return ($sourceRealm
-//                ->infoOps()
-//                ->targetDominion($targetDominion)
-//                ->whereType($type)
-//                ->count() === 1);
-
         return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
                 return (
                     ($infoOp->target_dominion_id === $targetDominion->id) &&
                     ($infoOp->type === $type)
                 );
-            })->count() === 1);
+            })->count() > 0);
     }
 
     public function getInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): ?InfoOp
@@ -66,7 +55,7 @@ class InfoOpService
                 ($infoOp->target_dominion_id === $targetDominion->id) &&
                 ($infoOp->type === $type)
             );
-        })->sortByDesc('updated_at')->first();
+        })->sortByDesc('created_at')->first();
     }
 
     public function getInfoOpForRealm(Realm $sourceRealm, Realm $targetRealm, string $type): ?InfoOp
@@ -76,7 +65,7 @@ class InfoOpService
                 ($infoOp->type === $type) &&
                 $infoOp->target_realm_id == $targetRealm->id
             );
-        })->sortByDesc('updated_at')->first();
+        })->sortByDesc('created_at')->first();
     }
 
     public function getOffensivePower(Realm $sourceRealm, Dominion $targetDominion): ?int
@@ -185,7 +174,7 @@ class InfoOpService
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion) {
             return ($infoOp->target_dominion_id === $targetDominion->id && $infoOp->type != 'clairvoyance');
         })
-        ->sortByDesc('updated_at')
+        ->sortByDesc('created_at')
         ->first();
     }
 
@@ -206,7 +195,7 @@ class InfoOpService
         return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetRealm) {
             return ($infoOp->target_realm_id === $targetRealm->id && $infoOp->type == 'clairvoyance');
         })
-            ->sortByDesc('updated_at')
+            ->sortByDesc('created_at')
             ->first();
     }
 

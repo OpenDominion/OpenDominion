@@ -219,7 +219,7 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
                                     <span class="label label-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
@@ -274,7 +274,7 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
                                     <span class="label label-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
@@ -329,7 +329,7 @@
 
                         @slot('boxFooter')
                             @if ($infoOp !== null)
-                                <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                 @if ($infoOp->isInvalid())
                                     <span class="label label-danger">Invalid</span>
                                 @elseif ($infoOp->isStale())
@@ -415,7 +415,7 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
                                             <span class="label label-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
@@ -531,7 +531,7 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
                                             <span class="label label-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
@@ -643,7 +643,7 @@
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
-                                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
                                         @if ($infoOp->isInvalid())
                                             <span class="label label-danger">Invalid</span>
                                         @elseif ($infoOp->isStale())
