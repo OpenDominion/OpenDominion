@@ -48,7 +48,7 @@ class OpCenterController extends AbstractDominionController
             ->infoOps()
             ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
-            //->where('latest', '=', true);
+            ->where('latest', '=', true)
             ->get();
 
         return view('pages.dominion.op-center.show', [

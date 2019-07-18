@@ -232,7 +232,6 @@ class EspionageActionService
             }
         }
 
-        // todo: is not invalid?
         $infoOp = new InfoOp([
             'source_realm_id' => $dominion->realm->id,
             'target_dominion_id' => $target->id,

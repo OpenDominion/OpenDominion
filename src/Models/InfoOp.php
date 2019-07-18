@@ -30,6 +30,10 @@ class InfoOp extends AbstractModel
         'data' => 'array',
     ];
 
+    protected $dispatchesEvents = [
+        'creating' => \OpenDominion\Events\InfoOpCreatingEvent::class,
+    ];
+
     public function sourceRealm()
     {
 //        return $this->belongsTo(Realm::class);
