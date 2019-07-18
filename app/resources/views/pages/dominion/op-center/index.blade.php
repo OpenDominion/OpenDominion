@@ -22,8 +22,8 @@
                             --}}
                             <col width="100">
                             <col width="100">
-                            <col width="200">
-                            <col width="50">
+                            <col width="160">
+                            <col width="130">
                         </colgroup>
                         <thead>
                             <tr>
@@ -37,11 +37,12 @@
                                 <th class="text-center">Land</th>
                                 <th class="text-center">Networth</th>
                                 <th class="text-center">Last Op</th>
-                                <th class="text-center">Ops</th>
+                                <th class="text-center">Recent Ops</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($latestInfoOps as $lastInfoOp)
+                            @foreach ($latestInfoOps as $targetDominionOps)
+                                @php $lastInfoOp = $targetDominionOps->first(); @endphp
                                 <tr>
                                     <td>
                                         <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
@@ -77,7 +78,7 @@
                                         {{ $infoOpService->getNetworthString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
-                                        {{ $infoOpService->getLastInfoOpName($selectedDominion->realm, $lastInfoOp->targetDominion) }}
+                                        {{ $infoOpService->getInfoOpName($lastInfoOp) }}
                                         by
                                         @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
                                             <strong>

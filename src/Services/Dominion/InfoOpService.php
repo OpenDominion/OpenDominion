@@ -38,10 +38,11 @@ class InfoOpService
             })->count() > 0);
     }
 
-    public function hasInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): bool
+    public function hasActiveInfoOp(Realm $sourceRealm, Dominion $targetDominion, string $type): bool
     {
         return ($sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetDominion, $type) {
                 return (
+                    !$infoOp->isInvalid() &&
                     ($infoOp->target_dominion_id === $targetDominion->id) &&
                     ($infoOp->type === $type)
                 );
@@ -63,7 +64,7 @@ class InfoOpService
         return $sourceRealm->infoOps->filter(function (InfoOp $infoOp) use ($targetRealm, $type) {
             return (
                 ($infoOp->type === $type) &&
-                $infoOp->target_realm_id == $targetRealm->id
+                ($infoOp->target_realm_id == $targetRealm->id)
             );
         })->sortByDesc('created_at')->first();
     }
@@ -111,7 +112,7 @@ class InfoOpService
 
     public function getLand(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
-        if (!$this->hasInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
+        if (!$this->hasActiveInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
             return null;
         }
 
@@ -141,7 +142,7 @@ class InfoOpService
 
     public function getNetworth(Realm $sourceRealm, Dominion $targetDominion): ?int
     {
-        if (!$this->hasInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
+        if (!$this->hasActiveInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
             return null;
         }
 
@@ -169,23 +170,12 @@ class InfoOpService
         return $return;
     }
 
-    public function getLastInfoOp(Realm $sourceRealm, Dominion $targetDominion): ?InfoOp
+    public function getInfoOpName(InfoOp $infoOp): string
     {
-        return $sourceRealm->infoOps->filter(function ($infoOp) use ($targetDominion) {
-            return ($infoOp->target_dominion_id === $targetDominion->id && $infoOp->type != 'clairvoyance');
-        })
-        ->sortByDesc('created_at')
-        ->first();
-    }
-
-    public function getLastInfoOpName(Realm $sourceRealm, Dominion $targetDominion): string
-    {
-        $lastInfoOp = $this->getLastInfoOp($sourceRealm, $targetDominion);
-
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
-            ->filter(function ($op) use ($lastInfoOp) {
-                return ($op['key'] === $lastInfoOp->type);
+            ->filter(function ($op) use ($infoOp) {
+                return ($op['key'] === $infoOp->type);
             })
             ->first()['name'];
     }
@@ -205,9 +195,8 @@ class InfoOpService
             ->merge($this->spellHelper->getInfoOpSpells())
             ->filter(function ($op) use ($sourceRealm, $targetDominion) {
                 if ($op['key'] !== 'clairvoyance') { // refactor: Removes Clairvoyance from count
-                    return $this->hasInfoOp($sourceRealm, $targetDominion, $op['key']);
+                    return $this->hasActiveInfoOp($sourceRealm, $targetDominion, $op['key']);
                 }
-
                 return null;
             })
             ->count();
