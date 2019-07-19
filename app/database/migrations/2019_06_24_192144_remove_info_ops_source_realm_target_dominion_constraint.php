@@ -14,10 +14,10 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
     public function up()
     {
         Schema::table('info_ops', function (Blueprint $table) {
-            $table->index(['source_realm_id', 'target_dominion_id', 'type']);
-            $table->index(['source_realm_id', 'target_dominion_id', 'latest']);
             $table->boolean('latest')->default(true);
 
+            $table->index(['source_realm_id']);
+            $table->index(['target_dominion_id']);
             $table->dropUnique(['source_realm_id', 'target_dominion_id', 'type']);
         });
     }
@@ -30,11 +30,11 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
     public function down()
     {
         Schema::table('info_ops', function (Blueprint $table) {
-            $table->unique(['source_realm_id', 'target_dominion_id', 'type']);
-
-            $table->dropIndex(['source_realm_id', 'target_dominion_id', 'type']);
-            $table->dropIndex(['source_realm_id', 'target_dominion_id', 'latest']);
             $table->dropColumn(['latest']);
+
+            $table->unique(['source_realm_id', 'target_dominion_id', 'type']);
+            $table->dropIndex(['source_realm_id']);
+            $table->dropIndex(['target_dominion_id']);
         });
     }
 }
