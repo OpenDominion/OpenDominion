@@ -78,7 +78,7 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominionArchive(Dominion $dominion, string $type)
     {
-        $resultsPerPage = 20;
+        $resultsPerPage = 10;
         $valid_types = ['clear_sight', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
         $infoOpService = app(InfoOpService::class);
 
@@ -91,7 +91,7 @@ class OpCenterController extends AbstractDominionController
             ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
             ->where('type', '=', $type)
-            ->orderBy('updated_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate($resultsPerPage);
 
         return view('pages.dominion.op-center.archive', [
@@ -119,14 +119,13 @@ class OpCenterController extends AbstractDominionController
             $targetRealm,
             'clairvoyance'
         );
-        die(var_dump($clairvoyanceInfoOp));
 
         if ($clairvoyanceInfoOp === null) {
             abort(404);
         }
 
         $gameEventService = app(GameEventService::class);
-        $clairvoyanceData = $gameEventService->getClairvoyance($targetRealm, $clairvoyanceInfoOp->updated_at);
+        $clairvoyanceData = $gameEventService->getClairvoyance($targetRealm, $clairvoyanceInfoOp->created_at);
 
         $gameEvents = $clairvoyanceData['gameEvents'];
         $dominionIds = $clairvoyanceData['dominionIds'];
