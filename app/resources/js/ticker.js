@@ -26,9 +26,11 @@ class Ticker {
      * @private
      */
     tick() {
-        const currentTime = new Date;
+        const currentServerTime = this.tickerServerElement.innerHTML;
+        const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
+        currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
 
-        const nextHour = new Date;
+        const nextHour = new Date(currentTime);
         nextHour.setUTCHours(currentTime.getUTCHours() + 1);
         nextHour.setMinutes(0);
         nextHour.setSeconds(0);
