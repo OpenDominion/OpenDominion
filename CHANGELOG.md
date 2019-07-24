@@ -5,13 +5,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Changed
+- Condensed the items in the left navigation menu (except on mobile)
+
+### Fixed
+- Fixed newlines sometimes not being properly applied in council posts
+- The server time/next tick tickers should now be slightly more accurate
+- Fixed Gnome's racial spell Mechanical Genius, now properly granting the intended amount of rezoning cost reduction
+- Realm spinner on realm page no longer allows for invalid input (eg negative numbers)
+- Minor text fixes
+
+## [0.6.2-9] - 2019-07-14
+### Changed
 - Slightly improved targeted espionage/magic spell success rate
 
 ### Fixed
 - Fixed spell mana cost not being reduced by wizard guilds
 - Fixed a race condition during tick, where more resources could be deducted than intended
 - Fixed displayed WPA on statistics advisor page
-- Fixed a bug where unintended bounces could happen with the correct input
+- Fixed a bug where you could still conquer land upon bouncing
 - Fixed unable to scroll op center page tables on mobile
 - Fixed typo on Town Crier page
 
@@ -298,7 +309,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...HEAD
+[0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
 [0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
 [0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
 [0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6

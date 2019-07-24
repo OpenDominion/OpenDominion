@@ -176,7 +176,7 @@
                                 </p>
                             @endif
 
-                            @if (isset($event->data['result']['overwhelmed']))
+                            @if (isset($event->data['result']['overwhelmed']) && $event->data['result']['overwhelmed'])
                                 <p class="text-center text-red">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because you were severely outmatched, you suffered extra casualties.
