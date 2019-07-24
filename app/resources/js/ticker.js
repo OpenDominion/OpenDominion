@@ -16,8 +16,11 @@ class Ticker {
         this.tickerServerElement = document.getElementById('ticker-server');
         this.tickerNextHourElement = document.getElementById('ticker-next-tick');
 
-        const self = this;
-        setInterval(() => self.tick(), 1000);
+        // Only tick if the ticker element is visible; i.e. not on the homepage
+        if (this.tickerServerElement !== null) {
+            const self = this;
+            setInterval(() => self.tick(), 1000);
+        }
     }
 
     /**
