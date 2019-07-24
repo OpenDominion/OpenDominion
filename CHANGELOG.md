@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
 - The server time/next tick tickers should now be slightly more accurate
+- Minor text fixes
 
 ## [0.6.2-9] - 2019-07-14
 ### Changed
