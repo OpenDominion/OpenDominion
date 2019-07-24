@@ -60,7 +60,6 @@ class UserSharpList extends SharpEntityList
         )->addDataContainer(
             EntityListDataContainer::make('activated')
                 ->setLabel('Activated?')
-                ->setSortable()
         )->addDataContainer(
             EntityListDataContainer::make('last_online')
                 ->setLabel('Last Online')
