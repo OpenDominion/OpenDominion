@@ -139,8 +139,28 @@ class TrainActionService
         foreach ($unitsToTrain as $unitType => $amount) {
             if ($amount > 0) {
                 $unitName = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
-                $unitsToTrainStringParts[] = (number_format($amount) . ' ' . str_plural(str_singular($unitName),
-                        $amount));
+
+                // str_plural() isn't perfect for certain unit names. This array
+                // serves as an override to use (see issue #607)
+                // todo: Might move this to UnitHelper, especially if more
+                //       locations need unit name overrides
+                $overridePluralUnitNames = [
+                    'shaman' => 'shamans',
+                ];
+
+                $amountLabel = number_format($amount);
+
+                if (array_key_exists($unitName, $overridePluralUnitNames)) {
+                    if ($amount === 1) {
+                        $unitLabel = $unitName;
+                    } else {
+                        $unitLabel = $overridePluralUnitNames[$unitName];
+                    }
+                } else {
+                    $unitLabel = str_plural(str_singular($unitName), $amount);
+                }
+
+                $unitsToTrainStringParts[] = "{$amountLabel} {$unitLabel}";
             }
         }
 
