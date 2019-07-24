@@ -4,6 +4,9 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Condensed the items in the left navigation menu (except on mobile)
+
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
 - The server time/next tick tickers should now be slightly more accurate
