@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed newlines sometimes not being properly applied in council posts
 - The server time/next tick tickers should now be slightly more accurate
 - Fixed Gnome's racial spell Mechanical Genius, now properly granting the intended amount of rezoning cost reduction
+- Realm spinner on realm page no longer allows for invalid input (eg negative numbers)
 - Minor text fixes
 
 ## [0.6.2-9] - 2019-07-14
