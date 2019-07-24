@@ -21,25 +21,25 @@ class UserSharpList extends SharpEntityList
             ->orderBy($params->sortedBy(), $params->sortedDir());
 
         collect($params->searchWords())
-            ->each(function ($word) use ($query) {
+            ->each(static function ($word) use ($query) {
                 $query->where('display_name', 'like', $word);
             });
 
         return $this
-            ->setCustomTransformer('last_online', function (?string $lastOnline) {
+            ->setCustomTransformer('last_online', static function (?string $lastOnline) {
                 if ($lastOnline === null) {
                     return 'Never';
                 }
 
                 return carbon($lastOnline)->diffForHumans();
             })
-            ->setCustomTransformer('activated', function (int $activated) {
+            ->setCustomTransformer('activated', static function (int $activated) {
                 return ($activated ? 'Yes' : 'No');
             })
-            ->setCustomTransformer('created_at', function (string $createdAt) {
+            ->setCustomTransformer('created_at', static function (string $createdAt) {
                 return carbon($createdAt)->diffForHumans();
             })
-            ->transform($query->paginate(30));
+            ->transform($query->paginate(10));
     }
 
     /**
@@ -93,7 +93,8 @@ class UserSharpList extends SharpEntityList
      */
     public function buildListConfig()
     {
-        $this->setPaginated()
+        $this->setDefaultSort('id')
+            ->setPaginated()
             ->setSearchable();
     }
 }
