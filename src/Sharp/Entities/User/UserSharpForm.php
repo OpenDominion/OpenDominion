@@ -2,8 +2,10 @@
 
 namespace OpenDominion\Sharp\Entities\User;
 
+use Code16\Sharp\Form\Eloquent\Transformers\FormUploadModelTransformer;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormTextField;
+use Code16\Sharp\Form\Fields\SharpFormUploadField;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;
 use Code16\Sharp\Form\SharpForm;
 use OpenDominion\Models\User;
@@ -20,7 +22,9 @@ class UserSharpForm extends SharpForm
      */
     public function find($id): array
     {
-        return $this->transform(User::findOrFail($id));
+        return $this->transform(
+            User::findOrFail($id)
+        );
     }
 
     /**
@@ -55,7 +59,21 @@ class UserSharpForm extends SharpForm
         $this->addField(
             SharpFormTextField::make('display_name')
                 ->setLabel('Display Name')
+        )->addField(
+            SharpFormUploadField::make('avatar')
+                ->setLabel('Avatar')
+                ->setFileFilterImages()
+                ->setStorageDisk('local')
+                ->setStorageBasePath('uploads/avatars')
+//                ->setReadOnly()
         );
+
+        // activated
+        // settings?
+        // last_deleted_dominion_round todo:remove
+        // last_online
+        // created_at
+        // updated_at?
     }
 
     /**
@@ -65,8 +83,10 @@ class UserSharpForm extends SharpForm
      */
     public function buildFormLayout()
     {
-        $this->addColumn(6, function (FormLayoutColumn $column) {
+        $this->addColumn(6, static function (FormLayoutColumn $column) {
             $column->withSingleField('display_name');
+        })->addColumn(6, static function (FormLayoutColumn $column) {
+            $column->withSingleField('avatar');
         });
     }
 }
