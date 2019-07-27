@@ -774,20 +774,23 @@ class InvadeActionService
     protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties): array
     {
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
+        $convertedUnits = array_fill(1, 4, 0);
 
-        $conversionBaseMultiplier = 0.06;
-        $spellParasiticHunger = 0.03;
-        $conversionMultiplier = $conversionBaseMultiplier;
-
-        $convertedUnits = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
-
-        if(!$isInvasionSuccessful ||
-            $totalDefensiveCasualties == 0 ||
-            ($dominion->race->name !== 'Undead' &&
-            $dominion->race->name !== 'Lycanthrope')) {
-
+        if (
+            !$isInvasionSuccessful ||
+            ($totalDefensiveCasualties === 0) ||
+            !in_array($dominion->race->name, ['Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
+        ) {
             return $convertedUnits;
         }
+
+        $conversionBaseMultiplier = 0.06;
+        $spellParasiticHungerMultiplier = 0.5;
+
+        $conversionMultiplier = (
+            $conversionBaseMultiplier *
+            (1 + $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHungerMultiplier))
+        );
 
         $totalConvertingUnits = 0;
 
@@ -798,17 +801,16 @@ class InvadeActionService
         // conversion: 12
         // staggered_conversion: 50;12,65;3
 
-        $unitsWithConversionPerk = $dominion->race->units->filter(function ($unit) use ($landRatio, $units) {
-            if($units[$unit->slot] == 0) {
+        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use ($landRatio, $units) {
+            if ($units[$unit->slot] == 0) {
                 return false;
             }
 
             $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
-            if($staggeredConversionPerk) {
-
+            if ($staggeredConversionPerk) {
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
                     $range = ((int)$rangeConversionPerk[0]) / 100;
-                    if($rangeConversionPerk <= $range) {
+                    if ($rangeConversionPerk <= $range) {
                         return true;
                     }
                 }
@@ -819,24 +821,22 @@ class InvadeActionService
             return $unit->getPerkValue('conversion');
         });
 
-        foreach($unitsWithConversionPerk as $unit) {
+        foreach ($unitsWithConversionPerk as $unit) {
             $totalConvertingUnits += $units[$unit->slot];
         }
 
-        $conversionMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHunger);
-
-        $convertingUnitConversions = $totalConvertingUnits * $conversionMultiplier * $landRatio;
-        $enemyCasualtyConversions = $totalDefensiveCasualties * $landRatio;
+        $convertingUnitConversions = ($totalConvertingUnits * $conversionMultiplier * $landRatio);
+        $enemyCasualtyConversions = ($totalDefensiveCasualties * $landRatio);
 
         $totalConverts = min($convertingUnitConversions, $enemyCasualtyConversions);
 
-        foreach($unitsWithConversionPerk as $unit) {
+        foreach ($unitsWithConversionPerk as $unit) {
             $conversionPerk = $unit->getPerkValue('conversion');
             $convertingUnitsForSlot = $units[$unit->slot];
             $convertingUnitsRatio = $convertingUnitsForSlot / $totalConvertingUnits;
             $totalConversionsForUnit = floor($totalConverts * $convertingUnitsRatio);
 
-            if(!$conversionPerk) {
+            if (!$conversionPerk) {
                 $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
 
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
