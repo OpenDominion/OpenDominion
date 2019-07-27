@@ -172,14 +172,31 @@ class CasualtiesCalculator
     {
         $multiplier = 1;
 
-        // First check immortality, so we can skip the other checks on immortal
-        // units
-        if ($slot) {
-            if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')
-                && !($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade'))) {
-                $multiplier = 0;
+        // First check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
+        // casualties will then always be 0 anyway
 
-            } elseif ($this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
+        // Only military units with a slot number could be immortal
+        if ($slot !== null) {
+            // Global immortality
+            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // Note: At the moment only SPUDs have the global 'immortal' perk. If we ever add global immortality to
+                // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
+                // additional race-based checks in here for any new units. So always assume we're running SPUD at the
+                // moment
+
+                $attackerHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade') !== 0);
+
+                // Note: This doesn't do a race check on $attacker, since I don't think that's needed atm; only HuNo can
+                // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
+                // go here
+
+                if (!$attackerHasCrusadeActive) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Race perk-based immortality
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
                 $multiplier = 0;
             }
         }
