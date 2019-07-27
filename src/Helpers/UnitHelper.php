@@ -86,7 +86,7 @@ class UnitHelper
 
             'immortal' => 'Almost never dies.',
             'immortal_except_vs' => 'Almost never dies, except vs %s.',
-            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %s%% of your size.',
+            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %s%%+ of your size.',
 
             'reduce_combat_losses' => 'Reduces combat losses.',
 
