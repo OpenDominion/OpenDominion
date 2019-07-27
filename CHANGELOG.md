@@ -4,6 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Added new races: Lycanthrope, Merfolk, Nox*, Spirit, Undead, Wood Elf
+- *Note: The Nox was a premiun race back in Dominion Classic. In OpenDominion it has been renamed to just 'Nox', and made available for everyone, without restrictions.
+- Added missing Valhalla races, including the ones mentioned above
+
 ### Changed
 - Condensed the items in the left navigation menu (except on mobile)
 
@@ -12,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - The server time/next tick tickers should now be slightly more accurate
 - Fixed Gnome's racial spell Mechanical Genius, now properly granting the intended amount of rezoning cost reduction
 - Realm spinner on realm page no longer allows for invalid input (eg negative numbers) which in turn displayed a server error page
+- Barren land now correctly houses 10 population for Gnome and Halfling
 - Minor text fixes
 
 ## [0.6.2-9] - 2019-07-14
