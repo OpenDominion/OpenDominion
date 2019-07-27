@@ -65,11 +65,9 @@ class UnitHelper
             'immortal_except_vs' => 'Immortal (except vs %s).',
             'immortal_vs_land_range' => 'Immortal when attacking dominions %s%% of your size.',
 
-
             'ore_production' => 'Each unit produces %s units of ore per hour.',
             'plunders_resources_on_attack' => 'Plunders resources on attack.',
             'reduce_combat_losses' => 'Reduces combat losses.',
-
 
             'counts_as_wizard_offense' => 'Each unit counts as %s of a wizard on offense.',
             'counts_as_wizard_defense' => 'Each unit counts as %s of a wizard on defense.',
