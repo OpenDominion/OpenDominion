@@ -551,6 +551,15 @@ class EspionageActionService
             $target->save();
         });
 
+        $this->notificationService
+            ->queueNotification('resource_stolen', [
+                'sourceDominionId' => $dominion->id,
+                'operationKey' => $operationKey,
+                'resource' => $resource,
+                'amount' => $amountStolen,
+            ])
+            ->sendNotifications($target, 'irregular_dominion');
+
         return [
             'success' => true,
             'message' => sprintf('Your spies infiltrate the target\'s dominion successfully and return with %s %s.', $amountStolen, $resource),

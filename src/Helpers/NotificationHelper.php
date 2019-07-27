@@ -123,6 +123,11 @@ class NotificationHelper
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'fa fa-user-secret text-orange',
             ],
+            'resource_stolen' => [
+                'label' => 'Resource stolen',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'fa fa-user-secret text-orange',
+            ],
 //            'received_hostile_spell' => [
 //                'label' => 'Hostile spell received',
 //                'defaults' => ['email' => false, 'ingame' => true],
@@ -318,6 +323,15 @@ class NotificationHelper
                     $where,
                     number_format($data['spiesKilled']),
                     str_plural('spy', $data['spiesKilled'])
+                );
+
+            case 'irregular_dominion.resource_stolen':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                return sprintf(
+                    'Our spies discovered %s %s missing from our vaults!',
+                    number_format($data['amount']),
+                    $data['resource']
                 );
 
             case 'irregular_dominion.repelled_hostile_spell':
