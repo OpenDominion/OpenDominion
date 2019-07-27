@@ -84,6 +84,7 @@ class SpellCalculator
                 ->where('event', 'cast spell')
                 ->where('delta', 'like', '%'.$spell.'%')
                 ->orderby('created_at', 'desc')
+                ->take(1)
                 ->first();
             if ($spellLastCast && now()->diffInHours($spellLastCast->created_at) < $spellInfo['cooldown']) {
                 return true;
