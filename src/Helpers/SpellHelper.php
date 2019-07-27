@@ -210,7 +210,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Regeneration',
-                'description' => 'Reduces combat losses by 25%',
+                'description' => '-25% combat losses',
                 'key' => 'regeneration',
                 'mana_cost' => 5,
                 'duration' => 12,
