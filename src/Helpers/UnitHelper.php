@@ -54,6 +54,7 @@ class UnitHelper
         $perkTypeStrings = [
             // Conversions
             'conversion' => 'Converts some enemy casualties into %s.',
+            'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$s%%+ of your size.',
 
             // OP/DP related
             'defense_from_building' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
@@ -65,7 +66,7 @@ class UnitHelper
             'defense_vs_goblin' => 'Defense increased by %s against goblins.',
             'offense_vs_goblin' => 'Offense increased by %s against goblins.',
 
-            'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%% of your size.',
+            'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%%+ of your size.',
 
             'offense_raw_wizard_ratio' => 'Offense increased by %1$s * Raw Wizard Ratio (max +%2$s).',
 
@@ -83,22 +84,30 @@ class UnitHelper
             'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
             'fixed_casualties' => 'ALWAYS suffers %s%% casualties.',
 
-            'immortal' => 'Almost never dies',
-            'immortal_except_vs' => 'Immortal (except vs %s).',
-            'immortal_vs_land_range' => 'Immortal when attacking dominions %s%% of your size.',
+            'immortal' => 'Almost never dies.',
+            'immortal_except_vs' => 'Almost never dies, except vs %s.',
+            'immortal_vs_land_range' => 'Almost never dies when attacking dominions %s%% of your size.',
 
             'reduce_combat_losses' => 'Reduces combat losses.',
 
             // Resource related
             'ore_production' => 'Each unit produces %s units of ore per hour.',
             'plunders_resources_on_attack' => 'Plunders resources on attack.',
+            'sink_boats_defense' => 'Sinks boats when defending.',
+            'sink_boats_offense' => 'Sinks boats when attacking.',
 
             // Misc
             'faster_return' => 'Returns %s hours faster from battle.',
         ];
 
         foreach ($race->units as $unit) {
-            foreach ($unit->perks->whereIn('key', array_keys($perkTypeStrings)) as $perk) {
+            foreach ($unit->perks as $perk) {
+
+                if (!array_key_exists($perk->key, $perkTypeStrings)) {
+//                    \Debugbar::warning("Missing perk help text for unit perk '{$perk->key}'' on unit '{$unit->name}''.");
+                    continue;
+                }
+
                 $perkValue = $perk->pivot->value;
 
                 // Handle array-based perks
@@ -120,13 +129,36 @@ class UnitHelper
 
                 // Special case for conversions
                 if ($perk->key === 'conversion') {
-                    $unitSlotToConvertTo = (int)$perkValue;
+                    $unitSlotsToConvertTo = array_map('intval', str_split($perkValue));
+                    $unitNamesToConvertTo = [];
 
-                    $unitToConvertTo = $race->units->filter(static function ($unit) use ($unitSlotToConvertTo) {
-                        return ($unit->slot === $unitSlotToConvertTo);
-                    })->first();
+                    foreach ($unitSlotsToConvertTo as $slot) {
+                        $unitToConvertTo = $race->units->filter(static function ($unit) use ($slot) {
+                            return ($unit->slot === $slot);
+                        })->first();
 
-                    $perkValue = str_plural($unitToConvertTo->name);
+                        $unitNamesToConvertTo[] = str_plural($unitToConvertTo->name);
+                    }
+
+                    $perkValue = generate_sentence_from_array($unitNamesToConvertTo);
+
+                } elseif ($perk->key === 'staggered_conversion') {
+                    foreach ($perkValue as $index => $conversion) {
+                        [$convertAboveLandRatio, $slots] = $conversion;
+
+                        $unitSlotsToConvertTo = array_map('intval', str_split($slots));
+                        $unitNamesToConvertTo = [];
+
+                        foreach ($unitSlotsToConvertTo as $slot) {
+                            $unitToConvertTo = $race->units->filter(static function ($unit) use ($slot) {
+                                return ($unit->slot === $slot);
+                            })->first();
+
+                            $unitNamesToConvertTo[] = str_plural($unitToConvertTo->name);
+                        }
+
+                        $perkValue[$index][1] = generate_sentence_from_array($unitNamesToConvertTo);
+                    }
                 }
 
                 if (is_array($perkValue)) {
