@@ -12,7 +12,6 @@ units:
     power:
       offense: 3
       defense: 0
-    perks:
   - name: Ratman
     cost:
       platinum: 250
@@ -20,7 +19,6 @@ units:
     power:
       offense: 0
       defense: 3
-    perks:
   - name: Werewolf
     cost:
       platinum: 875
