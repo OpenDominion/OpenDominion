@@ -101,6 +101,10 @@ class SpellActionService
             throw new RuntimeException("You do not have enough mana to cast {$spellInfo['name']}.");
         }
 
+        if ($this->spellCalculator->isOnCooldown($dominion, $spellKey)) {
+            throw new RuntimeException("You can only cast {$spellInfo['name']} every {$spellInfo['cooldown']} hours.");
+        }
+
         if ($this->spellHelper->isOffensiveSpell($spellKey)) {
             if ($target === null) {
                 throw new RuntimeException("You must select a target when casting offensive spell {$spellInfo['name']}");
@@ -146,7 +150,7 @@ class SpellActionService
 
             $dominion->decrement('resource_mana', $manaCost);
             $dominion->decrement('wizard_strength', ($result['wizardStrengthCost'] ?? 5));
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL, 'action' => $spellKey]);
         });
 
         return [
