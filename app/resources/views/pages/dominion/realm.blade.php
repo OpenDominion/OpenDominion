@@ -123,7 +123,7 @@
                             <div class="col-xs-4">
                                 <form action="{{ route('dominion.realm.change-realm') }}" method="post" role="form">
                                     @csrf
-                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}">
+                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}" min="1" max="{{ $realmCount }}">
                                 </form>
                             </div>
                             <div class="col-xs-4 text-right">
