@@ -183,6 +183,7 @@ class CasualtiesCalculator
                 // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
                 // go here
 
+                // We're only immortal if they're not Deus-Vult'ing into our unholy lands :^)
                 if (!$attackerHasCrusadeActive) {
                     $multiplier = 0;
                 }
