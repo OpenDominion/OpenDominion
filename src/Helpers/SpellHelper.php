@@ -218,7 +218,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Parasitic Hunger',
-                'description' => 'Increases conversions by 3 percentage points',
+                'description' => '+50% conversion rate',
                 'key' => 'parasitic_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,
