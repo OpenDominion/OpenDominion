@@ -130,7 +130,7 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Crusade',
-                'description' => '+5% offensive power, and allows you to kill Undead',
+                'description' => '+5% offensive power and allows you to kill Spirit/Undead',
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -178,7 +178,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Mechanical Genius',
-                'description' => '30% reduction of re-zoning costs',
+                'description' => '-30% land rezoning costs',
                 'key' => 'mechanical_genius',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -186,7 +186,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Unholy Ghost',
-                'description' => 'Enemy draftees do not participate in battle due to extreme fear',
+                'description' => 'Enemy draftees do not participate in battle',
                 'key' => 'unholy_ghost',
                 'mana_cost' => 5,
                 'duration' => 12,
