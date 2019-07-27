@@ -58,20 +58,13 @@ class CasualtiesCalculator
         if (!$isOverwhelmed) {
             // Global immortality
             if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // Note: At the moment only SPUDs have the global 'immortal' perk. If we ever add global immortality to
-                // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
-                // additional race-based checks in here for any new units. So always assume we're running SPUD at the
-                // moment
+                // Contrary to Dominion Classic, invading SPUDs are always immortal in OD, even when invading a HuNo
+                // with Crusade active
 
-                $targetHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($target, 'crusade') !== 0);
+                // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
+                // invasion targets
 
-                // Note: This doesn't do a race check on $target, since I don't think that's needed atm; only HuNo can
-                // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
-                // go here
-
-                if (!$targetHasCrusadeActive) {
-                    $multiplier = 0;
-                }
+                $multiplier = 0;
             }
 
             // Range-based immortality
