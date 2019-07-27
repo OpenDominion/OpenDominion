@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
@@ -68,6 +69,9 @@ class EspionageActionService
     /** @var RangeCalculator */
     protected $rangeCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * EspionageActionService constructor.
      */
@@ -85,6 +89,7 @@ class EspionageActionService
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
         $this->rangeCalculator = app(RangeCalculator::class);
+        $this->spellCalculator = app(SpellCalculator::class);
     }
 
     /**
@@ -547,8 +552,8 @@ class EspionageActionService
 
     protected function getResourceTheftAmount(Dominion $dominion, Dominion $target, string $resource, array $constraints): int
     {
-        // TODO: Fool's Gold
-        // TODO: Forest Haven reduction
+        if ($resource == 'platinum' && $this->spellCalculator->isSpellActive($target, 'fools_gold'))
+            return 0;
 
         // Limit to percentage of target's raw production
         $maxTarget = true;
@@ -580,8 +585,20 @@ class EspionageActionService
             $maxCarried = $this->militaryCalculator->getSpyRatioRaw($dominion) * $this->landCalculator->getTotalLand($dominion) * $constraints['spy_carries'];
         }
 
+        // Forest Haven reduction
+        if ($resource == 'platinum') {
+            $forestHavenStolenPlatinumReduction = 8;
+            $forestHavenStolenPlatinumReductionMax = 80;
+            $stolenPlatinumMultiplier = (1 - min(
+                    (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenStolenPlatinumReduction),
+                    ($forestHavenStolenPlatinumReductionMax / 100)
+                ));
+            $maxTarget = $maxTarget * $stolenPlatinumMultiplier;
+        }
+
         return min($maxTarget, $maxDominion, $maxCarried);
     }
+
     // todo: black ops/war
     // don't forget that undead has immortal wizards
 }
