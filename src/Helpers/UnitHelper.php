@@ -52,19 +52,31 @@ class UnitHelper
 
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
-            'fewer_casualties' => '%s%% fewer casualties.',
+            'conversion' => 'Converts some enemy casualties into %s.',
+
             'faster_return' => 'Returns %s hours faster from battle.',
+
+            'fewer_casualties' => '%s%% fewer casualties.',
+            'fewer_casualties_defense' => '%s%% fewer casualties on defense.',
+            'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
+            'fixed_casualties' => 'ALWAYS suffers %s%% casualties.',
+
+            'immortal' => 'Almost never dies',
+            'immortal_except_vs' => 'Immortal (except vs %s).',
+            'immortal_vs_land_range' => 'Immortal when attacking dominions %s%% of your size.',
+
+
             'ore_production' => 'Each unit produces %s units of ore per hour.',
             'plunders_resources_on_attack' => 'Plunders resources on attack.',
             'reduce_combat_losses' => 'Reduces combat losses.',
-            'immortal_except_vs' => 'Immortal (except vs %s).',
-            'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
+
+
             'counts_as_wizard_offense' => 'Each unit counts as %s of a wizard on offense.',
             'counts_as_wizard_defense' => 'Each unit counts as %s of a wizard on defense.',
-            'immortal_vs_land_range' => 'Immortal when attacking dominions %s%% of your size.',
+
             'counts_as_spy_offense' => 'Each unit counts as %s of a spy on offense.',
             'counts_as_spy_defense' => 'Each unit counts as %s of a spy on defense.',
-            'fixed_casualties' => 'ALWAYS suffers %s%% casualties.',
+
             'offense_from_building' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
             'defense_from_building' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
             'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
@@ -94,6 +106,17 @@ class UnitHelper
                         $nestedArrays = true;
                         $perkValue[$key] = explode(';', $value);
                     }
+                }
+
+                // Special case for conversions
+                if ($perk->key === 'conversion') {
+                    $unitSlotToConvertTo = (int)$perkValue;
+
+                    $unitToConvertTo = $race->units->filter(static function ($unit) use ($unitSlotToConvertTo) {
+                        return ($unit->slot === $unitSlotToConvertTo);
+                    })->first();
+
+                    $perkValue = str_plural($unitToConvertTo->name);
                 }
 
                 if (is_array($perkValue)) {
