@@ -222,7 +222,7 @@ class SpellHelper
                 'key' => 'parasitic_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Undead']),
+                'races' => collect(['Lycanthrope', 'Spirit', 'Undead']),
             ],
             [
                 'name' => 'Gaia\'s Blessing',
