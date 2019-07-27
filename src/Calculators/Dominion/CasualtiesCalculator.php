@@ -45,24 +45,46 @@ class CasualtiesCalculator
     public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $target, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
     {
         $multiplier = 1;
-        // First check immortality, so we can skip the other checks on immortal
-        // units
-        // Note: Immortality only works if you're NOT overwhelmed, regardless if
-        // invasion is successful or not
-        if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')
-            && !($this->spellCalculator->getActiveSpellMultiplierBonus($target, 'crusade'))) {
-            $multiplier = 0;
-        } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) {
-            // todo: refactor to combine with except_vs_{race}
-            if ($landRatio >= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['immortal_vs_land_range']) / 100)) {
-                $multiplier = 0;
-            }
-        } elseif (!$isOverwhelmed && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
-            $multiplier = 0;
+
+        // Check if unit has fixed casualties first, so we can skip all other checks
+        if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties') !== 0) {
+            return 1;
         }
 
-        if($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties')) {
-            return 1;
+        // Then check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
+        // casualties will then always be 0 anyway
+
+        // Immortality never triggers upon being overwhelmed
+        if (!$isOverwhelmed) {
+            // Global immortality
+            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // Note: At the moment only SPUDs have the global 'immortal' perk. If we ever add global immortality to
+                // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
+                // additional race-based checks in here for any new units. So always assume we're running SPUD at the
+                // moment
+
+                $targetHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($target, 'crusade') !== 0);
+
+                // Note: This doesn't do a race check on $target, since I don't think that's needed atm; only HuNo can
+                // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
+                // go here
+
+                if (!$targetHasCrusadeActive) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Range-based immortality
+            if (($multiplier !== 0) && (($immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) !== 0)) {
+                if ($landRatio >= ($immortalVsLandRange / 100)) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Race perk-based immortality
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
+                $multiplier = 0;
+            }
         }
 
         if ($multiplier !== 0) {
