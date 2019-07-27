@@ -52,10 +52,32 @@ class UnitHelper
 
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
+            // Conversions
             'conversion' => 'Converts some enemy casualties into %s.',
 
-            'faster_return' => 'Returns %s hours faster from battle.',
+            // OP/DP related
+            'defense_from_building' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
+            'offense_from_building' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
 
+            'defense_from_land' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
+            'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
+
+            'defense_vs_goblin' => 'Defense increased by %s against goblins.',
+            'offense_vs_goblin' => 'Offense increased by %s against goblins.',
+
+            'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%% of your size.',
+
+            'offense_raw_wizard_ratio' => 'Offense increased by %1$s * Raw Wizard Ratio (max +%2$s).',
+
+            // Spy related
+            'counts_as_spy_defense' => 'Each unit counts as %s of a spy on defense.',
+            'counts_as_spy_offense' => 'Each unit counts as %s of a spy on offense.',
+
+            // Wizard related
+            'counts_as_wizard_defense' => 'Each unit counts as %s of a wizard on defense.',
+            'counts_as_wizard_offense' => 'Each unit counts as %s of a wizard on offense.',
+
+            // Casualties related
             'fewer_casualties' => '%s%% fewer casualties.',
             'fewer_casualties_defense' => '%s%% fewer casualties on defense.',
             'fewer_casualties_offense' => '%s%% fewer casualties on offense.',
@@ -65,24 +87,14 @@ class UnitHelper
             'immortal_except_vs' => 'Immortal (except vs %s).',
             'immortal_vs_land_range' => 'Immortal when attacking dominions %s%% of your size.',
 
-            'ore_production' => 'Each unit produces %s units of ore per hour.',
-            'plunders_resources_on_attack' => 'Plunders resources on attack.',
             'reduce_combat_losses' => 'Reduces combat losses.',
 
-            'counts_as_wizard_offense' => 'Each unit counts as %s of a wizard on offense.',
-            'counts_as_wizard_defense' => 'Each unit counts as %s of a wizard on defense.',
+            // Resource related
+            'ore_production' => 'Each unit produces %s units of ore per hour.',
+            'plunders_resources_on_attack' => 'Plunders resources on attack.',
 
-            'counts_as_spy_offense' => 'Each unit counts as %s of a spy on offense.',
-            'counts_as_spy_defense' => 'Each unit counts as %s of a spy on defense.',
-
-            'offense_from_building' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
-            'defense_from_building' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
-            'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
-            'defense_from_land' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
-            'offense_raw_wizard_ratio' => 'Offense increased by %1$s * Raw Wizard Ratio (max +%2$s).',
-            'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%% of your size.',
-            'offense_vs_goblin' => 'Offense increased by %s against goblins.',
-            'defense_vs_goblin' => 'Defense increased by %s against goblins.',
+            // Misc
+            'faster_return' => 'Returns %s hours faster from battle.',
         ];
 
         foreach ($race->units as $unit) {
