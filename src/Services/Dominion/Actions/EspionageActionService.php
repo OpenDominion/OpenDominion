@@ -92,6 +92,8 @@ class EspionageActionService
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
+    public const THEFT_DAYS_AFTER_ROUND_START = 7;
+
     /**
      * Performs a espionage operation for $dominion, aimed at $target dominion.
      *
@@ -127,9 +129,15 @@ class EspionageActionService
             throw new RuntimeException('You cannot perform espionage operations on targets outside of your range');
         }
 
-        if ($this->espionageHelper->isResourceTheftOperation($operationKey) && $this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
-            throw new RuntimeException('You cannot perform resource theft on targets smaller than yourself');
+        if ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
+            if (now()->diffInDays($dominion->round->start_date) < self::THEFT_DAYS_AFTER_ROUND_START) {
+                throw new RuntimeException('You cannot perform resource theft for the first seven days of the round');
+            }
+            if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
+                throw new RuntimeException('You cannot perform resource theft on targets smaller than yourself');
+            }
         }
+
 
         if ($dominion->round->id !== $target->round->id) {
             throw new RuntimeException('Nice try, but you cannot perform espionage operations cross-round');
