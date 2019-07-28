@@ -25,7 +25,7 @@ class AddDominionStatisticsFields extends Migration
             $table->unsignedInteger('stat_total_ore_production')->after('stat_total_mana_production')->default(0);
             $table->unsignedInteger('stat_total_gem_production')->after('stat_total_ore_production')->default(0);
             $table->unsignedInteger('stat_total_tech_production')->after('stat_total_gem_production')->default(0);
-            $table->unsignedInteger('stat_total_boat_production')->after('stat_total_tech_production')->default(0);
+            $table->float('stat_total_boat_production')->after('stat_total_tech_production')->default(0);
         });
     }
 
