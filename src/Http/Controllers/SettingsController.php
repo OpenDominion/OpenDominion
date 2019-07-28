@@ -65,7 +65,6 @@ class SettingsController extends AbstractController
 
         if (!Storage::disk('public')->put(($path . '/' . $fileName), $data)) {
             throw new RuntimeException('Failed to upload avatar');
-            // todo: notify bugsnag
         }
 
         $user->avatar = $fileName;
