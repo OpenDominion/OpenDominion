@@ -441,7 +441,7 @@ class EspionageActionService
                 // todo: move to CasualtiesCalculator
 
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.2; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 1;
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
