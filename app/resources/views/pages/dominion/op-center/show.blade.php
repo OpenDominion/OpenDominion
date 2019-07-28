@@ -558,7 +558,7 @@
                 @else
                     @slot('noPadding', true)
                     @slot('titleExtra')
-                        <span class="pull-right">Barren Land: {{ number_format(array_get($infoOp->data, 'barren_land')) }}</span>
+                        <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong></span>
                     @endslot
 
                     <table class="table">
