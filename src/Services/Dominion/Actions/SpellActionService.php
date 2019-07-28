@@ -369,6 +369,15 @@ class SpellActionService
         $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
 
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spellKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
         $redirect = route('dominion.op-center.show', $target);
         if ($spellKey === 'clairvoyance') {
             $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);

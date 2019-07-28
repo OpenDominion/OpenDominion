@@ -134,10 +134,11 @@ class NotificationHelper
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'fa fa-user-secret text-orange',
             ],
-//            'received_hostile_spell' => [
-//                'label' => 'Hostile spell received',
-//                'defaults' => ['email' => false, 'ingame' => true],
-//            ],
+            'received_hostile_spell' => [
+                'label' => 'Hostile spell received',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-fairy-wand text-orange',
+            ],
             'repelled_hostile_spell' => [
                 'label' => 'Hostile spell deflected',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -450,6 +451,16 @@ class NotificationHelper
                     $where,
                     number_format($data['spiesKilled']),
                     str_plural('spy', $data['spiesKilled'])
+                );
+
+            case 'irregular_dominion.received_hostile_spell':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                return sprintf(
+                    'Our wizards detected a %s spell cast by %s (#%s)!',
+                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number
                 );
 
             case 'irregular_dominion.repelled_hostile_spell':
