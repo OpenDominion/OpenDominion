@@ -107,13 +107,13 @@ class SpellHelper
                 'duration' => 10,
                 'cooldown' => 22,
             ],
-//            [
-//                'name' => 'Surreal Perception',
-//                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
-//                'key' => 'surreal_perception',
-//                'mana_cost' => 4,
-//                'duration' => 8,
-//            ],
+            [
+                'name' => 'Surreal Perception',
+                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
+                'key' => 'surreal_perception',
+                'mana_cost' => 4,
+                'duration' => 8,
+            ],
 //            [
 //                'name' => 'Energy Mirror',
 //                'description' => '20% chance to reflect incoming spells',

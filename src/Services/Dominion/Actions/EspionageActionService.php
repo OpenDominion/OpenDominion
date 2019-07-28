@@ -402,6 +402,15 @@ class EspionageActionService
         $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
 
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_spy_op', [
+                    'sourceDominionId' => $dominion->id,
+                    'operationKey' => $operationKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
         return [
             'success' => true,
             'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
@@ -461,7 +470,7 @@ class EspionageActionService
                 $dominion->military_spies -= $spiesKilled;
 
                 $this->notificationService
-                    ->queueNotification('repelled_spy_op', [
+                    ->queueNotification('repelled_resource_theft', [
                         'sourceDominionId' => $dominion->id,
                         'operationKey' => $operationKey,
                         'spiesKilled' => $spiesKilled,
@@ -551,12 +560,18 @@ class EspionageActionService
             $target->save();
         });
 
+        // Surreal Perception
+        $sourceDominionId = null;
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $sourceDominionId = $dominion->id;
+        }
+
         $this->notificationService
-            ->queueNotification('resource_stolen', [
-                'sourceDominionId' => $dominion->id,
+            ->queueNotification('resource_theft', [
+                'sourceDominionId' => $sourceDominionId,
                 'operationKey' => $operationKey,
-                'resource' => $resource,
                 'amount' => $amountStolen,
+                'resource' => $resource,
             ])
             ->sendNotifications($target, 'irregular_dominion');
 
