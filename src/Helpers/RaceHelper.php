@@ -58,7 +58,6 @@ SYLVAN;
 <p>Wood elf description here</p>
 WOODELF;
 
-
         // Evil races
 
         $descriptions['dark elf'] = <<<DARKELF
