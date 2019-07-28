@@ -44,15 +44,20 @@ HUMAN;
 <p>They have trained aquatic animals to serve as their guardians. They typically avoid combat but are capable warriors should the need arise.</p>
 MERFOLK;
 
+        $descriptions['spirit'] = <<<SPIRIT
+<p>These kind spirits long for a quite and peaceful world.</p>
+<p>Some of the lost souls of fallen enemies, will join their ranks in search of this goal.</p>
+SPIRIT;
+
         $descriptions['sylvan'] = <<<SYLVAN
 <p>Mythical forest-dwelling creatures, which have banded together to combat the forces of evil.</p>
 <p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
 SYLVAN;
 
-        $descriptions['spirit'] = <<<SPIRIT
-<p>These kind spirits long for a quite and peaceful world.</p>
-<p>Some of the lost souls of fallen enemies, will join their ranks in search of this goal.</p>
-SPIRIT;
+        $descriptions['wood elf'] = <<<WOODELF
+<p>Wood elf description here</p>
+WOODELF;
+
 
         // Evil races
 
@@ -76,10 +81,20 @@ ICEKIN;
 <p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
 LIZARDFOLK;
 
+        $descriptions['lycanthrope'] = <<<LYCANTHROPE
+<p>Nocturnal shapeshifters, stalking their pray from deep within the caves of the land.</p>
+<p>Falling to their bite will make even their fiercest enemies turn.</p>
+LYCANTHROPE;
+
         $descriptions['nomad'] = <<<NOMAD
 <p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
 <p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
 NOMAD;
+
+        $descriptions['nox'] = <<<NOX
+<p>The children of the night lurk in the shadows, striking terror in even the most powerful of rulers.</p>
+<p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
+NOX;
 
         $descriptions['troll'] = <<<TROLL
 <p>Clans of dumb brutes, hulking in stature, originally thought to have evolved from the elves long ago.</p>
@@ -90,16 +105,6 @@ TROLL;
 <p>An unending horde of beings that have overcome death, the undead have an insatiable desire to destroy all living creatures.</p>
 <p>They are always on the offensive, increasing their number by reanimating fallen enemies.</p>
 UNDEAD;
-
-        $descriptions['Nox'] = <<<NOX
-<p>The children of the night lurk in the shadows, striking terror in even the most powerful of rulers.</p>
-<p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
-NOX;
-
-        $descriptions['Lycanthrope'] = <<<LYCANTHROPE
-<p>Nocturnal shapeshifters, stalking their pray from deep within the caves of the land.</p>
-<p>Falling to their bite, will make even their fiercest enemies turn.</p>
-LYCANTHROPE;
 
         $key = strtolower($race->name);
 
@@ -155,7 +160,7 @@ LYCANTHROPE;
                 break;
             case 'offense':
                 $negativeBenefit = false;
-                $description = 'offense';
+                $description = 'offensive power';
                 break;
             case 'ore_production':
                 $negativeBenefit = false;
