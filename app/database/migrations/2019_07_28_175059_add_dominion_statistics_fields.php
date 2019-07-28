@@ -37,18 +37,20 @@ class AddDominionStatisticsFields extends Migration
     public function down(): void
     {
         Schema::table('dominions', static function (Blueprint $table) {
-            $table->dropColumn('stat_attacking_success');
-            $table->dropColumn('stat_defending_success');
-            $table->dropColumn('stat_espionage_success');
-            $table->dropColumn('stat_spell_success');
-            $table->dropColumn('stat_total_platinum_production');
-            $table->dropColumn('stat_total_food_production');
-            $table->dropColumn('stat_total_lumber_production');
-            $table->dropColumn('stat_total_mana_production');
-            $table->dropColumn('stat_total_ore_production');
-            $table->dropColumn('stat_total_gem_production');
-            $table->dropColumn('stat_total_tech_production');
-            $table->dropColumn('stat_total_boat_production');
+            $table->dropColumn([
+                'stat_attacking_success',
+                'stat_defending_success',
+                'stat_espionage_success',
+                'stat_spell_success',
+                'stat_total_platinum_production',
+                'stat_total_food_production',
+                'stat_total_lumber_production',
+                'stat_total_mana_production',
+                'stat_total_ore_production',
+                'stat_total_gem_production',
+                'stat_total_tech_production',
+                'stat_total_boat_production',
+            ]);
         });
     }
 }
