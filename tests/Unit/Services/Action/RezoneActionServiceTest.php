@@ -49,7 +49,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Baseline.
      *
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testDoingNothing()
     {
@@ -77,7 +77,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that nothing happens when the target land is the same as the source.
      *
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testConvertingToSameTypeIsFree()
     {
@@ -129,7 +129,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that the amount of land to add cannot be different from the land to remove.
      *
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testMismatchedRezoning()
     {
@@ -139,7 +139,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that only barren land can be converted.
      *
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testRemovingMoreThanBarrenLand()
     {
@@ -154,7 +154,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /**
      * Test that you cannot perform a conversion you can't afford.
      *
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testRemovingMoreThanCanBeAfforded()
     {
