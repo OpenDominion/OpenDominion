@@ -82,7 +82,7 @@ class SpellCalculator
             $spellLastCast = DB::table('dominion_history')
                 ->where('dominion_id', $dominion->id)
                 ->where('event', 'cast spell')
-                ->where('delta', 'like', '%'.$spell.'%')
+                ->where('delta', 'like', "%{$spell}%")
                 ->orderby('created_at', 'desc')
                 ->take(1)
                 ->first();
