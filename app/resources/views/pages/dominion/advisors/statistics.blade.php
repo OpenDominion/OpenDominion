@@ -14,6 +14,13 @@
                 </div>
                 <div class="box-body no-padding">
                     <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Military</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
@@ -121,6 +128,13 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Operations</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
@@ -129,7 +143,7 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Ratios</th>
+                                        <th colspan="2">Spy Power</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -151,6 +165,22 @@
                                             @endif
                                         </td>
                                     </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Wizard Power</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     <tr>
                                         <td>Wizard Ratio (Offense):</td>
                                         <td>
@@ -181,25 +211,114 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Black Ops</th>
+                                        <th colspan="2">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Attacking Success:</td>
-                                        <td>0{{--2 / 8 <small class="text-muted"><i>(25%)</i></small>--}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Defending Success:</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
                                         <td>Espionage Success:</td>
-                                        <td>0</td>
+                                        <td><strong>0</strong></td>
                                     </tr>
                                     <tr>
-                                        <td>Spell Success:</td>
-                                        <td>0</td>
+                                        <td>Magic Success:</td>
+                                        <td><strong>0</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Population</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}</strong>
+                                            @if ($populationCalculator->getMaxPopulationMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Population multiplier:</td>
+                                        <td>
+                                            <strong>{{ number_format(($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Peasantry</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->peasants) }}</strong>
+                                            <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }})</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Population multiplier:</td>
+                                        <td>
+                                            <strong>{{ number_format(($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Military</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}</strong>
+                                            @if ($populationCalculator->getMaxPopulationMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Population multiplier:</td>
+                                        <td>
+                                            <strong>{{ number_format(($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
