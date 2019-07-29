@@ -2,9 +2,11 @@
 
 namespace OpenDominion\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
+use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 
 class PackService
@@ -47,16 +49,21 @@ class PackService
      * @param string $alignment
      * @param string $packName
      * @param string $packPassword
+     * @param Race $race
      * @return Pack
-     * @throws GameException
      */
-    public function getPack(Round $round, string $alignment, string $packName, string $packPassword): Pack
+    public function getPack(Round $round, string $alignment, string $packName, string $packPassword, Race $race): Pack
     {
         $pack = Pack::where([
             'round_id' => $round->id,
             'name' => $packName,
             'password' => $packPassword,
-        ])->withCount('dominions')->first();
+        ])->withCount([
+            'dominions',
+            'dominions.race_id as players_with_race' => function (Builder $query) use ($race) {
+                $query->where('race_id', $race->id);
+            }
+            ])->first();
 
         if (!$pack) {
             throw new GameException('Pack with specified name/password was not found.');
@@ -64,6 +71,10 @@ class PackService
 
         if ($pack->dominions_count >= $pack->size) {
             throw new GameException('Pack is already full.');
+        }
+
+        if($round->players_per_race != 0 && $pack->players_with_race >= $round->players_per_race) {
+            throw new GameException('Selected race has already been selected by the maximum amount of players.');
         }
 
         if ($pack->realm->alignment !== $alignment && !$round->mixed_alignments) {
