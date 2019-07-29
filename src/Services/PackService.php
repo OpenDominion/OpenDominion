@@ -59,7 +59,7 @@ class PackService
             'password' => $packPassword,
         ])->withCount([
             'dominions',
-            'dominions.race_id as players_with_race' => function (Builder $query) use ($race) {
+            'dominions as players_with_race' => function (Builder $query) use ($race) {
                 $query->where('race_id', $race->id);
             }
             ])->first();
@@ -76,7 +76,7 @@ class PackService
             throw new GameException('Selected race has already been selected by the maximum amount of players.');
         }
 
-        if (!$round->mixed_alignments && $pack->realm->alignment !== $race->alignment) {
+        if (!$round->mixed_alignment && $pack->realm->alignment !== $race->alignment) {
             throw new GameException(sprintf(
                 'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
                 (($pack->realm->alignment === 'evil') ? 'an' : 'a'),

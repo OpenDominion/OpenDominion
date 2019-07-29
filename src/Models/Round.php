@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $realm_size
  * @property int $pack_size
  * @property int $players_per_race
- * @property bool $mixed_alignments
+ * @property bool $mixed_alignment
  * @property \Illuminate\Support\Carbon $start_date
  * @property \Illuminate\Support\Carbon $end_date
  * @property \Illuminate\Support\Carbon|null $created_at

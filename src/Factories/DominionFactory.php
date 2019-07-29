@@ -33,7 +33,7 @@ class DominionFactory
         ?Pack $pack = null
     ): Dominion {
         $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
-        $this->guardAgainstMismatchedAlignments($race, $realm);
+        $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
         // todo: get starting values from config
 
@@ -141,11 +141,11 @@ class DominionFactory
     /**
      * @param Race $race
      * @param Realm $realm
-     * @throws LogicException
+     * @param Round $round
      */
-    protected function guardAgainstMismatchedAlignments(Race $race, Realm $realm): void
+    protected function guardAgainstMismatchedAlignments(Race $race, Realm $realm, Round $round): void
     {
-        if ($race->alignment !== $realm->alignment) {
+        if (!$round->mixed_alignment && $race->alignment !== $realm->alignment) {
             throw new LogicException('Race and realm alignment do not match');
         }
     }

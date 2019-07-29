@@ -166,6 +166,7 @@ class RoundController extends AbstractController
             });
 
         } catch (QueryException $e) {
+            dd($e);
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors(["Someone already registered a dominion with the name '{$dominionName}' for this round."]);

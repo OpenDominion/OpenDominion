@@ -20,7 +20,7 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--realmSize=6 : Maximum number of dominions in one realm}
                              {--packSize=3 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
-                             {--mixedAlignments : Allows for mixed alignments}';
+                             {--mixedAlignment : Allows for mixed alignments}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
@@ -52,7 +52,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         $realmSize = $this->option('realmSize');
         $packSize = $this->option('packSize');
         $playersPerRace = $this->option('playersPerRace');
-        $mixedAlignments = $this->option('mixedAlignments');
+        $mixedAlignments = $this->option('mixedAlignment');
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');

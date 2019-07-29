@@ -38,7 +38,7 @@ class RealmFinderService
                 'realms.round_id' => $round->id,
             ]);
 
-        if(!$round->mixed_alignments) {
+        if(!$round->mixed_alignment) {
             $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);
         }
 
