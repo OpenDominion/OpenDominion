@@ -989,8 +989,15 @@ class InvadeActionService
         if ($unitsThatSinkBoats > 0) {
             $defenderBoatsProtected = (static::BOATS_PROTECTED_PER_DOCK * $target->building_dock);
             $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
-            $defenderBoatsSunk = (int)floor(max(0, $target->resource_boats - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
-            $target->decrement('resource_boats', $defenderBoatsSunk);
+            $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
+            $targetBoatTotal = $target->resource_boats + $targetQueuedBoats;
+            $defenderBoatsSunk = (int)floor(max(0, $targetBoatTotal - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
+            if ($defenderBoatsSunk > $targetQueuedBoats) {
+                $this->queueService->dequeueResource('invasion', $target, 'boats', $targetQueuedBoats);
+                $target->decrement('resource_boats', $defenderBoatsSunk - $targetQueuedBoats);
+            } else {
+                $this->queueService->dequeueResource('invasion', $target, 'boats', $defenderBoatsSunk);
+            }
             $this->invasionResult['defender']['boatsLost'] = $defenderBoatsSunk;
         }
 
