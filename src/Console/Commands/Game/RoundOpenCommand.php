@@ -18,7 +18,9 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--days= : Start the round in +DAYS days midnight, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
                              {--realmSize=6 : Maximum number of dominions in one realm}
-                             {--packSize=3 : Maximum number of players in a pack}';
+                             {--packSize=3 : Maximum number of players in a pack}
+                             {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
+                             {--mixedAlignments : Allows for mixed alignments}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
@@ -49,6 +51,8 @@ class RoundOpenCommand extends Command implements CommandInterface
         $league = $this->option('league');
         $realmSize = $this->option('realmSize');
         $packSize = $this->option('packSize');
+        $playersPerRace = $this->option('playersPerRace');
+        $mixedAlignments = $this->option('mixedAlignments');
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');
@@ -68,6 +72,10 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         if ($realmSize < $packSize) {
             throw new RuntimeException('Option --realmSize must be greater than or equal to option --packSize.');
+        }
+
+        if($playersPerRace < 0) {
+            throw new RuntimeException('Option --playersPerRace must be greater than or equal to 0.');
         }
 
         if ($now) {
@@ -92,7 +100,7 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         $this->info("Starting a new round in {$roundLeague->key} league");
 
-        $round = $this->roundFactory->create($roundLeague, $startDate, $realmSize, $packSize);
+        $round = $this->roundFactory->create($roundLeague, $startDate, $realmSize, $packSize, $playersPerRace, $mixedAlignments);
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
     }

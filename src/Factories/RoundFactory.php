@@ -18,9 +18,11 @@ class RoundFactory
      * @param Carbon $startDate
      * @param int $realmSize
      * @param int $packSize
+     * @param int $playersPerRace
+     * @param bool $mixedAlignment
      * @return Round
      */
-    public function create(RoundLeague $league, Carbon $startDate, int $realmSize, int $packSize): Round
+    public function create(RoundLeague $league, Carbon $startDate, int $realmSize, int $packSize, int $playersPerRace, bool $mixedAlignment): Round
     {
         $number = ($this->getLastRoundNumber($league) + 1);
 
@@ -32,6 +34,8 @@ class RoundFactory
             'end_date' => (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS),
             'realm_size' => $realmSize,
             'pack_size' => $packSize,
+            'players_per_race' => $playersPerRace,
+            'mixed_alignment' => $mixedAlignment
         ]);
     }
 
