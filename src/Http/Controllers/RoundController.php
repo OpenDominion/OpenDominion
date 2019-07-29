@@ -113,9 +113,9 @@ class RoundController extends AbstractController
                     case 'join_pack':
                         $pack = $this->packService->getPack(
                             $round,
-                            $race->alignment,
                             $request->get('pack_name'),
-                            $request->get('pack_password')
+                            $request->get('pack_password'),
+                            $race
                         );
 
                         $realm = $pack->realm;

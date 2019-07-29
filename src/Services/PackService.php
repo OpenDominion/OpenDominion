@@ -46,13 +46,12 @@ class PackService
      * Gets a pack based on pack based on round, alignment, pack name and password.
      *
      * @param Round $round
-     * @param string $alignment
      * @param string $packName
      * @param string $packPassword
      * @param Race $race
      * @return Pack
      */
-    public function getPack(Round $round, string $alignment, string $packName, string $packPassword, Race $race): Pack
+    public function getPack(Round $round, string $packName, string $packPassword, Race $race): Pack
     {
         $pack = Pack::where([
             'round_id' => $round->id,
@@ -77,7 +76,7 @@ class PackService
             throw new GameException('Selected race has already been selected by the maximum amount of players.');
         }
 
-        if ($pack->realm->alignment !== $alignment && !$round->mixed_alignments) {
+        if (!$round->mixed_alignments && $pack->realm->alignment !== $race->alignment) {
             throw new GameException(sprintf(
                 'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
                 (($pack->realm->alignment === 'evil') ? 'an' : 'a'),
