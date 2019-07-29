@@ -34,6 +34,10 @@ class RealmFactory
             $number = ((int)$results[0]->max_realm_number + 1);
         }
 
+        if($round->mixed_alignments) {
+            $alignment = 'mixed';
+        }
+
         $realmName = ucwords(Haikunator::haikunate([
             'tokenLength' => 0,
             'delimiter' => ' '

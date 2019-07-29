@@ -66,7 +66,7 @@ class PackService
             throw new GameException('Pack is already full.');
         }
 
-        if ($pack->realm->alignment !== $alignment) {
+        if ($pack->realm->alignment !== $alignment && !$round->mixed_alignments) {
             throw new GameException(sprintf(
                 'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
                 (($pack->realm->alignment === 'evil') ? 'an' : 'a'),

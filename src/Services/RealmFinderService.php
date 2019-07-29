@@ -31,14 +31,18 @@ class RealmFinderService
     public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
         // Get a list of realms which are not full, disregarding pack status for now
-        $realms = Realm::query()
+        $realmQuery = Realm::query()
             ->with('packs.dominions') // todo: can probably be just with('packs')
             ->withCount('dominions')
             ->where([
                 'realms.round_id' => $round->id,
-                'realms.alignment' => $race->alignment,
-            ])
-            ->groupBy('realms.id')
+            ]);
+
+        if(!$round->mixed_alignments) {
+            $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);
+        }
+
+        $realms = $realmQuery->groupBy('realms.id')
             ->having('dominions_count', '<', $round->realm_size)
             ->orderBy('number')// Start from realm 1 to n, to fill the early realms first. Could be refactored later to
             // sort on dominions_count asc, to fill more empty realms first
