@@ -109,13 +109,13 @@
                                             <tr>
                                                 <td>{{ $notification['label'] }}</td>
                                                 <td class="text-center">
-                                                    <input type="checkbox" name="notifications[{{ $category }}][{{ $type }}][email]" {{ (array_get($notificationSettings, "{$category}.{$type}.email") || $notification['defaults']['email']) ? 'checked' : null }} data-check-all-type="email">
+                                                    <input type="checkbox" name="notifications[{{ $category }}][{{ $type }}][email]" {{ array_get($notificationSettings, "{$category}.{$type}.email", $notification['defaults']['email']) ? 'checked' : null }} data-check-all-type="email">
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($notification['onlyemail'] ?? false)
                                                         &nbsp;
                                                     @else
-                                                        <input type="checkbox" name="notifications[{{ $category }}][{{ $type }}][ingame]" {{ (array_get($notificationSettings, "{$category}.{$type}.ingame") || $notification['defaults']['ingame']) ? 'checked' : null }} data-check-all-type="ingame">
+                                                        <input type="checkbox" name="notifications[{{ $category }}][{{ $type }}][ingame]" {{ array_get($notificationSettings, "{$category}.{$type}.ingame", $notification['defaults']['ingame']) ? 'checked' : null }} data-check-all-type="ingame">
                                                     @endif
                                                 </td>
                                             </tr>
