@@ -13,7 +13,7 @@ class MiscController extends AbstractDominionController
 {
     public function postClearNotifications()
     {
-        $this->getSelectedDominion()->notifications()->delete();
+        $this->getSelectedDominion()->notifications->markAsRead();
         return redirect()->back();
     }
 
