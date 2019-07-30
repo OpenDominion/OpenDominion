@@ -14,6 +14,11 @@ class StatusController extends AbstractDominionController
 {
     public function getStatus()
     {
+        $resultsPerPage = 25;
+        $selectedDominion = $this->getSelectedDominion();
+
+        $notifications = $selectedDominion->notifications()->paginate($resultsPerPage);
+
         return view('pages.dominion.status', [
             'dominionProtectionService' => app(ProtectionService::class),
             'landCalculator' => app(LandCalculator::class),
@@ -21,7 +26,8 @@ class StatusController extends AbstractDominionController
             'networthCalculator' => app(NetworthCalculator::class),
             'notificationHelper' => app(NotificationHelper::class),
             'populationCalculator' => app(PopulationCalculator::class),
-            'queueService' => app(QueueService::class)
+            'queueService' => app(QueueService::class),
+            'notifications' => $notifications
         ]);
     }
 }

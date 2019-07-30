@@ -264,7 +264,7 @@
                 </div>
                 <div class="box-body">
                     <table class="table table-condensed no-border">
-                        @foreach ($selectedDominion->notifications->take(30) as $notification)
+                        @foreach ($notifications as $notification)
                             @php
                                 $route = array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#');
 
@@ -290,6 +290,11 @@
                             </tr>
                         @endforeach
                     </table>
+                </div>
+                <div class="box-footer">
+                    <div class="pull-right">
+                        {{ $notifications->links() }}
+                    </div>
                 </div>
             </div>
         </div>
