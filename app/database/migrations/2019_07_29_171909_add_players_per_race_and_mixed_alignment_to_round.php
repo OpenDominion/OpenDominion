@@ -11,11 +11,16 @@ class AddPlayersPerRaceAndMixedAlignmentToRound extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('rounds', function (Blueprint $table) {
-            $table->unsignedInteger('players_per_race')->default(0)->after('pack_size');
-            $table->boolean('mixed_alignment')->default(false)->after('players_per_race');
+        Schema::table('rounds', static function (Blueprint $table) {
+            $table->unsignedInteger('players_per_race')
+                ->default(0)
+                ->after('pack_size');
+
+            $table->boolean('mixed_alignment')
+                ->default(false)
+                ->after('players_per_race');
         });
     }
 
@@ -24,11 +29,10 @@ class AddPlayersPerRaceAndMixedAlignmentToRound extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('rounds', function (Blueprint $table) {
-            $table->dropColumn('players_per_race');
-            $table->dropColumn('mixed_alignment');
+        Schema::table('rounds', static function (Blueprint $table) {
+            $table->dropColumn(['players_per_race', 'mixed_alignment']);
         });
     }
 }

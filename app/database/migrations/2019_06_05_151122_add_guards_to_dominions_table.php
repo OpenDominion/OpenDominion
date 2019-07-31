@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddGuardsToDominionsTable extends Migration
 {
@@ -11,9 +11,9 @@ class AddGuardsToDominionsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('dominions', function (Blueprint $table) {
+        Schema::table('dominions', static function (Blueprint $table) {
             $table->timestamp('royal_guard')->nullable();
             $table->timestamp('elite_guard')->nullable();
         });
@@ -24,9 +24,9 @@ class AddGuardsToDominionsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('dominions', function (Blueprint $table) {
+        Schema::table('dominions', static function (Blueprint $table) {
             $table->dropColumn(['royal_guard', 'elite_guard']);
         });
     }
