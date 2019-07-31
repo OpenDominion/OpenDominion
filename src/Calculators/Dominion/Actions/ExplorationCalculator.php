@@ -64,7 +64,6 @@ class ExplorationCalculator
      */
     public function getDrafteeCost(Dominion $dominion): int
     {
-        // todo: check elite guard penalty???
         $draftees = 0;
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
