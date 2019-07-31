@@ -10,8 +10,10 @@ use OpenDominion\Models\Round;
 
 class RealmFinderService
 {
-    /** @var int Maximum number of packs that can exist in a single realm */
-    public $maxPacksPerRealm = 1;
+    /**
+     * @var int Maximum number of packs that can exist in a single realm
+     */
+    protected const MAX_PACKS_PER_REALM = 1;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
@@ -38,7 +40,7 @@ class RealmFinderService
                 'realms.round_id' => $round->id,
             ]);
 
-        if(!$round->mixed_alignment) {
+        if (!$round->mixed_alignment) {
             $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);
         }
 
@@ -50,7 +52,7 @@ class RealmFinderService
 
         // Iterate over suspected eligible realms and check pack status
         foreach ($realms as $realm) {
-            if ($forPack && ($this->maxPacksPerRealm !== null) && ($realm->packs->count() >= $this->maxPacksPerRealm)) {
+            if ($forPack && (static::MAX_PACKS_PER_REALM !== null) && ($realm->packs->count() >= static::MAX_PACKS_PER_REALM)) {
                 continue;
             }
 
