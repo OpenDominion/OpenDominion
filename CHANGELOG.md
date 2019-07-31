@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Condensed the items in the left navigation menu (except on mobile)
 - Removed prestige penalty on invading targets below 66% range
 - Added prestige grab on invading targets above 120% your size
+- Extended the Statistics Advisor with more useful information
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
