@@ -38,7 +38,7 @@ HALFLING;
         // new
         $descriptions['human'] = <<<HUMAN
 <p>Among the youngest of the races, the Human empire rose swiftly and against the odds. Humans proved to be not only capable warriors, but also skilled smiths, clever engineers and above all, adaptable. Their homeland destroyed by the forces of Evil decades ago, Humans seek to rebuild and avenge their fallen brothers.</p>
-<p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline. </p>
+<p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline.</p>
 HUMAN;
 
         $descriptions['merfolk'] = <<<MERFOLK
@@ -69,9 +69,10 @@ WOODELF;
 <p>They lurk in dark places, love the shadows, and have a natural inclination towards magic and the dark arts.</p>
 DARKELF;
 
+        // new
         $descriptions['goblin'] = <<<GOBLIN
-<p>What they lack in intelligence, they make up for in sheer numbers. They love slaughtering other living things as much as they love shiny gems.</p>
-<p>Short, cunning, and gnarling, they hate anything that smells like Dwarf.</p>
+<p>Small in stature but great in number, Goblins are a vicious and single-minded breed that prefer to take down their enemies with overwhelming numbers - and then steal all the shinies.</p>
+<p>Goblin populations can grow quickly out of control if left unchecked, and these short, green and ugly wretches have been known to completely ransack well-fortified castles in their relentless pursuit of gems, gems and more gems.</p>
 GOBLIN;
 
         $descriptions['icekin'] = <<<ICEKIN
