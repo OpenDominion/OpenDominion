@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
 use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
@@ -34,7 +34,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->joinRoyalGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
@@ -52,7 +52,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->leaveRoyalGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
@@ -70,7 +70,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->joinEliteGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
@@ -88,7 +88,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->leaveEliteGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
