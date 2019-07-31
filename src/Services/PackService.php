@@ -72,11 +72,11 @@ class PackService
             throw new GameException('Pack is already full.');
         }
 
-        if($round->players_per_race != 0 && $pack->players_with_race >= $round->players_per_race) {
+        if (((int)$round->players_per_race !== 0) && ($pack->players_with_race >= $round->players_per_race)) {
             throw new GameException('Selected race has already been selected by the maximum amount of players.');
         }
 
-        if (!$round->mixed_alignment && $pack->realm->alignment !== $race->alignment) {
+        if (!$round->mixed_alignment && ($pack->realm->alignment !== $race->alignment)) {
             throw new GameException(sprintf(
                 'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
                 (($pack->realm->alignment === 'evil') ? 'an' : 'a'),
