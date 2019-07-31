@@ -11,10 +11,12 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('info_ops', function (Blueprint $table) {
-            $table->boolean('latest')->default(true);
+        Schema::table('info_ops', static function (Blueprint $table) {
+            $table->boolean('latest')
+                ->after('data')
+                ->default(true);
 
             $table->index(['source_realm_id']);
             $table->index(['target_dominion_id']);
@@ -27,9 +29,9 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('info_ops', function (Blueprint $table) {
+        Schema::table('info_ops', static function (Blueprint $table) {
             $table->dropColumn(['latest']);
 
             $table->unique(['source_realm_id', 'target_dominion_id', 'type']);
