@@ -1,0 +1,44 @@
+name: Gnome
+alignment: good
+home_land_type: mountain
+perks:
+  offense: 7.5
+  max_population: -5
+  extra_barren_max_population: 5
+  food_consumption: -20
+  gem_production: 5
+units:
+  - name: Suicide Squad
+    cost:
+      platinum: 200
+      ore: 50
+    power:
+      offense: 4
+      defense: 0
+    perks:
+      fixed_casualties: 50
+  - name: Tinker
+    cost:
+      platinum: 300
+      ore: 5
+    power:
+      offense: 0
+      defense: 3
+  - name: Rockapult
+    cost:
+      platinum: 675
+      ore: 330
+    power:
+      offense: 2
+      defense: 4
+    perks:
+      defense_from_land: mountain,20,2 # land type, ratio%, max
+  - name: Juggernaut
+    cost:
+      platinum: 775
+      ore: 550
+    power:
+      offense: 5
+      defense: 3
+    perks:
+      offense_staggered_land_range: 75;1,85;2

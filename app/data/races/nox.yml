@@ -1,0 +1,39 @@
+name: Nox
+alignment: evil
+home_land_type: swamp
+perks:
+  food_consumption: -20
+  mana_production: 10
+units:
+  - name: Imp
+    cost:
+      platinum: 300
+      ore: 0
+    power:
+      offense: 3
+      defense: 0
+  - name: Fiend
+    cost:
+      platinum: 325
+      ore: 25
+    power:
+      offense: 0
+      defense: 3
+  - name: Nightshade
+    cost:
+      platinum: 925
+      ore: 100
+    power:
+      offense: 0
+      defense: 2
+    perks:
+      defense_from_land: swamp,10,4 # land type, ratio%, max
+  - name: Lich
+    cost:
+      platinum: 1000
+      ore: 0
+    power:
+      offense: 5
+      defense: 2
+    perks:
+      fewer_casualties: 50

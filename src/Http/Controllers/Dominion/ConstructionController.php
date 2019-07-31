@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DestroyActionRequest;
@@ -14,7 +14,6 @@ use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\QueueService;
-use Throwable;
 
 class ConstructionController extends AbstractDominionController
 {
@@ -37,7 +36,7 @@ class ConstructionController extends AbstractDominionController
         try {
             $result = $constructionActionService->construct($dominion, $request->get('construct'));
 
-        } catch (Throwable $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
@@ -73,7 +72,7 @@ class ConstructionController extends AbstractDominionController
         try {
             $result = $destroyActionService->destroy($dominion, $request->get('destroy'));
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

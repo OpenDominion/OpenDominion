@@ -98,18 +98,12 @@ class TrainActionService
             throw new RuntimeException('Training aborted due to lack of wizards');
         }
 
-        $newPlatinum = ($dominion->resource_platinum - $totalCosts['platinum']);
-        $newOre = ($dominion->resource_ore - $totalCosts['ore']);
-        $newDraftees = ($dominion->military_draftees - $totalCosts['draftees']);
-        $newWizards = ($dominion->military_wizards - $totalCosts['wizards']);
-
-        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newOre, $newDraftees, $newWizards) {
-            $dominion->fill([
-                'resource_platinum' => $newPlatinum,
-                'resource_ore' => $newOre,
-                'military_draftees' => $newDraftees,
-                'military_wizards' => $newWizards,
-            ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
+        DB::transaction(function () use ($dominion, $data, $totalCosts) {
+            $dominion->decrement('resource_platinum', $totalCosts['platinum']);
+            $dominion->decrement('resource_ore', $totalCosts['ore']);
+            $dominion->decrement('military_draftees', $totalCosts['draftees']);
+            $dominion->decrement('military_wizards', $totalCosts['wizards']);
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
 
             // Specialists train in 9 hours
             $nineHourData = [
@@ -145,8 +139,28 @@ class TrainActionService
         foreach ($unitsToTrain as $unitType => $amount) {
             if ($amount > 0) {
                 $unitName = strtolower($this->unitHelper->getUnitName($unitType, $dominion->race));
-                $unitsToTrainStringParts[] = (number_format($amount) . ' ' . str_plural(str_singular($unitName),
-                        $amount));
+
+                // str_plural() isn't perfect for certain unit names. This array
+                // serves as an override to use (see issue #607)
+                // todo: Might move this to UnitHelper, especially if more
+                //       locations need unit name overrides
+                $overridePluralUnitNames = [
+                    'shaman' => 'shamans',
+                ];
+
+                $amountLabel = number_format($amount);
+
+                if (array_key_exists($unitName, $overridePluralUnitNames)) {
+                    if ($amount === 1) {
+                        $unitLabel = $unitName;
+                    } else {
+                        $unitLabel = $overridePluralUnitNames[$unitName];
+                    }
+                } else {
+                    $unitLabel = str_plural(str_singular($unitName), $amount);
+                }
+
+                $unitsToTrainStringParts[] = "{$amountLabel} {$unitLabel}";
             }
         }
 

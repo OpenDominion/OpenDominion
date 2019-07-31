@@ -63,6 +63,12 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @if (isset($event->data['attacker']['boatsLost']))
+                                        <tr>
+                                            <td><i class="ra ra-droplet text-blue"></i> Boats</td>
+                                            <td>{{ number_format($event->data['attacker']['boatsLost']) }}</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -116,6 +122,12 @@
                                             </tr>
                                         @endforeach
                                     @endif
+                                    @if (isset($event->data['defender']['boatsLost']))
+                                        <tr>
+                                            <td><i class="ra ra-droplet text-blue"></i> Boats</td>
+                                            <td>{{ number_format($event->data['defender']['boatsLost']) }}</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -166,7 +178,7 @@
                                 $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($event->target);
                             @endphp
 
-                            @if ($recentlyInvadedCount > 0)
+                            @if ($recentlyInvadedCount > 0 && $event->data['result']['success'])
                                 <p class="text-center">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because the target was recently invaded, your prestige gains and their defensive losses are reduced.
@@ -176,7 +188,7 @@
                                 </p>
                             @endif
 
-                            @if (isset($event->data['result']['overwhelmed']))
+                            @if (isset($event->data['result']['overwhelmed']) && $event->data['result']['overwhelmed'])
                                 <p class="text-center text-red">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because you were severely outmatched, you suffered extra casualties.

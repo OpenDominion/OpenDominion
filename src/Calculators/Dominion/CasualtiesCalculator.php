@@ -10,6 +10,9 @@ class CasualtiesCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    private $spellCalculator;
+
     /** @var UnitHelper */
     protected $unitHelper;
 
@@ -17,11 +20,13 @@ class CasualtiesCalculator
      * CasualtiesCalculator constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, UnitHelper $unitHelper)
+    public function __construct(LandCalculator $landCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
     {
         $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
     }
 
@@ -30,37 +35,65 @@ class CasualtiesCalculator
      * slot.
      *
      * @param Dominion $dominion
+     * @param Dominion $target
      * @param int $slot
      * @param array $units Units being sent out on invasion
+     * @param float $landRatio
      * @param bool $isOverwhelmed
      * @return float
      */
-    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, int $slot, array $units, bool $isOverwhelmed): float
+    public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $target, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
     {
         $multiplier = 1;
 
-        // First check immortality, so we can skip the other checks on immortal
-        // units
-        // Note: Immortality only works if you're NOT overwhelmed, regardless if
-        // invasion is successful or not
-        if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-            // todo: check HuNo's Crusader vs SPUD
-            $multiplier = 0;
+        // Check if unit has fixed casualties first, so we can skip all other checks
+        if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties') !== 0) {
+            return 1;
+        }
 
-        } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
-            // todo: check more immortal_except_vs_*
-            // todo: icekin isn't implemented yet. Once I do, refactor this
-            $multiplier = 0;
+        // Then check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
+        // casualties will then always be 0 anyway
+
+        // Immortality never triggers upon being overwhelmed
+        if (!$isOverwhelmed) {
+            // Global immortality
+            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // Contrary to Dominion Classic, invading SPUDs are always immortal in OD, even when invading a HuNo
+                // with Crusade active
+
+                // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
+                // invasion targets
+
+                $multiplier = 0;
+            }
+
+            // Range-based immortality
+            if (($multiplier !== 0) && (($immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) !== 0)) {
+                if ($landRatio >= ($immortalVsLandRange / 100)) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Race perk-based immortality
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
+                $multiplier = 0;
+            }
         }
 
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, shrines, tech, wonders), capped at -80%
+            // Values (percentages)
+            $spellRegeneration = 25;
+
             $nonUnitBonusMultiplier = 0;
 
             // todo: Heroes
 
             // Shrines
             $nonUnitBonusMultiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
+
+            // Spells
+            $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
             // todo: Tech (eg Tactical Battle)
 
@@ -124,30 +157,51 @@ class CasualtiesCalculator
      * slot.
      *
      * @param Dominion $dominion
+     * @param Dominion $attacker
      * @param int|null $slot Null is for non-racial units and thus used as draftees casualties multiplier
      * @return float
      */
-    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, ?int $slot): float
+    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot): float
     {
         $multiplier = 1;
 
-        // First check immortality, so we can skip the other checks on immortal
-        // units
-        if ($slot) {
-            if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // todo: check HuNo's Crusader vs SPUD
-                $multiplier = 0;
+        // First check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
+        // casualties will then always be 0 anyway
 
-            } elseif ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs_icekin')) {
-                // todo: check more immortal_except_vs_*
-                // todo: icekin isn't implemented yet. Once I do, refactor this
+        // Only military units with a slot number could be immortal
+        if ($slot !== null) {
+            // Global immortality
+            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // Note: At the moment only SPUDs have the global 'immortal' perk. If we ever add global immortality to
+                // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
+                // additional race-based checks in here for any new units. So always assume we're running SPUD at the
+                // moment
+
+                $attackerHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade') !== 0);
+
+                // Note: This doesn't do a race check on $attacker, since I don't think that's needed atm; only HuNo can
+                // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
+                // go here
+
+                // We're only immortal if they're not Deus-Vult'ing into our unholy lands :^)
+                if (!$attackerHasCrusadeActive) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Race perk-based immortality
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
                 $multiplier = 0;
             }
         }
 
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, tech, wonders), capped at -80%
-//            $nonUnitBonusMultiplier = 0;
+
+            // Values (percentages)
+            $spellRegeneration = 25;
+
+            $nonUnitBonusMultiplier = 0;
 
             // todo: Heroes
 
@@ -155,8 +209,11 @@ class CasualtiesCalculator
 
             // todo: Wonders
 
+            // Spells
+            $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+
             // Cap at -80% and apply to multiplier (additive)
-//            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
+            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;
@@ -228,13 +285,14 @@ class CasualtiesCalculator
      * Returns the Dominion's casualties by unit type.
      *
      * @param  Dominion $dominion
+     * @param int $foodDeficit
      * @return array
      */
-    public function getStarvationCasualtiesByUnitType(Dominion $dominion): array
+    public function getStarvationCasualtiesByUnitType(Dominion $dominion, int $foodDeficit): array
     {
         $units = $this->getStarvationUnitTypes();
 
-        $totalCasualties = $this->getTotalStarvationCasualties($dominion);
+        $totalCasualties = $this->getTotalStarvationCasualties($dominion, $foodDeficit);
 
         if ($totalCasualties === 0) {
             return [];
@@ -287,15 +345,16 @@ class CasualtiesCalculator
      * Returns the Dominion's number of casualties due to starvation.
      *
      * @param  Dominion $dominion
+     * @param int $foodDeficit
      * @return int
      */
-    public function getTotalStarvationCasualties(Dominion $dominion): int
+    public function getTotalStarvationCasualties(Dominion $dominion, int $foodDeficit): int
     {
-        if ($dominion->resource_food >= 0) {
+        if ($foodDeficit >= 0) {
             return 0;
         }
 
-        return (int)(abs($dominion->resource_food) * 4);
+        return (int)(abs($foodDeficit) * 4);
     }
 
     /**
@@ -314,5 +373,26 @@ class CasualtiesCalculator
             ),
             ['military_draftees']
         );
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param string $opposingForceRaceName
+     * @param int $slot
+     * @return bool
+     */
+    protected function isImmortalVersusRacePerk(Dominion $dominion, string $opposingForceRaceName, int $slot): bool
+    {
+        $raceNameFormatted = strtolower($opposingForceRaceName);
+        $raceNameFormatted = str_replace(' ', '_', $raceNameFormatted);
+
+        $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_except_vs');
+
+        if(!$perkValue)
+        {
+            return false;
+        }
+
+        return $perkValue !== $raceNameFormatted;
     }
 }

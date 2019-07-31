@@ -96,12 +96,12 @@ class BuildingHelper
             'diamond_mine' => 2,
             'school' => 0, // produces research points
             'lumberyard' => 2,
-            'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage, reduce plat stolen
+            'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage
             'factory' => 2,
             'guard_tower' => 2,
             'shrine' => 2, // todo for later: increases chance of hero level gain and increase hero bonuses
             'barracks' => 2,
-            'dock' => 1, // prevents boats being sunk
+            'dock' => 2,
         ];
 
         switch ($buildingTypes[$buildingType]) {

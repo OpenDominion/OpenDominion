@@ -75,6 +75,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_shrine
  * @property int $building_barracks
  * @property int $building_dock
+ * @property \Illuminate\Support\Carbon|null $council_last_read
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $pack_id
@@ -229,6 +230,9 @@ class Dominion extends AbstractModel
         if ($recordChanges) {
             $dominionHistoryService = app(HistoryService::class);
             $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+            if (isset($options['action'])) {
+                $deltaAttributes['action'] = $options['action'];
+            }
         }
 
         $saved = parent::save($options);
@@ -294,8 +298,10 @@ class Dominion extends AbstractModel
         $bonus = 0;
 
         foreach ($this->race->units as $unit) {
-            if ($unit->getPerkValue($resourceType) !== 0) {
-                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$unit->getPerkValue($resourceType));
+            $perkValue = $unit->getPerkValue($resourceType);
+
+            if ($perkValue !== 0) {
+                $bonus += ($this->{'military_unit' . $unit->slot} * (float)$perkValue);
             }
         }
 

@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\BankActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
@@ -31,9 +31,8 @@ class BankController extends AbstractDominionController
                 $request->get('amount')
             );
 
-        } catch (Exception $e) {
-            return redirect()
-                ->back()
+        } catch (GameException $e) {
+            return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }

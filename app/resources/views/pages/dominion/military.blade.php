@@ -48,18 +48,28 @@
                                                 $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitType) {
                                                     return ($unit->slot == (int)str_replace('unit', '', $unitType));
                                                 })->first();
+
+                                                $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
+                                                $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
+
+                                                $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
+                                                    return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
+                                                })->count() > 0;
+                                                $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
+                                                    return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
+                                                })->count() > 0;
                                             @endphp
                                             <td class="text-center">
-                                                @if ($unit->power_offense == 0)
+                                                @if ($offensivePower === 0)
                                                     <span class="text-muted">0</span>
                                                 @else
-                                                    {{ $unit->power_offense }}
+                                                    {{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}{{ $hasDynamicOffensivePower ? '*' : null }}
                                                 @endif
                                                 /
-                                                @if ($unit->power_defense == 0)
+                                                @if ($defensivePower === 0)
                                                     <span class="text-muted">0</span>
                                                 @else
-                                                    {{ $unit->power_defense }}
+                                                    {{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}{{ $hasDynamicDefensivePower ? '*' : null }}
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -116,7 +126,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Train</button>
                         <div class="pull-right">
-                            You have {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }} available to train.
+                            You have <strong>{{ number_format($selectedDominion->military_draftees) }}</strong> {{ str_plural('draftee', $selectedDominion->military_draftees) }} available to train.
                         </div>
                     </div>
                 </form>

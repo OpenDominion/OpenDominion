@@ -10,8 +10,10 @@ use OpenDominion\Models\Round;
 
 class RealmFinderService
 {
-    /** @var int Maximum number of packs that can exist in a single realm */
-    public $maxPacksPerRealm = 1;
+    /**
+     * @var int Maximum number of packs that can exist in a single realm
+     */
+    protected const MAX_PACKS_PER_REALM = 1;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
@@ -24,20 +26,25 @@ class RealmFinderService
      * @param Round $round
      * @param Race $race
      * @param int $slotsNeeded
+     * @param bool $forPack
      *
      * @return Realm|null
      */
-    public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1): ?Realm
+    public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
         // Get a list of realms which are not full, disregarding pack status for now
-        $realms = Realm::query()
+        $realmQuery = Realm::query()
             ->with('packs.dominions') // todo: can probably be just with('packs')
             ->withCount('dominions')
             ->where([
                 'realms.round_id' => $round->id,
-                'realms.alignment' => $race->alignment,
-            ])
-            ->groupBy('realms.id')
+            ]);
+
+        if (!$round->mixed_alignment) {
+            $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);
+        }
+
+        $realms = $realmQuery->groupBy('realms.id')
             ->having('dominions_count', '<', $round->realm_size)
             ->orderBy('number')// Start from realm 1 to n, to fill the early realms first. Could be refactored later to
             // sort on dominions_count asc, to fill more empty realms first
@@ -45,7 +52,7 @@ class RealmFinderService
 
         // Iterate over suspected eligible realms and check pack status
         foreach ($realms as $realm) {
-            if (($this->maxPacksPerRealm !== null) && ($realm->packs->count() >= $this->maxPacksPerRealm)) {
+            if ($forPack && (static::MAX_PACKS_PER_REALM !== null) && ($realm->packs->count() >= static::MAX_PACKS_PER_REALM)) {
                 continue;
             }
 
@@ -70,7 +77,7 @@ class RealmFinderService
     public function findRandomRealmForPack(Round $round, Race $race, Pack $pack): ?Realm
     {
         // todo: move this to dominionfactory instead
-        $realm = $this->findRandomRealm($round, $race, $pack->size);
+        $realm = $this->findRandomRealm($round, $race, $pack->size, true);
 
         if ($realm !== null) {
             $pack->realm_id = $realm->id;

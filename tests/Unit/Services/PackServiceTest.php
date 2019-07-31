@@ -64,7 +64,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testCreatePackWhenPackSizeIsLowerThan2Throws()
     {
@@ -78,7 +78,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testCreatePackWhenPackSizeIsGreaterThanRoundPackSizeThrows()
     {
@@ -134,7 +134,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals($this->goodRealm->id, $pack2->realm_id);
     }
 
-    public function testGetPackWhenNoPackExistsReturnsNull()
+    /**
+     * @expectedException \OpenDominion\Exceptions\GameException
+     */
+    public function testGetPackWhenNoPackExistsThrows()
     {
         // Act
         $pack = $this->packService->getPack(
@@ -143,13 +146,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
             'pack name',
             'pack password'
         );
-
-        // Assert
-        $this->assertNull($pack);
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testGetPackWhenPackIsFullThrows()
     {
@@ -189,7 +189,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testGetPackWhenRaceAlignmentMismatchThrows()
     {

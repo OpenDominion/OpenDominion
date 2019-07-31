@@ -95,10 +95,14 @@ class SpellActionService
             throw new RuntimeException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
         }
 
-        $manaCost = ($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
+        $manaCost = $this->spellCalculator->getManaCost($dominion, $spellKey);
 
         if ($dominion->resource_mana < $manaCost) {
             throw new RuntimeException("You do not have enough mana to cast {$spellInfo['name']}.");
+        }
+
+        if ($this->spellCalculator->isOnCooldown($dominion, $spellKey)) {
+            throw new RuntimeException("You can only cast {$spellInfo['name']} every {$spellInfo['cooldown']} hours.");
         }
 
         if ($this->spellHelper->isOffensiveSpell($spellKey)) {
@@ -144,9 +148,9 @@ class SpellActionService
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
 
-            $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
+            $dominion->decrement('resource_mana', $manaCost);
+            $dominion->decrement('wizard_strength', ($result['wizardStrengthCost'] ?? 5));
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL, 'action' => $spellKey]);
         });
 
         if ($target !== null)
@@ -164,7 +168,7 @@ class SpellActionService
                 ],
                 'redirect' =>
                     $this->spellHelper->isInfoOpSpell($spellKey) && $result['success']
-                        ? route('dominion.op-center.show', $target->id)
+                        ? $result['redirect']
                         : null,
             ] + $result;
     }
@@ -238,8 +242,8 @@ class SpellActionService
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
-        $selfWpa = $this->militaryCalculator->getWizardRatio($dominion);
-        $targetWpa = $this->militaryCalculator->getWizardRatio($target);
+        $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
+        $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
         // You need at least some positive WPA to cast info ops
         if ($selfWpa === 0.0) {
@@ -252,12 +256,12 @@ class SpellActionService
             $ratio = ($selfWpa / $targetWpa);
 
             // Exact formula from Dom is unknown. Thanks to mriswith on Discord for coming up with this formula <3
-            $successRate = (
+            $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
+                + (0.7777 * $ratio)
                 - 0.0134
-            );
+            ), 0.0, 1.0);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
@@ -280,18 +284,13 @@ class SpellActionService
 
         // todo: take Energy Mirror into account with 20% spell reflect (either show your info or give the infoop to the target)
 
-        $infoOp = InfoOp::firstOrNew([
+        $infoOp = new InfoOp([
             'source_realm_id' => $dominion->realm->id,
-            'target_dominion_id' => $target->id,
+            'target_realm_id' => $target->realm->id,
             'type' => $spellKey,
-        ], [
             'source_dominion_id' => $dominion->id,
+            'target_dominion_id' => $target->id,
         ]);
-
-        if ($infoOp->exists) {
-            // Overwrite casted_by_dominion_id for the newer data
-            $infoOp->source_dominion_id = $dominion->id;
-        }
 
         switch ($spellKey) {
             case 'clear_sight':
@@ -312,7 +311,10 @@ class SpellActionService
                     'resource_ore' => $target->resource_ore,
                     'resource_gems' => $target->resource_gems,
                     'resource_tech' => $target->resource_tech,
-                    'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource($dominion, 'resource_boats'),
+                    'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource(
+                            $target,
+                            'resource_boats'
+                        ),
 
                     'morale' => $target->morale,
                     'military_draftees' => $target->military_draftees,
@@ -334,11 +336,11 @@ class SpellActionService
                 $infoOp->data = $this->spellCalculator->getActiveSpells($target);
                 break;
 
-//            case 'clairvoyance':
-//                $infoOp->data = [
-            // tc
-//                ];
-//                break;
+            case 'clairvoyance':
+                $infoOp->data = [
+                    'targetRealmId' => $target->realm->id
+                ];
+                break;
 
 //            case 'disclosure':
 //                $infoOp->data = [];
@@ -348,15 +350,27 @@ class SpellActionService
                 throw new LogicException("Unknown info op spell {$spellKey}");
         }
 
-        // Always force update updated_at on infoops to know when the last infoop was cast
-        $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
+
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spellKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
+        $redirect = route('dominion.op-center.show', $target);
+        if ($spellKey === 'clairvoyance') {
+            $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);
+        }
 
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
             'wizardStrengthCost' => 2,
-            'redirect' => route('dominion.op-center.show', $target),
+            'redirect' => $redirect,
         ];
     }
 

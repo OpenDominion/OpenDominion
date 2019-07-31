@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class DestroyActionService
 {
@@ -17,7 +17,7 @@ class DestroyActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function destroy(Dominion $dominion, array $data): array
     {
@@ -28,7 +28,7 @@ class DestroyActionService
         $totalBuildingsToDestroy = array_sum($data);
 
         if ($totalBuildingsToDestroy === 0) {
-            throw new RuntimeException('The destruction was not completed due to bad input.');
+            throw new GameException('The destruction was not completed due to bad input.');
         }
 
         foreach ($data as $buildingType => $amount) {
@@ -37,12 +37,12 @@ class DestroyActionService
             }
 
             if ($amount > $dominion->{'building_' . $buildingType}) {
-                throw new RuntimeException('The destruction was not completed due to bad input.');
+                throw new GameException('The destruction was not completed due to bad input.');
             }
         }
 
         foreach ($data as $buildingType => $amount) {
-            $dominion->{'building_' . $buildingType} -= $amount;
+            $dominion->decrement('building_' . $buildingType, $amount);
         }
 
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DESTROY]);

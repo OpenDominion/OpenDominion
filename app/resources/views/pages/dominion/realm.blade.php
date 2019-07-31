@@ -75,7 +75,11 @@
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
                                             @else
-                                                {{ $dominion->name }}
+                                                @if ($isOwnRealm)
+                                                    {{ $dominion->name }}
+                                                @else
+                                                    <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                                @endif
                                             @endif
 
                                             @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
@@ -127,7 +131,7 @@
                             <div class="col-xs-4">
                                 <form action="{{ route('dominion.realm.change-realm') }}" method="post" role="form">
                                     @csrf
-                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}">
+                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}" min="1" max="{{ $realmCount }}">
                                 </form>
                             </div>
                             <div class="col-xs-4 text-right">

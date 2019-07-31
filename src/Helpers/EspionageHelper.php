@@ -78,12 +78,36 @@ class EspionageHelper
     public function getResourceTheftOperations(): Collection
     {
         return collect([
-            // steal platinum
-            // steal lumber
-            // steal mana
-            // steal food
-            // steal ore
-            // steal gems
+            [
+                'name' => 'Steal Platinum',
+                'description' => 'Steal platinum from target',
+                'key' => 'steal_platinum',
+            ],
+            [
+                'name' => 'Steal Food',
+                'description' => 'Steal food from target',
+                'key' => 'steal_food',
+            ],
+            [
+                'name' => 'Steal Lumber',
+                'description' => 'Steal lumber from target',
+                'key' => 'steal_lumber',
+            ],
+            [
+                'name' => 'Steal Mana',
+                'description' => 'Steal mana from target',
+                'key' => 'steal_mana',
+            ],
+            [
+                'name' => 'Steal Ore',
+                'description' => 'Steal ore from target',
+                'key' => 'steal_ore',
+            ],
+            [
+                'name' => 'Steal Gems',
+                'description' => 'Steal gems from target',
+                'key' => 'steal_gems',
+            ],
         ]);
     }
 

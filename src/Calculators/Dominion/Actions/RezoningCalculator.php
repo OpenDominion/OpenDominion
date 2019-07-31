@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 
 class RezoningCalculator
@@ -10,14 +11,20 @@ class RezoningCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /**
      * RezoningCalculator constructor.
      *
      * @param LandCalculator $landCalculator
      */
-    public function __construct(LandCalculator $landCalculator)
-    {
+    public function __construct(
+        LandCalculator $landCalculator,
+        SpellCalculator $spellCalculator
+    ) {
         $this->landCalculator = $landCalculator;
+        $this->spellCalculator = $spellCalculator;
     }
 
     /**
@@ -68,12 +75,23 @@ class RezoningCalculator
         // Values (percentages)
         $factoryReduction = 3;
         $factoryReductionMax = 75;
+        $spellMechanicalGeniusReduction = 30;
 
         // Factories
         $multiplier -= min(
             (($dominion->building_factory / $this->landCalculator->getTotalLand($dominion)) * $factoryReduction),
             ($factoryReductionMax / 100)
         );
+
+        $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
+            $dominion,
+            'mechanical_genius',
+            $spellMechanicalGeniusReduction
+        );
+
+        $multiplier -= $mechanicalGeniusReduction;
+
+        $multiplier = max($multiplier, -0.75);
 
         return (1 + $multiplier);
     }

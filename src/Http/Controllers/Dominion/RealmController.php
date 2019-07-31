@@ -51,13 +51,13 @@ class RealmController extends AbstractDominionController
         // todo: still duplicate queries on this page. investigate later
 
         $dominions = $realm->dominions
-            ->groupBy(function (Dominion $dominion) use ($landCalculator) {
+            ->groupBy(static function (Dominion $dominion) use ($landCalculator) {
                 return $landCalculator->getTotalLand($dominion);
             })
             ->sortKeysDesc()
-            ->map(function (Collection $collection) use ($networthCalculator) {
+            ->map(static function (Collection $collection) use ($networthCalculator) {
                 return $collection->sortByDesc(
-                    function (Dominion $dominion) use ($networthCalculator) {
+                    static function (Dominion $dominion) use ($networthCalculator) {
                         return $networthCalculator->getDominionNetworth($dominion);
                     });
             })
@@ -74,9 +74,13 @@ class RealmController extends AbstractDominionController
         $nextRealm = DB::table('realms')
             ->where('round_id', $round->id)
             ->where('number', '>', $realm->number)
-            ->orderBy('number', 'asc')
+            ->orderBy('number')
             ->limit(1)
             ->first();
+
+        $realmCount = DB::table('realms')
+            ->where('round_id', $round->id)
+            ->count();
 
         return view('pages.dominion.realm', compact(
             'landCalculator',
@@ -88,7 +92,8 @@ class RealmController extends AbstractDominionController
             'guardMembershipService',
             'protectionService',
             'nextRealm',
-            'isOwnRealm'
+            'isOwnRealm',
+            'realmCount'
         ));
     }
 

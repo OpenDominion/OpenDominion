@@ -114,19 +114,31 @@ class NotificationHelper
                 },
                 'iconClass' => 'ra ra-crossed-swords text-orange',
             ],
-//            'received_spy_op' => [
-//                'label' => 'Hostile spy operation received',
-//                'defaults' => ['email' => false, 'ingame' => true],
-//            ],
+            'received_spy_op' => [
+                'label' => 'Hostile spy operation received',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'fa fa-user-secret text-orange',
+            ],
             'repelled_spy_op' => [
                 'label' => 'Hostile spy operation repelled',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'fa fa-user-secret text-orange',
             ],
-//            'received_hostile_spell' => [
-//                'label' => 'Hostile spell received',
-//                'defaults' => ['email' => false, 'ingame' => true],
-//            ],
+            'resource_theft' => [
+                'label' => 'Resource stolen',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'fa fa-user-secret text-orange',
+            ],
+            'repelled_resource_theft' => [
+                'label' => 'Resource theft repelled',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'fa fa-user-secret text-orange',
+            ],
+            'received_hostile_spell' => [
+                'label' => 'Hostile spell received',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-fairy-wand text-orange',
+            ],
             'repelled_hostile_spell' => [
                 'label' => 'Hostile spell deflected',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -286,6 +298,37 @@ class NotificationHelper
                     number_format($data['unitsLost'])
                 );
 
+            case 'irregular_dominion.received_spy_op':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                switch ($data['operationKey']) {
+                    case 'barracks_spy':
+                        $where = 'within our barracks';
+                        break;
+
+                    case 'castle_spy':
+                        $where = 'within our castle';
+                        break;
+
+                    case 'survey_dominion':
+                        $where = 'amongst our buildings';
+                        break;
+
+                    case 'land_spy':
+                        $where = 'amongst our lands';
+                        break;
+
+                    default:
+                        throw new \LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented");
+                }
+
+                return sprintf(
+                    'Our wizards detected spies from %s (#%s) %s!',
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number,
+                    $where
+                );
+
             case 'irregular_dominion.repelled_spy_op':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
 
@@ -307,8 +350,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new \LogicException("Repelled spy op notification for spell key {$data['spellKey']} not yet implemented");
-//                        $where = 'around our domain';
+                        throw new \LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
                 return sprintf(
@@ -318,6 +360,107 @@ class NotificationHelper
                     $where,
                     number_format($data['spiesKilled']),
                     str_plural('spy', $data['spiesKilled'])
+                );
+
+            case 'irregular_dominion.resource_theft':
+                $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
+
+                switch ($data['operationKey']) {
+                    case 'steal_platinum':
+                        $where = 'from our vaults';
+                        break;
+
+                    case 'steal_food':
+                        $where = 'from our granaries';
+                        break;
+
+                    case 'steal_lumber':
+                        $where = 'from our storehouses';
+                        break;
+
+                    case 'steal_mana':
+                        $where = 'from our towers';
+                        break;
+
+                    case 'steal_ore':
+                        $where = 'from our mines';
+                        break;
+
+                    case 'steal_gems':
+                        $where = 'from our mines';
+                        break;
+
+                    default:
+                        throw new \LogicException("Resource theft op notification for operation key {$data['operationKey']} not yet implemented");
+                }
+
+                if ($sourceDominion) {
+                    return sprintf(
+                        'Our wizards have determined that spies from %s (#%s) stole %s %s %s!',
+                        $sourceDominion->name,
+                        $sourceDominion->realm->number,
+                        number_format($data['amount']),
+                        $data['resource'],
+                        $where
+                    );
+                } else {
+                    return sprintf(
+                        'Our spies discovered %s %s missing %s!',
+                        number_format($data['amount']),
+                        $data['resource'],
+                        $where
+                    );
+                }
+
+            case 'irregular_dominion.repelled_resource_theft':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                switch ($data['operationKey']) {
+                    case 'steal_platinum':
+                        $where = 'within our vaults';
+                        break;
+
+                    case 'steal_food':
+                        $where = 'within our granaries';
+                        break;
+
+                    case 'steal_lumber':
+                        $where = 'within our lumberyards';
+                        break;
+
+                    case 'steal_mana':
+                        $where = 'within our towers';
+                        break;
+
+                    case 'steal_ore':
+                        $where = 'within our ore mines';
+                        break;
+
+                    case 'steal_gems':
+                        $where = 'within our diamond mines';
+                        break;
+
+                    default:
+                        throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
+                }
+
+                return sprintf(
+                    'Spies from %s (#%s) were discovered %s! We executed %s %s.',
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number,
+                    $where,
+                    number_format($data['spiesKilled']),
+                    str_plural('spy', $data['spiesKilled'])
+                );
+
+            case 'irregular_dominion.received_hostile_spell':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                return sprintf(
+                    'Our wizards detected a %s spell cast by %s (#%s)!',
+                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number
                 );
 
             case 'irregular_dominion.repelled_hostile_spell':
@@ -369,6 +512,8 @@ class NotificationHelper
             // Page: Town Crier
             'Realmie invaded another dominion',
             // Victorious on the battlefield, Priapus (# 16) conquered 64 land from Black Whirling (# 26).
+            'Dominion failed to invade realmie',
+            // Fellow dominion Jupiter (# 11) fended of an attack from Miss Piggy (# 31).
             'Realmie failed to invade another dominion',
             // Sadly, the forces of Starscream (# 31) were beaten back by Myself Yourself (# 44).
             'A dominion invaded realmie',

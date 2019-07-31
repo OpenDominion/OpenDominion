@@ -43,10 +43,10 @@ class ImproveActionService
 
             $points = (($amount * $worth[$resource]) * $multiplier);
 
-            $dominion->{'improvement_' . $improvementType} += $points;
+            $dominion->increment('improvement_' . $improvementType, $points);
         }
 
-        $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
+        $dominion->decrement('resource_' . $resource, $totalResourcesToInvest);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
 
         return [

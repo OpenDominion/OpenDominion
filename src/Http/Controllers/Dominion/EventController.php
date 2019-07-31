@@ -30,34 +30,42 @@ class EventController extends AbstractDominionController
             ])
             ->where('id', $eventUuid);
 
-        if (!$dominion->user->isStaff()) {
-            $query->where(static function (Builder $query) use ($dominion) {
-                $query
-                    ->orWhere(static function (Builder $query) use ($dominion) {
-                        $query->where('source_type', Dominion::class)
-                            ->where('source_id', $dominion->id);
-                    })
-                    ->orWhere(static function (Builder $query) use ($dominion) {
-                        $query->where('target_type', Dominion::class)
-                            ->where('target_id', $dominion->id);
-                    })
-                    ->orWhere(static function (Builder $query) use ($dominion) {
-                        $query->where('source_type', Realm::class)
-                            ->where('source_id', $dominion->realm->id);
-                    })
-                    ->orWhere(static function (Builder $query) use ($dominion) {
-                        $query->where('target_type', Realm::class)
-                            ->where('target_id', $dominion->realm->id);
-                    });
-            });
-        }
-
         $event = $query->firstOrFail();
+
+        if(!$this->canView($event, $dominion))
+        {
+            abort(404);
+        }
 
         return view("pages.dominion.event.{$event->type}", [
             'event' => $event, // todo: compact()
             'unitHelper' => app(UnitHelper::class), // todo: only load if event->type == 'invasion'
             'militaryCalculator' => app(MilitaryCalculator::class), // todo: same thing here
         ]);
+    }
+
+    private function canView(GameEvent $event, Dominion $dominion): bool
+    {
+        if($dominion->user->isStaff()) {
+            return true;
+        }
+
+        if($event->source_type === Dominion::class && $event->source->realm_id == $dominion->realm->id) {
+            return true;
+        }
+
+        if($event->target_type === Dominion::class && $event->target->realm_id == $dominion->realm->id) {
+            return true;
+        }
+
+        if($event->source_type === Realm::class && $event->source->id == $dominion->realm->id) {
+            return true;
+        }
+
+        if($event->target_type === Realm::class && $event->target->id == $dominion->realm->id) {
+            return true;
+        }
+
+        return false;
     }
 }

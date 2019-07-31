@@ -41,7 +41,13 @@ class SpellCalculator
     public function getManaCost(Dominion $dominion, string $spell): int
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
-        return round($spellInfo['mana_cost'] * $this->landCalculator->getTotalLand($dominion));
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+
+        // Cost reduction from wizard guilds (2x ratio, max 40%)
+        $wizardGuildRatio = ($dominion->building_wizard_guild / $totalLand);
+        $spellCostMultiplier = (1 - clamp(2 * $wizardGuildRatio, 0, 0.4));
+
+        return round($spellInfo['mana_cost'] * $totalLand * $spellCostMultiplier);
     }
 
     /**
@@ -59,6 +65,33 @@ class SpellCalculator
             ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
             ($dominion->wizard_strength >= 30)
         );
+    }
+
+    /**
+     * Returns whether spell $type for $dominion is on cooldown.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return bool
+     */
+    public function isOnCooldown(Dominion $dominion, string $spell): bool
+    {
+        $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
+
+        if (isset($spellInfo['cooldown'])) {
+            $spellLastCast = DB::table('dominion_history')
+                ->where('dominion_id', $dominion->id)
+                ->where('event', 'cast spell')
+                ->where('delta', 'like', "%{$spell}%")
+                ->orderby('created_at', 'desc')
+                ->take(1)
+                ->first();
+            if ($spellLastCast && now()->diffInHours($spellLastCast->created_at) < $spellInfo['cooldown']) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

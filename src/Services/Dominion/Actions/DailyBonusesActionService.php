@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class DailyBonusesActionService
 {
@@ -16,16 +16,16 @@ class DailyBonusesActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function claimPlatinum(Dominion $dominion): array
     {
         if ($dominion->daily_platinum) {
-            throw new RuntimeException('You already claimed your platinum bonus for today.');
+            throw new GameException('You already claimed your platinum bonus for today.');
         }
 
         $platinumGained = $dominion->peasants * 4;
-        $dominion->resource_platinum += $platinumGained;
+        $dominion->increment('resource_platinum', $platinumGained);
         $dominion->daily_platinum = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
@@ -45,17 +45,17 @@ class DailyBonusesActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function claimLand(Dominion $dominion): array
     {
         if ($dominion->daily_land) {
-            throw new RuntimeException('You already claimed your land bonus for today.');
+            throw new GameException('You already claimed your land bonus for today.');
         }
 
         $landGained = 20;
         $attribute = ('land_' . $dominion->race->home_land_type);
-        $dominion->{$attribute} += $landGained;
+        $dominion->increment($attribute, $landGained);
         $dominion->daily_land = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 

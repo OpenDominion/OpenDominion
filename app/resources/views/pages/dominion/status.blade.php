@@ -223,7 +223,7 @@
                             @endif
                         </p>
                         @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
-                            <p>Your pack will automatically close in <strong>{{ $selectedDominion->pack->getClosingDate()->diffForHumans() }}</strong> to make space for random players in your realm.</p>
+                            <p>Your pack will automatically close on <strong>{{ $selectedDominion->pack->getClosingDate() }}</strong> to make space for random players in your realm.</p>
                             @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
                                 <p>
                                     <form action="{{ route('dominion.misc.close-pack') }}" method="post">
@@ -236,6 +236,67 @@
                     </div>
                 </div>
             @endif
+
+            @if (!$selectedDominion->round->hasStarted() && ($selectedDominion->user->last_deleted_dominion_round < $selectedDominion->round->number))
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Delete</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You have the ability to delete your dominion <strong>once</strong> this round in case you don't want to play this round after all, you messed up your first hour, or you messed up your pack.</p>
+                        <p>This action can only be taken because the round has not yet started. Deleting or restarting your dominion during an active round is <em>not yet</em> possible.</p>
+                        <p class="text-red text-bold">Do note that this action is destructive, and your dominion can <u>not</u> be restored by the admins once deleted.</p>
+                    </div>
+                    <div class="box-footer">
+                        <form action="{{ route('dominion.misc.delete-dominion') }}" method="post" onsubmit="return confirm('Are you really sure you want to DELETE your dominion \'{{ $selectedDominion->name }}\' in round {{ $selectedDominion->round->number }}?');">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Delete Your Dominion</button>
+                        </form>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <div class="col-sm-12 col-md-9">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-newspaper-o"></i> Recent News</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-condensed no-border">
+                        @foreach ($notifications as $notification)
+                            @php
+                                $route = array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#');
+
+                                if (is_callable($route)) {
+                                    if (isset($notification->data['data']['_routeParams'])) {
+                                        $route = $route($notification->data['data']['_routeParams']);
+                                    } else {
+                                        // fallback
+                                        $route = '#';
+                                    }
+                                }
+                            @endphp
+                            <tr>
+                                <td>
+                                    <span class="text-muted">{{ $notification->created_at }}</span>
+                                </td>
+                                <td>
+                                    @if ($route !== '#')<a href="{{ $route }}">@endif
+                                        <i class="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.iconClass", 'fa fa-question') }}"></i>
+                                        {{ $notification->data['message'] }}
+                                    @if ($route !== '#')</a>@endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <div class="pull-right">
+                        {{ $notifications->links() }}
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

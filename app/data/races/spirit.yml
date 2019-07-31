@@ -1,0 +1,48 @@
+name: Spirit
+alignment: good
+home_land_type: swamp
+perks:
+  max_population: 12.5
+  food_consumption: -90
+  immortal_wizards: 1
+units:
+  - name: Phantom
+    cost:
+      platinum: 225
+      ore: 0
+    power:
+      offense: 2.5
+      defense: 0
+    perks:
+      immortal: 1
+  - name: Banshee
+    cost:
+      platinum: 225
+      ore: 0
+    power:
+      offense: 0
+      defense: 2.5
+    perks:
+      immortal: 1
+  - name: Ghost
+    cost:
+      platinum: 900
+      ore: 0
+    power:
+      offense: 2
+      defense: 4
+    perks:
+      immortal: 1
+      conversion: 12 # slot 1 and slot 2 aka specs
+    need_boat: false
+  - name: Spectre
+    cost:
+      platinum: 1000
+      ore: 0
+    power:
+      offense: 4
+      defense: 3
+    perks:
+      immortal: 1
+      staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above
+    need_boat: false
