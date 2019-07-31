@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Removed prestige penalty on invading targets below 66% range
 - Added prestige grab on invading targets above 120% your size
 - Extended the Statistics Advisor with more useful information
+- No more than two identical races can be in the same pack 
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
