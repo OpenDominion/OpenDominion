@@ -18,7 +18,11 @@
                             </div>
                         @endif
                         <div class="col-xs-6 text-center">
-                            <h4 class="text-green">The Emperor's Royal Guard</h4>
+                            <h4 class="text-green">
+                                <i class="ra ra-heavy-shield" title="Royal Guard"></i>
+                                The Emperor's Royal Guard
+                                <i class="ra ra-heavy-shield" title="Royal Guard"></i>
+                            </h4>
                             <ul class="text-left" style="padding: 0 50px;">
                                 <li>Cannot interact with Dominions less than 60% or greater than 166% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2%.</li>
@@ -44,7 +48,11 @@
                             @endif
                         </div>
                         <div class="col-xs-6 text-center">
-                            <h4 class="text-yellow">The Emperor's Elite Guard</h4>
+                            <h4 class="text-yellow">
+                                <i class="ra ra-heavy-shield" title="Elite Guard"></i>
+                                The Emperor's Elite Guard
+                                <i class="ra ra-heavy-shield" title="Elite Guard"></i>
+                            </h4>
                             <ul class="text-left" style="padding: 0 50px;">
                                 <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2%.</li>
