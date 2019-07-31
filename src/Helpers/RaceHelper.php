@@ -64,9 +64,10 @@ WOODELF;
 
         // Evil races
 
+        // new
         $descriptions['dark elf'] = <<<DARKELF
-<p>Dark elves are known for their aggression, deceit, and stealth. These creatures are very brutal and cruel by nature, having little regard for mercy.</p>
-<p>They lurk in dark places, love the shadows, and have a natural inclination towards magic and the dark arts.</p>
+<p>With ashen skin, inky-black eyes and bat-like features, Dark Elves are the cave-dwelling distant cousins of the majestic Wood Elves. Corrupted long ago by the whispered promises of power from fallen demons, the Dark Elves are a cruel species who thrive on torment... be it the torment of their enemies, or even their own kin.</p>
+<p>Dark Elves have black magic coursing through their veins. Capable of calling down a rain of fire and lightning upon their enemies, they are a terrifying force to reckon with - and that's before they even set foot on the battlefield.</p>
 DARKELF;
 
         // new
