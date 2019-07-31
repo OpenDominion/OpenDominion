@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Notifications are now visible from the status screen in a 'Recent News' section
 - Added theft espionage operations, allowing you to steal resources from your target
 - Added magic spells: Fool's Gold and Surreal Perception
+- Added Government page with Royal Guard and Elite Guard
 
 ### Changed
 - Condensed the items in the left navigation menu (except on mobile)
@@ -28,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed Gnome's racial spell Mechanical Genius, now properly granting the intended amount of rezoning cost reduction
 - Realm spinner on realm page no longer allows for invalid input (eg negative numbers) which in turn displayed a server error page
 - Barren land now correctly houses 10 population for Gnome and Halfling
+- Changed bank icon
 - Minor text fixes
 
 ## [0.6.2-9] - 2019-07-14
