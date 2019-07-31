@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use OpenDominion\Events\InfoOpCreatingEvent;
 
 /**
  * OpenDominion\Models\InfoOp
@@ -31,7 +32,7 @@ class InfoOp extends AbstractModel
     ];
 
     protected $dispatchesEvents = [
-        'creating' => \OpenDominion\Events\InfoOpCreatingEvent::class,
+        'creating' => InfoOpCreatingEvent::class,
     ];
 
     public function sourceRealm()
