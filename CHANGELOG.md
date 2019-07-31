@@ -9,11 +9,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - *Note: The Nox was a premiun race back in Dominion Classic. In OpenDominion it has been renamed to just 'Nox', and made available for everyone, without restrictions.
 - Added missing Valhalla races, including the ones mentioned above
 - Construction advisor now shows total amount of barren land
+- Added info op archive, allowing you to view previously taken info ops
+- Docks are now fully implemented, preventing a certain amount of boats from being sunk
+- Notifications are now visible from the status screen in a 'Recent News' section
+- Added theft espionage operations, allowing you to steal resources from your target
+- Added magic spells: Fool's Gold and Surreal Perception
 
 ### Changed
 - Condensed the items in the left navigation menu (except on mobile)
 - Removed prestige penalty on invading targets below 66% range
 - Added prestige grab on invading targets above 120% your size
+- Extended the Statistics Advisor with more useful information
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts

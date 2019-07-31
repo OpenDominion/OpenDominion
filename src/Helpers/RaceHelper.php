@@ -14,9 +14,10 @@ class RaceHelper
 
         // Good races
 
+        // new
         $descriptions['dwarf'] = <<<DWARF
-<p>Defined by their majestic beards and their love for booze and labor, these descendants of Caedair Hold have come to fight for the forces of good.</p>
-<p>Short and grumpy, they harbor an intense hatred towards Goblins.</p>
+<p>Dwarves are a short and ill-tempered race well-known for their majestic beards, their love of ale and tireless labour. Their spirited chants and songs echo long into the night as they hollow out entire mountains for their ore.</p>
+<p>Dwarven mines are the most productive in the lands, producing a steady flow of ore used to fortify their great cities, and craft legendary Dwarven armour for their military forces.</p>
 DWARF;
 
         $descriptions['firewalker'] = <<<FIREWALKER
@@ -34,9 +35,10 @@ GNOME;
 <p>Fiercely loyal to family and friends, they will defend their homeland with surprising fortitude.</p>
 HALFLING;
 
+        // new
         $descriptions['human'] = <<<HUMAN
-<p>These noble and religious Humans hail from fallen city of Brimstone Keep.</p>
-<p>Proficient at everything but excelling at nothing, they are a well-balanced and self-sufficient race.</p>
+<p>Among the youngest of the races, the Human empire rose swiftly and against the odds. Humans proved to be not only capable warriors, but also skilled smiths, clever engineers and above all, adaptable. Their homeland destroyed by the forces of Evil decades ago, Humans seek to rebuild and avenge their fallen brothers.</p>
+<p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline.</p>
 HUMAN;
 
         $descriptions['merfolk'] = <<<MERFOLK
@@ -54,6 +56,7 @@ SPIRIT;
 <p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
 SYLVAN;
 
+        // new
         $descriptions['wood elf'] = <<<WOODELF
 <p>Graceful, slender and eerily beautiful, the Wood Elves are among the eldest of the races and keenly attuned with the natural world, seeking to protect their forests from the forces of evil.</p>
 <p>Though peaceful by nature, Wood Elves are a versatile race, proficient in combat with their deadly archers and magically gifted druids that draw power from the very forest itself, and backed up by powerful wizards and skilled spies that excel at covert ops.</p>
@@ -61,14 +64,16 @@ WOODELF;
 
         // Evil races
 
+        // new
         $descriptions['dark elf'] = <<<DARKELF
-<p>Dark elves are known for their aggression, deceit, and stealth. These creatures are very brutal and cruel by nature, having little regard for mercy.</p>
-<p>They lurk in dark places, love the shadows, and have a natural inclination towards magic and the dark arts.</p>
+<p>With ashen skin, inky-black eyes and bat-like features, Dark Elves are the cave-dwelling distant cousins of the majestic Wood Elves. Corrupted long ago by the whispered promises of power from fallen demons, the Dark Elves are a cruel species who thrive on torment... be it the torment of their enemies, or even their own kin.</p>
+<p>Dark Elves have black magic coursing through their veins. Capable of calling down a rain of fire and lightning upon their enemies, they are a terrifying force to reckon with - and that's before they even set foot on the battlefield.</p>
 DARKELF;
 
+        // new
         $descriptions['goblin'] = <<<GOBLIN
-<p>What they lack in intelligence, they make up for in sheer numbers. They love slaughtering other living things as much as they love shiny gems.</p>
-<p>Short, cunning, and gnarling, they hate anything that smells like Dwarf.</p>
+<p>Small in stature but great in number, Goblins are a vicious and single-minded breed that prefer to take down their enemies with overwhelming numbers - and then steal all the shinies.</p>
+<p>Goblin populations can grow quickly out of control if left unchecked, and these short, green and ugly wretches have been known to completely ransack well-fortified castles in their relentless pursuit of gems, gems and more gems.</p>
 GOBLIN;
 
         $descriptions['icekin'] = <<<ICEKIN

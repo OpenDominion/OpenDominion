@@ -257,5 +257,47 @@
             @endif
         </div>
 
+        <div class="col-sm-12 col-md-9">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-newspaper-o"></i> Recent News</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-condensed no-border">
+                        @foreach ($notifications as $notification)
+                            @php
+                                $route = array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.route", '#');
+
+                                if (is_callable($route)) {
+                                    if (isset($notification->data['data']['_routeParams'])) {
+                                        $route = $route($notification->data['data']['_routeParams']);
+                                    } else {
+                                        // fallback
+                                        $route = '#';
+                                    }
+                                }
+                            @endphp
+                            <tr>
+                                <td>
+                                    <span class="text-muted">{{ $notification->created_at }}</span>
+                                </td>
+                                <td>
+                                    @if ($route !== '#')<a href="{{ $route }}">@endif
+                                        <i class="{{ array_get($notificationHelper->getNotificationCategories(), "{$notification->data['category']}.{$notification->data['type']}.iconClass", 'fa fa-question') }}"></i>
+                                        {{ $notification->data['message'] }}
+                                    @if ($route !== '#')</a>@endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <div class="box-footer">
+                    <div class="pull-right">
+                        {{ $notifications->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection

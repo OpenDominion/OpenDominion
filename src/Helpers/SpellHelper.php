@@ -99,27 +99,27 @@ class SpellHelper
                 'mana_cost' => 2.5,
                 'duration' => 12,
             ],
-//            [
-//                'name' => 'Surreal Perception',
-//                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
-//                'key' => 'surreal_perception',
-//                'mana_cost' => 4,
-//                'duration' => 8,
-//            ],
+            [
+                'name' => 'Fool\'s Gold',
+                'description' => 'Platinum theft protection for 10 hours, 22 hour recharge',
+                'key' => 'fools_gold',
+                'mana_cost' => 5,
+                'duration' => 10,
+                'cooldown' => 22,
+            ],
+            [
+                'name' => 'Surreal Perception',
+                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
+                'key' => 'surreal_perception',
+                'mana_cost' => 4,
+                'duration' => 8,
+            ],
 //            [
 //                'name' => 'Energy Mirror',
 //                'description' => '20% chance to reflect incoming spells',
 //                'key' => '',
 //                'mana_cost' => 3,
 //                'duration' => 8,
-//            ],
-//            [
-//                'name' => 'Fool\'s Gold',
-//                'description' => 'Platinum theft protection for 10 hours, 22 hour recharge',
-//                'key' => 'fools_gold',
-//                'mana_cost' => 5,
-//                'duration' => 10,
-//                'cooldown' => 22, // todo
 //            ],
             $racialSpell
         ]));

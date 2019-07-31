@@ -62,7 +62,7 @@ class Realm extends AbstractModel
             'target_dominion_id'
         )
             ->groupBy('target_dominion_id')
-            ->orderBy('info_ops.updated_at', 'desc');
+            ->orderBy('info_ops.created_at', 'desc');
     }
 
     public function monarch()

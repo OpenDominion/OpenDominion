@@ -101,6 +101,10 @@ class SpellActionService
             throw new RuntimeException("You do not have enough mana to cast {$spellInfo['name']}.");
         }
 
+        if ($this->spellCalculator->isOnCooldown($dominion, $spellKey)) {
+            throw new RuntimeException("You can only cast {$spellInfo['name']} every {$spellInfo['cooldown']} hours.");
+        }
+
         if ($this->spellHelper->isOffensiveSpell($spellKey)) {
             if ($target === null) {
                 throw new RuntimeException("You must select a target when casting offensive spell {$spellInfo['name']}");
@@ -146,7 +150,7 @@ class SpellActionService
 
             $dominion->decrement('resource_mana', $manaCost);
             $dominion->decrement('wizard_strength', ($result['wizardStrengthCost'] ?? 5));
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL]);
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL, 'action' => $spellKey]);
         });
 
         return [
@@ -277,31 +281,13 @@ class SpellActionService
 
         // todo: take Energy Mirror into account with 20% spell reflect (either show your info or give the infoop to the target)
 
-        if ($spellKey === 'clairvoyance') {
-            $infoOp = InfoOp::firstOrNew([
-                'source_realm_id' => $dominion->realm->id,
-                'target_realm_id' => $target->realm->id,
-                'type' => $spellKey,
-            ], [
-                'source_dominion_id' => $dominion->id,
-                'target_dominion_id' => $target->id,
-            ]);
-        } else {
-            $infoOp = InfoOp::firstOrNew([
-                'source_realm_id' => $dominion->realm->id,
-                'target_dominion_id' => $target->id,
-                'type' => $spellKey,
-            ], [
-                'target_realm_id' => $target->realm->id,
-                'source_dominion_id' => $dominion->id,
-            ]);
-        }
-
-        if ($infoOp->exists) {
-            // Overwrite casted_by_dominion_id for the newer data
-            $infoOp->source_dominion_id = $dominion->id;
-            $infoOp->target_dominion_id = $target->id;
-        }
+        $infoOp = new InfoOp([
+            'source_realm_id' => $dominion->realm->id,
+            'target_realm_id' => $target->realm->id,
+            'type' => $spellKey,
+            'source_dominion_id' => $dominion->id,
+            'target_dominion_id' => $target->id,
+        ]);
 
         switch ($spellKey) {
             case 'clear_sight':
@@ -361,9 +347,16 @@ class SpellActionService
                 throw new LogicException("Unknown info op spell {$spellKey}");
         }
 
-        // Always force update updated_at on infoops to know when the last infoop was cast
-        $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
+
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spellKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
 
         $redirect = route('dominion.op-center.show', $target);
         if ($spellKey === 'clairvoyance') {

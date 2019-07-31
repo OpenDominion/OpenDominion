@@ -228,6 +228,9 @@ class Dominion extends AbstractModel
         if ($recordChanges) {
             $dominionHistoryService = app(HistoryService::class);
             $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+            if (isset($options['action'])) {
+                $deltaAttributes['action'] = $options['action'];
+            }
         }
 
         $saved = parent::save($options);
