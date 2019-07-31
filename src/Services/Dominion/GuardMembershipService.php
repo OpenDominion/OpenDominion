@@ -15,9 +15,9 @@ class GuardMembershipService
     public const ROYAL_GUARD_RANGE = 0.6;
     public const ELITE_GUARD_RANGE = 0.75;
 
-    /** 
+    /**
      * Returns guard availability for a Dominion.
-     * 
+     *
      * @param Dominion $dominion
      * @return bool
      */
@@ -214,7 +214,7 @@ class GuardMembershipService
 
     /**
      * Sets the Dominion's royal guard join time.
-     * 
+     *
      * @param Dominion $dominion
      * @return void
      */
@@ -226,7 +226,7 @@ class GuardMembershipService
 
     /**
      * Sets the Dominion's elite guard join time.
-     * 
+     *
      * @param Dominion $dominion
      * @return void
      */
@@ -238,7 +238,7 @@ class GuardMembershipService
 
     /**
      * Removes the Dominion's royal guard join time.
-     * 
+     *
      * @param Dominion $dominion
      * @return void
      */
@@ -250,7 +250,7 @@ class GuardMembershipService
 
     /**
      * Removes the Dominion's elite guard join time.
-     * 
+     *
      * @param Dominion $dominion
      * @return void
      */
