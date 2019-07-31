@@ -14,8 +14,7 @@ class InfoOpCreatingEvent
     /**
      * Create a new event instance.
      *
-     * @param \OpenDominion\Models\InfoOp
-     * @return void
+     * @param InfoOp $infoOp
      */
     public function __construct(InfoOp $infoOp)
     {
