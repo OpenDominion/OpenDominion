@@ -168,7 +168,6 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
@@ -202,7 +201,6 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
