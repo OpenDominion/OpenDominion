@@ -138,7 +138,6 @@ class EspionageActionService
             }
         }
 
-
         if ($dominion->round->id !== $target->round->id) {
             throw new RuntimeException('Nice try, but you cannot perform espionage operations cross-round');
         }
