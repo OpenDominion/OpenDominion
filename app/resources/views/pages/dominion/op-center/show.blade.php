@@ -4,11 +4,10 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clear_sight');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'clear_sight');
                 @endphp
 
                 @slot('title', ('Status Screen (' . $dominion->name . ')'))
@@ -22,6 +21,7 @@
                         $race = OpenDominion\Models\Race::findOrFail($infoOp->data['race_id']);
                     @endphp
 
+                    @slot('tableResponsive', false)
                     @slot('noPadding', true)
 
                     <div class="row">
@@ -192,8 +192,10 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isStale())
+                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isInvalid())
+                            <span class="label label-danger">Invalid</span>
+                        @elseif ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
                     @endif
@@ -205,6 +207,11 @@
                             <input type="hidden" name="spell" value="clear_sight">
                             <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
                         </form>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'clear_sight']) }}">View Archives</a>
                     </div>
                 @endslot
             @endcomponent
@@ -218,7 +225,7 @@
                 <div class="box-body">
                     <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm {{ $dominion->realm->name }} (#{{ $dominion->realm->number }}).</p>
 
-                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Recast your info ops before performing any offensive operations during this hour.</p>
+                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old. Recast your info ops before performing any offensive operations during this hour.</p>
 
                     {{--<p>Estimated stats:</p>
                     <p>
@@ -239,11 +246,11 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'revelation');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'revelation');
                 @endphp
 
                 @slot('title', 'Active Spells')
-                @slot('titleIconClass', 'ra ra-magic-wand')
+                @slot('titleIconClass', 'ra ra-fairy-wand')
 
                 @if ($infoOp === null)
                     <p>No recent data available.</p>
@@ -287,8 +294,10 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isStale())
+                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isInvalid())
+                            <span class="label label-danger">Invalid</span>
+                        @elseif ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
                     @endif
@@ -301,6 +310,11 @@
                             <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'revelation')) }} mana)</button>
                         </form>
                     </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'revelation']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -308,7 +322,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'castle_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'castle_spy');
                 @endphp
 
                 @slot('title', 'Improvements')
@@ -356,8 +370,10 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isStale())
+                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isInvalid())
+                            <span class="label label-danger">Invalid</span>
+                        @elseif ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
                     @endif
@@ -370,6 +386,11 @@
                             <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
                         </form>
                     </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'castle_spy']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -380,7 +401,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'barracks_spy');
                 @endphp
 
                 @slot('title', 'Units in training and home')
@@ -457,27 +478,34 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isStale())
+                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isInvalid())
+                            <span class="label label-danger">Invalid</span>
+                        @elseif ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
                     @endif
 
-                        <div class="pull-right">
-                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                                @csrf
-                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                                <input type="hidden" name="operation" value="barracks_spy">
-                                <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
-                            </form>
-                        </div>
+                    <div class="clearfix pull-right">
+                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="operation" value="barracks_spy">
+                            <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                        </form>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'barracks_spy']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'barracks_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'barracks_spy');
                 @endphp
 
                 @slot('title', 'Units returning from battle')
@@ -546,7 +574,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'survey_dominion');
                 @endphp
 
                 @slot('title', 'Constructed Buildings')
@@ -595,8 +623,10 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isStale())
+                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isInvalid())
+                            <span class="label label-danger">Invalid</span>
+                        @elseif ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
                     @endif
@@ -609,6 +639,11 @@
                             <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
                         </form>
                     </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'survey_dominion']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -616,7 +651,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'survey_dominion');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'survey_dominion');
                 @endphp
 
                 @slot('title', 'Incoming building breakdown')
@@ -682,7 +717,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'land_spy');
                 @endphp
 
                 @slot('title', 'Explored Land')
@@ -729,8 +764,10 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isStale())
+                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                        @if ($infoOp->isInvalid())
+                            <span class="label label-danger">Invalid</span>
+                        @elseif ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
                     @endif
@@ -743,6 +780,11 @@
                             <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
                         </form>
                     </div>
+                    <div class="clearfix"></div>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'land_spy']) }}">View Archives</a>
+                    </div>
                 @endslot
             @endcomponent
         </div>
@@ -750,7 +792,7 @@
         <div class="col-sm-12 col-md-6">
             @component('partials.dominion.op-center.box')
                 @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'land_spy');
+                    $infoOp = $latestInfoOps->firstWhere('type', 'land_spy');
                 @endphp
 
                 @slot('title', 'Incoming land breakdown')
@@ -814,41 +856,5 @@
                 @endif
             @endcomponent
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-12 col-sm-6">
-            @component('partials.dominion.op-center.box')
-                @php
-                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clairvoyance');
-                @endphp
-
-                @slot('title', 'Town Crier')
-                @slot('titleIconClass', 'fa fa-newspaper-o')
-
-                @if ($infoOp === null)
-                    <p>No recent data available.</p>
-                    <p>Cast magic spell 'Clairvoyance' to reveal information.</p>
-                @else
-                    <a href="{{ route('dominion.op-center.clairvoyance', $dominion->realm->id) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
-                    - <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
-                    @if ($infoOp->isStale())
-                        <span class="label label-warning">Stale</span>
-                    @endif
-                @endif
-
-                @slot('boxFooter')
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="spell" value="clairvoyance">
-                            <button type="submit" class="btn btn-sm btn-primary">Clairvoyance ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clairvoyance')) }} mana)</button>
-                        </form>
-                    </div>
-                @endslot
-            @endcomponent
-        </div>
-
     </div>
 @endsection

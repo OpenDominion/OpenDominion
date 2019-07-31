@@ -71,7 +71,11 @@
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
                                             @else
-                                                {{ $dominion->name }}
+                                                @if ($isOwnRealm)
+                                                    {{ $dominion->name }}
+                                                @else
+                                                    <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                                @endif
                                             @endif
 
                                             @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())

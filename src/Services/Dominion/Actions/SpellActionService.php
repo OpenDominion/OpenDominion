@@ -277,31 +277,13 @@ class SpellActionService
 
         // todo: take Energy Mirror into account with 20% spell reflect (either show your info or give the infoop to the target)
 
-        if ($spellKey === 'clairvoyance') {
-            $infoOp = InfoOp::firstOrNew([
-                'source_realm_id' => $dominion->realm->id,
-                'target_realm_id' => $target->realm->id,
-                'type' => $spellKey,
-            ], [
-                'source_dominion_id' => $dominion->id,
-                'target_dominion_id' => $target->id,
-            ]);
-        } else {
-            $infoOp = InfoOp::firstOrNew([
-                'source_realm_id' => $dominion->realm->id,
-                'target_dominion_id' => $target->id,
-                'type' => $spellKey,
-            ], [
-                'target_realm_id' => $target->realm->id,
-                'source_dominion_id' => $dominion->id,
-            ]);
-        }
-
-        if ($infoOp->exists) {
-            // Overwrite casted_by_dominion_id for the newer data
-            $infoOp->source_dominion_id = $dominion->id;
-            $infoOp->target_dominion_id = $target->id;
-        }
+        $infoOp = new InfoOp([
+            'source_realm_id' => $dominion->realm->id,
+            'target_realm_id' => $target->realm->id,
+            'type' => $spellKey,
+            'source_dominion_id' => $dominion->id,
+            'target_dominion_id' => $target->id,
+        ]);
 
         switch ($spellKey) {
             case 'clear_sight':
@@ -361,8 +343,6 @@ class SpellActionService
                 throw new LogicException("Unknown info op spell {$spellKey}");
         }
 
-        // Always force update updated_at on infoops to know when the last infoop was cast
-        $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
 
         $redirect = route('dominion.op-center.show', $target);

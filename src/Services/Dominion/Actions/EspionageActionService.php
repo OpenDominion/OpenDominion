@@ -232,19 +232,12 @@ class EspionageActionService
             }
         }
 
-        // todo: is not invalid?
-        $infoOp = InfoOp::firstOrNew([
+        $infoOp = new InfoOp([
             'source_realm_id' => $dominion->realm->id,
             'target_dominion_id' => $target->id,
             'type' => $operationKey,
-        ], [
             'source_dominion_id' => $dominion->id,
         ]);
-
-        if ($infoOp->exists) {
-            // Overwrite casted_by_dominion_id for the newer data
-            $infoOp->source_dominion_id = $dominion->id;
-        }
 
         switch ($operationKey) {
             case 'barracks_spy':
@@ -375,8 +368,6 @@ class EspionageActionService
                 throw new LogicException("Unknown info gathering operation {$operationKey}");
         }
 
-        // Always force update updated_at on infoops to know when the last infoop was performed
-        $infoOp->updated_at = now(); // todo: fixable with ->save(['touch'])?
         $infoOp->save();
 
         return [
