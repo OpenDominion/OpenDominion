@@ -68,6 +68,33 @@ class SpellCalculator
     }
 
     /**
+     * Returns whether spell $type for $dominion is on cooldown.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return bool
+     */
+    public function isOnCooldown(Dominion $dominion, string $spell): bool
+    {
+        $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
+
+        if (isset($spellInfo['cooldown'])) {
+            $spellLastCast = DB::table('dominion_history')
+                ->where('dominion_id', $dominion->id)
+                ->where('event', 'cast spell')
+                ->where('delta', 'like', "%{$spell}%")
+                ->orderby('created_at', 'desc')
+                ->take(1)
+                ->first();
+            if ($spellLastCast && now()->diffInHours($spellLastCast->created_at) < $spellInfo['cooldown']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns a list of spells currently affecting $dominion.
      *
      * @param Dominion $dominion

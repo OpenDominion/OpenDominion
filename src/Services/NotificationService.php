@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services;
 
+use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Notifications\HourlyEmailDigestNotification;
 use OpenDominion\Notifications\IrregularDominionEmailNotification;
@@ -11,6 +12,17 @@ class NotificationService
 {
     /** @var array */
     protected $notifications = [];
+
+    /** @var NotificationHelper */
+    protected $notificationHelper;
+
+    /**
+     * NotificationService constructor.
+     */
+    public function __construct()
+    {
+        $this->notificationHelper = app(NotificationHelper::class);
+    }
 
     /**
      * Queues a notification, to be sent later with sendNotifications.
@@ -41,13 +53,22 @@ class NotificationService
         $user = $dominion->user;
 
         $emailNotifications = [];
+        $defaultSettings = $this->notificationHelper->getDefaultUserNotificationSettings();
 
         foreach ($this->notifications as $type => $data) {
-            if ($user->getSetting("notifications.{$category}.{$type}.ingame")) {
+            $ingameSetting = $user->getSetting("notifications.{$category}.{$type}.ingame");
+            if ($ingameSetting === null) {
+                $ingameSetting = $defaultSettings[$category][$type]['ingame'];
+            }
+            if ($ingameSetting) {
                 $dominion->notify(new WebNotification($category, $type, $data));
             }
 
-            if ($user->getSetting("notifications.{$category}.{$type}.email")) {
+            $emailSetting = $user->getSetting("notifications.{$category}.{$type}.email");
+            if ($emailSetting === null) {
+                $emailSetting = $defaultSettings[$category][$type]['email'];
+            }
+            if ($emailSetting) {
                 $emailNotifications[] = [
                     'category' => $category,
                     'type' => $type,
