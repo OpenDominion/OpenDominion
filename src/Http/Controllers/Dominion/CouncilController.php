@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
@@ -48,7 +47,7 @@ class CouncilController extends AbstractDominionController
                 $request->get('body')
             );
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
@@ -104,7 +103,7 @@ class CouncilController extends AbstractDominionController
             // todo: $post = ... and navigate to anchor with post id on page?
             $councilService->postReply($dominion, $thread, $request->get('body'));
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

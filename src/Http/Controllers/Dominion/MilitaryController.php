@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
@@ -16,7 +16,6 @@ use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\QueueService;
-use Throwable;
 
 class MilitaryController extends AbstractDominionController
 {
@@ -39,7 +38,7 @@ class MilitaryController extends AbstractDominionController
         try {
             $result = $changeDraftRateActionService->changeDraftRate($dominion, $request->get('draft_rate'));
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
@@ -66,7 +65,7 @@ class MilitaryController extends AbstractDominionController
         try {
             $result = $militaryTrainActionService->train($dominion, $request->get('train'));
 
-        } catch (Throwable $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
@@ -100,7 +99,7 @@ class MilitaryController extends AbstractDominionController
         try {
             $result = $releaseActionService->release($dominion, $request->get('release'));
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
