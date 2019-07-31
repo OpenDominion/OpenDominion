@@ -72,14 +72,36 @@ if (!function_exists('random_chance')) {
      *
      * @param float $chance Floating-point number between 0.0 and 1.0, representing 0% and 100%, respectively
      * @return bool
+     * @throws Exception
      */
     function random_chance(float $chance): bool
     {
         global $mockRandomChance;
         if ($mockRandomChance === true) {
             return false;
-        } else {
-            return ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $chance);
         }
+
+        return ((random_int(0, mt_getrandmax()) / mt_getrandmax()) <= $chance);
+    }
+}
+
+if (!function_exists('number_string')) {
+    /**
+     * Generates a string from a number with number_format, and optionally an
+     * explicit + sign prefix.
+     *
+     * @param int|float $number
+     * @param int $numDecimals
+     * @param bool $explicitPlusSign
+     * @return string
+     */
+    function number_string($number, int $numDecimals = 0, bool $explicitPlusSign = false): string {
+        $string = number_format($number, $numDecimals);
+
+        if ($explicitPlusSign && $number > 0) {
+            $string = "+{$string}";
+        }
+
+        return $string;
     }
 }

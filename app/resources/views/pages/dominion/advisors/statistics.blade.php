@@ -38,14 +38,14 @@
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}</strong>
                                             @if ($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getOffensivePowerRaw($selectedDominion))) }})</small>
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getOffensivePowerRaw($selectedDominion))) }} raw)</small>
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Offensive Power Modifier:</td>
+                                        <td>Offensive Power Multiplier:</td>
                                         <td>
-                                            <strong>{{ number_format(($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                            <strong>{{ number_string(($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) - 1) * 100, 3, true) }}%</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -77,14 +77,14 @@
                                         <td>
                                             <strong>{{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}</strong>
                                             @if ($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($selectedDominion))) }})</small>
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($selectedDominion))) }} raw)</small>
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Defensive Power Modifier:</td>
+                                        <td>Defensive Power Multiplier:</td>
                                         <td>
-                                            <strong>{{ number_format(($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                            <strong>{{ number_string(($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) - 1) * 100, 3, true) }}%</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -250,76 +250,38 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Population:</td>
+                                        <td>Current Population:</td>
                                         <td>
-                                            <strong>{{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}</strong>
-                                            @if ($populationCalculator->getMaxPopulationMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }})</small>
-                                            @endif
+                                            <strong>{{ number_format($populationCalculator->getPopulation($selectedDominion)) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Population multiplier:</td>
-                                        <td>
-                                            <strong>{{ number_format(($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <table class="table">
-                                <colgroup>
-                                    <col width="50%">
-                                    <col width="50%">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Peasantry</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Population:</td>
+                                        <td>Peasant Population:</td>
                                         <td>
                                             <strong>{{ number_format($selectedDominion->peasants) }}</strong>
-                                            <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }})</small>
+                                            <small class="text-muted">({{ number_format((($selectedDominion->peasants / $populationCalculator->getPopulation($selectedDominion)) * 100), 2) }}%)</small>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Population multiplier:</td>
+                                        <td>Military Population:</td>
                                         <td>
-                                            <strong>{{ number_format(($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                            <strong>{{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}</strong>
+                                            <small class="text-muted">({{ number_format((100 - ($selectedDominion->peasants / $populationCalculator->getPopulation($selectedDominion)) * 100), 2) }}%)</small>
                                         </td>
                                     </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <table class="table">
-                                <colgroup>
-                                    <col width="50%">
-                                    <col width="50%">
-                                </colgroup>
-                                <thead>
                                     <tr>
-                                        <th colspan="2">Military</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Population:</td>
+                                        <td>Max Population:</td>
                                         <td>
                                             <strong>{{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}</strong>
                                             @if ($populationCalculator->getMaxPopulationMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }})</small>
+                                                <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }} raw)</small>
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Population multiplier:</td>
+                                        <td>Population Multiplier:</td>
                                         <td>
-                                            <strong>{{ number_format(($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100, 3) }}%</strong>
+                                            <strong>{{ number_string((($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100), 3, true) }}%</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -335,7 +297,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The statistics advisor gives you some rudimentary numbers of statistics regarding your current state.</p>
+                    <p>The statistics advisor gives you statistics regarding your current dominion state.</p>
                     <p>Ratio numbers are total number of units per acre of land.</p>
                 </div>
             </div>
