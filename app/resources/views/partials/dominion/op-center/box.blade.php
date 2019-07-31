@@ -9,7 +9,7 @@
         @endisset
     </div>
 
-    <div class="box-body table-responsive {{ (isset($noPadding) && $noPadding) ? 'no-padding' : null }}">
+    <div class="box-body {{ (isset($tableResponsive) && !$tableResponsive) ? null : 'table-responsive' }} {{ (isset($noPadding) && $noPadding) ? 'no-padding' : null }}">
         {{ $slot }}
     </div>
 
