@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\CastSpellRequest;
 use OpenDominion\Models\Dominion;
@@ -12,7 +13,6 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use Throwable;
 
 class MagicController extends AbstractDominionController
 {
@@ -39,9 +39,9 @@ class MagicController extends AbstractDominionController
                 ($request->has('target_dominion') ? Dominion::findOrFail($request->get('target_dominion')) : null)
             );
 
-        } catch (Throwable $e) {
+        } catch (GameException $e) {
             return redirect()->back()
-//                ->withInput($request->all())
+                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
