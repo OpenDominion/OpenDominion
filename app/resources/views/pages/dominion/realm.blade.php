@@ -55,13 +55,13 @@
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($protectionService->isUnderProtection($dominion))
-                                                <i class="ra ra-shield ra-lg text-aqua" title="Under protection"></i>
+                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
                                             @endif
 
                                             @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-yellow"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
                                             @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-green"></i>
+                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                             @endif
 
                                             {{--
