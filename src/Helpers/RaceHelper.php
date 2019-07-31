@@ -34,9 +34,10 @@ GNOME;
 <p>Fiercely loyal to family and friends, they will defend their homeland with surprising fortitude.</p>
 HALFLING;
 
+        // new
         $descriptions['human'] = <<<HUMAN
-<p>These noble and religious Humans hail from fallen city of Brimstone Keep.</p>
-<p>Proficient at everything but excelling at nothing, they are a well-balanced and self-sufficient race.</p>
+<p>Among the youngest of the races, the Human empire rose swiftly and against the odds. Humans proved to be not only capable warriors, but also skilled smiths, clever engineers and above all, adaptable. Their homeland destroyed by the forces of Evil decades ago, Humans seek to rebuild and avenge their fallen brothers.</p>
+<p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline. </p>
 HUMAN;
 
         $descriptions['merfolk'] = <<<MERFOLK
@@ -54,6 +55,7 @@ SPIRIT;
 <p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
 SYLVAN;
 
+        // new
         $descriptions['wood elf'] = <<<WOODELF
 <p>Graceful, slender and eerily beautiful, the Wood Elves are among the eldest of the races and keenly attuned with the natural world, seeking to protect their forests from the forces of evil.</p>
 <p>Though peaceful by nature, Wood Elves are a versatile race, proficient in combat with their deadly archers and magically gifted druids that draw power from the very forest itself, and backed up by powerful wizards and skilled spies that excel at covert ops.</p>
