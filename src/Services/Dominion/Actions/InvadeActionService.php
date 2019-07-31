@@ -25,6 +25,16 @@ class InvadeActionService
     use DominionGuardsTrait;
 
     /**
+     * @var float Number of boats protected per dock
+     */
+    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
+
+    /**
+     * @var float Base percentage of boats sunk
+     */
+    protected const BOATS_SUNK_BASE_PERCENTAGE = 5;
+
+    /**
      * @var float Base percentage of defensive casualties
      */
     protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.5;
@@ -233,6 +243,7 @@ class InvadeActionService
             $this->checkInvasionSuccess($dominion, $target, $units);
             $this->checkOverwhelmed();
 
+            $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
@@ -922,7 +933,6 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units, array $convertedUnits): void
     {
-        // Units
         foreach ($units as $slot => $amount) {
             $unitKey = "military_unit{$slot}";
 
@@ -939,14 +949,31 @@ class InvadeActionService
                 $this->getUnitReturnHoursForSlot($dominion, $slot)
             );
         }
+    }
 
-        // Boats
-        // todo: move me in my own method
+    /**
+     * Handles the surviving units returning home.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @throws Throwable
+     */
+    protected function handleBoats(Dominion $dominion, Dominion $target, array $units): void
+    {
+        $unitsTotal = 0;
+        $unitsThatSinkBoats = 0;
         $unitsThatNeedsBoatsByReturnHours = [];
-
+        // Calculate boats sent and attacker sinking perk
         foreach ($dominion->race->units as $unit) {
             if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
                 continue;
+            }
+
+            $unitsTotal += (int)$units[$unit->slot];
+
+            if ($unit->getPerkValue('sink_boats_offense') !== 0) {
+                $unitsThatSinkBoats += (int)$units[$unit->slot];
             }
 
             if ($unit->need_boat) {
@@ -959,11 +986,46 @@ class InvadeActionService
                 $unitsThatNeedsBoatsByReturnHours[$hours] += (int)$units[$unit->slot];
             }
         }
+        if ($unitsThatSinkBoats > 0) {
+            $defenderBoatsProtected = (static::BOATS_PROTECTED_PER_DOCK * $target->building_dock);
+            $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
+            $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
+            $targetBoatTotal = $target->resource_boats + $targetQueuedBoats;
+            $defenderBoatsSunk = (int)floor(max(0, $targetBoatTotal - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
+            if ($defenderBoatsSunk > $targetQueuedBoats) {
+                $this->queueService->dequeueResource('invasion', $target, 'boats', $targetQueuedBoats);
+                $target->decrement('resource_boats', $defenderBoatsSunk - $targetQueuedBoats);
+            } else {
+                $this->queueService->dequeueResource('invasion', $target, 'boats', $defenderBoatsSunk);
+            }
+            $this->invasionResult['defender']['boatsLost'] = $defenderBoatsSunk;
+        }
 
+        $defendingUnitsTotal = 0;
+        $defendingUnitsThatSinkBoats = 0;
+        $attackerBoatsLost = 0;
+        // Defender sinking perk
+        foreach ($target->race->units as $unit) {
+            $defendingUnitsTotal += $target->{"military_unit{$unit->slot}"};
+            if ($unit->getPerkValue('sink_boats_defense') !== 0) {
+                $defendingUnitsThatSinkBoats += $target->{"military_unit{$unit->slot}"};
+            }
+        }
+        if ($defendingUnitsThatSinkBoats > 0) {
+            $attackerBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($defendingUnitsThatSinkBoats / $defendingUnitsTotal);
+        }
+
+        // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / 30);
+            $boatsByReturnHourGroup = (int)floor($amountUnits / static::UNITS_PER_BOAT);
 
             $dominion->decrement('resource_boats', $boatsByReturnHourGroup);
+
+            if ($defendingUnitsThatSinkBoats > 0) {
+                $attackerBoatsSunk = (int)ceil($boatsByReturnHourGroup * $attackerBoatsSunkPercentage);
+                $attackerBoatsLost += $attackerBoatsSunk;
+                $boatsByReturnHourGroup -= $attackerBoatsSunk;
+            }
 
             $this->queueService->queueResources(
                 'invasion',
@@ -971,6 +1033,9 @@ class InvadeActionService
                 ['resource_boats' => $boatsByReturnHourGroup],
                 $hours
             );
+        }
+        if ($attackerBoatsLost > 0) {
+            $this->invasionResult['attacker']['boatsLost'] = $attackerBoatsSunk;
         }
     }
 

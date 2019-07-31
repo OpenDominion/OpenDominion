@@ -63,6 +63,12 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @if (isset($event->data['attacker']['boatsLost']))
+                                        <tr>
+                                            <td><i class="ra ra-droplet text-blue"></i> Boats</td>
+                                            <td>{{ number_format($event->data['attacker']['boatsLost']) }}</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -115,6 +121,12 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                    @endif
+                                    @if (isset($event->data['defender']['boatsLost']))
+                                        <tr>
+                                            <td><i class="ra ra-droplet text-blue"></i> Boats</td>
+                                            <td>{{ number_format($event->data['defender']['boatsLost']) }}</td>
+                                        </tr>
                                     @endif
                                 </tbody>
                             </table>
