@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Construction advisor now shows total amount of barren land
 - Added info op archive, allowing you to view previously taken info ops
 - Boats are now fully implemented, preventing a certain amount of boats from being sunk
+- Notifications are now visible from the status screen in a 'Recent News' section
 
 ### Changed
 - Condensed the items in the left navigation menu (except on mobile)
