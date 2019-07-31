@@ -114,13 +114,13 @@
                                     <tr>
                                         <td>Attacking success:</td>
                                         <td>
-                                            <strong>0</strong>
+                                            <strong>{{ number_format($selectedDominion->stat_attacking_success) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Defending success:</td>
                                         <td>
-                                            <strong>0</strong>
+                                            <strong>{{ number_format($selectedDominion->stat_defending_success) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -217,11 +217,15 @@
                                 <tbody>
                                     <tr>
                                         <td>Espionage Success:</td>
-                                        <td><strong>0</strong></td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_espionage_success) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Magic Success:</td>
-                                        <td><strong>0</strong></td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_spell_success) }}</strong>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
