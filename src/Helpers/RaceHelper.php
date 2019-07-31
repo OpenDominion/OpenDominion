@@ -14,9 +14,10 @@ class RaceHelper
 
         // Good races
 
+        // new
         $descriptions['dwarf'] = <<<DWARF
-<p>Defined by their majestic beards and their love for booze and labor, these descendants of Caedair Hold have come to fight for the forces of good.</p>
-<p>Short and grumpy, they harbor an intense hatred towards Goblins.</p>
+<p>Dwarves are a short and ill-tempered race well-known for their majestic beards, their love of ale and tireless labour. Their spirited chants and songs echo long into the night as they hollow out entire mountains for their ore.</p>
+<p>Dwarven mines are the most productive in the lands, producing a steady flow of ore used to fortify their great cities, and craft legendary Dwarven armour for their military forces.</p>
 DWARF;
 
         $descriptions['firewalker'] = <<<FIREWALKER
