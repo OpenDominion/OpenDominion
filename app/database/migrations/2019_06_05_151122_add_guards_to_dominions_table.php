@@ -14,8 +14,13 @@ class AddGuardsToDominionsTable extends Migration
     public function up(): void
     {
         Schema::table('dominions', static function (Blueprint $table) {
-            $table->timestamp('royal_guard')->nullable();
-            $table->timestamp('elite_guard')->nullable();
+            $table->timestamp('royal_guard_active_at')
+                ->nullable()
+                ->after('council_last_read');
+
+            $table->timestamp('elite_guard_active_at')
+                ->nullable()
+                ->after('royal_guard_active_at');
         });
     }
 
@@ -27,7 +32,7 @@ class AddGuardsToDominionsTable extends Migration
     public function down(): void
     {
         Schema::table('dominions', static function (Blueprint $table) {
-            $table->dropColumn(['royal_guard', 'elite_guard']);
+            $table->dropColumn(['elite_guard_active_at', 'elite_guard_active_at']);
         });
     }
 }
