@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Extended the Statistics Advisor with more useful information
 - No more than two identical races can be in the same pack
 - Realms can now have mixed racial alignments
+- Prestige gain formula changed to `20 + ([Target's Prestige] * [Land Ratio] / 12)`, still capped at 10% of your current prestige.
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
