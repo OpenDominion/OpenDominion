@@ -357,7 +357,7 @@ class InvadeActionService
 
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = (int)round(min(
-                (($target->prestige * (static::PRESTIGE_CHANGE_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
+                (($target->prestige * (($range / 100) / 12)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
                 (($dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD) // But capped by depending on your current prestige
             ));
             $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
