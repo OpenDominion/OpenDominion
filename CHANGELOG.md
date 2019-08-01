@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Barren land now correctly houses 10 population for Gnome and Halfling
 - Changed bank icon
 - Minor text fixes
+- Fixed bug where spy strength was lowered when trying to perform op when you had no spies
 
 ## [0.6.2-9] - 2019-07-14
 ### Changed
