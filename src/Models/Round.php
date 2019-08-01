@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property bool $mixed_alignment
  * @property \Illuminate\Support\Carbon $start_date
  * @property \Illuminate\Support\Carbon $end_date
+ * @property \Illuminate\Support\Carbon $invasions_end_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
@@ -128,6 +129,11 @@ class Round extends AbstractModel
     public function hasEnded()
     {
         return ($this->end_date <= now());
+    }
+
+    public function hasInvasionsDisabled()
+    {
+        return ($this->invasions_end_date <= now());
     }
 
     /**

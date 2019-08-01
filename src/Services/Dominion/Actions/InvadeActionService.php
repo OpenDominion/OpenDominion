@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
@@ -187,24 +188,29 @@ class InvadeActionService
             // Checks
             $this->guardLockedDominion($dominion);
 
+            if($dominion->round->hasInvasionsDisabled())
+            {
+                throw new GameException('Invasions have been disabled for the remainder of the round.');
+            }
+
             if ($this->protectionService->isUnderProtection($dominion)) {
-                throw new RuntimeException('You cannot invade while under protection');
+                throw new GameException('You cannot invade while under protection');
             }
 
             if ($this->protectionService->isUnderProtection($target)) {
-                throw new RuntimeException('You cannot invade dominions which are under protection');
+                throw new GameException('You cannot invade dominions which are under protection');
             }
 
             if (!$this->rangeCalculator->isInRange($dominion, $target)) {
-                throw new RuntimeException('You cannot invade dominions outside of your range');
+                throw new GameException('You cannot invade dominions outside of your range');
             }
 
             if ($dominion->round->id !== $target->round->id) {
-                throw new RuntimeException('Nice try, but you cannot invade cross-round');
+                throw new GameException('Nice try, but you cannot invade cross-round');
             }
 
             if ($dominion->realm->id === $target->realm->id) {
-                throw new RuntimeException('Nice try, but you cannot invade your realmies');
+                throw new GameException('Nice try, but you cannot invade your realmies');
             }
 
             // Sanitize input
@@ -212,31 +218,31 @@ class InvadeActionService
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
             if (!$this->hasAnyOP($dominion, $units)) {
-                throw new RuntimeException('You need to send at least some units');
+                throw new GameException('You need to send at least some units');
             }
 
             if (!$this->allUnitsHaveOP($dominion, $units)) {
-                throw new RuntimeException('You cannot send units that have no OP');
+                throw new GameException('You cannot send units that have no OP');
             }
 
             if (!$this->hasEnoughUnitsAtHome($dominion, $units)) {
-                throw new RuntimeException('You don\'t have enough units at home to send this many units');
+                throw new GameException('You don\'t have enough units at home to send this many units');
             }
 
             if (!$this->hasEnoughBoats($dominion, $units)) {
-                throw new RuntimeException('You do not have enough boats to send this many units');
+                throw new GameException('You do not have enough boats to send this many units');
             }
 
             if ($dominion->morale < static::MIN_MORALE) {
-                throw new RuntimeException('You do not have enough morale to invade others');
+                throw new GameException('You do not have enough morale to invade others');
             }
 
-            if (!$this->passes33PercentRule($dominion, $target, null, $units)) {
-                throw new RuntimeException('You need to leave more DP units at home, based on the OP you\'re sending out (33% rule)');
+            if (!$this->passes33PercentRule($dominion, $target, $units)) {
+                throw new GameException('You need to leave more DP units at home, based on the OP you\'re sending out (33% rule)');
             }
 
             if (!$this->passes54RatioRule($dominion, $target, $landRatio, $units)) {
-                throw new RuntimeException('You are sending out too much OP, based on your new home DP (5:4 rule)');
+                throw new GameException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
             // Handle invasion results
@@ -1166,13 +1172,12 @@ class InvadeActionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
-     * @param float $landRatio
      * @param array $units
      * @return bool
      */
-    protected function passes33PercentRule(Dominion $dominion, Dominion $target, ?float $landRatio, array $units): bool
+    protected function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
     {
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
