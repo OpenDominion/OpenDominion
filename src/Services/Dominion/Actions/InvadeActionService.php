@@ -188,7 +188,7 @@ class InvadeActionService
             // Checks
             $this->guardLockedDominion($dominion);
 
-            if($dominion->round->hasInvasionsDisabled())
+            if($dominion->round->hasOffensiveActionsDisabled())
             {
                 throw new GameException('Invasions have been disabled for the remainder of the round.');
             }

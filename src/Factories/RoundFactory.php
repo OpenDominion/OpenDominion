@@ -33,7 +33,7 @@ class RoundFactory
 
         $hoursBeforeRoundEnd = $invasionEndHours[random_int(0, count($invasionEndHours) - 1)];
 
-        $invasionsEndDate = (clone $endDate)->addHours(-$hoursBeforeRoundEnd);
+        $offensiveActionsEndDate = (clone $endDate)->addHours(-$hoursBeforeRoundEnd);
 
         return Round::create([
             'round_league_id' => $league->id,
@@ -41,7 +41,7 @@ class RoundFactory
             'name' => "Beta Round {$number}", // todo
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'invasions_end_date' => $invasionsEndDate,
+            'offensive_actions_end_date' => $offensiveActionsEndDate,
             'realm_size' => $realmSize,
             'pack_size' => $packSize,
             'players_per_race' => $playersPerRace,

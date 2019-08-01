@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -46,6 +47,11 @@ class ExploreActionService
     public function explore(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
+
+        if($dominion->round->hasOffensiveActionsDisabled())
+        {
+            throw new GameException('Exploration has been disabled for the remainder of the round.');
+        }
 
         $data = array_only($data, array_map(function ($value) {
             return "land_{$value}";

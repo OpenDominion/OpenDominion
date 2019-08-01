@@ -131,7 +131,7 @@ class Round extends AbstractModel
         return ($this->end_date <= now());
     }
 
-    public function hasInvasionsDisabled()
+    public function hasOffensiveActionsDisabled()
     {
         return ($this->invasions_end_date <= now());
     }

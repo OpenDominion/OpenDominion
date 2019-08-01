@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -141,8 +142,16 @@ class SpellActionService
                 $result = $this->castInfoOpSpell($dominion, $spellKey, $target);
 
             } elseif ($this->spellHelper->isBlackOpSpell($spellKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } elseif ($this->spellHelper->isWarSpell($spellKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } else {
                 throw new LogicException("Unknown type for spell {$spellKey}");
