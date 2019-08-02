@@ -50,6 +50,7 @@ class PackService
      * @param string $packPassword
      * @param Race $race
      * @return Pack
+     * @throws GameException
      */
     public function getPack(Round $round, string $packName, string $packPassword, Race $race): Pack
     {
