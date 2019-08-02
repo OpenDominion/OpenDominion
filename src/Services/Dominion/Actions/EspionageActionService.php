@@ -142,7 +142,7 @@ class EspionageActionService
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
-            $dominion->spy_strength -= 2; // todo: different values for different kind of ops (info ops 2%, rest 5%)
+            $dominion->decrement('spy_strength', 2); // todo: different values for different kind of ops (info ops 2%, rest 5%)
             $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION]);
 
         });
@@ -163,8 +163,8 @@ class EspionageActionService
     {
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
-        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion);
-        $targetSpa = $this->militaryCalculator->getSpyRatio($target);
+        $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+        $targetSpa = $this->militaryCalculator->getSpyRatio($target, 'defense');
 
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa === 0.0) {
@@ -183,7 +183,7 @@ class EspionageActionService
             $successRate = clamp((
                 (0.0172 * ($ratio ** 3))
                 - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
+                + (0.7777 * $ratio)
                 - 0.0134
             ), 0.0, 1.0);
 

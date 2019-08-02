@@ -26,6 +26,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int $activated
  * @property string $activation_code
  * @property array|null $settings
+ * @property int|null $last_deleted_dominion_round
  * @property \Illuminate\Support\Carbon|null $last_online
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

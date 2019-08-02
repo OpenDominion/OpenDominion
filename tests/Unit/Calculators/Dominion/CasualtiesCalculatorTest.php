@@ -6,6 +6,7 @@ use Mockery as m;
 use Mockery\Mock;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -32,7 +33,8 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(CasualtiesCalculator::class, [
             $this->app->make(LandCalculator::class),
-            $this->app->make(UnitHelper::class),
+            $this->app->make(SpellCalculator::class),
+            $this->app->make(UnitHelper::class)
         ])->makePartial();
     }
 
@@ -137,7 +139,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
                 $this->dominion->shouldReceive('getAttribute')->with($attribute)->andReturn($value)->byDefault();
             }
 
-            $this->assertEquals($test['expected'], $this->sut->getStarvationCasualtiesByUnitType($this->dominion));
+            $this->assertEquals($test['expected'], $this->sut->getStarvationCasualtiesByUnitType($this->dominion, $test['attributes']['resource_food']));
         }
     }
 
@@ -146,13 +148,8 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
      */
     public function testGetTotalStarvationCasualties()
     {
-        $this->dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(100)->byDefault();
-        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion));
-
-        $this->dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(0)->byDefault();
-        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion));
-
-        $this->dominion->shouldReceive('getAttribute')->with('resource_food')->andReturn(-100)->byDefault();
-        $this->assertEquals(400, $this->sut->getTotalStarvationCasualties($this->dominion));
+        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion, 100));
+        $this->assertEquals(0, $this->sut->getTotalStarvationCasualties($this->dominion, 0));
+        $this->assertEquals(400, $this->sut->getTotalStarvationCasualties($this->dominion, -100));
     }
 }

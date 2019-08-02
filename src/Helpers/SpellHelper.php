@@ -63,7 +63,7 @@ class SpellHelper
             return $spell['races']->contains($raceName);
         })->first();
 
-        return collect([
+        return collect(array_filter([
             [
                 'name' => 'Gaia\'s Watch',
                 'description' => '+10% food production',
@@ -122,7 +122,7 @@ class SpellHelper
 //                'cooldown' => 22, // todo
 //            ],
             $racialSpell
-        ]);
+        ]));
     }
 
     public function getRacialSelfSpells(): Collection
@@ -167,7 +167,55 @@ class SpellHelper
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Lizardfolk']),
-            ]
+            ],
+            [
+                'name' => 'Blizzard',
+                'description' => '+15% defensive strength (not cumulative with Ares Call)',
+                'key' => 'blizzard',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Icekin']),
+            ],
+            [
+                'name' => 'Mechanical Genius',
+                'description' => '30% reduction of re-zoning costs',
+                'key' => 'mechanical_genius',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Gnome']),
+            ],
+            [
+                'name' => 'Unholy Ghost',
+                'description' => 'Enemy draftees do not participate in battle due to extreme fear',
+                'key' => 'unholy_ghost',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Dark Elf']),
+            ],
+            [
+                'name' => 'Defensive Frenzy',
+                'description' => '+20% defensive strength (not cumulative with Ares Call)',
+                'key' => 'defensive_frenzy',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Halfling']),
+            ],
+            [
+                'name' => 'Warsong',
+                'description' => '+10% offensive power',
+                'key' => 'warsong',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Sylvan']),
+            ],
+            [
+                'name' => 'Regeneration',
+                'description' => 'Reduces combat losses by 25%',
+                'key' => 'regeneration',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Troll']),
+            ],
         ]);
     }
 
@@ -199,12 +247,12 @@ class SpellHelper
                 'key' => 'revelation',
                 'mana_cost' => 1.2,
             ],
-//            [
-//                'name' => 'Clairvoyance',
-//                'description' => 'Reveal realm town crier',
-//                'key' => 'clairvoyance',
-//                'mana_cost' => 1.2,
-//            ],
+            [
+                'name' => 'Clairvoyance',
+                'description' => 'Reveal realm town crier',
+                'key' => 'clairvoyance',
+                'mana_cost' => 1.2,
+            ],
 //            [
 //                'name' => 'Disclosure',
 //                'description' => 'Reveal wonder',

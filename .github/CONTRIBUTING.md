@@ -103,7 +103,7 @@ There's also some non-domain coding issues open from time to time. We'll try to 
 
 ##### Tech stack
 
-OpenDominion is built on the Laravel 5.8 PHP framework, using PHP 7.2 as the main programming language.
+OpenDominion is built on the Laravel 5.7 PHP framework, using PHP 7.3 as the main programming language.
 
 The frontend is based off the [AdminLTE](https://adminlte.io/themes/AdminLTE/index2.html) open source dashboard theme, using [Font Awesome](https://fontawesome.com/) and [RPG Awesome](https://nagoshiashumari.github.io/Rpg-Awesome/) as font icons, alongside some additional NPM packages like Select2 for improved UX. It's built with Laravel's Blade templating language to serve static HTML responses.
 
@@ -111,7 +111,7 @@ If you're going to use PhpStorm to tinker around in the code, there's a partiall
 
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 7.2 or higher installed and in your path.
+- You have [PHP](http://www.php.net/) 7.3 or higher installed and in your path.
 - Your PHP has the extensions: curl, fileinfo, gd OR imagick, mbstring, openssl, pdo_mysql and optionally [xdebug](https://xdebug.org/).
 - You have [Composer](https://getcomposer.org/) installed and in your path.
 - You have [NPM](https://nodejs.org/en/) 10 or higher installed and in your path.

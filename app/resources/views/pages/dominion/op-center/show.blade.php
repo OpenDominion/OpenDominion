@@ -192,7 +192,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -287,7 +287,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -356,7 +356,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -457,7 +457,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -595,7 +595,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -638,7 +638,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Land Type</th>
+                                <th>Building Type</th>
                                 @for ($i = 1; $i <= 12; $i++)
                                     <th class="text-center">{{ $i }}</th>
                                 @endfor
@@ -729,7 +729,7 @@
 
                 @slot('boxFooter')
                     @if ($infoOp !== null)
-                        <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                        <em>Revealed {{ $infoOp->updated_at }} by {{ $infoOp->sourceDominion->name }}</em>
                         @if ($infoOp->isStale())
                             <span class="label label-warning">Stale</span>
                         @endif
@@ -812,6 +812,41 @@
                         </tbody>
                     </table>
                 @endif
+            @endcomponent
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-sm-6">
+            @component('partials.dominion.op-center.box')
+                @php
+                    $infoOp = $infoOpService->getInfoOp($selectedDominion->realm, $dominion, 'clairvoyance');
+                @endphp
+
+                @slot('title', 'Town Crier')
+                @slot('titleIconClass', 'fa fa-newspaper-o')
+
+                @if ($infoOp === null)
+                    <p>No recent data available.</p>
+                    <p>Cast magic spell 'Clairvoyance' to reveal information.</p>
+                @else
+                    <a href="{{ route('dominion.op-center.clairvoyance', $dominion->realm->id) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>
+                    - <em>Revealed <abbr title="{{ $infoOp->updated_at }}">{{ $infoOp->updated_at->diffForHumans() }}</abbr> by {{ $infoOp->sourceDominion->name }}</em>
+                    @if ($infoOp->isStale())
+                        <span class="label label-warning">Stale</span>
+                    @endif
+                @endif
+
+                @slot('boxFooter')
+                    <div class="pull-right">
+                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                            @csrf
+                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                            <input type="hidden" name="spell" value="clairvoyance">
+                            <button type="submit" class="btn btn-sm btn-primary">Clairvoyance ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clairvoyance')) }} mana)</button>
+                        </form>
+                    </div>
+                @endslot
             @endcomponent
         </div>
 

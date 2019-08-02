@@ -25,7 +25,7 @@
                     </div>
                 </div>
             @else
-                <form action="{{ route('dominion.invade') }}" method="post" role="form">
+                <form action="{{ route('dominion.invade') }}" method="post" role="form" id="invade_form">
                     @csrf
 
                     <div class="box box-primary">
@@ -83,6 +83,18 @@
                                             @continue
                                         @endif
 
+                                        @php
+                                            $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
+                                            $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
+
+                                            $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
+                                                return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
+                                            })->count() > 0;
+                                            $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
+                                                return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
+                                            })->count() > 0;
+                                        @endphp
+
                                         <tr>
                                             <td>
                                                 {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}") !!}
@@ -91,11 +103,9 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                {{ $unit->power_offense }}
+                                                <span id="unit{{ $unitSlot }}_op">{{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}</span>{{ $hasDynamicOffensivePower ? '*' : null }}
                                                 /
-                                                <span class="text-muted">
-                                                    {{ $unit->power_defense }}
-                                                </span>
+                                                <span id="unit{{ $unitSlot }}_dp" class="text-muted">{{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}</span><span class="text-muted">{{ $hasDynamicDefensivePower ? '*' : null }}</span>
                                             </td>
                                             <td class="text-center">
                                                 {{ number_format($selectedDominion->{"military_unit{$unitSlot}"}) }}
@@ -274,9 +284,37 @@
                 templateSelection: select2Template,
             });
 
+            updateUnitStats();
+
+            $('#target_dominion').change(function (e) {
+                updateUnitStats();
+            });
+
             // please forgive me for this monstrosity
             $('input[name^=\'unit\']').change(function (e) {
-                // var input = $(this);
+                calculate();
+            });
+
+            function updateUnitStats() {
+                $.get(
+                    "{{ route('api.dominion.invasion') }}?" + $('#invade_form').serialize(), {},
+                    function(response) {
+                        if(response.result == 'success') {
+                            $.each(response.units, function(slot, stats) {
+                                // Update unit stats data attributes
+                                $('#unit\\['+slot+'\\]').data('dp', stats.dp);
+                                $('#unit\\['+slot+'\\]').data('op', stats.op);
+                                // Update unit stats display
+                                $('#unit'+slot+'_dp').text(stats.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                                $('#unit'+slot+'_op').text(stats.op.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            });
+                            calculate();
+                        }
+                    }
+                );
+            }
+
+            function calculate() {
                 var invasionForceOPElement = $('#invasion-force-op');
                 var invasionForceBoatsElement = $('#invasion-force-boats');
                 var homeForcesOPElement = $('#home-forces-op');
@@ -284,7 +322,6 @@
                 var homeForcesBoatsElement = $('#home-forces-boats');
                 var invadeButtonElement = $('#invade-button');
                 var allUnitInputs = $('input[name^=\'unit\']');
-                var unitSlot = parseInt($(this).data('slot'));
 
                 var invadingForceOP = 0;
                 var invadingForceDP = 0;
@@ -304,11 +341,6 @@
                 var DPNeededToLeaveAtHome; // 33% rule
                 var allowedMaxOP; // 5:4 rule
 
-                // Calculate total unit OP / DP
-                var unitStatsElement = $('#unit' + unitSlot + '_stats');
-                unitStatsElement.find('.op').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('op')) * OPMultiplier)).toLocaleString(undefined, {maximumFractionDigits: 2}));
-                unitStatsElement.find('.dp').text((parseInt($(this).val() || 0) * (parseFloat($(this).data('dp')) * DPMultiplier)).toLocaleString(undefined, {maximumFractionDigits: 2}));
-
                 // Calculate invading force OP / DP
                 allUnitInputs.each(function () {
                     // var unitAmount = parseInt($(this).data('amount')); // total amount at home before invading
@@ -316,6 +348,13 @@
                     var unitDP = parseFloat($(this).data('dp'));
                     var amountToSend = parseInt($(this).val() || 0);
                     var needBoat = !!$(this).data('need-boat');
+
+                    var totalUnitOP = amountToSend * unitOP * OPMultiplier;
+                    var totalUnitDP = amountToSend * unitDP * DPMultiplier;
+                    var unitSlot = parseInt($(this).data('slot'));
+                    var unitStatsElement = $('#unit' + unitSlot + '_stats');
+                    unitStatsElement.find('.op').text(totalUnitOP.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                    unitStatsElement.find('.dp').text(totalUnitDP.toLocaleString(undefined, {maximumFractionDigits: 2}));
 
                     if (amountToSend === 0) {
                         return true; // continue
@@ -400,7 +439,7 @@
                 } else {
                     invadeButtonElement.removeAttr('disabled');
                 }
-            });
+            }
         })(jQuery);
 
         function select2Template(state) {

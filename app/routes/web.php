@@ -141,6 +141,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
+            $router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
@@ -155,6 +156,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Misc
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
+            $router->post('misc/delete-dominion')->uses('Dominion\MiscController@postDeleteDominion')->name('misc.delete-dominion');
 
             // Debug
             // todo: remove me later

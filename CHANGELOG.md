@@ -1,9 +1,81 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+All notable changes relevant to players in this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.6.2-9] - 2019-07-14
+### Changed
+- Slightly improved targeted espionage/magic spell success rate
+
+### Fixed
+- Fixed spell mana cost not being reduced by wizard guilds
+- Fixed a race condition during tick, where more resources could be deducted than intended
+- Fixed displayed WPA on statistics advisor page
+- Fixed a bug where you could still conquer land upon bouncing
+- Fixed unable to scroll op center page tables on mobile
+- Fixed typo on Town Crier page
+
+## [0.6.2-8] - 2019-06-23
+### Changed
+- Server and tick timers on pages are now based on server time, not browser time
+- Changed texts and colors on Town Crier page
+
+### Fixed
+- Fixed race condition bug around hour change, sometimes resulting in loss of resources when performing actions on the hour change
+- Changed invasions to calculate casualties before everything else, fixes bugs related to immortal range and Hobgoblin plunder
+- Fixed missing Wizard Guild spell mana cost reduction
+- Fixed missing text on Town Crier page where a realmie fended off an attack
+- Removed 'target was recently invaded'-text on invasion report on failed invasions
+- Fixed Clear Sight not including returning boats
+- Fixed networth calculation to include dynamic unit power values (e.g. increased op/dp from land ratio based perks)
+
+## [0.6.2-7] - 2019-06-16
+### Fixed
+- Fix Clairvoyance reports on Op Center page
+- Fix 5:4 check on the invasion page
+
+## [0.6.2-6] - 2019-06-16
+### Fixed
+- Fixed Ares call not working properly sometimes
+
+## [0.6.2-5] - 2019-06-16
+### Added
+- Added unread count badge to the council page menu item in the sidebar to indicate new messages since your last council visit
+
+### Fixed
+- Fixed unit OP/DP on military training page to show with including certain bonuses
+- Fixed error where military DP was counted twice
+- Fixed code refactor with SPA/WPA perks
+- Fixed error in Op Center with Clairvoyance
+
+## [0.6.2-4] - 2019-06-12
+### Fixed
+- Fixed Firewalker's Phoenix immortal except vs Icekin perk
+- Fixed ArchMage cost reduction for Icekin
+
+## [0.6.2-3] - 2019-06-12
+### Added
+- Added ability to delete your pack once during registration
+
+### Fixed
+- Fixed server error when trying to join a pack with invalid credentials
+- Fixed missing unit perk help texts
+- Fixed Regeneration racial spell for trolls
+
+## [0.6.2-2] - 2019-06-10
+### Fixed
+- Fixed error on construction page
+- Fixed realms not filling up properly with new dominions
+
+## [0.6.2-1] - 2019-06-10
+### Added
+- Added Clairvoyance spell
+- Added new races: Dark Elf, Gnome, Halfling, Icekin, Sylvan, and Troll
+
+### Changed
+- Changed timestamp displays from relative server time (eg '13 hours ago') to absolute server time (eg '2019-06-19 13:33:37'). A setting will be added in the future for this, including round time (eg 'Day 12 Hour 23')
 
 ## [0.6.2] - 2019-06-05
 ### Changed
@@ -228,7 +300,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...HEAD
+[0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
+[0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
+[0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
+[0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
+[0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
+[0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
+[0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
+[0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
+[0.6.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...0.6.2-1
 [0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
 [0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5
 [0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4

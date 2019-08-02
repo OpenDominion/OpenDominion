@@ -1,55 +1,103 @@
+'use strict';
 
-// todo: there's probably a more elegant way to implement this :)
+class Ticker {
+    /**
+     * Ticker constructor.
+     */
+    constructor() {
+        this.tickerServerElement = null;
+        this.tickerNextHourElement = null;
+    }
 
-function ticker() {
-    tick();
-    setInterval(tick, 1000);
-}
+    /**
+     * Starts the ticker.
+     */
+    start() {
+        this.tickerServerElement = document.getElementById('ticker-server');
+        this.tickerNextHourElement = document.getElementById('ticker-next-tick');
 
-function tick() {
-    const now = new Date();
-    const nextHour = new Date();
-    nextHour.setHours(now.getHours() + 1);
-    nextHour.setMinutes(0);
-    nextHour.setSeconds(0);
-    const el = document.getElementById('tickers');
-    if (el != null) {
-        // el.getElementsByClassName('ticker-local')[0].innerHTML = hms(now);
-        el.getElementsByClassName('ticker-server')[0].innerHTML = hms(utc(now));
-        el.getElementsByClassName('ticker-next-tick')[0].innerHTML = hms(nextHour - now);
+        const self = this;
+        setInterval(() => self.tick(), 1000);
+    }
+
+    /**
+     * Ticks the ticker.
+     *
+     * @private
+     */
+    tick() {
+        const currentTime = new Date;
+
+        const nextHour = new Date;
+        nextHour.setUTCHours(currentTime.getUTCHours() + 1);
+        nextHour.setMinutes(0);
+        nextHour.setSeconds(0);
+
+        const diffDate = (nextHour - currentTime);
+
+        this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
+        this.tickerNextHourElement.innerHTML = Ticker.hms(diffDate);
+    }
+
+    /**
+     * Formats a Date or numeric value.
+     *
+     * @param {Date|number} value
+     * @return {string}
+     * @private
+     */
+    static hms(value) {
+        let hours = 0;
+        let minutes = 0;
+        let seconds = 0;
+
+        if (value instanceof Date) {
+            hours = value.getHours();
+            minutes = value.getMinutes();
+            seconds = value.getSeconds();
+
+        } else if (typeof value === 'number') {
+            value /= 1000;
+            seconds = value % 60;
+            minutes = (value - seconds) / 60;
+            hours = (value - (minutes * 60) - seconds) / 60;
+        }
+
+        return (
+            Ticker.pad(hours) +
+            ':' + Ticker.pad(minutes) +
+            ':' + Ticker.pad(seconds)
+        );
+    }
+
+    /**
+     * Left-pads a numeric value with two zeroes.
+     *
+     * @param {number} value
+     * @returns {string}
+     * @private
+     */
+    static pad(value) {
+        return ('00' + value).slice(-2);
+    }
+
+    /**
+     * Converts a Date into UTC.
+     *
+     * @param {Date} date
+     * @returns {Date}
+     * @private
+     */
+    static utc(date) {
+        return new Date(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds()
+        );
     }
 }
 
-function hms(value) {
-    let hours = 0;
-    let minutes = 0;
-    let seconds = 0;
-    if (value instanceof Date) {
-        hours = value.getHours();
-        minutes = value.getMinutes();
-        seconds = value.getSeconds();
-    } else if (typeof value == 'number') {
-        value = parseInt(value) / 1000;
-        seconds = value % 60;
-        minutes = (value - seconds) / 60;
-        hours = (value - (minutes * 60) - seconds) / 60;
-    }
-    return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
-}
-
-function pad(value) {
-    return ('00' + value).slice(-2);
-}
-
-function utc(date) {
-    return new Date(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        date.getUTCHours(),
-        date.getUTCMinutes(),
-        date.getUTCSeconds()
-    )
-}
-
-module.exports = ticker;
+module.exports = new Ticker;

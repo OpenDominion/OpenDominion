@@ -55,6 +55,7 @@ task('supervisorctl:restart', function () {
 
 // Execute tasks
 
+// Task list is based off the Laravel recipe
 task('deploy', [
     'deploy:info',
     'deploy:prepare',
@@ -63,22 +64,22 @@ task('deploy', [
     'deploy:update_code',
     'deploy:shared',
     'deploy:vendors',
-    'npm install', //
-    'npm run prod', //
+    'npm install', // custom made
+    'npm run prod', // custom made
     'deploy:writable',
     'artisan:storage:link',
+    'artisan:down', // custom inserted
     'artisan:view:clear',
     'artisan:cache:clear',
     'artisan:config:cache',
+    'artisan:migrate', // custom inserted
+    'artisan:game:data:sync', // custom made
+    'artisan:version:update', // custom made
     'artisan:optimize',
-    'artisan:down', //
-    'artisan:migrate', //
-    'artisan:game:data:sync', //
-    'artisan:version:update', //
     'deploy:symlink',
-    'php-fpm:reload', //
-    'supervisorctl:restart', //
-    'artisan:up', //
+    'php-fpm:reload', // custom made
+    'supervisorctl:restart', // custom made
+    'artisan:up', // custom inserted
     'deploy:unlock',
     'cleanup',
 ]);

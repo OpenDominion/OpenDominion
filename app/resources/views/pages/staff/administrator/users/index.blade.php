@@ -44,7 +44,7 @@
                                 </td>
                             @endif
                             <td class="text-center" data-order="{{ $user->created_at->getTimestamp() }}" data-search="">
-                                <span title="{{ $user->created_at }}">{{ $user->created_at->diffForHumans() }}</span>
+                                <span title="{{ $user->created_at }}">{{ $user->created_at }}</span>
                             </td>
                             <td class="text-center" data-search="">{{ $user->activated ? 'Yes' : 'No' }}</td>
                             <td class="text-center" data-search="">

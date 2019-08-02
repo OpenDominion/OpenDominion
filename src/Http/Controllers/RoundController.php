@@ -45,10 +45,15 @@ class RoundController extends AbstractController
     {
         $this->guardAgainstUserAlreadyHavingDominionInRound($round);
 
+        $races = Race::query()
+            ->with(['perks'])
+            ->orderBy('name')
+            ->get();
+
         return view('pages.round.register', [
             'raceHelper' => app(RaceHelper::class),
             'round' => $round,
-            'races' => Race::all(),
+            'races' => $races,
         ]);
     }
 
@@ -91,7 +96,9 @@ class RoundController extends AbstractController
                 );
 
                 if (!$pack) {
-                    throw new RuntimeException('Pack not found');
+                    return redirect()->back()
+                        ->withInput($request->all())
+                        ->withErrors(['The pack you specified was not found.']);
                 }
 
                 $realm = $pack->realm;
@@ -101,7 +108,8 @@ class RoundController extends AbstractController
                 $realm = $realmFinderService->findRandomRealm(
                     $round,
                     $race,
-                    $request->get('pack_size')
+                    $request->get('pack_size'),
+                    true
                 );
                 break;
 
