@@ -191,11 +191,8 @@ class EspionageActionService
 
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa === 0.0) {
-            return [
-                'success' => false,
-                'message' => "Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.",
-                'alert-type' => 'warning',
-            ];
+            // Don't reduce spy strength by throwing an exception here
+            throw new GameException("Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.");
         }
 
         if ($targetSpa !== 0.0) {
@@ -418,11 +415,8 @@ class EspionageActionService
 
         // You need at least some positive SPA to perform espionage operations
         if ($selfSpa === 0.0) {
-            return [
-                'success' => false,
-                'message' => "Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.",
-                'alert-type' => 'warning',
-            ];
+            // Don't reduce spy strength by throwing an exception here
+            throw new GameException("Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.");
         }
 
         if ($targetSpa !== 0.0) {

@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Extended the Statistics Advisor with more useful information
 - No more than two identical races can be in the same pack 
 - Changed national bank icon
+- Realms can now have mixed racial alignments
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
@@ -30,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed Gnome's racial spell Mechanical Genius, now properly granting the intended amount of rezoning cost reduction
 - Realm spinner on realm page no longer allows for invalid input (eg negative numbers) which in turn displayed a server error page
 - Barren land now correctly houses 10 population for Gnome and Halfling
+- Fixed bug where spy strength was lowered when trying to perform op when you had no spies
 - Minor text fixes
 
 ## [0.6.2-9] - 2019-07-14

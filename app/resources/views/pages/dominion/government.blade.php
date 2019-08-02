@@ -21,7 +21,6 @@
                             <h4 class="text-green">
                                 <i class="ra ra-heavy-shield" title="Royal Guard"></i>
                                 The Emperor's Royal Guard
-                                <i class="ra ra-heavy-shield" title="Royal Guard"></i>
                             </h4>
                             <ul class="text-left" style="padding: 0 50px;">
                                 <li>Cannot interact with Dominions less than 60% or greater than 166% of your land size.</li>
@@ -51,7 +50,6 @@
                             <h4 class="text-yellow">
                                 <i class="ra ra-heavy-shield" title="Elite Guard"></i>
                                 The Emperor's Elite Guard
-                                <i class="ra ra-heavy-shield" title="Elite Guard"></i>
                             </h4>
                             <ul class="text-left" style="padding: 0 50px;">
                                 <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
@@ -94,13 +92,13 @@
                     <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard.</p>
 
                     @if ($isEliteGuardMember)
-                        <p>You are a member of the <span class="text-yellow">Emperor's Elite Guard</span>.</p>
+                        <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
 
                         @if ($hoursBeforeLeaveEliteGuard)
                             <p>You cannot leave for {{ $hoursBeforeLeaveEliteGuard }} hours.</p>
                         @endif
                     @elseif ($isRoyalGuardMember)
-                        <p>You are a member of the <span class="text-green">Emperor's Royal Guard</span>.</p>
+                        <p>You are a member of the Emperor's <span class="text-green"><i class="ra ra-heavy-shield" title="Royal Guard"></i> Royal Guard</span>.</p>
 
                         @if ($hoursBeforeLeaveRoyalGuard)
                             <p>You cannot leave for {{ $hoursBeforeLeaveRoyalGuard }} hours.</p>
