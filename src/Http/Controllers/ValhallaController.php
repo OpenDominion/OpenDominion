@@ -125,8 +125,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->dominions()
-            ->with(['realm', 'race.units', 'user'])
-            ->limit(100);
+            ->with(['realm', 'race.units', 'user']);
 
         if ($alignment !== null) {
             $builder->whereHas('race', function ($builder) use ($alignment) {
@@ -162,6 +161,7 @@ class ValhallaController extends AbstractController
             ->sortByDesc(function ($row) {
                 return $row['networth'];
             })
+            ->take(100)
             ->values()
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
@@ -175,8 +175,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->realms()
-            ->with(['dominions.race.units'])
-            ->limit(100);
+            ->with(['dominions.race.units']);
 
         if ($alignment !== null) {
             $builder->where('alignment', $alignment);
@@ -195,6 +194,7 @@ class ValhallaController extends AbstractController
             ->sortByDesc(function ($row) {
                 return $row['networth'];
             })
+            ->take(100)
             ->values()
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
@@ -208,8 +208,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->packs()
-            ->with(['dominions.user', 'realm', 'user'])
-            ->limit(100);
+            ->with(['dominions.user', 'realm', 'user']);
 
         $builder->has('dominions', '>', 1);
 
@@ -237,6 +236,7 @@ class ValhallaController extends AbstractController
             ->sortByDesc(function ($row) {
                 return $row['avg_networth'];
             })
+            ->take(100)
             ->values()
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
@@ -250,8 +250,7 @@ class ValhallaController extends AbstractController
         $landCalculator = app(LandCalculator::class);
 
         $builder = $round->dominions()
-            ->with(['realm', 'race.units', 'user'])
-            ->limit(100);
+            ->with(['realm', 'race.units', 'user']);
 
         if ($alignment !== null) {
             $builder->whereHas('race', function ($builder) use ($alignment) {
@@ -287,6 +286,7 @@ class ValhallaController extends AbstractController
             ->sortByDesc(function ($row) {
                 return $row['land'];
             })
+            ->take(100)
             ->values()
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
@@ -300,8 +300,7 @@ class ValhallaController extends AbstractController
         $landCalculator = app(LandCalculator::class);
 
         $builder = $round->realms()
-            ->with(['dominions.race.units'])
-            ->limit(100);
+            ->with(['dominions.race.units']);
 
         if ($alignment !== null) {
             $builder->where('alignment', $alignment);
@@ -322,6 +321,7 @@ class ValhallaController extends AbstractController
             ->sortByDesc(function ($row) {
                 return $row['land'];
             })
+            ->take(100)
             ->values()
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
@@ -335,8 +335,7 @@ class ValhallaController extends AbstractController
         $landCalculator = app(LandCalculator::class);
 
         $builder = $round->packs()
-            ->with(['dominions.user', 'realm', 'user'])
-            ->limit(100);
+            ->with(['dominions.user', 'realm', 'user']);
 
         $builder->has('dominions', '>', 1);
 
@@ -364,6 +363,7 @@ class ValhallaController extends AbstractController
             ->sortByDesc(function ($row) {
                 return $row['avg_land'];
             })
+            ->take(100)
             ->values()
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
