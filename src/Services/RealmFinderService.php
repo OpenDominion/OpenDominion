@@ -34,10 +34,10 @@ class RealmFinderService
     {
         // Get a list of realms which are not full, disregarding pack status for now
         $realmQuery = Realm::query()
-            ->with('packs.dominions') // todo: can probably be just with('packs')
+            ->with('packs.dominions')
             ->withCount('dominions')
             ->where([
-                'realms.round_id' => $round->id,
+                'realms.round_id' => $round->id
             ]);
 
         if (!$round->mixed_alignment) {
@@ -46,31 +46,34 @@ class RealmFinderService
 
         $realms = $realmQuery->groupBy('realms.id')
             ->having('dominions_count', '<', $round->realm_size)
-            ->orderBy('number')// Start from realm 1 to n, to fill the early realms first. Could be refactored later to
-            // sort on dominions_count asc, to fill more empty realms first
-            ->get();
-
-        // Iterate over suspected eligible realms and check pack status
-        foreach ($realms as $realm) {
-            if ($forPack && (static::MAX_PACKS_PER_REALM !== null) && ($realm->packs->count() >= static::MAX_PACKS_PER_REALM)) {
-                continue;
-            }
-
-            $availableSlots = ($round->realm_size - $realm->dominions_count);
-
-            foreach ($realm->packs as $pack) {
-                if ($pack->isClosed()) {
-                    continue;
+            ->get()
+            ->filter(function($realm) use ($round, $slotsNeeded, $forPack) {
+                // Check pack status
+                if ($forPack && (static::MAX_PACKS_PER_REALM !== null) && ($realm->packs->count() >= static::MAX_PACKS_PER_REALM)) {
+                    return false;
                 }
 
-                $availableSlots -= ($pack->size - $pack->dominions->count());
-            }
+                $availableSlots = ($round->realm_size - $realm->dominions_count);
+                foreach ($realm->packs as $pack) {
+                    if ($pack->isClosed()) {
+                        return false;
+                    }
+                    $availableSlots -= ($pack->size - $pack->dominions->count());
+                }
 
-            if ($availableSlots >= $slotsNeeded) {
-                return Realm::find($realm->id); // return fresh copy
-            }
+                if ($availableSlots < $slotsNeeded) {
+                    return false;
+                }
+
+                return true;
+            })
+            ->sortBy('dominions_count')
+            ->take(3);
+
+        if ($realms->count() > 0) {
+            // Choose randomly from the emptiest 3 realms
+            return $realms->random();
         }
-
         return null;
     }
 
