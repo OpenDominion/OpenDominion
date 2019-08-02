@@ -142,9 +142,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         // Act
         $pack = $this->packService->getPack(
             $this->round,
-            'good',
             'pack name',
-            'pack password'
+            'pack password',
+            $this->goodRace
         );
     }
 
