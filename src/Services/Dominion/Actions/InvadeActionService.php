@@ -37,12 +37,7 @@ class InvadeActionService
     /**
      * @var float Base percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.5;
-
-    /**
-     * @var float Defensive casualties percentage addition for every 1% land difference
-     */
-    protected const CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD = 0.035;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.375;
 
     /**
      * @var float Max percentage of defensive casualties
@@ -533,14 +528,9 @@ class InvadeActionService
      */
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
     {
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
-
-        // Modify casualties percentage based on relative land size
-        $landRatioDiff = clamp(($landRatio - 1), -0.5, 0.5);
-        $defensiveCasualtiesPercentage += ($landRatioDiff * static::CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD);
 
         // Scale casualties further with invading OP vs target DP
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
