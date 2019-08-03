@@ -8,6 +8,7 @@ perks:
   immortal_wizards: 1
 units:
   - name: Skeleton
+    need_boat: false
     cost:
       platinum: 225
       ore: 0
@@ -16,8 +17,8 @@ units:
       defense: 0
     perks:
       immortal: 1
-      need_boat: false
   - name: Ghoul
+    need_boat: false
     cost:
       platinum: 225
       ore: 0
@@ -26,8 +27,8 @@ units:
       defense: 2.5
     perks:
       immortal: 1
-      need_boat: false
   - name: Progeny
+    need_boat: false
     cost:
       platinum: 900
       ore: 0
@@ -37,8 +38,8 @@ units:
     perks:
       immortal: 1
       conversion: 12 # slot 1 and slot 2 aka specs
-      need_boat: false
   - name: Vampire
+    need_boat: false
     cost:
       platinum: 1000
       ore: 0
@@ -48,4 +49,3 @@ units:
     perks:
       immortal: 1
       staggered_conversion: 50;12,60;3 # slot 1 and 2 below 65%, slot 3 above
-      need_boat: false
