@@ -46,10 +46,13 @@ class ExplorationCalculator
         }
 
         $platinum += 1000;
-        $platinum *= 1.1;
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+            $platinum *= 1.25;
+        }
+
+        if($totalLand >= 4000) {
             $platinum *= 1.25;
         }
 
@@ -74,7 +77,10 @@ class ExplorationCalculator
         }
 
         $draftees += 5;
-        $draftees *= 1.1;
+
+        if($totalLand >= 4000) {
+            $draftees *= 1.25;
+        }
 
         return round($draftees);
     }
