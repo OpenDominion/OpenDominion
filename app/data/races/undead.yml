@@ -2,7 +2,7 @@ name: Undead
 alignment: evil
 home_land_type: swamp
 perks:
-  max_population: 12.5
+  max_population: 15
   mana_production: 5
   food_consumption: -75
   immortal_wizards: 1
@@ -16,6 +16,7 @@ units:
       defense: 0
     perks:
       immortal: 1
+      need_boat: false
   - name: Ghoul
     cost:
       platinum: 225
@@ -25,6 +26,7 @@ units:
       defense: 2.5
     perks:
       immortal: 1
+      need_boat: false
   - name: Progeny
     cost:
       platinum: 900
@@ -35,7 +37,7 @@ units:
     perks:
       immortal: 1
       conversion: 12 # slot 1 and slot 2 aka specs
-    need_boat: false
+      need_boat: false
   - name: Vampire
     cost:
       platinum: 1000
@@ -45,5 +47,5 @@ units:
       defense: 3
     perks:
       immortal: 1
-      staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above
-    need_boat: false
+      staggered_conversion: 50;12,60;3 # slot 1 and 2 below 65%, slot 3 above
+      need_boat: false
