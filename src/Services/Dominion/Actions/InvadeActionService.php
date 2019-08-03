@@ -632,8 +632,7 @@ class InvadeActionService
         $landGrabRatio = 1;
         // todo: if mutual war, $landGrabRatio = 1.2
         // todo: if non-mutual war, $landGrabRatio = 1.15
-        // todo: if peace, $landGrabRatio = 0.9
-        $bonusLandRatio = 1.5;
+        $bonusLandRatio = 2;
 
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
 
@@ -644,6 +643,8 @@ class InvadeActionService
         } else {
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
+
+        $acresLost *= 0.75;
 
         $acresLost = (int)max(floor($acresLost), 10);
 
