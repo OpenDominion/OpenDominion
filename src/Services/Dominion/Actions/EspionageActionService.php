@@ -196,16 +196,8 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $ratio = ($selfSpa / $targetSpa);
-
-            // todo: copied from spell success ratio. needs looking into later
-            // todo: factor in spy strength
-            $successRate = clamp((
-                (0.0172 * ($ratio ** 3))
-                - (0.1809 * ($ratio ** 2))
-                + (0.7777 * $ratio)
-                - 0.0134
-            ), 0.0, 1.0);
+            $ratioDifference = $targetSpa - $selfSpa;
+            $successRate = clamp(0.8 * (1 - $ratioDifference), 0.04, 0.96);
 
             if (!random_chance($successRate)) {
                 // todo: move to CasualtiesCalculator
@@ -420,16 +412,8 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $ratio = ($selfSpa / $targetSpa);
-
-            // todo: copied from spell success ratio. needs looking into later
-            // todo: factor in spy strength
-            $successRate = clamp((
-                (0.0172 * ($ratio ** 3))
-                - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
-                - 0.0134
-            ), 0.0, 1.0);
+            $ratioDifference = $targetSpa - $selfSpa;
+            $successRate = clamp(0.5 * (1 - $ratioDifference), 0.04, 0.96);
 
             if (!random_chance($successRate)) {
                 // todo: move to CasualtiesCalculator
