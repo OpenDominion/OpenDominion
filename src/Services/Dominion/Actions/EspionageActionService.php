@@ -200,10 +200,8 @@ class EspionageActionService
             $successRate = clamp(0.8 * (1 - $ratioDifference), 0.04, 0.96);
 
             if (!random_chance($successRate)) {
-                // todo: move to CasualtiesCalculator
-
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 0.5; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -213,7 +211,7 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.05, 0.5);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 2);
 
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
@@ -416,10 +414,8 @@ class EspionageActionService
             $successRate = clamp(0.5 * (1 - $ratioDifference), 0.04, 0.96);
 
             if (!random_chance($successRate)) {
-                // todo: move to CasualtiesCalculator
-
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1;
+                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -429,7 +425,7 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.05, 0.5);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 2);
 
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
