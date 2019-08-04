@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers;
 
 
 use OpenDominion\Helpers\RaceHelper;
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Race;
 
@@ -26,6 +27,7 @@ class ScribesController extends AbstractController
         return view('pages.scribes.race', [
             'unitHelper' => app(UnitHelper::class),
             'raceHelper' => app(RaceHelper::class),
+            'spellHelper' => app(SpellHelper::class),
             'race' => $race,
         ]);
     }

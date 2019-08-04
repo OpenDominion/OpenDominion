@@ -8,8 +8,38 @@
 
 
         <div class="box-body table-responsive no-padding">
+
             <div class="col-md-12 col-md-9">
-                {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                <div class="row">
+                    <div class="col-md-12 col-md-12">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Description</h4>
+                        </div>
+                        {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-md-12">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Racial spell</h4>
+                        </div>
+                        <table class="table table-striped">
+                            @php
+                                $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                            @endphp
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {{ $racialSpell['name'] }}
+                                    </td>
+                                    <td>
+                                        {{ $racialSpell['description'] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="col-md-12 col-md-3">
                 <table class="table table-striped">
@@ -43,6 +73,9 @@
         </div>
         <div class="box-body table-responsive no-padding">
             <div class="col-md-12 col-md-12">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Units</h4>
+                </div>
                 <table class="table table-striped">
                     <colgroup>
                         <col>
