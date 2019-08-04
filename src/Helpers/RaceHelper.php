@@ -131,6 +131,10 @@ UNDEAD;
                 $negativeBenefit = true;
                 $description = 'construction cost';
                 break;
+            case 'defense':
+                $negativeBenefit = false;
+                $description = 'defensive power';
+                break;
             case 'extra_barren_max_population':
                 $negativeBenefit = false;
                 $description = 'population from barren land';
@@ -146,6 +150,10 @@ UNDEAD;
             case 'gem_production':
                 $negativeBenefit = false;
                 $description = ' gem production';
+                break;
+            case 'immortal_wizards':
+                $negativeBenefit = false;
+                $description = 'immortal wizards';
                 break;
             case 'invest_bonus':
                 $negativeBenefit = false;
@@ -200,5 +208,116 @@ UNDEAD;
                 return "<span class=\"text-green\">Increased {$description}</span>";
             }
         }
+    }
+
+    public function getPerkDescriptionHtmlWithValue(RacePerkType $perkType): array
+    {
+        $valueType = '%';
+        $booleanValue = false;
+        switch($perkType->key) {
+            case 'archmage_cost':
+                $negativeBenefit = true;
+                $description = 'Archmage cost';
+                $valueType = 'p';
+                break;
+            case 'construction_cost':
+                $negativeBenefit = true;
+                $description = 'Construction cost';
+                break;
+            case 'defense':
+                $negativeBenefit = false;
+                $description = 'Defensive power';
+                break;
+            case 'extra_barren_max_population':
+                $negativeBenefit = false;
+                $description = 'Population from barren land';
+                $valueType = '';
+                break;
+            case 'food_consumption':
+                $negativeBenefit = true;
+                $description = 'Food consumption';
+                break;
+            case 'food_production':
+                $negativeBenefit = false;
+                $description = 'Food production';
+                break;
+            case 'gem_production':
+                $negativeBenefit = false;
+                $description = 'Gem production';
+                break;
+            case 'immortal_wizards':
+                $negativeBenefit = false;
+                $description = 'Immortal wizards';
+                $booleanValue = true;
+                break;
+            case 'invest_bonus':
+                $negativeBenefit = false;
+                $description = 'Castle bonuses';
+                break;
+            case 'lumber_production':
+                $negativeBenefit = false;
+                $description = 'Lumber production';
+                break;
+            case 'mana_production':
+                $negativeBenefit = false;
+                $description = 'Mana production';
+                break;
+            case 'max_population':
+                $negativeBenefit = false;
+                $description = 'Max population';
+                break;
+            case 'offense':
+                $negativeBenefit = false;
+                $description = 'Offensive power';
+                break;
+            case 'ore_production':
+                $negativeBenefit = false;
+                $description = 'Ore production';
+                break;
+            case 'platinum_production':
+                $negativeBenefit = false;
+                $description = 'Platinum production';
+                break;
+            case 'spy_strength':
+                $negativeBenefit = false;
+                $description = 'Spy strength';
+                break;
+            case 'wizard_strength':
+                $negativeBenefit = false;
+                $description = 'Wizard strength';
+                break;
+            default:
+                return null;
+        }
+
+        $result = ['description' => $description, 'value' => ''];
+        $valueString = "{$perkType->pivot->value}{$valueType}";
+
+        if ($perkType->pivot->value < 0) {
+
+            if($booleanValue) {
+                $valueString = 'No';
+            }
+
+            if ($negativeBenefit) {
+                $result['value'] = "<span class=\"text-green\">{$valueString}</span>";
+            } else {
+                $result['value'] = "<span class=\"text-red\">{$valueString}</span>";
+            }
+        } else {
+            $prefix = '+';
+            if($booleanValue) {
+                $valueString = 'Yes';
+                $prefix = '';
+            }
+
+            if ($negativeBenefit) {
+                $result['value'] = "<span class=\"text-red\">{$prefix}{$valueString}</span>";
+            } else {
+                $result['value'] = "<span class=\"text-green\">{$prefix}{$valueString}</span>";
+            }
+        }
+
+        return $result;
     }
 }
