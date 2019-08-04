@@ -421,7 +421,7 @@ class EspionageActionService
         }
 
         if(now()->diffInDays($dominion->round->start_date) < 5) {
-            throw new GameException("Theft operations are not allowed for the first five days of the round.");
+            throw new GameException('Theft operations are not allowed for the first five days of the round.');
         }
 
         if ($targetSpa !== 0.0) {
