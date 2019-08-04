@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OpenDominion\Http\Controllers;
-
 
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\UnitHelper;
