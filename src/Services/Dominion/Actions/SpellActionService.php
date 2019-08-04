@@ -10,6 +10,7 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -25,6 +26,11 @@ class SpellActionService
 {
     use DominionGuardsTrait;
 
+    /**
+     * @var float Info op base success rate
+     */
+    protected const INFO_BASE_SUCCESS_RATE = 0.8;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -36,6 +42,9 @@ class SpellActionService
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var OpsHelper */
+    protected $opsHelper;
 
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -64,6 +73,7 @@ class SpellActionService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsHelper = app(OpsHelper::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -253,8 +263,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $ratioDifference = $targetWpa - $selfWpa;
-            $successRate = clamp(0.8 * (1 - $ratioDifference), 0.04, 0.96);
+            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa, static::INFO_BASE_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell

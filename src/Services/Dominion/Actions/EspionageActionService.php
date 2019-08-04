@@ -14,6 +14,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -32,6 +33,16 @@ use Throwable;
 class EspionageActionService
 {
     use DominionGuardsTrait;
+
+    /**
+     * @var float Theft base success rate
+     */
+    protected const THEFT_BASE_SUCCESS_RATE = 0.5;
+
+    /**
+     * @var float Info op base success rate
+     */
+    protected const INFO_BASE_SUCCESS_RATE = 0.8;
 
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -56,6 +67,9 @@ class EspionageActionService
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var OpsHelper */
+    protected $opsHelper;
 
     /** @var ProductionCalculator */
     protected $productionCalculator;
@@ -85,6 +99,7 @@ class EspionageActionService
         $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsHelper = app(OpsHelper::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -196,8 +211,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $ratioDifference = $targetSpa - $selfSpa;
-            $successRate = clamp(0.8 * (1 - $ratioDifference), 0.04, 0.96);
+            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::INFO_BASE_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -410,8 +424,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $ratioDifference = $targetSpa - $selfSpa;
-            $successRate = clamp(0.5 * (1 - $ratioDifference), 0.04, 0.96);
+            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::THEFT_BASE_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
