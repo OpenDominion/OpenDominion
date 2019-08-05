@@ -178,9 +178,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->packService->getPack(
             $this->round,
-            'good',
             'pack name',
-            'pack password'
+            'pack password',
+            $this->goodRace
         );
 
         // Assert
@@ -204,9 +204,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->packService->getPack(
             $this->round,
-            'evil',
             'pack name',
-            'pack password'
+            'pack password',
+            $this->evilRace
         );
     }
 }
