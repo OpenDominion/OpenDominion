@@ -210,6 +210,11 @@ class Dominion extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
+    public function tick()
+    {
+        return $this->hasOne(Dominion\Tick::class);
+    }
+
     // Eloquent Query Scopes
 
     public function scopeActive(Builder $query)
