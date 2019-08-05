@@ -54,14 +54,34 @@ class PackService
      */
     public function getPack(Round $round, string $packName, string $packPassword, Race $race): Pack
     {
+        $otherRaceId = null;
+        if(((int)$round->players_per_race !== 0)) {
+            if ($race->name == 'Spirit') {
+                // count spud as same race
+                $otherRaceId = Race::where('name', 'Undead')->first()->id;
+            } elseif ($race->name == 'Undead') {
+                // count spud as same race
+                $otherRaceId = Race::where('name', 'Spirit')->first()->id;
+            } elseif ($race->name == 'Nomad') {
+                // count huno as same race
+                $otherRaceId = Race::where('name', 'Human')->first()->id;
+            } elseif ($race->name == 'Human') {
+                // count huno as same race
+                $otherRaceId = Race::where('name', 'Nomad')->first()->id;
+            }
+        }
+
         $pack = Pack::where([
             'round_id' => $round->id,
             'name' => $packName,
             'password' => $packPassword,
         ])->withCount([
             'dominions',
-            'dominions as players_with_race' => function (Builder $query) use ($race) {
+            'dominions as players_with_race' => function (Builder $query) use ($race, $otherRaceId) {
                 $query->where('race_id', $race->id);
+                if($otherRaceId) {
+                    $query->orWhere('race_id', $otherRaceId);
+                }
             }
             ])->first();
 
