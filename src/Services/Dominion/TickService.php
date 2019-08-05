@@ -15,6 +15,7 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Dominion\Tick;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\NotificationService;
 use Throwable;
 
@@ -90,7 +91,7 @@ class TickService
                         'race.units.perks',
                     ])
                     ->get();
-                $this->precalculateTick($activeDominions);
+                $this->precalculateTick($activeDominions, true);
                 continue;
             }
 
@@ -148,14 +149,14 @@ class TickService
                         'dominions.building_shrine' => DB::raw('dominions.building_shrine + dominion_tick.building_shrine'),
                         'dominions.building_barracks' => DB::raw('dominions.building_barracks + dominion_tick.building_barracks'),
                         'dominions.building_dock' => DB::raw('dominions.building_dock + dominion_tick.building_dock'),
-                        'dominions.stat_total_platinum_production' => DB::raw('dominion_tick.resource_platinum'),
-                        'dominions.stat_total_food_production' => DB::raw('dominion_tick.resource_food'),
-                        'dominions.stat_total_lumber_production' => DB::raw('dominion_tick.resource_lumber'),
-                        'dominions.stat_total_mana_production' => DB::raw('dominion_tick.resource_mana'),
-                        'dominions.stat_total_ore_production' => DB::raw('dominion_tick.resource_ore'),
-                        'dominions.stat_total_gem_production' => DB::raw('dominion_tick.resource_gems'),
-                        'dominions.stat_total_tech_production' => DB::raw('dominion_tick.resource_tech'),
-                        'dominions.stat_total_boat_production' => DB::raw('dominion_tick.resource_boats'),
+                        'dominions.stat_total_platinum_production' => DB::raw('dominions.stat_total_platinum_production + dominion_tick.resource_platinum'),
+                        'dominions.stat_total_food_production' => DB::raw('dominions.stat_total_food_production + dominion_tick.resource_food_production'),
+                        'dominions.stat_total_lumber_production' => DB::raw('dominions.stat_total_lumber_production + dominion_tick.resource_lumber_production'),
+                        'dominions.stat_total_mana_production' => DB::raw('dominions.stat_total_mana_production + dominion_tick.resource_mana_production'),
+                        'dominions.stat_total_ore_production' => DB::raw('dominions.stat_total_ore_production + dominion_tick.resource_ore'),
+                        'dominions.stat_total_gem_production' => DB::raw('dominions.stat_total_gem_production + dominion_tick.resource_gems'),
+                        'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
+                        'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
                     ]);
 
                 // Update spells
@@ -193,7 +194,7 @@ class TickService
             foreach ($activeDominions as $dominion) {
                 $this->tickActiveSpells($dominion);
                 $this->tickQueues($dominion);
-                $this->precalculateTick($dominion);
+                $this->precalculateTick($dominion, true);
             }
         }
 
@@ -310,14 +311,20 @@ class TickService
             ->delete();
     }
 
-    public function precalculateTick(Dominion $dominion)
+    public function precalculateTick(Dominion $dominion, ?bool $saveHistory = false)
     {
         $tick = Tick::firstOrCreate(
             ['dominion_id' => $dominion->id]
         );
 
-        //TODO: Save an event for the previous hour?
-        //$dominion->save(['event' => HistoryService::EVENT_TICK]);
+        if ($saveHistory) {
+            // Save a dominion history record
+            $dominionHistoryService = app(HistoryService::class);
+            $changes = array_filter($tick->getAttributes(), function($value, $key) {
+                if ($key != 'id' && $key != 'dominion_id' && $value != 0) return true;
+            }, ARRAY_FILTER_USE_BOTH);
+            $dominionHistoryService->record($dominion, $changes, HistoryService::EVENT_TICK);
+        }
 
         // Reset tick values
         foreach ($tick->getAttributes() as $attr => $value) {
@@ -342,11 +349,14 @@ class TickService
 
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
+        $tick->resource_lumber_production += $this->productionCalculator->getLumberProduction($dominion);
         $tick->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
+        $tick->resource_mana_production += $this->productionCalculator->getManaProduction($dominion);
         $tick->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
         $tick->resource_ore += $this->productionCalculator->getOreProduction($dominion);
         $tick->resource_gems += $this->productionCalculator->getGemProduction($dominion);
         $tick->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
+        $tick->resource_food_production += $this->productionCalculator->getFoodProduction($dominion);
         // Check for starvation before adjusting food
         $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
 

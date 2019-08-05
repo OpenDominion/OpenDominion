@@ -23,8 +23,11 @@ class CreateDominionTickTable extends Migration
             $table->float('wizard_strength')->default(0);
             $table->integer('resource_platinum')->default(0);
             $table->integer('resource_food')->default(0);
+            $table->integer('resource_food_production')->default(0);
             $table->integer('resource_lumber')->default(0);
+            $table->integer('resource_lumber_production')->default(0);
             $table->integer('resource_mana')->default(0);
+            $table->integer('resource_mana_production')->default(0);
             $table->integer('resource_ore')->default(0);
             $table->integer('resource_gems')->default(0);
             $table->integer('resource_tech')->default(0);
@@ -63,7 +66,9 @@ class CreateDominionTickTable extends Migration
             $table->integer('building_shrine')->default(0);
             $table->integer('building_barracks')->default(0);
             $table->integer('building_dock')->default(0);
+        });
 
+        Schema::table('dominion_tick', function (Blueprint $table) {
             $table->foreign('dominion_id')->references('id')->on('dominions');
         });
     }
