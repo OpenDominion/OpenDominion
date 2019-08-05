@@ -163,9 +163,8 @@ class EspionageActionService
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
-            $dominion->decrement('spy_strength', $spyStrengthLost);
+            $dominion->spy_strength -= $spyStrengthLost;
             $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION, 'action' => $operationKey]);
-
         });
 
         $this->rangeCalculator->checkGuardApplications($dominion, $target);
@@ -538,11 +537,11 @@ class EspionageActionService
         $amountStolen = $this->getResourceTheftAmount($dominion, $target, $resource, $constraints);
 
         DB::transaction(function () use ($dominion, $target, $resource, $amountStolen) {
-            $dominion->increment("resource_{$resource}", $amountStolen);
-            $dominion->save();
+            $dominion->{"resource_{$resource}"} += $amountStolen;
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION, 'action' => $operationKey]);
 
-            $target->decrement("resource_{$resource}", $amountStolen);
-            $target->save();
+            $target->{"resource_{$resource}"} -= $amountStolen;
+            $target->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION, 'action' => $operationKey]);
         });
 
         // Surreal Perception

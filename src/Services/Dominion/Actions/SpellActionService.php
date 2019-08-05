@@ -148,8 +148,8 @@ class SpellActionService
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
 
-            $dominion->decrement('resource_mana', $manaCost);
-            $dominion->decrement('wizard_strength', ($result['wizardStrengthCost'] ?? 5));
+            $dominion->resource_mana -= $manaCost;
+            $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL, 'action' => $spellKey]);
         });
 

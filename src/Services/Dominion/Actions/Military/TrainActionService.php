@@ -98,12 +98,18 @@ class TrainActionService
             throw new RuntimeException('Training aborted due to lack of wizards');
         }
 
-        DB::transaction(function () use ($dominion, $data, $totalCosts) {
-            $dominion->decrement('resource_platinum', $totalCosts['platinum']);
-            $dominion->decrement('resource_ore', $totalCosts['ore']);
-            $dominion->decrement('military_draftees', $totalCosts['draftees']);
-            $dominion->decrement('military_wizards', $totalCosts['wizards']);
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
+        $newPlatinum = ($dominion->resource_platinum - $totalCosts['platinum']);
+        $newOre = ($dominion->resource_ore - $totalCosts['ore']);
+        $newDraftees = ($dominion->military_draftees - $totalCosts['draftees']);
+        $newWizards = ($dominion->military_wizards - $totalCosts['wizards']);
+
+        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newOre, $newDraftees, $newWizards) {
+            $dominion->fill([
+                'resource_platinum' => $newPlatinum,
+                'resource_ore' => $newOre,
+                'military_draftees' => $newDraftees,
+                'military_wizards' => $newWizards,
+            ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
 
             // Specialists train in 9 hours
             $nineHourData = [
