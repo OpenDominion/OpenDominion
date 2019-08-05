@@ -113,6 +113,7 @@ class SpellCalculator
             ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
             ->join('realms', 'realms.id', '=', 'dominions.realm_id')
             ->where('dominion_id', $dominion->id)
+            ->where('duration', '>', 0)
             ->orderBy('duration', 'desc')
             ->orderBy('created_at')
             ->get([

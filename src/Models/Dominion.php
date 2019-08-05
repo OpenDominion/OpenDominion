@@ -247,6 +247,10 @@ class Dominion extends AbstractModel
             $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
         }
 
+        // Recalculate next tick
+        $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
+        $tickService->precalculateTick($this);
+
         return $saved;
     }
 
