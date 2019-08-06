@@ -185,8 +185,6 @@ class LandCalculator
             $landLeftToLose -= $totalLandTypeLoss;
         }
 
-        dd($landLostByLandType);
-
         return $landLostByLandType;
     }
 }
