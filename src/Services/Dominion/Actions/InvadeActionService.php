@@ -807,13 +807,6 @@ class InvadeActionService
 
         $totalConvertingUnits = 0;
 
-        // Lycan
-        // conversion: 3
-
-        // SPUD:
-        // conversion: 12
-        // staggered_conversion: 50;12,65;3
-
         $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use ($landRatio, $units) {
             if ($units[$unit->slot] == 0) {
                 return false;
@@ -838,10 +831,7 @@ class InvadeActionService
             $totalConvertingUnits += $units[$unit->slot];
         }
 
-        $convertingUnitConversions = ($totalConvertingUnits * $conversionMultiplier * $landRatio);
-        $enemyCasualtyConversions = ($totalDefensiveCasualties * $landRatio);
-
-        $totalConverts = min($convertingUnitConversions, $enemyCasualtyConversions);
+        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 2) * $landRatio;
 
         foreach ($unitsWithConversionPerk as $unit) {
             $conversionPerk = $unit->getPerkValue('conversion');
