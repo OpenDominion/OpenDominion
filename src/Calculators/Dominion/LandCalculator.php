@@ -131,10 +131,29 @@ class LandCalculator
         arsort($landPerType);
 
         $landLeftToLose = $totalLandToLose;
-//        $totalLandLost = 0;
         $landLostByLandType = [];
+        foreach ($barrenLandByLandType as $landType => $barrenLandForLandType) {
+
+            if ($landLeftToLose === 0) {
+                break;
+            }
+            $totalLandTypeLoss = $barrenLandForLandType;
+            if ($totalLandTypeLoss > $landLeftToLose) {
+                $totalLandTypeLoss = $landLeftToLose;
+            }
+
+            $landLostByLandType[$landType] = [
+                'landLost' => $totalLandTypeLoss,
+                'barrenLandLost' => $totalLandTypeLoss,
+                'buildingsToDestroy' => 0
+            ];
+
+            $landLeftToLose -= $totalLandTypeLoss;
+            $landPerType[$landType] -= $totalLandTypeLoss;
+        }
 
         foreach ($landPerType as $landType => $totalLandForType) {
+
             if ($landLeftToLose === 0) {
                 break;
             }
@@ -151,24 +170,22 @@ class LandCalculator
                 $totalLandTypeLoss = $landLeftToLose;
             }
 
-//            $totalLandLost += $totalLandTypeLoss;
-            $barrenLandForLandType = $barrenLandByLandType[$landType];
-
-            if ($barrenLandForLandType <= $totalLandTypeLoss) {
-                $barrenLandLostForLandType = $barrenLandForLandType;
-            } else {
-                $barrenLandLostForLandType = $totalLandTypeLoss;
+            if(!array_key_exists($landType, $landLostByLandType))
+            {
+                $landLostByLandType[$landType] = [
+                    'landLost' => 0,
+                    'barrenLandLost' => 0,
+                    'buildingsToDestroy' => 0
+                ];
             }
 
-            $buildingsToDestroy = $totalLandTypeLoss - $barrenLandLostForLandType;
-            $landLostByLandType[$landType] = [
-                'landLost' => $totalLandTypeLoss,
-                'barrenLandLost' => $barrenLandLostForLandType,
-                'buildingsToDestroy' => $buildingsToDestroy
-            ];
+            $landLostByLandType[$landType]['landLost'] += $totalLandTypeLoss;
+            $landLostByLandType[$landType]['buildingsToDestroy'] += $totalLandTypeLoss;
 
             $landLeftToLose -= $totalLandTypeLoss;
         }
+
+        dd($landLostByLandType);
 
         return $landLostByLandType;
     }
