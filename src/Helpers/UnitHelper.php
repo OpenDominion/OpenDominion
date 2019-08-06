@@ -234,7 +234,9 @@ class UnitHelper
                 }
             }
 
-            $result .= "{$amount} {$race->units[$slotNumber - 1]->name}s";
+            $formattedAmount = number_format($amount);
+
+            $result .= "{$formattedAmount} {$race->units[$slotNumber - 1]->name}s";
 
             $i++;
         }
