@@ -807,16 +807,19 @@ class InvadeActionService
 
         $totalConvertingUnits = 0;
 
-        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use ($landRatio, $units) {
-            if ($units[$unit->slot] == 0) {
+        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use ($landRatio, $units, $dominion) {
+            if (!array_key_exists($unit->slot, $units) || $units[$unit->slot] == 0) {
                 return false;
             }
 
-            $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
+            $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+                $unit->slot,
+                'staggered_conversion');
+
             if ($staggeredConversionPerk) {
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
                     $range = ((int)$rangeConversionPerk[0]) / 100;
-                    if ($rangeConversionPerk <= $range) {
+                    if ($range <= $landRatio) {
                         return true;
                     }
                 }
@@ -840,8 +843,9 @@ class InvadeActionService
             $totalConversionsForUnit = floor($totalConverts * $convertingUnitsRatio);
 
             if (!$conversionPerk) {
-                $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
-
+                $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+                    $unit->slot,
+                    'staggered_conversion');
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
                     $range = ((int)$rangeConversionPerk[0]) / 100;
                     $slots = $rangeConversionPerk[1];
@@ -856,8 +860,12 @@ class InvadeActionService
             $slotsToConvertTo = strlen($conversionPerk);
             $totalConvertsForSlot = floor($totalConversionsForUnit / $slotsToConvertTo);
             foreach (str_split($conversionPerk) as $slot) {
-                $convertedUnits[(int)$slot] += $totalConvertsForSlot;
+                $convertedUnits[(int)$slot] += (int)$totalConvertsForSlot;
             }
+        }
+
+        if (!isset($this->invasionResult['attacker']['conversion'])) {
+            $this->invasionResult['attacker']['conversion'] = $convertedUnits;
         }
 
         return $convertedUnits;
@@ -925,20 +933,29 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units, array $convertedUnits): void
     {
-        foreach ($units as $slot => $amount) {
-            $unitKey = "military_unit{$slot}";
+        for($i = 1; $i <= 4; $i++) {
+            $unitKey = "military_unit{$i}";
+            $returningAmount = 0;
 
-            $dominion->decrement($unitKey, $amount);
+            if(array_key_exists($i, $units)) {
+                $returningAmount += $units[$i];
+                $dominion->decrement($unitKey, $units[$i]);
+            }
 
-            $returningAmount = $amount;
+            if(array_key_exists($i, $convertedUnits))
+            {
+                $returningAmount += $convertedUnits[$i];
+            }
 
-            $returningAmount += $convertedUnits[$slot];
+            if($returningAmount === 0) {
+                continue;
+            }
 
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
                 [$unitKey => $returningAmount],
-                $this->getUnitReturnHoursForSlot($dominion, $slot)
+                $this->getUnitReturnHoursForSlot($dominion, $i)
             );
         }
     }
