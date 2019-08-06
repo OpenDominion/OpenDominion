@@ -864,7 +864,7 @@ class InvadeActionService
             }
         }
 
-        if (!isset($this->invasionResult['attacker']['conversion'])) {
+        if (!isset($this->invasionResult['attacker']['conversion']) && array_sum($convertedUnits) > 0) {
             $this->invasionResult['attacker']['conversion'] = $convertedUnits;
         }
 
