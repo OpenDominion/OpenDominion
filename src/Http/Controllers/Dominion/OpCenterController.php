@@ -25,7 +25,8 @@ class OpCenterController extends AbstractDominionController
             ->get()
             ->map(static function ($infoOp) {
                 return $infoOp->targetRealm;
-            });
+            })
+            ->unique();
 
         $latestInfoOps = $dominion->realm->infoOps()
             ->with('sourceDominion')
@@ -109,10 +110,16 @@ class OpCenterController extends AbstractDominionController
         ]);
     }
 
-    public function getClairvoyance(int $realmId)
+    public function getClairvoyance(int $realmNumber)
     {
         $infoOpService = app(InfoOpService::class);
-        $targetRealm = Realm::findOrFail($realmId);
+        $dominion = $this->getSelectedDominion();
+
+        $targetRealm = Realm::where([
+                'round_id' => $dominion->round->id,
+                'number' => $realmNumber,
+            ])
+            ->firstOrFail();
 
         $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm(
             $this->getSelectedDominion()->realm,

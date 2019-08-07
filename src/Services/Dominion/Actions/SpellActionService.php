@@ -364,7 +364,7 @@ class SpellActionService
 
         $redirect = route('dominion.op-center.show', $target);
         if ($spellKey === 'clairvoyance') {
-            $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);
+            $redirect = route('dominion.op-center.clairvoyance', $target->realm->number);
         }
 
         return [

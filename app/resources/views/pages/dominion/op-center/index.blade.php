@@ -107,7 +107,7 @@
                     <h3 class="box-title">Clairvoyance Realms</h3>
                 </div>
                 <div class="box-body table-responsive">
-                    <table class="table table-hover" id="dominions-table">
+                    <table class="table table-hover" id="clairvoyance-table">
                         <colgroup>
                             <col>
                             <col>
@@ -127,7 +127,7 @@
                                 @endphp
                                 <tr>
                                     <td data-order="{{ $realm->number }}">
-                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->id) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
+                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->number) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
                                     </td>
                                     <td data-order="{{ $lastInfoOp->targetDominion->name }}">
                                         <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
@@ -184,6 +184,9 @@
         (function ($) {
             $('#dominions-table').DataTable({
                 order: [[5, 'desc']],
+            });
+            $('#clairvoyance-table').DataTable({
+                order: [[2, 'desc']],
             });
         })(jQuery);
     </script>
