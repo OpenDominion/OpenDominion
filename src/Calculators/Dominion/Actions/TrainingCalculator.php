@@ -76,7 +76,9 @@ class TrainingCalculator
                         $cost['platinum'] = (int)ceil($platinum * $this->getSpecialistEliteCostMultiplier($dominion));
                     }
 
-                    if ($ore > 0) {
+                    if($dominion->race->name == 'Gnome') {
+                        $cost['ore'] = $ore;
+                    } elseif ($ore > 0) {
                         $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion));
                     }
 
@@ -143,7 +145,7 @@ class TrainingCalculator
             ($smithiesReductionMax / 100)
         );
 
-        // todo: Master of Resources Tech (note: no ore reduction for gnomes)
+        // todo: Master of Resources Tech
 
         return (1 + $multiplier);
     }
