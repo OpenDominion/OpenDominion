@@ -10,7 +10,6 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
-use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
@@ -93,7 +92,7 @@ class EspionageActionService
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
-    public const THEFT_DAYS_AFTER_ROUND_START = 7;
+    public const THEFT_DAYS_AFTER_ROUND_START = 8;
 
     /**
      * Performs a espionage operation for $dominion, aimed at $target dominion.
@@ -418,10 +417,6 @@ class EspionageActionService
         if ($selfSpa === 0.0) {
             // Don't reduce spy strength by throwing an exception here
             throw new GameException("Your spy force is too weak to cast {$operationInfo['name']}. Please train some more spies.");
-        }
-
-        if(now()->diffInDays($dominion->round->start_date) < 5) {
-            throw new GameException('Theft operations are not allowed for the first five days of the round.');
         }
 
         if ($targetSpa !== 0.0) {
