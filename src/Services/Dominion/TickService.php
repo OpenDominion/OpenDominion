@@ -192,8 +192,12 @@ class TickService
                 ])
                 ->get();
             foreach ($activeDominions as $dominion) {
+                if (!empty($dominion->tick->starvation_casualties)) {
+                    $this->notificationService->queueNotification('starvation_occurred', $dominion->tick->starvation_casualties);
+                }
                 $this->tickActiveSpells($dominion);
                 $this->tickQueues($dominion);
+                $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
                 $this->precalculateTick($dominion, true);
             }
         }
@@ -321,15 +325,17 @@ class TickService
             // Save a dominion history record
             $dominionHistoryService = app(HistoryService::class);
             $changes = array_filter($tick->getAttributes(), function($value, $key) {
-                if ($key != 'id' && $key != 'dominion_id' && $value != 0) return true;
+                if ($key != 'id' && $key != 'dominion_id' && $key != 'updated_at' && $value != 0) return true;
             }, ARRAY_FILTER_USE_BOTH);
             $dominionHistoryService->record($dominion, $changes, HistoryService::EVENT_TICK);
         }
 
         // Reset tick values
         foreach ($tick->getAttributes() as $attr => $value) {
-            if ($attr != 'id' && $attr != 'dominion_id') {
+            if ($attr != 'id' && $attr != 'dominion_id' && $attr != 'updated_at' && $attr != 'starvation_casualties') {
                 $tick->{$attr} = 0;
+            } elseif ($attr == 'starvation_casualties') {
+                $tick->{$attr} = [];
             }
         }
 
@@ -363,6 +369,7 @@ class TickService
         // Starvation casualties
         if (($dominion->resource_food + $foodNetChange) < 0) {
             $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion, $dominion->resource_food + $foodNetChange);
+            $tick->starvation_casualties = $casualties;
 
             foreach ($casualties as $unitType => $unitCasualties) {
                 $tick->{$unitType} -= $unitCasualties;
@@ -370,8 +377,6 @@ class TickService
 
             // Decrement to zero
             $tick->resource_food = -$dominion->resource_food;
-
-            $this->notificationService->queueNotification('starvation_occurred', $casualties);
         } else {
             // Food production
             $tick->resource_food += $foodNetChange;
@@ -410,8 +415,6 @@ class TickService
 
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
         }
-
-        $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
 
         $tick->save();
     }

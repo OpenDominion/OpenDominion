@@ -110,9 +110,12 @@ class Tick extends AbstractModel
         'building_shrine' => 'integer',
         'building_barracks' => 'integer',
         'building_dock' => 'integer',
+        'starvation_casualties' => 'array',
     ];
 
-    protected $guarded = ['id'];
+    protected $guarded = ['id', 'updated_at'];
+
+    protected $dates = ['updated_at'];
 
     public function dominion()
     {
@@ -120,5 +123,4 @@ class Tick extends AbstractModel
     }
 
     const CREATED_AT = null;
-    const UPDATED_AT = null;
 }

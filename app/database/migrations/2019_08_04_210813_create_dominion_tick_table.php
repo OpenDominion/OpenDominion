@@ -66,6 +66,8 @@ class CreateDominionTickTable extends Migration
             $table->integer('building_shrine')->default(0);
             $table->integer('building_barracks')->default(0);
             $table->integer('building_dock')->default(0);
+            $table->text('starvation_casualties')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
 
         Schema::table('dominion_tick', function (Blueprint $table) {
