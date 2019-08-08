@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - No more than two identical races can be in the same pack 
 - Changed national bank icon
 - Realms can now have mixed racial alignments
+- Spirit/Undead and Human/Nomad now count as identical races for pack race-uniqueness purposes
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
