@@ -223,6 +223,8 @@ class UnitHelper
 
         $numberOfUnitTypesConverted = count($convertedUnitsFiltered);
         $i = 1;
+
+        // todo: this can probably be refactored to use generate_sentence_from_array() in helpers.php
         foreach ($convertedUnitsFiltered as $slotNumber => $amount) {
             if ($i !== 1) {
                 if ($numberOfUnitTypesConverted === $i) {
