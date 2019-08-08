@@ -25,6 +25,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Changed national bank icon
 - Realms can now have mixed racial alignments
 - Significantly reduced starvation casualties
+- Slightly lowered overall exploration costs
+- Significantly increased exploration cost at or above 4000 acres
+- Reduced land lost and defensive casualties upon being on the receiving end on a successful invasion. Total land gains for attackers unchanged
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
