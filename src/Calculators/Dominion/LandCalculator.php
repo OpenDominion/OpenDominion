@@ -132,12 +132,14 @@ class LandCalculator
 
         $landLeftToLose = $totalLandToLose;
         $landLostByLandType = [];
-        foreach ($barrenLandByLandType as $landType => $barrenLandForLandType) {
 
+        foreach ($barrenLandByLandType as $landType => $barrenLandForLandType) {
             if ($landLeftToLose === 0) {
                 break;
             }
+
             $totalLandTypeLoss = $barrenLandForLandType;
+
             if ($totalLandTypeLoss > $landLeftToLose) {
                 $totalLandTypeLoss = $landLeftToLose;
             }
@@ -153,7 +155,6 @@ class LandCalculator
         }
 
         foreach ($landPerType as $landType => $totalLandForType) {
-
             if ($landLeftToLose === 0) {
                 break;
             }
@@ -170,8 +171,7 @@ class LandCalculator
                 $totalLandTypeLoss = $landLeftToLose;
             }
 
-            if(!array_key_exists($landType, $landLostByLandType))
-            {
+            if (!array_key_exists($landType, $landLostByLandType)) {
                 $landLostByLandType[$landType] = [
                     'landLost' => 0,
                     'barrenLandLost' => 0,
