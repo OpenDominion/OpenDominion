@@ -174,8 +174,9 @@ class UnitHelper
                 }
             }
 
-            if ($unit->need_boat == false)
+            if ($unit->need_boat === false) {
                 $helpStrings['unit' . $unit->slot] .= ('<br><br>No boats needed.');
+            }
         }
 
         return $helpStrings[$unitType] ?: null;
@@ -223,13 +224,10 @@ class UnitHelper
         $numberOfUnitTypesConverted = count($convertedUnitsFiltered);
         $i = 1;
         foreach ($convertedUnitsFiltered as $slotNumber => $amount) {
-            if($i != 1) {
-                if($numberOfUnitTypesConverted == $i)
-                {
+            if ($i !== 1) {
+                if ($numberOfUnitTypesConverted === $i) {
                     $result .= ' and ';
-                }
-                else
-                {
+                } else {
                     $result .= ', ';
                 }
             }
