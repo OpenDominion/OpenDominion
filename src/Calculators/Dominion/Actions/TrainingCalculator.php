@@ -78,8 +78,8 @@ class TrainingCalculator
 
                     if ($ore > 0) {
                         $cost['ore'] = $ore;
-                        if($dominion->race->name != 'Gnome')
-                        {
+
+                        if ($dominion->race->name !== 'Gnome') {
                             $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion));
                         }
                     }
