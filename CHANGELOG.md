@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed bug where spy strength was lowered when trying to perform op when you had no spies
 - Land lost from being invaded now properly takes barren land away first
 - Minor text fixes
+- Gnomes now correctly do not gain any ore reduction, from any sources, on their units
 
 ## [0.6.2-9] - 2019-07-14
 ### Changed
