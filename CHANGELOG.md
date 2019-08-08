@@ -28,6 +28,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Slightly lowered overall exploration costs
 - Significantly increased exploration cost at or above 4000 acres
 - Reduced land lost and defensive casualties upon being on the receiving end on a successful invasion. Total land gains for attackers unchanged
+- Reworked spy/wizard operations success chance to be more linear
+- Significantly increased spy casualties for failed info gathering operations
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
