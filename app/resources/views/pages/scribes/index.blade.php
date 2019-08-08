@@ -15,7 +15,7 @@
                         @foreach ($goodRaces as $race)
                             <tr>
                                 <td>
-                                    <a href="{{ route('scribes.race', $race['name']) }}">{{ $race['name'] }}</a>
+                                    <a href="{{ route('scribes.race', str_slug($race['name'])) }}">{{ $race['name'] }}</a>
                                 </td>
                             </tr>
                         @endforeach

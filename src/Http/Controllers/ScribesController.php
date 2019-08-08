@@ -18,9 +18,12 @@ class ScribesController extends AbstractController
         ]);
     }
 
-    public function getRace($raceName)
+    public function getRace(string $raceName)
     {
-        $race = Race::where('name', $raceName)->firstOrFail();
+        $raceName = ucwords(str_replace('-', ' ', $raceName));
+
+        $race = Race::where('name', $raceName)
+            ->firstOrFail();
 
         return view('pages.scribes.race', [
             'unitHelper' => app(UnitHelper::class),
