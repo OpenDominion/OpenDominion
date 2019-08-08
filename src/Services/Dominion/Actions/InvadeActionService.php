@@ -159,8 +159,7 @@ class InvadeActionService
         QueueService $queueService,
         RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
-        )
-    {
+    ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->landCalculator = $landCalculator;
@@ -459,7 +458,7 @@ class InvadeActionService
                 $totalUnitsLeftToKill -= $unitsToKill;
 
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if($fixedCasualtiesPerk) {
+                if ($fixedCasualtiesPerk) {
                     $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
                     $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
                     $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
@@ -472,7 +471,7 @@ class InvadeActionService
 
             foreach ($units as $slot => $amount) {
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if($fixedCasualtiesPerk) {
+                if ($fixedCasualtiesPerk) {
                     $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
                     $unitsToKill = (int)ceil($amount * $fixedCasualtiesRatio);
                     $offensiveUnitsLost[$slot] = $unitsToKill;
@@ -784,8 +783,12 @@ class InvadeActionService
      * @param int $totalDefensiveCasualties
      * @return array
      */
-    protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties): array
-    {
+    protected function handleConversions(
+        Dominion $dominion,
+        float $landRatio,
+        array $units,
+        int $totalDefensiveCasualties
+    ): array {
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         $convertedUnits = array_fill(1, 4, 0);
 
@@ -807,8 +810,12 @@ class InvadeActionService
 
         $totalConvertingUnits = 0;
 
-        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use ($landRatio, $units, $dominion) {
-            if (!array_key_exists($unit->slot, $units) || $units[$unit->slot] == 0) {
+        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use (
+            $landRatio,
+            $units,
+            $dominion
+        ) {
+            if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
                 return false;
             }
 
@@ -845,11 +852,14 @@ class InvadeActionService
             if (!$conversionPerk) {
                 $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
                     $unit->slot,
-                    'staggered_conversion');
+                    'staggered_conversion'
+                );
+
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
                     $range = ((int)$rangeConversionPerk[0]) / 100;
                     $slots = $rangeConversionPerk[1];
-                    if($range > $landRatio) {
+
+                    if ($range > $landRatio) {
                         continue;
                     }
 
@@ -859,6 +869,7 @@ class InvadeActionService
 
             $slotsToConvertTo = strlen($conversionPerk);
             $totalConvertsForSlot = floor($totalConversionsForUnit / $slotsToConvertTo);
+
             foreach (str_split($conversionPerk) as $slot) {
                 $convertedUnits[(int)$slot] += (int)$totalConvertsForSlot;
             }
@@ -933,21 +944,20 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units, array $convertedUnits): void
     {
-        for($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 4; $i++) {
             $unitKey = "military_unit{$i}";
             $returningAmount = 0;
 
-            if(array_key_exists($i, $units)) {
+            if (array_key_exists($i, $units)) {
                 $returningAmount += $units[$i];
                 $dominion->decrement($unitKey, $units[$i]);
             }
 
-            if(array_key_exists($i, $convertedUnits))
-            {
+            if (array_key_exists($i, $convertedUnits)) {
                 $returningAmount += $convertedUnits[$i];
             }
 
-            if($returningAmount === 0) {
+            if ($returningAmount === 0) {
                 continue;
             }
 
@@ -1274,7 +1284,7 @@ class InvadeActionService
             ($templeMaxDpReduction / 100)
         );
 
-        if($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+        if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
             $ignoreDraftees = true;
         }
 
