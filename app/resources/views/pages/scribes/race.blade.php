@@ -5,116 +5,107 @@
         <div class="box-header with-border">
             <h3 class="box-title">{{ $race->name }}</h3>
         </div>
-
-
-        <div class="box-body table-responsive no-padding">
-
-            <div class="col-md-12 col-md-9">
-                <div class="row">
-                    <div class="col-md-12 col-md-12">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">Description</h4>
-                        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12 col-md-9">
+                    {{-- Description --}}
+                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Description</h4>
+                    <em>
                         {!! $raceHelper->getRaceDescriptionHtml($race) !!}
-                    </div>
+                    </em>
+
+                    {{-- Racial Spell --}}
+                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell</h4>
+                    @php
+                        $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                    @endphp
+                    <p>
+                        <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
+                    </p>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 col-md-12">
-                        <div class="box-header with-border">
-                            <h4 class="box-title">Racial spell</h4>
-                        </div>
-                        <table class="table table-striped">
-                            @php
-                                $racialSpell = $spellHelper->getRacialSelfSpell($race);
-                            @endphp
-                            <tbody>
+                <div class="col-md-12 col-md-3">
+                    <table class="table table-striped">
+                        <colgroup>
+                            <col>
+                            <col width="50px">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Race Perk</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($race->perks as $perk)
+                                @php
+                                    $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
+                                @endphp
                                 <tr>
                                     <td>
-                                        {{ $racialSpell['name'] }}
+                                        {!! $perkDescription['description'] !!}
                                     </td>
-                                    <td>
-                                        {{ $racialSpell['description'] }}
+                                    <td class="text-center">
+                                        {!! $perkDescription['value']  !!}
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-md-12 col-md-3">
-                <table class="table table-striped">
-                    <colgroup>
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Special Ability</th>
-                            <th>Cost</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($race->perks as $perk)
-                            @php
-                                $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
-                            @endphp
-                        <tr>
-                            <td>
-                                {!! $perkDescription['description'] !!}
-                            </td>
-                            <td>
-                                {!! $perkDescription['value']  !!}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="box-body table-responsive no-padding">
-            <div class="col-md-12 col-md-12">
-                <div class="box-header with-border">
-                    <h4 class="box-title">Units</h4>
-                </div>
-                <table class="table table-striped">
-                    <colgroup>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Unit</th>
-                            <th>OP</th>
-                            <th>DP</th>
-                            <th>Special Ability</th>
-                            <th>Cost</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($race->units as $unit)
+            <div class="row">
+                <div class="col-md-12">
+                    {{-- Military Units --}}
+                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Military Units</h4>
+
+                    <table class="table table-striped">
+                        <colgroup>
+                            <col width="200px">
+                            <col width="50px">
+                            <col width="50px">
+                            <col>
+                            <col width="100px">
+                        </colgroup>
+                        <thead>
                             <tr>
-                                <td>
-                                    {{ $unit->name }}
-                                </td>
-                                <td>
-                                    {{ $unit->power_offense }}
-                                </td>
-                                <td>
-                                    {{ $unit->power_defense }}
-                                </td>
-                                <td>
-                                    {!! $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) !!}
-                                </td>
-                                <td>
-                                    {{ $unit->cost_platinum }}p, {{ $unit->cost_ore }}r
-                                </td>
+                                <th>Unit</th>
+                                <th class="text-center">OP</th>
+                                <th class="text-center">DP</th>
+                                <th>Perks</th>
+                                <th class="text-center">Cost</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($race->units as $unit)
+                                @php
+                                    $unitCostString = (number_format($unit->cost_platinum) . 'p');
+
+                                    if ($unit->cost_ore > 0) {
+                                        $unitCostString .= (', ' . number_format($unit->cost_ore) . 'r');
+                                    }
+                                @endphp
+                                <tr>
+                                    <td>
+                                        {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}") !!}
+                                        {{ $unit->name }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $unit->power_offense }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $unit->power_defense }}
+                                    </td>
+                                    <td>
+                                        {!! $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) !!}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $unitCostString }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
