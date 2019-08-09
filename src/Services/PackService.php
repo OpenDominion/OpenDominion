@@ -54,16 +54,38 @@ class PackService
      */
     public function getPack(Round $round, string $packName, string $packPassword, Race $race): Pack
     {
+        $otherRaceId = null;
+
+        if (((int)$round->players_per_race !== 0)) {
+            if ($race->name === 'Spirit') {
+                // Count Undead with Spirit
+                $otherRaceId = Race::where('name', 'Undead')->firstOrFail()->id;
+            } elseif ($race->name === 'Undead') {
+                // Count Spirit with Undead
+                $otherRaceId = Race::where('name', 'Spirit')->firstOrFail()->id;
+            } elseif ($race->name === 'Nomad') {
+                // Count Human with Nomad
+                $otherRaceId = Race::where('name', 'Human')->firstOrFail()->id;
+            } elseif ($race->name === 'Human') {
+                // Count Nomad with Human
+                $otherRaceId = Race::where('name', 'Nomad')->firstOrFail()->id;
+            }
+        }
+
         $pack = Pack::where([
             'round_id' => $round->id,
             'name' => $packName,
             'password' => $packPassword,
         ])->withCount([
             'dominions',
-            'dominions as players_with_race' => function (Builder $query) use ($race) {
+            'dominions AS players_with_race' => static function (Builder $query) use ($race, $otherRaceId) {
                 $query->where('race_id', $race->id);
+
+                if ($otherRaceId) {
+                    $query->orWhere('race_id', $otherRaceId);
+                }
             }
-            ])->first();
+        ])->first();
 
         if (!$pack) {
             throw new GameException('Pack with specified name/password was not found.');

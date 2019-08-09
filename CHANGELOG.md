@@ -4,6 +4,32 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.7.0-2] - 2019-08-09
+### Added
+- Added link to scribes in the top navigation bar
+
+### Changed
+- Dwarf Cleric: -40p
+- Gnome: Now has Miner's Sight as racial spell. Mechanical Genius has been removed
+- Gnome Juggernaut: Increased max staggered OP to +2.5 at 90% land
+- Icekin: Removed +5% platinum production, ArchMage -25p
+- Lycanthrope Werewolf: -25p, +1 OP
+- Nox Nightshade: +50p
+- Nox Lich: -50p
+- Spirit: Increased max population bonus from +12.5% to +15%
+- Spirit Phantom: No longer needs boats 
+- Spirit Banshee: No longer needs boats
+- Spirit Spectre: Now converts into elite dp at 60%+ (from 65%+)
+- Undead Skeleton: No longer needs boats
+- Undead Ghoul: No longer needs boats
+- Undead Vampire: Now converts intp elite dp at 60%+ (from 65%+) 
+
+## [0.7.0-1] - 2019-08-09
+### Fixed
+- Fixed some deploy-related stuff
+
+## [0.7.0] - 2019-08-09
 ### Added
 - Added new races: Lycanthrope, Merfolk, Nox*, Spirit, Undead, Wood Elf
 - *Note: The Nox was a premiun race back in Dominion Classic. In OpenDominion it has been renamed to just 'Nox', and made available for everyone, without restrictions.
@@ -15,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added theft espionage operations, allowing you to steal resources from your target
 - Added magic spells: Fool's Gold and Surreal Perception
 - Added Government page with Royal Guard and Elite Guard
+- Added basic Scribes page with races and units
 
 ### Changed
 - Condensed the items in the left navigation menu (except on mobile)
@@ -24,6 +51,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - No more than two identical races can be in the same pack 
 - Changed national bank icon
 - Realms can now have mixed racial alignments
+- Significantly reduced starvation casualties
+- Slightly lowered overall exploration costs
+- Significantly increased exploration cost at or above 4000 acres
+- Reduced land lost and defensive casualties upon being on the receiving end on a successful invasion. Total land gains for attackers unchanged
+- Reworked spy/wizard operations success chance to be more linear
+- Significantly increased spy casualties for failed info gathering operations
+- Spirit/Undead and Human/Nomad now count as identical races for pack race-uniqueness purposes
 
 ### Fixed
 - Fixed newlines sometimes not being properly applied in council posts
@@ -32,7 +66,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Realm spinner on realm page no longer allows for invalid input (eg negative numbers) which in turn displayed a server error page
 - Barren land now correctly houses 10 population for Gnome and Halfling
 - Fixed bug where spy strength was lowered when trying to perform op when you had no spies
+- Land lost from being invaded now properly takes barren land away first
 - Minor text fixes
+- Gnomes now correctly do not gain any ore reduction, from any sources, on their units
 
 ## [0.6.2-9] - 2019-07-14
 ### Changed
@@ -329,7 +365,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...HEAD
+[0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
+[0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
+[0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
 [0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
 [0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
 [0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7

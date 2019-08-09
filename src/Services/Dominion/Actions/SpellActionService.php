@@ -11,6 +11,7 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -26,6 +27,11 @@ class SpellActionService
 {
     use DominionGuardsTrait;
 
+    /**
+     * @var float Info op base success rate
+     */
+    protected const INFO_BASE_SUCCESS_RATE = 0.8;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -37,6 +43,9 @@ class SpellActionService
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var OpsHelper */
+    protected $opsHelper;
 
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -65,6 +74,7 @@ class SpellActionService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsHelper = app(OpsHelper::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -254,15 +264,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $ratio = ($selfWpa / $targetWpa);
-
-            // Exact formula from Dom is unknown. Thanks to mriswith on Discord for coming up with this formula <3
-            $successRate = clamp((
-                (0.0172 * ($ratio ** 3))
-                - (0.1809 * ($ratio ** 2))
-                + (0.7777 * $ratio)
-                - 0.0134
-            ), 0.0, 1.0);
+            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa, static::INFO_BASE_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
