@@ -210,15 +210,15 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     // Developer
 
-    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
-
-        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
-
-        // simulate dominion by state string
-        // take over dominion & traverse state history
-        // set dominion state/attributes?
-
-    });
+//    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
+//
+//        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
+//
+//        // simulate dominion by state string
+//        // take over dominion & traverse state history
+//        // set dominion state/attributes?
+//
+//    });
 
     // Administrator
 
