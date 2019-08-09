@@ -57,11 +57,7 @@ class SpellHelper
 
     public function getSelfSpells(Race $race): Collection
     {
-        $raceName = $race->name;
-
-        $racialSpell = $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
-            return $spell['races']->contains($raceName);
-        })->first();
+        $racialSpell = $this->getRacialSelfSpell($race);
 
         return collect(array_filter([
             [
@@ -99,13 +95,21 @@ class SpellHelper
                 'mana_cost' => 2.5,
                 'duration' => 12,
             ],
-//            [
-//                'name' => 'Surreal Perception',
-//                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
-//                'key' => 'surreal_perception',
-//                'mana_cost' => 4,
-//                'duration' => 8,
-//            ],
+            [
+                'name' => 'Fool\'s Gold',
+                'description' => 'Platinum theft protection for 10 hours, 22 hour recharge',
+                'key' => 'fools_gold',
+                'mana_cost' => 5,
+                'duration' => 10,
+                'cooldown' => 22,
+            ],
+            [
+                'name' => 'Surreal Perception',
+                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
+                'key' => 'surreal_perception',
+                'mana_cost' => 4,
+                'duration' => 8,
+            ],
 //            [
 //                'name' => 'Energy Mirror',
 //                'description' => '20% chance to reflect incoming spells',
@@ -113,16 +117,15 @@ class SpellHelper
 //                'mana_cost' => 3,
 //                'duration' => 8,
 //            ],
-//            [
-//                'name' => 'Fool\'s Gold',
-//                'description' => 'Platinum theft protection for 10 hours, 22 hour recharge',
-//                'key' => 'fools_gold',
-//                'mana_cost' => 5,
-//                'duration' => 10,
-//                'cooldown' => 22, // todo
-//            ],
             $racialSpell
         ]));
+    }
+
+    public function getRacialSelfSpell(Race $race) {
+        $raceName = $race->name;
+        return $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
     }
 
     public function getRacialSelfSpells(): Collection
@@ -130,7 +133,7 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Crusade',
-                'description' => '+5% offensive power', // todo: add mention later that you can kill SPUD
+                'description' => '+5% offensive power and allows you to kill Spirit/Undead',
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -166,7 +169,7 @@ class SpellHelper
                 'key' => 'erosion',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Lizardfolk']),
+                'races' => collect(['Lizardfolk', 'Merfolk']),
             ],
             [
                 'name' => 'Blizzard',
@@ -178,7 +181,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Mechanical Genius',
-                'description' => '30% reduction of re-zoning costs',
+                'description' => '-30% land rezoning costs',
                 'key' => 'mechanical_genius',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -186,7 +189,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Unholy Ghost',
-                'description' => 'Enemy draftees do not participate in battle due to extreme fear',
+                'description' => 'Enemy draftees do not participate in battle',
                 'key' => 'unholy_ghost',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -210,11 +213,35 @@ class SpellHelper
             ],
             [
                 'name' => 'Regeneration',
-                'description' => 'Reduces combat losses by 25%',
+                'description' => '-25% combat losses',
                 'key' => 'regeneration',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Troll']),
+            ],
+            [
+                'name' => 'Parasitic Hunger',
+                'description' => '+50% conversion rate',
+                'key' => 'parasitic_hunger',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Lycanthrope', 'Spirit', 'Undead']),
+            ],
+            [
+                'name' => 'Gaia\'s Blessing',
+                'description' => '+20% food production (not cumulative with Gaia\'s Watch), +10% lumber production',
+                'key' => 'gaias_blessing',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Wood Elf']),
+            ],
+            [
+                'name' => 'Nightfall',
+                'description' => '+5% offensive power',
+                'key' => 'nightfall',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Nox']),
             ],
         ]);
     }

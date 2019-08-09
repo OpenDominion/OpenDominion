@@ -4,20 +4,28 @@ namespace OpenDominion\Calculators\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class ExplorationCalculator
 {
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
+
     /**
      * ExplorationCalculator constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param GuardMembershipService $guardMembershipService
      */
-    public function __construct(LandCalculator $landCalculator)
+    public function __construct(
+        LandCalculator $landCalculator,
+        GuardMembershipService $guardMembershipService)
     {
         $this->landCalculator = $landCalculator;
+        $this->guardMembershipService = $guardMembershipService;
     }
 
     /**
@@ -38,7 +46,15 @@ class ExplorationCalculator
         }
 
         $platinum += 1000;
-        $platinum *= 1.1;
+
+        // Elite Guard Tax
+        if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+            $platinum *= 1.25;
+        }
+
+        if($totalLand >= 4000) {
+            $platinum *= 1.25;
+        }
 
         return round($platinum);
     }
@@ -61,7 +77,10 @@ class ExplorationCalculator
         }
 
         $draftees += 5;
-        $draftees *= 1.1;
+
+        if($totalLand >= 4000) {
+            $draftees *= 1.25;
+        }
 
         return round($draftees);
     }

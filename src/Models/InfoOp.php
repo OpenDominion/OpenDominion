@@ -3,6 +3,7 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use OpenDominion\Events\InfoOpCreatingEvent;
 
 /**
  * OpenDominion\Models\InfoOp
@@ -30,6 +31,10 @@ class InfoOp extends AbstractModel
         'data' => 'array',
     ];
 
+    protected $dispatchesEvents = [
+        'creating' => InfoOpCreatingEvent::class,
+    ];
+
     public function sourceRealm()
     {
 //        return $this->belongsTo(Realm::class);
@@ -52,7 +57,7 @@ class InfoOp extends AbstractModel
 
 //    public function scopeNotInvalid(Builder $query): Builder
 //    {
-//        return $query->where('updated_at', '>=', now()->parse('-12 hours')->toDateTimeString());
+//        return $query->where('created_at', '>=', now()->parse('-12 hours')->toDateTimeString());
 //    }
 //
 //    public function scopeTargetDominion(Builder $query, Dominion $target): Builder
@@ -62,11 +67,11 @@ class InfoOp extends AbstractModel
 
     public function isStale(): bool
     {
-        return ($this->updated_at < carbon()->minute(0)->second(0));
+        return ($this->created_at < carbon()->minute(0)->second(0));
     }
 
     public function isInvalid(): bool
     {
-        return ($this->updated_at < new Carbon('-12 hours'));
+        return ($this->created_at < new Carbon('-12 hours'));
     }
 }

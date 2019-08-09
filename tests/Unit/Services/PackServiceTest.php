@@ -64,7 +64,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testCreatePackWhenPackSizeIsLowerThan2Throws()
     {
@@ -78,7 +78,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testCreatePackWhenPackSizeIsGreaterThanRoundPackSizeThrows()
     {
@@ -134,22 +134,22 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals($this->goodRealm->id, $pack2->realm_id);
     }
 
-    public function testGetPackWhenNoPackExistsReturnsNull()
+    /**
+     * @expectedException \OpenDominion\Exceptions\GameException
+     */
+    public function testGetPackWhenNoPackExistsThrows()
     {
         // Act
         $pack = $this->packService->getPack(
             $this->round,
-            'good',
             'pack name',
-            'pack password'
+            'pack password',
+            $this->goodRace
         );
-
-        // Assert
-        $this->assertNull($pack);
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testGetPackWhenPackIsFullThrows()
     {
@@ -178,9 +178,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->packService->getPack(
             $this->round,
-            'good',
             'pack name',
-            'pack password'
+            'pack password',
+            $this->goodRace
         );
 
         // Assert
@@ -189,7 +189,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testGetPackWhenRaceAlignmentMismatchThrows()
     {
@@ -204,9 +204,9 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         // Act
         $this->packService->getPack(
             $this->round,
-            'evil',
             'pack name',
-            'pack password'
+            'pack password',
+            $this->evilRace
         );
     }
 }

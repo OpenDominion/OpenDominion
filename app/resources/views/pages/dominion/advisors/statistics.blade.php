@@ -14,7 +14,13 @@
                 </div>
                 <div class="box-body no-padding">
                     <div class="row">
-
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Military</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
@@ -23,32 +29,37 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Power</th>
+                                        <th colspan="2">Offensive Power</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Offensive Power:</td>
                                         <td>
-                                            {{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}
+                                            <strong>{{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}</strong>
                                             @if ($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getOffensivePowerRaw($selectedDominion)) }})</small>
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getOffensivePowerRaw($selectedDominion))) }} raw)</small>
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Defensive Power:</td>
+                                        <td>Offensive Power Multiplier:</td>
                                         <td>
-                                            {{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}
-                                            @if ($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getDefensivePowerRaw($selectedDominion)) }})</small>
+                                            <strong>{{ number_string(($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) - 1) * 100, 3, true) }}%</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Offensive Ratio:</td>
+                                        <td>
+                                            <strong>{{ number_format(($militaryCalculator->getOffensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }}</strong>
+                                            @if ($militaryCalculator->getOffensivePowerMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getOffensivePowerRaw($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }})</small>
                                             @endif
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
@@ -57,50 +68,29 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Ratios</th>
+                                        <th colspan="2">Defensive Power</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Spy Ratio (Offense):</td>
+                                        <td>Defensive Power:</td>
                                         <td>
-                                            {{ number_format($militaryCalculator->getSpyRatio($selectedDominion, 'offense'), 3) }}
-                                            @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion, 'offense'), 3) }})</small>
+                                            <strong>{{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}</strong>
+                                            @if ($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($selectedDominion))) }} raw)</small>
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Spy Ratio (Defense):</td>
+                                        <td>Defensive Power Multiplier:</td>
                                         <td>
-                                            {{ number_format($militaryCalculator->getSpyRatio($selectedDominion, 'defense'), 3) }}
-                                            @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion, 'defense'), 3) }})</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Wizard Ratio (Offense):</td>
-                                        <td>
-                                            {{ number_format($militaryCalculator->getWizardRatio($selectedDominion, 'offense'), 3) }}
-                                            @if ($militaryCalculator->getWizardRatioMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getWizardRatioRaw($selectedDominion, 'offense'), 3) }})</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Wizard Ratio (Defense):</td>
-                                        <td>
-                                            {{ number_format($militaryCalculator->getWizardRatio($selectedDominion, 'defense'), 3) }}
-                                            @if ($militaryCalculator->getWizardRatioMultiplier($selectedDominion) !== 1.0)
-                                                <small class="text-muted">({{ number_format($militaryCalculator->getWizardRatioRaw($selectedDominion, 'defense'), 3) }})</small>
-                                            @endif
+                                            <strong>{{ number_string(($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) - 1) * 100, 3, true) }}%</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Defense Ratio:</td>
                                         <td>
-                                            {{ number_format(($militaryCalculator->getDefensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }}
+                                            <strong>{{ number_format(($militaryCalculator->getDefensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }}</strong>
                                             @if ($militaryCalculator->getDefensivePowerMultiplier($selectedDominion) !== 1.0)
                                                 <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($selectedDominion) / $landCalculator->getTotalLand($selectedDominion)), 3) }})</small>
                                             @endif
@@ -109,7 +99,6 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="col-xs-12 col-sm-4">
                             <table class="table">
                                 <colgroup>
@@ -118,42 +107,197 @@
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Black Ops</th>
+                                        <th colspan="2">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Attacking Success:</td>
-                                        <td>0{{--2 / 8 <small class="text-muted"><i>(25%)</i></small>--}}</td>
+                                        <td>Attacking success:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_attacking_success) }}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td>Defending Success:</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Espionage Success:</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Spell Success:</td>
-                                        <td>0</td>
+                                        <td>Defending success:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_defending_success) }}</strong>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Operations</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Spy Power</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Spy Ratio (Offense):</td>
+                                        <td>
+                                            <strong>{{ number_format($militaryCalculator->getSpyRatio($selectedDominion, 'offense'), 3) }}</strong>
+                                            @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion, 'offense'), 3) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spy Ratio (Defense):</td>
+                                        <td>
+                                            <strong>{{ number_format($militaryCalculator->getSpyRatio($selectedDominion, 'defense'), 3) }}</strong>
+                                            @if ($militaryCalculator->getSpyRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getSpyRatioRaw($selectedDominion, 'defense'), 3) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Wizard Power</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Wizard Ratio (Offense):</td>
+                                        <td>
+                                            <strong>{{ number_format($militaryCalculator->getWizardRatio($selectedDominion, 'offense'), 3) }}</strong>
+                                            @if ($militaryCalculator->getWizardRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getWizardRatioRaw($selectedDominion, 'offense'), 3) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wizard Ratio (Defense):</td>
+                                        <td>
+                                            <strong>{{ number_format($militaryCalculator->getWizardRatio($selectedDominion, 'defense'), 3) }}</strong>
+                                            @if ($militaryCalculator->getWizardRatioMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($militaryCalculator->getWizardRatioRaw($selectedDominion, 'defense'), 3) }})</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Espionage Success:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_espionage_success) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Magic Success:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_spell_success) }}</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Population</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Current Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($populationCalculator->getPopulation($selectedDominion)) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Peasant Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->peasants) }}</strong>
+                                            <small class="text-muted">({{ number_format((($selectedDominion->peasants / $populationCalculator->getPopulation($selectedDominion)) * 100), 2) }}%)</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Military Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}</strong>
+                                            <small class="text-muted">({{ number_format((100 - ($selectedDominion->peasants / $populationCalculator->getPopulation($selectedDominion)) * 100), 2) }}%)</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Max Population:</td>
+                                        <td>
+                                            <strong>{{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}</strong>
+                                            @if ($populationCalculator->getMaxPopulationMultiplier($selectedDominion) !== 1.0)
+                                                <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }} raw)</small>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Population Multiplier:</td>
+                                        <td>
+                                            <strong>{{ number_string((($populationCalculator->getMaxPopulationMultiplier($selectedDominion) - 1) * 100), 3, true) }}%</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-md-12 col-md-3">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The statistics advisor gives you some rudimentary numbers of statistics regarding your current state.</p>
+                    <p>The statistics advisor gives you statistics regarding your current dominion state.</p>
                     <p>Ratio numbers are total number of units per acre of land.</p>
                 </div>
             </div>

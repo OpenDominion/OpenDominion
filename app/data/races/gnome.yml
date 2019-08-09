@@ -4,6 +4,7 @@ home_land_type: mountain
 perks:
   offense: 7.5
   max_population: -5
+  extra_barren_max_population: 5
   food_consumption: -20
   gem_production: 5
 units:

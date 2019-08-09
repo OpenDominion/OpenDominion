@@ -21,8 +21,8 @@ class RezoningCalculator
      */
     public function __construct(
         LandCalculator $landCalculator,
-        SpellCalculator $spellCalculator)
-    {
+        SpellCalculator $spellCalculator
+    ) {
         $this->landCalculator = $landCalculator;
         $this->spellCalculator = $spellCalculator;
     }
@@ -84,7 +84,10 @@ class RezoningCalculator
         );
 
         $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
-            $dominion, 'mechanical_genius', $spellMechanicalGeniusReduction) / 100;
+            $dominion,
+            'mechanical_genius',
+            $spellMechanicalGeniusReduction
+        );
 
         $multiplier -= $mechanicalGeniusReduction;
 

@@ -89,7 +89,7 @@ class RoundTest extends AbstractBrowserKitTestCase
                 'name' => 'dominionname',
             ])
             ->get('round/1/register')
-            ->seeStatusCode(500);
+            ->seeStatusCode(302);
     }
 
     public function testMultipleUsersCanRegisterToARoundAsAPack()

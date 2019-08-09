@@ -73,13 +73,13 @@ class ValhallaController extends AbstractController
             case 'largest-packs': $data = $this->getLargestPacks($round); break;
 
             default:
-                if (!preg_match('/(strongest|largest)-(\w+)/', $type, $matches)) {
+                if (!preg_match('/(strongest|largest)-([-\w]+)/', $type, $matches)) {
                     return redirect()->back()
                         ->withErrors(["Valhalla type '{$type}' not supported"]);
                 }
 
                 list(, $prefix, $raceName) = $matches;
-                $raceName = ucfirst(str_singular($raceName)); // todo: refactor this
+                $raceName = ucwords(str_replace('-', ' ', $raceName));
 
                 $race = Race::where('name', $raceName)->firstOrFail();
 

@@ -141,7 +141,15 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
+            $router->get('op-center/{dominion}/{type}')->uses('Dominion\OpCenterController@getDominionArchive')->name('op-center.archive');
             $router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
+
+            // Government
+            $router->get('government')->uses('Dominion\GovernmentController@getIndex')->name('government');
+            $router->post('government/royal-guard/join')->uses('Dominion\GovernmentController@postJoinRoyalGuard')->name('government.royal-guard.join');
+            $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');
+            $router->post('government/royal-guard/leave')->uses('Dominion\GovernmentController@postLeaveRoyalGuard')->name('government.royal-guard.leave');
+            $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
@@ -170,6 +178,12 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 });
 
 // Scribes
+
+$router->group(['prefix' => 'scribes', 'as' => 'scribes.'], function (Router $router) {
+
+    $router->get('/')->uses('ScribesController@getIndex')->name('index');
+    $router->get('{race}')->uses('ScribesController@getRace')->name('race');
+});
 
 // Valhalla
 

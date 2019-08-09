@@ -16,8 +16,11 @@ class Ticker {
         this.tickerServerElement = document.getElementById('ticker-server');
         this.tickerNextHourElement = document.getElementById('ticker-next-tick');
 
-        const self = this;
-        setInterval(() => self.tick(), 1000);
+        // Only tick if the ticker element is visible; i.e. not on the homepage
+        if (this.tickerServerElement !== null) {
+            const self = this;
+            setInterval(() => self.tick(), 1000);
+        }
     }
 
     /**
@@ -26,9 +29,11 @@ class Ticker {
      * @private
      */
     tick() {
-        const currentTime = new Date;
+        const currentServerTime = this.tickerServerElement.innerHTML;
+        const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
+        currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
 
-        const nextHour = new Date;
+        const nextHour = new Date(currentTime.toString());
         nextHour.setUTCHours(currentTime.getUTCHours() + 1);
         nextHour.setMinutes(0);
         nextHour.setSeconds(0);

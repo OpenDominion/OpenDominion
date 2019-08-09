@@ -55,13 +55,17 @@
                                         <td class="text-center">{{ $i + 1 }}</td>
                                         <td>
                                             @if ($protectionService->isUnderProtection($dominion))
-                                                <i class="ra ra-shield ra-lg text-aqua" title="Under protection"></i>
+                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
+                                            @endif
+
+                                            @if ($guardMembershipService->isEliteGuardMember($dominion))
+                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
+                                            @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
+                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                             @endif
 
                                             {{--
 
-                                            RG: <i class="ra ra-crossed-swords ra-lg text-green"></i>
-                                            EG: <i class="ra ra-crossed-swords ra-lg text-yellow"></i>
                                             Monarch: <i class="ra ra-queen-crown ra-lg"></i>
                                                 RG: text-green
                                                 EG: text-yellow
@@ -71,7 +75,11 @@
                                             @if ($dominion->id === $selectedDominion->id)
                                                 <b>{{ $dominion->name }}</b> (you)
                                             @else
-                                                {{ $dominion->name }}
+                                                @if ($isOwnRealm)
+                                                    {{ $dominion->name }}
+                                                @else
+                                                    <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                                @endif
                                             @endif
 
                                             @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
@@ -123,7 +131,7 @@
                             <div class="col-xs-4">
                                 <form action="{{ route('dominion.realm.change-realm') }}" method="post" role="form">
                                     @csrf
-                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}">
+                                    <input type="number" name="realm" class="form-control text-center" placeholder="{{ $realm->number }}" min="1" max="{{ $realmCount }}">
                                 </form>
                             </div>
                             <div class="col-xs-4 text-right">

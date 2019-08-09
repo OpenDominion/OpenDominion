@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Factories;
 
-use LogicException;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -22,7 +22,7 @@ class DominionFactory
      * @param string $dominionName
      * @param Pack|null $pack
      * @return Dominion
-     * @throws LogicException
+     * @throws GameException
      */
     public function create(
         User $user,
@@ -33,7 +33,7 @@ class DominionFactory
         ?Pack $pack = null
     ): Dominion {
         $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
-        $this->guardAgainstMismatchedAlignments($race, $realm);
+        $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
         // todo: get starting values from config
 
@@ -122,7 +122,7 @@ class DominionFactory
     /**
      * @param User $user
      * @param Round $round
-     * @throws LogicException
+     * @throws GameException
      */
     protected function guardAgainstMultipleDominionsInARound(User $user, Round $round): void
     {
@@ -134,19 +134,20 @@ class DominionFactory
             ->count();
 
         if ($dominionCount > 0) {
-            throw new LogicException('User already has a dominion in this round');
+            throw new GameException('User already has a dominion in this round');
         }
     }
 
     /**
      * @param Race $race
      * @param Realm $realm
-     * @throws LogicException
+     * @param Round $round
+     * @throws GameException
      */
-    protected function guardAgainstMismatchedAlignments(Race $race, Realm $realm): void
+    protected function guardAgainstMismatchedAlignments(Race $race, Realm $realm, Round $round): void
     {
-        if ($race->alignment !== $realm->alignment) {
-            throw new LogicException('Race and realm alignment do not match');
+        if (!$round->mixed_alignment && $race->alignment !== $realm->alignment) {
+            throw new GameException('Race and realm alignment do not match');
         }
     }
 

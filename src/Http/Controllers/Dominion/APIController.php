@@ -2,12 +2,10 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Illuminate\Http\Request;
-use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\API\InvadeCalculationRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\API\InvadeCalculationService;
-use Throwable;
 
 class APIController extends AbstractDominionController
 {
@@ -22,7 +20,7 @@ class APIController extends AbstractDominionController
                 Dominion::find($request->get('target_dominion')),
                 $request->get('unit')
             );
-        } catch (Throwable $e) {
+        } catch (GameException $e) {
             return [
                 'result' => 'error',
                 'errors' => [$e->getMessage()]

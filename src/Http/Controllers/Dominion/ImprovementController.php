@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ImproveActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
@@ -34,7 +34,7 @@ class ImprovementController extends AbstractDominionController
                 $request->get('improve')
             );
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

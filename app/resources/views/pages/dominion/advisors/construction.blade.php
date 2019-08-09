@@ -11,6 +11,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-home"></i> Construction Advisor</h3>
+                    <span class="pull-right">Barren Land: <strong>{{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }}</strong></span>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
@@ -61,7 +62,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Land Type</th>
+                                <th>Building Type</th>
                                 @for ($i = 1; $i <= 12; $i++)
                                     <th class="text-center">{{ $i }}</th>
                                 @endfor

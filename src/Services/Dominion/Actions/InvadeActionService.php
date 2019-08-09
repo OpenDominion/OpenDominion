@@ -25,14 +25,19 @@ class InvadeActionService
     use DominionGuardsTrait;
 
     /**
-     * @var float Base percentage of defensive casualties
+     * @var float Number of boats protected per dock
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.5;
+    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
 
     /**
-     * @var float Defensive casualties percentage addition for every 1% land difference
+     * @var float Base percentage of boats sunk
      */
-    protected const CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD = 0.035;
+    protected const BOATS_SUNK_BASE_PERCENTAGE = 5;
+
+    /**
+     * @var float Base percentage of defensive casualties
+     */
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.375;
 
     /**
      * @var float Max percentage of defensive casualties
@@ -149,8 +154,7 @@ class InvadeActionService
         QueueService $queueService,
         RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
-        )
-    {
+    ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->landCalculator = $landCalculator;
@@ -233,15 +237,17 @@ class InvadeActionService
             $this->checkInvasionSuccess($dominion, $target, $units);
             $this->checkOverwhelmed();
 
+            $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
-            $this->handleDefensiveCasualties($dominion, $target);
-            $this->handleReturningUnits($dominion, $survivingUnits);
+            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target);
+            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties);
+
+            $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
 
             $this->handleMoraleChanges($dominion, $target);
-            $this->handleConversions($dominion, $target, $units);
             $this->handleLandGrabs($dominion, $target);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
@@ -299,6 +305,8 @@ class InvadeActionService
             $alertType = 'danger';
         }
 
+        $this->rangeCalculator->checkGuardApplications($dominion, $target);
+
         return [
             'message' => $message,
             'alert-type' => $alertType,
@@ -338,10 +346,10 @@ class InvadeActionService
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
 
-        if ($isOverwhelmed || ($range < 66)) {
+        if ($isOverwhelmed) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
-        } elseif ($isInvasionSuccessful && ($range >= 75) && ($range < 120)) {
+        } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = (int)round(min(
                 (($target->prestige * (static::PRESTIGE_CHANGE_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
                 (($dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD) // But capped by depending on your current prestige
@@ -445,7 +453,7 @@ class InvadeActionService
                 $totalUnitsLeftToKill -= $unitsToKill;
 
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if($fixedCasualtiesPerk) {
+                if ($fixedCasualtiesPerk) {
                     $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
                     $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
                     $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
@@ -458,7 +466,7 @@ class InvadeActionService
 
             foreach ($units as $slot => $amount) {
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if($fixedCasualtiesPerk) {
+                if ($fixedCasualtiesPerk) {
                     $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
                     $unitsToKill = (int)ceil($amount * $fixedCasualtiesRatio);
                     $offensiveUnitsLost[$slot] = $unitsToKill;
@@ -515,17 +523,13 @@ class InvadeActionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
+     * @return int
      */
-    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): void
+    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
     {
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
-
-        // Modify casualties percentage based on relative land size
-        $landRatioDiff = clamp(($landRatio - 1), -0.5, 0.5);
-        $defensiveCasualtiesPercentage += ($landRatioDiff * static::CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD);
 
         // Scale casualties further with invading OP vs target DP
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
@@ -588,6 +592,8 @@ class InvadeActionService
 
             $this->invasionResult['defender']['unitsLost'][$slot] = $amount;
         }
+
+        return $this->unitsLost;
     }
 
     /**
@@ -625,18 +631,19 @@ class InvadeActionService
         $landGrabRatio = 1;
         // todo: if mutual war, $landGrabRatio = 1.2
         // todo: if non-mutual war, $landGrabRatio = 1.15
-        // todo: if peace, $landGrabRatio = 0.9
-        $bonusLandRatio = 1.5;
+        $bonusLandRatio = 2;
 
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
 
         if ($range < 55) {
-            $acresLost = (0.304 * ($rangeMultiplier ^ 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
+            $acresLost = (0.304 * ($rangeMultiplier ** 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
         } elseif ($range < 75) {
             $acresLost = (0.154 * $rangeMultiplier - 0.069) * $attackerLandWithRatioModifier;
         } else {
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
+
+        $acresLost *= 0.75;
 
         $acresLost = (int)max(floor($acresLost), 10);
 
@@ -760,9 +767,110 @@ class InvadeActionService
         $dominion->increment('morale', $moraleChange);
     }
 
-    protected function handleConversions(Dominion $dominion, Dominion $target, array $units): void
-    {
-        // todo for later when I add spud/lycan
+    /**
+     * @param Dominion $dominion
+     * @param float $landRatio
+     * @param array $units
+     * @param int $totalDefensiveCasualties
+     * @return array
+     */
+    protected function handleConversions(
+        Dominion $dominion,
+        float $landRatio,
+        array $units,
+        int $totalDefensiveCasualties
+    ): array {
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
+        $convertedUnits = array_fill(1, 4, 0);
+
+        if (
+            !$isInvasionSuccessful ||
+            ($totalDefensiveCasualties === 0) ||
+            !in_array($dominion->race->name, ['Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
+        ) {
+            return $convertedUnits;
+        }
+
+        $conversionBaseMultiplier = 0.06;
+        $spellParasiticHungerMultiplier = 0.5;
+
+        $conversionMultiplier = (
+            $conversionBaseMultiplier *
+            (1 + $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHungerMultiplier))
+        );
+
+        $totalConvertingUnits = 0;
+
+        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use (
+            $landRatio,
+            $units,
+            $dominion
+        ) {
+            if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
+                return false;
+            }
+
+            $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+                $unit->slot,
+                'staggered_conversion');
+
+            if ($staggeredConversionPerk) {
+                foreach ($staggeredConversionPerk as $rangeConversionPerk) {
+                    $range = ((int)$rangeConversionPerk[0]) / 100;
+                    if ($range <= $landRatio) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return $unit->getPerkValue('conversion');
+        });
+
+        foreach ($unitsWithConversionPerk as $unit) {
+            $totalConvertingUnits += $units[$unit->slot];
+        }
+
+        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 2) * $landRatio;
+
+        foreach ($unitsWithConversionPerk as $unit) {
+            $conversionPerk = $unit->getPerkValue('conversion');
+            $convertingUnitsForSlot = $units[$unit->slot];
+            $convertingUnitsRatio = $convertingUnitsForSlot / $totalConvertingUnits;
+            $totalConversionsForUnit = floor($totalConverts * $convertingUnitsRatio);
+
+            if (!$conversionPerk) {
+                $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+                    $unit->slot,
+                    'staggered_conversion'
+                );
+
+                foreach ($staggeredConversionPerk as $rangeConversionPerk) {
+                    $range = ((int)$rangeConversionPerk[0]) / 100;
+                    $slots = $rangeConversionPerk[1];
+
+                    if ($range > $landRatio) {
+                        continue;
+                    }
+
+                    $conversionPerk = $slots;
+                }
+            }
+
+            $slotsToConvertTo = strlen($conversionPerk);
+            $totalConvertsForSlot = floor($totalConversionsForUnit / $slotsToConvertTo);
+
+            foreach (str_split($conversionPerk) as $slot) {
+                $convertedUnits[(int)$slot] += (int)$totalConvertsForSlot;
+            }
+        }
+
+        if (!isset($this->invasionResult['attacker']['conversion']) && array_sum($convertedUnits) > 0) {
+            $this->invasionResult['attacker']['conversion'] = $convertedUnits;
+        }
+
+        return $convertedUnits;
     }
 
     protected function handleAfterInvasionUnitPerks(Dominion $dominion, Dominion $target, array $units): void
@@ -822,31 +930,60 @@ class InvadeActionService
      *
      * @param Dominion $dominion
      * @param array $units
+     * @param array $convertedUnits
      * @throws Throwable
      */
-    protected function handleReturningUnits(Dominion $dominion, array $units): void
+    protected function handleReturningUnits(Dominion $dominion, array $units, array $convertedUnits): void
     {
-        // Units
-        foreach ($units as $slot => $amount) {
-            $unitKey = "military_unit{$slot}";
+        for ($i = 1; $i <= 4; $i++) {
+            $unitKey = "military_unit{$i}";
+            $returningAmount = 0;
 
-            $dominion->decrement($unitKey, $amount);
+            if (array_key_exists($i, $units)) {
+                $returningAmount += $units[$i];
+                $dominion->decrement($unitKey, $units[$i]);
+            }
+
+            if (array_key_exists($i, $convertedUnits)) {
+                $returningAmount += $convertedUnits[$i];
+            }
+
+            if ($returningAmount === 0) {
+                continue;
+            }
 
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
-                [$unitKey => $amount],
-                $this->getUnitReturnHoursForSlot($dominion, $slot)
+                [$unitKey => $returningAmount],
+                $this->getUnitReturnHoursForSlot($dominion, $i)
             );
         }
+    }
 
-        // Boats
-        // todo: move me in my own method
+    /**
+     * Handles the surviving units returning home.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @throws Throwable
+     */
+    protected function handleBoats(Dominion $dominion, Dominion $target, array $units): void
+    {
+        $unitsTotal = 0;
+        $unitsThatSinkBoats = 0;
         $unitsThatNeedsBoatsByReturnHours = [];
-
+        // Calculate boats sent and attacker sinking perk
         foreach ($dominion->race->units as $unit) {
             if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
                 continue;
+            }
+
+            $unitsTotal += (int)$units[$unit->slot];
+
+            if ($unit->getPerkValue('sink_boats_offense') !== 0) {
+                $unitsThatSinkBoats += (int)$units[$unit->slot];
             }
 
             if ($unit->need_boat) {
@@ -859,11 +996,46 @@ class InvadeActionService
                 $unitsThatNeedsBoatsByReturnHours[$hours] += (int)$units[$unit->slot];
             }
         }
+        if ($unitsThatSinkBoats > 0) {
+            $defenderBoatsProtected = (static::BOATS_PROTECTED_PER_DOCK * $target->building_dock);
+            $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
+            $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
+            $targetBoatTotal = $target->resource_boats + $targetQueuedBoats;
+            $defenderBoatsSunk = (int)floor(max(0, $targetBoatTotal - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
+            if ($defenderBoatsSunk > $targetQueuedBoats) {
+                $this->queueService->dequeueResource('invasion', $target, 'boats', $targetQueuedBoats);
+                $target->decrement('resource_boats', $defenderBoatsSunk - $targetQueuedBoats);
+            } else {
+                $this->queueService->dequeueResource('invasion', $target, 'boats', $defenderBoatsSunk);
+            }
+            $this->invasionResult['defender']['boatsLost'] = $defenderBoatsSunk;
+        }
 
+        $defendingUnitsTotal = 0;
+        $defendingUnitsThatSinkBoats = 0;
+        $attackerBoatsLost = 0;
+        // Defender sinking perk
+        foreach ($target->race->units as $unit) {
+            $defendingUnitsTotal += $target->{"military_unit{$unit->slot}"};
+            if ($unit->getPerkValue('sink_boats_defense') !== 0) {
+                $defendingUnitsThatSinkBoats += $target->{"military_unit{$unit->slot}"};
+            }
+        }
+        if ($defendingUnitsThatSinkBoats > 0) {
+            $attackerBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($defendingUnitsThatSinkBoats / $defendingUnitsTotal);
+        }
+
+        // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / 30);
+            $boatsByReturnHourGroup = (int)floor($amountUnits / static::UNITS_PER_BOAT);
 
             $dominion->decrement('resource_boats', $boatsByReturnHourGroup);
+
+            if ($defendingUnitsThatSinkBoats > 0) {
+                $attackerBoatsSunk = (int)ceil($boatsByReturnHourGroup * $attackerBoatsSunkPercentage);
+                $attackerBoatsLost += $attackerBoatsSunk;
+                $boatsByReturnHourGroup -= $attackerBoatsSunk;
+            }
 
             $this->queueService->queueResources(
                 'invasion',
@@ -871,6 +1043,9 @@ class InvadeActionService
                 ['resource_boats' => $boatsByReturnHourGroup],
                 $hours
             );
+        }
+        if ($attackerBoatsLost > 0) {
+            $this->invasionResult['attacker']['boatsLost'] = $attackerBoatsSunk;
         }
     }
 
@@ -1100,7 +1275,7 @@ class InvadeActionService
             ($templeMaxDpReduction / 100)
         );
 
-        if($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+        if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
             $ignoreDraftees = true;
         }
 

@@ -2,13 +2,12 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\CouncilService;
-use RuntimeException;
 
 class CouncilController extends AbstractDominionController
 {
@@ -18,8 +17,10 @@ class CouncilController extends AbstractDominionController
         $this->updateDominionCouncilLastRead($dominion);
         $councilService = app(CouncilService::class);
 
+        $threads = $councilService->getThreads($dominion->realm);
+
         return view('pages.dominion.council.index', [
-            'councilThreads' => $councilService->getThreads($dominion->realm),
+            'councilThreads' => $threads,
             'realm' => $dominion->realm,
         ]);
     }
@@ -46,7 +47,7 @@ class CouncilController extends AbstractDominionController
                 $request->get('body')
             );
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
@@ -67,7 +68,13 @@ class CouncilController extends AbstractDominionController
 
     public function getThread(Council\Thread $thread)
     {
-        $this->guardAgainstCrossRealm($thread);
+        try {
+            $this->guardAgainstCrossRealm($thread);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('council')
+                ->withErrors([$e->getMessage()]);
+        }
 
         $dominion = $this->getSelectedDominion();
         $this->updateDominionCouncilLastRead($dominion);
@@ -81,7 +88,13 @@ class CouncilController extends AbstractDominionController
 
     public function postReply(CreatePostRequest $request, Council\Thread $thread)
     {
-        $this->guardAgainstCrossRealm($thread);
+        try {
+            $this->guardAgainstCrossRealm($thread);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('council')
+                ->withErrors([$e->getMessage()]);
+        }
 
         $dominion = $this->getSelectedDominion();
         $councilService = app(CouncilService::class);
@@ -90,7 +103,7 @@ class CouncilController extends AbstractDominionController
             // todo: $post = ... and navigate to anchor with post id on page?
             $councilService->postReply($dominion, $thread, $request->get('body'));
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
@@ -109,10 +122,16 @@ class CouncilController extends AbstractDominionController
         return redirect()->route('dominion.council.thread', $thread);
     }
 
-    protected function guardAgainstCrossRealm(Council\Thread $thread)
+    /**
+     * Throws exception if trying to view a thread outside of your realm.
+     *
+     * @param Council\Thread $thread
+     * @throws GameException
+     */
+    protected function guardAgainstCrossRealm(Council\Thread $thread): void
     {
         if ($this->getSelectedDominion()->realm->id !== (int)$thread->realm_id) {
-            throw new RuntimeException('No permission to view thread'); // todo: modelnotfoundexception?
+            throw new GameException('No permission to view thread.');
         }
     }
 

@@ -10,6 +10,9 @@ class CasualtiesCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var PopulationCalculator */
+    private $populationCalculator;
+
     /** @var SpellCalculator */
     private $spellCalculator;
 
@@ -20,14 +23,16 @@ class CasualtiesCalculator
      * CasualtiesCalculator constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param PopulationCalculator $populationCalculator
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
+    public function __construct(LandCalculator $landCalculator, PopulationCalculator $populationCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
     {
         $this->landCalculator = $landCalculator;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
+        $this->populationCalculator = $populationCalculator;
     }
 
     /**
@@ -45,24 +50,39 @@ class CasualtiesCalculator
     public function getOffensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $target, int $slot, array $units, float $landRatio, bool $isOverwhelmed): float
     {
         $multiplier = 1;
-        // First check immortality, so we can skip the other checks on immortal
-        // units
-        // Note: Immortality only works if you're NOT overwhelmed, regardless if
-        // invasion is successful or not
-        if (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-            // todo: check HuNo's Crusader vs SPUD
-            $multiplier = 0;
-        } elseif (!$isOverwhelmed && $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) {
-            // todo: refactor to combine with except_vs_{race}
-            if ($landRatio >= ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['immortal_vs_land_range']) / 100)) {
-                $multiplier = 0;
-            }
-        } elseif (!$isOverwhelmed && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
-            $multiplier = 0;
+
+        // Check if unit has fixed casualties first, so we can skip all other checks
+        if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties') !== 0) {
+            return 1;
         }
 
-        if($dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties')) {
-            return 1;
+        // Then check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
+        // casualties will then always be 0 anyway
+
+        // Immortality never triggers upon being overwhelmed
+        if (!$isOverwhelmed) {
+            // Global immortality
+            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // Contrary to Dominion Classic, invading SPUDs are always immortal in OD, even when invading a HuNo
+                // with Crusade active
+
+                // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
+                // invasion targets
+
+                $multiplier = 0;
+            }
+
+            // Range-based immortality
+            if (($multiplier !== 0) && (($immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) !== 0)) {
+                if ($landRatio >= ($immortalVsLandRange / 100)) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Race perk-based immortality
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
+                $multiplier = 0;
+            }
         }
 
         if ($multiplier !== 0) {
@@ -150,14 +170,32 @@ class CasualtiesCalculator
     {
         $multiplier = 1;
 
-        // First check immortality, so we can skip the other checks on immortal
-        // units
-        if ($slot) {
-            if ($dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
-                // todo: check HuNo's Crusader vs SPUD
-                $multiplier = 0;
+        // First check immortality, so we can skip the other remaining checks if we indeed have immortal units, since
+        // casualties will then always be 0 anyway
 
-            } elseif ($this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
+        // Only military units with a slot number could be immortal
+        if ($slot !== null) {
+            // Global immortality
+            if ((bool)$dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal')) {
+                // Note: At the moment only SPUDs have the global 'immortal' perk. If we ever add global immortality to
+                // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
+                // additional race-based checks in here for any new units. So always assume we're running SPUD at the
+                // moment
+
+                $attackerHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade') !== 0);
+
+                // Note: This doesn't do a race check on $attacker, since I don't think that's needed atm; only HuNo can
+                // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
+                // go here
+
+                // We're only immortal if they're not Deus-Vult'ing into our unholy lands :^)
+                if (!$attackerHasCrusadeActive) {
+                    $multiplier = 0;
+                }
+            }
+
+            // Race perk-based immortality
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
                 $multiplier = 0;
             }
         }
@@ -265,7 +303,8 @@ class CasualtiesCalculator
             return [];
         }
 
-        $casualties = ['peasants' => min($totalCasualties / 2, $dominion->peasants)];
+        $peasantPopPercentage = $dominion->peasants / $this->populationCalculator->getPopulation($dominion);
+        $casualties = ['peasants' => min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
@@ -321,7 +360,10 @@ class CasualtiesCalculator
             return 0;
         }
 
-        return (int)(abs($foodDeficit) * 4);
+        $casualties = (int)(abs($foodDeficit) * 2);
+        $maxCasualties = $this->populationCalculator->getPopulation($dominion) * 0.02;
+
+        return min($casualties, $maxCasualties);
     }
 
     /**

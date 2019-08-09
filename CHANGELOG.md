@@ -5,6 +5,47 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0] - 2019-08-09
+### Added
+- Added new races: Lycanthrope, Merfolk, Nox*, Spirit, Undead, Wood Elf
+- *Note: The Nox was a premiun race back in Dominion Classic. In OpenDominion it has been renamed to just 'Nox', and made available for everyone, without restrictions.
+- Added missing Valhalla races, including the ones mentioned above
+- Construction advisor now shows total amount of barren land
+- Added info op archive, allowing you to view previously taken info ops
+- Docks are now fully implemented, preventing a certain amount of boats from being sunk
+- Notifications are now visible from the status screen in a 'Recent News' section
+- Added theft espionage operations, allowing you to steal resources from your target
+- Added magic spells: Fool's Gold and Surreal Perception
+- Added Government page with Royal Guard and Elite Guard
+- Added basic Scribes page with races and units
+
+### Changed
+- Condensed the items in the left navigation menu (except on mobile)
+- Removed prestige penalty on invading targets below 66% your size
+- Added prestige grab on invading targets above 120% your size
+- Extended the Statistics Advisor with more useful information
+- No more than two identical races can be in the same pack 
+- Changed national bank icon
+- Realms can now have mixed racial alignments
+- Significantly reduced starvation casualties
+- Slightly lowered overall exploration costs
+- Significantly increased exploration cost at or above 4000 acres
+- Reduced land lost and defensive casualties upon being on the receiving end on a successful invasion. Total land gains for attackers unchanged
+- Reworked spy/wizard operations success chance to be more linear
+- Significantly increased spy casualties for failed info gathering operations
+- Spirit/Undead and Human/Nomad now count as identical races for pack race-uniqueness purposes
+
+### Fixed
+- Fixed newlines sometimes not being properly applied in council posts
+- The server time/next tick tickers should now be slightly more accurate
+- Fixed Gnome's racial spell Mechanical Genius, now properly granting the intended amount of rezoning cost reduction
+- Realm spinner on realm page no longer allows for invalid input (eg negative numbers) which in turn displayed a server error page
+- Barren land now correctly houses 10 population for Gnome and Halfling
+- Fixed bug where spy strength was lowered when trying to perform op when you had no spies
+- Land lost from being invaded now properly takes barren land away first
+- Minor text fixes
+- Gnomes now correctly do not gain any ore reduction, from any sources, on their units
+
 ## [0.6.2-9] - 2019-07-14
 ### Changed
 - Slightly improved targeted espionage/magic spell success rate
@@ -13,7 +54,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed spell mana cost not being reduced by wizard guilds
 - Fixed a race condition during tick, where more resources could be deducted than intended
 - Fixed displayed WPA on statistics advisor page
-- Fixed a bug where unintended bounces could happen upon invading with correct input
+- Fixed a bug where you could still conquer land upon bouncing
 - Fixed unable to scroll op center page tables on mobile
 - Fixed typo on Town Crier page
 
@@ -300,7 +341,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
 [0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
 [0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
 [0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
