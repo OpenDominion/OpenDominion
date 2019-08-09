@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0-1] - 2019-08-09
+### Fixed
+- Fixed some deploy-related stuff
+
 ## [0.7.0] - 2019-08-09
 ### Added
 - Added new races: Lycanthrope, Merfolk, Nox*, Spirit, Undead, Wood Elf
@@ -341,7 +345,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...HEAD
+[0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
 [0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
 [0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
 [0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
