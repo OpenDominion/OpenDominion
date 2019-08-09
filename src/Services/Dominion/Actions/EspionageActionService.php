@@ -38,12 +38,12 @@ class EspionageActionService
     /**
      * @var float Theft base success rate
      */
-    protected const THEFT_BASE_SUCCESS_RATE = 0.5;
+    protected const THEFT_MULTIPLIER_SUCCESS_RATE = 1.2;
 
     /**
      * @var float Info op base success rate
      */
-    protected const INFO_BASE_SUCCESS_RATE = 0.8;
+    protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
 
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -212,7 +212,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::INFO_BASE_SUCCESS_RATE);
+            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::INFO_MULTIPLIER_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -425,7 +425,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::THEFT_BASE_SUCCESS_RATE);
+            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::THEFT_MULTIPLIER_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)

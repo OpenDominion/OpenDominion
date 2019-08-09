@@ -4,10 +4,10 @@ namespace OpenDominion\Helpers;
 
 class OpsHelper
 {
-    public function operationSuccessChance(float $selfRatio, float $targetRatio, float $base): float
+    public function operationSuccessChance(float $selfRatio, float $targetRatio, float $multiplier): float
     {
-        $ratioDifference = $targetRatio - $selfRatio;
-        $successRate = min($base, $base * $selfRatio * 5) * ((1 - $ratioDifference / 3) * (1/3) + ($selfRatio / $targetRatio) * (2/3));
+        $ratio = $selfRatio / $targetRatio;
+        $successRate = 0.8 ** (2 / (($ratio * $multiplier) ** 1.2));
         return clamp($successRate, 0, 1);
     }
 }
