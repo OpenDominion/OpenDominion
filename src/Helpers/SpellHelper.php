@@ -57,11 +57,7 @@ class SpellHelper
 
     public function getSelfSpells(Race $race): Collection
     {
-        $raceName = $race->name;
-
-        $racialSpell = $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
-            return $spell['races']->contains($raceName);
-        })->first();
+        $racialSpell = $this->getRacialSelfSpell($race);
 
         return collect(array_filter([
             [
@@ -123,6 +119,13 @@ class SpellHelper
 //            ],
             $racialSpell
         ]));
+    }
+
+    public function getRacialSelfSpell(Race $race) {
+        $raceName = $race->name;
+        return $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
     }
 
     public function getRacialSelfSpells(): Collection

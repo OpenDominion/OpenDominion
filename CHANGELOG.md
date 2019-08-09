@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added theft espionage operations, allowing you to steal resources from your target
 - Added magic spells: Fool's Gold and Surreal Perception
 - Added Government page with Royal Guard and Elite Guard
+- Added basic Scribes page with races and units
 
 ### Changed
 - Condensed the items in the left navigation menu (except on mobile)

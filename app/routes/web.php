@@ -179,6 +179,12 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
 // Scribes
 
+$router->group(['prefix' => 'scribes', 'as' => 'scribes.'], function (Router $router) {
+
+    $router->get('/')->uses('ScribesController@getIndex')->name('index');
+    $router->get('{race}')->uses('ScribesController@getRace')->name('race');
+});
+
 // Valhalla
 
 $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $router) {
