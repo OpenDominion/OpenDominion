@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.7.0-2] - 2019-08-09
 ### Added
 - Added link to scribes in the top navigation bar
 
@@ -363,7 +365,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...HEAD
+[0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
 [0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
 [0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
 [0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
