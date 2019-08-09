@@ -14,14 +14,23 @@
                         {!! $raceHelper->getRaceDescriptionHtml($race) !!}
                     </em>
 
-                    {{-- Racial Spell --}}
-                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell</h4>
-                    @php
-                        $racialSpell = $spellHelper->getRacialSelfSpell($race);
-                    @endphp
-                    <p>
-                        <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
-                    </p>
+                    <div class="col-md-12 col-md-3">
+                        {{-- Home land --}}
+                        <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Home land</h4>
+                        <p>
+                            {!! $landHelper->getLandTypeIconHtml($race->home_land_type) !!} {{ ucfirst($race->home_land_type) }}
+                        </p>
+                    </div>
+                    <div class="col-md-12 col-md-9">
+                        {{-- Racial Spell --}}
+                        <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial Spell</h4>
+                        @php
+                            $racialSpell = $spellHelper->getRacialSelfSpell($race);
+                        @endphp
+                        <p>
+                            <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
+                        </p>
+                    </div>
                 </div>
                 <div class="col-md-12 col-md-3">
                     <table class="table table-striped">
