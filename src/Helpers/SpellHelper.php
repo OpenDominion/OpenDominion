@@ -145,7 +145,7 @@ class SpellHelper
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Dwarf']),
+                'races' => collect(['Dwarf', 'Gnome']),
             ],
             [
                 'name' => 'Killing Rage',
@@ -185,7 +185,7 @@ class SpellHelper
                 'key' => 'mechanical_genius',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Gnome']),
+                'races' => collect([]),
             ],
             [
                 'name' => 'Unholy Ghost',

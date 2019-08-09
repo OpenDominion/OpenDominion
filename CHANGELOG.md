@@ -5,6 +5,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0-2] - 2019-08-09
+### Added
+- Added link to scribes in the top navigation bar
+
+### Changed
+- Dwarf Cleric: -40p
+- Gnome: Now has Miner's Sight as racial spell. Mechanical Genius has been removed
+- Gnome Juggernaut: Increased max staggered OP to +2.5 at 90% land
+- Icekin: Removed +5% platinum production, ArchMage -25p
+- Lycanthrope Werewolf: -25p, +1 OP
+- Nox Nightshade: +50p
+- Nox Lich: -50p
+- Spirit: Increased max population bonus from +12.5% to +15%
+- Spirit Phantom: No longer needs boats 
+- Spirit Banshee: No longer needs boats
+- Spirit Spectre: Now converts into elite dp at 60%+ (from 65%+)
+- Undead Skeleton: No longer needs boats
+- Undead Ghoul: No longer needs boats
+- Undead Vampire: Now converts intp elite dp at 60%+ (from 65%+) 
+
 ## [0.7.0-1] - 2019-08-09
 ### Fixed
 - Fixed some deploy-related stuff
@@ -345,7 +365,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...HEAD
+[0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
 [0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
 [0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
 [0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9

@@ -19,6 +19,7 @@
             <ul class="nav navbar-nav">
                 @include('partials.staff-nav')
                 @include('partials.wiki-nav')
+                @include('partials.scribes-nav')
                 @include('partials.notification-nav')
                 @include('partials.auth-user-nav')
             </ul>
