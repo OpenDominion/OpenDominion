@@ -8,9 +8,9 @@ $router->get('/')->uses('HomeController@getIndex')->name('home');
 
 // Authentication
 
-$router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) {
+$router->group(['prefix' => 'auth', 'as' => 'auth.'], static function (Router $router) {
 
-    $router->group(['middleware' => 'guest'], function (Router $router) {
+    $router->group(['middleware' => 'guest'], static function (Router $router) {
 
         // Authentication
         $router->get('login')->uses('Auth\LoginController@showLoginForm')->name('login');
@@ -29,7 +29,7 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
     });
 
-    $router->group(['middleware' => 'auth'], function (Router $router) {
+    $router->group(['middleware' => 'auth'], static function (Router $router) {
 
         // Logout
         $router->post('logout')->uses('Auth\LoginController@logout')->name('logout');
@@ -40,7 +40,7 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], function (Router $router) 
 
 // Gameplay
 
-$router->group(['middleware' => 'auth'], function (Router $router) {
+$router->group(['middleware' => 'auth'], static function (Router $router) {
 
     // Profile
     // todo
@@ -56,18 +56,16 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');
 
-    $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], function (Router $router) {
+    $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], static function (Router $router) {
 
         // Dominion Select
 //        $router->get('{dominion}/select')->uses(function () { return redirect()->route('dashboard'); });
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
-        $router->group(['middleware' => 'dominionselected'], function (Router $router) {
+        $router->group(['middleware' => 'dominionselected'], static function (Router $router) {
 
-            $router->get('/', function () {
-                return redirect()->route('dominion.status');
-            });
+            $router->get('/')->uses('Dominion\IndexController@getIndex');
 
             // Status
             $router->get('status')->uses('Dominion\StatusController@getStatus')->name('status');
@@ -179,7 +177,7 @@ $router->group(['middleware' => 'auth'], function (Router $router) {
 
 // Scribes
 
-$router->group(['prefix' => 'scribes', 'as' => 'scribes.'], function (Router $router) {
+$router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Router $router) {
 
     $router->get('/')->uses('ScribesController@getIndex')->name('index');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
@@ -187,7 +185,7 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], function (Router $ro
 
 // Valhalla
 
-$router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $router) {
+$router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], static function (Router $router) {
 
     $router->get('/')->uses('ValhallaController@getIndex')->name('index');
     $router->get('round/{round}')->uses('ValhallaController@getRound')->name('round');
@@ -204,25 +202,25 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], function (Router $
 
 // Staff
 
-$router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator'], 'prefix' => 'staff', 'as' => 'staff.'], function (Router $router) {
+$router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator'], 'prefix' => 'staff', 'as' => 'staff.'], static function (Router $router) {
 
     $router->get('/')->uses('Staff\StaffController@getIndex')->name('index');
 
     // Developer
 
-    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
-
-        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
-
-        // simulate dominion by state string
-        // take over dominion & traverse state history
-        // set dominion state/attributes?
-
-    });
+//    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
+//
+//        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
+//
+//        // simulate dominion by state string
+//        // take over dominion & traverse state history
+//        // set dominion state/attributes?
+//
+//    });
 
     // Administrator
 
-    $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], function (Router $router) {
+    $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], static function (Router $router) {
 
         $router->resource('dominions', 'Staff\Administrator\DominionController');
 
