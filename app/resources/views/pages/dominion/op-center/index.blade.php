@@ -121,29 +121,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($clairvoyanceRealms as $realm)
-                                @php
-                                    $lastInfoOp = $infoOpService->getLastClairvoyance($selectedDominion->realm, $realm);
-                                @endphp
+                            @foreach ($clairvoyances as $clairvoyance)
                                 <tr>
-                                    <td data-order="{{ $realm->number }}">
-                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->number) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
+                                    <td data-order="{{ $clairvoyance->targetRealm->number }}">
+                                        <a href="{{ route('dominion.op-center.clairvoyance', $clairvoyance->targetRealm->number) }}">{{ $clairvoyance->targetRealm->name }} (#{{ $clairvoyance->targetRealm->number }})</a>
                                     </td>
-                                    <td data-order="{{ $lastInfoOp->targetDominion->name }}">
-                                        <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
+                                    <td data-order="{{ $clairvoyance->targetDominion->name }}">
+                                        <a href="{{ route('dominion.op-center.show', $clairvoyance->targetDominion->id) }}">{{ $clairvoyance->targetDominion->name }}</a>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
+                                    <td class="text-center" data-search="" data-order="{{ $clairvoyance->created_at->getTimestamp() }}">
                                         Clairvoyance by
-                                        @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
+                                        @if ($clairvoyance->sourceDominion->id === $selectedDominion->id)
                                             <strong>
                                                 {{ $selectedDominion->name }}
                                             </strong>
                                         @else
-                                            {{ $lastInfoOp->sourceDominion->name }}
+                                            {{ $clairvoyance->sourceDominion->name }}
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $lastInfoOp->created_at->diffForHumans() }}
+                                            {{ $clairvoyance->created_at->diffForHumans() }}
                                         </span>
                                     </td>
                                 </tr>
