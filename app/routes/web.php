@@ -65,9 +65,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
         // Dominion
         $router->group(['middleware' => 'dominionselected'], static function (Router $router) {
 
-            $router->get('/', static function () {
-                return redirect()->route('dominion.status');
-            });
+            $router->get('/')->uses('Dominion\IndexController@getIndex');
 
             // Status
             $router->get('status')->uses('Dominion\StatusController@getStatus')->name('status');
