@@ -162,7 +162,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Misc
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
-            $router->post('misc/delete-dominion')->uses('Dominion\MiscController@postDeleteDominion')->name('misc.delete-dominion');
 
             // Debug
             // todo: remove me later
