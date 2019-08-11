@@ -3,7 +3,6 @@
 namespace OpenDominion\Services;
 
 use OpenDominion\Factories\DominionFactory;
-use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
