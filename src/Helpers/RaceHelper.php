@@ -104,9 +104,10 @@ NOMAD;
 <p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
 NOX;
 
+        // new
         $descriptions['troll'] = <<<TROLL
-<p>Clans of dumb brutes, hulking in stature, originally thought to have evolved from the elves long ago.</p>
-<p>Trolls are excellent at smashing others, especially things smaller than themselves. <em>[Urg smash puny gnome!]</em></p>
+<p>Hard to kill, and even harder to look at without screaming, Trolls are the hideously ugly but tremendously powerful genetic dead end of an ancient elven race.</p>
+<p>Trolls are notoriously bloodthirsty. What they lack in subtlety they more than make up for in gratuitous violence. It is not uncommon to see fully-armoured soldiers being punted up sixty feet into the air during Troll invasions. <em>[Urg smash!]</em></p>
 TROLL;
 
         $descriptions['undead'] = <<<UNDEAD
