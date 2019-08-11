@@ -21,7 +21,7 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--realmSize=10 : Maximum number of dominions in one realm}
                              {--packSize=4 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
-                             {--mixedAlignment : Allows for mixed alignments}';
+                             {--mixedAlignment=true : Allows for mixed alignments}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 5 days';
@@ -104,6 +104,8 @@ class RoundOpenCommand extends Command implements CommandInterface
         }
 
         $startDate = new Carbon($startDate);
+
+        /** @var RoundLeague $roundLeague */
         $roundLeague = RoundLeague::where('key', $league)->firstOrFail();
 
         $this->info("Starting a new round in {$roundLeague->key} league");
