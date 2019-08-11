@@ -124,7 +124,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         if ($round->mixed_alignment) {
             // Prepopulate round with 20 mixed realms
             for ($i = 1; $i <= 20; $i++) {
-                $realm = $this->realmFactory->create($round, 'mixed');
+                $realm = $this->realmFactory->create($round);
                 $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
             }
         } else {
