@@ -42,9 +42,10 @@ HALFLING;
 <p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline.</p>
 HUMAN;
 
+        // new
         $descriptions['merfolk'] = <<<MERFOLK
-<p>Amphibious creatures who live in isolated settlements within shallow seas and coral reefs where protection and food are abundant.</p>
-<p>They have trained aquatic animals to serve as their guardians. They typically avoid combat but are capable warriors should the need arise.</p>
+<p>An aquatic race that lives in beautiful coral reefs where food is plentiful, Merfolk are the benevolent guardians of the great oceans.</p>
+<p>Though typically peaceful, Merfolk are legendary for their wrath when angered, summoning terrors of the deep to destroy entire naval fleets with the thrashing tentacles of ravenous krakens. The chilling and alluring call of the psiren might be the last thing you ever hear... before you're snatched from your ship and dragged down to the bottom of the cold, dark sea.</p>
 MERFOLK;
 
         $descriptions['spirit'] = <<<SPIRIT
