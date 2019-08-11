@@ -66,6 +66,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Realm spinner on realm page no longer allows for invalid input (eg negative numbers) which in turn displayed a server error page
 - Barren land now correctly houses 10 population for Gnome and Halfling
 - Fixed bug where spy strength was lowered when trying to perform op when you had no spies
+- Land lost from being invaded now properly takes barren land away first
 - Minor text fixes
 - Gnomes now correctly do not gain any ore reduction, from any sources, on their units
 
