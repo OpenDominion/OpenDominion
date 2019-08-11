@@ -51,4 +51,33 @@ class LandHelper
 
         return $return;
     }
+
+    public function getLandTypeIconHtml(string $landType): string
+    {
+        switch ($landType) {
+            case 'plain':
+                return '<i class="ra ra-grass-patch text-green"></i>';
+
+            case 'mountain':
+                return '<i class="ra ra-mountains text-red"></i>';
+
+            case 'swamp':
+                return '<i class="ra ra-skull text-black"></i>';
+
+            case 'cavern':
+                return '<i class="ra ra-mining-diamonds text-blue"></i>';
+
+            case 'forest':
+                return '<i class="ra ra-pine-tree text-green"></i>';
+
+            case 'hill':
+                return '<i class="ra ra-grass text-green"></i>';
+
+            case 'water':
+                return '<i class="ra ra-water-drop text-light-blue"></i>';
+
+            default:
+                return '';
+        }
+    }
 }

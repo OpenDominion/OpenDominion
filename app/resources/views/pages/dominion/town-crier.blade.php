@@ -76,11 +76,11 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        @if ($fromOpCenter)
-                            <div class="box-footer">
-                                <em>Revealed {{ $clairvoyanceInfoOp->updated_at }} by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
-                            </div>
-                        @endif
+                    </div>
+                @endif
+                @if ($fromOpCenter)
+                    <div class="box-footer">
+                        <em>Revealed {{ $clairvoyanceInfoOp->updated_at }} by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
                     </div>
                 @endif
             </div>

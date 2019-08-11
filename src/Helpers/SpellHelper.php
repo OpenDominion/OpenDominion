@@ -180,14 +180,6 @@ class SpellHelper
                 'races' => collect(['Icekin']),
             ],
             [
-                'name' => 'Mechanical Genius',
-                'description' => '-30% land rezoning costs',
-                'key' => 'mechanical_genius',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect([]),
-            ],
-            [
                 'name' => 'Unholy Ghost',
                 'description' => 'Enemy draftees do not participate in battle',
                 'key' => 'unholy_ghost',

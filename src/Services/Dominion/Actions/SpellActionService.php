@@ -30,7 +30,7 @@ class SpellActionService
     /**
      * @var float Info op base success rate
      */
-    protected const INFO_BASE_SUCCESS_RATE = 0.8;
+    protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -264,7 +264,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa, static::INFO_BASE_SUCCESS_RATE);
+            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa, static::INFO_MULTIPLIER_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
@@ -366,7 +366,7 @@ class SpellActionService
 
         $redirect = route('dominion.op-center.show', $target);
         if ($spellKey === 'clairvoyance') {
-            $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);
+            $redirect = route('dominion.op-center.clairvoyance', $target->realm->number);
         }
 
         return [

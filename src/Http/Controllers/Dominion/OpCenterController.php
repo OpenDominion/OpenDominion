@@ -20,12 +20,6 @@ class OpCenterController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
-        $clairvoyanceRealms = $dominion->realm->infoOps()
-            ->where('type', '=', 'clairvoyance')
-            ->get()
-            ->map(static function ($infoOp) {
-                return $infoOp->targetRealm;
-            });
 
         $latestInfoOps = $dominion->realm->infoOps()
             ->with('sourceDominion')
@@ -38,12 +32,21 @@ class OpCenterController extends AbstractDominionController
             ->get()
             ->groupBy('target_dominion_id');
 
+        $clairvoyances = $dominion->realm->infoOps()
+            ->with('sourceDominion')
+            ->with('targetDominion')
+            ->with('targetRealm')
+            ->where('type', '=', 'clairvoyance')
+            ->where('latest', '=', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('pages.dominion.op-center.index', [
             'infoOpService' => app(InfoOpService::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellHelper' => app(SpellHelper::class),
             'latestInfoOps' => $latestInfoOps,
-            'clairvoyanceRealms' => $clairvoyanceRealms
+            'clairvoyances' => $clairvoyances
         ]);
     }
 
@@ -109,10 +112,16 @@ class OpCenterController extends AbstractDominionController
         ]);
     }
 
-    public function getClairvoyance(int $realmId)
+    public function getClairvoyance(int $realmNumber)
     {
         $infoOpService = app(InfoOpService::class);
-        $targetRealm = Realm::findOrFail($realmId);
+        $dominion = $this->getSelectedDominion();
+
+        $targetRealm = Realm::where([
+                'round_id' => $dominion->round->id,
+                'number' => $realmNumber,
+            ])
+            ->firstOrFail();
 
         $clairvoyanceInfoOp = $infoOpService->getInfoOpForRealm(
             $this->getSelectedDominion()->realm,

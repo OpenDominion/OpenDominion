@@ -20,9 +20,10 @@ class RaceHelper
 <p>Dwarven mines are the most productive in the lands, producing a steady flow of ore used to fortify their great cities, and craft legendary Dwarven armour for their military forces.</p>
 DWARF;
 
+        // new
         $descriptions['firewalker'] = <<<FIREWALKER
-<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
-<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+<p>The first Firewalker erupted into existence from the smouldering ashes of a greedy scientist that had sought to enrich himself with forbidden alchemical practices, combining chemistry and pyromancy to forge platinum from the earth itself.</p>
+<p>Turning entire networks of caverns into vast furnaces where they live as one flame, Firewalker alchemies enhanced by pyromantic magics are the most productive in the lands, and their populations spread like wildfire wherever they ignite.</p>
 FIREWALKER;
 
         $descriptions['gnome'] = <<<GNOME
@@ -41,9 +42,10 @@ HALFLING;
 <p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline.</p>
 HUMAN;
 
+        // new
         $descriptions['merfolk'] = <<<MERFOLK
-<p>Amphibious creatures who live in isolated settlements within shallow seas and coral reefs where protection and food are abundant.</p>
-<p>They have trained aquatic animals to serve as their guardians. They typically avoid combat but are capable warriors should the need arise.</p>
+<p>An aquatic race that lives in beautiful coral reefs where food is plentiful, Merfolk are the benevolent guardians of the great oceans.</p>
+<p>Though typically peaceful, Merfolk are legendary for their wrath when angered, summoning terrors of the deep to destroy entire naval fleets with the thrashing tentacles of ravenous krakens. The chilling and alluring call of the psiren might be the last thing you ever hear... before you're snatched from your ship and dragged down to the bottom of the cold, dark sea.</p>
 MERFOLK;
 
         $descriptions['spirit'] = <<<SPIRIT
@@ -76,9 +78,10 @@ DARKELF;
 <p>Goblin populations can grow quickly out of control if left unchecked, and these short, green and ugly wretches have been known to completely ransack well-fortified castles in their relentless pursuit of gems, gems and more gems.</p>
 GOBLIN;
 
+        // new
         $descriptions['icekin'] = <<<ICEKIN
-<p>These icy creatures come from the cold mountains, up in the far north.</p>
-<p>Icekin are a slow race that make for excellent explorers and late-game attacking.</p>
+<p>Slow, lumbering elementals of frost and stone, Icekin emerged from the snow-capped mountains as a counterweight to unnatural the pyromancy experiments that created the Firewalkers.</p>
+<p>Their creeping cold expands ever outwards, insistent, transforming the lands around them with a white permafrost and hijacking the weather with seemingly never-ending blizzards. Icekin can become an immense military threat once they become well fortified.</p>
 ICEKIN;
 
         $descriptions['lizardfolk'] = <<<LIZARDFOLK
@@ -86,9 +89,10 @@ ICEKIN;
 <p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
 LIZARDFOLK;
 
+        // new
         $descriptions['lycanthrope'] = <<<LYCANTHROPE
-<p>Nocturnal shapeshifters, stalking their pray from deep within the caves of the land.</p>
-<p>Falling to their bite will make even their fiercest enemies turn.</p>
+<p>Once thought to be an ancient curse that transformed men into wolves under the light of a full moon, little is understood about the Lycanthropic affliction. But one thing's for certain: once bitten, you'll never be the same again.</p>
+<p>Capable of agonising transformations into half-beast monsters, Lycanthropes are a hardy and fast-growing race, turning their enemies into werewolves and regenerating non-lethal wounds mid-combat.</p>
 LYCANTHROPE;
 
         $descriptions['nomad'] = <<<NOMAD
@@ -101,9 +105,10 @@ NOMAD;
 <p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
 NOX;
 
+        // new
         $descriptions['troll'] = <<<TROLL
-<p>Clans of dumb brutes, hulking in stature, originally thought to have evolved from the elves long ago.</p>
-<p>Trolls are excellent at smashing others, especially things smaller than themselves. <em>[Urg smash puny gnome!]</em></p>
+<p>Hard to kill, and even harder to look at without screaming, Trolls are the hideously ugly but tremendously powerful genetic dead end of an ancient elven race.</p>
+<p>Trolls are notoriously bloodthirsty. What they lack in subtlety they more than make up for in gratuitous violence. It is not uncommon to see fully-armoured soldiers being punted up sixty feet into the air during Troll invasions. <em>[Urg smash!]</em></p>
 TROLL;
 
         $descriptions['undead'] = <<<UNDEAD

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -26,6 +27,7 @@ class ScribesController extends AbstractController
             ->firstOrFail();
 
         return view('pages.scribes.race', [
+            'landHelper' => app(LandHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'raceHelper' => app(RaceHelper::class),
             'spellHelper' => app(SpellHelper::class),

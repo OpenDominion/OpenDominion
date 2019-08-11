@@ -32,7 +32,7 @@ class AddGuardsToDominionsTable extends Migration
     public function down(): void
     {
         Schema::table('dominions', static function (Blueprint $table) {
-            $table->dropColumn(['elite_guard_active_at', 'elite_guard_active_at']);
+            $table->dropColumn(['royal_guard_active_at', 'elite_guard_active_at']);
         });
     }
 }
