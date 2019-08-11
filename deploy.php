@@ -69,8 +69,7 @@ task('deploy', [
     'deploy:writable',
     'artisan:storage:link',
     'artisan:down', // custom inserted
-    'artisan:view:clear',
-    'artisan:cache:clear',
+    'artisan:view:cache',
     'artisan:config:cache',
     'artisan:migrate', // custom inserted
     'artisan:game:data:sync', // custom made

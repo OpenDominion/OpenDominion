@@ -37,12 +37,7 @@ class InvadeActionService
     /**
      * @var float Base percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.5;
-
-    /**
-     * @var float Defensive casualties percentage addition for every 1% land difference
-     */
-    protected const CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD = 0.035;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.375;
 
     /**
      * @var float Max percentage of defensive casualties
@@ -159,8 +154,7 @@ class InvadeActionService
         QueueService $queueService,
         RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
-        )
-    {
+    ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->landCalculator = $landCalculator;
@@ -459,7 +453,7 @@ class InvadeActionService
                 $totalUnitsLeftToKill -= $unitsToKill;
 
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if($fixedCasualtiesPerk) {
+                if ($fixedCasualtiesPerk) {
                     $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
                     $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
                     $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
@@ -472,7 +466,7 @@ class InvadeActionService
 
             foreach ($units as $slot => $amount) {
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
-                if($fixedCasualtiesPerk) {
+                if ($fixedCasualtiesPerk) {
                     $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
                     $unitsToKill = (int)ceil($amount * $fixedCasualtiesRatio);
                     $offensiveUnitsLost[$slot] = $unitsToKill;
@@ -533,14 +527,9 @@ class InvadeActionService
      */
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
     {
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
-
-        // Modify casualties percentage based on relative land size
-        $landRatioDiff = clamp(($landRatio - 1), -0.5, 0.5);
-        $defensiveCasualtiesPercentage += ($landRatioDiff * static::CASUALTIES_DEFENSIVE_LAND_DIFFERENCE_ADD);
 
         // Scale casualties further with invading OP vs target DP
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
@@ -642,18 +631,19 @@ class InvadeActionService
         $landGrabRatio = 1;
         // todo: if mutual war, $landGrabRatio = 1.2
         // todo: if non-mutual war, $landGrabRatio = 1.15
-        // todo: if peace, $landGrabRatio = 0.9
-        $bonusLandRatio = 1.5;
+        $bonusLandRatio = 2;
 
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
 
         if ($range < 55) {
-            $acresLost = (0.304 * ($rangeMultiplier ^ 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
+            $acresLost = (0.304 * ($rangeMultiplier ** 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
         } elseif ($range < 75) {
             $acresLost = (0.154 * $rangeMultiplier - 0.069) * $attackerLandWithRatioModifier;
         } else {
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
+
+        $acresLost *= 0.75;
 
         $acresLost = (int)max(floor($acresLost), 10);
 
@@ -784,8 +774,12 @@ class InvadeActionService
      * @param int $totalDefensiveCasualties
      * @return array
      */
-    protected function handleConversions(Dominion $dominion, float $landRatio, array $units, int $totalDefensiveCasualties): array
-    {
+    protected function handleConversions(
+        Dominion $dominion,
+        float $landRatio,
+        array $units,
+        int $totalDefensiveCasualties
+    ): array {
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         $convertedUnits = array_fill(1, 4, 0);
 
@@ -807,23 +801,23 @@ class InvadeActionService
 
         $totalConvertingUnits = 0;
 
-        // Lycan
-        // conversion: 3
-
-        // SPUD:
-        // conversion: 12
-        // staggered_conversion: 50;12,65;3
-
-        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use ($landRatio, $units) {
-            if ($units[$unit->slot] == 0) {
+        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use (
+            $landRatio,
+            $units,
+            $dominion
+        ) {
+            if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
                 return false;
             }
 
-            $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
+            $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+                $unit->slot,
+                'staggered_conversion');
+
             if ($staggeredConversionPerk) {
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
                     $range = ((int)$rangeConversionPerk[0]) / 100;
-                    if ($rangeConversionPerk <= $range) {
+                    if ($range <= $landRatio) {
                         return true;
                     }
                 }
@@ -838,10 +832,7 @@ class InvadeActionService
             $totalConvertingUnits += $units[$unit->slot];
         }
 
-        $convertingUnitConversions = ($totalConvertingUnits * $conversionMultiplier * $landRatio);
-        $enemyCasualtyConversions = ($totalDefensiveCasualties * $landRatio);
-
-        $totalConverts = min($convertingUnitConversions, $enemyCasualtyConversions);
+        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 2) * $landRatio;
 
         foreach ($unitsWithConversionPerk as $unit) {
             $conversionPerk = $unit->getPerkValue('conversion');
@@ -850,12 +841,16 @@ class InvadeActionService
             $totalConversionsForUnit = floor($totalConverts * $convertingUnitsRatio);
 
             if (!$conversionPerk) {
-                $staggeredConversionPerk = $unit->getPerkValue('staggered_conversion');
+                $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
+                    $unit->slot,
+                    'staggered_conversion'
+                );
 
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {
                     $range = ((int)$rangeConversionPerk[0]) / 100;
                     $slots = $rangeConversionPerk[1];
-                    if($range > $landRatio) {
+
+                    if ($range > $landRatio) {
                         continue;
                     }
 
@@ -865,9 +860,14 @@ class InvadeActionService
 
             $slotsToConvertTo = strlen($conversionPerk);
             $totalConvertsForSlot = floor($totalConversionsForUnit / $slotsToConvertTo);
+
             foreach (str_split($conversionPerk) as $slot) {
-                $convertedUnits[(int)$slot] += $totalConvertsForSlot;
+                $convertedUnits[(int)$slot] += (int)$totalConvertsForSlot;
             }
+        }
+
+        if (!isset($this->invasionResult['attacker']['conversion']) && array_sum($convertedUnits) > 0) {
+            $this->invasionResult['attacker']['conversion'] = $convertedUnits;
         }
 
         return $convertedUnits;
@@ -935,20 +935,28 @@ class InvadeActionService
      */
     protected function handleReturningUnits(Dominion $dominion, array $units, array $convertedUnits): void
     {
-        foreach ($units as $slot => $amount) {
-            $unitKey = "military_unit{$slot}";
+        for ($i = 1; $i <= 4; $i++) {
+            $unitKey = "military_unit{$i}";
+            $returningAmount = 0;
 
-            $dominion->decrement($unitKey, $amount);
+            if (array_key_exists($i, $units)) {
+                $returningAmount += $units[$i];
+                $dominion->decrement($unitKey, $units[$i]);
+            }
 
-            $returningAmount = $amount;
+            if (array_key_exists($i, $convertedUnits)) {
+                $returningAmount += $convertedUnits[$i];
+            }
 
-            $returningAmount += $convertedUnits[$slot];
+            if ($returningAmount === 0) {
+                continue;
+            }
 
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
                 [$unitKey => $returningAmount],
-                $this->getUnitReturnHoursForSlot($dominion, $slot)
+                $this->getUnitReturnHoursForSlot($dominion, $i)
             );
         }
     }
@@ -1267,7 +1275,7 @@ class InvadeActionService
             ($templeMaxDpReduction / 100)
         );
 
-        if($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
+        if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
             $ignoreDraftees = true;
         }
 

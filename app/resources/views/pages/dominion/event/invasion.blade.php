@@ -229,6 +229,11 @@
                                     </p>
                                 @endif
                             @endif
+                            @if (isset($event->data['attacker']['conversion']) && $event->source->id === $selectedDominion->id)
+                                <p class="text-center text-green">
+                                    {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $selectedDominion->race) }}
+                                </p>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -18,8 +18,8 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
                              {--days= : Start the round in +DAYS days midnight, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
-                             {--realmSize=6 : Maximum number of dominions in one realm}
-                             {--packSize=3 : Maximum number of players in a pack}
+                             {--realmSize=10 : Maximum number of dominions in one realm}
+                             {--packSize=4 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment : Allows for mixed alignments}';
 

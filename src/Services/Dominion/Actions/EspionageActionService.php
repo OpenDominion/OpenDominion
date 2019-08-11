@@ -10,10 +10,12 @@ use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -32,6 +34,16 @@ use Throwable;
 class EspionageActionService
 {
     use DominionGuardsTrait;
+
+    /**
+     * @var float Theft base success rate
+     */
+    protected const THEFT_BASE_SUCCESS_RATE = 0.5;
+
+    /**
+     * @var float Info op base success rate
+     */
+    protected const INFO_BASE_SUCCESS_RATE = 0.8;
 
     /** @var BuildingHelper */
     protected $buildingHelper;
@@ -56,6 +68,9 @@ class EspionageActionService
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var OpsHelper */
+    protected $opsHelper;
 
     /** @var ProductionCalculator */
     protected $productionCalculator;
@@ -85,6 +100,7 @@ class EspionageActionService
         $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsHelper = app(OpsHelper::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -92,7 +108,7 @@ class EspionageActionService
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
-    public const THEFT_DAYS_AFTER_ROUND_START = 7;
+    public const THEFT_DAYS_AFTER_ROUND_START = 8;
 
     /**
      * Performs a espionage operation for $dominion, aimed at $target dominion.
@@ -196,22 +212,11 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $ratio = ($selfSpa / $targetSpa);
-
-            // todo: copied from spell success ratio. needs looking into later
-            // todo: factor in spy strength
-            $successRate = clamp((
-                (0.0172 * ($ratio ** 3))
-                - (0.1809 * ($ratio ** 2))
-                + (0.7777 * $ratio)
-                - 0.0134
-            ), 0.0, 1.0);
+            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::INFO_BASE_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
-                // todo: move to CasualtiesCalculator
-
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 0.5; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -221,7 +226,7 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.05, 0.5);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 2);
 
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
@@ -420,22 +425,11 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $ratio = ($selfSpa / $targetSpa);
-
-            // todo: copied from spell success ratio. needs looking into later
-            // todo: factor in spy strength
-            $successRate = clamp((
-                (0.0172 * ($ratio ** 3))
-                - (0.1809 * ($ratio ** 2))
-                + (0.6767 * $ratio)
-                - 0.0134
-            ), 0.0, 1.0);
+            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::THEFT_BASE_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
-                // todo: move to CasualtiesCalculator
-
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1;
+                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -445,7 +439,7 @@ class EspionageActionService
                     ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.05, 0.5);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 2);
 
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
