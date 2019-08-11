@@ -66,6 +66,12 @@ class UnitHelper
             'defense_vs_goblin' => 'Defense increased by %s against goblins.',
             'offense_vs_goblin' => 'Offense increased by %s against goblins.',
 
+            'defense_vs_wood_elf' => 'Defense increased by %s against wood elves.',
+            'offense_vs_wood_elf' => 'Offense increased by %s against wood elves.',
+
+//            'defense_vs_kobold' => 'Defense increased by %s against kobolds.',
+//            'offense_vs_kobold' => 'Offense increased by %s against kobolds.',
+
             'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%%+ of your size.',
 
             'offense_raw_wizard_ratio' => 'Offense increased by %1$s * Raw Wizard Ratio (max +%2$s).',
