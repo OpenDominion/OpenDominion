@@ -18,7 +18,13 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
                 ->after('data')
                 ->default(true);
 
+            $table->dropForeign('info_ops_source_realm_id_foreign');
+            $table->dropForeign('info_ops_target_dominion_id_foreign');
+
             $table->dropUnique(['source_realm_id', 'target_dominion_id', 'type']);
+
+            $table->foreign('source_realm_id')->references('id')->on('realms');
+            $table->foreign('target_dominion_id')->references('id')->on('dominions');
         });
     }
 
