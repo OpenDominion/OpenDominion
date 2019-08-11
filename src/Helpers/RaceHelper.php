@@ -20,9 +20,10 @@ class RaceHelper
 <p>Dwarven mines are the most productive in the lands, producing a steady flow of ore used to fortify their great cities, and craft legendary Dwarven armour for their military forces.</p>
 DWARF;
 
+        // new
         $descriptions['firewalker'] = <<<FIREWALKER
-<p>Beings of pure fire, which came into this world after a powerful sorcerer once got too greedy with their pyro experimentation projects.</p>
-<p>Excellent at proliferation, these fiery beasts seem highly interested in leaving only ash in their wake.</p>
+<p>The first Firewalker erupted into existence from the smouldering ashes of a greedy scientist that had sought to enrich himself with forbidden alchemical practices, combining chemistry and pyromancy to forge platinum from the earth itself.</p>
+<p>Turning entire networks of caverns into vast furnaces where they live as one flame, Firewalker alchemies enhanced by pyromantic magics are the most productive in the lands, and their populations spread like wildfire wherever they ignite.</p>
 FIREWALKER;
 
         $descriptions['gnome'] = <<<GNOME
