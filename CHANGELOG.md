@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.7.0-3] - 2019-08-11
 ### Changed
 - A bunch of empty realms now get created for each new round, to prevent people landing together when not packing
 - Land lost from being invaded is now again proportional to land types, including constructed/constructed buildings
@@ -373,7 +375,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...HEAD
+[0.7.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...0.7.0-3
 [0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
 [0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
 [0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
