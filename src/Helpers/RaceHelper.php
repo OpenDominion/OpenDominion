@@ -89,9 +89,10 @@ ICEKIN;
 <p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
 LIZARDFOLK;
 
+        // new
         $descriptions['lycanthrope'] = <<<LYCANTHROPE
-<p>Nocturnal shapeshifters, stalking their pray from deep within the caves of the land.</p>
-<p>Falling to their bite will make even their fiercest enemies turn.</p>
+<p>Once thought to be an ancient curse that transformed men into wolves under the light of a full moon, little is understood about the Lycanthropic affliction. But one thing's for certain: once bitten, you'll never be the same again.</p>
+<p>Capable of agonising transformations into half-beast monsters, Lycanthropes are a hardy and fast-growing race, turning their enemies into werewolves and regenerating non-lethal wounds mid-combat.</p>
 LYCANTHROPE;
 
         $descriptions['nomad'] = <<<NOMAD
