@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - A bunch of empty realms now get created for each new round, to prevent people landing together when not packing
+- Land lost from being invaded is now again proportional to land types, including constructed/constructed buildings
 
 ### Fixed
 - Units in training now count towards max military population
