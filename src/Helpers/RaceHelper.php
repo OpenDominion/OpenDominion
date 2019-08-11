@@ -77,9 +77,10 @@ DARKELF;
 <p>Goblin populations can grow quickly out of control if left unchecked, and these short, green and ugly wretches have been known to completely ransack well-fortified castles in their relentless pursuit of gems, gems and more gems.</p>
 GOBLIN;
 
+        // new
         $descriptions['icekin'] = <<<ICEKIN
-<p>These icy creatures come from the cold mountains, up in the far north.</p>
-<p>Icekin are a slow race that make for excellent explorers and late-game attacking.</p>
+<p>Slow, lumbering elementals of frost and stone, Icekin emerged from the snow-capped mountains as a counterweight to unnatural the pyromancy experiments that created the Firewalkers.</p>
+<p>Their creeping cold expands ever outwards, insistent, transforming the lands around them with a white permafrost and hijacking the weather with seemingly never-ending blizzards. Icekin can become an immense military threat once they become well fortified.</p>
 ICEKIN;
 
         $descriptions['lizardfolk'] = <<<LIZARDFOLK
