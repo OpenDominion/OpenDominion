@@ -21,14 +21,13 @@ class RealmFinderService
      * The number of dominions that can exist in a realm is dictated by
      * $round->realm_size.
      *
-     * @see DominionFactory::create()
-     *
      * @param Round $round
      * @param Race $race
      * @param int $slotsNeeded
      * @param bool $forPack
      *
      * @return Realm|null
+     * @see DominionFactory::create()
      */
     public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
@@ -47,7 +46,7 @@ class RealmFinderService
         $realms = $realmQuery->groupBy('realms.id')
             ->having('dominions_count', '<', $round->realm_size)
             ->get()
-            ->filter(function($realm) use ($round, $slotsNeeded, $forPack) {
+            ->filter(static function ($realm) use ($round, $slotsNeeded, $forPack) {
                 // Check pack status
                 if ($forPack && (static::MAX_PACKS_PER_REALM !== null) && ($realm->packs->count() >= static::MAX_PACKS_PER_REALM)) {
                     return false;
@@ -61,6 +60,7 @@ class RealmFinderService
                     $availableSlots -= ($pack->size - $pack->dominions->count());
                 }
 
+                /** @noinspection IfReturnReturnSimplificationInspection */
                 if ($availableSlots < $slotsNeeded) {
                     return false;
                 }
@@ -74,6 +74,7 @@ class RealmFinderService
             // Choose randomly from the emptiest 3 realms
             return $realms->random();
         }
+
         return null;
     }
 
