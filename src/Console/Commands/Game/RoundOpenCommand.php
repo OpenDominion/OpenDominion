@@ -36,12 +36,12 @@ class RoundOpenCommand extends Command implements CommandInterface
      * RoundOpenCommand constructor.
      *
      * @param RoundFactory $roundFactory
+     * @param RealmFactory $realmFactory
      */
     public function __construct(
         RoundFactory $roundFactory,
         RealmFactory $realmFactory
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->roundFactory = $roundFactory;
@@ -82,7 +82,7 @@ class RoundOpenCommand extends Command implements CommandInterface
             throw new RuntimeException('Option --realmSize must be greater than or equal to option --packSize.');
         }
 
-        if($playersPerRace < 0) {
+        if ($playersPerRace < 0) {
             throw new RuntimeException('Option --playersPerRace must be greater than or equal to 0.');
         }
 
@@ -108,21 +108,29 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         $this->info("Starting a new round in {$roundLeague->key} league");
 
-        $round = $this->roundFactory->create($roundLeague, $startDate, $realmSize, $packSize, $playersPerRace, $mixedAlignments);
+        $round = $this->roundFactory->create(
+            $roundLeague,
+            $startDate,
+            $realmSize,
+            $packSize,
+            $playersPerRace,
+            $mixedAlignments
+        );
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
 
         if ($round->mixed_alignment) {
             // Prepopulate round with 20 mixed realms
-            for($i=1; $i<=20; $i++) {
+            for ($i = 1; $i <= 20; $i++) {
                 $realm = $this->realmFactory->create($round, 'mixed');
                 $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
             }
         } else {
             // Prepopulate round with 5 good and 5 evil realms
-            for($i=1; $i<=5; $i++) {
+            for ($i = 1; $i <= 5; $i++) {
                 $realm = $this->realmFactory->create($round, 'good');
                 $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
+
                 $realm = $this->realmFactory->create($round, 'evil');
                 $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
             }
