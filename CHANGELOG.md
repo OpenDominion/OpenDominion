@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - A bunch of empty realms now get created for each new round, to prevent people landing together when not packing
 - Land lost from being invaded is now again proportional to land types, including constructed/constructed buildings
 - Increased spy/wiz success rate
+- Race pages on the Scribes now show the race's home land type
 
 ### Fixed
 - Units in training now count towards max military population
