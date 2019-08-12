@@ -231,8 +231,8 @@
                     <p>
                         OP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
                         DP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
-                        Land: {{ $infoOpService->getLandString($selectedDominion->realm, $dominion) }}<br>
-                        Networth: {{ $infoOpService->getNetworthString($selectedDominion->realm, $dominion) }}<br>
+                        Land: {{ $infoOpService->getLandString($latestInfoOps) }}<br>
+                        Networth: {{ $infoOpService->getNetworthString($latestInfoOps) }}<br>
                     </p>--}}
 
                     {{-- todo: invade button --}}
