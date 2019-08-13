@@ -587,8 +587,6 @@ class InvadeActionService
             }
         }
 
-
-
         foreach ($defensiveUnitsLost as $slot => $amount) {
             $target->decrement("military_unit{$slot}", $amount);
 
