@@ -200,8 +200,6 @@ class CasualtiesCalculator
             }
         }
 
-
-
         if ($multiplier !== 0) {
             // Non-unit bonuses (hero, tech, wonders), capped at -80%
 
