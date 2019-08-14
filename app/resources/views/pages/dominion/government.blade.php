@@ -17,7 +17,7 @@
                                 <p class="text-red">You cannot join the Emperor's Royal Guard for the first five days of the round.</p>
                             </div>
                         @endif
-                        <div class="col-xs-6 text-center">
+                        <div class="col-sm-6 text-center">
                             <h4 class="text-green">
                                 <i class="ra ra-heavy-shield" title="Royal Guard"></i>
                                 The Emperor's Royal Guard
@@ -27,9 +27,9 @@
                                 <li>Hourly platinum production reduced by 2%.</li>
                             </ul>
                             @if ($isRoyalGuardApplicant || $isRoyalGuardMember)
-                                <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember ? 'disabled' : null }}>
                                         @if ($isRoyalGuardMember)
                                             Leave Royal Guard
                                         @else
@@ -38,15 +38,15 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('dominion.government.royal-guard.join') }}" method="post" role="form">
+                                <form action="{{ route('dominion.government.royal-guard.join') }}" method="post" role="form" style="padding-bottom: 10px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Request to Join Royal Guard
                                     </button>
                                 </form>
                             @endif
                         </div>
-                        <div class="col-xs-6 text-center">
+                        <div class="col-sm-6 text-center">
                             <h4 class="text-yellow">
                                 <i class="ra ra-heavy-shield" title="Elite Guard"></i>
                                 The Emperor's Elite Guard
@@ -59,7 +59,7 @@
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
                                 <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-lg" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         @if ($isEliteGuardMember)
                                             Leave Elite Guard
                                         @else
@@ -70,7 +70,7 @@
                             @else
                                 <form action="{{ route('dominion.government.elite-guard.join') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-primary btn-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards || !$isRoyalGuardMember ? 'disabled' : null }}>
                                         Request to Join Elite Guard
                                     </button>
                                 </form>
