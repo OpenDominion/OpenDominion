@@ -180,8 +180,10 @@ class EspionageActionService
             }
 
             $dominion->decrement('spy_strength', $spyStrengthLost);
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION, 'action' => $operationKey]);
 
+            $dominion->increment('stat_espionage_success');
+
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION, 'action' => $operationKey]);
         });
 
         $this->rangeCalculator->checkGuardApplications($dominion, $target);
