@@ -252,6 +252,14 @@ class InvadeActionService
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
+            // Stat changes
+            // todo: move to own method
+            if ($this->invasionResult['result']['success']) {
+                $dominion->increment('stat_attacking_success');
+            } else {
+                $target->increment('stat_defending_success');
+            }
+
             // todo: move to GameEventService
             $this->invasionEvent = GameEvent::create([
                 'round_id' => $dominion->round_id,
