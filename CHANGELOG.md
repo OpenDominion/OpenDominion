@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed Government page styling on mobile
 - Fixed Op Center page being slow sometimes
 - Fixed 33% rule sometimes not being applied correctly
+- Fixed incorrect dominion placement in realms if a pack was already present in such realm
 - Minor text fixes
 
 ## [0.7.0-3] - 2019-08-11
