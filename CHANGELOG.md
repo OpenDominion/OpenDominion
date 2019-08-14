@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0-5] - 2019-08-14
+### Changed
+- Temporarily changed so that new dominions always land in the most emptiest realm
+
 ## [0.7.0-4] - 2019-08-14
 ### Fixed
 - Fixed Government page styling on mobile
@@ -383,7 +387,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-4...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-5...HEAD
+[0.7.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-4...0.7.0-5
 [0.7.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...0.7.0-4
 [0.7.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...0.7.0-3
 [0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
