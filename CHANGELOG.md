@@ -7,7 +7,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - 33% rule is now implemented as in DC.
 
-
 ## [0.7.0-3] - 2019-08-11
 ### Changed
 - A bunch of empty realms now get created for each new round, to prevent people landing together when not packing
