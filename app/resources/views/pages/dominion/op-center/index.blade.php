@@ -67,15 +67,15 @@
                                         {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                     </td>
                                     --}}
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getLandString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($targetDominionOps) }}">
+                                        {{ $infoOpService->getLandString($targetDominionOps) }}
                                         <br>
                                         <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $lastInfoOp->targetDominion) }}">
                                             {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $lastInfoOp->targetDominion), 1) }}%
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getNetworthString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($targetDominionOps) }}">
+                                        {{ $infoOpService->getNetworthString($targetDominionOps) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
                                         {{ $infoOpService->getInfoOpName($lastInfoOp) }}
@@ -92,8 +92,8 @@
                                             {{ $lastInfoOp->created_at }}
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $lastInfoOp->targetDominion) }}/{{ $infoOpService->getMaxInfoOps() }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($targetDominionOps) }}">
+                                        {{ $infoOpService->getNumberOfActiveInfoOps($targetDominionOps) }}/{{ $infoOpService->getMaxInfoOps() }}
                                     </td>
                                 </tr>
                             @endforeach

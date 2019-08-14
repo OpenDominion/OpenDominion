@@ -182,7 +182,7 @@ class CasualtiesCalculator
                 // additional race-based checks in here for any new units. So always assume we're running SPUD at the
                 // moment
 
-                $attackerHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade') !== 0);
+                $attackerHasCrusadeActive = ($this->spellCalculator->isSpellActive($attacker, 'crusade'));
 
                 // Note: This doesn't do a race check on $attacker, since I don't think that's needed atm; only HuNo can
                 // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should

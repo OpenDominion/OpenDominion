@@ -110,61 +110,63 @@ class InfoOpService
         return 'todo';
     }
 
-    public function getLand(Realm $sourceRealm, Dominion $targetDominion): ?int
+    public function getLand(Collection $ops): ?int
     {
-        if (!$this->hasActiveInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
-            return null;
+        $clearSight = $ops->filter(function ($op) {
+            return $op->type == 'clear_sight';
+        })->first();
+
+        if ($clearSight) {
+            return $clearSight->data['land'];
         }
 
-        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
-
-        return $clearSight->data['land'];
+        return null;
     }
 
-    public function getLandString(Realm $sourceRealm, Dominion $targetDominion): string
+    public function getLandString(Collection $ops): string
     {
-        $land = $this->getLand($sourceRealm, $targetDominion);
+        $clearSight = $ops->filter(function ($op) {
+            return $op->type == 'clear_sight';
+        })->first();
 
-        if ($land === null) {
-            return '???';
-        }
-
-        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
-
-        $return = number_format($clearSight->data['land']);
-
-        if ($clearSight->isStale()) {
-            $return .= '?';
+        if ($clearSight) {
+            $return = number_format($clearSight->data['land']);
+            if ($clearSight->isStale()) {
+                $return .= '?';
+            }
+        } else {
+            $return = '???';
         }
 
         return $return;
     }
 
-    public function getNetworth(Realm $sourceRealm, Dominion $targetDominion): ?int
+    public function getNetworth(Collection $ops): ?int
     {
-        if (!$this->hasActiveInfoOp($sourceRealm, $targetDominion, 'clear_sight')) {
-            return null;
+        $clearSight = $ops->filter(function ($op) {
+            return $op->type == 'clear_sight';
+        })->first();
+
+        if ($clearSight) {
+            return $clearSight->data['networth'];
         }
 
-        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
-
-        return $clearSight->data['networth'];
+        return null;
     }
 
-    public function getNetworthString(Realm $sourceRealm, Dominion $targetDominion): string
+    public function getNetworthString(Collection $ops): string
     {
-        $networth = $this->getNetworth($sourceRealm, $targetDominion);
+        $clearSight = $ops->filter(function ($op) {
+            return $op->type == 'clear_sight';
+        })->first();
 
-        if ($networth === null) {
-            return '???';
-        }
-
-        $clearSight = $this->getInfoOp($sourceRealm, $targetDominion, 'clear_sight');
-
-        $return = number_format($clearSight->data['networth']);
-
-        if ($clearSight->isStale()) {
-            $return .= '?';
+        if ($clearSight) {
+            $return = number_format($clearSight->data['networth']);
+            if ($clearSight->isStale()) {
+                $return .= '?';
+            }
+        } else {
+            $return = '???';
         }
 
         return $return;
@@ -189,15 +191,10 @@ class InfoOpService
             ->first();
     }
 
-    public function getNumberOfActiveInfoOps(Realm $sourceRealm, Dominion $targetDominion): int
+    public function getNumberOfActiveInfoOps(Collection $ops): int
     {
-        return $this->espionageHelper->getInfoGatheringOperations()
-            ->merge($this->spellHelper->getInfoOpSpells())
-            ->filter(function ($op) use ($sourceRealm, $targetDominion) {
-                if ($op['key'] !== 'clairvoyance') { // refactor: Removes Clairvoyance from count
-                    return $this->hasActiveInfoOp($sourceRealm, $targetDominion, $op['key']);
-                }
-                return null;
+        return $ops->filter(function ($op) {
+                return !$op->isStale();
             })
             ->count();
     }
@@ -205,7 +202,7 @@ class InfoOpService
     public function getMaxInfoOps(): int
     {
         return $this->espionageHelper->getInfoGatheringOperations()
-                ->merge($this->spellHelper->getInfoOpSpells())
-                ->count() - 1; // refactor: Removes Clairvoyance from count
+            ->merge($this->spellHelper->getInfoOpSpells())
+            ->count() - 1; // refactor: Removes Clairvoyance from count
     }
 }

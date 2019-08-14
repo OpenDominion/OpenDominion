@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0-4] - 2019-08-14
+### Fixed
+- Fixed Government page styling on mobile
+- Fixed Op Center page being slow sometimes
+- Fixed 33% rule sometimes not being applied correctly
+- Fixed incorrect dominion placement in realms if a pack was already present in such realm
+- Minor text fixes
+
 ## [0.7.0-3] - 2019-08-11
 ### Changed
 - A bunch of empty realms now get created for each new round, to prevent people landing together when not packing
@@ -375,7 +383,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-4...HEAD
+[0.7.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...0.7.0-4
 [0.7.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...0.7.0-3
 [0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
 [0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
