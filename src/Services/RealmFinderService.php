@@ -56,6 +56,7 @@ class RealmFinderService
                     if ($pack->isClosed()) {
                         continue;
                     }
+
                     $availableSlots -= ($pack->size - $pack->dominions->count());
                 }
 
