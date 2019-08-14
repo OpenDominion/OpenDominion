@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Fixed Government page styling on mobile
 - Fixed Op Center page being slow sometimes
+- Fixed 33% rule sometimes not being applied correctly
 - Minor text fixes
 
 ## [0.7.0-3] - 2019-08-11
