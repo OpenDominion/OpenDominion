@@ -54,7 +54,7 @@ class RealmFinderService
                 $availableSlots = ($round->realm_size - $realm->dominions_count);
                 foreach ($realm->packs as $pack) {
                     if ($pack->isClosed()) {
-                        return false;
+                        continue;
                     }
                     $availableSlots -= ($pack->size - $pack->dominions->count());
                 }
