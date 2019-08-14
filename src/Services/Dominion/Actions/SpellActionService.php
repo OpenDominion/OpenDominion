@@ -161,6 +161,11 @@ class SpellActionService
 
             $dominion->decrement('resource_mana', $manaCost);
             $dominion->decrement('wizard_strength', ($result['wizardStrengthCost'] ?? 5));
+
+            if (!$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
+                $dominion->increment('stat_spell_success');
+            }
+
             $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL, 'action' => $spellKey]);
         });
 
