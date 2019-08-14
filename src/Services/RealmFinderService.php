@@ -68,7 +68,7 @@ class RealmFinderService
                 return true;
             })
             ->sortBy('dominions_count')
-            ->take(3);
+            ->take(1); // todo: change back to 3 (or make it dynamically smaller, depending on how much time there is until OOP)
 
         if ($realms->count() > 0) {
             // Choose randomly from the emptiest 3 realms
