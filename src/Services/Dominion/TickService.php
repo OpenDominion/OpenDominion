@@ -184,11 +184,15 @@ class TickService
         $this->spellCalculator->getActiveSpells($dominion, true);
 
         // Resources
-        $dominion->increment('resource_platinum', $this->productionCalculator->getPlatinumProduction($dominion));
+        $platinumProduced = $this->productionCalculator->getPlatinumProduction($dominion);
+        $dominion->increment('resource_platinum', $platinumProduced);
+//        $dominion->increment('stat_total_platinum_production', $platinumProduced); // todo: round 15+
+
         $dominion->increment('resource_lumber', $this->productionCalculator->getLumberNetChange($dominion));
         $dominion->increment('resource_mana', $this->productionCalculator->getManaNetChange($dominion));
         $dominion->increment('resource_ore', $this->productionCalculator->getOreProduction($dominion));
         $dominion->increment('resource_gems', $this->productionCalculator->getGemProduction($dominion));
+
         $dominion->increment('resource_boats', $this->productionCalculator->getBoatProduction($dominion));
         // Check for starvation before adjusting food
         $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
