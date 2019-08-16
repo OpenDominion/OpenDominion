@@ -397,15 +397,6 @@ class EspionageActionService
 
         $infoOp->save();
 
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
-            $this->notificationService
-                ->queueNotification('received_spy_op', [
-                    'sourceDominionId' => $dominion->id,
-                    'operationKey' => $operationKey,
-                ])
-                ->sendNotifications($target, 'irregular_dominion');
-        }
-
         return [
             'success' => true,
             'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
