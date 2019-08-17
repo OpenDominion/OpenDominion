@@ -148,6 +148,10 @@ class Round extends AbstractModel
      */
     public function hasOffensiveActionsDisabled(): bool
     {
+        if ($this->offensive_actions_prohibited_at === null) {
+            return false;
+        }
+
         return ($this->offensive_actions_prohibited_at <= now());
     }
 
