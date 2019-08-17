@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +11,12 @@ class AddOffensiveActionsEndDateToRound extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('rounds', function (Blueprint $table) {
-            $table->dateTime('offensive_actions_end_date')->default(Carbon::now())->after('end_date');
+        Schema::table('rounds', static function (Blueprint $table) {
+            $table->dateTime('offensive_actions_prohibited_at')
+                ->nullable()
+                ->after('end_date');
         });
     }
 
@@ -24,10 +25,10 @@ class AddOffensiveActionsEndDateToRound extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('rounds', function (Blueprint $table) {
-            $table->dropColumn('offensive_actions_end_date');
+        Schema::table('rounds', static function (Blueprint $table) {
+            $table->dropColumn('offensive_actions_prohibited_at');
         });
     }
 }
