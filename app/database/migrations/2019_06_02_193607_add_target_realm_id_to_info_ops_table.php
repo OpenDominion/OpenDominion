@@ -30,7 +30,9 @@ class AddTargetRealmIdToInfoOpsTable extends Migration
     public function down(): void
     {
         Schema::table('info_ops', static function (Blueprint $table) {
-            $table->dropForeign('info_ops_target_realm_id_foreign');
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign('info_ops_target_realm_id_foreign');
+            }
 
             $table->dropColumn('target_realm_id');
         });
