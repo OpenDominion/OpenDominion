@@ -48,7 +48,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $mockRandomChance = true;
     }
 
-    public function testPerformOperation_SameSpa_LoseOnePermille()
+    public function testPerformOperation_SameSpa_LoseFivePermille()
     {
         // Arrange
         $this->dominion->military_spies = 10000;
@@ -58,10 +58,10 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(9990, $this->dominion->military_spies);
+        $this->assertEquals(9950, $this->dominion->military_spies);
     }
 
-    public function testPerformOperation_MuchLowerSpa_LoseMaxAHalfPercent()
+    public function testPerformOperation_MuchLowerSpa_LoseMaxTwoPercent()
     {
         // Arrange
         $this->dominion->military_spies = 10000;
@@ -71,10 +71,10 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(9950, $this->dominion->military_spies);
+        $this->assertEquals(9800, $this->dominion->military_spies);
     }
 
-    public function testPerformOperation_MuchHigherSpa_LoseHalfAPermille()
+    public function testPerformOperation_MuchHigherSpa_LoseHalfAPercent()
     {
         // Arrange
         $this->dominion->military_spies = 10000;
@@ -84,6 +84,6 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(9995, $this->dominion->military_spies);
+        $this->assertEquals(9950, $this->dominion->military_spies);
     }
 }

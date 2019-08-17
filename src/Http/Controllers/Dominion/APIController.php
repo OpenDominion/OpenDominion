@@ -9,7 +9,7 @@ use OpenDominion\Services\Dominion\API\InvadeCalculationService;
 
 class APIController extends AbstractDominionController
 {
-    public function calculateInvasion(InvadeCalculationRequest $request)
+    public function calculateInvasion(InvadeCalculationRequest $request): array
     {
         $dominion = $this->getSelectedDominion();
         $invadeCalculationService = app(InvadeCalculationService::class);

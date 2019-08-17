@@ -49,7 +49,7 @@ HUMAN;
 MERFOLK;
 
         $descriptions['spirit'] = <<<SPIRIT
-<p>These kind spirits long for a quite and peaceful world.</p>
+<p>These kind spirits long for a quiet and peaceful world.</p>
 <p>Some of the lost souls of fallen enemies, will join their ranks in search of this goal.</p>
 SPIRIT;
 

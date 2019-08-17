@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0-6] - 2019-08-17
+### Changed
+- Slightly increased prestige gains for attackers. Prestige loss for defenders unchanged
+- Offensive actions and exploration will now be randomly disabled at end of round (1 to 16 hours before round end)
+
 ## [0.7.0-5] - 2019-08-14
 ### Changed
 - Temporarily changed so that new dominions always land in the most emptiest realm
@@ -387,7 +392,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-5...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-6...HEAD
+[0.7.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-5...0.7.0-6
 [0.7.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-4...0.7.0-5
 [0.7.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...0.7.0-4
 [0.7.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...0.7.0-3

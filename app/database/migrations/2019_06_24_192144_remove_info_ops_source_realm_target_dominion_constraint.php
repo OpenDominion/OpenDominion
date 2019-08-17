@@ -18,8 +18,10 @@ class RemoveInfoOpsSourceRealmTargetDominionConstraint extends Migration
                 ->after('data')
                 ->default(true);
 
-            $table->dropForeign('info_ops_source_realm_id_foreign');
-            $table->dropForeign('info_ops_target_dominion_id_foreign');
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign('info_ops_source_realm_id_foreign');
+                $table->dropForeign('info_ops_target_dominion_id_foreign');
+            }
 
             $table->dropUnique(['source_realm_id', 'target_dominion_id', 'type']);
 

@@ -50,7 +50,7 @@
                 <li class="header">COMMS</li>
                 <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group ra-fw"></i> <span>The Council</span> {!! $councilUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $councilUnreadCount . '</small></span>') : null !!}</a></li>
                 <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}"><a href="{{ route('dominion.op-center') }}"><i class="fa fa-globe ra-fw"></i> <span>Op Center</span></a></li>
-                <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span> <span class="pull-right-container"><small class="label pull-right bg-green">new</small></span></a></li>
+                <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a></li>
 
                 <li class="header">REALM</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>The Realm</span></a></li>

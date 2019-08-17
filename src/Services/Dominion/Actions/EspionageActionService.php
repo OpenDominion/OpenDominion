@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use Exception;
 use LogicException;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -168,20 +169,35 @@ class EspionageActionService
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
                 $spyStrengthLost = 2;
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
+
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
+
             } elseif ($this->espionageHelper->isBlackOperation($operationKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } elseif ($this->espionageHelper->isWarOperation($operationKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
             $dominion->decrement('spy_strength', $spyStrengthLost);
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION, 'action' => $operationKey]);
 
+            $dominion->increment('stat_espionage_success');
+
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+                'action' => $operationKey
+            ]);
         });
 
         $this->rangeCalculator->checkGuardApplications($dominion, $target);
@@ -198,6 +214,13 @@ class EspionageActionService
             ] + $result;
     }
 
+    /**
+     * @param Dominion $dominion
+     * @param string $operationKey
+     * @param Dominion $target
+     * @return array
+     * @throws Exception
+     */
     protected function performInfoGatheringOperation(Dominion $dominion, string $operationKey, Dominion $target): array
     {
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
@@ -212,7 +235,11 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::INFO_MULTIPLIER_SUCCESS_RATE);
+            $successRate = $this->opsHelper->operationSuccessChance(
+                $selfSpa,
+                $targetSpa,
+                static::INFO_MULTIPLIER_SUCCESS_RATE
+            );
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -231,7 +258,12 @@ class EspionageActionService
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
-                $spiesKilled = min($spiesKilled, $dominion->military_spies); // Cap to amount of spies we have to prevent negatives, see issue #486
+
+                // Cap to amount of spies we have to prevent negatives, see issue #486
+                $spiesKilled = min(
+                    $spiesKilled,
+                    $dominion->military_spies
+                );
 
                 $dominion->military_spies -= $spiesKilled;
 
@@ -294,7 +326,7 @@ class EspionageActionService
                 }
 
                 // Units returning (85% accurate)
-                $this->queueService->getInvasionQueue($target)->each(function ($row) use (&$data) {
+                $this->queueService->getInvasionQueue($target)->each(static function ($row) use (&$data) {
                     if (!starts_with($row->resource, 'military_')) {
                         return; // continue
                     }
@@ -310,7 +342,7 @@ class EspionageActionService
                 });
 
                 // Units in training (100% accurate)
-                $this->queueService->getTrainingQueue($target)->each(function ($row) use (&$data) {
+                $this->queueService->getTrainingQueue($target)->each(static function ($row) use (&$data) {
                     $unitType = str_replace('military_', '', $row->resource);
 
                     array_set($data, "units.training.{$unitType}.{$row->hours}", $row->amount);
@@ -338,7 +370,7 @@ class EspionageActionService
                     array_set($data, "constructed.{$buildingType}", $target->{'building_' . $buildingType});
                 }
 
-                $this->queueService->getConstructionQueue($target)->each(function ($row) use (&$data) {
+                $this->queueService->getConstructionQueue($target)->each(static function ($row) use (&$data) {
                     $buildingType = str_replace('building_', '', $row->resource);
 
                     array_set($data, "constructing.{$buildingType}.{$row->hours}", $row->amount);
@@ -362,7 +394,7 @@ class EspionageActionService
                         $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
                 }
 
-                $this->queueService->getExplorationQueue($target)->each(function ($row) use (&$data) {
+                $this->queueService->getExplorationQueue($target)->each(static function ($row) use (&$data) {
                     $landType = str_replace('land_', '', $row->resource);
 
                     array_set(
@@ -372,7 +404,7 @@ class EspionageActionService
                     );
                 });
 
-                $this->queueService->getInvasionQueue($target)->each(function ($row) use (&$data) {
+                $this->queueService->getInvasionQueue($target)->each(static function ($row) use (&$data) {
                     if (!starts_with($row->resource, 'land_')) {
                         return; // continue
                     }
@@ -395,15 +427,6 @@ class EspionageActionService
 
         $infoOp->save();
 
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
-            $this->notificationService
-                ->queueNotification('received_spy_op', [
-                    'sourceDominionId' => $dominion->id,
-                    'operationKey' => $operationKey,
-                ])
-                ->sendNotifications($target, 'irregular_dominion');
-        }
-
         return [
             'success' => true,
             'message' => 'Your spies infiltrate the target\'s dominion successfully and return with a wealth of information.',
@@ -411,8 +434,20 @@ class EspionageActionService
         ];
     }
 
+    /**
+     * @param Dominion $dominion
+     * @param string $operationKey
+     * @param Dominion $target
+     * @return array
+     * @throws Exception
+     */
     protected function performResourceTheftOperation(Dominion $dominion, string $operationKey, Dominion $target): array
     {
+        if($dominion->round->hasOffensiveActionsDisabled())
+        {
+            throw new GameException('Theft has been disabled for the remainder of the round.');
+        }
+
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
         $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
@@ -425,7 +460,11 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfSpa, $targetSpa, static::THEFT_MULTIPLIER_SUCCESS_RATE);
+            $successRate = $this->opsHelper->operationSuccessChance(
+                $selfSpa,
+                $targetSpa,
+                static::THEFT_MULTIPLIER_SUCCESS_RATE
+            );
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -444,7 +483,12 @@ class EspionageActionService
                 // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
 
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
-                $spiesKilled = min($spiesKilled, $dominion->military_spies); // Cap to amount of spies we have to prevent negatives, see issue #486
+
+                // Cap to amount of spies we have to prevent negatives, see issue #486
+                $spiesKilled = min(
+                    $spiesKilled,
+                    $dominion->military_spies
+                );
 
                 $dominion->military_spies -= $spiesKilled;
 
@@ -531,7 +575,7 @@ class EspionageActionService
 
         $amountStolen = $this->getResourceTheftAmount($dominion, $target, $resource, $constraints);
 
-        DB::transaction(function () use ($dominion, $target, $resource, $amountStolen) {
+        DB::transaction(static function () use ($dominion, $target, $resource, $amountStolen) {
             $dominion->increment("resource_{$resource}", $amountStolen);
             $dominion->save();
 
@@ -565,10 +609,15 @@ class EspionageActionService
         ];
     }
 
-    protected function getResourceTheftAmount(Dominion $dominion, Dominion $target, string $resource, array $constraints): int
-    {
-        if ($resource == 'platinum' && $this->spellCalculator->isSpellActive($target, 'fools_gold'))
+    protected function getResourceTheftAmount(
+        Dominion $dominion,
+        Dominion $target,
+        string $resource,
+        array $constraints
+    ): int {
+        if (($resource === 'platinum') && $this->spellCalculator->isSpellActive($target, 'fools_gold')) {
             return 0;
+        }
 
         // Limit to percentage of target's raw production
         $maxTarget = true;
@@ -579,18 +628,19 @@ class EspionageActionService
         // Limit to percentage of dominion's raw production
         $maxDominion = true;
         if ($constraints['self_production'] > 0) {
-            if ($resource == 'platinum')
+            if ($resource === 'platinum') {
                 $maxDominion = floor($this->productionCalculator->getPlatinumProductionRaw($dominion) * $constraints['self_production'] / 100);
-            elseif ($resource == 'food')
+            } elseif ($resource === 'food') {
                 $maxDominion = floor($this->productionCalculator->getFoodProductionRaw($dominion) * $constraints['self_production'] / 100);
-            elseif ($resource == 'lumber')
+            } elseif ($resource === 'lumber') {
                 $maxDominion = floor($this->productionCalculator->getLumberProductionRaw($dominion) * $constraints['self_production'] / 100);
-            elseif ($resource == 'mana')
+            } elseif ($resource === 'mana') {
                 $maxDominion = floor($this->productionCalculator->getManaProductionRaw($dominion) * $constraints['self_production'] / 100);
-            elseif ($resource == 'ore')
+            } elseif ($resource === 'ore') {
                 $maxDominion = floor($this->productionCalculator->getOreProductionRaw($dominion) * $constraints['self_production'] / 100);
-            elseif ($resource == 'gems')
+            } elseif ($resource === 'gems') {
                 $maxDominion = floor($this->productionCalculator->getGemsProductionRaw($dominion) * $constraints['self_production'] / 100);
+            }
         }
 
         // Limit to amount carryable by spies
@@ -601,14 +651,15 @@ class EspionageActionService
         }
 
         // Forest Haven reduction
-        if ($resource == 'platinum') {
+        if ($resource === 'platinum') {
             $forestHavenStolenPlatinumReduction = 8;
             $forestHavenStolenPlatinumReductionMax = 80;
             $stolenPlatinumMultiplier = (1 - min(
                     (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenStolenPlatinumReduction),
                     ($forestHavenStolenPlatinumReductionMax / 100)
                 ));
-            $maxTarget = $maxTarget * $stolenPlatinumMultiplier;
+
+            $maxTarget *= $stolenPlatinumMultiplier;
         }
 
         return min($maxTarget, $maxDominion, $maxCarried);
