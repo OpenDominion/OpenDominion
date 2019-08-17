@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-university"></i> Guard Membership <span class="label label-success">New!</span></h3>
+                    <h3 class="box-title"><i class="fa fa-university"></i> Guard Membership</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
