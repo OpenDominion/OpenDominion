@@ -175,8 +175,16 @@ class EspionageActionService
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
 
             } elseif ($this->espionageHelper->isBlackOperation($operationKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } elseif ($this->espionageHelper->isWarOperation($operationKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
@@ -435,6 +443,11 @@ class EspionageActionService
      */
     protected function performResourceTheftOperation(Dominion $dominion, string $operationKey, Dominion $target): array
     {
+        if($dominion->round->hasOffensiveActionsDisabled())
+        {
+            throw new GameException('Theft has been disabled for the remainder of the round.');
+        }
+
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
         $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');

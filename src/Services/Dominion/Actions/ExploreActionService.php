@@ -46,6 +46,11 @@ class ExploreActionService
     {
         $this->guardLockedDominion($dominion);
 
+        if($dominion->round->hasOffensiveActionsDisabled())
+        {
+            throw new GameException('Exploration has been disabled for the remainder of the round.');
+        }
+
         $data = array_only($data, array_map(function ($value) {
             return "land_{$value}";
         }, $this->landHelper->getLandTypes()));

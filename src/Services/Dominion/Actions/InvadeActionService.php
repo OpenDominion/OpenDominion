@@ -180,6 +180,11 @@ class InvadeActionService
             // Checks
             $this->guardLockedDominion($dominion);
 
+            if($dominion->round->hasOffensiveActionsDisabled())
+            {
+                throw new GameException('Invasions have been disabled for the remainder of the round.');
+            }
+
             if ($this->protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You cannot invade while under protection');
             }
@@ -224,7 +229,7 @@ class InvadeActionService
                 throw new GameException('You do not have enough morale to invade others');
             }
 
-            if (!$this->passes33PercentRule($dominion, $target, null, $units)) {
+            if (!$this->passes33PercentRule($dominion, $target, $units)) {
                 throw new GameException('You need to leave more DP units at home, based on the OP you\'re sending out (33% rule)');
             }
 
@@ -1177,12 +1182,12 @@ class InvadeActionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
-     * @param float $landRatio
      * @param array $units
      * @return bool
      */
-    protected function passes33PercentRule(Dominion $dominion, Dominion $target, ?float $landRatio, array $units): bool
+    protected function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
     {
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
 

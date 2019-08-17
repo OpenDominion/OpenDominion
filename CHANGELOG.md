@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - Slightly increased prestige gains for attackers. Prestige loss for defenders unchanged
+- Offensive actions and exploration will now be randomly disabled at end of round (1 to 16 hours before round end)
 
 ## [0.7.0-5] - 2019-08-14
 ### Changed
