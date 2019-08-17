@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.0-7] - 2019-08-17
+### Fixed
+- Minor bug fixes
+
 ## [0.7.0-6] - 2019-08-17
 ### Changed
 - Slightly increased prestige gains for attackers. Prestige loss for defenders unchanged
@@ -392,7 +396,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-6...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-7...HEAD
+[0.7.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-6...0.7.0-7
 [0.7.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-5...0.7.0-6
 [0.7.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-4...0.7.0-5
 [0.7.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...0.7.0-4
