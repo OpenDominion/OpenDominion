@@ -802,7 +802,7 @@ class InvadeActionService
         }
 
         $conversionBaseMultiplier = 0.06;
-        $spellParasiticHungerMultiplier = 0.5;
+        $spellParasiticHungerMultiplier = 50;
 
         $conversionMultiplier = (
             $conversionBaseMultiplier *
