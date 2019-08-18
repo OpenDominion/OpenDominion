@@ -21,16 +21,9 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use OpenDominion\Services\Dominion\Queue\ConstructionQueueService;
-use OpenDominion\Services\Dominion\Queue\ExplorationQueueService;
-use OpenDominion\Services\Dominion\Queue\LandIncomingQueueService;
-use OpenDominion\Services\Dominion\Queue\TrainingQueueService;
-use OpenDominion\Services\Dominion\Queue\UnitsReturningQueueService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
-use Throwable;
 
 class EspionageActionService
 {
@@ -118,7 +111,8 @@ class EspionageActionService
      * @param string $operationKey
      * @param Dominion $target
      * @return array
-     * @throws Throwable
+     * @throws GameException
+     * @throws LogicException
      */
     public function performOperation(Dominion $dominion, string $operationKey, Dominion $target): array
     {
@@ -127,40 +121,40 @@ class EspionageActionService
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
         if (!$operationInfo) {
-            throw new RuntimeException("Cannot perform unknown operation '{$operationKey}'");
+            throw new LogicException("Cannot perform unknown operation '{$operationKey}'");
         }
 
         if ($dominion->spy_strength < 30) {
-            throw new RuntimeException("Your spies do not have enough strength to perform {$operationInfo['name']}.");
+            throw new GameException("Your spies do not have enough strength to perform {$operationInfo['name']}.");
         }
 
         if ($this->protectionService->isUnderProtection($dominion)) {
-            throw new RuntimeException('You cannot perform espionage operations while under protection');
+            throw new GameException('You cannot perform espionage operations while under protection');
         }
 
         if ($this->protectionService->isUnderProtection($target)) {
-            throw new RuntimeException('You cannot perform espionage operations on targets which are under protection');
+            throw new GameException('You cannot perform espionage operations on targets which are under protection');
         }
 
         if (!$this->rangeCalculator->isInRange($dominion, $target)) {
-            throw new RuntimeException('You cannot perform espionage operations on targets outside of your range');
+            throw new GameException('You cannot perform espionage operations on targets outside of your range');
         }
 
         if ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
             if (now()->diffInDays($dominion->round->start_date) < self::THEFT_DAYS_AFTER_ROUND_START) {
-                throw new RuntimeException('You cannot perform resource theft for the first seven days of the round');
+                throw new GameException('You cannot perform resource theft for the first seven days of the round');
             }
             if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
-                throw new RuntimeException('You cannot perform resource theft on targets smaller than yourself');
+                throw new GameException('You cannot perform resource theft on targets smaller than yourself');
             }
         }
 
         if ($dominion->round->id !== $target->round->id) {
-            throw new RuntimeException('Nice try, but you cannot perform espionage operations cross-round');
+            throw new GameException('Nice try, but you cannot perform espionage operations cross-round');
         }
 
         if ($dominion->realm->id === $target->realm->id) {
-            throw new RuntimeException('Nice try, but you cannot perform espionage oprations on your realmies');
+            throw new GameException('Nice try, but you cannot perform espionage oprations on your realmies');
         }
 
         $result = null;
