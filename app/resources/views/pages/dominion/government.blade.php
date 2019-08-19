@@ -26,11 +26,11 @@
                                 <li>Cannot interact with Dominions less than 60% or greater than 166% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2%.</li>
                             </ul>
-                            @if ($isRoyalGuardApplicant || $isRoyalGuardMember)
+                            @if ($isRoyalGuardApplicant || $isGuardMember)
                                 <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember ? 'disabled' : null }}>
-                                        @if ($isRoyalGuardMember)
+                                        @if ($isGuardMember)
                                             Leave Royal Guard
                                         @else
                                             Cancel Application

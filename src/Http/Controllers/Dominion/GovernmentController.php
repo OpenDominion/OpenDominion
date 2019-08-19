@@ -20,6 +20,7 @@ class GovernmentController extends AbstractDominionController
             'isEliteGuardApplicant' => $guardMembershipService->isEliteGuardApplicant($dominion),
             'isRoyalGuardMember' => $guardMembershipService->isRoyalGuardMember($dominion),
             'isEliteGuardMember' => $guardMembershipService->isEliteGuardMember($dominion),
+            'isGuardMember' => $guardMembershipService->isGuardMember($dominion),
             'hoursBeforeRoyalGuardMember' => $guardMembershipService->getHoursBeforeRoyalGuardMember($dominion),
             'hoursBeforeEliteGuardMember' => $guardMembershipService->getHoursBeforeEliteGuardMember($dominion),
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
