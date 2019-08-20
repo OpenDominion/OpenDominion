@@ -102,7 +102,7 @@ class EspionageActionService
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
-    public const THEFT_DAYS_AFTER_ROUND_START = 8;
+    public const THEFT_DAYS_AFTER_ROUND_START = 7;
 
     /**
      * Performs a espionage operation for $dominion, aimed at $target dominion.

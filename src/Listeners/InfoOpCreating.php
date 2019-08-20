@@ -15,14 +15,17 @@ class InfoOpCreating
      */
     public function handle(InfoOpCreatingEvent $event)
     {
-        InfoOp::where('target_dominion_id', '=', $event->infoOp->target_dominion_id)
-            ->where('source_realm_id', '=', $event->infoOp->source_realm_id)
-            ->where('type', '=', $event->infoOp->type)
-            ->update(['latest' => false]);
+        if ($event->infoOp->type == 'clairvoyance') {
+            InfoOp::where('target_realm_id', '=', $event->infoOp->target_realm_id)
+                ->where('source_realm_id', '=', $event->infoOp->source_realm_id)
+                ->where('type', '=', 'clairvoyance')
+                ->update(['latest' => false]);
+        } else {
+            InfoOp::where('target_dominion_id', '=', $event->infoOp->target_dominion_id)
+                ->where('source_realm_id', '=', $event->infoOp->source_realm_id)
+                ->where('type', '=', $event->infoOp->type)
+                ->update(['latest' => false]);
+        }
 
-        InfoOp::where('target_realm_id', '=', $event->infoOp->target_realm_id)
-            ->where('source_realm_id', '=', $event->infoOp->source_realm_id)
-            ->where('type', '=', 'clairvoyance')
-            ->update(['latest' => false]);
     }
 }
