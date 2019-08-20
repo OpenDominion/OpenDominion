@@ -308,36 +308,32 @@ class CasualtiesCalculator
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
+        $totalMilitaryCasualties = $remainingCasualties;
 
-        while (count($units) > 0 && $remainingCasualties > 0) {
-            foreach ($units as $unit) {
-                $casualties[$unit] = (int)min(
-                    (array_get($casualties, $unit, 0) + (int)(ceil($remainingCasualties / count($units)))),
-                    $dominion->{$unit}
-                );
+        foreach($units as $unit) {
+            if($remainingCasualties) {
+                break;
             }
 
-            $remainingCasualties = $totalCasualties - array_sum($casualties);
+            $slotTotal = $dominion->{$unit};
 
-            $units = array_filter($units, function ($unit) use ($dominion, $casualties) {
-                return ($casualties[$unit] < $dominion->{$unit});
-            });
+            if($slotTotal == 0) {
+                continue;
+            }
+
+            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;;
+
+            $slotLost = ceil($slotTotal * $slotLostMultiplier);
+
+            if($slotLost > $remainingCasualties) {
+                $slotLost = $remainingCasualties;
+            }
+
+            $casualties[$unit] += $slotLost;
+            $remainingCasualties -= $slotLost;
         }
 
-        if ($remainingCasualties < 0) {
-            while ($remainingCasualties < 0) {
-                foreach (array_keys(array_reverse($casualties)) as $unitType) {
-                    if ($casualties[$unitType] > 0) {
-                        $casualties[$unitType]--;
-                        $remainingCasualties++;
-                    }
-
-                    if ($remainingCasualties === 0) {
-                        break 2;
-                    }
-                }
-            }
-        } elseif ($remainingCasualties > 0) {
+        if ($remainingCasualties > 0) {
             $casualties['peasants'] = (int)min(
                 ($remainingCasualties + $casualties['peasants']),
                 $dominion->peasants
