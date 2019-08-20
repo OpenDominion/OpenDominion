@@ -311,7 +311,7 @@ class CasualtiesCalculator
         $totalMilitaryCasualties = $remainingCasualties;
 
         foreach($units as $unit) {
-            if($remainingCasualties) {
+            if($remainingCasualties == 0) {
                 break;
             }
 
