@@ -73,7 +73,7 @@
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
                                                         class="btn btn-primary btn-block"
-                                                        {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 8) ? 'disabled' : null }}>
+                                                        {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>
