@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Fixed
 - Surreal Perception now states it lasts for 8 hours
+- Fixed Clairvoyances sometimes disappearing from the Op Center
+- Fixed notifications not updating properly on settings page
+- Fixed not being able to the Royal Guard at the intended day in the round
+- Fixed being able to leave the Elite Guard while in the Royal Guard
 
 ## [0.7.0-9] - 2019-08-18
 ### Fixed
