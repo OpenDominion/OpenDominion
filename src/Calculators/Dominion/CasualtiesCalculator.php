@@ -321,7 +321,7 @@ class CasualtiesCalculator
                 continue;
             }
 
-            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;;
+            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;
 
             $slotLost = ceil($slotTotal * $slotLostMultiplier);
 
