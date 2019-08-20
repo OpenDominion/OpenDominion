@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.7.0-10] - 2019-08-20
 ### Fixed
 - Surreal Perception now states it lasts for 8 hours
 - Fixed Clairvoyances sometimes disappearing from the Op Center
@@ -410,7 +412,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...HEAD
+[0.7.0-10]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...0.7.0-10
 [0.7.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-8...0.7.0-9
 [0.7.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-7...0.7.0-8
 [0.7.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-6...0.7.0-7
