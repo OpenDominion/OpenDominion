@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Fixed
+- Barracks spy should now be more clear that draftees are inaccurate
 
 ## [0.7.0-10] - 2019-08-20
 ### Fixed
