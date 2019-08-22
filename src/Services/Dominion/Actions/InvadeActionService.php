@@ -240,6 +240,8 @@ class InvadeActionService
             $this->checkInvasionSuccess($dominion, $target, $units);
             $this->checkOverwhelmed();
 
+            $this->rangeCalculator->checkGuardApplications($dominion, $target);
+
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
 
@@ -315,8 +317,6 @@ class InvadeActionService
             );
             $alertType = 'danger';
         }
-
-        $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
         return [
             'message' => $message,
