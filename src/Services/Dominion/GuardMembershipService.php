@@ -154,7 +154,7 @@ class GuardMembershipService
 
         $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
 
-        return $modifiedJoinDate->diffInHours(Carbon::parse(now()->format('Y-m-d H:00:00')));
+        return $modifiedJoinDate->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -171,7 +171,7 @@ class GuardMembershipService
 
         $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
 
-        return $modifiedJoinDate->diffInHours(Carbon::parse(now()->format('Y-m-d H:00:00')));
+        return $modifiedJoinDate->diffInHours(now()->startOfHour());
     }
 
     /**
