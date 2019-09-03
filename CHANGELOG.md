@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Barracks spy should now be more clear that draftees are inaccurate
 - Fixed a bug when knocking a target outside of your applied guard range would reset your guard application
+- Fixed a bug where survey dominion calculated percentages based on a dominon's current land total
 
 ## [0.7.0-10] - 2019-08-20
 ### Fixed
