@@ -690,46 +690,34 @@ class InvadeActionService
             }
 
             $landConquered = (int)round($landLost);
+            $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
+            $landGained = ($landConquered + $landGenerated);
 
-            // Racial Spell: Erosion (Lizardfolk)
+            // Racial Spell: Erosion (Lizardfolk, Merfolk)
             if ($this->spellCalculator->isSpellActive($dominion, 'erosion')) {
                 // todo: needs a more generic solution later
                 $landRezoneType = 'water';
                 $landRezonePercentage = 20;
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
+                $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
+                $landGenerated -= $landRezonedGenerated;
+                $landGained -= ($landRezonedConquered + $landRezonedGenerated);
 
                 if (!isset($landGainedPerLandType["land_{$landRezoneType}"])) {
                     $landGainedPerLandType["land_{$landRezoneType}"] = 0;
                 }
-
-                $landGainedPerLandType["land_{$landRezoneType}"] += $landRezonedConquered;
-
-                // todo: hacky hacky, fixmepls
-                if (!isset($this->invasionResult['attacker']['landConquered'][$landRezoneType])) {
-                    $this->invasionResult['attacker']['landConquered'][$landRezoneType] = 0;
-                }
-
-                $this->invasionResult['attacker']['landConquered'][$landRezoneType] += $landRezonedConquered;
-
-                $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
+                $landGainedPerLandType["land_{$landRezoneType}"] += ($landRezonedConquered + $landRezonedGenerated);
 
                 if (!isset($this->invasionResult['attacker']['landGenerated'][$landRezoneType])) {
                     $this->invasionResult['attacker']['landGenerated'][$landRezoneType] = 0;
                 }
-
                 $this->invasionResult['attacker']['landGenerated'][$landRezoneType] += $landRezonedGenerated;
-
-                $landConquered -= $landRezonedConquered;
             }
-
-            $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
-            $landGained = ($landConquered + $landGenerated);
 
             if (!isset($landGainedPerLandType["land_{$landType}"])) {
                 $landGainedPerLandType["land_{$landType}"] = 0;
             }
-
             $landGainedPerLandType["land_{$landType}"] += $landGained;
 
             $this->invasionResult['attacker']['landConquered'][$landType] += $landConquered;
