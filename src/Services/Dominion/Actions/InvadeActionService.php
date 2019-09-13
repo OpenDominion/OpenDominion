@@ -713,6 +713,11 @@ class InvadeActionService
                     $this->invasionResult['attacker']['landGenerated'][$landRezoneType] = 0;
                 }
                 $this->invasionResult['attacker']['landGenerated'][$landRezoneType] += $landRezonedGenerated;
+
+                if (!isset($this->invasionResult['attacker']['landErosion'])) {
+                    $this->invasionResult['attacker']['landErosion'] = 0;
+                }
+                $this->invasionResult['attacker']['landErosion'] += ($landRezonedConquered + $landRezonedGenerated);
             }
 
             if (!isset($landGainedPerLandType["land_{$landType}"])) {
