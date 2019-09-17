@@ -101,6 +101,11 @@ class MilitaryCalculator
                 $numberOfUnits = (int)$units[$unit->slot];
             }
 
+            if ($numberOfUnits !== 0) {
+                $bonusOffense = $this->getBonusPowerFromPairingPerk($dominion, $unit, 'offense', $units);
+                $powerOffense += $bonusOffense / $numberOfUnits;
+            }
+
             $op += ($powerOffense * $numberOfUnits);
         }
 
@@ -121,6 +126,7 @@ class MilitaryCalculator
         $opPerGryphonNest = 1.75;
         $gryphonNestMaxOp = 35;
         $spellCrusade = 5;
+        $spellHowling = 10;
         $spellKillingRage = 10;
         $spellWarsong = 10;
         $spellNightfall = 5;
@@ -139,10 +145,10 @@ class MilitaryCalculator
 
         // Racial Spell
         // todo
-        // Spell: Howling (+10%)
         // Spell: Nightfall (+5%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'crusade' => $spellCrusade,
+            'howling' => $spellHowling,
             'killing_rage' => $spellKillingRage,
             'warsong' => $spellWarsong,
             'nightfall' => $spellNightfall,
@@ -242,6 +248,11 @@ class MilitaryCalculator
                 $numberOfUnits = (int)$units[$unit->slot];
             }
 
+            if ($numberOfUnits !== 0) {
+                $bonusDefense = $this->getBonusPowerFromPairingPerk($dominion, $unit, 'defense', $units);
+                $powerDefense += $bonusDefense / $numberOfUnits;
+            }
+
             $dp += ($powerDefense * $numberOfUnits);
         }
 
@@ -283,6 +294,7 @@ class MilitaryCalculator
         $spellAresCall = 10;
         $spellBlizzard = 15;
         $spellFrenzy = 20;
+        $spellHowling = 20;
 
         // Guard Towers
         $multiplier += min(
@@ -297,7 +309,8 @@ class MilitaryCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
 
         // Spell: Howling (+10%)
-        // todo
+        $multiplierFromHowling = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'howling', $spellHowling);
+        $multiplier += $multiplierFromHowling;
 
         // Spell: Blizzard (+15%)
         $multiplierFromBlizzard = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'blizzard', $spellBlizzard);
@@ -308,7 +321,7 @@ class MilitaryCalculator
         $multiplier += $multiplierFromFrenzy;
 
         // Spell: Ares' Call (+10%)
-        if($multiplierFromBlizzard == 0 && $multiplierFromFrenzy == 0) {
+        if($multiplierFromHowling == 0 && $multiplierFromBlizzard == 0 && $multiplierFromFrenzy == 0) {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call',
                 $spellAresCall);
         }
@@ -479,6 +492,26 @@ class MilitaryCalculator
             "{$powerType}_vs_{$raceNameFormatted}");
 
         return $versusRacePerk;
+    }
+
+    protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, array $units = null): float
+    {
+        $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
+
+        if(!$pairingPerkData) {
+            return 0;
+        }
+
+        $unitSlot = (int)$pairingPerkData[0];
+        $amount = (int)$pairingPerkData[1];
+
+        $powerFromPerk = 0;
+        if (isset($units[$unitSlot]) && ((int)$units[$unitSlot] !== 0)) {
+            $numberPaired = min($units[$unit->slot], (int)$units[$unitSlot]);
+            $powerFromPerk = $numberPaired * $amount;
+        }
+
+        return $powerFromPerk;
     }
 
     /**

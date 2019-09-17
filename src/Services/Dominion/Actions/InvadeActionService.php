@@ -1173,7 +1173,13 @@ class InvadeActionService
             }
         }
 
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / static::UNITS_PER_BOAT));
+        $unitsPerBoat = static::UNITS_PER_BOAT;
+        $boatCapacityPerk = $dominion->race->getPerkValue('boat_capacity');
+        if ($boatCapacityPerk != 0) {
+            $unitsPerBoat += $boatCapacityPerk;
+        }
+
+        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $unitsPerBoat));
     }
 
     /**

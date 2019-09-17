@@ -53,6 +53,11 @@ MERFOLK;
 <p>Some of the lost souls of fallen enemies, will join their ranks in search of this goal.</p>
 SPIRIT;
 
+        $descriptions['kobold'] = <<<KOBOLD
+<p>A bunch of annoying little shits.</p>
+<p>You no take candle!</p>
+KOBOLD;
+
         $descriptions['sylvan'] = <<<SYLVAN
 <p>Mythical forest-dwelling creatures, which have banded together to combat the forces of evil.</p>
 <p>Their affinity for nature makes them excellent at exploration, and highly proficient spellcasters.</p>
