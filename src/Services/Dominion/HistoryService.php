@@ -146,8 +146,8 @@ class HistoryService
                 'updated_at',
                 'daily_platinum',
                 'daily_land',
-                'royal_guard',
-                'elite_guard',
+                'royal_guard_active_at',
+                'elite_guard_active_at',
             ])->keys()->toArray();
     }
 }

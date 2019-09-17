@@ -74,6 +74,7 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.statistics', [
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
+            'populationCalculator' => app(PopulationCalculator::class),
         ]);
     }
 }

@@ -60,7 +60,7 @@
                                                     @else
                                                         Fellow dominion
                                                         <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
-                                                        fended of an attack from
+                                                        fended off an attack from
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
                                                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
                                                     @endif
@@ -76,11 +76,11 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        @if ($fromOpCenter)
-                            <div class="box-footer">
-                                <em>Revealed {{ $clairvoyanceInfoOp->updated_at }} by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
-                            </div>
-                        @endif
+                    </div>
+                @endif
+                @if ($fromOpCenter)
+                    <div class="box-footer">
+                        <em>Revealed {{ $clairvoyanceInfoOp->updated_at }} by {{ $clairvoyanceInfoOp->sourceDominion->name }}</em>
                     </div>
                 @endif
             </div>

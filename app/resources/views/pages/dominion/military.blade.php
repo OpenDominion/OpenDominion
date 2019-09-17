@@ -126,7 +126,7 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Train</button>
                         <div class="pull-right">
-                            You have {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }} available to train.
+                            You have <strong>{{ number_format($selectedDominion->military_draftees) }}</strong> {{ str_plural('draftee', $selectedDominion->military_draftees) }} available to train.
                         </div>
                     </div>
                 </form>

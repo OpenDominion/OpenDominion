@@ -4,10 +4,10 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class RezoneActionService
 {
@@ -38,7 +38,7 @@ class RezoneActionService
      * @param array $remove Land to remove
      * @param array $add Land to add.
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function rezone(Dominion $dominion, array $remove, array $add): array
     {
@@ -58,14 +58,14 @@ class RezoneActionService
         $totalLand = array_sum($remove);
 
         if (($totalLand === 0) || $totalLand !== array_sum($add)) {
-            throw new RuntimeException('Re-zoning was not completed due to bad input.');
+            throw new GameException('Re-zoning was not completed due to bad input.');
         }
 
         // Check if the requested amount of land is barren.
         foreach ($remove as $landType => $landToRemove) {
             $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType);
             if ($landToRemove > $landAvailable) {
-                throw new RuntimeException('You do not have enough barren land to re-zone ' . $landToRemove . ' ' . str_plural($landType, $landAvailable));
+                throw new GameException('You do not have enough barren land to re-zone ' . $landToRemove . ' ' . str_plural($landType, $landAvailable));
             }
         }
 
@@ -73,7 +73,7 @@ class RezoneActionService
         $platinumCost = $totalLand * $costPerAcre;
 
         if ($platinumCost > $dominion->resource_platinum) {
-            throw new RuntimeException("You do not have enough platinum to re-zone {$totalLand} acres of land.");
+            throw new GameException("You do not have enough platinum to re-zone {$totalLand} acres of land.");
         }
 
         // All fine, perform changes.

@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class GuardMembershipActionService
 {
@@ -29,17 +29,20 @@ class GuardMembershipActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function joinRoyalGuard(Dominion $dominion): array
     {
         if (!$this->guardMembershipService->canJoinGuards($dominion)) {
-            throw new RuntimeException('You cannot join the Emperor\'s Royal Guard for the first five days of the round.');
+            throw new GameException('You cannot join the Emperor\'s Royal Guard for the first five days of the round.');
         }
+
         if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
-            throw new RuntimeException('You are already a member of the Emperor\'s Royal Guard.');
-        } elseif ($this->guardMembershipService->isRoyalGuardApplicant($dominion)) {
-            throw new RuntimeException('You have already applied to join the Emperor\'s Royal Guard.');
+            throw new GameException('You are already a member of the Emperor\'s Royal Guard.');
+        }
+
+        if ($this->guardMembershipService->isRoyalGuardApplicant($dominion)) {
+            throw new GameException('You have already applied to join the Emperor\'s Royal Guard.');
         }
 
         $this->guardMembershipService->joinRoyalGuard($dominion);
@@ -57,17 +60,21 @@ class GuardMembershipActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function joinEliteGuard(Dominion $dominion): array
     {
         // todo: cannot join for first 5 days
-        if(!$this->guardMembershipService->isRoyalGuardMember($dominion)) {
-            throw new RuntimeException('You must already be a member of the Emperor\'s Royal Guard.');
-        } elseif ($this->guardMembershipService->isEliteGuardMember($dominion)) {
-            throw new RuntimeException('You are already a member of the Emperor\'s Elite Guard.');
-        } elseif ($this->guardMembershipService->isEliteGuardApplicant($dominion)) {
-            throw new RuntimeException('You have already applied to join the Emperor\'s Elite Guard.');
+        if (!$this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            throw new GameException('You must already be a member of the Emperor\'s Royal Guard.');
+        }
+
+        if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+            throw new GameException('You are already a member of the Emperor\'s Elite Guard.');
+        }
+
+        if ($this->guardMembershipService->isEliteGuardApplicant($dominion)) {
+            throw new GameException('You have already applied to join the Emperor\'s Elite Guard.');
         }
 
         $this->guardMembershipService->joinEliteGuard($dominion);
@@ -85,16 +92,20 @@ class GuardMembershipActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function leaveRoyalGuard(Dominion $dominion): array
     {
         if ($this->guardMembershipService->isEliteGuardApplicant($dominion)) {
-            throw new RuntimeException('You must first cancel your Emperor\'s Elite Guard application.');
-        } elseif ($this->guardMembershipService->isEliteGuardMember($dominion)) {
-            throw new RuntimeException('You must first leave the Emperor\'s Elite Guard.');
-        } elseif (!$this->guardMembershipService->isRoyalGuardApplicant($dominion) && !$this->guardMembershipService->isRoyalGuardMember($dominion)) {
-            throw new RuntimeException('You are not a member of the Emperor\'s Royal Guard.');
+            throw new GameException('You must first cancel your Emperor\'s Elite Guard application.');
+        }
+
+        if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
+            throw new GameException('You must first leave the Emperor\'s Elite Guard.');
+        }
+
+        if (!$this->guardMembershipService->isRoyalGuardApplicant($dominion) && !$this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            throw new GameException('You are not a member of the Emperor\'s Royal Guard.');
         }
 
         if ($this->guardMembershipService->isRoyalGuardApplicant($dominion)) {
@@ -116,12 +127,12 @@ class GuardMembershipActionService
      *
      * @param Dominion $dominion
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function leaveEliteGuard(Dominion $dominion): array
     {
         if (!$this->guardMembershipService->isEliteGuardApplicant($dominion) && !$this->guardMembershipService->isEliteGuardMember($dominion)) {
-            throw new RuntimeException('You are not a member of the Emperor\'s Elite Guard.');
+            throw new GameException('You are not a member of the Emperor\'s Elite Guard.');
         }
 
         if ($this->guardMembershipService->isEliteGuardApplicant($dominion)) {

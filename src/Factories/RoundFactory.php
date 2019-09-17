@@ -18,20 +18,65 @@ class RoundFactory
      * @param Carbon $startDate
      * @param int $realmSize
      * @param int $packSize
+     * @param int $playersPerRace
+     * @param bool $mixedAlignment
      * @return Round
      */
-    public function create(RoundLeague $league, Carbon $startDate, int $realmSize, int $packSize): Round
-    {
+    public function create(
+        RoundLeague $league,
+        Carbon $startDate,
+        int $realmSize,
+        int $packSize,
+        int $playersPerRace,
+        bool $mixedAlignment
+    ): Round {
         $number = ($this->getLastRoundNumber($league) + 1);
+        $endDate = (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS);
+
+        $invasionEndHours = [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            12,
+            12,
+            13,
+            13,
+            13,
+            14,
+            14,
+            14,
+            15,
+            15,
+            15,
+            16,
+            16,
+            16,
+        ];
+
+        $hoursBeforeRoundEnd = array_random($invasionEndHours);
+
+        $offensiveActionsEndDate = (clone $endDate)->addHours(-$hoursBeforeRoundEnd);
 
         return Round::create([
             'round_league_id' => $league->id,
             'number' => $number,
             'name' => "Beta Round {$number}", // todo
             'start_date' => $startDate,
-            'end_date' => (clone $startDate)->addDays(static::ROUND_DURATION_IN_DAYS),
+            'end_date' => $endDate,
+            'offensive_actions_prohibited_at' => $offensiveActionsEndDate,
             'realm_size' => $realmSize,
             'pack_size' => $packSize,
+            'players_per_race' => $playersPerRace,
+            'mixed_alignment' => $mixedAlignment
         ]);
     }
 

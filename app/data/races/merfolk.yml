@@ -1,0 +1,37 @@
+name: Merfolk
+alignment: good
+home_land_type: water
+perks:
+  lumber_production: -15
+  food_production: 15
+units:
+  - name: Merman
+    cost:
+      platinum: 275
+    power:
+      offense: 3
+      defense: 0
+    need_boat: false
+  - name: Siren
+    cost:
+      platinum: 300
+    power:
+      offense: 0
+      defense: 3
+  - name: Leviathan
+    cost:
+      platinum: 1350
+    power:
+      offense: 0
+      defense: 7
+    perks:
+      sink_boats_defense: 1
+  - name: Kraken
+    cost:
+      platinum: 600
+    power:
+      offense: 4
+      defense: 2
+    perks:
+      sink_boats_offense: 1
+    need_boat: false

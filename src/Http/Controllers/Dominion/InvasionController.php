@@ -5,12 +5,12 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\InvadeActionRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Actions\InvadeActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use Throwable;
 
 class InvasionController extends AbstractDominionController
 {
@@ -37,9 +37,9 @@ class InvasionController extends AbstractDominionController
                 $request->get('unit')
             );
 
-        } catch (Throwable $e) {
+        } catch (GameException $e) {
             return redirect()->back()
-//                ->withInput($request->all())
+                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 

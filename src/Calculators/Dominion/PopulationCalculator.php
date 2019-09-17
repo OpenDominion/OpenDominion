@@ -208,7 +208,7 @@ class PopulationCalculator
         $troopsPerBarracks = 36;
 
         return min(
-            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees - $this->queueService->getTrainingQueueTotal($dominion)),
+            ($this->getPopulationMilitary($dominion) - $dominion->military_draftees),
             ($dominion->building_barracks * $troopsPerBarracks)
         );
     }

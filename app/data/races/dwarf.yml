@@ -24,7 +24,7 @@ units:
       ore_production: 0.5
   - name: Cleric
     cost:
-      platinum: 800
+      platinum: 760
       ore: 0
     power:
       offense: 4

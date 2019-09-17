@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use OpenDominion\Calculators\Dominion\EspionageCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\PerformEspionageRequest;
 use OpenDominion\Models\Dominion;
@@ -12,7 +13,6 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use Throwable;
 
 class EspionageController extends AbstractDominionController
 {
@@ -40,9 +40,9 @@ class EspionageController extends AbstractDominionController
                 Dominion::findOrFail($request->get('target_dominion'))
             );
 
-        } catch (Throwable $e) {
+        } catch (GameException $e) {
             return redirect()->back()
-//                ->withInput($request->all())
+                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 

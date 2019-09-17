@@ -25,12 +25,13 @@ class RangeCalculator
      *
      * @param LandCalculator $landCalculator
      * @param ProtectionService $protectionService
+     * @param GuardMembershipService $guardMembershipService
      */
     public function __construct(
         LandCalculator $landCalculator,
         ProtectionService $protectionService,
-        GuardMembershipService $guardMembershipService)
-    {
+        GuardMembershipService $guardMembershipService
+    ) {
         $this->landCalculator = $landCalculator;
         $this->protectionService = $protectionService;
         $this->guardMembershipService = $guardMembershipService;
@@ -65,7 +66,7 @@ class RangeCalculator
      * @param Dominion $self
      * @param Dominion $target
      */
-    public function checkGuardApplications(Dominion $self, Dominion $target)
+    public function checkGuardApplications(Dominion $self, Dominion $target): void
     {
         $isRoyalGuardApplicant = $this->guardMembershipService->isRoyalGuardApplicant($self);
         $isEliteGuardApplicant = $this->guardMembershipService->isEliteGuardApplicant($self);
@@ -73,17 +74,19 @@ class RangeCalculator
         if ($isRoyalGuardApplicant || $isEliteGuardApplicant) {
             $selfLand = $this->landCalculator->getTotalLand($self);
             $targetLand = $this->landCalculator->getTotalLand($target);
+
             // Reset Royal Guard application if out of range
-            if($isRoyalGuardApplicant) {
+            if ($isRoyalGuardApplicant) {
                 $guardModifier = $this->guardMembershipService::ROYAL_GUARD_RANGE;
-                if(($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
+                if (($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
                     $this->guardMembershipService->joinRoyalGuard($self);
                 }
             }
+
             // Reset Elite Guard application if out of range
-            if($isEliteGuardApplicant) {
+            if ($isEliteGuardApplicant) {
                 $guardModifier = $this->guardMembershipService::ELITE_GUARD_RANGE;
-                if(($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
+                if (($targetLand < ($selfLand * $guardModifier)) || ($targetLand > ($selfLand / $guardModifier))) {
                     $this->guardMembershipService->joinEliteGuard($self);
                 }
             }
@@ -95,11 +98,11 @@ class RangeCalculator
      *
      * Return value is a percentage (eg 114.28~) used for displaying. For calculation purposes, divide this by 100.
      *
-     * @todo: should probably change this (and all its usages) to return without *100
-     *
      * @param Dominion $self
      * @param Dominion $target
      * @return float
+     * @todo: should probably change this (and all its usages) to return without *100
+     *
      */
     public function getDominionRange(Dominion $self, Dominion $target): float
     {
@@ -145,11 +148,13 @@ class RangeCalculator
     {
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
             return $this->guardMembershipService::ELITE_GUARD_RANGE;
-        } elseif ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
-            return $this->guardMembershipService::ROYAL_GUARD_RANGE;
-        } else {
-            return self::MINIMUM_RANGE;
         }
+
+        if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {
+            return $this->guardMembershipService::ROYAL_GUARD_RANGE;
+        }
+
+        return self::MINIMUM_RANGE;
     }
 
     /**

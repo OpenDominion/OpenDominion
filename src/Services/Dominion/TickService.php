@@ -75,8 +75,6 @@ class TickService
 
         // Hourly tick
         DB::transaction(function () use (&$activeDominionIds) {
-//            DB::connection()->enableQueryLog();
-
             foreach (Round::active()->get() as $round) {
                 // Ignore hour 0
                 if ($this->now->diffInHours($round->start_date) === 0) {
@@ -96,13 +94,6 @@ class TickService
                 foreach ($dominions as $dominion) {
                     $this->tickDominion($dominion);
                     $activeDominionIds[] = $dominion->id;
-
-//                    if (count($activeDominionIds) === 10) {
-//                        $queries = DB::getQueryLog();
-//                        Log::debug(count($queries) . ' queries executed');
-//
-//                        return; // todo: tmp
-//                    }
                 }
             }
 
@@ -117,7 +108,9 @@ class TickService
         if (($this->now->hour % 6) === 0) {
             $now = now();
             Log::debug('Update rankings started');
+
             $this->updateDailyRankings($activeDominionIds);
+
             Log::info(sprintf(
                 'Ticked rankings in %s seconds',
                 $now->diffInSeconds(now())
@@ -166,7 +159,7 @@ class TickService
 
             if (!empty($queueResult)) {
                 foreach ($queueResult as $resource => $amount) {
-                    $dominion->$resource += $amount;
+                    $dominion->increment($resource, $amount);
                 }
 
                 // todo: hacky hacky. refactor me pls
@@ -184,46 +177,54 @@ class TickService
         $this->spellCalculator->getActiveSpells($dominion, true);
 
         // Resources
-        $dominion->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
-        $dominion->resource_food += $this->productionCalculator->getFoodNetChange($dominion);
-        $dominion->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
-        $dominion->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
-        $dominion->resource_ore += $this->productionCalculator->getOreProduction($dominion);
-        $dominion->resource_gems += $this->productionCalculator->getGemProduction($dominion);
-        $dominion->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
+        $platinumProduced = $this->productionCalculator->getPlatinumProduction($dominion);
+        $dominion->increment('resource_platinum', $platinumProduced);
+//        $dominion->increment('stat_total_platinum_production', $platinumProduced); // todo: round 15+
+
+        $dominion->increment('resource_lumber', $this->productionCalculator->getLumberNetChange($dominion));
+        $dominion->increment('resource_mana', $this->productionCalculator->getManaNetChange($dominion));
+        $dominion->increment('resource_ore', $this->productionCalculator->getOreProduction($dominion));
+        $dominion->increment('resource_gems', $this->productionCalculator->getGemProduction($dominion));
+
+        $dominion->increment('resource_boats', $this->productionCalculator->getBoatProduction($dominion));
+        // Check for starvation before adjusting food
+        $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
 
         // Starvation casualties
-        if ($dominion->resource_food < 0) {
-            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion);
+        if (($dominion->resource_food + $foodNetChange) < 0) {
+            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion, $dominion->resource_food + $foodNetChange);
 
             foreach ($casualties as $unitType => $unitCasualties) {
-                $dominion->{$unitType} -= $unitCasualties;
+                $dominion->decrement($unitType, $unitCasualties);
             }
 
-            $dominion->resource_food = 0;
+            // Decrement to zero
+            $dominion->decrement('resource_food', $dominion->resource_food);
 
             $this->notificationService->queueNotification('starvation_occurred', $casualties);
+        } else {
+            // Food production
+            $dominion->increment('resource_food', $foodNetChange);
         }
 
         // Population
         $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
 
-        $dominion->peasants += $populationPeasantGrowth;
+        $dominion->increment('peasants', $populationPeasantGrowth);
         $dominion->peasants_last_hour = $populationPeasantGrowth;
-        $dominion->military_draftees += $drafteesGrowthRate;
+        $dominion->increment('military_draftees', $drafteesGrowthRate);
 
         // Morale
         if ($dominion->morale < 70) {
-            $dominion->morale += 6;
-
+            $dominion->increment('morale', 6);
         } elseif ($dominion->morale < 100) {
-            $dominion->morale = min(($dominion->morale + 3), 100);
+            $dominion->increment('morale', min(3, 100 - $dominion->morale));
         }
 
         // Spy Strength
         if ($dominion->spy_strength < 100) {
-            $dominion->spy_strength = min(($dominion->spy_strength + 4), 100);
+            $dominion->increment('spy_strength', min(4, 100 - $dominion->spy_strength));
         }
 
         // Wizard Strength
@@ -238,7 +239,7 @@ class TickService
                 $wizardStrengthPerWizardGuildMax
             );
 
-            $dominion->wizard_strength = min(($dominion->wizard_strength + $wizardStrengthAdded), 100);
+            $dominion->increment('wizard_strength', min($wizardStrengthAdded, 100 - $dominion->wizard_strength));
         }
 
         // Active spells

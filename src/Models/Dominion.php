@@ -160,8 +160,8 @@ class Dominion extends AbstractModel
         'building_dock' => 'integer',
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
-        'royal_guard' => 'datetime',
-        'elite_guard' => 'datetime',
+        'royal_guard_active_at' => 'datetime',
+        'eltie_guard_active_at' => 'datetime',
     ];
 
     // Relations
@@ -233,6 +233,9 @@ class Dominion extends AbstractModel
         if ($recordChanges) {
             $dominionHistoryService = app(HistoryService::class);
             $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+            if (isset($options['action'])) {
+                $deltaAttributes['action'] = $options['action'];
+            }
         }
 
         $saved = parent::save($options);

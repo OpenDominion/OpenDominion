@@ -65,7 +65,6 @@ class SettingsController extends AbstractController
 
         if (!Storage::disk('public')->put(($path . '/' . $fileName), $data)) {
             throw new RuntimeException('Failed to upload avatar');
-            // todo: notify bugsnag
         }
 
         $user->avatar = $fileName;
@@ -81,15 +80,37 @@ class SettingsController extends AbstractController
         /** @var User $user */
         $user = Auth::user();
 
+        /** @var NotificationHelper $notificationHelper */
+        $notificationHelper = app(NotificationHelper::class);
+        $notificationCategories = $notificationHelper->getNotificationCategories();
+
+        $notificationKeys = [];
+        $enabledNotificationKeys = [];
         $newNotifications = [];
 
+        // Get list of all ingame notifications (for default values)
+        foreach ($notificationCategories as $key => $types) {
+            foreach ($types as $type => $channels) {
+                $notificationKeys["{$key}.{$type}.ingame"] = false;
+            }
+        }
+
+        // Set checked boxes to true
         foreach ($data['notifications'] as $key => $types) {
             foreach ($types as $type => $channels) {
                 foreach ($channels as $channel => $enabled) {
                     if ($enabled === 'on') {
+                        $enabledNotificationKeys["{$key}.{$type}.{$channel}"] = true;
                         array_set($newNotifications, "{$key}.{$type}.{$channel}", true);
                     }
                 }
+            }
+        }
+
+        // Set other types to false
+        foreach ($notificationKeys as $key => $value) {
+            if (!isset($enabledNotificationKeys[$key])) {
+                array_set($newNotifications, $key, false);
             }
         }
 

@@ -11,9 +11,9 @@ class AddTargetRealmIdToInfoOpsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('info_ops', function (Blueprint $table) {
+        Schema::table('info_ops', static function (Blueprint $table) {
             $table->unsignedInteger('target_realm_id')
                 ->nullable()
                 ->after('source_dominion_id');
@@ -27,9 +27,13 @@ class AddTargetRealmIdToInfoOpsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('info_ops', function (Blueprint $table) {
+        Schema::table('info_ops', static function (Blueprint $table) {
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign('info_ops_target_realm_id_foreign');
+            }
+
             $table->dropColumn('target_realm_id');
         });
     }

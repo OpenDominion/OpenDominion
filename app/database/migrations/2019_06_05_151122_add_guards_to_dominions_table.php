@@ -11,11 +11,16 @@ class AddGuardsToDominionsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('dominions', function (Blueprint $table) {
-            $table->timestamp('royal_guard')->nullable();
-            $table->timestamp('elite_guard')->nullable();
+        Schema::table('dominions', static function (Blueprint $table) {
+            $table->timestamp('royal_guard_active_at')
+                ->nullable()
+                ->after('council_last_read');
+
+            $table->timestamp('elite_guard_active_at')
+                ->nullable()
+                ->after('royal_guard_active_at');
         });
     }
 
@@ -24,10 +29,10 @@ class AddGuardsToDominionsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('dominions', function (Blueprint $table) {
-            $table->dropColumn(['royal_guard', 'elite_guard']);
+        Schema::table('dominions', static function (Blueprint $table) {
+            $table->dropColumn(['royal_guard_active_at', 'elite_guard_active_at']);
         });
     }
 }

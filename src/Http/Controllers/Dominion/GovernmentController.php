@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\GovernmentActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
 use OpenDominion\Services\Dominion\Actions\GovernmentActionService;
@@ -25,6 +25,7 @@ class GovernmentController extends AbstractDominionController
             'isEliteGuardApplicant' => $guardMembershipService->isEliteGuardApplicant($dominion),
             'isRoyalGuardMember' => $guardMembershipService->isRoyalGuardMember($dominion),
             'isEliteGuardMember' => $guardMembershipService->isEliteGuardMember($dominion),
+            'isGuardMember' => $guardMembershipService->isGuardMember($dominion),
             'hoursBeforeRoyalGuardMember' => $guardMembershipService->getHoursBeforeRoyalGuardMember($dominion),
             'hoursBeforeEliteGuardMember' => $guardMembershipService->getHoursBeforeEliteGuardMember($dominion),
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
@@ -65,7 +66,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->joinRoyalGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
@@ -83,7 +84,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->leaveRoyalGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
@@ -101,7 +102,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->joinEliteGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())
@@ -119,7 +120,7 @@ class GovernmentController extends AbstractDominionController
 
         try {
             $result = $guardActionService->leaveEliteGuard($dominion);
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()
                 ->back()
                 ->withInput($request->all())

@@ -15,8 +15,11 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $name
  * @property int $realm_size
  * @property int $pack_size
+ * @property int $players_per_race
+ * @property bool $mixed_alignment
  * @property \Illuminate\Support\Carbon $start_date
  * @property \Illuminate\Support\Carbon $end_date
+ * @property \Illuminate\Support\Carbon $offensive_actions_prohibited_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
@@ -32,7 +35,13 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Round extends AbstractModel
 {
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+    protected $dates = [
+        'start_date',
+        'end_date',
+        'offensive_actions_prohibited_at',
+        'created_at',
+        'updated_at'
+    ];
 
     // Eloquent Relations
 
@@ -126,6 +135,24 @@ class Round extends AbstractModel
     public function hasEnded()
     {
         return ($this->end_date <= now());
+    }
+
+    /**
+     * Returns whether offensive actions (and exploration) are disabled for the
+     * rest of the round.
+     *
+     * Actions like these are disabled near the end of the round to prevent
+     * suicides and whatnot.
+     *
+     * @return bool
+     */
+    public function hasOffensiveActionsDisabled(): bool
+    {
+        if ($this->offensive_actions_prohibited_at === null) {
+            return false;
+        }
+
+        return ($this->offensive_actions_prohibited_at <= now());
     }
 
     /**

@@ -2,9 +2,9 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use Exception;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\RezoneActionRequest;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
@@ -32,7 +32,7 @@ class RezoneController extends AbstractDominionController
                 $request->get('add')
             );
 
-        } catch (Exception $e) {
+        } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);

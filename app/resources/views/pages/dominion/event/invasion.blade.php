@@ -63,6 +63,12 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @if (isset($event->data['attacker']['boatsLost']))
+                                        <tr>
+                                            <td><i class="ra ra-droplet text-blue"></i> Boats</td>
+                                            <td>{{ number_format($event->data['attacker']['boatsLost']) }}</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -115,6 +121,12 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                    @endif
+                                    @if (isset($event->data['defender']['boatsLost']))
+                                        <tr>
+                                            <td><i class="ra ra-droplet text-blue"></i> Boats</td>
+                                            <td>{{ number_format($event->data['defender']['boatsLost']) }}</td>
+                                        </tr>
                                     @endif
                                 </tbody>
                             </table>
@@ -176,7 +188,7 @@
                                 </p>
                             @endif
 
-                            @if (isset($event->data['result']['overwhelmed']))
+                            @if (isset($event->data['result']['overwhelmed']) && $event->data['result']['overwhelmed'])
                                 <p class="text-center text-red">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because you were severely outmatched, you suffered extra casualties.
@@ -216,6 +228,11 @@
                                         You lost {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems due to plundering.
                                     </p>
                                 @endif
+                            @endif
+                            @if (isset($event->data['attacker']['conversion']) && $event->source->id === $selectedDominion->id)
+                                <p class="text-center text-green">
+                                    {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $selectedDominion->race) }}
+                                </p>
                             @endif
                         </div>
                     </div>

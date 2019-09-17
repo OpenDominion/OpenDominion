@@ -284,7 +284,9 @@
                 templateSelection: select2Template,
             });
 
-            updateUnitStats();
+            @if (!$protectionService->isUnderProtection($selectedDominion))
+                updateUnitStats();
+            @endif
 
             $('#target_dominion').change(function (e) {
                 updateUnitStats();

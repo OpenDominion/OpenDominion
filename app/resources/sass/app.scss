@@ -1,3 +1,9 @@
+@media (min-width: 768px) {
+  .sidebar-menu > li > a {
+    padding: 6px 5px 6px 15px;
+  }
+}
+
 .sidebar-menu > li > a > .ra {
   display: inline-block;
   width: 20px;
