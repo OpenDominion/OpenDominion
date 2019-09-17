@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models\Council;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenDominion\Models\AbstractModel;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -26,6 +27,8 @@ use OpenDominion\Models\Realm;
  */
 class Thread extends AbstractModel
 {
+    use SoftDeletes;
+
     protected $table = 'council_threads';
 
     public function dominion()
