@@ -19,6 +19,9 @@
                     @endif
                 </i>
             </small>
+            @if ($selectedDominion->isMonarch()) 
+                <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+            @endif
         </div>
     </div>
 
@@ -37,6 +40,9 @@
                             @endif
                         </i>
                     </small>
+                    @if ($selectedDominion->isMonarch()) 
+                        <a href="{{ route('dominion.council.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
+                    @endif
                 </div>
             </div>
         @endforeach

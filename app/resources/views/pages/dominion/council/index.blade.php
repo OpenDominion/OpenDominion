@@ -42,6 +42,9 @@
                                                     ({{ $thread->dominion->ruler_name }})
                                                 @endif
                                             </small>
+                                            @if ($selectedDominion->isMonarch()) 
+                                                <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                                            @endif
                                         </td>
                                         <td class="text-center align-middle">
                                             {{ number_format($thread->posts->count()) }}

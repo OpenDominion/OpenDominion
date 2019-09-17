@@ -2,11 +2,13 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 use OpenDominion\Services\CouncilService;
 
 class CouncilController extends AbstractDominionController
@@ -72,7 +74,7 @@ class CouncilController extends AbstractDominionController
             $this->guardAgainstCrossRealm($thread);
         } catch (GameException $e) {
             return redirect()
-                ->route('council')
+                ->route('dominion.council')
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -92,7 +94,7 @@ class CouncilController extends AbstractDominionController
             $this->guardAgainstCrossRealm($thread);
         } catch (GameException $e) {
             return redirect()
-                ->route('council')
+                ->route('dominion.council')
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -112,7 +114,7 @@ class CouncilController extends AbstractDominionController
         // todo: fire laravel event
 //        $analyticsService = app(AnalyticsService::class);
 //        $analyticsService->queueFlashEvent(new Event( // todo: contract
-//            'council',
+//            'dominion.council',
 //            'create-post',
 //            $thread->title, // ?
 //            null
@@ -120,6 +122,72 @@ class CouncilController extends AbstractDominionController
 
         $request->session()->flash('alert-success', 'Your message has been posted');
         return redirect()->route('dominion.council.thread', $thread);
+    }
+
+    public function getDeletePost(Council\Post $post)
+    {
+        try {
+            $this->guardForMonarchy($post->thread);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dominion.council')
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $post->load(['dominion.user']);
+
+        return view('pages.dominion.council.delete-post', compact(
+            'post'
+        ));
+    }
+
+    public function postDeletePost(Request $request, Council\Post $post)
+    {
+        try {
+            $this->guardForMonarchy($post->thread);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dominion.council')
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $post->delete();
+
+        $request->session()->flash('alert-success', 'Post successfully deleted.');
+        return redirect()->route('dominion.council');
+    }
+
+    public function getDeleteThread(Council\Thread $thread)
+    {
+        try {
+            $this->guardForMonarchy($thread);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dominion.council')
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $thread->load(['dominion.user', 'posts.dominion.user']);
+
+        return view('pages.dominion.council.delete-thread', compact(
+            'thread'
+        ));
+    }
+
+    public function postDeleteThread(Request $request, Council\Thread $thread)
+    {
+        try {
+            $this->guardForMonarchy($thread);
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dominion.council')
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $thread->delete();
+
+        $request->session()->flash('alert-success', 'Thread successfully deleted.');
+        return redirect()->route('dominion.council');
     }
 
     /**
@@ -132,6 +200,19 @@ class CouncilController extends AbstractDominionController
     {
         if ($this->getSelectedDominion()->realm->id !== (int)$thread->realm_id) {
             throw new GameException('No permission to view thread.');
+        }
+    }
+
+    /**
+     * Throws exception if the selected dominion is not the realm's monarch.
+     *
+     * @param Realm $realm
+     * @throws GameException
+     */
+    protected function guardForMonarchy(Council\Thread $thread): void
+    {
+        if ($this->getSelectedDominion()->id !== (int)$thread->realm->monarch_dominion_id) {
+            throw new GameException('No permission to moderate council.');
         }
     }
 

@@ -135,6 +135,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('council/create')->uses('Dominion\CouncilController@postCreate');
             $router->get('council/{thread}')->uses('Dominion\CouncilController@getThread')->name('council.thread');
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
+            $router->get('council/{thread}/delete')->uses('Dominion\CouncilController@getDeleteThread')->name('council.delete.thread');
+            $router->post('council/{thread}/delete')->uses('Dominion\CouncilController@postDeleteThread');
+            $router->get('council/post/{post}/delete')->uses('Dominion\CouncilController@getDeletePost')->name('council.delete.post');
+            $router->post('council/post/{post}/delete')->uses('Dominion\CouncilController@postDeletePost');
 
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
