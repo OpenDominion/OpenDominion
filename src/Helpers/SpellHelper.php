@@ -179,6 +179,22 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Icekin']),
             ],
+            /*[
+                'name' => 'Mechanical Genius',
+                'description' => '30% reduction of re-zoning costs',
+                'key' => 'mechanical_genius',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Gnome']),
+            ],*/
+            [
+                'name' => 'Bloodrage',
+                'description' => '+10% offensive strength, +10% offensive casualties',
+                'key' => 'bloodrage',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Orc']),
+            ],
             [
                 'name' => 'Unholy Ghost',
                 'description' => 'Enemy draftees do not participate in battle',
