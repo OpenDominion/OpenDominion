@@ -242,35 +242,48 @@ class EspionageActionService
                 $forestHavenSpyCasualtyReductionMax = 30;
 
                 $spiesKilledMultiplier = (1 - min(
-                        (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
-                        ($forestHavenSpyCasualtyReductionMax / 100)
-                    ));
+                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
+                    ($forestHavenSpyCasualtyReductionMax / 100)
+                ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 2);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1);
 
-                // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
-
+                $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                if ($spiesKilled > 0) {
+                    $unitsKilled['spies'] = $spiesKilled;
+                    $dominion->military_spies -= $spiesKilled;
+                }
 
-                // Cap to amount of spies we have to prevent negatives, see issue #486
-                $spiesKilled = min(
-                    $spiesKilled,
-                    $dominion->military_spies
-                );
-
-                $dominion->military_spies -= $spiesKilled;
+                foreach ($dominion->race->units as $unit) {
+                    if ($unit->getPerkValue('counts_as_spy_offense')) {
+                        $multiplierForSpyDefense = $unit->getPerkValue('counts_as_spy_offense') / $unit->power_defense;
+                        $unitKilled = (int)floor(($dominion->{"military_unit{$unit->slot}"} * $multiplierForSpyDefense * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                        if ($unitKilled > 0) {
+                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                        }
+                    }
+                }
 
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
                         'sourceDominionId' => $dominion->id,
                         'operationKey' => $operationKey,
-                        'spiesKilled' => $spiesKilled,
+                        'spiesKilled' => $unitsKilled,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
-                if ($spiesKilled > 0) {
-                    $message = ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.');
+                if (!empty($unitsKilled)) {
+                    $lossString = "";
+                    foreach ($unitsKilled as $key => $value) {
+                        $lossString .= number_format($value) . " of our " . str_plural($key, $value);
+                        if (next($unitsKilled)) {
+                            $lossString .= " and ";
+                        }
+                    }
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $lossString.";
                 } else {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
                 }
@@ -467,35 +480,48 @@ class EspionageActionService
                 $forestHavenSpyCasualtyReductionMax = 30;
 
                 $spiesKilledMultiplier = (1 - min(
-                        (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
-                        ($forestHavenSpyCasualtyReductionMax / 100)
-                    ));
+                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
+                    ($forestHavenSpyCasualtyReductionMax / 100)
+                ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 2);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 1, 2);
 
-                // todo: check if we need to divide by lizzie chameleons (and other units that count at spies)?
-
+                $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                if ($spiesKilled > 0) {
+                    $unitsKilled['spies'] = $spiesKilled;
+                    $dominion->military_spies -= $spiesKilled;
+                }
 
-                // Cap to amount of spies we have to prevent negatives, see issue #486
-                $spiesKilled = min(
-                    $spiesKilled,
-                    $dominion->military_spies
-                );
-
-                $dominion->military_spies -= $spiesKilled;
+                foreach ($dominion->race->units as $unit) {
+                    if ($unit->getPerkValue('counts_as_spy_offense')) {
+                        $multiplierForSpyDefense = $unit->getPerkValue('counts_as_spy_offense') / $unit->power_defense;
+                        $unitKilled = (int)floor(($dominion->{"military_unit{$unit->slot}"} * $multiplierForSpyDefense * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                        if ($unitKilled > 0) {
+                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                        }
+                    }
+                }
 
                 $this->notificationService
                     ->queueNotification('repelled_resource_theft', [
                         'sourceDominionId' => $dominion->id,
                         'operationKey' => $operationKey,
-                        'spiesKilled' => $spiesKilled,
+                        'spiesKilled' => $unitsKilled,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
-                if ($spiesKilled > 0) {
-                    $message = ("The enemy has prevented our {$operationInfo['name']} attempt and managed to capture " . number_format($spiesKilled) . ' of our spies.');
+                if (!empty($unitsKilled)) {
+                    $lossString = "";
+                    foreach ($unitsKilled as $key => $value) {
+                        $lossString .= number_format($value) . " of our " . str_plural($key, $value);
+                        if (next($unitsKilled)) {
+                            $lossString .= " and ";
+                        }
+                    }
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $lossString.";
                 } else {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
                 }

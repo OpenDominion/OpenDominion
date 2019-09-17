@@ -353,13 +353,20 @@ class NotificationHelper
                         throw new \LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
+                $lossString = "";
+                foreach ($data['spiesKilled'] as $key => $value) {
+                    $lossString .= number_format($value) . " of our " . str_plural($key, $value);
+                    if (next($data['spiesKilled'])) {
+                        $lossString .= " and ";
+                    }
+                }
+
                 return sprintf(
-                    'Spies from %s (#%s) were discovered %s! We executed %s %s.',
+                    'Spies from %s (#%s) were discovered %s! We executed %s.',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $where,
-                    number_format($data['spiesKilled']),
-                    str_plural('spy', $data['spiesKilled'])
+                    $lossString
                 );
 
             case 'irregular_dominion.resource_theft':
@@ -444,13 +451,20 @@ class NotificationHelper
                         throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
+                $lossString = "";
+                foreach ($data['spiesKilled'] as $key => $value) {
+                    $lossString .= number_format($value) . " of our " . str_plural($key, $value);
+                    if (next($data['spiesKilled'])) {
+                        $lossString .= " and ";
+                    }
+                }
+
                 return sprintf(
-                    'Spies from %s (#%s) were discovered %s! We executed %s %s.',
+                    'Spies from %s (#%s) were discovered %s! We executed %s.',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $where,
-                    number_format($data['spiesKilled']),
-                    str_plural('spy', $data['spiesKilled'])
+                    $lossString
                 );
 
             case 'irregular_dominion.received_hostile_spell':
