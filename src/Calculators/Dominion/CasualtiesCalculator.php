@@ -80,7 +80,7 @@ class CasualtiesCalculator
             }
 
             // Race perk-based immortality
-            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target->race->name, $slot)) {
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
                 $multiplier = 0;
             }
         }
@@ -197,7 +197,7 @@ class CasualtiesCalculator
             }
 
             // Race perk-based immortality
-            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $attacker->race->name, $slot)) {
+            if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $attacker, $slot)) {
                 $multiplier = 0;
             }
         }

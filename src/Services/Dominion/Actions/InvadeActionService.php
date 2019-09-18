@@ -73,11 +73,6 @@ class InvadeActionService
      */
     protected const PRESTIGE_CHANGE_PERCENTAGE = 5.0;
 
-    /**
-     * @var int How many units can fit in a single boat
-     */
-    protected const UNITS_PER_BOAT = 30;
-
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -1034,7 +1029,7 @@ class InvadeActionService
 
         // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / static::UNITS_PER_BOAT);
+            $boatsByReturnHourGroup = (int)floor($amountUnits / $dominion->race->getBoatCapacity());
 
             $dominion->decrement('resource_boats', $boatsByReturnHourGroup);
 
@@ -1067,7 +1062,7 @@ class InvadeActionService
     protected function checkInvasionSuccess(Dominion $dominion, Dominion $target, array $units): void
     {
         $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $this->invasionResult['attacker']['op'] = $attackingForceOP;
         $this->invasionResult['defender']['dp'] = $targetDP;
@@ -1173,13 +1168,7 @@ class InvadeActionService
             }
         }
 
-        $unitsPerBoat = static::UNITS_PER_BOAT;
-        $boatCapacityPerk = $dominion->race->getPerkValue('boat_capacity');
-        if ($boatCapacityPerk != 0) {
-            $unitsPerBoat += $boatCapacityPerk;
-        }
-
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $unitsPerBoat));
+        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity()));
     }
 
     /**
@@ -1192,7 +1181,7 @@ class InvadeActionService
      */
     protected function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
     {
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, null, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
 
@@ -1219,7 +1208,7 @@ class InvadeActionService
      */
     protected function passes54RatioRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
     {
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target->race->name, $landRatio, $units);
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
         $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
@@ -1299,6 +1288,6 @@ class InvadeActionService
             $ignoreDraftees = true;
         }
 
-        return $this->militaryCalculator->getDefensivePower($target, $dominion->race->name, null, null, $dpMultiplierReduction, $ignoreDraftees);
+        return $this->militaryCalculator->getDefensivePower($target, $dominion, null, null, $dpMultiplierReduction, $ignoreDraftees);
     }
 }
