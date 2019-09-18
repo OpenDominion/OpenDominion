@@ -362,7 +362,8 @@ class MilitaryCalculator
         ?Dominion $target,
         ?float $landRatio,
         Unit $unit,
-        string $powerType
+        string $powerType,
+        array $calc = []
     ): float
     {
         $unitPower = $unit->{"power_$powerType"};
@@ -376,9 +377,9 @@ class MilitaryCalculator
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
         }
 
-        if ($target !== null) {
+        if ($target !== null || !empty($calc)) {
             $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
-            $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType);
+            $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType, $calc);
         }
 
         return $unitPower;
@@ -540,14 +541,13 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType): float
+    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType, array $calc = []): float
     {
-        if ($target === null) {
+        if ($target === null && empty($calc)) {
             return 0;
         }
 
         $versusBuildingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_vs_building", null);
-
         if(!$versusBuildingPerkData) {
             return 0;
         }
@@ -555,8 +555,17 @@ class MilitaryCalculator
         $buildingType = $versusBuildingPerkData[0];
         $ratio = (int)$versusBuildingPerkData[1];
         $max = (int)$versusBuildingPerkData[2];
-        $totalLand = $this->landCalculator->getTotalLand($target);
-        $landPercentage = ($target->{"building_{$buildingType}"} / $totalLand) * 100;
+
+        $landPercentage = 0;
+        if (!empty($calc)) {
+            # Override building percentage for invasion calculator
+            if (isset($calc["{$buildingType}_percent"])) {
+                $landPercentage = (float) $calc["{$buildingType}_percent"];
+            }
+        } elseif ($target !== null) {
+            $totalLand = $this->landCalculator->getTotalLand($target);
+            $landPercentage = ($target->{"building_{$buildingType}"} / $totalLand) * 100;
+        }
 
         $powerFromBuilding = $landPercentage / $ratio;
         if ($max < 0) {

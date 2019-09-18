@@ -72,6 +72,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $offenseVsBuildingTypes = [];
+                                    @endphp
                                     @foreach (range(1, 4) as $unitSlot)
                                         @php
                                             $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitSlot) {
@@ -90,6 +93,12 @@
                                             $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
                                                 return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
                                             })->count() > 0;
+                                            if ($hasDynamicOffensivePower) {
+                                                $offenseVsBuildingPerk = $unit->getPerkValue('offense_vs_building');
+                                                if ($offenseVsBuildingPerk) {
+                                                    $offenseVsBuildingTypes[] = explode(',', $offenseVsBuildingPerk)[0];
+                                                }
+                                            }
                                             $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
                                                 return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
                                             })->count() > 0;
@@ -128,6 +137,23 @@
                                             <td class="text-center" id="unit{{ $unitSlot }}_stats">
                                                 <span class="op">0</span> / <span class="dp text-muted">0</span>
                                             </td>
+                                        </tr>
+                                    @endforeach
+                                    @foreach ($offenseVsBuildingTypes as $buildingType)
+                                        <tr>
+                                            <td colspan="3" class="text-right">
+                                                <b>Enter target {{ ucwords(str_replace('_', ' ', $buildingType)) }} percentage:</b>
+                                            </td>
+                                            <td>
+                                                <input type="number"
+                                                       name="calc[{{ $buildingType }}_percent]"
+                                                       class="form-control text-center"
+                                                       min="0"
+                                                       max="100"
+                                                       placeholder="0"
+                                                       {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            </td>
+                                            <td>&nbsp;</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -289,6 +315,10 @@
             @endif
 
             $('#target_dominion').change(function (e) {
+                updateUnitStats();
+            });
+
+            $('input[name^=\'calc\']').change(function (e) {
                 updateUnitStats();
             });
 

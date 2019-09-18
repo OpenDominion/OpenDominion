@@ -59,7 +59,7 @@ class InvadeCalculationService
      * @param array $units
      * @return array
      */
-    public function calculate(Dominion $dominion, ?Dominion $target, array $units): array
+    public function calculate(Dominion $dominion, ?Dominion $target, array $units, ?array $calc): array
     {
         if (empty($units)) {
             throw new LogicException('$units is empty');
@@ -67,6 +67,9 @@ class InvadeCalculationService
 
         // Sanitize input
         $units = array_map('intval', array_filter($units));
+        if ($calc === null) {
+            $calc = ['api' => true];
+        }
 
         if ($target !== null) {
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
@@ -91,7 +94,8 @@ class InvadeCalculationService
                 $target,
                 $landRatio,
                 $unit,
-                'offense'
+                'offense',
+                $calc
             );
         }
 
