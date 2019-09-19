@@ -63,6 +63,15 @@ class UnitHelper
             'defense_from_land' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
             'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
 
+            'defense_from_pairing' => 'Defense increased by %2$s when paired with one %1$s.',
+            'offense_from_pairing' => 'Offense increased by %2$s when paired with one %1$s.',
+
+            'defense_from_prestige' => 'Defense increased by 1 for every %1$s prestige (max +%2$s).',
+            'offense_from_prestige' => 'Offense increased by 1 for every %1$s prestige (max +%2$s).',
+
+            'defense_vs_building' => 'Defense decreased by 1 for every %2$s%% %1$ss of defender (max %3$s).',
+            'offense_vs_building' => 'Offense decreased by 1 for every %2$s%% %1$ss of defender (max %3$s).',
+
             'defense_vs_goblin' => 'Defense increased by %s against goblins.',
             'offense_vs_goblin' => 'Offense increased by %s against goblins.',
             'defense_vs_kobold' => 'Defense increased by %s against kobolds.',
@@ -129,6 +138,15 @@ class UnitHelper
                         $nestedArrays = true;
                         $perkValue[$key] = explode(';', $value);
                     }
+                }
+
+                // Special case for pairings
+                if ($perk->key === 'defense_from_pairing' || $perk->key === 'offense_from_pairing') {
+                    $slot = (int)$perkValue[0];
+                    $pairedUnit = $race->units->filter(static function ($unit) use ($slot) {
+                        return ($unit->slot === $slot);
+                    })->first();
+                    $perkValue[0] = $pairedUnit->name;
                 }
 
                 // Special case for conversions
