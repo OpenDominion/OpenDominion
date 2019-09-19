@@ -524,7 +524,6 @@ class MilitaryCalculator
     protected function getBonusPowerFromPairingPerk(Dominion $dominion, Unit $unit, string $powerType, array $units = null): float
     {
         $pairingPerkData = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, "{$powerType}_from_pairing", null);
-
         if(!$pairingPerkData) {
             return 0;
         }
@@ -535,8 +534,10 @@ class MilitaryCalculator
         $powerFromPerk = 0;
         if (isset($units[$unitSlot]) && ((int)$units[$unitSlot] !== 0)) {
             $numberPaired = min($units[$unit->slot], (int)$units[$unitSlot]);
-            $powerFromPerk = $numberPaired * $amount;
+        } else {
+            $numberPaired = min($dominion->{'military_unit' . $unit->slot}, (int)$dominion->{'military_unit' . $unitSlot});
         }
+        $powerFromPerk = $numberPaired * $amount;
 
         return $powerFromPerk;
     }

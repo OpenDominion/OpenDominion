@@ -178,17 +178,17 @@
                                             <tr>
                                                 <td>OP:</td>
                                                 <td>
-                                                    <strong id="invasion-force-op">0</strong>
+                                                    <strong id="invasion-force-op" data-amount="0">0</strong>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>DP:</td>
-                                                <td id="invasion-force-dp">0</td>
+                                                <td id="invasion-force-dp" data-amount="0">0</td>
                                             </tr>
                                             <tr>
                                                 <td>Boats:</td>
                                                 <td>
-                                                    <span id="invasion-force-boats">0</span>
+                                                    <span id="invasion-force-boats" data-amount="0">0</span>
                                                     /
                                                     {{ number_format(floor($selectedDominion->resource_boats)) }}
                                                 </td>
@@ -201,7 +201,7 @@
                                                        data-placement="top"
                                                        title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
                                                 </td>
-                                                <td id="invasion-force-max-op">0</td>
+                                                <td id="invasion-force-max-op" data-amount="0">0</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -233,19 +233,19 @@
                                         <tbody>
                                             <tr>
                                                 <td>OP:</td>
-                                                <td id="home-forces-op" data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}">
-                                                    {{ number_format($militaryCalculator->getOffensivePower($selectedDominion)) }}
+                                                <td id="home-forces-op" data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}" data-amount="0">
+                                                    {{ number_format($militaryCalculator->getOffensivePower($selectedDominion), 2) }}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>DP:</td>
-                                                <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}">
-                                                    {{ number_format($militaryCalculator->getDefensivePower($selectedDominion)) }}
+                                                <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}" data-amount="0">
+                                                    {{ number_format($militaryCalculator->getDefensivePower($selectedDominion), 2) }}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>Boats:</td>
-                                                <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}">
+                                                <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}" data-amount="0">
                                                     {{ number_format(floor($selectedDominion->resource_boats)) }}
                                                 </td>
                                             </tr>
@@ -257,11 +257,11 @@
                                                        data-placement="top"
                                                        title="You must leave at least 33% of your invasion force OP in DP at home. (33% rule)"></i>
                                                 </td>
-                                                <td id="home-forces-min-dp">0</td>
+                                                <td id="home-forces-min-dp" data-amount="0">0</td>
                                             </tr>
                                             <tr>
                                                 <td>DPA:</td>
-                                                <td id="home-forces-dpa">
+                                                <td id="home-forces-dpa" data-amount="0">
                                                     {{ number_format($militaryCalculator->getDefensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion), 3) }}
                                                 </td>
                                             </tr>
@@ -305,29 +305,42 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
+            var invasionForceOPElement = $('#invasion-force-op');
+            var invasionForceDPElement = $('#invasion-force-dp');
+            var invasionForceBoatsElement = $('#invasion-force-boats');
+            var invasionForceMaxOPElement = $('#invasion-force-max-op');
+            var homeForcesOPElement = $('#home-forces-op');
+            var homeForcesDPElement = $('#home-forces-dp');
+            var homeForcesBoatsElement = $('#home-forces-boats');
+            var homeForcesMinDPElement = $('#home-forces-min-dp');
+            var homeForcesDPAElement = $('#home-forces-dpa');
+
+            var invadeButtonElement = $('#invade-button');
+            var allUnitInputs = $('input[name^=\'unit\']');
+
             $('.select2').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
 
             @if (!$protectionService->isUnderProtection($selectedDominion))
-                updateUnitStats();
+                calculate();
             @endif
 
             $('#target_dominion').change(function (e) {
-                updateUnitStats();
+                calculate();
             });
 
             $('input[name^=\'calc\']').change(function (e) {
-                updateUnitStats();
+                calculate();
             });
 
-            // please forgive me for this monstrosity
             $('input[name^=\'unit\']').change(function (e) {
                 calculate();
             });
 
-            function updateUnitStats() {
+            function calculate() {
+                // Update unit stats
                 $.get(
                     "{{ route('api.dominion.invasion') }}?" + $('#invade_form').serialize(), {},
                     function(response) {
@@ -340,93 +353,42 @@
                                 $('#unit'+slot+'_dp').text(stats.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
                                 $('#unit'+slot+'_op').text(stats.op.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             });
-                            calculate();
+                            // Update OP / DP data attributes
+                            invasionForceOPElement.data('amount', response.away_offense);
+                            invasionForceDPElement.data('amount', response.away_defense);
+                            invasionForceBoatsElement.data('amount', response.boats_needed);
+                            invasionForceMaxOPElement.data('amount', response.max_op);
+                            homeForcesOPElement.data('amount', response.home_offense);
+                            homeForcesDPElement.data('amount', response.home_defense);
+                            homeForcesBoatsElement.data('amount', response.boats_remaining);
+                            homeForcesMinDPElement.data('amount', response.min_dp);
+                            homeForcesDPAElement.data('amount', response.home_dpa);
+                            // Update OP / DP display
+                            invasionForceOPElement.text(response.away_offense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            invasionForceDPElement.text(response.away_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            invasionForceBoatsElement.text(response.boats_needed.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            invasionForceMaxOPElement.text(response.max_op.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesOPElement.text(response.home_offense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesDPElement.text(response.home_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesBoatsElement.text(response.boats_remaining.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesMinDPElement.text(response.min_dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesDPAElement.text(response.home_dpa.toLocaleString(undefined, {maximumFractionDigits: 3}));
                         }
                     }
                 );
-            }
 
-            function calculate() {
-                var invasionForceOPElement = $('#invasion-force-op');
-                var invasionForceBoatsElement = $('#invasion-force-boats');
-                var homeForcesOPElement = $('#home-forces-op');
-                var homeForcesDPElement = $('#home-forces-dp');
-                var homeForcesBoatsElement = $('#home-forces-boats');
-                var invadeButtonElement = $('#invade-button');
-                var allUnitInputs = $('input[name^=\'unit\']');
-
-                var invadingForceOP = 0;
-                var invadingForceDP = 0;
-                var invadingForceBoats = 0;
-                var originalHomeForcesOP = parseInt(homeForcesOPElement.data('original'));
-                var originalHomeForcesDP = parseInt(homeForcesDPElement.data('original'));
-                var originalHomeForcesBoats = parseInt(homeForcesBoatsElement.data('original'));
-                var newHomeForcesOP;
-                var newHomeForcesDP;
-                var newHomeForcesBoats;
-                var newDPA;
-
-                var landSize = parseInt('{{ $landCalculator->getTotalLand($selectedDominion) }}');
-                var OPMultiplier = parseFloat('{{ $militaryCalculator->getOffensivePowerMultiplier($selectedDominion) }}');
-                var DPMultiplier = parseFloat('{{ $militaryCalculator->getDefensivePowerMultiplier($selectedDominion) }}');
-
-                var DPNeededToLeaveAtHome; // 33% rule
-                var allowedMaxOP; // 5:4 rule
-
-                // Calculate invading force OP / DP
+                // Calculate subtotals for each unit
                 allUnitInputs.each(function () {
-                    // var unitAmount = parseInt($(this).data('amount')); // total amount at home before invading
                     var unitOP = parseFloat($(this).data('op'));
                     var unitDP = parseFloat($(this).data('dp'));
                     var amountToSend = parseInt($(this).val() || 0);
-                    var needBoat = !!$(this).data('need-boat');
-
-                    var totalUnitOP = amountToSend * unitOP * OPMultiplier;
-                    var totalUnitDP = amountToSend * unitDP * DPMultiplier;
+                    var totalUnitOP = amountToSend * unitOP;
+                    var totalUnitDP = amountToSend * unitDP;
                     var unitSlot = parseInt($(this).data('slot'));
                     var unitStatsElement = $('#unit' + unitSlot + '_stats');
                     unitStatsElement.find('.op').text(totalUnitOP.toLocaleString(undefined, {maximumFractionDigits: 2}));
                     unitStatsElement.find('.dp').text(totalUnitDP.toLocaleString(undefined, {maximumFractionDigits: 2}));
-
-                    if (amountToSend === 0) {
-                        return true; // continue
-                    }
-
-                    invadingForceOP += (amountToSend * unitOP) * OPMultiplier;
-                    invadingForceDP += (amountToSend * unitDP) * DPMultiplier;
-
-                    if (needBoat) {
-                        invadingForceBoats += amountToSend;
-                    }
                 });
-
-                // todo: move all this boat logic to invasionCalcualtorService
-                @php
-                    $boatCapacity = 30;
-                    $boatCapacityPerk = $selectedDominion->race->getPerkValue('boat_capacity');
-                    if ($boatCapacityPerk) $boatCapacity += $boatCapacityPerk;
-                @endphp
-
-                var boatCapacity = {{ $boatCapacity }};
-                invadingForceBoats = Math.ceil(invadingForceBoats / boatCapacity);
-
-                DPNeededToLeaveAtHome = Math.floor(invadingForceOP / 3);
-                allowedMaxOP = Math.ceil((originalHomeForcesDP - invadingForceDP) * 1.25);
-
-                newHomeForcesOP = Math.round(originalHomeForcesOP - invadingForceOP);
-                newHomeForcesDP = Math.round(originalHomeForcesDP - invadingForceDP);
-                newHomeForcesBoats = originalHomeForcesBoats - invadingForceBoats;
-                newDPA = newHomeForcesDP / landSize;
-
-                invasionForceOPElement.text(invadingForceOP.toLocaleString(undefined, {maximumFractionDigits: 2}));
-                $('#invasion-force-dp').text(invadingForceDP.toLocaleString(undefined, {maximumFractionDigits: 2}));
-                invasionForceBoatsElement.text(invadingForceBoats.toLocaleString());
-                $('#invasion-force-max-op').text(allowedMaxOP.toLocaleString());
-                homeForcesOPElement.text(newHomeForcesOP.toLocaleString());
-                homeForcesDPElement.text(newHomeForcesDP.toLocaleString());
-                homeForcesBoatsElement.text(newHomeForcesBoats.toLocaleString());
-                $('#home-forces-min-dp').text(DPNeededToLeaveAtHome.toLocaleString());
-                $('#home-forces-dpa').text(newDPA.toLocaleString(undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3}));
 
                 // Check if we have enough of these bad bois
                 /*                __--___
@@ -447,7 +409,9 @@
                 ^^!!!!%%%%^^^^!!^^%%%%%^^!!!^^%%%%%!!!%%%%^^^!!^^%%%!!
 
                 Shamelessly stolen from http://www.asciiworld.com/-Boats-.html */
-                if (invadingForceBoats > originalHomeForcesBoats) {
+
+                var hasEnoughBoats = parseInt(invasionForceBoatsElement.data('amount')) <= {{ floor($selectedDominion->resource_boats) }};
+                if (!hasEnoughBoats) {
                     invasionForceBoatsElement.addClass('text-danger');
                     homeForcesBoatsElement.addClass('text-danger');
                 } else {
@@ -455,26 +419,25 @@
                     homeForcesBoatsElement.removeClass('text-danger');
                 }
 
-                // 33% rule
-                if (newHomeForcesDP < DPNeededToLeaveAtHome) {
+                // Check 33% rule
+                var minDefenseRule = parseFloat(homeForcesDPElement.data('amount')) < parseFloat(homeForcesMinDPElement.data('amount'));
+                if (minDefenseRule) {
                     homeForcesDPElement.addClass('text-danger');
                 } else {
                     homeForcesDPElement.removeClass('text-danger');
                 }
 
-                // 5:4 rule
-                if (invadingForceOP > allowedMaxOP) {
+                // Check 5:4 rule
+                var maxOffenseRule = parseFloat(invasionForceOPElement.data('amount')) > parseFloat(invasionForceMaxOPElement.data('amount'));
+                console.log(maxOffenseRule);
+                if (maxOffenseRule) {
                     invasionForceOPElement.addClass('text-danger');
                 } else {
                     invasionForceOPElement.removeClass('text-danger');
                 }
 
                 // Check if invade button should be disabled
-                if (
-                    (invadingForceBoats > originalHomeForcesBoats) ||
-                    (newHomeForcesDP < DPNeededToLeaveAtHome) ||
-                    (invadingForceOP > allowedMaxOP)
-                ) {
+                if (!hasEnoughBoats || minDefenseRule || maxOffenseRule) {
                     invadeButtonElement.attr('disabled', 'disabled');
                 } else {
                     invadeButtonElement.removeAttr('disabled');
