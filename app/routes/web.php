@@ -129,6 +129,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
+            // Search
+            $router->get('search')->uses('Dominion\SearchController@getSearch')->name('search');
+
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
             $router->get('council/create')->uses('Dominion\CouncilController@getCreate')->name('council.create');
