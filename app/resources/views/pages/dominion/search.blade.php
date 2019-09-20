@@ -10,45 +10,67 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-search"></i> Search Dominions</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="box-body table-responsive" id="dominion-search">
                     <div class="row no-margin">
-                        <div class="form-horizontal">
+                        <div class="col-sm-6 col-md-4 form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label text-right">Race:</label>
-                                <div class="col-sm-2">
+                                <label class="col-sm-6 control-label text-right">Race:</label>
+                                <div class="col-sm-6">
                                     <select class="form-control" name="race">
-                                        <option value="">Any</option>
+                                        <option value="">All</option>
                                         @foreach ($dominions->pluck('race.name')->sort()->unique() as $race)
                                             <option value="{{ $race }}">{{ $race }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <label class="col-sm-2 control-label text-right">Land Min:</label>
-                                <div class="col-sm-2">
-                                    <input type="text" name="landMin" class="form-control input-sm" placeholder="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label text-right">Limit:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="range">
+                                        <option value="true">My Range</option>
+                                        <option value="">No Limit</option>
+                                    </select>
                                 </div>
-                                <label class="col-sm-2 control-label text-right">Networth Min:</label>
-                                <div class="col-sm-2">
-                                    <input type="text" name="networthMin" class="form-control input-sm" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label text-right">Land Min:</label>
+                                <div class="col-sm-6">
+                                    <input type="number" name="landMin" class="form-control input-sm" min="0" placeholder="0" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label text-right">Guard Status:</label>
-                                <div class="col-sm-2">
-                                    <select class="form-control" name="guard">
-                                        <option value="">Any</option>
-                                        <option value="No Guard">No Guard</option>
-                                        <option value="Royal Guard">Royal Guard</option>
-                                        <option value="Elite Guard">Elite Guard</option>
-                                    </select>
+                                <label class="col-sm-6 control-label text-right">Land Max:</label>
+                                <div class="col-sm-6">
+                                    <input type="number" name="landMax" class="form-control input-sm" placeholder="--" />
                                 </div>
-                                <label class="col-sm-2 control-label text-right">Land Max:</label>
-                                <div class="col-sm-2">
-                                    <input type="text" name="landMax" class="form-control input-sm" placeholder="--" />
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12 text-right">
+                                    <button class="btn btn-default search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.40) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.40) }}">40%</button>
+                                    <button class="btn btn-success search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.60) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.60) }}">60%</button>
+                                    <button class="btn btn-warning search-range" data-min="{{ ceil($landCalculator->getTotalLand($selectedDominion) * 0.75) }}" data-max="{{ floor($landCalculator->getTotalLand($selectedDominion) / 0.75) }}">75%</button>
                                 </div>
-                                <label class="col-sm-2 control-label text-right">Networth Max:</label>
-                                <div class="col-sm-2">
-                                    <input type="text" name="networthMax" class="form-control input-sm" placeholder="--" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label text-right">Networth Min:</label>
+                                <div class="col-sm-6">
+                                    <input type="number" name="networthMin" class="form-control input-sm" min="0" placeholder="0" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label text-right">Networth Max:</label>
+                                <div class="col-sm-6">
+                                    <input type="number" name="networthMax" class="form-control input-sm" placeholder="--" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-6 col-sm-offset-6">
+                                    <button id="dominion-search" class="btn btn-block btn-primary">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -70,13 +92,13 @@
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>
                                 <th class="text-center">Networth</th>
-                                <th class="text-center hidden">Guard Status</th>
+                                <th class="text-center hidden">My Range</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($dominions as $dominion)
                                 <tr>
-                                    <td data-search="{{ $dominion->name }}" data-guard="<?php if ($guardMembershipService->isEliteGuardMember($dominion)) echo "eg"; elseif ($guardMembershipService->isRoyalGuardMember($dominion)) echo "rg"; else echo "ng"; ?>">
+                                    <td data-search="{{ $dominion->name }}">
                                         @if ($protectionService->isUnderProtection($dominion))
                                             <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
                                         @endif
@@ -102,7 +124,9 @@
                                         {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
                                     </td>
                                     <td class="hidden">
-                                        <?php if ($guardMembershipService->isEliteGuardMember($dominion)) echo "Elite Guard"; elseif ($guardMembershipService->isRoyalGuardMember($dominion)) echo "Royal Guard"; else echo "No Guard"; ?>
+                                        @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
+                                            true
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -129,6 +153,9 @@
 
 @push('page-styles')
     <link rel="stylesheet" href="{{ asset('assets/vendor/datatables/css/dataTables.bootstrap.css') }}">
+    <style>
+        #dominion-search #dominions-table_filter { display: none !important; }
+    </style>
 @endpush
 
 @push('page-scripts')
@@ -167,8 +194,8 @@
                     return false;
                 }
 
-                var guard = $('select[name=guard]').val();
-                if (guard && guard != data[5]) return false;
+                var range = $('select[name=range]').val();
+                if (range && data[5] != "true") return false;
 
                 return true;
             }
@@ -178,15 +205,13 @@
                 order: [[3, 'desc']],
                 paging: false,
             });
-            $('input[name=landMin], input[name=landMax]').keyup(function() {
+            $('#dominion-search').click(function() {
                 table.draw();
             });
-            $('input[name=networthMin], input[name=networthMax]').keyup(function() {
-                table.draw();
-            });
-            $('select[name=race], select[name=guard]').change(function() {
-                table.draw();
-            });
+            $('.search-range').click(function() {
+                $('input[name=landMin]').val($(this).data('min'));
+                $('input[name=landMax]').val($(this).data('max'));
+            })
         })(jQuery);
     </script>
 @endpush
