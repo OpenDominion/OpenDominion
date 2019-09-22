@@ -1,29 +1,41 @@
-version: '2'
+version: '3'
+
 services:
-    web:
-        build: .docker/web
-        environment:
-            - VIRTUAL_HOST=opendominion.docker
-            - VIRTUAL_PORT=80
-            - HTTPS_METHOD=noredirect
-        links:
-            - php
-        volumes:
-            - .:/app
+  php-fpm:
+    build:
+      context: .docker/php-fpm
+    networks:
+      - opendominion-network
+    volumes:
+      - .:/var/www/html
 
-    php:
-        build: .docker/php
-        links:
-            - db
-        volumes:
-            - .:/app
+  nginx:
+    build:
+      context: .docker/nginx
+    depends_on:
+      - php-fpm
+    networks:
+      - opendominion-network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/var/www/html
+      - .docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/defaults.conf
 
-    db:
-        image: mariadb:latest
-        environment:
-          - MYSQL_ROOT_PASSWORD=supersecurepassword
-          - MYSQL_DATABASE=opendominion
-          - MYSQL_USER=opendominion
-          - MYSQL_PASSWORD=opendominion
-        ports:
-          - 3306:3306
+  mariadb:
+    build:
+      context: .docker/mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=opendominion
+      - MYSQL_USER=opendominion
+      - MYSQL_PASSWORD=secret
+    networks:
+      - opendominion-network
+    ports:
+      - "3306:3306"
+
+networks:
+  opendominion-network:
+    driver: bridge
