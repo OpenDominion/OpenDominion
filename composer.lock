@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77d38ada762b35a368df86799948f455",
+    "content-hash": "ddd162647d9412dbb2df37d6281a77c6",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -9312,7 +9312,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3"
+        "php": "^7.3",
+        "ext-bcmath": "^7.3"
     },
     "platform-dev": []
 }

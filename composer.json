@@ -2,6 +2,7 @@
   "type": "project",
   "require": {
     "php": "^7.3",
+    "ext-bcmath": "^7.3",
     "atrox/haikunator": "~1.2",
     "beyondcode/laravel-self-diagnosis": "^1.0",
     "bugsnag/bugsnag-laravel": "~2.0",
