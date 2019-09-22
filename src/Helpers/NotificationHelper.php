@@ -449,7 +449,6 @@ class NotificationHelper
                         throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-
                 if ($data['spiesKilled'] === 0) {
                     $lastPart = '';
                 } else {
