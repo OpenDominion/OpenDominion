@@ -260,9 +260,9 @@ class InvadeActionService
             // Stat changes
             // todo: move to own method
             if ($this->invasionResult['result']['success']) {
-                $dominion->increment('stat_attacking_success');
+                $dominion->stat_attacking_success += 1;
             } else {
-                $target->increment('stat_defending_success');
+                $target->stat_defending_success += 1;
             }
 
             // todo: move to GameEventService
