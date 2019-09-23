@@ -1,0 +1,8 @@
+**/profiles_settings.xml
+*.ids
+*.local.xml
+/dataSources/
+/dictionaries/
+/shelf/
+/vcs.xml
+/workspace.xml
