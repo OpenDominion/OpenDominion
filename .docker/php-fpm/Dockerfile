@@ -1,7 +1,10 @@
 FROM php:7.3-fpm-alpine
 
+# System packages
+RUN apk add curl-dev libpng-dev
+
 # Install MySQL extensions
-RUN docker-php-ext-install -j$(nproc) bcmath pdo_mysql
+RUN docker-php-ext-install -j$(nproc) bcmath curl fileinfo gd mbstring openssl pdo_mysql
 
 # Install Xdebug
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
@@ -16,5 +19,8 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 
 # Install Composer
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install NodeJS & NPM
+RUN apk add npm
 
 WORKDIR /var/www/html
