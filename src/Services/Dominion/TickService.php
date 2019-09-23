@@ -96,7 +96,7 @@ class TickService
                 continue;
             }
 
-            DB::transaction(function() use ($round) {
+            DB::transaction(function () use ($round) {
                 // Update dominions
                 DB::table('dominions')
                     ->join('dominion_tick', 'dominions.id', '=', 'dominion_tick.dominion_id')
@@ -302,8 +302,8 @@ class TickService
                 $resources[$row->resource] = $row->amount;
             }
 
-            if ($source === "invasion") {
-                $notificationType = "returning_completed";
+            if ($source === 'invasion') {
+                $notificationType = 'returning_completed';
             } else {
                 $notificationType = "{$source}_completed";
             }
@@ -327,7 +327,7 @@ class TickService
         if ($saveHistory) {
             // Save a dominion history record
             $dominionHistoryService = app(HistoryService::class);
-            $changes = array_filter($tick->getAttributes(), function($value, $key) {
+            $changes = array_filter($tick->getAttributes(), function ($value, $key) {
                 if ($key != 'id' && $key != 'dominion_id' && $key != 'updated_at' && $value != 0) return true;
             }, ARRAY_FILTER_USE_BOTH);
             $dominionHistoryService->record($dominion, $changes, HistoryService::EVENT_TICK);
