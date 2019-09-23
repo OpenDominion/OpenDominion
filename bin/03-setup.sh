@@ -30,4 +30,4 @@ yarn run dev
 php artisan self-diagnosis
 
 # Seed the database
-php artisan db:sed
+php artisan db:seed
