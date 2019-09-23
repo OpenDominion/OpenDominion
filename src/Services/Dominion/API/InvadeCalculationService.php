@@ -2,16 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\API;
 
-//use OpenDominion\Calculators\Dominion\BuildingCalculator;
-//use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
-//use OpenDominion\Calculators\Dominion\LandCalculator;
+use LogicException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
-//use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
-//use OpenDominion\Models\Unit;
-use RuntimeException;
-use Throwable;
 
 class InvadeCalculationService
 {
@@ -20,20 +14,11 @@ class InvadeCalculationService
      */
     protected const UNITS_PER_BOAT = 30;
 
-    /** @var BuildingCalculator */
-    //protected $buildingCalculator;
-
-    /** @var LandCalculator */
-    //protected $landCalculator;
-
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
     /** @var RangeCalculator */
     protected $rangeCalculator;
-
-    /** @var SpellCalculator */
-    //protected $spellCalculator;
 
     /** @var array Calculation result array. */
     protected $calculationResult = [
@@ -54,46 +39,36 @@ class InvadeCalculationService
     /**
      * InvadeActionService constructor.
      *
-     * @param BuildingCalculator $buildingCalculator
-     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param RangeCalculator $rangeCalculator
-     * @param SpellCalculator $spellCalculator
      */
     public function __construct(
-        //BuildingCalculator $buildingCalculator,
-        //LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         RangeCalculator $rangeCalculator
-        //SpellCalculator $spellCalculator
-        )
+    )
     {
-        //$this->buildingCalculator = $buildingCalculator;
-        //$this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->rangeCalculator = $rangeCalculator;
-        //$this->spellCalculator = $spellCalculator;
     }
 
     /**
      * Calculates an invasion against dominion $target from $dominion.
      *
      * @param Dominion $dominion
-     * @param Dominion $target
+     * @param Dominion|null $target
      * @param array $units
      * @return array
-     * @throws Throwable
      */
-    public function calculate(Dominion $dominion, Dominion $target = null, array $units): array
+    public function calculate(Dominion $dominion, ?Dominion $target, array $units): array
     {
+        if (empty($units)) {
+            throw new LogicException('$units is empty');
+        }
+
         // Sanitize input
         $units = array_map('intval', array_filter($units));
 
-        //if (!$this->hasEnoughBoats($dominion, $units)) {
-        //    throw new RuntimeException('You do not have enough boats to send this many units');
-        //}
-
-        if($target) {
+        if ($target !== null) {
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
             $this->calculationResult['land_ratio'] = $landRatio;
             $opposingForceRaceName = $target->race->name;
@@ -106,8 +81,21 @@ class InvadeCalculationService
         $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
 
         foreach ($dominion->race->units as $unit) {
-            $this->calculationResult['units'][$unit->slot]['dp'] = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'defense');
-            $this->calculationResult['units'][$unit->slot]['op'] = $this->militaryCalculator->getUnitPowerWithPerks($dominion, $opposingForceRaceName, $landRatio, $unit, 'offense');
+            $this->calculationResult['units'][$unit->slot]['dp'] = $this->militaryCalculator->getUnitPowerWithPerks(
+                $dominion,
+                $opposingForceRaceName,
+                $landRatio,
+                $unit,
+                'defense'
+            );
+
+            $this->calculationResult['units'][$unit->slot]['op'] = $this->militaryCalculator->getUnitPowerWithPerks(
+                $dominion,
+                $opposingForceRaceName,
+                $landRatio,
+                $unit,
+                'offense'
+            );
         }
 
         return $this->calculationResult;

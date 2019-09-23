@@ -57,11 +57,7 @@ class SpellHelper
 
     public function getSelfSpells(Race $race): Collection
     {
-        $raceName = $race->name;
-
-        $racialSpell = $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
-            return $spell['races']->contains($raceName);
-        })->first();
+        $racialSpell = $this->getRacialSelfSpell($race);
 
         return collect(array_filter([
             [
@@ -109,7 +105,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Surreal Perception',
-                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops',
+                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops for 8 hours',
                 'key' => 'surreal_perception',
                 'mana_cost' => 4,
                 'duration' => 8,
@@ -123,6 +119,13 @@ class SpellHelper
 //            ],
             $racialSpell
         ]));
+    }
+
+    public function getRacialSelfSpell(Race $race) {
+        $raceName = $race->name;
+        return $this->getRacialSelfSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
     }
 
     public function getRacialSelfSpells(): Collection
@@ -142,7 +145,7 @@ class SpellHelper
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Dwarf']),
+                'races' => collect(['Dwarf', 'Gnome']),
             ],
             [
                 'name' => 'Killing Rage',
@@ -175,14 +178,6 @@ class SpellHelper
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Icekin']),
-            ],
-            [
-                'name' => 'Mechanical Genius',
-                'description' => '-30% land rezoning costs',
-                'key' => 'mechanical_genius',
-                'mana_cost' => 5,
-                'duration' => 12,
-                'races' => collect(['Gnome']),
             ],
             [
                 'name' => 'Unholy Ghost',

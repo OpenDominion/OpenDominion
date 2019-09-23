@@ -75,21 +75,12 @@ class RezoningCalculator
         // Values (percentages)
         $factoryReduction = 3;
         $factoryReductionMax = 75;
-        $spellMechanicalGeniusReduction = 30;
 
         // Factories
         $multiplier -= min(
             (($dominion->building_factory / $this->landCalculator->getTotalLand($dominion)) * $factoryReduction),
             ($factoryReductionMax / 100)
         );
-
-        $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
-            $dominion,
-            'mechanical_genius',
-            $spellMechanicalGeniusReduction
-        );
-
-        $multiplier -= $mechanicalGeniusReduction;
 
         $multiplier = max($multiplier, -0.75);
 

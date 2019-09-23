@@ -21,10 +21,10 @@ units:
       defense: 3
   - name: Werewolf
     cost:
-      platinum: 875
+      platinum: 850
       ore: 55
     power:
-      offense: 3
+      offense: 4
       defense: 4
     perks:
       fewer_casualties_offense: 25

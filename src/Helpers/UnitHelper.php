@@ -65,6 +65,10 @@ class UnitHelper
 
             'defense_vs_goblin' => 'Defense increased by %s against goblins.',
             'offense_vs_goblin' => 'Offense increased by %s against goblins.',
+            'defense_vs_kobold' => 'Defense increased by %s against kobolds.',
+            'offense_vs_kobold' => 'Offense increased by %s against kobolds.',
+            'defense_vs_wood_elf' => 'Defense increased by %s against wood elves.',
+            'offense_vs_wood_elf' => 'Offense increased by %s against wood elves.',
 
             'offense_staggered_land_range' => 'Offense increased by %2$s against dominions %1$s%%+ of your size.',
 
@@ -174,8 +178,9 @@ class UnitHelper
                 }
             }
 
-            if ($unit->need_boat == false)
+            if ($unit->need_boat === false) {
                 $helpStrings['unit' . $unit->slot] .= ('<br><br>No boats needed.');
+            }
         }
 
         return $helpStrings[$unitType] ?: null;
@@ -212,4 +217,36 @@ class UnitHelper
                 return '';
         }
     }
+
+    public function getConvertedUnitsString(array $convertedUnits, Race $race): string
+    {
+        $result = 'In addition, your army converts some of the enemy casualties into ';
+        $convertedUnitsFiltered = array_filter($convertedUnits, function ($item) {
+            return $item > 0;
+        });
+
+        $numberOfUnitTypesConverted = count($convertedUnitsFiltered);
+        $i = 1;
+
+        // todo: this can probably be refactored to use generate_sentence_from_array() in helpers.php
+        foreach ($convertedUnitsFiltered as $slotNumber => $amount) {
+            if ($i !== 1) {
+                if ($numberOfUnitTypesConverted === $i) {
+                    $result .= ' and ';
+                } else {
+                    $result .= ', ';
+                }
+            }
+
+            $formattedAmount = number_format($amount);
+
+            $result .= "{$formattedAmount} {$race->units[$slotNumber - 1]->name}s";
+
+            $i++;
+        }
+
+        $result .= '!';
+
+        return $result;
     }
+}

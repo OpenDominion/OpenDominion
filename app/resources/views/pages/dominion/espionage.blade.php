@@ -69,7 +69,11 @@
                                     @foreach ($operations as $operation)
                                         <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                             <div class="form-group">
-                                                <button type="submit" name="operation" value="{{ $operation['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) ? 'disabled' : null }}>
+                                                <button type="submit"
+                                                        name="operation"
+                                                        value="{{ $operation['key'] }}"
+                                                        class="btn btn-primary btn-block"
+                                                        {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
                                                 <p>{{ $operation['description'] }}</p>

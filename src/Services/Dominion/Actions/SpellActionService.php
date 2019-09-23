@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
+use Exception;
 use LogicException;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -10,6 +11,8 @@ use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -18,12 +21,15 @@ use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
-use Throwable;
 
 class SpellActionService
 {
     use DominionGuardsTrait;
+
+    /**
+     * @var float Info op base success rate
+     */
+    protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -36,6 +42,9 @@ class SpellActionService
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var OpsHelper */
+    protected $opsHelper;
 
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -64,6 +73,7 @@ class SpellActionService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsHelper = app(OpsHelper::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -79,7 +89,8 @@ class SpellActionService
      * @param string $spellKey
      * @param null|Dominion $target
      * @return array
-     * @throws Throwable
+     * @throws GameException
+     * @throws LogicException
      */
     public function castSpell(Dominion $dominion, string $spellKey, ?Dominion $target = null): array
     {
@@ -88,46 +99,46 @@ class SpellActionService
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
         if (!$spellInfo) {
-            throw new RuntimeException("Cannot cast unknown spell '{$spellKey}'");
+            throw new LogicException("Cannot cast unknown spell '{$spellKey}'");
         }
 
         if ($dominion->wizard_strength < 30) {
-            throw new RuntimeException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
+            throw new GameException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
         }
 
         $manaCost = $this->spellCalculator->getManaCost($dominion, $spellKey);
 
         if ($dominion->resource_mana < $manaCost) {
-            throw new RuntimeException("You do not have enough mana to cast {$spellInfo['name']}.");
+            throw new GameException("You do not have enough mana to cast {$spellInfo['name']}.");
         }
 
         if ($this->spellCalculator->isOnCooldown($dominion, $spellKey)) {
-            throw new RuntimeException("You can only cast {$spellInfo['name']} every {$spellInfo['cooldown']} hours.");
+            throw new GameException("You can only cast {$spellInfo['name']} every {$spellInfo['cooldown']} hours.");
         }
 
         if ($this->spellHelper->isOffensiveSpell($spellKey)) {
             if ($target === null) {
-                throw new RuntimeException("You must select a target when casting offensive spell {$spellInfo['name']}");
+                throw new GameException("You must select a target when casting offensive spell {$spellInfo['name']}");
             }
 
             if ($this->protectionService->isUnderProtection($dominion)) {
-                throw new RuntimeException('You cannot cast offensive spells while under protection');
+                throw new GameException('You cannot cast offensive spells while under protection');
             }
 
             if ($this->protectionService->isUnderProtection($target)) {
-                throw new RuntimeException('You cannot cast offensive spells to targets which are under protection');
+                throw new GameException('You cannot cast offensive spells to targets which are under protection');
             }
 
             if (!$this->rangeCalculator->isInRange($dominion, $target)) {
-                throw new RuntimeException('You cannot cast offensive spells to targets outside of your range');
+                throw new GameException('You cannot cast offensive spells to targets outside of your range');
             }
 
             if ($dominion->round->id !== $target->round->id) {
-                throw new RuntimeException('Nice try, but you cannot cast spells cross-round');
+                throw new GameException('Nice try, but you cannot cast spells cross-round');
             }
 
             if ($dominion->realm->id === $target->realm->id) {
-                throw new RuntimeException('Nice try, but you cannot cast spells on your realmies');
+                throw new GameException('Nice try, but you cannot cast spells on your realmies');
             }
         }
 
@@ -141,8 +152,16 @@ class SpellActionService
                 $result = $this->castInfoOpSpell($dominion, $spellKey, $target);
 
             } elseif ($this->spellHelper->isBlackOpSpell($spellKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } elseif ($this->spellHelper->isWarSpell($spellKey)) {
+                if($dominion->round->hasOffensiveActionsDisabled())
+                {
+                    throw new GameException('Black ops have been disabled for the remainder of the round.');
+                }
                 throw new LogicException('Not yet implemented');
             } else {
                 throw new LogicException("Unknown type for spell {$spellKey}");
@@ -150,11 +169,20 @@ class SpellActionService
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_CAST_SPELL, 'action' => $spellKey]);
+
+            if (!$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
+                $dominion->stat_spell_success -= 1;
+            }
+
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                'action' => $spellKey
+            ]);
         });
 
-        if ($target !== null)
+        if ($target !== null) {
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
+        }
 
         return [
                 'message' => $result['message'], /* sprintf(
@@ -179,6 +207,8 @@ class SpellActionService
      * @param Dominion $dominion
      * @param string $spellKey
      * @return array
+     * @throws GameException
+     * @throws LogicException
      */
     protected function castSelfSpell(Dominion $dominion, string $spellKey): array
     {
@@ -200,7 +230,7 @@ class SpellActionService
             }
 
             if ((int)$activeSpell->duration === $spellInfo['duration']) {
-                throw new RuntimeException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
+                throw new GameException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
             }
 
             DB::table('active_spells')
@@ -237,6 +267,8 @@ class SpellActionService
      * @param string $spellKey
      * @param Dominion $target
      * @return array
+     * @throws GameException
+     * @throws Exception
      */
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
@@ -253,15 +285,8 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $ratio = ($selfWpa / $targetWpa);
-
-            // Exact formula from Dom is unknown. Thanks to mriswith on Discord for coming up with this formula <3
-            $successRate = clamp((
-                (0.0172 * ($ratio ** 3))
-                - (0.1809 * ($ratio ** 2))
-                + (0.7777 * $ratio)
-                - 0.0134
-            ), 0.0, 1.0);
+            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa,
+                static::INFO_MULTIPLIER_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
@@ -352,18 +377,9 @@ class SpellActionService
 
         $infoOp->save();
 
-        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
-            $this->notificationService
-                ->queueNotification('received_hostile_spell', [
-                    'sourceDominionId' => $dominion->id,
-                    'spellKey' => $spellKey,
-                ])
-                ->sendNotifications($target, 'irregular_dominion');
-        }
-
         $redirect = route('dominion.op-center.show', $target);
         if ($spellKey === 'clairvoyance') {
-            $redirect = route('dominion.op-center.clairvoyance', $target->realm->id);
+            $redirect = route('dominion.op-center.clairvoyance', $target->realm->number);
         }
 
         return [

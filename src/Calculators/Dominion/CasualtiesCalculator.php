@@ -10,6 +10,9 @@ class CasualtiesCalculator
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var PopulationCalculator */
+    private $populationCalculator;
+
     /** @var SpellCalculator */
     private $spellCalculator;
 
@@ -20,12 +23,14 @@ class CasualtiesCalculator
      * CasualtiesCalculator constructor.
      *
      * @param LandCalculator $landCalculator
+     * @param PopulationCalculator $populationCalculator
      * @param SpellCalculator $spellCalculator
      * @param UnitHelper $unitHelper
      */
-    public function __construct(LandCalculator $landCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
+    public function __construct(LandCalculator $landCalculator, PopulationCalculator $populationCalculator, SpellCalculator $spellCalculator, UnitHelper $unitHelper)
     {
         $this->landCalculator = $landCalculator;
+        $this->populationCalculator = $populationCalculator;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
     }
@@ -177,7 +182,7 @@ class CasualtiesCalculator
                 // additional race-based checks in here for any new units. So always assume we're running SPUD at the
                 // moment
 
-                $attackerHasCrusadeActive = ($this->spellCalculator->getActiveSpellMultiplierBonus($attacker, 'crusade') !== 0);
+                $attackerHasCrusadeActive = ($this->spellCalculator->isSpellActive($attacker, 'crusade'));
 
                 // Note: This doesn't do a race check on $attacker, since I don't think that's needed atm; only HuNo can
                 // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
@@ -298,7 +303,8 @@ class CasualtiesCalculator
             return [];
         }
 
-        $casualties = ['peasants' => min($totalCasualties / 2, $dominion->peasants)];
+        $peasantPopPercentage = $dominion->peasants / $this->populationCalculator->getPopulation($dominion);
+        $casualties = ['peasants' => min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
@@ -354,7 +360,10 @@ class CasualtiesCalculator
             return 0;
         }
 
-        return (int)(abs($foodDeficit) * 4);
+        $casualties = (int)(abs($foodDeficit) * 2);
+        $maxCasualties = $this->populationCalculator->getPopulation($dominion) * 0.02;
+
+        return min($casualties, $maxCasualties);
     }
 
     /**

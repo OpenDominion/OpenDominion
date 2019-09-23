@@ -8,7 +8,6 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class RezoneActionService
 {
@@ -39,7 +38,7 @@ class RezoneActionService
      * @param array $remove Land to remove
      * @param array $add Land to add.
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function rezone(Dominion $dominion, array $remove, array $add): array
     {

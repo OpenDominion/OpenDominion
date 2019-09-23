@@ -67,15 +67,15 @@
                                         {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
                                     </td>
                                     --}}
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getLandString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($targetDominionOps) }}">
+                                        {{ $infoOpService->getLandString($targetDominionOps) }}
                                         <br>
                                         <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $lastInfoOp->targetDominion) }}">
                                             {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $lastInfoOp->targetDominion), 1) }}%
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getNetworthString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($targetDominionOps) }}">
+                                        {{ $infoOpService->getNetworthString($targetDominionOps) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
                                         {{ $infoOpService->getInfoOpName($lastInfoOp) }}
@@ -92,8 +92,8 @@
                                             {{ $lastInfoOp->created_at }}
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getNumberOfActiveInfoOps($selectedDominion->realm, $lastInfoOp->targetDominion) }}/{{ $infoOpService->getMaxInfoOps() }}
+                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNumberOfActiveInfoOps($targetDominionOps) }}">
+                                        {{ $infoOpService->getNumberOfActiveInfoOps($targetDominionOps) }}/{{ $infoOpService->getMaxInfoOps() }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -107,7 +107,7 @@
                     <h3 class="box-title">Clairvoyance Realms</h3>
                 </div>
                 <div class="box-body table-responsive">
-                    <table class="table table-hover" id="dominions-table">
+                    <table class="table table-hover" id="clairvoyance-table">
                         <colgroup>
                             <col>
                             <col>
@@ -121,29 +121,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($clairvoyanceRealms as $realm)
-                                @php
-                                    $lastInfoOp = $infoOpService->getLastClairvoyance($selectedDominion->realm, $realm);
-                                @endphp
+                            @foreach ($clairvoyances as $clairvoyance)
                                 <tr>
-                                    <td data-order="{{ $realm->number }}">
-                                        <a href="{{ route('dominion.op-center.clairvoyance', $realm->id) }}">{{ $realm->name }} (#{{ $realm->number }})</a>
+                                    <td data-order="{{ $clairvoyance->targetRealm->number }}">
+                                        <a href="{{ route('dominion.op-center.clairvoyance', $clairvoyance->targetRealm->number) }}">{{ $clairvoyance->targetRealm->name }} (#{{ $clairvoyance->targetRealm->number }})</a>
                                     </td>
-                                    <td data-order="{{ $lastInfoOp->targetDominion->name }}">
-                                        <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
+                                    <td data-order="{{ $clairvoyance->targetDominion->name }}">
+                                        <a href="{{ route('dominion.op-center.show', $clairvoyance->targetDominion->id) }}">{{ $clairvoyance->targetDominion->name }}</a>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
+                                    <td class="text-center" data-search="" data-order="{{ $clairvoyance->created_at->getTimestamp() }}">
                                         Clairvoyance by
-                                        @if ($lastInfoOp->sourceDominion->id === $selectedDominion->id)
+                                        @if ($clairvoyance->sourceDominion->id === $selectedDominion->id)
                                             <strong>
                                                 {{ $selectedDominion->name }}
                                             </strong>
                                         @else
-                                            {{ $lastInfoOp->sourceDominion->name }}
+                                            {{ $clairvoyance->sourceDominion->name }}
                                         @endif
                                         <br>
                                         <span class="small">
-                                            {{ $lastInfoOp->created_at->diffForHumans() }}
+                                            {{ $clairvoyance->created_at->diffForHumans() }}
                                         </span>
                                     </td>
                                 </tr>
@@ -184,6 +181,9 @@
         (function ($) {
             $('#dominions-table').DataTable({
                 order: [[5, 'desc']],
+            });
+            $('#clairvoyance-table').DataTable({
+                order: [[2, 'desc']],
             });
         })(jQuery);
     </script>

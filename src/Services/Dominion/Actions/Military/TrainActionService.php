@@ -4,12 +4,12 @@ namespace OpenDominion\Services\Dominion\Actions\Military;
 
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 use Throwable;
 
 class TrainActionService
@@ -56,7 +56,7 @@ class TrainActionService
         $totalUnitsToTrain = array_sum($data);
 
         if ($totalUnitsToTrain === 0) {
-            throw new RuntimeException('Training aborted due to bad input.');
+            throw new GameException('Training aborted due to bad input.');
         }
 
         $totalCosts = [
@@ -87,15 +87,15 @@ class TrainActionService
         }
 
         if (($totalCosts['platinum'] > $dominion->resource_platinum) || ($totalCosts['ore'] > $dominion->resource_ore)) {
-            throw new RuntimeException('Training aborted due to lack of economical resources');
+            throw new GameException('Training aborted due to lack of economical resources');
         }
 
         if ($totalCosts['draftees'] > $dominion->military_draftees) {
-            throw new RuntimeException('Training aborted due to lack of draftees');
+            throw new GameException('Training aborted due to lack of draftees');
         }
 
         if ($totalCosts['wizards'] > $dominion->military_wizards) {
-            throw new RuntimeException('Training aborted due to lack of wizards');
+            throw new GameException('Training aborted due to lack of wizards');
         }
 
         $newPlatinum = ($dominion->resource_platinum - $totalCosts['platinum']);

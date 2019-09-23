@@ -68,7 +68,7 @@ class QueueService
     public function getQueueAmount(string $source, Dominion $dominion, string $resource, int $hour): int
     {
         return $this->getQueue($source, $dominion)
-                ->filter(function ($row) use ($resource, $hour) {
+                ->filter(static function ($row) use ($resource, $hour) {
                     return (
                         ($row->resource === $resource) &&
                         ($row->hours === $hour)
@@ -102,7 +102,7 @@ class QueueService
     public function getQueueTotalByResource(string $source, Dominion $dominion, string $resource): int
     {
         return $this->getQueue($source, $dominion)
-            ->filter(function ($row) use ($resource) {
+            ->filter(static function ($row) use ($resource) {
                 return ($row->resource === $resource);
             })->sum('amount');
     }
@@ -110,7 +110,7 @@ class QueueService
     public function dequeueResource(string $source, Dominion $dominion, string $resource, int $amount): void
     {
         $queue = $this->getQueue($source, $dominion, true)
-            ->filter(function ($row) use ($resource) {
+            ->filter(static function ($row) use ($resource) {
                 return ($row->resource === $resource);
             })->sortByDesc('hours');
 
@@ -157,7 +157,6 @@ class QueueService
      * @param Dominion $dominion
      * @param array $data In format: [$resource => $amount, $resource2 => $amount2] etc
      * @param int $hours
-     * @throws Throwable
      */
     public function queueResources(string $source, Dominion $dominion, array $data, int $hours = 12): void
     {
@@ -171,7 +170,7 @@ class QueueService
                 }
                 $q = $this->getQueue($source, $dominion, true);
                 $existingQueueRow =
-                    $q->filter(function ($row) use ($resource, $hours) {
+                    $q->filter(static function ($row) use ($resource, $hours) {
                         return (
                             ($row->resource === $resource) &&
                             ((int)$row->hours === $hours)

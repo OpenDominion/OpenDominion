@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class ImproveActionService
 {
@@ -20,15 +20,15 @@ class ImproveActionService
         $totalResourcesToInvest = array_sum($data);
 
         if ($totalResourcesToInvest === 0) {
-            throw new RuntimeException('Investment aborted due to bad input.');
+            throw new GameException('Investment aborted due to bad input.');
         }
 
         if (!\in_array($resource, ['platinum', 'lumber', 'ore', 'gems'], true)) {
-            throw new RuntimeException('Investment aborted due to bad resource type.');
+            throw new GameException('Investment aborted due to bad resource type.');
         }
 
         if ($totalResourcesToInvest > $dominion->{'resource_' . $resource}) {
-            throw new RuntimeException("You do not have enough {$resource} to invest.");
+            throw new GameException("You do not have enough {$resource} to invest.");
         }
 
         $worth = $this->getImprovementWorth();
