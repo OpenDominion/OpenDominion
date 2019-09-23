@@ -66,9 +66,11 @@ class MilitaryCalculator
         Dominion $dominion,
         Dominion $target = null,
         float $landRatio = null,
-        array $units = null): float
+        array $units = null,
+        array $calc = []
+    ): float
     {
-        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->getOffensivePowerMultiplier($dominion));
+        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units, $calc) * $this->getOffensivePowerMultiplier($dominion));
 
         return ($op * $this->getMoraleMultiplier($dominion));
     }
@@ -86,12 +88,14 @@ class MilitaryCalculator
         Dominion $dominion,
         Dominion $target = null,
         float $landRatio = null,
-        array $units = null): float
+        array $units = null,
+        array $calc = []
+    ): float
     {
         $op = 0;
 
         foreach ($dominion->race->units as $unit) {
-            $powerOffense = $this->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense');
+            $powerOffense = $this->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense', $calc);
 
             $numberOfUnits = 0;
 
@@ -205,7 +209,8 @@ class MilitaryCalculator
         float $landRatio = null,
         array $units = null,
         float $multiplierReduction = 0,
-        bool $ignoreDraftees = false): float
+        bool $ignoreDraftees = false
+        ): float
     {
         $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees);
         $dp *= $this->getDefensivePowerMultiplier($dominion, $multiplierReduction);
@@ -228,7 +233,8 @@ class MilitaryCalculator
         Dominion $target = null,
         float $landRatio = null,
         array $units = null,
-        bool $ignoreDraftees = false): float
+        bool $ignoreDraftees = false
+    ): float
     {
         $dp = 0;
 
