@@ -324,22 +324,22 @@
             });
 
             @if (!$protectionService->isUnderProtection($selectedDominion))
-                calculate();
+                updateUnitStats();
             @endif
 
             $('#target_dominion').change(function (e) {
-                calculate();
+                updateUnitStats();
             });
 
             $('input[name^=\'calc\']').change(function (e) {
-                calculate();
+                updateUnitStats();
             });
 
             $('input[name^=\'unit\']').change(function (e) {
-                calculate();
+                updateUnitStats();
             });
 
-            function calculate() {
+            function updateUnitStats() {
                 // Update unit stats
                 $.get(
                     "{{ route('api.dominion.invasion') }}?" + $('#invade_form').serialize(), {},
@@ -373,10 +373,13 @@
                             homeForcesBoatsElement.text(response.boats_remaining.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesMinDPElement.text(response.min_dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesDPAElement.text(response.home_dpa.toLocaleString(undefined, {maximumFractionDigits: 3}));
+                            calculate();
                         }
                     }
                 );
+            }
 
+            function calculate() {
                 // Calculate subtotals for each unit
                 allUnitInputs.each(function () {
                     var unitOP = parseFloat($(this).data('op'));
@@ -429,7 +432,6 @@
 
                 // Check 5:4 rule
                 var maxOffenseRule = parseFloat(invasionForceOPElement.data('amount')) > parseFloat(invasionForceMaxOPElement.data('amount'));
-                console.log(maxOffenseRule);
                 if (maxOffenseRule) {
                     invasionForceOPElement.addClass('text-danger');
                 } else {
