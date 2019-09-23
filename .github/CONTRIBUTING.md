@@ -30,10 +30,10 @@ Thank you for considering contributing to OpenDominion! This document contains s
 
 - For code contributions, make sure you have a [GitHub account](https://github.com/signup/free).
 - Make sure you read, understand and agree to the [Code of Conduct](CODE_OF_CONDUCT.md).
-- The project's development is governed BDFL-style. See [Governance](GOVERNANCE.md) for more details.
-- Join the [OpenDominion Discord server](https://discord.gg/mFk2wZT).
+- Understand that the project's development is governed BDFL-style. See [Governance](GOVERNANCE.md) for more details.
+- Finally, join the [OpenDominion Discord server](https://discord.gg/mFk2wZT).
 
-The Discord is used for both for the playerbase community, as well as development-related communication, announcements and game updates.
+The Discord is used for both for the playerbase community, as well as development-related communication, community announcements and game updates.
 
 ### Vision
 
@@ -41,8 +41,9 @@ OpenDominion is an open source clone of Dominion (round 70-74 ruleset), with a f
 
 - An open source project with (hopefully) well-written, documented and (unit-)tested code.
 - A modern and responsive design, developed and tested for desktop, tablet and mobile.
-- Full free to play. Meaning: no premium accounts or features, no microtransactions, no lootboxes, and no advertisements either.
+- Free to play forever. No premium accounts, no microtransactions, no lootboxes, and no advertisements. The project is financed through voluntary Patreon donations.
 - Lifetime accounts by default. Meaning you can use the same user account across multiple rounds, instead of having to re-register for each round.
+- Additional gameplay changes for balance purposes, as decided by OpenDominion's Gameplay Committee.
  
 ## How can I contribute?
 
@@ -107,104 +108,54 @@ OpenDominion is built on the Laravel 5.7 PHP framework, using PHP 7.3 as the mai
 
 The frontend is based off the [AdminLTE](https://adminlte.io/themes/AdminLTE/index2.html) open source dashboard theme, using [Font Awesome](https://fontawesome.com/) and [RPG Awesome](https://nagoshiashumari.github.io/Rpg-Awesome/) as font icons, alongside some additional NPM packages like Select2 for improved UX. It's built with Laravel's Blade templating language to serve static HTML responses.
 
-If you're going to use PhpStorm to tinker around in the code, there's a partially gitignored `.idea` directory in Git with some sensible default project configuration.
+If you're going to use PhpStorm to tinker around in the code, there's a partially gitignored `.idea` directory in Git with some sensible project configuration.
 
 ##### Assumptions:
 
-- You have [PHP](http://www.php.net/) 7.3 or higher installed and in your path.
-- Your PHP has the extensions: curl, fileinfo, gd OR imagick, mbstring, openssl, pdo_mysql and optionally [xdebug](https://xdebug.org/).
-- You have [Composer](https://getcomposer.org/) installed and in your path.
-- You have [NPM](https://nodejs.org/en/) 10 or higher installed and in your path.
-- You have a [MySQL](https://www.mysql.com/) 5.7+ or [MariaDB](https://mariadb.org/) 10.0+ SQL database server installed.
+- You have [Docker](https://www.docker.com/) installed and in your path.
+- You are on a *nix-like shell. On Windows I recommend [Git for Windows](https://gitforwindows.org/), since this process is untested on WSL is at time of updating this document.
 - You have a basic understanding of the [Laravel framework](https://laravel.com/docs). See sections [deviation from Laravel](#deviation-from-laravel) and [directory structure](#directory-structure) for the current architectural setup, which slightly differs from a traditional Laravel project. 
 
 Notes:
-- Previously there was support for Sqlite for local development. This has since been dropped (due to reasons I forgot at time of updating this document).
-- If you're not going to use the internal PHP webserver, you need to have a webserver like Nginx or Apache setup according to the [Laravel documentation](https://laravel.com/docs/5.8/installation#pretty-urls).
+- Previously the installation guide required things like PHP, Composer etc, Homestead, and also Sqlite support. These have all been deprecated in favor for a Dockerized approach.
 
-If you don't want to hassle too much with setting the aforementioned up, there's [Laravel Homestead](https://laravel.com/docs/5.8/homestead) configuration files available for your convenience. Docker Compose files are also present in the repository, but these are currently unmaintained and untested, and might potentially not work in their current state. 
+##### Steps
 
-##### Cloning the repository:
+Clone the repository:
 
 ```bash
 $ git clone https://github.com/WaveHack/OpenDominion
 $ cd OpenDominion
+$ git submodule update --init
 ```
 
-##### Setting up after cloning:
+*Note:* If you've forked the repository on GitHub, use `git clone git@github.com:YOURPROFILE/OpenDominion` instead.
 
-Install PHP dependencies:
+*Note:* Shell scripts for the next few steps have been made for convenience. I recommend you inspect them first, so you know which commands will be ran in the next few steps.
+
+Copy the Docker configuration files and start the Docker containers:
 
 ```bash
-$ composer install
+$ bin/01-start.sh
 ```
 
-Copy the provided .env example file and generate a fresh application encryption key.
+Login into the workspace container:
 
 ```bash
-$ cp .env.example .env
-$ php artisan key:generate
+$ bin/02-login.sh
 ```
 
-Edit the `.env` file and set the correct database configuration in the `DB_*` fields. If in doubt, consult the [Laravel documentation](https://laravel.com/docs/5.8/database#configuration) for this.
+Your shell prompt should now change to: `laradock@8ea9bd9c9c56:/var/www$`, indicating you're inside the workspace container. The hostname (after `@` can vary on your system). Subsequent commands should be run inside the container. If you restart development and need to get back into the container, run `bin/02-login.sh` again.
 
-After this, migrate the database and seed development testing data:
+First-time setup script:
 
 ```bash
-$ php artisan migrate --seed
-```
+laradock@8ea9bd9c9c56:/var/www$ bin/03-setup.sh
+``` 
 
-If your database is setup correctly then the migrations and seeders will run without errors, and you will receive user credentials for an automatically generated user account and dominion. 
+You're now done. Navigate to [localhost](http://localhost) and you should see the homepage of your local OpenDominion instance. You can login with the credentials provided to you after the last step.
 
-Now [link the storage directory](https://laravel.com/docs/5.8/filesystem#the-public-disk):
-
-```bash
-$ php artisan storage:link
-```
-
-Optional: If your editor or IDE supports code inspection and autocompletion, there are some additional Artisan commands you can run to generate helper files:
-
-```bash
-$ php artisan ide-helper:generate
-$ php artisan ide-helper:models -N
-$ php artisan ide-helper:meta
-```
-
-Now install the frontend dependencies. Note that if you're on Linux you need to have `libpng-dev` installed.
-
-```bash
-$ npm install # Optionally with --no-bin-links on mounted drives, like with Vagrant
-# If using Vagrant, node-sass might fail to install properly.
-# If so, run: npm rebuild node-sass --no-bin-links
-```
-
-And build the frontend:
-
-```bash
-$ npm run dev
-```
-
-Make sure the directories `bootstrap/cache` and `storage` (and every directory under `storage`) are writable.
-
-Optional but recommended: Run a self-diagnostic check to see if everything was setup correctly.
-
-```bash
-$ php artisan self-diagnosis
-```
-
-It should pass most checks and you're good to go! Note that the following checks might fail in certain conditions, which you can safely ignore:
-
-- Locale check on Windows, which is not supported on that platform.
-
-Setup your webserver of choice, or run the internal PHP webserver with a helper command through Artisan:
-
-```bash
-$ php artisan serve
-```
-
-Open your web browser, navigate to [localhost:8000](http://localhost:8000) and login with the credentials provided to you after migrating and seeding the database.
-
-If you want to tinker with stuff through the command-line with an interactive shell (i.e. a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)), you can run `php artisan tinker`. Note that you need to restart the tinker process every time you make a change in the code.
+If you want to tinker with stuff through the command-line with an interactive shell (i.e. a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)), you can run `php artisan tinker` from within the workspace container. Note that you need to restart the tinker process every time you make a change in the code.
 
 For more info about Artisan and Tinker, consult the [documentation](https://laravel.com/docs/5.8/artisan#introduction).
 
@@ -281,7 +232,7 @@ Tests are ran in an in-memory Sqlite database. You need to have the `php-sqlite3
 You can run the full test suite with:
 
 ```bash
-$ vendor/bin/phpunit
+laradock@8ea9bd9c9c56:/var/www$ vendor/bin/phpunit
 ```
 
 **Note: The rest of this section is largely out of date as tests need refactoring. This section will be updated later.**
@@ -301,20 +252,20 @@ Consult [PHPUnit's manual](https://phpunit.de/manual/5.7/en/index.html) for runn
 
 ### How to update
 
-For updating your local development environment, do a `git pull`, optionally followed by a `composer install`, `npm install` and/or `npm run dev`, depending on which files have changed.
+For updating your local development environment, do a `git pull`, followed by a `bin/04-update.sh` from within the workspace container to update dependencies and rebuild frontend assets.
 
 ### How to reset
 
 If you want to reset the database, run the following:
 
 ```bash
-$ php artisan migrate:fresh --seed
+laradock@8ea9bd9c9c56:/var/www$ php artisan migrate:fresh --seed
 ```
 
 If that doesn't work, empty your database which you use for OpenDominion, and then rerun the migrations and seeders:
 
 ```bash
-$ php artisan migrate --seed
+laradock@8ea9bd9c9c56:/var/www$ php artisan migrate --seed
 ```
 
 **Note:** Any additionally registered user accounts and dominions next to the ones provided by the database seeding process will have to be re-registered (and activated in the case of a user account).
@@ -323,7 +274,7 @@ You can activate newly created users by either:
 
 1. Inspecting the registration mail sent (either through a SMTP server like Mailtrap.io, or fishing the activation link out of the logged email if your MAIL_DRIVER is set to 'log' in .env),
 2. Use a database client and set `users.activated = 1` on the relevant user account,
-3. Using Tinker to manually set the activated field to 1. For example (using `php artisan tinker`):
+3. Using `php artisan tinker` to manually set the activated field to 1:
 
 ```php
 >>> $u = User::find(2);
