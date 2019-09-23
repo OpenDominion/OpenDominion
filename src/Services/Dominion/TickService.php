@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion;
 use DB;
 use Exception;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Log;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
@@ -130,6 +131,7 @@ class TickService
                         'dominions.land_forest' => DB::raw('dominions.land_forest + dominion_tick.land_forest'),
                         'dominions.land_hill' => DB::raw('dominions.land_hill + dominion_tick.land_hill'),
                         'dominions.land_water' => DB::raw('dominions.land_water + dominion_tick.land_water'),
+                        'dominions.discounted_land' => DB::raw('dominions.discounted_land + dominion_tick.discounted_land'),
                         'dominions.building_home' => DB::raw('dominions.building_home + dominion_tick.building_home'),
                         'dominions.building_alchemy' => DB::raw('dominions.building_alchemy + dominion_tick.building_alchemy'),
                         'dominions.building_farm' => DB::raw('dominions.building_farm + dominion_tick.building_farm'),
@@ -157,6 +159,7 @@ class TickService
                         'dominions.stat_total_gem_production' => DB::raw('dominions.stat_total_gem_production + dominion_tick.resource_gems'),
                         'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
                         'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
+                        'dominions.last_tick_at' => DB::raw('now()')
                     ]);
 
                 // Update spells

@@ -47,6 +47,7 @@ class CreateDominionTickTable extends Migration
             $table->integer('land_forest')->default(0);
             $table->integer('land_hill')->default(0);
             $table->integer('land_water')->default(0);
+            $table->integer('discounted_land')->default(0);
             $table->integer('building_home')->default(0);
             $table->integer('building_alchemy')->default(0);
             $table->integer('building_farm')->default(0);
@@ -73,6 +74,10 @@ class CreateDominionTickTable extends Migration
         Schema::table('dominion_tick', function (Blueprint $table) {
             $table->foreign('dominion_id')->references('id')->on('dominions');
         });
+
+        Schema::table('dominions', function (Blueprint $table) {
+            $table->timestamp('last_tick_at')->nullable()->after('elite_guard_active_at');
+        });
     }
 
     /**
@@ -83,5 +88,9 @@ class CreateDominionTickTable extends Migration
     public function down()
     {
         Schema::dropIfExists('dominion_tick');
+
+        Schema::table('dominions', function (Blueprint $table) {
+            $table->dropColumn('last_tick_at');
+        });
     }
 }
