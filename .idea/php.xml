@@ -169,7 +169,7 @@
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter id="688d88b5-74e2-4aa3-9d63-52a0e8cab24e" name="Laradock (7.3)" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
-        <remote_data DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="workspace" DOCKER_REMOTE_PROJECT_PATH="/var/www" INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false">
+        <remote_data DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="workspace" DOCKER_REMOTE_PROJECT_PATH="/opt/project" INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false">
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/laradock/docker-compose.yml" />
           </dockerComposeConfigurationPaths>
@@ -182,11 +182,11 @@
   <component name="PhpInterpretersPhpInfoCache">
     <phpInfoCache>
       <interpreter name="Laradock (7.3)">
-        <phpinfo binary_type="PHP" php_cli="/usr/local/bin/php" path_separator=":" version="7.3.8">
-          <additional_php_ini>/usr/local/etc/php/conf.d/docker-php-ext-bcmath.ini, /usr/local/etc/php/conf.d/docker-php-ext-gd.ini, /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini, /usr/local/etc/php/conf.d/docker-php-ext-intl.ini, /usr/local/etc/php/conf.d/docker-php-ext-mysqli.ini, /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini, /usr/local/etc/php/conf.d/docker-php-ext-pdo_mysql.ini, /usr/local/etc/php/conf.d/docker-php-ext-pdo_pgsql.ini, /usr/local/etc/php/conf.d/docker-php-ext-redis.ini, /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini, /usr/local/etc/php/conf.d/docker-php-ext-zip.ini, /usr/local/etc/php/conf.d/laravel.ini, /usr/local/etc/php/conf.d/opcache.ini, /usr/local/etc/php/conf.d/xdebug.ini</additional_php_ini>
-          <configuration_file>/usr/local/etc/php/php.ini</configuration_file>
+        <phpinfo binary_type="PHP" php_cli="/usr/bin/php7.3" path_separator=":" version="7.3.9-1+ubuntu16.04.1+deb.sury.org+1">
+          <additional_php_ini>/etc/php/7.3/cli/conf.d/10-mysqlnd.ini, /etc/php/7.3/cli/conf.d/10-opcache.ini, /etc/php/7.3/cli/conf.d/10-pdo.ini, /etc/php/7.3/cli/conf.d/15-xml.ini, /etc/php/7.3/cli/conf.d/20-bcmath.ini, /etc/php/7.3/cli/conf.d/20-calendar.ini, /etc/php/7.3/cli/conf.d/20-ctype.ini, /etc/php/7.3/cli/conf.d/20-curl.ini, /etc/php/7.3/cli/conf.d/20-dom.ini, /etc/php/7.3/cli/conf.d/20-exif.ini, /etc/php/7.3/cli/conf.d/20-fileinfo.ini, /etc/php/7.3/cli/conf.d/20-ftp.ini, /etc/php/7.3/cli/conf.d/20-gd.ini, /etc/php/7.3/cli/conf.d/20-gettext.ini, /etc/php/7.3/cli/conf.d/20-iconv.ini, /etc/php/7.3/cli/conf.d/20-igbinary.ini, /etc/php/7.3/cli/conf.d/20-intl.ini, /etc/php/7.3/cli/conf.d/20-json.ini, /etc/php/7.3/cli/conf.d/20-mbstring.ini, /etc/php/7.3/cli/conf.d/20-msgpack.ini, /etc/php/7.3/cli/conf.d/20-mysqli.ini, /etc/php/7.3/cli/conf.d/20-pdo_mysql.ini, /etc/php/7.3/cli/conf.d/20-pdo_pgsql.ini, /etc/php/7.3/cli/conf.d/20-pdo_sqlite.ini, /etc/php/7.3/cli/conf.d/20-pgsql.ini, /etc/php/7.3/cli/conf.d/20-phar.ini, /etc/php/7.3/cli/conf.d/20-posix.ini, /etc/php/7.3/cli/conf.d/20-readline.ini, /etc/php/7.3/cli/conf.d/20-shmop.ini, /etc/php/7.3/cli/conf.d/20-simplexml.ini, /etc/php/7.3/cli/conf.d/20-sockets.ini, /etc/php/7.3/cli/conf.d/20-sqlite3.ini, /etc/php/7.3/cli/conf.d/20-sysvmsg.ini, /etc/php/7.3/cli/conf.d/20-sysvsem.ini, /etc/php/7.3/cli/conf.d/20-sysvshm.ini, /etc/php/7.3/cli/conf.d/20-tokenizer.ini, /etc/php/7.3/cli/conf.d/20-wddx.ini, /etc/php/7.3/cli/conf.d/20-xmlreader.ini, /etc/php/7.3/cli/conf.d/20-xmlwriter.ini, /etc/php/7.3/cli/conf.d/20-xsl.ini, /etc/php/7.3/cli/conf.d/20-zip.ini, /etc/php/7.3/cli/conf.d/25-memcached.ini, /etc/php/7.3/cli/conf.d/xdebug.ini</additional_php_ini>
+          <configuration_file>/etc/php/7.3/cli/php.ini</configuration_file>
           <configuration_options>
-            <configuration_option name="include_path" value=".:/usr/local/lib/php" />
+            <configuration_option name="include_path" value=".:/usr/share/php" />
           </configuration_options>
           <debuggers />
           <loaded_extensions>
@@ -198,39 +198,52 @@
             <extension name="SimpleXML" />
             <extension name="Zend OPcache" />
             <extension name="bcmath" />
+            <extension name="calendar" />
             <extension name="ctype" />
             <extension name="curl" />
             <extension name="date" />
             <extension name="dom" />
+            <extension name="exif" />
             <extension name="fileinfo" />
             <extension name="filter" />
             <extension name="ftp" />
             <extension name="gd" />
+            <extension name="gettext" />
             <extension name="hash" />
             <extension name="iconv" />
-            <extension name="imagick" />
+            <extension name="igbinary" />
             <extension name="intl" />
             <extension name="json" />
             <extension name="libxml" />
             <extension name="mbstring" />
+            <extension name="memcached" />
+            <extension name="msgpack" />
             <extension name="mysqli" />
             <extension name="mysqlnd" />
             <extension name="openssl" />
+            <extension name="pcntl" />
             <extension name="pcre" />
             <extension name="pdo_mysql" />
             <extension name="pdo_pgsql" />
             <extension name="pdo_sqlite" />
+            <extension name="pgsql" />
             <extension name="posix" />
             <extension name="readline" />
-            <extension name="redis" />
             <extension name="session" />
+            <extension name="shmop" />
+            <extension name="sockets" />
             <extension name="sodium" />
             <extension name="sqlite3" />
             <extension name="standard" />
+            <extension name="sysvmsg" />
+            <extension name="sysvsem" />
+            <extension name="sysvshm" />
             <extension name="tokenizer" />
+            <extension name="wddx" />
             <extension name="xml" />
             <extension name="xmlreader" />
             <extension name="xmlwriter" />
+            <extension name="xsl" />
             <extension name="zip" />
             <extension name="zlib" />
           </loaded_extensions>
