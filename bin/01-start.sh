@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# Copy the Laradock configuration file
-cp .env.laradock laradock/.env
+# Copy the Laradock configuration files
+cp -R .laradock laradock
 
 # Build and start the Laradock Docker containers
 cd laradock && docker-compose up --build -d workspace php-fpm nginx mariadb
