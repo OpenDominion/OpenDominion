@@ -9,6 +9,12 @@ cp .env.example .env
 # Generate application secret key
 php artisan key:generate
 
+# Link storage directory
+php artisan storage:link
+
+# Migrate the database
+php artisan migrate
+
 # Generate IDE helper files
 php artisan ide-helper:generate
 php artisan ide-helper:models -N
@@ -23,5 +29,5 @@ yarn run dev
 # Diagnostics check
 php artisan self-diagnosis
 
-# Migrate and seed the database
-php artisan migrate --seed
+# Seed the database
+php artisan db:sed
