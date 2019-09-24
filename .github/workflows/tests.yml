@@ -31,7 +31,8 @@ jobs:
       run: |
         cp .laradock/.env laradock/
         cp -R .laradock/** laradock/
-        cd laradock && docker-compose up --build -d workspace php-fpm nginx mariadb
+        cd laradock
+        docker-compose up --build -d workspace php-fpm nginx mariadb
 
     - name: Exporting Docker images
       run: |
@@ -45,21 +46,25 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: docker-images
+        path: docker-images
 
     - name: Setup application
       run: |
-        cd laradock && docker-compose exec -T workspace bash -c "chmod -R 777 /var/www"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "composer install"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "cp .env.example .env"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan key:generate"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan storage:link"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan migrate"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan game:data:sync"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan version:update"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "yarn install"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "yarn run dev"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan self-diagnosis"
-        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan db:seed"
+        cd laradock
+        docker-compose exec -T workspace bash -c "chmod -R 777 /var/www"
+        docker-compose exec -T --user=laradock workspace bash -c "composer install"
+        docker-compose exec -T --user=laradock workspace bash -c "cp .env.example .env"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan key:generate"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan storage:link"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan migrate"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan game:data:sync"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan version:update"
+        docker-compose exec -T --user=laradock workspace bash -c "yarn install"
+        docker-compose exec -T --user=laradock workspace bash -c "yarn run dev"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan self-diagnosis"
+        docker-compose exec -T --user=laradock workspace bash -c "php artisan db:seed"
 
     - name: Run tests
-      run: cd laradock && docker-compose exec -T --user=laradock workspace bash -c "vendor/bin/phpunit"
+      run: |
+        cd laradock
+        docker-compose exec -T --user=laradock workspace bash -c "vendor/bin/phpunit"
