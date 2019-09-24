@@ -15,6 +15,12 @@ php artisan storage:link
 # Migrate the database
 php artisan migrate
 
+# Sync static game data to the database
+php artisan game:data:sync
+
+# Update app version
+php artisan version:update
+
 # Generate IDE helper files
 php artisan ide-helper:generate
 php artisan ide-helper:models -N
