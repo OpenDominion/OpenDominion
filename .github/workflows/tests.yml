@@ -15,17 +15,17 @@ jobs:
     - name: Stop running MySQL instance
       run: sudo service mysql stop
 
-#    - name: Downloading Docker images
-#      uses: actions/download-artifact@master
-#      with:
-#        name: docker-images
-#
-#    - name: Importing Docker images
-#      run: |
-#        docker load docker-images/opendominion_mariadb.tar.gz || true
-#        docker load docker-images/opendominion_nginx.tar.gz || true
-#        docker load docker-images/opendominion_php-fpm.tar.gz || true
-#        docker load docker-images/opendominion_workspace.tar.gz || true
+    - name: Downloading Docker images
+      uses: actions/download-artifact@master
+      with:
+        name: docker-images
+
+    - name: Importing Docker images
+      run: |
+        docker load docker-images/opendominion_mariadb.tar.gz || true
+        docker load docker-images/opendominion_nginx.tar.gz || true
+        docker load docker-images/opendominion_php-fpm.tar.gz || true
+        docker load docker-images/opendominion_workspace.tar.gz || true
 
     - name: Initialize Laradock
       run: |
