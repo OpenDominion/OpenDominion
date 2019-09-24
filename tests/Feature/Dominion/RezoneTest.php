@@ -17,8 +17,6 @@ class RezoneTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seedDatabase();
-
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $this->dominion = $this->createAndSelectDominion($user, $round);

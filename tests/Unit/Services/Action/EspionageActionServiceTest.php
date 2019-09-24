@@ -30,8 +30,6 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seedDatabase();
-
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound('last week');
 

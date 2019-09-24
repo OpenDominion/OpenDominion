@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Tests;
+namespace OpenDominion\Tests\Traits;
 
 use Hash;
 use Illuminate\Contracts\Console\Kernel;
@@ -15,7 +15,7 @@ trait CreatesApplication
      */
     public function createApplication(): Application
     {
-        $app = require __DIR__ . '/../bootstrap/app.php';
+        $app = require __DIR__ . '/../../bootstrap/app.php';
 
         $app->make(Kernel::class)->bootstrap();
 

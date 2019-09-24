@@ -37,8 +37,6 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seedDatabase();
-
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
         $this->evilRace = Race::where('alignment', 'evil')->firstOrFail();

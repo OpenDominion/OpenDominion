@@ -30,8 +30,6 @@ class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seedDatabase();
-
         $this->user = $this->createAndImpersonateUser();
         $this->round = $this->createRound();
         $this->dominion = $this->createDominion($this->user, $this->round);

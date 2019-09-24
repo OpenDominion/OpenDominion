@@ -3,6 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RoundTest extends AbstractBrowserKitTestCase
@@ -11,6 +12,7 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserSeesNoActiveRoundsWhenNoRoundsAreActive()
     {
+        $this->truncateGameData();
         $this->createAndImpersonateUser();
 
         $this->visit('/dashboard')
@@ -20,7 +22,6 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeActiveRounds()
     {
-        $this->seedDatabase();
         $this->createAndImpersonateUser();
         $this->createRound();
 
@@ -36,7 +37,6 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeRoundWhichStartSoon()
     {
-        $this->seedDatabase();
         $this->createAndImpersonateUser();
         $this->createRound('+3 days', '+53 days');
 
@@ -51,7 +51,6 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeRoundsWhichDontStartSoon()
     {
-        $this->seedDatabase();
         $this->createAndImpersonateUser();
         $this->createRound('+5 days', '+55 days');
 
@@ -66,7 +65,7 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanRegisterToARound()
     {
-        $this->seedDatabase();
+        $this->truncateGameData();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
 

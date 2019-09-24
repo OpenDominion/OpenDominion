@@ -12,8 +12,6 @@ class RealmTest extends AbstractBrowserKitTestCase
 
     public function testNewDominionGetsPlacedInARealmBasedOnRaceAlignment()
     {
-        $this->seedDatabase();
-
         $round = $this->createRound();
 
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
@@ -25,29 +23,32 @@ class RealmTest extends AbstractBrowserKitTestCase
 
         $userWithGoodDominion = $this->createUser();
         $goodDominion = $this->createDominion($userWithGoodDominion, $round, $goodRace);
+        $goodRealm = $goodDominion->realm;
 
         $anotherUserWithGoodDominion = $this->createUser();
         $anotherGoodDominion = $this->createDominion($anotherUserWithGoodDominion, $round, $goodRace);
+        $this->assertEquals($goodRealm, $anotherGoodDominion->realm);
 
         $userWithEvilDominion = $this->createUser();
         $evilDominion = $this->createDominion($userWithEvilDominion, $round, $evilRace);
+        $evilRealm = $evilDominion->realm;
 
         $anotherUserWithEvilDominion = $this->createUser();
         $anotherEvilDominion = $this->createDominion($anotherUserWithEvilDominion, $round, $evilRace);
+        $this->assertEquals($evilRealm, $anotherEvilDominion->realm);
 
         $this
-            ->seeInDatabase('realms', ['id' => 1, 'alignment' => 'good'])
-            ->seeInDatabase('realms', ['id' => 2, 'alignment' => 'evil'])
-            ->seeInDatabase('dominions', ['id' => $goodDominion->id, 'realm_id' => 1])
-            ->seeInDatabase('dominions', ['id' => $anotherGoodDominion->id, 'realm_id' => 1])
-            ->seeInDatabase('dominions', ['id' => $evilDominion->id, 'realm_id' => 2])
-            ->seeInDatabase('dominions', ['id' => $anotherEvilDominion->id, 'realm_id' => 2]);
+            ->seeInDatabase('realms', ['id' => $goodRealm->id, 'alignment' => 'good'])
+            ->seeInDatabase('realms', ['id' => $evilRealm->id, 'alignment' => 'evil'])
+            ->seeInDatabase('dominions', ['id' => $goodDominion->id, 'realm_id' => $goodRealm->id])
+            ->seeInDatabase('dominions', ['id' => $anotherGoodDominion->id, 'realm_id' => $goodRealm->id])
+            ->seeInDatabase('dominions', ['id' => $evilDominion->id, 'realm_id' => $evilRealm->id])
+            ->seeInDatabase('dominions', ['id' => $anotherEvilDominion->id, 'realm_id' => $evilRealm->id]);
     }
 
     public function testRealmsCantContainMoreThan12Dominions()
     {
-        $this->seedDatabase();
-
+        $this->truncateGameData();
         $round = $this->createRound();
 
         $goodRace = Race::where('alignment', 'good')->firstOrFail();

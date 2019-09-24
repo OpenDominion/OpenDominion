@@ -22,8 +22,7 @@ class RealmFactoryTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seedDatabase();
-
+        $this->truncateGameData();
         $this->round = $this->createRound();
 
         $this->realmFactory = $this->app->make(RealmFactory::class);

@@ -1,11 +1,8 @@
 <?php
 
-namespace OpenDominion\Tests;
+namespace OpenDominion\Tests\Traits;
 
-use Artisan;
 use Carbon\Carbon;
-use CoreDataSeeder;
-use OpenDominion\Console\Commands\Game\DataSyncCommand;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
@@ -18,16 +15,6 @@ use OpenDominion\Services\RealmFinderService;
 
 trait CreatesData
 {
-    /**
-     * Seeds the database with core data (races, units etc).
-     */
-    public function seedDatabase(): void
-    {
-        $this->seed(CoreDataSeeder::class);
-
-        Artisan::call(DataSyncCommand::class);
-    }
-
     /**
      * Creates a user for testing purposes.
      *
@@ -146,7 +133,7 @@ trait CreatesData
             $realm,
             $race,
             $faker->name,
-            $faker->company
+            $faker->unique()->company
         );
     }
 

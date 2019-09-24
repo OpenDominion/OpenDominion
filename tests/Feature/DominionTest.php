@@ -34,7 +34,6 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testDominionGetsAutoSelectedIfUserHasOnlyOneActiveDominion()
     {
-        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -45,7 +44,6 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testNoDominionGetsAutoSelectedIfUserHasMultipleActiveDominions()
     {
-        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -58,7 +56,6 @@ class DominionTest extends AbstractBrowserKitTestCase
 
     public function testUserCanSeeStatusPage()
     {
-        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createAndSelectDominion($user, $round);
