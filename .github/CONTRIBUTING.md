@@ -229,7 +229,7 @@ This is experimental and is subject to change. Please keep an eye on the #dev-an
 
 ### How to run tests
 
-Tests are ran in an in-memory Sqlite database. You need to have the `php-sqlite3` extension installed for this.
+Tests are ran in the same database as your local db, using transactions to revert the database state.
 
 You can run the full test suite with:
 
