@@ -12,6 +12,10 @@ jobs:
     - name: Initialize Git Submodules
       run: git submodule update --init
 
+    - name: Stop running MySQL instances
+      run: |
+        service mysqld stop
+
     - name: Initialize Laradock
       run: |
         cp .laradock/.env laradock/
