@@ -33,6 +33,19 @@ jobs:
         cp -R .laradock/** laradock/
         cd laradock && docker-compose up --build -d workspace php-fpm nginx mariadb
 
+    - name: Exporting Docker images
+      run: |
+        mkdir docker-images
+        docker save opendominion_mariadb | gzip > docker-images/opendominion_mariadb.tar.gz
+        docker save opendominion_nginx | gzip > docker-images/opendominion_nginx.tar.gz
+        docker save opendominion_php-fpm | gzip > docker-images/opendominion_php-fpm.tar.gz
+        docker save opendominion_workspace | gzip > docker-images/opendominion_workspace.tar.gz
+
+    - name: Uploading Docker images
+      uses: actions/upload-artifact@master
+      with:
+        name: docker-images
+
     - name: Setup application
       run: |
         cd laradock && docker-compose exec -T workspace bash -c "chmod -R 777 /var/www"
@@ -50,16 +63,3 @@ jobs:
 
     - name: Run tests
       run: cd laradock && docker-compose exec -T --user=laradock workspace bash -c "vendor/bin/phpunit"
-
-    - name: Exporting Docker images
-      run: |
-        mkdir docker-images
-        docker save opendominion_mariadb | gzip > docker-images/opendominion_mariadb.tar.gz
-        docker save opendominion_nginx | gzip > docker-images/opendominion_nginx.tar.gz
-        docker save opendominion_php-fpm | gzip > docker-images/opendominion_php-fpm.tar.gz
-        docker save opendominion_workspace | gzip > docker-images/opendominion_workspace.tar.gz
-
-    - name: Uploading Docker images
-      uses: actions/upload-artifact@master
-      with:
-        name: docker-images
