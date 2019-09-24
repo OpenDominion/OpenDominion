@@ -12,10 +12,8 @@ jobs:
     - name: Initialize Git Submodules
       run: git submodule update --init
 
-    - name: Stop running MySQL instances
-      run: |
-        sudo service --status-all
-        exit 1
+    - name: Stop running MySQL instance
+      run: sudo service mysql stop
 
     - name: Initialize Laradock
       run: |
