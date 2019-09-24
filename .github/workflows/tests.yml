@@ -36,6 +36,7 @@ jobs:
 
     - name: Setup application
       run: |
+        cd laradock && docker-compose exec -T workspace bash -c "chmod -R 777 /var/www"
         cd laradock && docker-compose exec -T --user=laradock workspace bash -c "composer install"
         cd laradock && docker-compose exec -T --user=laradock workspace bash -c "cp .env.example .env"
         cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan key:generate"
