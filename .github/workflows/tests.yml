@@ -17,9 +17,9 @@ jobs:
 
     - name: Downloading Docker images
       uses: actions/download-artifact@master
-        with:
-          name: docker-images
-          path: docker-images
+      with:
+        name: docker-images
+        path: docker-images
 
     - name: Importing Docker images
       run: |
