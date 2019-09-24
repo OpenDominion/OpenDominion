@@ -23,17 +23,17 @@ jobs:
 
     - name: Setup application
       run: |
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "composer install"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "cp .env.example .env"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan key:generate"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan storage:link"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan migrate"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan game:data:sync"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan version:update"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "yarn install"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "yarn run dev"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan self-diagnosis"
-        cd laradock && docker-compose exec --user=laradock workspace bash -c "php artisan db:seed"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "composer install"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "cp .env.example .env"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan key:generate"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan storage:link"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan migrate"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan game:data:sync"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan version:update"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "yarn install"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "yarn run dev"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan self-diagnosis"
+        cd laradock && docker-compose exec -T --user=laradock workspace bash -c "php artisan db:seed"
 
     - name: Run tests
-      run: cd laradock && docker-compose exec --user=laradock workspace bash -c "vendor/bin/phpunit"
+      run: cd laradock && docker-compose exec -T --user=laradock workspace bash -c "vendor/bin/phpunit"
