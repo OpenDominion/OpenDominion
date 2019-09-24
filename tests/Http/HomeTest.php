@@ -2,12 +2,12 @@
 
 namespace OpenDominion\Tests\Http;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Tests\AbstractTestCase;
 
 class HomeTest extends AbstractTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testHomePage()
     {

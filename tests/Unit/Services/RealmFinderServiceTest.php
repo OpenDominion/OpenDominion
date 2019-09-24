@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -12,7 +12,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var Round */
     protected $round;

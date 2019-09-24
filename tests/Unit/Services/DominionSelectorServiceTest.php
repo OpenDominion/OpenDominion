@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Unit\Services;
 
 use Exception;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
@@ -12,7 +12,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var User */
     protected $user;

@@ -7,7 +7,8 @@ use Notification;
 
 abstract class AbstractBrowserKitTestCase extends TestCase
 {
-    use CreatesApplication, CreatesData;
+    use CreatesApplication;
+    use CreatesData;
 
     /**
      * The base URL of the application.

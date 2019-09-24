@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Factories;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
@@ -15,7 +15,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DominionFactoryTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var User */
     protected $user;

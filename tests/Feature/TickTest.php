@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use Artisan;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -14,7 +14,7 @@ use Throwable;
 
 class TickTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     // todo: add test: dominion shouldnt tick on hour 0
 

@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Race;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RealmTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testNewDominionGetsPlacedInARealmBasedOnRaceAlignment()
     {

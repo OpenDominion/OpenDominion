@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Factories;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -10,7 +10,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RealmFactoryTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var Round */
     protected $round;
