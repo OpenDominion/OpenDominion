@@ -171,7 +171,7 @@ class SpellActionService
             $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
 
             if (!$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
-                $dominion->stat_spell_success -= 1;
+                $dominion->stat_spell_success += 1;
             }
 
             $dominion->save([
