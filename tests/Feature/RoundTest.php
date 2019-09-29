@@ -3,7 +3,6 @@
 namespace OpenDominion\Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use OpenDominion\Models\Round;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RoundTest extends AbstractBrowserKitTestCase
