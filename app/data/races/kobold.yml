@@ -41,4 +41,4 @@ units:
       offense: 3
       defense: 2
     perks:
-      offense_from_pairing: 1,2,2 # slot, amount, num required
+      offense_from_pairing: 1,2,1 # slot, amount, num required
