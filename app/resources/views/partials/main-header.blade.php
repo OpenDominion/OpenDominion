@@ -1,10 +1,14 @@
 <header class="main-header">
 
     <!-- Logo -->
-    <a href="{{ url('') }}" class="logo">
-        <span class="logo-mini">O<b>D</b></span>
-        <span class="logo-lg">Open<b>Dominion</b></span>
-    </a>
+    <div style="background-color: #367FA9;">
+        <div style="margin: 0 100px;">
+            <a href="{{ url('') }}" class="logo">
+                <span class="logo-mini">O<b>D</b></span>
+                <span class="logo-lg">Open<b>Dominion</b></span>
+            </a>
+        </div>
+    </div>
 
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
