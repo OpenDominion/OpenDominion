@@ -63,8 +63,8 @@ class UnitHelper
             'defense_from_land' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
             'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
 
-            'defense_from_pairing' => 'Defense increased by %2$s when paired with one %1$s.',
-            'offense_from_pairing' => 'Offense increased by %2$s when paired with one %1$s.',
+            'defense_from_pairing' => 'Defense increased by %2$s when paired with %3$s %1$s at home.',
+            'offense_from_pairing' => 'Offense increased by %2$s when paired with %3$s %1$s on attack.',
 
             'defense_from_prestige' => 'Defense increased by 1 for every %1$s prestige (max +%2$s).',
             'offense_from_prestige' => 'Offense increased by 1 for every %1$s prestige (max +%2$s).',
@@ -147,6 +147,11 @@ class UnitHelper
                         return ($unit->slot === $slot);
                     })->first();
                     $perkValue[0] = $pairedUnit->name;
+                    if (isset($perkValue[2]) && $perkValue[2] > 1) {
+                        $perkValue[0] = str_plural($perkValue[0]);
+                    } else {
+                        $perkValue[2] = 1;
+                    }
                 }
 
                 // Special case for conversions

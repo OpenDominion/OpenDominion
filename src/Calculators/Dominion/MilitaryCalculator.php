@@ -536,12 +536,17 @@ class MilitaryCalculator
 
         $unitSlot = (int)$pairingPerkData[0];
         $amount = (int)$pairingPerkData[1];
+        if (isset($pairingPerkData[2])) {
+            $numRequired = (int)$pairingPerkData[2];
+        } else {
+            $numRequired = 1;
+        }
 
         $powerFromPerk = 0;
         if (isset($units[$unitSlot]) && ((int)$units[$unitSlot] !== 0)) {
-            $numberPaired = min($units[$unit->slot], (int)$units[$unitSlot]);
+            $numberPaired = min($units[$unit->slot], floor((int)$units[$unitSlot] / $numRequired));
         } else {
-            $numberPaired = min($dominion->{'military_unit' . $unit->slot}, (int)$dominion->{'military_unit' . $unitSlot});
+            $numberPaired = min($dominion->{'military_unit' . $unit->slot}, floor((int)$dominion->{'military_unit' . $unitSlot} / $numRequired));
         }
         $powerFromPerk = $numberPaired * $amount;
 
