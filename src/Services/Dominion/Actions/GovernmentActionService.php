@@ -2,9 +2,11 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Realm\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
 
@@ -58,10 +60,14 @@ class GovernmentActionService
     public function changeRealmName(Dominion $dominion, string $name)
     {
         if (!$dominion->isMonarch()) {
-            throw new RuntimeException('Only the monarch can change the name of their realm.');
+            throw new GameException('Only the monarch can change the name of their realm.');
+        }
+
+        if (strlen($name) > 64) {
+            throw new GameException('Realm names are limited to 64 characters.');
         }
 
         $dominion->realm->name = $name;
-        $dominion->realm->save();
+        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_CHANGED_NAME]);
     }
 }

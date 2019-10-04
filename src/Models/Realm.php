@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use OpenDominion\Services\Realm\HistoryService;
+
 /**
  * OpenDominion\Models\Realm
  *
@@ -18,6 +20,7 @@ namespace OpenDominion\Models;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $infoOpTargetDominions
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\InfoOp[] $infoOps
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Pack[] $packs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm\History[] $history
  * @property-read \OpenDominion\Models\Round $round
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Realm newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Realm newQuery()
@@ -45,6 +48,11 @@ class Realm extends AbstractModel
 //    {
 //        return $this->morphMany(GameEvent::class, 'target');
 //    }
+
+    public function history()
+    {
+        return $this->hasMany(Realm\History::class);
+    }
 
     public function infoOps()
     {
@@ -78,5 +86,25 @@ class Realm extends AbstractModel
     public function round()
     {
         return $this->belongsTo(Round::class);
+    }
+
+    // todo: move to eloquent events, see $dispatchesEvents
+    public function save(array $options = [])
+    {
+        $recordChanges = isset($options['event']);
+
+        if ($recordChanges) {
+            $realmHistoryService = app(HistoryService::class);
+            $deltaAttributes = $realmHistoryService->getDeltaAttributes($this);
+        }
+
+        $saved = parent::save($options);
+
+        if ($saved && $recordChanges) {
+            /** @noinspection PhpUndefinedVariableInspection */
+            $realmHistoryService->record($this, $deltaAttributes, $options['event']);
+        }
+
+        return $saved;
     }
 }

@@ -14,7 +14,6 @@
                     <table class="table table-hover" id="dominions-table">
                         <colgroup>
                             <col>
-                            <col>
                             <col width="100">
                             {{--
                             <col width="100">
@@ -22,13 +21,12 @@
                             --}}
                             <col width="100">
                             <col width="100">
-                            <col width="160">
+                            <col>
                             <col width="130">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th>Dominion</th>
-                                <th>Realm</th>
                                 <th class="text-center">Race</th>
                                 {{--
                                 <th class="text-center">OP</th>
@@ -45,16 +43,12 @@
                                 @php $lastInfoOp = $targetDominionOps->first(); @endphp
                                 <tr>
                                     <td>
-                                        <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }}</a>
+                                        <a href="{{ route('dominion.op-center.show', $lastInfoOp->targetDominion) }}">{{ $lastInfoOp->targetDominion->name }} (#{{ $lastInfoOp->targetDominion->realm->number }})</a>
                                         @if ($lastInfoOp->isInvalid())
                                             <span class="label label-danger">Invalid</span>
                                         @elseif ($lastInfoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
-                                    </td>
-                                    <td data-search="realm:{{ $lastInfoOp->targetDominion->realm->number }}">
-                                        <a href="{{ route('dominion.realm', $lastInfoOp->targetDominion->realm->number) }}">{{ $lastInfoOp->targetDominion->realm->name }} (#{{ $lastInfoOp->targetDominion->realm->number }})</a>
-                                        {{-- todo: highlight clicked dominion in realm page? --}}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->targetDominion->race->name }}">
                                         {{ $lastInfoOp->targetDominion->race->name }}

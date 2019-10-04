@@ -138,16 +138,22 @@ class HistoryService
             ->except([
                 'id',
                 'user_id',
+                'pack_id',
                 'round_id',
                 'realm_id',
                 'race_id',
                 'name',
+                'ruler_name',
+                'peasants_last_hour',
                 'created_at',
                 'updated_at',
                 'daily_platinum',
                 'daily_land',
+                'council_last_read',
                 'royal_guard_active_at',
                 'elite_guard_active_at',
+                'last_tick_at',
+                'monarch_dominion_id',
             ])->keys()->toArray();
     }
 }
