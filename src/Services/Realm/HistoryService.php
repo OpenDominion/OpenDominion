@@ -66,7 +66,7 @@ class HistoryService
                     break;
 
                 default:
-                    return (string)$oldAttributes->get($key) . " > " . (string)$value;
+                    return (string)$oldAttributes->get($key) . ' > ' . (string)$value;
                     break;
             }
         })->toArray();
