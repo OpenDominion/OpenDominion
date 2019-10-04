@@ -193,11 +193,13 @@
             @endif
         </div>
 
-        <div class="col-sm-12 col-md-9">
-            <div class="panel panel-warning">
-                <div class="panel-heading"><b>Message of the Day:</b> {{ $selectedDominion->realm->message }}</div>
+        @if ($selectedDominion->realm->message)
+            <div class="col-sm-12 col-md-9">
+                <div class="panel panel-warning">
+                    <div class="panel-heading"><b>Message of the Day:</b> {{ $selectedDominion->realm->message }}</div>
+                </div>
             </div>
-        </div>
+        @endif
 
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">

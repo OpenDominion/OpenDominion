@@ -14,7 +14,7 @@ class AddMessageToRealmsTable extends Migration
     public function up()
     {
         Schema::table('realms', function (Blueprint $table) {
-            $table->text('message');
+            $table->text('message')->nullable();
         });
     }
 
