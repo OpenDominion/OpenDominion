@@ -57,17 +57,22 @@ class GovernmentActionService
      * @param string $name
      * @throws RuntimeException
      */
-    public function changeRealmName(Dominion $dominion, string $name)
+    public function updateRealm(Dominion $dominion, ?string $message, ?string $name)
     {
         if (!$dominion->isMonarch()) {
-            throw new GameException('Only the monarch can change the name of their realm.');
+            throw new GameException('Only the monarch can make changes to their realm.');
         }
 
-        if (strlen($name) > 64) {
+        if ($message && strlen($name) > 256) {
+            throw new GameException('Realm messages are limited to 256 characters.');
+        }
+
+        if ($name && strlen($name) > 64) {
             throw new GameException('Realm names are limited to 64 characters.');
         }
 
-        $dominion->realm->name = $name;
-        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_CHANGED_NAME]);
+        if ($message) $dominion->realm->message = $message;
+        if ($name) $dominion->realm->name = $name;
+        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_UPDATED]);
     }
 }

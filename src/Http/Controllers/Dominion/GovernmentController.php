@@ -47,15 +47,16 @@ class GovernmentController extends AbstractDominionController
         return redirect()->route('dominion.government');
     }
 
-    public function postRealmName(GovernmentActionRequest $request)
+    public function postRealm(GovernmentActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
         $governmentActionService = app(GovernmentActionService::class);
 
+        $message = $request->get('realm_message');
         $name = $request->get('realm_name');
-        $governmentActionService->changeRealmName($dominion, $name);
+        $governmentActionService->updateRealm($dominion, $message, $name);
 
-        $request->session()->flash('alert-success', 'Your realm name has been changed');
+        $request->session()->flash('alert-success', 'Your realm has been updated');
         return redirect()->route('dominion.government');
     }
 

@@ -15,14 +15,22 @@
                             <div class="col-md-12">
                                 <form action="{{ route('dominion.government.realm') }}" method="post" role="form">
                                     @csrf
-                                    <label for="realm_name">Change Realm Name</label>
+                                    <label for="realm_name">Realm Message</label>
                                     <div class="row">
-                                        <div class="col-sm-8 col-lg-9">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <input class="form-control" name="realm_message" id="realm_message" placeholder="{{ $selectedDominion->realm->message }}" maxlength="256" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <label for="realm_name">Realm Name</label>
+                                    <div class="row">
+                                        <div class="col-sm-12">
                                             <div class="form-group">
                                                 <input class="form-control" name="realm_name" id="realm_name" placeholder="{{ $selectedDominion->realm->name }}" maxlength="64" />
                                             </div>
                                         </div>
-                                        <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                        <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     Change
@@ -32,13 +40,18 @@
                                     </div>
                                 </form>
                             </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <hr/>
+                                </div>
+                            </div>
                         @endif
                         <div class="col-md-12">
                             <form action="{{ route('dominion.government.monarch') }}" method="post" role="form">
                                 @csrf
                                 <label for="monarch">Vote for monarch</label>
                                 <div class="row">
-                                    <div class="col-sm-8 col-lg-9">
+                                    <div class="col-sm-8 col-lg-10">
                                         <div class="form-group">
                                             <select name="monarch" id="monarch" class="form-control select2" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 <option></option>
