@@ -54,7 +54,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
 
     public function testCreate()
     {
-        $this->assertEquals(0, Dominion::count());
+        $this->assertEquals(0, $this->round->dominions()->count());
 
         $dominion = $this->dominionFactory->create(
             $this->user,
@@ -64,7 +64,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
             'Dominion Name'
         );
 
-        $this->assertEquals(1, Dominion::count());
-        $this->assertEquals($dominion->id, Dominion::first()->id);
+        $this->assertEquals(1, $this->round->dominions()->count());
+        $this->assertEquals($dominion->id, $this->round->dominions()->first()->id);
     }
 }
