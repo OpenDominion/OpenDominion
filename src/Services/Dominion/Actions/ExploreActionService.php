@@ -74,14 +74,17 @@ class ExploreActionService
         $moraleDrop = ($dominion->morale - $newMorale);
 
         $platinumCost = ($this->explorationCalculator->getPlatinumCost($dominion) * $totalLandToExplore);
+        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
 
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
+        $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
-        DB::transaction(function () use ($dominion, $data, $moraleDrop, $platinumCost, $drafteeCost) {
-            $dominion->decrement('morale', $moraleDrop);
-            $dominion->decrement('resource_platinum', $platinumCost);
-            $dominion->decrement('military_draftees', $drafteeCost);
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
+        DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees) {
+            $dominion->fill([
+                'morale' => $newMorale,
+                'resource_platinum' => $newPlatinum,
+                'military_draftees' => $newDraftees,
+            ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
 
             $this->queueService->queueResources('exploration', $dominion, $data);
         });

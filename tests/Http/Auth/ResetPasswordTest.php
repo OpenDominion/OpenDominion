@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Http\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Notification;
 use OpenDominion\Notifications\User\ResetPasswordNotification;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
@@ -10,7 +10,7 @@ use Password;
 
 class ResetPasswordTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testResetPasswordPage()
     {

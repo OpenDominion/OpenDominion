@@ -62,12 +62,12 @@ class ReleaseActionService
                 continue;
             }
 
-            $dominion->decrement('military_' . $unitType, $amount);
+            $dominion->{'military_' . $unitType} -= $amount;
 
             if ($unitType === 'draftees') {
-                $dominion->increment('peasants', $amount);
+                $dominion->peasants += $amount;
             } else {
-                $dominion->increment('military_draftees', $amount);
+                $dominion->military_draftees += $amount;
             }
 
             $troopsReleased[$unitType] = $amount;
