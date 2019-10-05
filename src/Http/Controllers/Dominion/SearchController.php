@@ -20,7 +20,15 @@ class SearchController extends AbstractDominionController
         $rangeCalculator = app(RangeCalculator::class);
 
         $dominion = $this->getSelectedDominion();
-        $dominions = Dominion::with(['race.units', 'round'])
+        $dominions = Dominion::query()
+            ->with([
+                'round',
+                'realm',
+                'race',
+                'race.perks',
+                'race.units',
+                'race.units.perks',
+            ])
             ->where('round_id', $dominion->round_id)
             ->where('realm_id', '!=', $dominion->realm_id)
             ->get();
