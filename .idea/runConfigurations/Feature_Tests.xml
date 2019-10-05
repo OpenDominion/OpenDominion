@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Feature Tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+    <TestRunner scope="XML" options="--testsuite Feature" />
+    <method v="2" />
+  </configuration>
+</component>

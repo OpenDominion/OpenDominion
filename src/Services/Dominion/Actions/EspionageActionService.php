@@ -371,6 +371,7 @@ class EspionageActionService
                 });
 
                 array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($target));
+                array_set($data, 'total_land', $this->landCalculator->getTotalLand($target));
 
                 $infoOp->data = $data;
                 break;

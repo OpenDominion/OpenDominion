@@ -2,12 +2,12 @@
 
 namespace OpenDominion\Tests\Http;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DashboardTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testDashboardPage()
     {
