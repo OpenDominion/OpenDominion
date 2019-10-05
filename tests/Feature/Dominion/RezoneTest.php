@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Tests\Feature\Dominion;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RezoneTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var Dominion */
     protected $dominion;
@@ -16,8 +16,6 @@ class RezoneTest extends AbstractBrowserKitTestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->seedDatabase();
 
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
