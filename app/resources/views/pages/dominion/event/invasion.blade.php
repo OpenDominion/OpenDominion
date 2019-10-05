@@ -216,6 +216,13 @@
                                 @endif
                             @endif
 
+                            @if (isset($event->data['attacker']['landErosion']))
+                                @if ($event->source->id === $selectedDominion->id)
+                                    <p class="text-center text-green">
+                                        Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to erosion.
+                                    </p>
+                                @endif
+                            @endif
                             @if (isset($event->data['attacker']['plunder']))
                                 @if ($event->source->id === $selectedDominion->id)
                                     <p class="text-center text-green">

@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Feature;
 
 use Artisan;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -14,13 +14,12 @@ use Throwable;
 
 class TickTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     // todo: add test: dominion shouldnt tick on hour 0
 
     public function testMoraleTick()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound('yesterday'); // todo: check why develop branch works w/o this x_x
         $dominion = $this->createDominion($user, $round);
@@ -44,7 +43,6 @@ class TickTest extends AbstractBrowserKitTestCase
      */
     public function testQueuesTick()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -85,7 +83,6 @@ class TickTest extends AbstractBrowserKitTestCase
      */
     public function testQueueShouldntTickLockedDominions()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound('-2 days', '-1 days');
         $dominion = $this->createDominion($user, $round);
@@ -123,7 +120,6 @@ class TickTest extends AbstractBrowserKitTestCase
 
     public function testResourcesGetGeneratedOnTheSameHourThatBuildingsComeIn()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -148,7 +144,6 @@ class TickTest extends AbstractBrowserKitTestCase
     // https://github.com/WaveHack/OpenDominion/issues/217
     public function testTheProperAmountOfPlatinumGetsAddedOnTick()
     {
-        $this->seedDatabase();
         $user1 = $this->createUser();
         $user2 = $this->createUser();
         $round = $this->createRound();
@@ -213,7 +208,6 @@ class TickTest extends AbstractBrowserKitTestCase
     // https://github.com/WaveHack/OpenDominion/issues/227
     public function testTheProperAmountOfFoodGetsAddedOnTick()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         // don't use a race that has food-related perks
