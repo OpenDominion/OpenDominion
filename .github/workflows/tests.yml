@@ -8,11 +8,11 @@ jobs:
     services:
 
       mariadb:
-        image: mariadb/server:10.0
+        image: mariadb:10.0
         env:
-          MARIADB_USER: opendominion
-          MARIADB_PASSWORD: secret
-          MARIADB_DATABASE: opendominion
+          MYSQL_USER: opendominion
+          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE: opendominion
         ports:
           - 3306
 #        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
