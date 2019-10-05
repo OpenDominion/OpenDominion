@@ -193,11 +193,6 @@ class TickService
                         'hours' => DB::raw('-`hours`'),
                         'dominion_queue.updated_at' => $this->now,
                     ]);
-
-                foreach ($round->dominions as $dominion) {
-                    $this->cleanupActiveSpells($dominion);
-                    $this->cleanupQueues($dominion);
-                }
             }, 5);
 
             Log::info(sprintf(
@@ -226,13 +221,16 @@ class TickService
                     $this->notificationService->queueNotification('starvation_occurred', $dominion->tick->starvation_casualties);
                 }
 
+                $this->cleanupActiveSpells($dominion);
+                $this->cleanupQueues($dominion);
+
                 $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
 
                 $this->precalculateTick($dominion, true);
             }
 
             Log::info(sprintf(
-                'Sent notifications and precalculated ticks for %s dominions in %s ms in %s',
+                'Cleaned up queues, sent notifications, and precalculated %s dominions in %s ms in %s',
                 number_format($round->dominions->count()),
                 number_format($this->now->diffInMilliseconds(now())),
                 $round->name
