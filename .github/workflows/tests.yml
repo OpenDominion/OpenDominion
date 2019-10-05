@@ -10,9 +10,9 @@ jobs:
       mariadb:
         image: mariadb:10.0
         env:
-          MYSQL_DATABASE=opendominion
-          MYSQL_USERNAME=opendominion
-          MYSQL_PASSWORD=secret
+          MYSQL_DATABASE: opendominion
+          MYSQL_USERNAME: opendominion
+          MYSQL_PASSWORD: secret
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
