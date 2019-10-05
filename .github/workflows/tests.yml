@@ -5,17 +5,17 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-16.04
-    services:
-
-      mariadb:
-        image: mariadb:10.0
-        env:
-          MYSQL_USER: opendominion
-          MYSQL_PASSWORD: secret
-          MYSQL_DATABASE: opendominion
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+#    services:
+#
+#      mariadb:
+#        image: mariadb:10.0
+#        env:
+#          MYSQL_USER: opendominion
+#          MYSQL_PASSWORD: secret
+#          MYSQL_DATABASE: opendominion
+#        ports:
+#          - 3306
+#        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
 
@@ -27,8 +27,11 @@ jobs:
     - name: Setup .env file
       run: |
         cp .env.ci .env
-        sed -i 's/DB_PORT=/DB_PORT=${{ job.services.mariadb.ports['3306'] }}/' .env
+#        sed -i 's/DB_PORT=/DB_PORT=${{ job.services.mariadb.ports['3306'] }}/' .env
         php artisan key:generate
+
+    - name: Create database
+      run: mysql -h127.0.0.1 -uroot -proot -e 'CREATE DATABASE opendominion;'
 
     - name: Run database migrations
       run: php artisan migrate
