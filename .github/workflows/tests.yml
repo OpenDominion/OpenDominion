@@ -16,6 +16,9 @@ jobs:
         cp .env.ci .env
         php artisan key:generate
 
+    - name: Create dummy mix-manifest.json file
+      run: echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
+
     - name: Create database
       run: mysql -h127.0.0.1 -uroot -proot -e 'CREATE DATABASE opendominion;'
 
