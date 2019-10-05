@@ -18,8 +18,8 @@ class RealmTest extends AbstractBrowserKitTestCase
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
 
         $this
-            ->dontSeeInDatabase('realms', ['alignment' => 'good'])
-            ->dontSeeInDatabase('realms', ['alignment' => 'evil']);
+            ->dontSeeInDatabase('realms', ['round_id' => $round->id, 'alignment' => 'good'])
+            ->dontSeeInDatabase('realms', ['round_id' => $round->id, 'alignment' => 'evil']);
 
         $userWithGoodDominion = $this->createUser();
         $goodDominion = $this->createDominion($userWithGoodDominion, $round, $goodRace);
@@ -49,22 +49,38 @@ class RealmTest extends AbstractBrowserKitTestCase
     public function testRealmsCantContainMoreThan12Dominions()
     {
         $round = $this->createRound();
-
         $goodRace = Race::where('alignment', 'good')->firstOrFail();
 
-        $this->dontSeeInDatabase('realms', ['alignment' => 'good']);
+        $this->assertEquals(0, $round->realms()->count());
 
-        // Create 13 Dominions, where the first 12 should be in realm 1 and the 13th in realm 2
+        $firstDominionId = null;
+        $firstRealmId = null;
+        $lastDominionId = null;
+        $lastRealmId = null;
+
+        // Create 13 Dominions, where the first 12 should be in realm #1 and the 13th in realm #2
         for ($i = 0; $i < 13; $i++) {
             $user = $this->createUser();
-            $this->createDominion($user, $round, $goodRace);
+
+            $dominion = $this->createDominion($user, $round, $goodRace);
+
+            if ($firstDominionId === null) {
+                $firstDominionId = $dominion->id;
+                $firstRealmId = $dominion->realm->id;
+            }
+
+            $lastDominionId = $dominion->id;
+            $lastRealmId = $dominion->realm->id;
         }
 
+        $this->assertEquals(2, $round->realms()->count());
+        $this->assertNotEquals($firstRealmId, $lastRealmId);
+
         $this
-            ->seeInDatabase('realms', ['id' => 1, 'alignment' => 'good'])
-            ->seeInDatabase('realms', ['id' => 2, 'alignment' => 'good'])
-            ->seeInDatabase('dominions', [ 'id' => 12, 'realm_id' => 1 ])
-            ->seeInDatabase('dominions', [ 'id' => 13, 'realm_id' => 2 ]);
+            ->seeInDatabase('realms', ['round_id' => $round->id, 'number' => 1, 'alignment' => 'good'])
+            ->seeInDatabase('realms', ['round_id' => $round->id, 'number' => 2, 'alignment' => 'good'])
+            ->seeInDatabase('dominions', ['id' => $firstDominionId, 'realm_id' => $firstRealmId])
+            ->seeInDatabase('dominions', ['id' => $lastDominionId, 'realm_id' => $lastRealmId]);
     }
 
     public function testDominionsInAPackGetPlacedInTheSameRealm()
