@@ -29,11 +29,11 @@ class RealmFactoryTest extends AbstractBrowserKitTestCase
 
     public function testCreate()
     {
-        $this->assertEquals(0, Realm::count());
+        $this->assertEquals(0, $this->round->realms()->count());
 
         $realm = $this->realmFactory->create($this->round, 'good');
 
-        $this->assertEquals(1, Realm::count());
-        $this->assertEquals($realm->id, Realm::first()->id);
+        $this->assertEquals(1, $this->round->realms()->count());
+        $this->assertEquals($realm->id, $this->round->realms()->first()->id);
     }
 }
