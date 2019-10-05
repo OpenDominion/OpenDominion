@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Added back spell mana cost of active spells to magic page
+- Added spell recharge time to magic page
+
 ### Changed
 - Slightly tweaked starvation casualties to now kill off population types based on proportion
 
@@ -13,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed a bug where Survey Dominion calculated percentages based on a dominon's current land total
 - Fixed a bug where races with increased max population from barren land wasn't applied properly
 - Fixed a bug where Erosion reduced land gains
+- Fixed spell duration in success message
 - Minor text fixes
 
 ## [0.7.0-10] - 2019-08-20
