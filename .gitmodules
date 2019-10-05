@@ -1,3 +1,4 @@
 [submodule "laradock"]
 	path = laradock
 	url = https://github.com/laradock/laradock.git
+	ignore = dirty
