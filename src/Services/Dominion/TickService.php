@@ -198,7 +198,7 @@ class TickService
                     $this->cleanupActiveSpells($dominion);
                     $this->cleanupQueues($dominion);
                 }
-            });
+            }, 5);
 
             Log::info(sprintf(
                 'Ticked %s dominions in %s ms in %s',
