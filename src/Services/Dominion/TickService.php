@@ -81,7 +81,7 @@ class TickService
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
-            // Ignore hour 0
+            // Precalculate all dominion ticks on hour 0
             if ($this->now->diffInHours($round->start_date) === 0) {
                 $activeDominions = $round
                     ->dominions()
@@ -92,6 +92,7 @@ class TickService
                         'race.units.perks',
                     ])
                     ->get();
+
                 $this->precalculateTick($activeDominions, true);
                 continue;
             }
@@ -193,6 +194,15 @@ class TickService
                         'dominion_queue.updated_at' => $this->now,
                     ]);
             });
+
+            Log::info(sprintf(
+                'Ticked %s dominions in %s ms in %s',
+                number_format($round->dominions->count()),
+                number_format($this->now->diffInMilliseconds(now())),
+                $round->name
+            ));
+
+            $this->now = now();
         }
 
         foreach ($activeRounds as $round) {
@@ -205,35 +215,49 @@ class TickService
                     'race.units.perks',
                 ])
                 ->get();
+
             foreach ($activeDominions as $dominion) {
                 if (!empty($dominion->tick->starvation_casualties)) {
                     $this->notificationService->queueNotification('starvation_occurred', $dominion->tick->starvation_casualties);
                 }
-                $this->tickActiveSpells($dominion);
-                $this->tickQueues($dominion);
+
+                $this->cleanupActiveSpells($dominion);
+                $this->cleanupQueues($dominion);
+
                 $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
+
                 $this->precalculateTick($dominion, true);
             }
+
+            Log::info(sprintf(
+                'Cleaned up queues and sent notifications for %s dominions in %s ms in %s',
+                number_format($round->dominions->count()),
+                number_format($this->now->diffInMilliseconds(now())),
+                $round->name
+            ));
+
+            $this->now = now();
         }
-
-        //$queries = DB::getQueryLog();
-        //Log::debug(count($queries) . ' queries executed');
-
-        Log::info(sprintf(
-            'Ticked %s dominions in %s seconds',
-            number_format($activeDominions->count()),
-            number_format($this->now->diffInSeconds(now()))
-        ));
 
         // Update rankings
         if (($this->now->hour % 6) === 0) {
-            $now = now();
             Log::debug('Update rankings started');
-            $this->updateDailyRankings($activeDominions);
-            Log::info(sprintf(
-                'Ticked rankings in %s seconds',
-                $now->diffInSeconds(now())
-            ));
+
+            foreach ($activeRounds as $round) {
+                $activeDominions = $round
+                    ->dominions()
+                    ->get();
+
+                $this->updateDailyRankings($activeDominions);
+
+                Log::info(sprintf(
+                    'Updated rankings in %s ms in %s',
+                    number_format($this->now->diffInMilliseconds(now())),
+                    $round->name
+                ));
+
+                $this->now = now();
+            }
         }
     }
 
@@ -268,7 +292,7 @@ class TickService
         Log::info('Daily tick finished');
     }
 
-    protected function tickActiveSpells(Dominion $dominion)
+    protected function cleanupActiveSpells(Dominion $dominion)
     {
         $finished = DB::table('active_spells')
             ->where('dominion_id', $dominion->id)
@@ -300,7 +324,7 @@ class TickService
             ->delete();
     }
 
-    protected function tickQueues(Dominion $dominion)
+    protected function cleanupQueues(Dominion $dominion)
     {
         $finished = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
