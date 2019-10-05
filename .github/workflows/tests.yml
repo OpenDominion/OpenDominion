@@ -14,7 +14,7 @@ jobs:
           MYSQL_USERNAME: opendominion
           MYSQL_PASSWORD: secret
         ports:
-          - 3306:33060
+          - 33060:3306
 #        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
