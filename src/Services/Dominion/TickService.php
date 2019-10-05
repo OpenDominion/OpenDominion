@@ -413,8 +413,11 @@ class TickService
 
         // Starvation casualties
         if (($dominion->resource_food + $foodNetChange) < 0) {
-            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType($dominion,
-                $dominion->resource_food + $foodNetChange);
+            $casualties = $this->casualtiesCalculator->getStarvationCasualtiesByUnitType(
+                $dominion,
+                ($dominion->resource_food + $foodNetChange)
+            );
+
             $tick->starvation_casualties = $casualties;
 
             foreach ($casualties as $unitType => $unitCasualties) {
