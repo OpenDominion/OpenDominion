@@ -8,11 +8,11 @@ jobs:
     services:
 
       mariadb:
-        image: mariadb:10.0
+        image: mariadb/server:10.0
         env:
-          MYSQL_DATABASE: opendominion
-          MYSQL_USERNAME: opendominion
-          MYSQL_PASSWORD: secret
+          MARIADB_USER: opendominion
+          MARIADB_PASSWORD: secret
+          MARIADB_DATABASE: opendominion
         ports:
           - 3306
 #        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -21,20 +21,23 @@ jobs:
 
     - uses: actions/checkout@v1
 
-#    - name: Stop running MySQL instance
-#      run: sudo service mysql stop
+    - name: Install PHP dependencies
+      run: composer install --no-interaction --prefer-dist
 
-    - name: Setup application
+    - name: Setup .env file
       run: |
         cp .env.ci .env
         sed -i 's/DB_PORT=/DB_PORT=${{ job.services.mariadb.ports['3306'] }}/' .env
-        composer install --no-interaction --prefer-dist
         php artisan key:generate
-        php artisan migrate
-        php artisan game:data:sync
-        php artisan version:update
-        php artisan self-diagnosis
-        php artisan db:seed
+
+    - name: Run database migrations
+      run: php artisan migrate
+
+    - name: Seed database
+      run: php artisan db:seed
+
+    - name: Sync game data
+      run: php artisan game:data:sync
 
     - name: Run tests
       run: vendor/bin/phpunit
