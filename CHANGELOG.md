@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fixed a bug where races with increased max population from barren land wasn't applied properly
 - Fixed a bug where Erosion reduced land gains
 - Fixed spell duration in success message
+- Fixed a bug where you could leave a guard immediately after joining
 - Minor text fixes
 
 ## [0.7.0-10] - 2019-08-20
