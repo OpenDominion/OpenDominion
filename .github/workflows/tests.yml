@@ -5,66 +5,35 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-16.04
+    services:
+
+      mariadb:
+        image: mariadb:10.0
+        env:
+          MYSQL_DATABASE=opendominion
+          MYSQL_USERNAME=opendominion
+          MYSQL_PASSWORD=secret
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
 
     - uses: actions/checkout@v1
 
-    - name: Initialize Git Submodules
-      run: git submodule update --init
-
     - name: Stop running MySQL instance
       run: sudo service mysql stop
 
-    - name: Downloading Docker images
-      uses: actions/download-artifact@master
-      with:
-        name: docker-images
-
-    - name: Importing Docker images
-      run: |
-        docker load docker-images/opendominion_mariadb.tar.gz || true
-        docker load docker-images/opendominion_nginx.tar.gz || true
-        docker load docker-images/opendominion_php-fpm.tar.gz || true
-        docker load docker-images/opendominion_workspace.tar.gz || true
-
-    - name: Initialize Laradock
-      run: |
-        cp .laradock/.env laradock/
-        cp -R .laradock/** laradock/
-        cd laradock
-        docker-compose up --build -d workspace php-fpm nginx mariadb
-
-    - name: Exporting Docker images
-      run: |
-        mkdir docker-images
-        docker save opendominion_mariadb | gzip > docker-images/opendominion_mariadb.tar.gz
-        docker save opendominion_nginx | gzip > docker-images/opendominion_nginx.tar.gz
-        docker save opendominion_php-fpm | gzip > docker-images/opendominion_php-fpm.tar.gz
-        docker save opendominion_workspace | gzip > docker-images/opendominion_workspace.tar.gz
-
-    - name: Uploading Docker images
-      uses: actions/upload-artifact@master
-      with:
-        name: docker-images
-        path: docker-images
-
     - name: Setup application
       run: |
-        cd laradock
-        docker-compose exec -T workspace bash -c "chmod -R 777 /var/www"
-        docker-compose exec -T --user=laradock workspace bash -c "composer install"
-        docker-compose exec -T --user=laradock workspace bash -c "cp .env.example .env"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan key:generate"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan storage:link"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan migrate"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan game:data:sync"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan version:update"
-        docker-compose exec -T --user=laradock workspace bash -c "yarn install"
-        docker-compose exec -T --user=laradock workspace bash -c "yarn run dev"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan self-diagnosis"
-        docker-compose exec -T --user=laradock workspace bash -c "php artisan db:seed"
+        cp .env.ci .env
+        composer install --no-interaction --prefer-dist
+        php artisan key:generate
+        php artisan migrate
+        php artisan game:data:sync
+        php artisan version:update
+        php artisan self-diagnosis
+        php artisan db:seed
 
     - name: Run tests
-      run: |
-        cd laradock
-        docker-compose exec -T --user=laradock workspace bash -c "vendor/bin/phpunit"
+      run: vendor/bin/phpunit
