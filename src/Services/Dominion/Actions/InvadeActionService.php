@@ -180,8 +180,7 @@ class InvadeActionService
             // Checks
             $this->guardLockedDominion($dominion);
 
-            if($dominion->round->hasOffensiveActionsDisabled())
-            {
+            if ($dominion->round->hasOffensiveActionsDisabled()) {
                 throw new GameException('Invasions have been disabled for the remainder of the round.');
             }
 
@@ -240,6 +239,8 @@ class InvadeActionService
             // Handle invasion results
             $this->checkInvasionSuccess($dominion, $target, $units);
             $this->checkOverwhelmed();
+
+            $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
@@ -316,8 +317,6 @@ class InvadeActionService
             );
             $alertType = 'danger';
         }
-
-        $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
         return [
             'message' => $message,

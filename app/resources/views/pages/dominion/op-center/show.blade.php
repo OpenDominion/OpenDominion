@@ -435,7 +435,7 @@
                                 <td>Draftees</td>
                                 <td colspan="12">&nbsp;</td>
                                 <td class="text-center">
-                                    {{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
+                                    ~{{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
                                 </td>
                             </tr>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)

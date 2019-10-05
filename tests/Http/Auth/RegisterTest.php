@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Http\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Notification;
 use OpenDominion\Models\User;
 use OpenDominion\Notifications\User\RegisteredNotification;
@@ -10,7 +10,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RegisterTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testRegistrationPage()
     {
