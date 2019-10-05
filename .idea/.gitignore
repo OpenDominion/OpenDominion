@@ -4,4 +4,5 @@
 /shelf/
 /*.ids
 /*.local.xml
+/sqldialects.xml
 /workspace.xml
