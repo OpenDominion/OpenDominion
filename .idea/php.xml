@@ -168,7 +168,7 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="688d88b5-74e2-4aa3-9d63-52a0e8cab24e" name="Laradock (7.3)" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
+      <interpreter id="688d88b5-74e2-4aa3-9d63-52a0e8cab24e" name="Laradock (7.3 CLI)" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
         <remote_data DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="workspace" DOCKER_REMOTE_PROJECT_PATH="/opt/project" INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false">
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/laradock/docker-compose.yml" />
@@ -181,14 +181,18 @@
   </component>
   <component name="PhpInterpretersPhpInfoCache">
     <phpInfoCache>
-      <interpreter name="Laradock (7.3)">
+      <interpreter name="Laradock (7.3 CLI)">
         <phpinfo binary_type="PHP" php_cli="/usr/bin/php7.3" path_separator=":" version="7.3.9-1+ubuntu16.04.1+deb.sury.org+1">
-          <additional_php_ini>/etc/php/7.3/cli/conf.d/10-mysqlnd.ini, /etc/php/7.3/cli/conf.d/10-opcache.ini, /etc/php/7.3/cli/conf.d/10-pdo.ini, /etc/php/7.3/cli/conf.d/15-xml.ini, /etc/php/7.3/cli/conf.d/20-bcmath.ini, /etc/php/7.3/cli/conf.d/20-calendar.ini, /etc/php/7.3/cli/conf.d/20-ctype.ini, /etc/php/7.3/cli/conf.d/20-curl.ini, /etc/php/7.3/cli/conf.d/20-dom.ini, /etc/php/7.3/cli/conf.d/20-exif.ini, /etc/php/7.3/cli/conf.d/20-fileinfo.ini, /etc/php/7.3/cli/conf.d/20-ftp.ini, /etc/php/7.3/cli/conf.d/20-gd.ini, /etc/php/7.3/cli/conf.d/20-gettext.ini, /etc/php/7.3/cli/conf.d/20-iconv.ini, /etc/php/7.3/cli/conf.d/20-igbinary.ini, /etc/php/7.3/cli/conf.d/20-intl.ini, /etc/php/7.3/cli/conf.d/20-json.ini, /etc/php/7.3/cli/conf.d/20-mbstring.ini, /etc/php/7.3/cli/conf.d/20-msgpack.ini, /etc/php/7.3/cli/conf.d/20-mysqli.ini, /etc/php/7.3/cli/conf.d/20-pdo_mysql.ini, /etc/php/7.3/cli/conf.d/20-pdo_pgsql.ini, /etc/php/7.3/cli/conf.d/20-pdo_sqlite.ini, /etc/php/7.3/cli/conf.d/20-pgsql.ini, /etc/php/7.3/cli/conf.d/20-phar.ini, /etc/php/7.3/cli/conf.d/20-posix.ini, /etc/php/7.3/cli/conf.d/20-readline.ini, /etc/php/7.3/cli/conf.d/20-shmop.ini, /etc/php/7.3/cli/conf.d/20-simplexml.ini, /etc/php/7.3/cli/conf.d/20-sockets.ini, /etc/php/7.3/cli/conf.d/20-sqlite3.ini, /etc/php/7.3/cli/conf.d/20-sysvmsg.ini, /etc/php/7.3/cli/conf.d/20-sysvsem.ini, /etc/php/7.3/cli/conf.d/20-sysvshm.ini, /etc/php/7.3/cli/conf.d/20-tokenizer.ini, /etc/php/7.3/cli/conf.d/20-wddx.ini, /etc/php/7.3/cli/conf.d/20-xmlreader.ini, /etc/php/7.3/cli/conf.d/20-xmlwriter.ini, /etc/php/7.3/cli/conf.d/20-xsl.ini, /etc/php/7.3/cli/conf.d/20-zip.ini, /etc/php/7.3/cli/conf.d/25-memcached.ini, /etc/php/7.3/cli/conf.d/xdebug.ini</additional_php_ini>
+          <additional_php_ini>/etc/php/7.3/cli/conf.d/10-mysqlnd.ini, /etc/php/7.3/cli/conf.d/10-opcache.ini, /etc/php/7.3/cli/conf.d/10-pdo.ini, /etc/php/7.3/cli/conf.d/15-xml.ini, /etc/php/7.3/cli/conf.d/20-bcmath.ini, /etc/php/7.3/cli/conf.d/20-calendar.ini, /etc/php/7.3/cli/conf.d/20-ctype.ini, /etc/php/7.3/cli/conf.d/20-curl.ini, /etc/php/7.3/cli/conf.d/20-dom.ini, /etc/php/7.3/cli/conf.d/20-exif.ini, /etc/php/7.3/cli/conf.d/20-fileinfo.ini, /etc/php/7.3/cli/conf.d/20-ftp.ini, /etc/php/7.3/cli/conf.d/20-gd.ini, /etc/php/7.3/cli/conf.d/20-gettext.ini, /etc/php/7.3/cli/conf.d/20-iconv.ini, /etc/php/7.3/cli/conf.d/20-igbinary.ini, /etc/php/7.3/cli/conf.d/20-intl.ini, /etc/php/7.3/cli/conf.d/20-json.ini, /etc/php/7.3/cli/conf.d/20-mbstring.ini, /etc/php/7.3/cli/conf.d/20-msgpack.ini, /etc/php/7.3/cli/conf.d/20-mysqli.ini, /etc/php/7.3/cli/conf.d/20-pdo_mysql.ini, /etc/php/7.3/cli/conf.d/20-pdo_pgsql.ini, /etc/php/7.3/cli/conf.d/20-pdo_sqlite.ini, /etc/php/7.3/cli/conf.d/20-pgsql.ini, /etc/php/7.3/cli/conf.d/20-phar.ini, /etc/php/7.3/cli/conf.d/20-posix.ini, /etc/php/7.3/cli/conf.d/20-readline.ini, /etc/php/7.3/cli/conf.d/20-shmop.ini, /etc/php/7.3/cli/conf.d/20-simplexml.ini, /etc/php/7.3/cli/conf.d/20-sockets.ini, /etc/php/7.3/cli/conf.d/20-sqlite3.ini, /etc/php/7.3/cli/conf.d/20-sysvmsg.ini, /etc/php/7.3/cli/conf.d/20-sysvsem.ini, /etc/php/7.3/cli/conf.d/20-sysvshm.ini, /etc/php/7.3/cli/conf.d/20-tokenizer.ini, /etc/php/7.3/cli/conf.d/20-wddx.ini, /etc/php/7.3/cli/conf.d/20-xdebug.ini, /etc/php/7.3/cli/conf.d/20-xmlreader.ini, /etc/php/7.3/cli/conf.d/20-xmlwriter.ini, /etc/php/7.3/cli/conf.d/20-xsl.ini, /etc/php/7.3/cli/conf.d/20-zip.ini, /etc/php/7.3/cli/conf.d/25-memcached.ini, /etc/php/7.3/cli/conf.d/xdebug.ini</additional_php_ini>
           <configuration_file>/etc/php/7.3/cli/php.ini</configuration_file>
           <configuration_options>
             <configuration_option name="include_path" value=".:/usr/share/php" />
           </configuration_options>
-          <debuggers />
+          <debuggers>
+            <debugger_info debugger="xdebug" debugger_version="2.7.2">
+              <debug_extensions />
+            </debugger_info>
+          </debuggers>
           <loaded_extensions>
             <extension name="Core" />
             <extension name="PDO" />
@@ -240,6 +244,7 @@
             <extension name="sysvshm" />
             <extension name="tokenizer" />
             <extension name="wddx" />
+            <extension name="xdebug" />
             <extension name="xml" />
             <extension name="xmlreader" />
             <extension name="xmlwriter" />
