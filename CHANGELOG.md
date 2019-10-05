@@ -4,6 +4,9 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Changed
+- Slightly tweaked starvation casualties to now kill off population types based on proportion
+
 ### Fixed
 - Barracks Spy should now be more clear that draftees are inaccurate
 - Fixed a bug when knocking a target outside of your applied guard range would reset your guard application
