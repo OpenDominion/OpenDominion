@@ -27,7 +27,6 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->truncateGameData();
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
 

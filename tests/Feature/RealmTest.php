@@ -48,7 +48,6 @@ class RealmTest extends AbstractBrowserKitTestCase
 
     public function testRealmsCantContainMoreThan12Dominions()
     {
-        $this->truncateGameData();
         $round = $this->createRound();
 
         $goodRace = Race::where('alignment', 'good')->firstOrFail();

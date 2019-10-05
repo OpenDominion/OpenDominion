@@ -42,7 +42,6 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->truncateGameData();
         $this->user = $this->createUser();
         $this->round = $this->createRound();
         $this->race = Race::firstOrFail();

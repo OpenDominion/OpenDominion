@@ -11,7 +11,6 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserSeesNoActiveRoundsWhenNoRoundsAreActive()
     {
-        $this->truncateGameData();
         $this->createAndImpersonateUser();
 
         $this->visit('/dashboard')
@@ -64,7 +63,6 @@ class RoundTest extends AbstractBrowserKitTestCase
 
     public function testUserCanRegisterToARound()
     {
-        $this->truncateGameData();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
 
