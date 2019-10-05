@@ -18,7 +18,18 @@ class GovernmentController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $guardMembershipService = app(GuardMembershipService::class);
 
+        $dominions = $dominion->realm->dominions()
+            ->with([
+                'race',
+                'race.perks',
+                'race.units',
+                'race.units.perks',
+            ])
+            ->orderBy('name')
+            ->get();
+
         return view('pages.dominion.government', [
+            'dominions' => $dominions,
             'monarch' => $dominion->realm->monarch,
             'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),
@@ -43,7 +54,7 @@ class GovernmentController extends AbstractDominionController
         $vote = $request->get('monarch');
         $governmentActionService->voteForMonarch($dominion, $vote);
 
-        $request->session()->flash('alert-success', 'Your vote has been cast');
+        $request->session()->flash('alert-success', 'Your vote has been cast!');
         return redirect()->route('dominion.government');
     }
 
@@ -56,7 +67,7 @@ class GovernmentController extends AbstractDominionController
         $name = $request->get('realm_name');
         $governmentActionService->updateRealm($dominion, $message, $name);
 
-        $request->session()->flash('alert-success', 'Your realm has been updated');
+        $request->session()->flash('alert-success', 'Your realm has been updated!');
         return redirect()->route('dominion.government');
     }
 

@@ -55,7 +55,7 @@
                                         <div class="form-group">
                                             <select name="monarch" id="monarch" class="form-control select2" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 <option></option>
-                                                @foreach ($selectedDominion->realm->dominions->sortBy('name') as $dominion)
+                                                @foreach ($dominions as $dominion)
                                                     <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}">
                                                         {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                     </option>
@@ -74,7 +74,7 @@
                                 <div class="form-group">
                                     <table class="table table-condensed">
                                         <tr><th>Dominion</th><th>Voted for</th></tr>
-                                        @foreach ($selectedDominion->realm->dominions->sortBy('name') as $dominion)
+                                        @foreach ($dominions as $dominion)
                                             <tr>
                                                 <td>
                                                     @if ($dominion->isMonarch())
