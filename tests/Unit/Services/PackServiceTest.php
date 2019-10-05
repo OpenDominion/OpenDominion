@@ -58,7 +58,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         );
 
         // Assert
-        $this->assertEquals(1, $pack->id);
+        $this->assertTrue($pack->exists);
     }
 
     /**
