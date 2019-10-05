@@ -241,8 +241,6 @@ class TickService
 
         // Update rankings
         if (($this->now->hour % 6) === 0) {
-            Log::debug('Update rankings started');
-
             foreach ($activeRounds as $round) {
                 $activeDominions = $round
                     ->dominions()
