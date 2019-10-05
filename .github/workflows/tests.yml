@@ -14,7 +14,7 @@ jobs:
           MYSQL_USERNAME: opendominion
           MYSQL_PASSWORD: secret
         ports:
-          - 33060:3306
+          - 3306
 #        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -27,6 +27,7 @@ jobs:
     - name: Setup application
       run: |
         cp .env.ci .env
+        sed -i 's/DB_PORT=/DB_PORT=${{ job.services.mariadb.ports['3306'] }}/' .env
         composer install --no-interaction --prefer-dist
         php artisan key:generate
         php artisan migrate
