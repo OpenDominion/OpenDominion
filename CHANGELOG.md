@@ -4,9 +4,23 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+### Added
+- Added back spell mana cost of active spells to magic page
+- Added spell recharge time to magic page
+
+### Changed
+- Slightly tweaked starvation casualties to now kill off population types based on proportion
+
 ### Fixed
-- Barracks spy should now be more clear that draftees are inaccurate
+- Barracks Spy should now be more clear that draftees are inaccurate
 - Fixed a bug when knocking a target outside of your applied guard range would reset your guard application
+- Fixed a bug where Survey Dominion calculated percentages based on a dominion's current land total
+- Fixed a bug where races with increased max population from barren land wasn't applied properly
+- Fixed a bug where Erosion reduced land gains
+- Fixed spell duration in success message
+- Fixed a bug where you could leave a guard immediately after joining
+- Reduced Combat Losses (RCL) unit perk now correctly triggers on offensive casualties based on RCL units which were sent out, instead of RCL units at home
+- Minor text fixes
 
 ## [0.7.0-10] - 2019-08-20
 ### Fixed

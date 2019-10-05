@@ -2,6 +2,13 @@
   "type": "project",
   "require": {
     "php": "^7.3",
+    "ext-bcmath": "^7.3",
+    "ext-curl": "^7.3",
+    "ext-fileinfo": "^7.3",
+    "ext-gd": "^7.3",
+    "ext-mbstring": "^7.3",
+    "ext-openssl": "^7.3",
+    "ext-pdo_mysql": "^7.3",
     "atrox/haikunator": "~1.2",
     "beyondcode/laravel-self-diagnosis": "^1.0",
     "bugsnag/bugsnag-laravel": "~2.0",
@@ -74,6 +81,7 @@
     "post-update-cmd": [
       "Illuminate\\Foundation\\ComposerScripts::postUpdate",
       "php artisan ide-helper:generate",
+      "php artisan ide-helper:models -N",
       "php artisan ide-helper:meta"
     ],
     "post-autoload-dump": [

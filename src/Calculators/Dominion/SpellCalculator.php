@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use DB;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
@@ -76,6 +77,21 @@ class SpellCalculator
      */
     public function isOnCooldown(Dominion $dominion, string $spell): bool
     {
+        if ($this->getSpellCooldown($dominion, $spell) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the number of hours before spell $type for $dominion can be cast.
+     *
+     * @param Dominion $dominion
+     * @param string $spell
+     * @return bool
+     */
+    public function getSpellCooldown(Dominion $dominion, string $spell): int
+    {
         $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
 
         if (isset($spellInfo['cooldown'])) {
@@ -86,12 +102,15 @@ class SpellCalculator
                 ->orderby('created_at', 'desc')
                 ->take(1)
                 ->first();
-            if ($spellLastCast && now()->diffInHours($spellLastCast->created_at) < $spellInfo['cooldown']) {
-                return true;
+            if ($spellLastCast) {
+                $hoursSinceCast = now()->startOfHour()->diffInHours(Carbon::parse($spellLastCast->created_at)->startOfHour());
+                if ($hoursSinceCast < $spellInfo['cooldown']) {
+                    return $spellInfo['cooldown'] - $hoursSinceCast;
+                }
             }
         }
 
-        return false;
+        return 0;
     }
 
     /**

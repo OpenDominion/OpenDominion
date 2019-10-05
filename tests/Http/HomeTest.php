@@ -2,12 +2,12 @@
 
 namespace OpenDominion\Tests\Http;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Tests\AbstractTestCase;
 
 class HomeTest extends AbstractTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testHomePage()
     {
@@ -27,7 +27,6 @@ class HomeTest extends AbstractTestCase
 
     public function testRedirectLoggedInUserWithSelectedDominionToStatus()
     {
-        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $this->createAndSelectDominion($user, $round);
@@ -39,7 +38,6 @@ class HomeTest extends AbstractTestCase
 
     public function testUserShouldNotGetRedirectedOnReferredRequests()
     {
-        $this->seedDatabase();
         $user = $this->createAndImpersonateUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);

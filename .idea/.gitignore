@@ -1,0 +1,8 @@
+/**/profiles_settings.xml
+/dataSources/
+/dictionaries/
+/shelf/
+/*.ids
+/*.local.xml
+/sqldialects.xml
+/workspace.xml
