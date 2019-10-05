@@ -75,11 +75,8 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
                     'military_wizards' => 25,
                 ],
                 'expected' => [
-                    'peasants' => 25,
-                    'military_unit2' => 1,
-                    'military_spies' => 1,
-                    'military_wizards' => 1,
-                    'military_draftees' => 1,
+                    'peasants' => 26,
+                    'military_unit2' => 6,
                 ],
             ],
 
