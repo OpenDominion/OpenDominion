@@ -114,36 +114,26 @@ class CasualtiesCalculator
             $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
 
             // Unit Perk: Reduce Combat Losses
-            $unitsAtHomePerSlot = [];
-            $unitsAtHomeRCLSlot = null;
+            $unitsSentPerSlot = [];
+            $unitsSentRCLSlot = null;
             $reducedCombatLossesMultiplierAddition = 0;
 
             // todo: inefficient to do run this code per slot. needs refactoring
             foreach ($dominion->race->units as $unit) {
                 $slot = $unit->slot;
-                $unitKey = "military_unit{$slot}";
 
-                $totalUnitAmount = $dominion->$unitKey;
-
-                $unitsAtHome = ($totalUnitAmount - ($units[$slot] ?? 0));
-                $unitsAtHomePerSlot[$slot] = $unitsAtHome;
+                $unitsSentPerSlot[$slot] = $units[$slot];
 
                 if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
-                    // todo: hacky workaround for not allowing RCL for gobbos (feedback from Gabbe)
-                    //  Needs to be refactored later; unit perk should be renamed in the yml to reduce_combat_losses_defense
-                    if ($dominion->race->name === 'Goblin') {
-                        continue;
-                    }
-
-                    $unitsAtHomeRCLSlot = $slot;
+                    $unitsSentRCLSlot = $slot;
                 }
             }
 
             // We have a unit with RCL!
-            if ($unitsAtHomeRCLSlot !== null) {
-                $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
+            if ($unitsSentRCLSlot !== null) {
+                $totalUnitsSent = array_sum($unitsSentPerSlot);
 
-                $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+                $reducedCombatLossesMultiplierAddition += (($unitsSentPerSlot[$unitsSentRCLSlot] / $totalUnitsSent) / 2);
             }
 
             $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
