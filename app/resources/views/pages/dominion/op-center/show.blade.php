@@ -614,7 +614,7 @@
                                         <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                                     </td>
                                     <td class="text-center">{{ number_format($amount) }}</td>
-                                    <td class="text-center">{{ number_format((($amount / $landCalculator->getTotalLand($dominion)) * 100), 2) }}%</td>
+                                    <td class="text-center">{{ number_format((($amount / array_get($infoOp->data, "total_land", $landCalculator->getTotalLand($dominion))) * 100), 2) }}%</td>
                                 </tr>
                             @endforeach
                         </tbody>

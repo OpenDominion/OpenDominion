@@ -4,10 +4,13 @@ namespace OpenDominion\Tests;
 
 use Laravel\BrowserKitTesting\TestCase;
 use Notification;
+use OpenDominion\Tests\Traits\CreatesApplication;
+use OpenDominion\Tests\Traits\CreatesData;
 
 abstract class AbstractBrowserKitTestCase extends TestCase
 {
-    use CreatesApplication, CreatesData;
+    use CreatesApplication;
+    use CreatesData;
 
     /**
      * The base URL of the application.
