@@ -64,6 +64,8 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 
     public function testFindRandomReturnsNullIfAllValidRealmsAreFull()
     {
+        $this->assertEquals(0, $this->round->realms()->count());
+
         // Create 3 realms full of dominions
         for ($i = 0; $i < 3; $i++) {
             for ($dominionCounter = 0; $dominionCounter < 12; $dominionCounter++) {
@@ -72,7 +74,7 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
             }
         }
 
-        $this->assertEquals(3, Realm::count());
+        $this->assertEquals(3, $this->round->realms()->count());
 
         $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
     }
