@@ -17,7 +17,7 @@ class GovernmentService
      */
     public function getMonarchVotes(Realm $realm): array
     {
-        $votes = $realm->dominions->groupBy('monarch_dominion_id');
+        $votes = $realm->dominions->groupBy('monarchy_vote_for_dominion_id');
 
         $results = [];
         foreach ($votes as $monarch => $dominions) {
@@ -37,7 +37,11 @@ class GovernmentService
      */
     public function checkMonarchVotes(Realm $realm): bool
     {
-        $currentMonarchId = $realm->monarch->id;
+        if ($realm->monarch) {
+            $currentMonarchId = $realm->monarch->id;
+        } else {
+            $currentMonarchId = null;
+        }
         $votes = $this->getMonarchVotes($realm);
         $totalVotes = array_sum($votes);
 

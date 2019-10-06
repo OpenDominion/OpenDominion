@@ -193,10 +193,13 @@
             @endif
         </div>
 
-        @if ($selectedDominion->realm->message)
+        @if ($selectedDominion->realm->motd)
             <div class="col-sm-12 col-md-9">
                 <div class="panel panel-warning">
-                    <div class="panel-heading"><b>Message of the Day:</b> {{ $selectedDominion->realm->message }}</div>
+                    <div class="panel-heading">
+                        <b>Message of the Day:</b> {{ $selectedDominion->realm->motd }}
+                        <br/><small class="text-muted">Posted {{ $selectedDominion->realm->motd_updated_at }}</small>
+                    </div>
                 </div>
             </div>
         @endif

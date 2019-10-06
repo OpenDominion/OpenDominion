@@ -14,7 +14,7 @@ class AddMonarchIdToDominions extends Migration
     public function up()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->integer('monarch_dominion_id')->unsigned()->nullable();
+            $table->integer('monarchy_vote_for_dominion_id')->after('council_last_read')->unsigned()->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddMonarchIdToDominions extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->dropColumn('monarch_dominion_id');
+            $table->dropColumn('monarchy_vote_for_dominion_id');
         });
     }
 }

@@ -19,7 +19,7 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <input class="form-control" name="realm_message" id="realm_message" placeholder="{{ $selectedDominion->realm->message }}" maxlength="256" />
+                                                <input class="form-control" name="realm_motd" id="realm_motd" placeholder="{{ $selectedDominion->realm->motd }}" maxlength="256" />
                                             </div>
                                         </div>
                                     </div>
@@ -83,8 +83,8 @@
                                                         {{ $dominion->name }}
                                                     @endif
                                                 </td>
-                                                @if ($dominion->monarchVote())
-                                                    <td>{{ $dominion->monarchVote()->name }}</td>
+                                                @if ($dominion->monarchVote)
+                                                    <td>{{ $dominion->monarchVote->name }}</td>
                                                 @else
                                                     <td>N/A</td>
                                                 @endif

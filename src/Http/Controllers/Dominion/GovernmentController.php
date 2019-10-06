@@ -24,6 +24,7 @@ class GovernmentController extends AbstractDominionController
                 'race.perks',
                 'race.units',
                 'race.units.perks',
+                'monarchVote',
             ])
             ->orderBy('name')
             ->get();
@@ -63,9 +64,9 @@ class GovernmentController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $governmentActionService = app(GovernmentActionService::class);
 
-        $message = $request->get('realm_message');
+        $motd = $request->get('realm_motd');
         $name = $request->get('realm_name');
-        $governmentActionService->updateRealm($dominion, $message, $name);
+        $governmentActionService->updateRealm($dominion, $motd, $name);
 
         $request->session()->flash('alert-success', 'Your realm has been updated!');
         return redirect()->route('dominion.government');

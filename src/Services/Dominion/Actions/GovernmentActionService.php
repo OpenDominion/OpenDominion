@@ -44,7 +44,7 @@ class GovernmentActionService
             throw new RuntimeException('You cannot vote for a monarch outside of your realm.');
         }
 
-        $dominion->monarch_dominion_id = $monarch->id;
+        $dominion->monarchy_vote_for_dominion_id = $monarch->id;
         $dominion->save();
 
         $this->governmentService->checkMonarchVotes($dominion->realm);
@@ -57,13 +57,13 @@ class GovernmentActionService
      * @param string $name
      * @throws RuntimeException
      */
-    public function updateRealm(Dominion $dominion, ?string $message, ?string $name)
+    public function updateRealm(Dominion $dominion, ?string $motd, ?string $name)
     {
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can make changes to their realm.');
         }
 
-        if ($message && strlen($name) > 256) {
+        if ($motd && strlen($name) > 256) {
             throw new GameException('Realm messages are limited to 256 characters.');
         }
 
@@ -71,8 +71,13 @@ class GovernmentActionService
             throw new GameException('Realm names are limited to 64 characters.');
         }
 
-        if ($message) $dominion->realm->message = $message;
-        if ($name) $dominion->realm->name = $name;
+        if ($motd) {
+            $dominion->realm->motd = $motd;
+            $dominion->realm->motd_updated_at = now();
+        }
+        if ($name) {
+            $dominion->realm->name = $name;
+        }
         $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_UPDATED]);
     }
 }
