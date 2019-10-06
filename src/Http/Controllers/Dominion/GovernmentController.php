@@ -26,8 +26,10 @@ class GovernmentController extends AbstractDominionController
                 'race.units.perks',
                 'monarchVote',
             ])
-            ->orderBy('name')
-            ->get();
+            ->get()
+            ->sortByDesc(function ($dominion) {
+                return app(LandCalculator::class)->getTotalLand($dominion);
+            });
 
         return view('pages.dominion.government', [
             'dominions' => $dominions,
