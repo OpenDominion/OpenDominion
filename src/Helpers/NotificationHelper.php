@@ -353,20 +353,20 @@ class NotificationHelper
                         throw new \LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-                $lossString = "";
-                foreach ($data['spiesKilled'] as $key => $value) {
-                    $lossString .= number_format($value) . " of our " . str_plural($key, $value);
-                    if (next($data['spiesKilled'])) {
-                        $lossString .= " and ";
-                    }
+                $unitsKilledStringParts = [];
+                foreach ($data['spiesKilled'] as $name => $amount) {
+                    $amountLabel = number_format($amount);
+                    $unitLabel = str_plural(str_singular($name), $amount);
+                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
                 }
+                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
                 return sprintf(
                     'Spies from %s (#%s) were discovered %s! We executed %s.',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $where,
-                    $lossString
+                    $unitsKilledString
                 );
 
             case 'irregular_dominion.resource_theft':
@@ -451,20 +451,20 @@ class NotificationHelper
                         throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-                $lossString = "";
-                foreach ($data['spiesKilled'] as $key => $value) {
-                    $lossString .= number_format($value) . " of our " . str_plural($key, $value);
-                    if (next($data['spiesKilled'])) {
-                        $lossString .= " and ";
-                    }
+                $unitsKilledStringParts = [];
+                foreach ($data['spiesKilled'] as $name => $amount) {
+                    $amountLabel = number_format($amount);
+                    $unitLabel = str_plural(str_singular($name), $amount);
+                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
                 }
+                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
                 return sprintf(
                     'Spies from %s (#%s) were discovered %s! We executed %s.',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $where,
-                    $lossString
+                    $unitsKilledString
                 );
 
             case 'irregular_dominion.received_hostile_spell':

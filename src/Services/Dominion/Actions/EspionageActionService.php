@@ -276,14 +276,14 @@ class EspionageActionService
                     ->sendNotifications($target, 'irregular_dominion');
 
                 if (!empty($unitsKilled)) {
-                    $lossString = "";
-                    foreach ($unitsKilled as $key => $value) {
-                        $lossString .= number_format($value) . " of our " . str_plural($key, $value);
-                        if (next($unitsKilled)) {
-                            $lossString .= " and ";
-                        }
+                    $unitsKilledStringParts = [];
+                    foreach ($unitsKilled as $name => $amount) {
+                        $amountLabel = number_format($amount);
+                        $unitLabel = str_plural(str_singular($name), $amount);
+                        $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
                     }
-                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $lossString.";
+                    $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
                 } else {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
                 }
@@ -514,14 +514,14 @@ class EspionageActionService
                     ->sendNotifications($target, 'irregular_dominion');
 
                 if (!empty($unitsKilled)) {
-                    $lossString = "";
-                    foreach ($unitsKilled as $key => $value) {
-                        $lossString .= number_format($value) . " of our " . str_plural($key, $value);
-                        if (next($unitsKilled)) {
-                            $lossString .= " and ";
-                        }
+                    $unitsKilledStringParts = [];
+                    foreach ($unitsKilled as $name => $amount) {
+                        $amountLabel = number_format($amount);
+                        $unitLabel = str_plural(str_singular($name), $amount);
+                        $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
                     }
-                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $lossString.";
+                    $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
                 } else {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
                 }
