@@ -33,7 +33,11 @@ class RealmController extends AbstractDominionController
         // Eager load some relational data to save on SQL queries down the road in NetworthCalculator and
         // ProtectionService
         $with = [
+            'dominions.queues',
+            'dominions.race',
             'dominions.race.units',
+            'dominions.race.units.perks',
+            'dominions.realm',
             'dominions.round',
         ];
 

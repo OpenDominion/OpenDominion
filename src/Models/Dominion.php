@@ -209,6 +209,11 @@ class Dominion extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function queues()
+    {
+        return $this->hasMany(Dominion\Queue::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
