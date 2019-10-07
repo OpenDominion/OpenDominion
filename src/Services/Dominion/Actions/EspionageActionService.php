@@ -265,22 +265,23 @@ class EspionageActionService
                     }
                 }
 
+                $unitsKilledStringParts = [];
+                foreach ($unitsKilled as $name => $amount) {
+                    $amountLabel = number_format($amount);
+                    $unitLabel = str_plural(str_singular($name), $amount);
+                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+                }
+                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
                         'sourceDominionId' => $dominion->id,
                         'operationKey' => $operationKey,
-                        'spiesKilled' => $unitsKilled,
+                        'unitsKilled' => $unitsKilledString,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
-                if (!empty($unitsKilled)) {
-                    $unitsKilledStringParts = [];
-                    foreach ($unitsKilled as $name => $amount) {
-                        $amountLabel = number_format($amount);
-                        $unitLabel = str_plural(str_singular($name), $amount);
-                        $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                    }
-                    $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                if ($unitsKilledString) {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
                 } else {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
@@ -504,22 +505,23 @@ class EspionageActionService
                     }
                 }
 
+                $unitsKilledStringParts = [];
+                foreach ($unitsKilled as $name => $amount) {
+                    $amountLabel = number_format($amount);
+                    $unitLabel = str_plural(str_singular($name), $amount);
+                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+                }
+                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
                 $this->notificationService
                     ->queueNotification('repelled_resource_theft', [
                         'sourceDominionId' => $dominion->id,
                         'operationKey' => $operationKey,
-                        'spiesKilled' => $unitsKilled,
+                        'unitsKilled' => $unitsKilledString,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
-                if (!empty($unitsKilled)) {
-                    $unitsKilledStringParts = [];
-                    foreach ($unitsKilled as $name => $amount) {
-                        $amountLabel = number_format($amount);
-                        $unitLabel = str_plural(str_singular($name), $amount);
-                        $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                    }
-                    $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                if ($unitsKilledString) {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
                 } else {
                     $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
