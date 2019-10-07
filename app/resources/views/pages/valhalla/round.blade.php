@@ -12,7 +12,7 @@
                     <b>Overall Rankings</b>
                 </div>
             </div>
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-dominions']) }}">The Strongest Dominions</a><br>
@@ -29,7 +29,28 @@
                 </div>
             </div>
 
-            {{-- extended rankings --}}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <b>Extended Rankings</b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6 text-center">
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-conquered']) }}">Largest Attacking Dominions<br>
+                    <!--
+                    Largest Attacking Realms<br>
+                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-attacking-success']) }}">Most Victorious Dominions</a><br>
+                </div>
+                <div class="col-sm-6 text-center">
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-explored']) }}">Largest Exploring Dominions<br>
+                    <!--
+                    Largest Exploring Realms<br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-success']) }}">Most Fortified Dominions</a><br>
+                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-prestige']) }}">Most Prestigious Dominions</a><br>
+                </div>
+            </div>
 
             {{--<div class="row">
                 <div class="col-md-12 text-center">
@@ -37,14 +58,50 @@
                 </div>
             </div>--}}
 
-            {{-- magic and spy rankings --}}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <b>Magic and Spy Rankings</b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6 text-center">
+                    <b>Spies</b><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-espionage-success']) }}">Most Successful Spies</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-platinum-stolen']) }}">Top Platinum Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-food-stolen']) }}">Top Food Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-lumber-stolen']) }}">Top Lumbrer Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-mana-stolen']) }}">Top Mana Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-ore-stolen']) }}">Top Ore Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-gem-stolen']) }}">Top Gem Thieves</a><br>
+                    <!--
+                    Top Saboteurs<br>
+                    Top Magical Assassins<br>
+                    Top Military Assassins<br>
+                    Top Snare Setters<br>
+                    Top Demoralizers<br>
+                    -->
+                </div>
+                <div class="col-sm-6 text-center">
+                    <b>Wizards</b><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spell-success']) }}">Most Successful Wizards</a><br>
+                    <!--
+                    Masters of Fire<br>
+                    Masters of Plague<br>
+                    Masters of Swarm<br>
+                    Masters of Lightning<br>
+                    Masters of Water<br>
+                    Masters of Earth<br>
+                    Top Spy Disbanders<br>
+                    -->
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-12 text-center">
                     <b>Rankings by Race</b>
                 </div>
             </div>
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
                     @foreach ($races as $race)
