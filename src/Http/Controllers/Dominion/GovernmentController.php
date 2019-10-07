@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Actions\GovernmentActionRequest;
@@ -45,7 +46,8 @@ class GovernmentController extends AbstractDominionController
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
             'hoursBeforeLeaveEliteGuard' => $guardMembershipService->getHoursBeforeLeaveEliteGuard($dominion),
             'landCalculator' => app(LandCalculator::class),
-            'networthCalculator' => app(NetworthCalculator::class)
+            'networthCalculator' => app(NetworthCalculator::class),
+            'rangeCalculator' => app(RangeCalculator::class)
         ]);
     }
 

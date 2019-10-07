@@ -56,7 +56,10 @@
                                             <select name="monarch" id="monarch" class="form-control select2" required style="width: 100%" data-placeholder="Select a dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                 <option></option>
                                                 @foreach ($dominions as $dominion)
-                                                    <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}">
+                                                    <option value="{{ $dominion->id }}"
+                                                            data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
+                                                            data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}"
+                                                            data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
                                                         {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                     </option>
                                                 @endforeach
@@ -251,11 +254,23 @@
             }
 
             const land = state.element.dataset.land;
+            const percentage = state.element.dataset.percentage;
             const networth = state.element.dataset.networth;
+            let difficultyClass;
+
+            if (percentage >= 120) {
+                difficultyClass = 'text-red';
+            } else if (percentage >= 75) {
+                difficultyClass = 'text-green';
+            } else if (percentage >= 66) {
+                difficultyClass = 'text-muted';
+            } else {
+                difficultyClass = 'text-gray';
+            }
 
             return $(`
                 <div class="pull-left">${state.text}</div>
-                <div class="pull-right">${land} land - ${networth} networth</div>
+                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span> - ${networth} networth</div>
                 <div style="clear: both;"></div>
             `);
         }
