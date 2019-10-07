@@ -63,7 +63,7 @@ class GovernmentActionService
             throw new GameException('Only the monarch can make changes to their realm.');
         }
 
-        if ($motd && strlen($name) > 256) {
+        if ($motd && strlen($motd) > 256) {
             throw new GameException('Realm messages are limited to 256 characters.');
         }
 
