@@ -29,8 +29,14 @@ class ValhallaController extends AbstractController
             return $response;
         }
 
+        $races = $round->dominions
+            ->sortBy('race.name')
+            ->pluck('race.name', 'race.id')
+            ->unique();
+
         return view('pages.valhalla.round', [
             'round' => $round,
+            'races' => $races,
         ]);
     }
 
@@ -125,7 +131,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->dominions()
-            ->with(['realm', 'race.units', 'user']);
+            ->with(['queues', 'realm', 'race.units.perks', 'user']);
 
         if ($alignment !== null) {
             $builder->whereHas('race', function ($builder) use ($alignment) {
@@ -175,7 +181,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->realms()
-            ->with(['dominions.race.units']);
+            ->with(['dominions.queues', 'dominions.race.units', 'dominions.race.units.perks']);
 
         if ($alignment !== null) {
             $builder->where('alignment', $alignment);
