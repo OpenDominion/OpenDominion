@@ -15,7 +15,7 @@ class AddMessageToRealmsTable extends Migration
     {
         Schema::table('realms', function (Blueprint $table) {
             $table->text('motd')->after('name')->nullable();
-            $table->timestamp('motd_updated_at')->after('motd_updated_at')->nullable();
+            $table->timestamp('motd_updated_at')->after('motd')->nullable();
         });
     }
 
