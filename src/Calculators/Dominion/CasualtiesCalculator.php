@@ -124,6 +124,9 @@ class CasualtiesCalculator
             foreach ($dominion->race->units as $unit) {
                 $slot = $unit->slot;
 
+                if (!isset($units[$slot])) {
+                    continue;
+                }
                 $unitsSentPerSlot[$slot] = $units[$slot];
 
                 if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
