@@ -214,7 +214,6 @@ class MilitaryCalculator
         $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees);
         $dp *= $this->getDefensivePowerMultiplier($dominion, $multiplierReduction);
 
-
         return ($dp * $this->getMoraleMultiplier($dominion));
     }
 
