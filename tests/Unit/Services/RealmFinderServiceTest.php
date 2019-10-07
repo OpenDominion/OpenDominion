@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -12,7 +12,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var Round */
     protected $round;
@@ -26,8 +26,6 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
     protected function setUp()
     {
         parent::setUp();
-
-        $this->seedDatabase();
 
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
@@ -66,6 +64,8 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 
     public function testFindRandomReturnsNullIfAllValidRealmsAreFull()
     {
+        $this->assertEquals(0, $this->round->realms()->count());
+
         // Create 3 realms full of dominions
         for ($i = 0; $i < 3; $i++) {
             for ($dominionCounter = 0; $dominionCounter < 12; $dominionCounter++) {
@@ -74,7 +74,7 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
             }
         }
 
-        $this->assertEquals(3, Realm::count());
+        $this->assertEquals(3, $this->round->realms()->count());
 
         $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
     }

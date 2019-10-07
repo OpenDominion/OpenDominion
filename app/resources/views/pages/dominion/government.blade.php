@@ -29,7 +29,7 @@
                             @if ($isRoyalGuardApplicant || $isGuardMember)
                                 <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px;">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember || $hoursBeforeLeaveRoyalGuard ? 'disabled' : null }}>
                                         @if ($isGuardMember)
                                             Leave Royal Guard
                                         @else
@@ -59,7 +59,7 @@
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
                                 <form action="{{ route('dominion.government.elite-guard.leave') }}" method="post" role="form">
                                     @csrf
-                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $hoursBeforeLeaveEliteGuard ? 'disabled' : null }}>
                                         @if ($isEliteGuardMember)
                                             Leave Elite Guard
                                         @else
@@ -101,7 +101,7 @@
                         <p>You are a member of the Emperor's <span class="text-green"><i class="ra ra-heavy-shield" title="Royal Guard"></i> Royal Guard</span>.</p>
 
                         @if ($hoursBeforeLeaveRoyalGuard)
-                            <p>You cannot leave for {{ $hoursBeforeLeaveRoyalGuard }} hours.</p>
+                            <p class="text-red">You cannot leave for {{ $hoursBeforeLeaveRoyalGuard }} hours.</p>
                         @endif
                     @else
                         <p>You are <span class="text-red">NOT</span> a member of the Emperor's Royal or Elite Guard. You cannot interact with dominions less than 40% or greater than 250% of your land size.</p>

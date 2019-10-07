@@ -3,7 +3,7 @@
 namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
@@ -12,7 +12,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var EspionageActionService */
     protected $espionageActionService;
@@ -29,8 +29,6 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->seedDatabase();
 
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound('last week');

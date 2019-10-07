@@ -260,9 +260,9 @@ class InvadeActionService
             // Stat changes
             // todo: move to own method
             if ($this->invasionResult['result']['success']) {
-                $dominion->increment('stat_attacking_success');
+                $dominion->stat_attacking_success += 1;
             } else {
-                $target->increment('stat_defending_success');
+                $target->stat_defending_success += 1;
             }
 
             // todo: move to GameEventService
@@ -389,7 +389,8 @@ class InvadeActionService
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
                 // Unsuccessful invasions (bounces) give negative prestige immediately
-                $dominion->increment('prestige', $attackerPrestigeChange);
+                $dominion->prestige += $attackerPrestigeChange;
+
             } else {
                 // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
                 $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
@@ -406,7 +407,7 @@ class InvadeActionService
         }
 
         if ($targetPrestigeChange !== 0) {
-            $target->increment('prestige', $targetPrestigeChange);
+            $target->prestige += $targetPrestigeChange;
 
             $this->invasionResult['defender']['prestigeChange'] = $targetPrestigeChange;
         }
@@ -498,7 +499,7 @@ class InvadeActionService
 
             if ($amount > 0) {
                 // Actually kill the units. RIP in peace, glorious warriors ;_;7
-                $dominion->decrement("military_unit{$slot}", $amount);
+                $dominion->{"military_unit{$slot}"} -= $amount;
 
                 $this->invasionResult['attacker']['unitsLost'][$slot] = $amount;
             }
@@ -575,7 +576,7 @@ class InvadeActionService
                 $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null));
         }
         if ($drafteesLost > 0) {
-            $target->decrement('military_draftees', $drafteesLost);
+            $target->military_draftees -= $drafteesLost;
 
             $this->unitsLost += $drafteesLost; // todo: refactor
             $this->invasionResult['defender']['unitsLost']['draftees'] = $drafteesLost;
@@ -598,7 +599,7 @@ class InvadeActionService
         }
 
         foreach ($defensiveUnitsLost as $slot => $amount) {
-            $target->decrement("military_unit{$slot}", $amount);
+            $target->{"military_unit{$slot}"} -= $amount;
 
             $this->invasionResult['defender']['unitsLost'][$slot] = $amount;
         }
@@ -674,13 +675,13 @@ class InvadeActionService
             $buildingsLostForLandType = $this->buildingCalculator->getBuildingTypesToDestroy($target, $buildingsToDestroy, $landType);
 
             // Remove land
-            $target->decrement("land_$landType", $landLost);
+            $target->{"land_$landType"} -= $landLost;
 
             // Destroy buildings
             foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
                 $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
                 $resourceName = "building_{$buildingType}";
-                $target->decrement($resourceName, $builtBuildingsToDestroy);
+                $target->$resourceName -= $builtBuildingsToDestroy;
 
                 $buildingsInQueueToRemove = $buildingsLost['buildingsInQueueToRemove'];
 
@@ -690,46 +691,39 @@ class InvadeActionService
             }
 
             $landConquered = (int)round($landLost);
+            $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
+            $landGained = ($landConquered + $landGenerated);
 
-            // Racial Spell: Erosion (Lizardfolk)
+            // Racial Spell: Erosion (Lizardfolk, Merfolk)
             if ($this->spellCalculator->isSpellActive($dominion, 'erosion')) {
                 // todo: needs a more generic solution later
                 $landRezoneType = 'water';
                 $landRezonePercentage = 20;
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
+                $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
+                $landGenerated -= $landRezonedGenerated;
+                $landGained -= ($landRezonedConquered + $landRezonedGenerated);
 
                 if (!isset($landGainedPerLandType["land_{$landRezoneType}"])) {
                     $landGainedPerLandType["land_{$landRezoneType}"] = 0;
                 }
-
-                $landGainedPerLandType["land_{$landRezoneType}"] += $landRezonedConquered;
-
-                // todo: hacky hacky, fixmepls
-                if (!isset($this->invasionResult['attacker']['landConquered'][$landRezoneType])) {
-                    $this->invasionResult['attacker']['landConquered'][$landRezoneType] = 0;
-                }
-
-                $this->invasionResult['attacker']['landConquered'][$landRezoneType] += $landRezonedConquered;
-
-                $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
+                $landGainedPerLandType["land_{$landRezoneType}"] += ($landRezonedConquered + $landRezonedGenerated);
 
                 if (!isset($this->invasionResult['attacker']['landGenerated'][$landRezoneType])) {
                     $this->invasionResult['attacker']['landGenerated'][$landRezoneType] = 0;
                 }
-
                 $this->invasionResult['attacker']['landGenerated'][$landRezoneType] += $landRezonedGenerated;
 
-                $landConquered -= $landRezonedConquered;
+                if (!isset($this->invasionResult['attacker']['landErosion'])) {
+                    $this->invasionResult['attacker']['landErosion'] = 0;
+                }
+                $this->invasionResult['attacker']['landErosion'] += ($landRezonedConquered + $landRezonedGenerated);
             }
-
-            $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
-            $landGained = ($landConquered + $landGenerated);
 
             if (!isset($landGainedPerLandType["land_{$landType}"])) {
                 $landGainedPerLandType["land_{$landType}"] = 0;
             }
-
             $landGainedPerLandType["land_{$landType}"] += $landGained;
 
             $this->invasionResult['attacker']['landConquered'][$landType] += $landConquered;
@@ -767,13 +761,13 @@ class InvadeActionService
     {
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
 
-        $moraleChange = -5;
+        $dominion->morale -= 5;
 
         // Increased morale drops for attacking weaker targets
         if ($range < 75) {
-            $moraleChange += max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
+            $additionalMoraleChange = max(round((((($range / 100) - 0.4) * 100) / 7) - 5), -5);
+            $dominion->morale += $additionalMoraleChange;
         }
-        $dominion->increment('morale', $moraleChange);
     }
 
     /**
@@ -913,8 +907,8 @@ class InvadeActionService
             $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
             $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
 
-            $target->decrement('resource_platinum', $plunderPlatinum);
-            $target->decrement('resource_gems', $plunderGems);
+            $target->resource_platinum -= $plunderPlatinum;
+            $target->resource_gems -= $plunderGems;
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
@@ -949,7 +943,7 @@ class InvadeActionService
 
             if (array_key_exists($i, $units)) {
                 $returningAmount += $units[$i];
-                $dominion->decrement($unitKey, $units[$i]);
+                $dominion->$unitKey -= $units[$i];
             }
 
             if (array_key_exists($i, $convertedUnits)) {
@@ -1011,7 +1005,7 @@ class InvadeActionService
             $defenderBoatsSunk = (int)floor(max(0, $targetBoatTotal - $defenderBoatsProtected) * $defenderBoatsSunkPercentage);
             if ($defenderBoatsSunk > $targetQueuedBoats) {
                 $this->queueService->dequeueResource('invasion', $target, 'boats', $targetQueuedBoats);
-                $target->decrement('resource_boats', $defenderBoatsSunk - $targetQueuedBoats);
+                $target->resource_boats -= $defenderBoatsSunk - $targetQueuedBoats;
             } else {
                 $this->queueService->dequeueResource('invasion', $target, 'boats', $defenderBoatsSunk);
             }
@@ -1036,7 +1030,7 @@ class InvadeActionService
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
             $boatsByReturnHourGroup = (int)floor($amountUnits / static::UNITS_PER_BOAT);
 
-            $dominion->decrement('resource_boats', $boatsByReturnHourGroup);
+            $dominion->resource_boats -= $boatsByReturnHourGroup;
 
             if ($defendingUnitsThatSinkBoats > 0) {
                 $attackerBoatsSunk = (int)ceil($boatsByReturnHourGroup * $attackerBoatsSunkPercentage);

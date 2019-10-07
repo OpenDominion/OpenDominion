@@ -2,12 +2,12 @@
 
 namespace OpenDominion\Tests\Http\Auth;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class LoginTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     public function testLoginPage()
     {

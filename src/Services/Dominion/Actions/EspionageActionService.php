@@ -159,7 +159,7 @@ class EspionageActionService
 
         $result = null;
 
-        DB::transaction(function () use ($dominion, $operationKey, &$result, $target) {
+        DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
                 $spyStrengthLost = 2;
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
@@ -184,10 +184,8 @@ class EspionageActionService
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }
 
-            $dominion->decrement('spy_strength', $spyStrengthLost);
-
-            $dominion->increment('stat_espionage_success');
-
+            $dominion->spy_strength -= $spyStrengthLost;
+            $dominion->stat_espionage_success += 1;
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
                 'action' => $operationKey
@@ -384,6 +382,7 @@ class EspionageActionService
                 });
 
                 array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($target));
+                array_set($data, 'total_land', $this->landCalculator->getTotalLand($target));
 
                 $infoOp->data = $data;
                 break;
@@ -595,12 +594,18 @@ class EspionageActionService
 
         $amountStolen = $this->getResourceTheftAmount($dominion, $target, $resource, $constraints);
 
-        DB::transaction(static function () use ($dominion, $target, $resource, $amountStolen) {
-            $dominion->increment("resource_{$resource}", $amountStolen);
-            $dominion->save();
+        DB::transaction(static function () use ($dominion, $target, $resource, $amountStolen, $operationKey) {
+            $dominion->{"resource_{$resource}"} += $amountStolen;
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+                'action' => $operationKey
+            ]);
 
-            $target->decrement("resource_{$resource}", $amountStolen);
-            $target->save();
+            $target->{"resource_{$resource}"} -= $amountStolen;
+            $target->save([
+                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+                'action' => $operationKey
+            ]);
         });
 
         // Surreal Perception

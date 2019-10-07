@@ -382,7 +382,7 @@ class NotificationHelper
                         break;
 
                     case 'steal_lumber':
-                        $where = 'from our storehouses';
+                        $where = 'from our lumberyards';
                         break;
 
                     case 'steal_mana':
@@ -390,9 +390,6 @@ class NotificationHelper
                         break;
 
                     case 'steal_ore':
-                        $where = 'from our mines';
-                        break;
-
                     case 'steal_gems':
                         $where = 'from our mines';
                         break;
@@ -410,14 +407,14 @@ class NotificationHelper
                         $data['resource'],
                         $where
                     );
-                } else {
-                    return sprintf(
-                        'Our spies discovered %s %s missing %s!',
-                        number_format($data['amount']),
-                        $data['resource'],
-                        $where
-                    );
                 }
+
+                return sprintf(
+                    'Our spies discovered %s %s missing %s!',
+                    number_format($data['amount']),
+                    $data['resource'],
+                    $where
+                );
 
             case 'irregular_dominion.repelled_resource_theft':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);

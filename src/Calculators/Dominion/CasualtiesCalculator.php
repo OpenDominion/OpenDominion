@@ -114,36 +114,26 @@ class CasualtiesCalculator
             $unitBonusMultiplier += ($dominion->race->getUnitPerkValueForUnitSlot($slot, ['fewer_casualties', 'fewer_casualties_offense']) / 100);
 
             // Unit Perk: Reduce Combat Losses
-            $unitsAtHomePerSlot = [];
-            $unitsAtHomeRCLSlot = null;
+            $unitsSentPerSlot = [];
+            $unitsSentRCLSlot = null;
             $reducedCombatLossesMultiplierAddition = 0;
 
             // todo: inefficient to do run this code per slot. needs refactoring
             foreach ($dominion->race->units as $unit) {
                 $slot = $unit->slot;
-                $unitKey = "military_unit{$slot}";
 
-                $totalUnitAmount = $dominion->$unitKey;
-
-                $unitsAtHome = ($totalUnitAmount - ($units[$slot] ?? 0));
-                $unitsAtHomePerSlot[$slot] = $unitsAtHome;
+                $unitsSentPerSlot[$slot] = $units[$slot];
 
                 if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
-                    // todo: hacky workaround for not allowing RCL for gobbos (feedback from Gabbe)
-                    //  Needs to be refactored later; unit perk should be renamed in the yml to reduce_combat_losses_defense
-                    if ($dominion->race->name === 'Goblin') {
-                        continue;
-                    }
-
-                    $unitsAtHomeRCLSlot = $slot;
+                    $unitsSentRCLSlot = $slot;
                 }
             }
 
             // We have a unit with RCL!
-            if ($unitsAtHomeRCLSlot !== null) {
-                $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
+            if ($unitsSentRCLSlot !== null) {
+                $totalUnitsSent = array_sum($unitsSentPerSlot);
 
-                $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
+                $reducedCombatLossesMultiplierAddition += (($unitsSentPerSlot[$unitsSentRCLSlot] / $totalUnitsSent) / 2);
             }
 
             $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
@@ -308,36 +298,32 @@ class CasualtiesCalculator
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
+        $totalMilitaryCasualties = $remainingCasualties;
 
-        while (count($units) > 0 && $remainingCasualties > 0) {
-            foreach ($units as $unit) {
-                $casualties[$unit] = (int)min(
-                    (array_get($casualties, $unit, 0) + (int)(ceil($remainingCasualties / count($units)))),
-                    $dominion->{$unit}
-                );
+        foreach($units as $unit) {
+            if($remainingCasualties == 0) {
+                break;
             }
 
-            $remainingCasualties = $totalCasualties - array_sum($casualties);
+            $slotTotal = $dominion->{$unit};
 
-            $units = array_filter($units, function ($unit) use ($dominion, $casualties) {
-                return ($casualties[$unit] < $dominion->{$unit});
-            });
+            if($slotTotal == 0) {
+                continue;
+            }
+
+            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;
+
+            $slotLost = ceil($slotTotal * $slotLostMultiplier);
+
+            if($slotLost > $remainingCasualties) {
+                $slotLost = $remainingCasualties;
+            }
+
+            $casualties[$unit] += $slotLost;
+            $remainingCasualties -= $slotLost;
         }
 
-        if ($remainingCasualties < 0) {
-            while ($remainingCasualties < 0) {
-                foreach (array_keys(array_reverse($casualties)) as $unitType) {
-                    if ($casualties[$unitType] > 0) {
-                        $casualties[$unitType]--;
-                        $remainingCasualties++;
-                    }
-
-                    if ($remainingCasualties === 0) {
-                        break 2;
-                    }
-                }
-            }
-        } elseif ($remainingCasualties > 0) {
+        if ($remainingCasualties > 0) {
             $casualties['peasants'] = (int)min(
                 ($remainingCasualties + $casualties['peasants']),
                 $dominion->peasants

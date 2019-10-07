@@ -4,6 +4,7 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -210,6 +211,11 @@ class Dominion extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
+    public function tick()
+    {
+        return $this->hasOne(Dominion\Tick::class);
+    }
+
     // Eloquent Query Scopes
 
     public function scopeActive(Builder $query)
@@ -235,12 +241,20 @@ class Dominion extends AbstractModel
             }
         }
 
+        // Verify tick hasn't happened during this request
+        if ($this->exists && $this->last_tick_at != $this->fresh()->last_tick_at) {
+            throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+        }
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
             /** @noinspection PhpUndefinedVariableInspection */
             $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
         }
+
+        // Recalculate next tick
+        $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
+        $tickService->precalculateTick($this);
 
         return $saved;
     }

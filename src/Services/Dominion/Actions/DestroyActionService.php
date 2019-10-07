@@ -42,7 +42,7 @@ class DestroyActionService
         }
 
         foreach ($data as $buildingType => $amount) {
-            $dominion->decrement('building_' . $buildingType, $amount);
+            $dominion->{'building_' . $buildingType} -= $amount;
         }
 
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DESTROY]);
