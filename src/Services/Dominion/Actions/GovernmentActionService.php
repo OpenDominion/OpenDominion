@@ -78,6 +78,6 @@ class GovernmentActionService
         if ($name) {
             $dominion->realm->name = $name;
         }
-        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_UPDATED]);
+        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_REALM_UPDATED]);
     }
 }
