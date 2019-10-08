@@ -45,10 +45,6 @@
                         @slot('title', ('Status Screen (' . $dominion->name . ')'))
                         @slot('titleIconClass', 'fa fa-bar-chart')
 
-                        @php
-                            $race = OpenDominion\Models\Race::findOrFail($infoOp->data['race_id']);
-                        @endphp
-
                         @slot('tableResponsive', false)
                         @slot('noPadding', true)
 
@@ -71,7 +67,7 @@
                                         </tr>
                                         <tr>
                                             <td>Race:</td>
-                                            <td>{{ $race->name }}</td>
+                                            <td>{{ $dominion->race->name }}</td>
                                         </tr>
                                         <tr>
                                             <td>Land:</td>
@@ -169,19 +165,19 @@
                                             <td>{{ number_format($infoOp->data['military_draftees']) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ $race->units->get(0)->name }}:</td>
+                                            <td>{{ $dominion->race->units->get(0)->name }}:</td>
                                             <td>{{ number_format($infoOp->data['military_unit1']) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ $race->units->get(1)->name }}:</td>
+                                            <td>{{ $dominion->race->units->get(1)->name }}:</td>
                                             <td>{{ number_format($infoOp->data['military_unit2']) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ $race->units->get(2)->name }}:</td>
+                                            <td>{{ $dominion->race->units->get(2)->name }}:</td>
                                             <td>{{ number_format($infoOp->data['military_unit3']) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ $race->units->get(3)->name }}:</td>
+                                            <td>{{ $dominion->race->units->get(3)->name }}:</td>
                                             <td>{{ number_format($infoOp->data['military_unit4']) }}</td>
                                         </tr>
                                         <tr>
