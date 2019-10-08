@@ -78,6 +78,7 @@ class ValhallaController extends AbstractController
             case 'largest-good-realms': $data = $this->getLargestRealms($round, 'good'); break;
             case 'largest-evil-realms': $data = $this->getLargestRealms($round, 'evil'); break;
             case 'largest-packs': $data = $this->getLargestPacks($round); break;
+            case 'stat-prestige': $data = $this->getDominionsByStatistic($round, 'prestige'); break;
             case 'stat-attacking-success': $data = $this->getDominionsByStatistic($round, 'stat_attacking_success'); break;
             case 'stat-defending-success': $data = $this->getDominionsByStatistic($round, 'stat_defending_success'); break;
             case 'stat-espionage-success': $data = $this->getDominionsByStatistic($round, 'stat_espionage_success'); break;

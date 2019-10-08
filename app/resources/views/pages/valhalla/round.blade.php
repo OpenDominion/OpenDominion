@@ -72,7 +72,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-lumber-stolen']) }}">Top Lumber Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-mana-stolen']) }}">Top Mana Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-ore-stolen']) }}">Top Ore Thieves</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-gem-stolen']) }}">Top Gem Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-gems-stolen']) }}">Top Gem Thieves</a><br>
                     <!--
                     Top Saboteurs<br>
                     Top Magical Assassins<br>
