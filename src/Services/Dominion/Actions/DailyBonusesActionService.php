@@ -56,6 +56,7 @@ class DailyBonusesActionService
         $landGained = 20;
         $attribute = ('land_' . $dominion->race->home_land_type);
         $dominion->{$attribute} += $landGained;
+        $dominion->stat_total_land_explored += $landGained;
         $dominion->daily_land = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 

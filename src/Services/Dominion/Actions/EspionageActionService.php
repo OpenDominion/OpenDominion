@@ -570,6 +570,7 @@ class EspionageActionService
 
         DB::transaction(static function () use ($dominion, $target, $resource, $amountStolen, $operationKey) {
             $dominion->{"resource_{$resource}"} += $amountStolen;
+            $dominion->{"stat_total_{$resource}_stolen"} += $amountStolen;
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
                 'action' => $operationKey

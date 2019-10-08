@@ -103,7 +103,7 @@
                                     <col width="50%">
                                     <col width="50%">
                                 </colgroup>
-                                <thead>
+                                <thead class="hidden-xs">
                                     <tr>
                                         <th colspan="2">&nbsp;</th>
                                     </tr>
@@ -119,6 +119,18 @@
                                         <td>Defending success:</td>
                                         <td>
                                             <strong>{{ number_format($selectedDominion->stat_defending_success) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Land conquered:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_land_conquered) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Land explored:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_land_explored) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -163,14 +175,6 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <table class="table">
-                                <colgroup>
-                                    <col width="50%">
-                                    <col width="50%">
-                                </colgroup>
                                 <thead>
                                     <tr>
                                         <th colspan="2">Wizard Power</th>
@@ -205,6 +209,57 @@
                                     <col width="50%">
                                 </colgroup>
                                 <thead>
+                                    <tr>
+                                        <th colspan="2">Theft</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Platinum Stolen:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_platinum_stolen) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lumber Stolen:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_lumber_stolen) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Food Stolen:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_food_stolen) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mana Stolen:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_mana_stolen) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ore Stolen:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_ore_stolen) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gems Stolen:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_total_gems_stolen) }}</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <table class="table">
+                                <colgroup>
+                                    <col width="50%">
+                                    <col width="50%">
+                                </colgroup>
+                                <thead class="hidden-xs">
                                     <tr>
                                         <th colspan="2">&nbsp;</th>
                                     </tr>
@@ -287,7 +342,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-8">
+                        <div class="col-xs-12 col-sm-4">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="box-header with-border">
@@ -296,8 +351,8 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12 col-sm-6">
-                                    <table class="table" style="margin-bottom: 0px;">
+                                <div class="col-xs-12">
+                                    <table class="table">
                                         <colgroup>
                                             <col width="50%">
                                             <col width="50%">
@@ -332,21 +387,6 @@
                                                     <strong>{{ number_format($selectedDominion->stat_total_mana_production) }}</strong>
                                                 </td>
                                             </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-xs-12 col-sm-6">
-                                    <table class="table">
-                                        <colgroup>
-                                            <col width="50%">
-                                            <col width="50%">
-                                        </colgroup>
-                                        <thead class="hidden-xs">
-                                            <tr>
-                                                <th colspan="2">&nbsp;</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
                                             <tr>
                                                 <td>Ore:</td>
                                                 <td>

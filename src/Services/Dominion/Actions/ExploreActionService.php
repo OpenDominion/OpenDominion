@@ -79,7 +79,8 @@ class ExploreActionService
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
         $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
-        DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees) {
+        DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees, $totalLandToExplore) {
+            $dominion->stat_total_land_explored += $totalLandToExplore;
             $dominion->fill([
                 'morale' => $newMorale,
                 'resource_platinum' => $newPlatinum,
