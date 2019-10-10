@@ -1,5 +1,8 @@
 name: Goblin
 alignment: evil
+description: >-
+  <p>Small in stature but great in number, Goblins are a vicious and single-minded breed that prefer to take down their enemies with overwhelming numbers - and then steal all the shinies.</p>
+  <p>Goblin populations can grow quickly out of control if left unchecked, and these short, green and ugly wretches have been known to completely ransack well-fortified castles in their relentless pursuit of gems, gems and more gems.</p>
 home_land_type: hill
 perks:
   max_population: 20

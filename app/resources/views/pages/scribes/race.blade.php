@@ -11,7 +11,7 @@
                     {{-- Description --}}
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Description</h4>
                     <em>
-                        {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                        {!! $race->description !!}
                     </em>
 
                     <div class="row">

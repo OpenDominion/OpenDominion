@@ -1,5 +1,8 @@
 name: Orc
 alignment: evil
+description: >-
+  <p>Known for their barbaric behavior and lack of intelligence, these warmongering creatures have an insatiable hunger for destruction.</p>
+  <p>Orcs are proud warriors with a strong sense of honor. As formidable as they are, their direct approach to warfare is weak against a fortified position.</p>
 home_land_type: forest
 perks:
   food_consumption: 20

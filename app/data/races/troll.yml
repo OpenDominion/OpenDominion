@@ -1,5 +1,8 @@
 name: Troll
 alignment: evil
+description: >-
+  <p>Hard to kill, and even harder to look at without screaming, Trolls are the hideously ugly but tremendously powerful genetic dead end of an ancient elven race.</p>
+  <p>Trolls are notoriously bloodthirsty. What they lack in subtlety they more than make up for in gratuitous violence. It is not uncommon to see fully-armoured soldiers being punted up sixty feet into the air during Troll invasions. <em>[Urg smash!]</em></p>
 home_land_type: plain
 perks:
   max_population: -5

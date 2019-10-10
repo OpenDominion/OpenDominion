@@ -1,6 +1,10 @@
 name: Nomad
 alignment: evil
+description: >-
+  <p>Descendants of Humans, these folk have been exiled from the kingdom long ago and went their own way.</p>
+  <p>Acclimated to the desert life, these traveling Nomads teamed up with the evil races out of spite towards the Humans and their allies.</p>
 home_land_type: plain
+playable: false
 perks:
   mana_production: 10
 units:

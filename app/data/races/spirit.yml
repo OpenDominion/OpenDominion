@@ -1,6 +1,10 @@
 name: Spirit
 alignment: good
+description: >-
+  <p>These kind spirits long for a quiet and peaceful world.</p>
+  <p>Some of the lost souls of fallen enemies, will join their ranks in search of this goal.</p>
 home_land_type: swamp
+playable: false
 perks:
   max_population: 15
   food_consumption: -90

@@ -1,5 +1,8 @@
 name: Wood Elf
 alignment: good
+description: >-
+  <p>Graceful, slender and eerily beautiful, the Wood Elves are among the eldest of the races and keenly attuned with the natural world, seeking to protect their forests from the forces of evil.</p>
+  <p>Though peaceful by nature, Wood Elves are a versatile race, proficient in combat with their deadly archers and magically gifted druids that draw power from the very forest itself, and backed up by powerful wizards and skilled spies that excel at covert ops.</p>
 home_land_type: forest
 perks:
   wizard_strength: 10

@@ -105,6 +105,10 @@ class RoundController extends AbstractController
                 $race = Race::findOrFail($request->get('race'));
                 $pack = null;
 
+                if (!$race->playable) {
+                    throw new GameException('Invalid race selection');
+                }
+
                 switch ($request->get('realm_type')) {
                     case 'random':
                         $realm = $realmFinderService->findRandomRealm($round, $race);

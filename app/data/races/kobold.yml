@@ -1,5 +1,8 @@
 name: Kobold
 alignment: good
+description: >-
+  <p>A bunch of annoying little shits.</p>
+  <p>You no take candle!</p>
 home_land_type: hill
 perks:
   max_population: 40

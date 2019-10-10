@@ -1,5 +1,8 @@
 name: Lizardfolk
 alignment: evil
+description: >-
+  <p>These amphibious creatures hail from the depths of the seas, having remained mostly hidden for decades before resurfacing and joining the war.</p>
+  <p>Lizardfolk are highly proficient at both performing and countering espionage operations, and make for excellent incursions on unsuspecting targets.</p>
 home_land_type: water
 perks:
   max_population: 5
