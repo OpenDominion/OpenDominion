@@ -14,8 +14,7 @@ class AddFieldsToUnitsTable extends Migration
     public function up()
     {
         Schema::table('units', function (Blueprint $table) {
-            $table->text('type')->after('need_boat')->nullable();
-            $table->text('proficiency')->after('type')->nullable();
+            $table->text('type')->after('name')->nullable();
         });
     }
 
@@ -28,7 +27,6 @@ class AddFieldsToUnitsTable extends Migration
     {
         Schema::table('units', function (Blueprint $table) {
             $table->dropColumn('type');
-            $table->dropColumn('proficiency');
         });
     }
 }

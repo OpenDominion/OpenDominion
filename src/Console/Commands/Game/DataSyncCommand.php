@@ -135,7 +135,6 @@ class DataSyncCommand extends Command implements CommandInterface
                     'power_defense' => object_get($unitData, 'power.defense', 0),
                     'need_boat' => (int)object_get($unitData, 'need_boat', true),
                     'type' => object_get($unitData, 'type'),
-                    'proficiency' => object_get($unitData, 'proficiency'),
                 ]);
 
                 if ($unit->exists) {

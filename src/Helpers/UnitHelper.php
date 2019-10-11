@@ -121,11 +121,9 @@ class UnitHelper
 
             list($type, $proficiency) = explode(" ", $helpStrings[$unitType]);
             if ($unit->type) {
-                $type = ucfirst($unit->type);
-            }
-            if ($unit->proficiency) {
-                $proficiency = "{$unit->proficiency}.";
-            }
+                list($type, $proficiency) = explode("_", $unit->type);
+                $type = ucfirst($type);
+            }   $proficiency .= ".";
             $helpStrings[$unitType] = "$type $proficiency";
 
             foreach ($unit->perks as $perk) {
@@ -273,17 +271,20 @@ class UnitHelper
             $unit = $race->units->filter(function ($unit) use ($unitType) {
                 return ($unit->slot == (int)str_replace('unit', '', $unitType));
             })->first();
-            if (strtolower($unit->type) == 'offensive') {
-                $iconClass = 'ra ra-sword';
-            } elseif (strtolower($unit->type) == 'defensive') {
-                $iconClass = 'ra ra-shield';
-            } elseif (strtolower($unit->type) == 'hybrid') {
-                $iconClass = 'ra ra-crossed-swords';
-            }
-            if (strtolower($unit->proficiency) == 'specialist') {
-                $colorClass = 'text-green';
-            } elseif (strtolower($unit->proficiency) == 'elite') {
-                $colorClass = 'text-light-blue';
+            if ($unit->type) {
+                list($type, $proficiency) = explode('_', $unit->type);
+                if (strtolower($type) == 'offensive') {
+                    $iconClass = 'ra ra-sword';
+                } elseif (strtolower($type) == 'defensive') {
+                    $iconClass = 'ra ra-shield';
+                } elseif (strtolower($type) == 'hybrid') {
+                    $iconClass = 'ra ra-crossed-swords';
+                }
+                if (strtolower($proficiency) == 'specialist') {
+                    $colorClass = 'text-green';
+                } elseif (strtolower($proficiency) == 'elite') {
+                    $colorClass = 'text-light-blue';
+                }
             }
         }
 

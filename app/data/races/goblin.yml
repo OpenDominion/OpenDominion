@@ -27,8 +27,7 @@ units:
     perks:
       reduce_combat_losses: 1
   - name: Hobgoblin
-    type: offensive
-    proficiency: elite
+    type: offensive_elite
     cost:
       platinum: 1000
       ore: 80

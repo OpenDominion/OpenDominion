@@ -25,8 +25,7 @@ units:
       offense: 0
       defense: 3
   - name: Basher
-    type: offensive
-    proficiency: elite
+    type: offensive_elite
     cost:
       platinum: 1000
       ore: 100
@@ -42,8 +41,7 @@ units:
       offense_vs_wood_elf: 1
       offense_vs_kobold: 1
   - name: Smasher
-    type: hybrid
-    proficiency: elite
+    type: hybrid_elite
     cost:
       platinum: 1450
       ore: 150
