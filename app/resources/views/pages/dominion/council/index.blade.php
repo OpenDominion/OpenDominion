@@ -37,7 +37,11 @@
                                         <td>
                                             <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                             <small class="text-muted">
-                                                Created {{ $thread->created_at }} by <b>{{ $thread->dominion->name }}</b>
+                                                Created {{ $thread->created_at }} by 
+                                                @if ($thread->dominion->isMonarch())
+                                                    <i class="ra ra-queen-crown text-red"></i>
+                                                @endif
+                                                <b>{{ $thread->dominion->name }}</b>
                                                 @if ($thread->dominion->name !== $thread->dominion->ruler_name)
                                                     ({{ $thread->dominion->ruler_name }})
                                                 @endif
@@ -56,7 +60,11 @@
                                             @if (!$thread->posts->isEmpty())
                                                 {{ $thread->posts->last()->created_at }}<br>
                                                 <small class="text-muted">
-                                                    by <b>{{ $thread->posts->last()->dominion->name }}</b>
+                                                    by
+                                                    @if ($thread->posts->last()->dominion->isMonarch())
+                                                        <i class="ra ra-queen-crown text-red"></i>
+                                                    @endif
+                                                    <b>{{ $thread->posts->last()->dominion->name }}</b>
                                                     @if ($thread->posts->last()->dominion->name !== $thread->posts->last()->dominion->ruler_name)
                                                         ({{ $thread->posts->last()->dominion->ruler_name }})
                                                     @endif

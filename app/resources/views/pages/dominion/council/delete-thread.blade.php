@@ -28,7 +28,11 @@
         <div class="box-footer">
             <small>
                 <i>
-                    Posted {{ $thread->created_at }} by <b>{{ $thread->dominion->name }}</b>
+                    Posted {{ $thread->created_at }} by
+                    @if ($thread->dominion->isMonarch())
+                        <i class="ra ra-queen-crown text-red"></i>
+                    @endif
+                    <b>{{ $thread->dominion->name }}</b>
                     @if ($thread->dominion->name !== $thread->dominion->ruler_name)
                         ({{ $thread->dominion->ruler_name }})
                     @endif
@@ -46,7 +50,11 @@
                 <div class="box-footer">
                     <small>
                         <i>
-                            Posted {{ $post->created_at }} by <b>{{ $post->dominion->name }}</b>
+                            Posted {{ $post->created_at }} by
+                            @if ($post->dominion->isMonarch())
+                                <i class="ra ra-queen-crown text-red"></i>
+                            @endif
+                            <b>{{ $post->dominion->name }}</b>
                             @if ($post->dominion->name !== $post->dominion->ruler_name)
                                 ({{ $post->dominion->ruler_name }})
                             @endif
