@@ -79,7 +79,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         }
 
         if ($realmSize < $packSize) {
-            throw new RuntimeException('Option --realmSize must be greater than or equal to option --packSize.');
+            throw new RuntimeException('Option --realm-size must be greater than or equal to option --packSize.');
         }
 
         if ($playersPerRace < 0) {
