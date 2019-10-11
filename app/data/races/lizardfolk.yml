@@ -21,6 +21,8 @@ units:
     power:
       defense: 3
   - name: Chameleon
+    type: hybrid
+    proficiency: elite
     cost:
       platinum: 900
     power:

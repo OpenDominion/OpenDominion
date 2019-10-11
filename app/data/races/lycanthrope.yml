@@ -23,6 +23,8 @@ units:
       offense: 0
       defense: 3
   - name: Werewolf
+    type: hybrid
+    proficiency: elite
     cost:
       platinum: 850
       ore: 55

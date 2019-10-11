@@ -97,7 +97,7 @@
                                 @endphp
                                 <tr>
                                     <td>
-                                        {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}") !!}
+                                        {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
                                         {{ $unit->name }}
                                     </td>
                                     <td class="text-center">

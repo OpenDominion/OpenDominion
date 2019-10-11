@@ -24,6 +24,8 @@ units:
       offense: 0
       defense: 3
   - name: Adept
+    type: hybrid
+    proficiency: elite
     cost:
       platinum: 1000
       ore: 55

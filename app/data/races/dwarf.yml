@@ -26,6 +26,8 @@ units:
     perks:
       ore_production: 0.5
   - name: Cleric
+    type: hybrid
+    proficiency: elite  
     cost:
       platinum: 760
       ore: 0
