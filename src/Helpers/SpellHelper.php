@@ -55,11 +55,9 @@ class SpellHelper
             ->merge($this->getOffensiveSpells());
     }
 
-    public function getSelfSpells(Race $race): Collection
+    public function getSelfSpells(?Race $race): Collection
     {
-        $racialSpell = $this->getRacialSelfSpell($race);
-
-        return collect(array_filter([
+        $spells = collect(array_filter([
             [
                 'name' => 'Gaia\'s Watch',
                 'description' => '+10% food production',
@@ -116,9 +114,15 @@ class SpellHelper
 //                'key' => '',
 //                'mana_cost' => 3,
 //                'duration' => 8,
-//            ],
-            $racialSpell
+//            ]
         ]));
+
+        if($race !== NULL){
+            $racialSpell = $this->getRacialSelfSpell($race);
+            $spells->append($racialSpell);
+        }
+
+        return $spells;
     }
 
     public function getRacialSelfSpell(Race $race) {

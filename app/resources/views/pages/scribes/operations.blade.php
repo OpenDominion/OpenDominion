@@ -17,7 +17,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Information Operation</th>
+                                <th>Information gathering</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
@@ -42,7 +42,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Theft Operation</th>
+                                <th>Theft</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>

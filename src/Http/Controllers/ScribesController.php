@@ -70,6 +70,8 @@ class ScribesController extends AbstractController
 
     public function getSpells()
     {
-        return view('pages.scribes.spells');
+        return view('pages.scribes.spells', [
+            'spellHelper' => app(SpellHelper::class)
+        ]);
     }
 }
