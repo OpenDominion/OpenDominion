@@ -11,8 +11,7 @@
                 <div class="col-md-12 col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
-                            <col>
-                            <col>
+                            <col width="200px">
                             <col>
                         </colgroup>
                         <thead>
@@ -36,8 +35,7 @@
                 <div class="col-md-12 col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
-                            <col>
-                            <col>
+                            <col width="200px">
                             <col>
                         </colgroup>
                         <thead>
