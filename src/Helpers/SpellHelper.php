@@ -117,7 +117,7 @@ class SpellHelper
 //            ]
         ]));
 
-        if($race !== NULL){
+        if($race !== null){
             $racialSpell = $this->getRacialSelfSpell($race);
             $spells->append($racialSpell);
         }
