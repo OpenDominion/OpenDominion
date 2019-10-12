@@ -36,7 +36,7 @@ class InvadeActionService
     /**
      * @var float Base percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.375;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.825;
 
     /**
      * @var float Max percentage of defensive casualties
@@ -535,6 +535,11 @@ class InvadeActionService
      */
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
     {
+        if ($this->invasionResult['result']['overwhelmed'])
+        {
+            return 0;
+        }
+
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
