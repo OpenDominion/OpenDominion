@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
@@ -58,5 +59,17 @@ class ScribesController extends AbstractController
             'buildingHelper' => $buildingHelper,
             'landHelper' => app(LandHelper::class),
         ]);
+    }
+
+    public function getOperations()
+    {
+        return view('pages.scribes.operations', [
+            'espionageHelper' => app(EspionageHelper::class)
+        ]);
+    }
+
+    public function getSpells()
+    {
+        return view('pages.scribes.spells');
     }
 }
