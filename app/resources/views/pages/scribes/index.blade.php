@@ -67,6 +67,7 @@
                                 <tr>
                                     <td>
                                         {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                                        {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                                     </td>
                                     <td>
                                         @if($landType !== NULL)
