@@ -68,9 +68,9 @@ class ScribesController extends AbstractController
         ]);
     }
 
-    public function getSpells()
+    public function getMagic()
     {
-        return view('pages.scribes.spells', [
+        return view('pages.scribes.magic', [
             'spellHelper' => app(SpellHelper::class)
         ]);
     }

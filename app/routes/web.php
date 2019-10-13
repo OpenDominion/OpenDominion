@@ -180,7 +180,7 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Rou
     $router->get('races')->uses('ScribesController@getRaces')->name('races');
     $router->get('buildings')->uses('ScribesController@getBuildings')->name('buildings');
     $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');
-    $router->get('spells')->uses('ScribesController@getSpells')->name('spells');
+    $router->get('magic')->uses('ScribesController@getMagic')->name('magic');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
 });
 

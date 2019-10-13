@@ -9,8 +9,9 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12 col-md-12">
-                    <em>
+
                         <p>Espionage is when you send your spies to take actions against a target in so-called spy-ops.</p>
+                    <em>
                         <p>More information can be found on the <a href="https://wiki.opendominion.net/wiki/Espionage">wiki</a>.</p>
                     </em>
                 </div>
