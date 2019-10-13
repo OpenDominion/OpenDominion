@@ -103,7 +103,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Surreal Perception',
-                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops for 8 hours',
+                'description' => 'Reveals the dominion casting offensive spells or committing spy ops against you for 8 hours',
                 'key' => 'surreal_perception',
                 'mana_cost' => 4,
                 'duration' => 8,

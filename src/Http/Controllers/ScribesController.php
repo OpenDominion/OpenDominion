@@ -38,7 +38,7 @@ class ScribesController extends AbstractController
         ]);
     }
 
-    public function getBuildings()
+    public function getConstruction()
     {
         $buildingHelper = app(BuildingHelper::class);
 
@@ -54,7 +54,7 @@ class ScribesController extends AbstractController
 
         ksort($buildingTypeWithLandType);
 
-        return view('pages.scribes.buildings', [
+        return view('pages.scribes.construction', [
             'buildingTypeWithLandType' => $buildingTypeWithLandType,
             'buildingHelper' => $buildingHelper,
             'landHelper' => app(LandHelper::class),

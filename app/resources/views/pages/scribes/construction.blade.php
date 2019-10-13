@@ -4,9 +4,25 @@
     @include('partials.scribes.nav')
     <div class="box box-primary">
         <div class="box-header with-border">
+            <h3 class="box-title">Construction</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12 col-md-12">
+                    <p>Buildings are the backbone of your dominion and provide you with production and various bonuses.</p>
+                    <p>They can only be constructed on acres of barren land.</p>
+                    <em>
+                        <p>More information can be found on the <a href="https://wiki.opendominion.net/wiki/Buildings">wiki</a>.</p>
+                    </em>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-header with-border">
             <h3 class="box-title">Buildings</h3>
         </div>
-        <div class="box-body no-padding">
+        <div class="box-body">
             <div class="row">
                 <div class="col-md-12 col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">
@@ -17,7 +33,7 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Building</th>
+                                <th></th>
                                 <th>Land</th>
                                 <th>&nbsp;</th>
                             </tr>
