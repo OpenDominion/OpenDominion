@@ -2,7 +2,7 @@
     <div class="box-body no-padding">
         <div class="row">
             <div class="col-md-12 col-md-12">
-                <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                <div class="navbar-collapse">
                     <ul class="nav navbar-nav scribes-menu">
                         <li class="{{ Route::is('scribes.races') ? 'active' : null }}"><a href="{{ route('scribes.races') }}">Races</a></li>
                         <li class="{{ Route::is('scribes.construction') ? 'active' : null }}"><a href="{{ route('scribes.construction') }}">Construction</a></li>
