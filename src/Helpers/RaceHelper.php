@@ -306,6 +306,10 @@ UNDEAD;
                 $description = 'Boat capacity';
                 $valueType = '';
                 break;
+            case 'population_growth':
+                $negativeBenefit = false;
+                $description = 'Population growth';
+                break;
             default:
                 return null;
         }
