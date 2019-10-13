@@ -517,6 +517,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
         foreach ($tests as $test) {
             /** @var Mock|Dominion $dominion */
             $dominion = m::mock(Dominion::class);
+            $target = m::mock(Dominion::class);
 
             /** @var Mock|Unit $unit */
             $unit = m::mock(Unit::class);
@@ -530,10 +531,11 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type)->andReturn(0)->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $test['attributes']['perk_name'])->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
+            $target->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
 
             $this->assertEquals(
                 $test['expected'],
-                $this->sut->getUnitPowerFromVersusRacePerk($dominion, $race, $unit, $test['attributes']['power_type']),
+                $this->sut->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $test['attributes']['power_type']),
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nOpposing Race: %s",
                     $test['attributes']['power_type'],
