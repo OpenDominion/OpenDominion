@@ -475,7 +475,7 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.5; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -485,7 +485,7 @@ class EspionageActionService
                 ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.25);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
 
                 $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
