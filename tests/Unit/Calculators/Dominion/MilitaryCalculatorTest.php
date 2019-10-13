@@ -526,13 +526,14 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 
             $perk_type = $test['attributes']['power_type'] . '_vs_' . $test['attributes']['race'];
             $unit->shouldReceive('getAttribute')->with('slot')->andReturn($test['attributes']['slot'])->byDefault();
+            $race->shouldReceive('getAttribute')->with('name')->andReturn($test['attributes']['race'])->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $perk_type)->andReturn(0)->byDefault();
             $race->shouldReceive('getUnitPerkValueForUnitSlot')->with($unit->slot, $test['attributes']['perk_name'])->andReturn($test['attributes']['perk_value'])->byDefault();
             $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race)->byDefault();
 
             $this->assertEquals(
                 $test['expected'],
-                $this->sut->getUnitPowerFromVersusRacePerk($dominion, $test['attributes']['race'], $unit, $test['attributes']['power_type']),
+                $this->sut->getUnitPowerFromVersusRacePerk($dominion, $race, $unit, $test['attributes']['power_type']),
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nOpposing Race: %s",
                     $test['attributes']['power_type'],
