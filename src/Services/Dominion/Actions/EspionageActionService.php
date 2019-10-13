@@ -235,7 +235,7 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.5; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 0.25; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -245,7 +245,7 @@ class EspionageActionService
                 ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.25, 1);
 
                 $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
@@ -256,8 +256,8 @@ class EspionageActionService
 
                 foreach ($dominion->race->units as $unit) {
                     if ($unit->getPerkValue('counts_as_spy_offense')) {
-                        $multiplierForSpyDefense = $unit->getPerkValue('counts_as_spy_offense') / $unit->power_defense;
-                        $unitKilled = (int)floor(($dominion->{"military_unit{$unit->slot}"} * $multiplierForSpyDefense * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
+                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
                         if ($unitKilled > 0) {
                             $unitsKilled[strtolower($unit->name)] = $unitKilled;
                             $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
@@ -475,7 +475,7 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 0.5; // TODO: Higher for black ops.
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -485,7 +485,7 @@ class EspionageActionService
                 ));
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 1, 2);
+                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.25);
 
                 $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
@@ -496,8 +496,8 @@ class EspionageActionService
 
                 foreach ($dominion->race->units as $unit) {
                     if ($unit->getPerkValue('counts_as_spy_offense')) {
-                        $multiplierForSpyDefense = $unit->getPerkValue('counts_as_spy_offense') / $unit->power_defense;
-                        $unitKilled = (int)floor(($dominion->{"military_unit{$unit->slot}"} * $multiplierForSpyDefense * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
+                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
+                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
                         if ($unitKilled > 0) {
                             $unitsKilled[strtolower($unit->name)] = $unitKilled;
                             $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
