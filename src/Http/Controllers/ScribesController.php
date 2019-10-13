@@ -61,9 +61,9 @@ class ScribesController extends AbstractController
         ]);
     }
 
-    public function getOperations()
+    public function getEspionage()
     {
-        return view('pages.scribes.operations', [
+        return view('pages.scribes.espionage', [
             'espionageHelper' => app(EspionageHelper::class)
         ]);
     }

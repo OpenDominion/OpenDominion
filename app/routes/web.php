@@ -179,7 +179,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Router $router) {
     $router->get('races')->uses('ScribesController@getRaces')->name('races');
     $router->get('buildings')->uses('ScribesController@getBuildings')->name('buildings');
-    $router->get('operations')->uses('ScribesController@getOperations')->name('operations');
+    $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');
     $router->get('spells')->uses('ScribesController@getSpells')->name('spells');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
 });
