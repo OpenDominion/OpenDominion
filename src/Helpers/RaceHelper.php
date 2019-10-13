@@ -225,7 +225,7 @@ UNDEAD;
         }
     }
 
-    public function getPerkDescriptionHtmlWithValue(RacePerkType $perkType): array
+    public function getPerkDescriptionHtmlWithValue(RacePerkType $perkType): ?array
     {
         $valueType = '%';
         $booleanValue = false;
@@ -300,6 +300,11 @@ UNDEAD;
             case 'wizard_strength':
                 $negativeBenefit = false;
                 $description = 'Wizard strength';
+                break;
+            case 'boat_capacity':
+                $negativeBenefit = false;
+                $description = 'Boat capacity';
+                $valueType = '';
                 break;
             default:
                 return null;
