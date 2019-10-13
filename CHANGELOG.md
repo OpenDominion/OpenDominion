@@ -5,10 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Added
+- Added new races: Kobold and Orc
+- Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts.
+- Added dominion search page
+- Added new categories to statistics advisor and valhalla
 - Added back spell mana cost of active spells to magic page
 - Added spell recharge time to magic page
 
 ### Changed
+- Sending less than 85% of your target's defense will no longer cause defensive casualties
+- Failed invasions when sending over 85% of the target's defense will now properly reduce defensive casualties for subsequent invasions
 - Slightly tweaked starvation casualties to now kill off population types based on proportion
 - Significantly increased the speed of the hourly tick (hour change)
 
