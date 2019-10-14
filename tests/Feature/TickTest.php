@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 use Throwable;
 
@@ -124,6 +125,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
         $queueService = app(QueueService::class);
+        $tickService = app(TickService::class);
 
         $dominion->resource_gems = 0;
         $dominion->resource_mana = 0;
@@ -131,6 +133,8 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $queueService->queueResources('construction', $dominion, ['building_diamond_mine' => 20], 1);
         $queueService->queueResources('construction', $dominion, ['building_tower' => 20], 1);
+        // Manually precalculate when queuing for next hour
+        $tickService->precalculateTick($dominion);
 
         Artisan::call('game:tick');
 

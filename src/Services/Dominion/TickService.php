@@ -384,19 +384,21 @@ class TickService
             }
         }
 
+        // Hacky refresh for dominion
+        $dominion->refresh();
+        $this->spellCalculator->getActiveSpells($dominion, true);
+
         // Queues
-        $incoming = DB::table('dominion_queue')
+        $incomingQueue = DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
             ->where('hours', '=', 1)
             ->get();
 
-        foreach ($incoming as $row) {
+        foreach ($incomingQueue as $row) {
             $tick->{$row->resource} += $row->amount;
+            // Temporarily add next hour's resources for accurate calculations
+            $dominion->{$row->resource} += $row->amount;
         }
-
-        // Hacky refresh for dominion
-        $dominion->refresh();
-        $this->spellCalculator->getActiveSpells($dominion, true);
 
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
@@ -463,6 +465,11 @@ class TickService
             );
 
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
+        }
+
+        foreach ($incomingQueue as $row) {
+            // Reset current resources in case object is saved later
+            $dominion->{$row->resource} -= $row->amount;
         }
 
         $tick->save();

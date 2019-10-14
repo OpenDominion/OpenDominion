@@ -120,6 +120,7 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
                 $this->dominion->shouldReceive('getAttribute')->with($attribute)->andReturn($value)->byDefault();
             }
 
+            $this->dominion->shouldReceive('getAttribute')->with('queues')->andReturn(new \Illuminate\Database\Eloquent\Collection())->byDefault();
             $this->assertEquals($test['expected'], $this->sut->getStarvationCasualtiesByUnitType($this->dominion, $test['attributes']['resource_food']));
         }
     }
