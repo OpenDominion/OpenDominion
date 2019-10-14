@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
+use DB;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -28,6 +29,19 @@ class HomeController extends AbstractController
             ->orderBy('created_at', 'desc')
             ->first();
 
-        return view('pages.home', compact('currentRound'));
+        $currentRankings = null;
+        if($currentRound !== null)
+        {
+            $currentRankings = DB::table('daily_rankings')
+                ->where('round_id', $currentRound->id)
+                ->orderBy('land_rank')
+                ->take(10)
+                ->get();
+        }
+
+        return view('pages.home', [
+            'currentRound' => $currentRound,
+            'currentRankings' => $currentRankings
+        ]);
     }
 }
