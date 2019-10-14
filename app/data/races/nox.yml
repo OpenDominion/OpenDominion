@@ -1,5 +1,8 @@
 name: Nox
 alignment: evil
+description: >-
+  <p>The children of the night lurk in the shadows, striking terror in even the most powerful of rulers.</p>
+  <p>Nox can be found in the deepest darkness where even Dark Elves won't dare to trespass.</p>
 home_land_type: swamp
 perks:
   food_consumption: -20

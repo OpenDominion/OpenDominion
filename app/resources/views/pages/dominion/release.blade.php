@@ -29,7 +29,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        {!! $unitHelper->getUnitTypeIconHtml('draftees') !!}
+                                        {!! $unitHelper->getUnitTypeIconHtml('draftees', $selectedDominion->race) !!}
                                         <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $selectedDominion->race) }}">
                                             Draftees
                                         </span>
@@ -42,7 +42,7 @@
                                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                                     <tr>
                                         <td>
-                                            {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                            {!! $unitHelper->getUnitTypeIconHtml($unitType, $selectedDominion->race) !!}
                                             <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $selectedDominion->race) }}">
                                                 {{ $unitHelper->getUnitName($unitType, $selectedDominion->race) }}
                                             </span>

@@ -62,12 +62,13 @@ class DataSyncCommand extends Command implements CommandInterface
             $race = Race::firstOrNew(['name' => $data->name])
                 ->fill([
                     'alignment' => object_get($data, 'alignment'),
+                    'description' => object_get($data, 'description'),
                     'home_land_type' => object_get($data, 'home_land_type'),
+                    'playable' => object_get($data, 'playable', true),
                 ]);
 
             if (!$race->exists) {
                 $this->info("Adding race {$data->name}");
-
             } else {
                 $this->info("Processing race {$data->name}");
 
@@ -133,6 +134,7 @@ class DataSyncCommand extends Command implements CommandInterface
                     'power_offense' => object_get($unitData, 'power.offense', 0),
                     'power_defense' => object_get($unitData, 'power.defense', 0),
                     'need_boat' => (int)object_get($unitData, 'need_boat', true),
+                    'type' => object_get($unitData, 'type'),
                 ]);
 
                 if ($unit->exists) {

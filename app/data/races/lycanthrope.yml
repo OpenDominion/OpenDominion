@@ -1,5 +1,8 @@
 name: Lycanthrope
 alignment: evil
+description: >-
+  <p>Once thought to be an ancient curse that transformed men into wolves under the light of a full moon, little is understood about the Lycanthropic affliction. But one thing's for certain&#58; once bitten, you'll never be the same again.</p>
+  <p>Capable of agonising transformations into half-beast monsters, Lycanthropes are a hardy and fast-growing race, turning their enemies into werewolves and regenerating non-lethal wounds mid-combat.</p>
 home_land_type: cavern
 perks:
   max_population: 10
@@ -20,6 +23,7 @@ units:
       offense: 0
       defense: 3
   - name: Werewolf
+    type: hybrid_elite
     cost:
       platinum: 850
       ore: 55

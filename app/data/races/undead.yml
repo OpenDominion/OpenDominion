@@ -1,5 +1,8 @@
 name: Undead
 alignment: evil
+description: >-
+  <p>An unending horde of beings that have overcome death, the undead have an insatiable desire to destroy all living creatures.</p>
+  <p>They are always on the offensive, increasing their number by reanimating fallen enemies.</p>
 home_land_type: swamp
 perks:
   max_population: 12.5
