@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getSelfSpells(null) as $operation)
+                            @foreach($spellHelper->getSelfSpells(null)->sortBy('name') as $operation)
                                 <tr>
                                     <td>{{ $operation['name'] }}</td>
                                     <td>&nbsp;</td>
@@ -78,7 +78,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getInfoOpSpells(null) as $operation)
+                            @foreach($spellHelper->getInfoOpSpells(null)->sortBy('name') as $operation)
                                 <tr>
                                     <td>{{ $operation['name'] }}</td>
                                     <td></td>
@@ -112,7 +112,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($spellHelper->getRacialSelfSpells(null) as $operation)
+                            @foreach($spellHelper->getRacialSelfSpells(null)->sortBy('name') as $operation)
                                 <tr>
                                     <td>{{ $operation['name'] }}</td>
                                     <td>{{$operation['races']->implode(', ')}}</td>

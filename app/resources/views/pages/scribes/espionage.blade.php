@@ -31,7 +31,7 @@
                             <col>
                         </colgroup>
                         <tbody>
-                            @foreach($espionageHelper->getInfoGatheringOperations() as $operation)
+                            @foreach($espionageHelper->getInfoGatheringOperations()->sortBy('name') as $operation)
                                 <tr>
                                     <td>{{ $operation['name'] }}</td>
                                     <td>{{ $operation['description'] }}</td>
@@ -48,7 +48,7 @@
                             <col>
                         </colgroup>
                         <tbody>
-                            @foreach($espionageHelper->getResourceTheftOperations() as $operation)
+                            @foreach($espionageHelper->getResourceTheftOperations()->sortBy('name') as $operation)
                                 <tr>
                                     <td>{{ $operation['name'] }}</td>
                                     <td>{{ $operation['description'] }}</td>
