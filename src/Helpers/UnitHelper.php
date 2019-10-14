@@ -119,11 +119,11 @@ class UnitHelper
                 return ($unit->slot == (int)str_replace('unit', '', $unitType));
             })->first();
 
-            list($type, $proficiency) = explode(" ", $helpStrings[$unitType]);
+            list($type, $proficiency) = explode(' ', $helpStrings[$unitType]);
             if ($unit->type) {
-                list($type, $proficiency) = explode("_", $unit->type);
+                list($type, $proficiency) = explode('_', $unit->type);
                 $type = ucfirst($type);
-            }   $proficiency .= ".";
+            }   $proficiency .= '.';
             $helpStrings[$unitType] = "$type $proficiency";
 
             foreach ($unit->perks as $perk) {
@@ -225,7 +225,7 @@ class UnitHelper
         switch ($unitType) {
             case 'draftees':
                 $iconClass = 'fa fa-user';
-                $colorClass = "text-green";
+                $colorClass = 'text-green';
                 break;
 
             case 'unit1':
