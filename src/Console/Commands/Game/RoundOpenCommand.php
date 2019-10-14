@@ -18,8 +18,8 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--open : Start the round in +3 days midnight, allowing for immediate registration}
                              {--days= : Start the round in +DAYS days midnight, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
-                             {--realmSize=10 : Maximum number of dominions in one realm}
-                             {--packSize=4 : Maximum number of players in a pack}
+                             {--realm-size=10 : Maximum number of dominions in one realm}
+                             {--pack-size=4 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment=true : Allows for mixed alignments}';
 
@@ -57,8 +57,8 @@ class RoundOpenCommand extends Command implements CommandInterface
         $open = $this->option('open');
         $days = $this->option('days');
         $league = $this->option('league');
-        $realmSize = $this->option('realmSize');
-        $packSize = $this->option('packSize');
+        $realmSize = $this->option('realm-size');
+        $packSize = $this->option('pack-size');
         $playersPerRace = $this->option('playersPerRace');
         $mixedAlignments = $this->option('mixedAlignment');
 
@@ -71,15 +71,15 @@ class RoundOpenCommand extends Command implements CommandInterface
         }
 
         if ($realmSize <= 0) {
-            throw new RuntimeException('Option --realmSize must be greater than 0.');
+            throw new RuntimeException('Option --realm-size must be greater than 0.');
         }
 
         if ($packSize <= 0) {
-            throw new RuntimeException('Option --packSize must be greater than 0.');
+            throw new RuntimeException('Option --pack-size must be greater than 0.');
         }
 
         if ($realmSize < $packSize) {
-            throw new RuntimeException('Option --realmSize must be greater than or equal to option --packSize.');
+            throw new RuntimeException('Option --realm-size must be greater than or equal to option --packSize.');
         }
 
         if ($playersPerRace < 0) {

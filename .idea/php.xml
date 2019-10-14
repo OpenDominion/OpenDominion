@@ -251,6 +251,15 @@
       </interpreter>
     </phpInfoCache>
   </component>
+  <component name="PhpProjectServersManager">
+    <servers>
+      <server host="localhost" id="59aaa1f8-4a81-49d9-aed5-d78cb39ae5a3" name="localhost" use_path_mappings="true">
+        <path_mappings>
+          <mapping local-root="$PROJECT_DIR$" remote-root="/var/www" />
+        </path_mappings>
+      </server>
+    </servers>
+  </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />
   <component name="PhpUnit">
     <phpunit_settings>

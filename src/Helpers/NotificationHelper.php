@@ -353,22 +353,18 @@ class NotificationHelper
                         throw new \LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-                if ($data['spiesKilled'] === 0) {
-                    $lastPart = '';
-                } else {
-                    $lastPart = sprintf(
-                        'We executed %s %s.',
-                        number_format($data['spiesKilled']),
-                        str_plural('spy', $data['spiesKilled'])
-                    );
+                $lastPart = '';
+                if ($data['unitsKilled']) {
+                    $lastPart = "We executed {$data['unitsKilled']}.";
                 }
 
-                return trim(sprintf(
-                    "Spies from %s (#%s) were discovered %s! {$lastPart}",
+                return sprintf(
+                    'Spies from %s (#%s) were discovered %s! %s',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
-                    $where
-                ));
+                    $where,
+                    $lastPart
+                );
 
             case 'irregular_dominion.resource_theft':
                 $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
@@ -449,22 +445,18 @@ class NotificationHelper
                         throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-                if ($data['spiesKilled'] === 0) {
-                    $lastPart = '';
-                } else {
-                    $lastPart = sprintf(
-                        'We executed %s %s.',
-                        number_format($data['spiesKilled']),
-                        str_plural('spy', $data['spiesKilled'])
-                    );
+                $lastPart = '';
+                if ($data['unitsKilled']) {
+                    $lastPart = "We executed {$data['unitsKilled']}.";
                 }
 
-                return trim(sprintf(
-                    "Spies from %s (#%s) were discovered %s! {$lastPart}",
+                return sprintf(
+                    'Spies from %s (#%s) were discovered %s! %s',
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
-                    $where
-                ));
+                    $where,
+                    $lastPart
+                );
 
             case 'irregular_dominion.received_hostile_spell':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
