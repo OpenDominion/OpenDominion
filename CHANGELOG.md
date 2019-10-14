@@ -13,6 +13,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added spell recharge time to magic page
 
 ### Changed
+- Gnome Juggernaut: OP changed to 7 regardless of range
+- Undead: Increased max population bonus from +15% to +12.5%
+- Undead Vampire: Now converts into elite dp at 65%+ (from 60%+) 
+- Wood Elf Longbowman: +25p
+- Wood Elf Mystic: +50p
+- Wood Elf Druid: -50p
+- Nomad: Removed
+- Spirit: Removed
+- Shrines: bonus increased to 5x (from 4x)
+- Slightly increased prestige gains
+- Reintroduce prestige loss for hits under 60% and multiple BF hits on the same dominon
+- Cut spy losses in half for info ops
+- Land generation changed to 85:65 (from 75:75)
+- Base defensive casualties changed to 3.825% (from 3.375%)
+- Conversion multipler change to 1.75% (from 2%)
+- Adjusted explore platinum cost formula
 - Sending less than 85% of your target's defense will no longer cause defensive casualties
 - Failed invasions when sending over 85% of the target's defense will now properly reduce defensive casualties for subsequent invasions
 - Slightly tweaked starvation casualties to now kill off population types based on proportion
@@ -94,7 +110,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Spectre: Now converts into elite dp at 60%+ (from 65%+)
 - Undead Skeleton: No longer needs boats
 - Undead Ghoul: No longer needs boats
-- Undead Vampire: Now converts intp elite dp at 60%+ (from 65%+) 
+- Undead Vampire: Now converts into elite dp at 60%+ (from 65%+) 
 
 ## [0.7.0-1] - 2019-08-09
 ### Fixed

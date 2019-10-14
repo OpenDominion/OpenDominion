@@ -36,7 +36,7 @@ class InvadeActionService
     /**
      * @var float Base percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.375;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.825;
 
     /**
      * @var float Max percentage of defensive casualties
@@ -353,17 +353,20 @@ class InvadeActionService
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
 
-        if ($isOverwhelmed) {
+        if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
-
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = (int)round(min(
-                (($target->prestige * (($range / 100) / 12)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
+                (($target->prestige * (($range / 100) / 10)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
                 (($dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD) // But capped by depending on your current prestige
             ));
             $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
 
-            // Reduce attacker prestige gain if the target was hit recently
+            // todo: if wat war, increase $attackerPrestigeChange by +15%
+        }
+
+        // Reduce attacker prestige gain if the target was hit recently
+        if($attackerPrestigeChange > 0) {
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
 
             if ($recentlyInvadedCount === 1) {
@@ -379,8 +382,6 @@ class InvadeActionService
             }
 
             $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
-
-            // todo: if wat war, increase $attackerPrestigeChange by +15%
         }
 
         if ($attackerPrestigeChange !== 0) {
@@ -535,6 +536,11 @@ class InvadeActionService
      */
     protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
     {
+        if ($this->invasionResult['result']['overwhelmed'])
+        {
+            return 0;
+        }
+
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
@@ -638,7 +644,7 @@ class InvadeActionService
         $landGrabRatio = 1;
         // todo: if mutual war, $landGrabRatio = 1.2
         // todo: if non-mutual war, $landGrabRatio = 1.15
-        $bonusLandRatio = 2;
+        $bonusLandRatio = 1.7647;
 
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
 
@@ -650,7 +656,7 @@ class InvadeActionService
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
 
-        $acresLost *= 0.75;
+        $acresLost *= 0.85;
 
         $acresLost = (int)max(floor($acresLost), 10);
 
@@ -832,7 +838,7 @@ class InvadeActionService
             $totalConvertingUnits += $units[$unit->slot];
         }
 
-        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 2) * $landRatio;
+        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 1.75) * $landRatio;
 
         foreach ($unitsWithConversionPerk as $unit) {
             $conversionPerk = $unit->getPerkValue('conversion');

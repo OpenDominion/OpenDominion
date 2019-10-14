@@ -42,17 +42,15 @@ class ExplorationCalculator
         if ($totalLand < 300) {
             $platinum += -(3 * (300 - $totalLand));
         } else {
-            $platinum += (3 * (($totalLand - 300) ** 1.09));
+            $exponent = ($totalLand ** 0.0185) / 1.05;
+            $exponent = clamp($exponent, 1.09, 1.121);
+            $platinum += (3 * (($totalLand - 300) ** $exponent));
         }
 
         $platinum += 1000;
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
-            $platinum *= 1.25;
-        }
-
-        if($totalLand >= 4000) {
             $platinum *= 1.25;
         }
 
