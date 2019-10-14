@@ -33,7 +33,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound('last week');
 
-        $this->dominion = $this->createDominion($user, $this->round,  Race::where('name', 'Halfling')->firstOrFail());
+        $this->dominion = $this->createDominion($user, $this->round, Race::where('name', 'Halfling')->firstOrFail());
         $this->dominion->created_at = Carbon::now()->addHours(-80);
 
         $targetUser = $this->createUser();
