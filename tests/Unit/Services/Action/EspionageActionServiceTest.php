@@ -33,7 +33,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
         $user = $this->createAndImpersonateUser();
         $this->round = $this->createRound('last week');
 
-        $this->dominion = $this->createDominion($user, $this->round);
+        $this->dominion = $this->createDominion($user, $this->round,  Race::where('name', 'Halfling')->firstOrFail());
         $this->dominion->created_at = Carbon::now()->addHours(-80);
 
         $targetUser = $this->createUser();
@@ -83,5 +83,18 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
         // Assert
         $this->assertEquals(9975, $this->dominion->military_spies);
+    }
+
+    public function testPerformOperation_SameSpa_LoseMilitary()
+    {
+        // Arrange
+        $this->dominion->military_unit3 = 50000;
+        $this->target->military_spies = 10000;
+
+        // Act
+        $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
+
+        // Assert
+        $this->assertEquals(49988, $this->dominion->military_unit3);
     }
 }
