@@ -353,7 +353,7 @@ class NotificationHelper
                         throw new \LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-                $lastPart = "";
+                $lastPart = '';
                 if ($data['unitsKilled']) {
                     $lastPart = "We executed {$data['unitsKilled']}.";
                 }
@@ -445,7 +445,7 @@ class NotificationHelper
                         throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
-                $lastPart = "";
+                $lastPart = '';
                 if ($data['unitsKilled']) {
                     $lastPart = "We executed {$data['unitsKilled']}.";
                 }
