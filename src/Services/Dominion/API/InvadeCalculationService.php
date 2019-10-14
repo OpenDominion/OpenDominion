@@ -70,10 +70,14 @@ class InvadeCalculationService
      * @param array $units
      * @return array
      */
-    public function calculate(Dominion $dominion, ?Dominion $target, array $units, ?array $calc): array
+    public function calculate(Dominion $dominion, ?Dominion $target, ?array $units, ?array $calc): array
     {
+        if ($dominion->isLocked() || !$dominion->round->isActive()) {
+            return ['result' => 'error', 'message' => 'invalid dominion(s) selected'];
+        }
+
         if (empty($units)) {
-            throw new LogicException('$units is empty');
+            return ['result' => 'error', 'message' => 'invalid input'];
         }
 
         // Sanitize input
