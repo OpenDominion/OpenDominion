@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Slightly tweaked starvation casualties to now kill off population types based on proportion
 - Significantly increased the speed of the hourly tick (hour change)
+- Scribes now contains more information. Construction, Espionage and Magic have now been added.
 
 ### Fixed
 - Barracks Spy should now be more clear that draftees are inaccurate
