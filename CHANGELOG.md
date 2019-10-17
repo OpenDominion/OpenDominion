@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Gnome Juggernaut: OP changed to 7 regardless of range
-- Undead: Increased max population bonus from +15% to +12.5%
+- Undead: Decreased max population bonus from +15% to +12.5%
 - Undead Vampire: Now converts into elite dp at 65%+ (from 60%+) 
 - Wood Elf Longbowman: +25p
 - Wood Elf Mystic: +50p
