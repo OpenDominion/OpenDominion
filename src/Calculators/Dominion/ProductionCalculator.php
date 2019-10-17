@@ -10,6 +10,9 @@ class ProductionCalculator
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
 
+    /** @var LandCalculator */
+    protected $landCalculator;
+
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
@@ -26,6 +29,7 @@ class ProductionCalculator
      * ProductionCalculator constructor.
      *
      * @param ImprovementCalculator $improvementCalculator
+     * @param LandCalculator $landCalculator
      * @param PopulationCalculator $populationCalculator
      * @param PrestigeCalculator $prestigeCalculator
      * @param SpellCalculator $spellCalculator
@@ -33,12 +37,14 @@ class ProductionCalculator
      */
     public function __construct(
         ImprovementCalculator $improvementCalculator,
+        LandCalculator $landCalculator,
         PopulationCalculator $populationCalculator,
         PrestigeCalculator $prestigeCalculator,
         SpellCalculator $spellCalculator,
         GuardMembershipService $guardMembershipService)
     {
         $this->improvementCalculator = $improvementCalculator;
+        $this->landCalculator = $landCalculator;
         $this->populationCalculator = $populationCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
         $this->spellCalculator = $spellCalculator;
@@ -565,7 +571,7 @@ class ProductionCalculator
     /**
      * Returns the Dominion's raw gem production.
      *
-     * Gems are rpoduced by:
+     * Gems are produced by:
      * - Building: Diamond Mine (15 per)
      *
      * @param Dominion $dominion
@@ -609,8 +615,64 @@ class ProductionCalculator
 
     //</editor-fold>
 
-    // Tech
-    // todo
+    //<editor-fold desc="Tech">
+
+    /**
+     * Returns the Dominion's research point production.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getTechProduction(Dominion $dominion): int
+    {
+        return floor($this->getTechProductionRaw($dominion) * $this->getTechProductionMultiplier($dominion));
+    }
+
+    /**
+     * Returns the Dominion's raw tech production.
+     *
+     * Research points are produced by:
+     * - Building: School (15 per)
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getTechProductionRaw(Dominion $dominion): float
+    {
+        $tech = 0;
+
+        // Values
+        $techPerSchool = 0.5;
+
+        // Building: School
+        $tech += max(
+            $dominion->building_school * $techPerSchool,
+            $dominion->building_school * (1 - ($dominion->building_school / $this->landCalculator->getTotalLand($dominion)))
+        );
+
+        return $tech;
+    }
+
+    /**
+     * Returns the Dominion's research point production multiplier.
+     *
+     * Research point production is modified by:
+     * - Racial Bonus
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getTechProductionMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('tech_production');
+
+        return (1 + $multiplier);
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Boats">
 
