@@ -9,9 +9,6 @@ use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\RacePerk;
 use OpenDominion\Models\RacePerkType;
-use OpenDominion\Models\Tech;
-use OpenDominion\Models\TechPerk;
-use OpenDominion\Models\TechPerkType;
 use OpenDominion\Models\Unit;
 use OpenDominion\Models\UnitPerk;
 use OpenDominion\Models\UnitPerkType;
@@ -48,7 +45,6 @@ class DataSyncCommand extends Command implements CommandInterface
     {
         DB::transaction(function () {
             $this->syncRaces();
-            $this->syncTechs();
         });
     }
 
@@ -178,66 +174,6 @@ class DataSyncCommand extends Command implements CommandInterface
 
                 $unit->perks()->sync($unitPerksToSync);
             }
-        }
-    }
-
-    /**
-     * Syncs tech and perk data from .yml file to the database.
-     */
-    protected function syncTechs()
-    {
-        $fileContents = $this->filesystem->get(base_path('app/data/techs.yml'));
-
-        $data = Yaml::parse($fileContents, Yaml::PARSE_OBJECT_FOR_MAP);
-
-        foreach ($data as $techKey => $techData) {
-            // Tech
-            $tech = Tech::firstOrNew(['key' => $techKey])
-                ->fill([
-                    'name' => $techData->name,
-                    'prerequisites' => object_get($techData, 'requires', []),
-                ]);
-
-            if (!$tech->exists) {
-                $this->info("Adding tech {$techData->name}");
-            } else {
-                $this->info("Processing tech {$techData->name}");
-
-                $newValues = $tech->getDirty();
-
-                foreach ($newValues as $key => $newValue) {
-                    $originalValue = $tech->getOriginal($key);
-
-                    $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
-                }
-            }
-
-            $tech->save();
-            $tech->refresh();
-
-            // Tech Perks
-            $techPerksToSync = [];
-
-            foreach (object_get($techData, 'perks', []) as $perk => $value) {
-                $value = (float)$value;
-
-                $techPerkType = TechPerkType::firstOrCreate(['key' => $perk]);
-
-                $techPerksToSync[$techPerkType->id] = ['value' => $value];
-
-                $techPerk = TechPerk::query()
-                    ->where('tech_id', $tech->id)
-                    ->where('tech_perk_type_id', $techPerkType->id)
-                    ->first();
-
-                if ($techPerk === null) {
-                    $this->info("[Add Tech Perk] {$perk}: {$value}");
-                } elseif ($techPerk->value !== $value) {
-                    $this->info("[Change Tech Perk] {$perk}: {$techPerk->value} -> {$value}");
-                }
-            }
-
-            $tech->perks()->sync($techPerksToSync);
         }
     }
 }
