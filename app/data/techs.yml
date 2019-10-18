@@ -1,0 +1,160 @@
+- commanders_insight:
+  name: Commander's Insight
+  perks:
+    fewer_casualties_offense: 10
+- tactician:
+  name: Tactician
+  perks:
+    fewer_casualties_defense: 10
+- military_genius:
+  name: Military Genius
+  perks:
+    offense: 5
+  requires:
+    - commanders_insight
+    - tactician
+- caravan_leader:
+  name: Caravan Leader
+  perks:
+    explore_platinum_cost: -5
+- explorers_intuition:
+  name: Explorer's Intuition
+  perks:
+    explore_draftee_cost: -1
+- explorers_luck:
+  name: Explorer's Luck
+  perks:
+    explore_platinum_cost: -10
+    explore_draftee_cost: -2
+  requires:
+    - caravan_leader
+    - explorers_intuition
+- sleight_of_hand:
+  name: Sleight of Hand
+  perks:
+    spy_losses: -20
+- darkness_walker:
+  name: Darkness Walker
+  perks:
+    spy_cost: -20
+- spy_master:
+  name: Spy Master
+  perks:
+    spy_strength_recovery: 1
+  requires:
+    - sleight_of_hand
+    - darkness_walker
+- magicians_apprentice:
+  name: Magician's Apprentice
+  perks:
+    spell_cost: -10
+- magicians_awe:
+  name: Magician's Awe
+  perks:
+    wizard_cost: -20
+- master_of_magi:
+  name: Master of Magi
+  perks:
+    wizard_strength_recovery: 1
+  requires:
+    - magicians_apprentice
+    - magicians_awe
+- farmers_growth:
+  name: Farmer's Growth
+  perks:
+    food_production: 10
+- miners_refining:
+  name: Miner's Refining
+  perks:
+    gem_production: 5
+- bankers_foresight:
+  name: Banker's Foresight
+  perks:
+    platinum_production: 5
+  requires:
+    - miners_refining
+    - bankers_foresight
+- masons_art:
+  name: Mason's Art
+  perks:
+    construction_costs: -10
+- foresters_touch:
+  name: Forester's Touch
+  perks:
+    rezoning_costs: -10
+- urban_planner:
+  name: Urban Planner
+  perks:
+    maximum_population: 2
+  requires:
+    - masons_art
+    - foresters_touch
+- fruits_of_labor:
+  name: Fruits of Labor
+  perks:
+    lumber_production: 20
+    ore_production: 20
+    gem_production: 10
+  requires:
+    - bankers_foresight
+    - urban_planner
+- dark_artistry:
+  name: Dark Artistry
+  perks:
+    spy_strength_recovery: 3
+    wizard_strength_recovery: 3
+  requires:
+    - spy_master
+    - master_of_magi
+- urban_mastery:
+  name: Urban Mastery
+  perks:
+    maximum_population: 6
+  requires:
+    - urban_planner
+    - explorers_luck
+- treasure_hunt:
+  name: Treasure Hunt
+  perks:
+    platinum_production: 12.5
+  requires:
+    - spy_master
+    - bankers_foresight
+- magical_weaponry:  
+  name: Magical Weaponry
+  perks:
+    offense: 10
+    wizard_strength: 15
+  requires:
+    - master_of_magi
+    - military_genius
+- conquerors_crafts:
+  name: Conqueror's Crafts
+  perks:
+    construction_costs: -30
+    rezoning_costs: -30
+  requires:
+    - military_genius
+    - urban_planner
+- master_of_resources:
+  name: Master of Resources
+  perks:
+    training_costs: -10
+  requires:
+    - explorers_luck
+    - bankers_foresight
+- tactical_battle:
+  name: Tactical Battle
+  perks:
+    fewer_casualties: 25
+  requires:
+    - spy_master
+    - military_genius
+- enchanted_lands:
+  name: Enchanted Lands
+  perks:
+    explore_cost: -20
+    mana_production: 15
+  requires:
+    - master_of_magi
+    - explorers_luck
