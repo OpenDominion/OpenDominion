@@ -10,7 +10,7 @@ namespace OpenDominion\Models;
  * @property int $tech_perk_type_id
  * @property string $value
  * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $updated_at 
  * @property-read \OpenDominion\Models\Tech $tech
  * @property-read \OpenDominion\Models\TechPerkType $type
  */
