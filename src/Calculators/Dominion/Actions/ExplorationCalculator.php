@@ -84,10 +84,17 @@ class ExplorationCalculator
         }
 
         // Techs
+<<<<<<< HEAD
         $draftees += $dominion->getTechPerkValue('explore_draftee_cost');
         # Minimum dratee cost is 3
         if ($draftees < 3) {
             $draftees = 3;
+=======
+        $draftees += $dominion->getTechPerkMultiplier('explore_draftee_cost');
+        # Minimum dratee cost is 3
+        if ($draftees < 3) {
+            $draftes = 3;
+>>>>>>> implement cost and casualty tech perks
         }
 
         return round($draftees);
