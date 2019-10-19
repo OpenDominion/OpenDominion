@@ -365,7 +365,7 @@ class Dominion extends AbstractModel
 
     public function getTechPerks() {
         return $this->techs()->with('perks')->get()->flatMap(
-            function($tech) {
+            function ($tech) {
                 return $tech->perks;
             }
         );
