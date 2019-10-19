@@ -232,7 +232,7 @@ class DataSyncCommand extends Command implements CommandInterface
 
                 if ($techPerk === null) {
                     $this->info("[Add Tech Perk] {$perk}: {$value}");
-                } elseif ($techPerk->value !== $value) {
+                } elseif ($techPerk->value != $value) {
                     $this->info("[Change Tech Perk] {$perk}: {$techPerk->value} -> {$value}");
                 }
             }
