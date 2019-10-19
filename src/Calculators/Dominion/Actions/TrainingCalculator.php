@@ -147,7 +147,8 @@ class TrainingCalculator
             ($smithiesReductionMax / 100)
         );
 
-        // todo: Master of Resources Tech
+        // Techs
+        $multiplier -= $dominion->getTechPerkMultiplier('military_cost');
 
         return (1 + $multiplier);
     }

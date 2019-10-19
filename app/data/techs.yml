@@ -77,15 +77,15 @@ bankers_foresight:
 masons_art:
   name: Mason's Art
   perks:
-    construction_costs: -10
+    construction_cost: -10
 foresters_touch:
   name: Forester's Touch
   perks:
-    rezoning_costs: -10
+    rezone_cost: -10
 urban_planner:
   name: Urban Planner
   perks:
-    maximum_population: 2
+    max_population: 2
   requires:
     - masons_art
     - foresters_touch
@@ -109,7 +109,7 @@ dark_artistry:
 urban_mastery:
   name: Urban Mastery
   perks:
-    maximum_population: 6
+    max_population: 6
   requires:
     - urban_planner
     - explorers_luck
@@ -131,15 +131,15 @@ magical_weaponry:
 conquerors_crafts:
   name: Conqueror's Crafts
   perks:
-    construction_costs: -30
-    rezoning_costs: -30
+    construction_cost: -30
+    rezone_cost: -30
   requires:
     - military_genius
     - urban_planner
 master_of_resources:
   name: Master of Resources
   perks:
-    training_costs: -10
+    military_cost: -10
   requires:
     - explorers_luck
     - bankers_foresight
@@ -154,7 +154,7 @@ tactical_battle:
 enchanted_lands:
   name: Enchanted Lands
   perks:
-    explore_cost: -20
+    explore_platinum_cost: -20
     mana_production: 15
   requires:
     - master_of_magi

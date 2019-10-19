@@ -371,15 +371,29 @@ class Dominion extends AbstractModel
         );
     }
 
-    public function getTechPerkValue($key) {
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getTechPerkValue(string $key): float
+    {
         $perks = $this->getTechPerks()->groupBy('key');
         if (isset($perks[$key])) {
-            $max = $perks[$key]->max('pivot.value');
+            $max = (float)$perks[$key]->max('pivot.value');
             if ($max < 0) {
-                return $perks[$key]->min('pivot.value');
+                return (float)$perks[$key]->min('pivot.value');
             }
             return $max;
         }
         return 0;
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getTechPerkMultiplier(string $key): float
+    {
+        return ($this->getTechPerkValue($key) / 100);
     }
 }

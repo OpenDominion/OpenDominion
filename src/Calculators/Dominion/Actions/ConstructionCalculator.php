@@ -71,7 +71,10 @@ class ConstructionCalculator
     {
         $multiplier = $this->getCostMultiplier($dominion);
 
+        // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('construction_cost');
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('construction_cost');
 
         return $multiplier;
     }
