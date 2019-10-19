@@ -119,11 +119,12 @@ class ProductionCalculator
         // Values (percentages)
         $spellMidasTouch = 10;
         $guardTax = -2;
-//        $techBankersForesight = 5;
-//        $techTreasureHunt = 12.5;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('platinum_production');
 
         // Spell: Midas Touch
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'midas_touch', $spellMidasTouch);
@@ -135,9 +136,6 @@ class ProductionCalculator
         if ($this->guardMembershipService->isGuardMember($dominion)) {
             $multiplier += ($guardTax / 100);
         }
-
-        // Tech: Treasure Hunt or Banker's Foresight
-        // todo
 
         return min(1.5, (1 + $multiplier));
     }
@@ -204,10 +202,12 @@ class ProductionCalculator
         // Values (percentages)
         $spellGaiasBlessing = 20;
         $spellGaiasWatch = 10;
-//        $techFarmersGrowth = 10;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('food_production');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('food_production');
 
         // Spell: Gaia's Blessing or Gaia's Watch
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
@@ -217,9 +217,6 @@ class ProductionCalculator
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
-
-        // Tech: Farmer's Growth
-        // todo
 
         // Prestige Bonus
         $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
@@ -339,16 +336,15 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellGaiasBlessing = 10;
-        $techProduction = 10;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('lumber_production');
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('lumber_production');
+
         // Spell: Gaia's Blessing
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'gaias_blessing', $spellGaiasBlessing);
-
-        // Tech: Fruits of Labor
-        // todo
 
         return (1 + $multiplier);
     }
@@ -435,13 +431,11 @@ class ProductionCalculator
     {
         $multiplier = 0;
 
-        // Values (percentages)
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('mana_production');
 
-        // Tech: Enchanted Lands
-        // todo
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('mana_production');
 
         return (1 + $multiplier);
     }
@@ -536,19 +530,18 @@ class ProductionCalculator
         // Values (percentages)
         $spellMinersSight = 20;
         $spellMiningStrength = 10;
-//        $techFruitsOfLabor = 20;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('ore_production');
 
         // Spell: Miner's Sight or Mining Strength
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'miners_sight' => $spellMinersSight,
             'mining_strength' => $spellMiningStrength,
         ]);
-
-        // Tech: Fruits of Labor
-        // todo
 
         return (1 + $multiplier);
     }
@@ -607,8 +600,8 @@ class ProductionCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
 
-        // Tech: Fruits of Labor and Miner's Refining
-        // todo
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('gem_production');
 
         return (1 + $multiplier);
     }

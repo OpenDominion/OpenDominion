@@ -144,12 +144,13 @@ class MilitaryCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('offense');
+
         // Improvement: Forges
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
         // Racial Spell
-        // todo
-        // Spell: Nightfall (+5%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'bloodrage' => $spellBloodrage,
             'crusade' => $spellCrusade,
@@ -161,10 +162,6 @@ class MilitaryCalculator
 
         // Prestige
         $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
-
-        // Tech: Military (+5%)
-        // Tech: Magical Weaponry (+10%)
-        // todo
 
         return (1 + $multiplier);
     }
@@ -315,6 +312,9 @@ class MilitaryCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('defense');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('defense');
 
         // Improvement: Walls
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
