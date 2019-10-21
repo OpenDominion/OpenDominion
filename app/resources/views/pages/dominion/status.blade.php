@@ -193,7 +193,7 @@
             @endif
         </div>
 
-        @if ($selectedDominion->realm->motd)
+        @if ($selectedDominion->realm->motd && ($selectedDominion->realm->motd_updated_at > now()->subDays(3)))
             <div class="col-sm-12 col-md-9">
                 <div class="panel panel-warning">
                     <div class="panel-heading">
