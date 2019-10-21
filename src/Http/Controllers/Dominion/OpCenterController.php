@@ -9,6 +9,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -73,6 +74,7 @@ class OpCenterController extends AbstractDominionController
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
+            'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
             'latestInfoOps' => $latestInfoOps
@@ -82,7 +84,7 @@ class OpCenterController extends AbstractDominionController
     public function getDominionArchive(Dominion $dominion, string $type)
     {
         $resultsPerPage = 10;
-        $valid_types = ['clear_sight', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
+        $valid_types = ['clear_sight', 'vision', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
         $infoOpService = app(InfoOpService::class);
 
         if (!in_array($type, $valid_types)) {
@@ -106,6 +108,7 @@ class OpCenterController extends AbstractDominionController
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
+            'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
             'infoOpArchive' => $infoOpArchive
