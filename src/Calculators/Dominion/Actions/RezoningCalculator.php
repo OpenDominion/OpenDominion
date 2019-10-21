@@ -45,9 +45,6 @@ class RezoningCalculator
 
         $platinum *= $this->getCostMultiplier($dominion);
 
-        // Techs
-        $platinum *= (1 - $dominion->getTechPerkMultiplier('rezone_cost'));
-
         return round($platinum);
     }
 
