@@ -242,7 +242,14 @@ class NotificationHelper
                 );
 
             case 'hourly_dominion.returning_completed':
-                $units = array_sum($data);
+                $units = collect($data)->filter(
+                    function($value, $key){
+                        // Disregard prestige and research points
+                        if(strpos($key, 'military_') === 0) {
+                            return $value;
+                        }
+                    }
+                )->sum();
 
                 return sprintf(
                     '%s %s returned from battle',
