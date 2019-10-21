@@ -69,7 +69,10 @@ class TechActionService
             ]);
 
             $dominion->resource_tech -= $techCost;
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_TECH]);
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_TECH,
+                'action' => $key
+            ]);
         });
 
         return [
