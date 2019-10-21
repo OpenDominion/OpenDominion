@@ -217,19 +217,21 @@ class TickService
                 ->get();
 
             foreach ($dominions as $dominion) {
-                if (!empty($dominion->tick->starvation_casualties)) {
-                    $this->notificationService->queueNotification(
-                        'starvation_occurred',
-                        $dominion->tick->starvation_casualties
-                    );
-                }
+                DB::transaction(function () use ($dominion) {
+                    if (!empty($dominion->tick->starvation_casualties)) {
+                        $this->notificationService->queueNotification(
+                            'starvation_occurred',
+                            $dominion->tick->starvation_casualties
+                        );
+                    }
 
-                $this->cleanupActiveSpells($dominion);
-                $this->cleanupQueues($dominion);
+                    $this->cleanupActiveSpells($dominion);
+                    $this->cleanupQueues($dominion);
 
-                $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
+                    $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
 
-                $this->precalculateTick($dominion, true);
+                    $this->precalculateTick($dominion, true);
+                }, 5);
             }
 
             Log::info(sprintf(
