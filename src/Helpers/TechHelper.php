@@ -53,7 +53,7 @@ class TechHelper
                 if ($perkValue < 0) {
                     $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], $perkValue);
                 } else {
-                    $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], '+'.$perkValue);
+                    $perkStrings[] = vsprintf($perkTypeStrings[$perk->key], '+' . $perkValue);
                 }
             }
         }
