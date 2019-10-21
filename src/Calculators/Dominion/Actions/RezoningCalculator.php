@@ -45,9 +45,6 @@ class RezoningCalculator
 
         $platinum *= $this->getCostMultiplier($dominion);
 
-        // Techs
-        $platinum *= (1 - $dominion->getTechPerkMultiplier('rezone_cost'));
-
         return round($platinum);
     }
 
@@ -85,7 +82,8 @@ class RezoningCalculator
             ($factoryReductionMax / 100)
         );
 
-        $multiplier = max($multiplier, -0.75);
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('rezone_cost');
 
         return (1 + $multiplier);
     }

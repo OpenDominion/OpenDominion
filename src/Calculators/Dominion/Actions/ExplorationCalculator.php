@@ -50,14 +50,14 @@ class ExplorationCalculator
         $platinum += 1000;
 
         // Techs
-        $platinum *= (1 - $dominion->getTechPerkMultiplier('explore_platinum_cost'));
+        $multiplier = (1 + $dominion->getTechPerkMultiplier('explore_platinum_cost'));
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
-            $platinum *= 1.25;
+            $multiplier += 25;
         }
 
-        return round($platinum);
+        return round($platinum * $multiplier);
     }
 
     /**
@@ -84,10 +84,10 @@ class ExplorationCalculator
         }
 
         // Techs
-        $draftees += $dominion->getTechPerkMultiplier('explore_draftee_cost');
+        $draftees += $dominion->getTechPerkValue('explore_draftee_cost');
         # Minimum dratee cost is 3
         if ($draftees < 3) {
-            $draftes = 3;
+            $draftees = 3;
         }
 
         return round($draftees);

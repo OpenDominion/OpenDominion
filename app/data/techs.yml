@@ -72,8 +72,8 @@ bankers_foresight:
   perks:
     platinum_production: 5
   requires:
+    - farmers_growth
     - miners_refining
-    - bankers_foresight
 masons_art:
   name: Mason's Art
   perks:
