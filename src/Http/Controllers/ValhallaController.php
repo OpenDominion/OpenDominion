@@ -89,7 +89,7 @@ class ValhallaController extends AbstractController
             //case 'stat-total-mana-production': $data = $this->getDominionsByStatistic($round, 'stat_total_mana_production'); break;
             //case 'stat-total-ore-production': $data = $this->getDominionsByStatistic($round, 'stat_total_ore_production'); break;
             //case 'stat-total-gem-production': $data = $this->getDominionsByStatistic($round, 'stat_total_gem_production'); break;
-            case 'stat-total-tech-production': $data = $this->getDominionsByStatistic($round, 'stat_total_tech_production'); break;
+            //case 'stat-total-tech-production': $data = $this->getDominionsByStatistic($round, 'stat_total_tech_production'); break;
             //case 'stat-total-boat-production': $data = $this->getDominionsByStatistic($round, 'stat_total_boat_production'); break;
             case 'stat-total-land-explored': $data = $this->getDominionsByStatistic($round, 'stat_total_land_explored'); break;
             case 'stat-total-land-conquered': $data = $this->getDominionsByStatistic($round, 'stat_total_land_conquered'); break;
