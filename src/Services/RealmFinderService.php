@@ -67,14 +67,22 @@ class RealmFinderService
 
                 return true;
             })
-            ->sortBy('dominions_count')
-            ->take(1); // todo: change back to 3 (or make it dynamically smaller, depending on how much time there is until OOP)
+            ->sortBy('dominions_count');
 
-        if ($realms->count() > 0) {
-            // Choose randomly from the emptiest 3 realms
-            return $realms->random();
+        if ($realms->count() == 0) {
+            return null;
         }
 
-        return null;
+        $smallestRealmSize = (int)$realms->min('dominions_count');
+        $largestRealmSize = (int)$realms->max('dominions_count');
+        $realmSizeRange = $largestRealmSize - $smallestRealmSize;
+
+        // Weight the random selection
+        // for every possible realm size between smallest and largest, duplicate smaller realms
+        $realmsWeightedBySize = $realms->where('dominions_count', '=', $smallestRealmSize);
+        for ($i=1; $i<=$realmSizeRange; $i++) {
+            $realmsWeightedBySize = $realmsWeightedBySize->concat($realms->where('dominions_count', '<=', $smallestRealmSize + $i));
+        }
+        return $realmsWeightedBySize->random();
     }
 }
