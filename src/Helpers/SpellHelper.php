@@ -294,12 +294,12 @@ class SpellHelper
                 'key' => 'revelation',
                 'mana_cost' => 1.2,
             ],
-            [
-                'name' => 'Clairvoyance',
-                'description' => 'Reveal realm town crier',
-                'key' => 'clairvoyance',
-                'mana_cost' => 1.2,
-            ],
+//            [
+//                'name' => 'Clairvoyance',
+//                'description' => 'Reveal realm town crier',
+//                'key' => 'clairvoyance',
+//                'mana_cost' => 1.2,
+//            ],
 //            [
 //                'name' => 'Disclosure',
 //                'description' => 'Reveal wonder',

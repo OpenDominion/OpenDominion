@@ -10,9 +10,11 @@ use OpenDominion\Models\Realm;
 
 class GameEventService
 {
-    public function getTownCrier(Dominion $dominion) : array
+    public function getTownCrier(Dominion $dominion, Realm $realm = null) : array
     {
-        $realm = $dominion->realm;
+        if ($realm === null) {
+            return $this->getGameEventsforRound($dominion, now());
+        }
 
         return $this->getGameEventsForRealm($realm, now());
     }
@@ -51,6 +53,25 @@ class GameEventService
                             ->where('target_id', $realm->id);
                     });
             })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return [
+            'dominionIds' => $dominionIds,
+            'gameEvents' =>  $gameEvents
+        ];
+    }
+
+    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore) : array
+    {
+        $dominionIds = $dominion->realm->dominions
+            ->pluck('id')
+            ->toArray();
+
+        $gameEvents = GameEvent::query()
+            ->where('round_id', $dominion->round_id)
+            ->where('created_at', '<', $createdBefore)
+            ->where('created_at', '>', now()->subDays(7))
             ->orderBy('created_at', 'desc')
             ->get();
 

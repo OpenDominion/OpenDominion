@@ -174,6 +174,7 @@ class InfoOpService
 
     public function getInfoOpName(InfoOp $infoOp): string
     {
+        if ($infoOp->type == 'clairvoyance') return 'Clairvoyance';
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
             ->filter(function ($op) use ($infoOp) {
@@ -203,6 +204,6 @@ class InfoOpService
     {
         return $this->espionageHelper->getInfoGatheringOperations()
             ->merge($this->spellHelper->getInfoOpSpells())
-            ->count() - 1; // refactor: Removes Clairvoyance from count
+            ->count();// - 1; // refactor: Removes Clairvoyance from count
     }
 }

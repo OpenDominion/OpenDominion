@@ -96,6 +96,7 @@
                 </div>
             </div>
 
+            {{--
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Clairvoyance Realms</h3>
@@ -143,6 +144,7 @@
                     </table>
                 </div>
             </div>
+            --}}
 
         </div>
 
@@ -176,9 +178,9 @@
             $('#dominions-table').DataTable({
                 order: [[5, 'desc']],
             });
-            $('#clairvoyance-table').DataTable({
-                order: [[2, 'desc']],
-            });
+            //$('#clairvoyance-table').DataTable({
+            //    order: [[2, 'desc']],
+            //});
         })(jQuery);
     </script>
 @endpush
