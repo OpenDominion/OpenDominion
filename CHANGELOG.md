@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
 ## [Unreleased]
+
+## [0.7.1] - 2019-11-04
 ### Added
 - Added new races: Kobold and Orc
 - Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts.
@@ -457,7 +459,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...0.7.1
 [0.7.0-10]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...0.7.0-10
 [0.7.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-8...0.7.0-9
 [0.7.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-7...0.7.0-8
