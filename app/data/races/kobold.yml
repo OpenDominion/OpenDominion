@@ -1,8 +1,8 @@
 name: Kobold
 alignment: good
 description: >-
-  <p>A bunch of annoying little shits.</p>
-  <p>You no take candle!</p>
+  <p>Aggressive, beast-like and intensely xenophobic, Kobolds are almost universally reviled wherever they trespass. Kobolds are only interested in two things: eating, and... well let's just say they think "monogamy" is a dirty word.</p>
+  <p>As a result, Kobolds are usually treated with extreme hostility due to their uncontrollable population growth. If not discovered and dealt with early, a Kobold nest can quickly become a swarm and overwhelm even a well-fortified dominion with sheer numbers alone.</p>
 home_land_type: hill
 perks:
   max_population: 40

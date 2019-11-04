@@ -39,6 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Significantly increased the speed of the hourly tick (hour change)
 - Scribes now contains more information. Construction, Espionage and Magic have now been added.
 - Can no longer view other realms before the round starts
+- Updated racial descriptions for a lot of races.
 
 ### Fixed
 - Barracks Spy should now be more clear that draftees are inaccurate

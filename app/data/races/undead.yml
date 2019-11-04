@@ -1,8 +1,8 @@
 name: Undead
 alignment: evil
 description: >-
-  <p>An unending horde of beings that have overcome death, the undead have an insatiable desire to destroy all living creatures.</p>
-  <p>They are always on the offensive, increasing their number by reanimating fallen enemies.</p>
+  <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, bloodthirsty vampires and their hideous progeny. This rag-tag alliance all share one thing in common: a hatred of life. They exist to end it, or drag it kicking and screaming into the shadow of undeath.</p>
+  <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with more corpses. The Undead tend to live in fetid swamps, where the cloying humid air acts a natural preservative, protecting the skin from rot. Vampires are a vain bunch.</p>
 home_land_type: swamp
 perks:
   max_population: 12.5
