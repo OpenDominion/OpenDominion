@@ -33,7 +33,7 @@ class RealmController extends AbstractDominionController
         if (!$round->hasStarted() && !$isOwnRealm) {
             $request->session()->flash(
                 'alert-warning',
-                "You cannot view other realms before the round has started."
+                'You cannot view other realms before the round has started.'
             );
             return redirect()->route('dominion.realm', (int)$dominion->realm->number);
         }
