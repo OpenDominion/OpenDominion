@@ -96,40 +96,42 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($dominions as $dominion)
-                                <tr>
-                                    <td data-search="{{ $dominion->name }}">
-                                        @if ($protectionService->isUnderProtection($dominion))
-                                            <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
-                                        @endif
+                            @if ($selectedDominion->round->hasStarted())
+                                @foreach ($dominions as $dominion)
+                                    <tr>
+                                        <td data-search="{{ $dominion->name }}">
+                                            @if ($protectionService->isUnderProtection($dominion))
+                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
+                                            @endif
 
-                                        @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                            <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
-                                        @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
-                                            <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
-                                        @endif
+                                            @if ($guardMembershipService->isEliteGuardMember($dominion))
+                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
+                                            @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
+                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
+                                            @endif
 
-                                        <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $dominion->realm->number }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $dominion->race->name }}
-                                    </td>
-                                    <td class="text-center" data-order="{{ $landCalculator->getTotalLand($dominion) }}" data-search="{{ $landCalculator->getTotalLand($dominion) }}">
-                                        {{ number_format($landCalculator->getTotalLand($dominion)) }}
-                                    </td>
-                                    <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
-                                        {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
-                                    </td>
-                                    <td class="hidden">
-                                        @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
-                                            true
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+                                            <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $dominion->realm->number }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $dominion->race->name }}
+                                        </td>
+                                        <td class="text-center" data-order="{{ $landCalculator->getTotalLand($dominion) }}" data-search="{{ $landCalculator->getTotalLand($dominion) }}">
+                                            {{ number_format($landCalculator->getTotalLand($dominion)) }}
+                                        </td>
+                                        <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
+                                            {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
+                                        </td>
+                                        <td class="hidden">
+                                            @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
+                                                true
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
 
@@ -143,7 +145,11 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    box body
+                    <p>Advanced search for locating dominions in other realms.</p>
+                    <p>By default, it is limited to targets that you can perform actions against due to range restrictions.</p>
+                    @if (!$selectedDominion->round->hasStarted())
+                        <p>The current round has not started. No dominions will be listed.</p>
+                    @endif
                 </div>
             </div>
         </div>
