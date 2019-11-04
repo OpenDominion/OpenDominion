@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added new categories to statistics advisor and valhalla
 - Added back spell mana cost of active spells to magic page
 - Added spell recharge time to magic page
+- Added magic spells and espionage to Scribes
 - Top 10 land rankings from current round will now be visible on start page.
 
 ### Changed
