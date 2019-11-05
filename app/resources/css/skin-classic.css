@@ -317,8 +317,8 @@
   .skin-classic .pagination > .active > span,
   .skin-classic .pagination > .active > span:focus,
   .skin-classic .pagination > .active > span:hover {
-      background: #A61000;
-      border-color: #790C00;
+      background-color: #005566;
+      border-color: #003344;
   }
   
   .skin-classic .navbar-nav > .user-menu > .dropdown-menu > .user-body a,
@@ -329,26 +329,26 @@
       color: #e5e3e6 !important;
   }
   
-  .navbar-nav > .notifications-menu > .dropdown-menu > li,
-  .navbar-nav > .messages-menu > .dropdown-menu > li,
-  .navbar-nav > .tasks-menu > .dropdown-menu > li {
+  .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li,
+  .skin-classic .navbar-nav > .messages-menu > .dropdown-menu > li,
+  .skin-classic .navbar-nav > .tasks-menu > .dropdown-menu > li {
       background-color: #332f35 !important;
       border-color: #675f6b !important;
       color: #e5e3e6 !important;
   }
-  .navbar-nav > .notifications-menu > .dropdown-menu > li.footer > a,
-  .navbar-nav > .messages-menu > .dropdown-menu > li.footer > a,
-  .navbar-nav > .tasks-menu > .dropdown-menu > li.footer > a {
+  .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li.footer > a,
+  .skin-classic .navbar-nav > .messages-menu > .dropdown-menu > li.footer > a,
+  .skin-classic .navbar-nav > .tasks-menu > .dropdown-menu > li.footer > a {
     background-color: #005566;
     border-bottom: 1px solid #675f6b;
     color: #fff !important;
   }
-  .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a:hover,
-  .navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a:hover,
-  .navbar-nav > .tasks-menu > .dropdown-menu > li .menu > li > a:hover {
+  .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a:hover,
+  .skin-classic .navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a:hover,
+  .skin-classic .navbar-nav > .tasks-menu > .dropdown-menu > li .menu > li > a:hover {
     background: #4d4750;
   }
-  .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a {
+  .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a {
     color: #e5e3e6;
     border-color: #675f6b;
   }
