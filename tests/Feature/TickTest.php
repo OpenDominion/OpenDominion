@@ -214,6 +214,7 @@ class TickTest extends AbstractBrowserKitTestCase
     {
         $user = $this->createUser();
         $round = $this->createRound();
+        $tickService = app(TickService::class);
         // don't use a race that has food-related perks
         $race = \OpenDominion\Models\Race::where('name', 'Human')->first();
         $dominion = $this->createDominion($user, $round, $race);
@@ -257,6 +258,7 @@ class TickTest extends AbstractBrowserKitTestCase
         // 7543 - 7553 - 275 = -285
         $this->assertEquals(-285, $productionCalculator->getFoodNetChange($dominion));
 
+        $tickService->precalculateTick($dominion);
         Artisan::call('game:tick');
         $dominion->refresh();
 
