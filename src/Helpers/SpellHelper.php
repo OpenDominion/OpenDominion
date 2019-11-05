@@ -119,7 +119,7 @@ class SpellHelper
 
         if($race !== null){
             $racialSpell = $this->getRacialSelfSpell($race);
-            $spells->append($racialSpell);
+            $spells->push($racialSpell);
         }
 
         return $spells;
