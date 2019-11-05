@@ -427,6 +427,7 @@
     background-color: #D19000 !important;
     border-color: #A67200 !important;
 }
+.skin-classic .bg-yellow,
 .skin-classic .btn-warning:hover {
     background-color: #A67200 !important;
 }
