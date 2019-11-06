@@ -29,8 +29,14 @@ class ValhallaController extends AbstractController
             return $response;
         }
 
+        $races = $round->dominions
+            ->sortBy('race.name')
+            ->pluck('race.name', 'race.id')
+            ->unique();
+
         return view('pages.valhalla.round', [
             'round' => $round,
+            'races' => $races,
         ]);
     }
 
@@ -54,6 +60,7 @@ class ValhallaController extends AbstractController
             'avg_networth' => ['width' => 150, 'align-center' => true],
             'land' => ['width' => 150, 'align-center' => true],
             'avg_land' => ['width' => 150, 'align-center' => true],
+            'value' => ['width' => 100, 'align-center' => true],
         ];
 
         switch ($type) {
@@ -71,9 +78,30 @@ class ValhallaController extends AbstractController
             case 'largest-good-realms': $data = $this->getLargestRealms($round, 'good'); break;
             case 'largest-evil-realms': $data = $this->getLargestRealms($round, 'evil'); break;
             case 'largest-packs': $data = $this->getLargestPacks($round); break;
+            case 'stat-prestige': $data = $this->getDominionsByStatistic($round, 'prestige'); break;
+            case 'stat-attacking-success': $data = $this->getDominionsByStatistic($round, 'stat_attacking_success'); break;
+            case 'stat-defending-success': $data = $this->getDominionsByStatistic($round, 'stat_defending_success'); break;
+            case 'stat-espionage-success': $data = $this->getDominionsByStatistic($round, 'stat_espionage_success'); break;
+            case 'stat-spell-success': $data = $this->getDominionsByStatistic($round, 'stat_spell_success'); break;
+            //case 'stat-total-platinum-production': $data = $this->getDominionsByStatistic($round, 'stat_total_platinum_production'); break;
+            //case 'stat-total-food-production': $data = $this->getDominionsByStatistic($round, 'stat_total_food_production'); break;
+            //case 'stat-total-lumber-production': $data = $this->getDominionsByStatistic($round, 'stat_total_lumber_production'); break;
+            //case 'stat-total-mana-production': $data = $this->getDominionsByStatistic($round, 'stat_total_mana_production'); break;
+            //case 'stat-total-ore-production': $data = $this->getDominionsByStatistic($round, 'stat_total_ore_production'); break;
+            //case 'stat-total-gem-production': $data = $this->getDominionsByStatistic($round, 'stat_total_gem_production'); break;
+            //case 'stat-total-tech-production': $data = $this->getDominionsByStatistic($round, 'stat_total_tech_production'); break;
+            //case 'stat-total-boat-production': $data = $this->getDominionsByStatistic($round, 'stat_total_boat_production'); break;
+            case 'stat-total-land-explored': $data = $this->getDominionsByStatistic($round, 'stat_total_land_explored'); break;
+            case 'stat-total-land-conquered': $data = $this->getDominionsByStatistic($round, 'stat_total_land_conquered'); break;
+            case 'stat-total-platinum-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_platinum_stolen'); break;
+            case 'stat-total-food-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_food_stolen'); break;
+            case 'stat-total-lumber-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_lumber_stolen'); break;
+            case 'stat-total-mana-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_mana_stolen'); break;
+            case 'stat-total-ore-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_ore_stolen'); break;
+            case 'stat-total-gems-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_gems_stolen'); break;
 
             default:
-                if (!preg_match('/(strongest|largest)-([-\w]+)/', $type, $matches)) {
+                if (!preg_match('/(strongest|largest|stat)-([-\w]+)/', $type, $matches)) {
                     return redirect()->back()
                         ->withErrors(["Valhalla type '{$type}' not supported"]);
                 }
@@ -90,6 +118,8 @@ class ValhallaController extends AbstractController
                 }
                 break;
         }
+
+        $type = str_replace('stat-', '', $type);
 
         return view('pages.valhalla.round-type', compact(
             'round',
@@ -125,7 +155,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->dominions()
-            ->with(['realm', 'race.units', 'user']);
+            ->with(['queues', 'realm', 'race.units.perks', 'user']);
 
         if ($alignment !== null) {
             $builder->whereHas('race', function ($builder) use ($alignment) {
@@ -175,7 +205,7 @@ class ValhallaController extends AbstractController
         $networthCalculator = app(NetworthCalculator::class);
 
         $builder = $round->realms()
-            ->with(['dominions.race.units']);
+            ->with(['dominions.queues', 'dominions.race.units', 'dominions.race.units.perks']);
 
         if ($alignment !== null) {
             $builder->where('alignment', $alignment);
@@ -368,6 +398,36 @@ class ValhallaController extends AbstractController
             ->map(function ($row, $key) {
                 $row['#'] = ($key + 1);
                 $row['avg_land'] = number_format($row['avg_land']);
+                return $row;
+            });
+    }
+
+    protected function getDominionsByStatistic(Round $round, string $stat)
+    {
+        $builder = $round->dominions()
+            ->with(['realm', 'race', 'user'])
+            ->where($stat, '>', 0);
+
+        return $builder->get()
+            ->map(function (Dominion $dominion) use ($stat) {
+                $data = [
+                    '#' => null,
+                    'dominion' => $dominion->name,
+                    'player' => $dominion->user->display_name,
+                    'race' => $dominion->race->name,
+                    'realm' => $dominion->realm->number,
+                    'value' => $dominion->{$stat},
+                ];
+                return $data;
+            })
+            ->sortByDesc(function ($row) {
+                return $row['value'];
+            })
+            ->take(100)
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['value'] = number_format($row['value']);
                 return $row;
             });
     }

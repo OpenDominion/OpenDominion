@@ -12,32 +12,45 @@
                     <b>Overall Rankings</b>
                 </div>
             </div>
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-dominions']) }}">The Strongest Dominions</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-good-dominions']) }}">The Strongest Dominions (Good)</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-dominions']) }}">The Strongest Dominions (Evil)</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-realms']) }}">The Strongest Realms</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-good-realms']) }}">The Strongest Realms (Good)</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-evil-realms']) }}">The Strongest Realms (Evil)</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'strongest-packs']) }}">The Strongest Packs</a>
                     {{-- strongest monarchs --}}
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Largest</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-dominions']) }}">The Largest Dominions</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-good-dominions']) }}">The Largest Dominions (Good)</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-dominions']) }}">The Largest Dominions (Evil)</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-realms']) }}">The Largest Realms</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-good-realms']) }}">The Largest Realms (Good)</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-evil-realms']) }}">The Largest Realms (Evil)</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'largest-packs']) }}">The Largest Packs</a>
                     {{-- largest monarchs --}}
                 </div>
             </div>
 
-            {{-- extended rankings --}}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <b>Extended Rankings</b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6 text-center">
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-conquered']) }}">Largest Attacking Dominions<br>
+                    <!--
+                    Largest Attacking Realms<br>
+                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-attacking-success']) }}">Most Victorious Dominions</a><br>
+                </div>
+                <div class="col-sm-6 text-center">
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-explored']) }}">Largest Exploring Dominions<br>
+                    <!--
+                    Largest Exploring Realms<br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-success']) }}">Most Fortified Dominions</a><br>
+                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-prestige']) }}">Most Prestigious Dominions</a><br>
+                </div>
+            </div>
 
             {{--<div class="row">
                 <div class="col-md-12 text-center">
@@ -45,55 +58,63 @@
                 </div>
             </div>--}}
 
-            {{-- magic and spy rankings --}}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <b>Magic and Spy Rankings</b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6 text-center">
+                    <b>Spies</b><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-espionage-success']) }}">Most Successful Spies</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-platinum-stolen']) }}">Top Platinum Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-food-stolen']) }}">Top Food Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-lumber-stolen']) }}">Top Lumber Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-mana-stolen']) }}">Top Mana Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-ore-stolen']) }}">Top Ore Thieves</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-gems-stolen']) }}">Top Gem Thieves</a><br>
+                    <!--
+                    Top Saboteurs<br>
+                    Top Magical Assassins<br>
+                    Top Military Assassins<br>
+                    Top Snare Setters<br>
+                    Top Demoralizers<br>
+                    -->
+                </div>
+                <div class="col-sm-6 text-center">
+                    <b>Wizards</b><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spell-success']) }}">Most Successful Wizards</a><br>
+                    <!--
+                    Masters of Fire<br>
+                    Masters of Plague<br>
+                    Masters of Swarm<br>
+                    Masters of Lightning<br>
+                    Masters of Water<br>
+                    Masters of Earth<br>
+                    Top Spy Disbanders<br>
+                    -->
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-12 text-center">
                     <b>Rankings by Race</b>
                 </div>
             </div>
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-dark-elf']) }}">The Strongest Dark Elves</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-dwarf']) }}">The Strongest Dwarves</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-firewalker']) }}">The Strongest Firewalkers</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-gnome']) }}">The Strongest Gnomes</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-goblin']) }}">The Strongest Goblins</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-halfling']) }}">The Strongest Halflings</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-human']) }}">The Strongest Humans</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-icekin']) }}">The Strongest Icekin</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-lizardfolk']) }}">The Strongest Lizardfolk</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-lycanthrope']) }}">The Strongest Lycanthropes</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-merfolk']) }}">The Strongest Merfolk</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-nomad']) }}">The Strongest Nomads</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-nox']) }}">The Strongest Nox</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-spirit']) }}">The Strongest Spirits</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-sylvan']) }}">The Strongest Sylvans</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-troll']) }}">The Strongest Trolls</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-undead']) }}">The Strongest Undead</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'strongest-wood-elf']) }}">The Strongest Wood Elves</a>
+                    @foreach ($races as $race)
+                        @php $raceSlug = 'strongest-' . str_slug($race); @endphp
+                        <a href="{{ route('valhalla.round.type', [$round, $raceSlug]) }}">The Strongest {{ str_plural($race) }}</a><br>
+                    @endforeach
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Largest</b><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-dark-elf']) }}">The Largest Dark Elves</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-dwarf']) }}">The Largest Dwarves</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-firewalker']) }}">The Largest Firewalkers</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-gnome']) }}">The Largest Gnomes</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-goblin']) }}">The Largest Goblins</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-halfling']) }}">The Largest Halflings</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-human']) }}">The Largest Humans</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-icekin']) }}">The Largest Icekin</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-lizardfolk']) }}">The Largest Lizardfolk</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-lycanthrope']) }}">The Largest Lycanthropes</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-merfolk']) }}">The Largest Merfolk</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-nomad']) }}">The Largest Nomads</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-nox']) }}">The Largest Nox</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-spirit']) }}">The Largest Spirits</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-sylvan']) }}">The Largest Sylvans</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-troll']) }}">The Largest Trolls</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-undead']) }}">The Largest Undead</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'largest-wood-elf']) }}">The Largest Wood Elves</a>
+                    @foreach ($races as $race)
+                        @php $raceSlug = 'largest-' . str_slug($race); @endphp
+                        <a href="{{ route('valhalla.round.type', [$round, $raceSlug]) }}">The Largest {{ str_plural($race) }}</a><br>
+                    @endforeach
                 </div>
             </div>
 

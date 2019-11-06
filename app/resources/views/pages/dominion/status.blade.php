@@ -191,52 +191,18 @@
                     </div>
                 </div>
             @endif
+        </div>
 
-            @if ($selectedDominion->pack !== null)
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Pack</h3>
-                    </div>
-                    <div class="box-body">
-                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
-                        <ul>
-                            @foreach ($selectedDominion->pack->dominions as $dominion)
-                                <li>
-                                    @if ($dominion->ruler_name === $dominion->name)
-                                        <strong>{{ $dominion->name }}</strong>
-                                    @else
-                                        {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
-                                    @endif
-
-                                    @if($dominion->ruler_name !== $dominion->user->display_name)
-                                        ({{ $dominion->user->display_name }})
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                        <p>
-                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
-                            @if ($selectedDominion->pack->isFull())
-                                (full)
-                            @elseif ($selectedDominion->pack->isClosed())
-                                (closed)
-                            @endif
-                        </p>
-                        @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
-                            <p>Your pack will automatically close on <strong>{{ $selectedDominion->pack->getClosingDate() }}</strong> to make space for random players in your realm.</p>
-                            @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
-                                <p>
-                                    <form action="{{ route('dominion.misc.close-pack') }}" method="post">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
-                                    </form>
-                                </p>
-                            @endif
-                        @endif
+        @if ($selectedDominion->realm->motd && ($selectedDominion->realm->motd_updated_at > now()->subDays(3)))
+            <div class="col-sm-12 col-md-9">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <b>Message of the Day:</b> {{ $selectedDominion->realm->motd }}
+                        <br/><small class="text-muted">Posted {{ $selectedDominion->realm->motd_updated_at }}</small>
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
 
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
@@ -286,6 +252,53 @@
                 @endif
             </div>
         </div>
+
+        @if ($selectedDominion->pack !== null)
+            <div class="col-sm-12 col-md-3">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Pack</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
+                        <ul>
+                            @foreach ($selectedDominion->pack->dominions as $dominion)
+                                <li>
+                                    @if ($dominion->ruler_name === $dominion->name)
+                                        <strong>{{ $dominion->name }}</strong>
+                                    @else
+                                        {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
+                                    @endif
+
+                                    @if($dominion->ruler_name !== $dominion->user->display_name)
+                                        ({{ $dominion->user->display_name }})
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                        <p>
+                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
+                            @if ($selectedDominion->pack->isFull())
+                                (full)
+                            @elseif ($selectedDominion->pack->isClosed())
+                                (closed)
+                            @endif
+                        </p>
+                        @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
+                            <p>Your pack will automatically close on <strong>{{ $selectedDominion->pack->getClosingDate() }}</strong> to make space for random players in your realm.</p>
+                            @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
+                                <p>
+                                    <form action="{{ route('dominion.misc.close-pack') }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
+                                    </form>
+                                </p>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
 
     </div>
 @endsection

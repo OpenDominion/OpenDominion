@@ -1,6 +1,7 @@
 @extends('layouts.topnav')
 
 @section('content')
+    @include('partials.scribes.nav')
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">{{ $race->name }}</h3>
@@ -11,7 +12,7 @@
                     {{-- Description --}}
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Description</h4>
                     <em>
-                        {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                        {!! $race->description !!}
                     </em>
 
                     <div class="row">
@@ -97,7 +98,7 @@
                                 @endphp
                                 <tr>
                                     <td>
-                                        {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}") !!}
+                                        {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
                                         {{ $unit->name }}
                                     </td>
                                     <td class="text-center">

@@ -41,7 +41,7 @@
                                     <strong>Good Aligned Races</strong>
                                 </div>
                                 <div class="row">
-                                    @foreach ($races->filter(function ($race) { return $race->alignment === 'good'; }) as $race)
+                                    @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; }) as $race)
                                         <div class="col-xs-12">
                                             <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
                                                 <div class="row text-left">
@@ -59,7 +59,7 @@
                                                         </p>
                                                     </div>
                                                     <div class="col-lg-6">
-                                                        {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                                                        {!! $race->description !!}
                                                     </div>
                                                 </div>
                                             </label>
@@ -73,7 +73,7 @@
                                     <strong>Evil Aligned Races</strong>
                                 </div>
                                 <div class="row">
-                                    @foreach ($races->filter(function ($race) { return $race->alignment === 'evil'; }) as $race)
+                                    @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; }) as $race)
                                         <div class="col-xs-12">
                                             <label class="btn btn-block" style="border: 1px solid #d2d6de; margin-top: 10px; white-space: normal;">
                                                 <div class="row text-left">
@@ -91,7 +91,7 @@
                                                         </p>
                                                     </div>
                                                     <div class="col-lg-6">
-                                                        {!! $raceHelper->getRaceDescriptionHtml($race) !!}
+                                                        {!! $race->description !!}
                                                     </div>
                                                 </div>
                                             </label>

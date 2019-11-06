@@ -3,24 +3,24 @@
 namespace OpenDominion\Tests\Feature;
 
 use Artisan;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 use Throwable;
 
 class TickTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     // todo: add test: dominion shouldnt tick on hour 0
 
     public function testMoraleTick()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound('yesterday'); // todo: check why develop branch works w/o this x_x
         $dominion = $this->createDominion($user, $round);
@@ -44,7 +44,6 @@ class TickTest extends AbstractBrowserKitTestCase
      */
     public function testQueuesTick()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
@@ -85,7 +84,6 @@ class TickTest extends AbstractBrowserKitTestCase
      */
     public function testQueueShouldntTickLockedDominions()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound('-2 days', '-1 days');
         $dominion = $this->createDominion($user, $round);
@@ -123,11 +121,11 @@ class TickTest extends AbstractBrowserKitTestCase
 
     public function testResourcesGetGeneratedOnTheSameHourThatBuildingsComeIn()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
         $dominion = $this->createDominion($user, $round);
         $queueService = app(QueueService::class);
+        $tickService = app(TickService::class);
 
         $dominion->resource_gems = 0;
         $dominion->resource_mana = 0;
@@ -135,6 +133,8 @@ class TickTest extends AbstractBrowserKitTestCase
 
         $queueService->queueResources('construction', $dominion, ['building_diamond_mine' => 20], 1);
         $queueService->queueResources('construction', $dominion, ['building_tower' => 20], 1);
+        // Manually precalculate when queuing for next hour
+        $tickService->precalculateTick($dominion);
 
         Artisan::call('game:tick');
 
@@ -148,7 +148,6 @@ class TickTest extends AbstractBrowserKitTestCase
     // https://github.com/WaveHack/OpenDominion/issues/217
     public function testTheProperAmountOfPlatinumGetsAddedOnTick()
     {
-        $this->seedDatabase();
         $user1 = $this->createUser();
         $user2 = $this->createUser();
         $round = $this->createRound();
@@ -213,9 +212,9 @@ class TickTest extends AbstractBrowserKitTestCase
     // https://github.com/WaveHack/OpenDominion/issues/227
     public function testTheProperAmountOfFoodGetsAddedOnTick()
     {
-        $this->seedDatabase();
         $user = $this->createUser();
         $round = $this->createRound();
+        $tickService = app(TickService::class);
         // don't use a race that has food-related perks
         $race = \OpenDominion\Models\Race::where('name', 'Human')->first();
         $dominion = $this->createDominion($user, $round, $race);
@@ -259,6 +258,7 @@ class TickTest extends AbstractBrowserKitTestCase
         // 7543 - 7553 - 275 = -285
         $this->assertEquals(-285, $productionCalculator->getFoodNetChange($dominion));
 
+        $tickService->precalculateTick($dominion);
         Artisan::call('game:tick');
         $dominion->refresh();
 

@@ -22,7 +22,6 @@ class CreateRealmsTable extends Migration
             $table->timestamps();
 
             $table->foreign('round_id')->references('id')->on('rounds');
-            // tdodo: monarch_dominion_id
         });
     }
 

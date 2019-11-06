@@ -1,0 +1,42 @@
+name: Orc
+alignment: evil
+description: >-
+  <p>War to an Orc is considered a basic necessity, like food or shelter. Orcs live for the fight and the only thing they respect is violence. Despite the unending carnage that underpins Orc existence, they are quite capable of thriving as long as they have a common foe, but will quickly turn on each other during prolonged periods of peace.</p>
+  <p>Orcs advance in their society only by killing, and killing a lot. They will often claim skulls as trophies from their victims, and the Orcs with the rarest trophies are revered. These gruesome trophies are also crucial in the vile necromantic rituals performed by Orc voodoo magi, which grant their savage warriors the cumulative strength of their fallen enemies.</p>
+home_land_type: forest
+perks:
+  food_consumption: 20
+  lumber_production: 50
+units:
+  - name: Savage
+    cost:
+      platinum: 375
+      ore: 0
+    power:
+      offense: 4
+      defense: 0
+  - name: Guard
+    cost:
+      platinum: 300
+      ore: 25
+    power:
+      offense: 0
+      defense: 3
+  - name: Voodoo Mage
+    cost:
+      platinum: 800
+      ore: 0
+    power:
+      offense: 0
+      defense: 3
+    perks:
+      defense_from_prestige: 600,2 # amount, max
+  - name: Bone Breaker
+    cost:
+      platinum: 1050
+      ore: 105
+    power:
+      offense: 7
+      defense: 2
+    perks:
+      offense_vs_building: guard_tower,10,-2 # building type, ratio%, max

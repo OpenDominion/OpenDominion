@@ -4,6 +4,7 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -76,9 +77,12 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_barracks
  * @property int $building_dock
  * @property \Illuminate\Support\Carbon|null $council_last_read
+ * @property \Illuminate\Support\Carbon|null $royal_guard
+ * @property \Illuminate\Support\Carbon|null $elite_guard
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $pack_id
+ * @property int|null $monarch_dominion_id
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsSource
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsTarget
@@ -205,9 +209,19 @@ class Dominion extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function queues()
+    {
+        return $this->hasMany(Dominion\Queue::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tick()
+    {
+        return $this->hasOne(Dominion\Tick::class);
     }
 
     // Eloquent Query Scopes
@@ -235,12 +249,20 @@ class Dominion extends AbstractModel
             }
         }
 
+        // Verify tick hasn't happened during this request
+        if ($this->exists && $this->last_tick_at != $this->fresh()->last_tick_at) {
+            throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+        }
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
             /** @noinspection PhpUndefinedVariableInspection */
             $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
         }
+
+        // Recalculate next tick
+        $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
+        $tickService->precalculateTick($this);
 
         return $saved;
     }
@@ -285,6 +307,27 @@ class Dominion extends AbstractModel
     public function isLocked()
     {
         return (now() >= $this->round->end_date);
+    }
+
+    /**
+     * Returns whether this Dominion is the monarch for its realm.
+     *
+     * @return bool
+     */
+    public function isMonarch()
+    {
+        $monarch = $this->realm->monarch;
+        return ($monarch !== null && $this->id == $monarch->id);
+    }
+
+    /**
+     * Returns the choice for monarch of a Dominion.
+     *
+     * @return Dominion
+     */
+    public function monarchVote()
+    {
+        return $this->hasOne(static::class, 'id', 'monarchy_vote_for_dominion_id');
     }
 
     /**

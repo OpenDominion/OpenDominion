@@ -1,0 +1,35 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install PHP dependencies
+      run: composer install --no-interaction --prefer-dist
+
+    - name: Setup .env file
+      run: |
+        cp .env.ci .env
+        php artisan key:generate
+
+    - name: Create dummy mix-manifest.json file
+      run: echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
+
+    - name: Create database
+      run: mysql -h127.0.0.1 -uroot -proot -e 'CREATE DATABASE opendominion;'
+
+    - name: Run database migrations
+      run: php artisan migrate
+
+    - name: Seed database
+      run: php artisan db:seed
+
+    - name: Sync game data
+      run: php artisan game:data:sync
+
+    - name: Run tests
+      run: vendor/bin/phpunit

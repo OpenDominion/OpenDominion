@@ -139,7 +139,7 @@ class BuildingHelper
             'forest_haven' => 'Increases peasant defense, reduces losses on failed spy ops, reduces incoming Fireball damage and reduces platinum theft.<br><br>Each Forest Haven gives 20 peasants 0.75 defense each.<br>Failed spy ops losses reduced by 3% per 1% owned, up to a maximum of 30% at 10% owned.<br>Fireball damage and platinum theft reduced by 8% per 1% owned, up to a maximum of 80% at 10% owned.',
             'factory' => 'Reduces construction and land rezoning costs.<br><br>Construction costs reduced by 4% per 1% owned, up to a maximum of 75% at 18.75% owned.<br>Rezoning costs reduced by 3% per 1% owned, up to a maximum of 75% at 25% owned.',
             'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
-            'shrine' => 'Reduces offensive casualties.<br><br>Casualties reduced by 4% per 1% owned, up to a maximum of 80% at 20% owned.', // todo: hero level gain and hero bonuses
+            'shrine' => 'Reduces offensive casualties.<br><br>Casualties reduced by 5% per 1% owned, up to a maximum of 80% at 16% owned.', // todo: hero level gain and hero bonuses
             'barracks' => 'Houses 36 trained or training military units.<br><br>Does not increase in capacity for population bonuses.',
             'dock' => 'Produces 1 boat every 20 hours on average, produces 35 bushels of food per hour and each dock prevents 2.5 of your boats from being sunk.',
         ];

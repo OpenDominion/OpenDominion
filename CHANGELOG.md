@@ -5,13 +5,60 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
+## [0.7.1] - 2019-11-06
+### Added
+- Added new races: Kobold and Orc
+- Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts.
+- Added dominion search page
+- Added new categories to statistics advisor and valhalla
+- Added back spell mana cost of active spells to magic page
+- Added spell recharge time to magic page
+- Top 10 land rankings from current round will now be visible on start page.
+
+### Changed
+- Gnome Juggernaut: OP changed to 7 regardless of range
+- Undead: Decreased max population bonus from +15% to +12.5%
+- Undead Vampire: Now converts into elite dp at 65%+ (from 60%+) 
+- Wood Elf Longbowman: +25p
+- Wood Elf Mystic: +50p
+- Wood Elf Druid: -50p
+- Nomad: Removed
+- Spirit: Removed
+- Shrines: bonus increased to 5x (from 4x)
+- Slightly increased prestige gains
+- Reintroduce prestige loss for hits under 60% and multiple BF hits on the same dominon
+- Cut spy losses in half for info ops
+- Land generation changed to 85:65 (from 75:75)
+- Base defensive casualties changed to 3.825% (from 3.375%)
+- Conversion multipler change to 1.75% (from 2%)
+- Adjusted explore platinum cost formula
+- Sending less than 85% of your target's defense will no longer cause defensive casualties
+- Failed invasions when sending over 85% of the target's defense will now properly reduce defensive casualties for subsequent invasions
+- Slightly tweaked starvation casualties to now kill off population types based on proportion
+- Significantly increased the speed of the hourly tick (hour change)
+- Scribes now contains more information. Construction, Espionage and Magic have now been added.
+- Other realms are now hidden before the round starts
+- Updated racial descriptions for a lot of races.
+
+### Fixed
+- Barracks Spy should now be more clear that draftees are inaccurate
+- Fixed a bug when knocking a target outside of your applied guard range would reset your guard application
+- Chameleons and Master Thieves now die on failed spy operations.
+- Fixed a bug where Survey Dominion calculated percentages based on a dominion's current land total
+- Fixed a bug where races with increased max population from barren land wasn't applied properly
+- Fixed a bug where Erosion reduced land gains
+- Fixed spell duration in success message
+- Fixed a bug where you could leave a guard immediately after joining
+- Reduced Combat Losses (RCL) unit perk now correctly triggers on offensive casualties based on RCL units which were sent out, instead of RCL units at home
+- Minor text fixes
+
 ## [0.7.0-10] - 2019-08-20
 ### Fixed
 - Surreal Perception now states it lasts for 8 hours
 - Fixed Clairvoyances sometimes disappearing from the Op Center
 - Fixed notifications not updating properly on settings page
 - Fixed not being able to the Royal Guard at the intended day in the round
-- Fixed being able to leave the Elite Guard while in the Royal Guard
+- Fixed being able to leave the Royal Guard while in the Elite Guard
 
 ## [0.7.0-9] - 2019-08-18
 ### Fixed
@@ -70,7 +117,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Spectre: Now converts into elite dp at 60%+ (from 65%+)
 - Undead Skeleton: No longer needs boats
 - Undead Ghoul: No longer needs boats
-- Undead Vampire: Now converts intp elite dp at 60%+ (from 65%+) 
+- Undead Vampire: Now converts into elite dp at 60%+ (from 65%+) 
 
 ## [0.7.0-1] - 2019-08-09
 ### Fixed
@@ -412,7 +459,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...0.7.1
 [0.7.0-10]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...0.7.0-10
 [0.7.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-8...0.7.0-9
 [0.7.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-7...0.7.0-8

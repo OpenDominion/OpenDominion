@@ -1,5 +1,8 @@
 name: Human
 alignment: good
+description: >-
+  <p>Among the youngest of the races, the Human empire rose swiftly and against the odds. Humans proved to be not only capable warriors, but also skilled smiths, clever engineers and above all, adaptable. Their homeland destroyed by the forces of Evil decades ago, Humans seek to rebuild and avenge their fallen brothers.</p>
+  <p>Humans are generally proficient in everything they set their mind to, though they are masters of no single discipline.</p>
 home_land_type: plain
 perks:
   food_production: 5

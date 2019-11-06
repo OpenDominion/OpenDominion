@@ -2,11 +2,11 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
-use RuntimeException;
 
 class ReleaseActionService
 {
@@ -31,7 +31,7 @@ class ReleaseActionService
      * @param Dominion $dominion
      * @param array $data
      * @return array
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function release(Dominion $dominion, array $data): array
     {
@@ -44,7 +44,7 @@ class ReleaseActionService
         $totalTroopsToRelease = array_sum($data);
 
         if ($totalTroopsToRelease === 0) {
-            throw new RuntimeException('Military release aborted due to bad input.');
+            throw new GameException('Military release aborted due to bad input.');
         }
 
         foreach ($data as $unitType => $amount) {
@@ -53,7 +53,7 @@ class ReleaseActionService
             }
 
             if ($amount > $dominion->{'military_' . $unitType}) {
-                throw new RuntimeException('Military release was not completed due to bad input.');
+                throw new GameException('Military release was not completed due to bad input.');
             }
         }
 
@@ -62,12 +62,12 @@ class ReleaseActionService
                 continue;
             }
 
-            $dominion->decrement('military_' . $unitType, $amount);
+            $dominion->{'military_' . $unitType} -= $amount;
 
             if ($unitType === 'draftees') {
-                $dominion->increment('peasants', $amount);
+                $dominion->peasants += $amount;
             } else {
-                $dominion->increment('military_draftees', $amount);
+                $dominion->military_draftees += $amount;
             }
 
             $troopsReleased[$unitType] = $amount;

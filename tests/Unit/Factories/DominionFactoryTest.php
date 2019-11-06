@@ -2,7 +2,7 @@
 
 namespace OpenDominion\Tests\Unit\Factories;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
@@ -15,7 +15,7 @@ use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
 class DominionFactoryTest extends AbstractBrowserKitTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
     /** @var User */
     protected $user;
@@ -42,8 +42,6 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
     {
         parent::setUp();
 
-        $this->seedDatabase();
-
         $this->user = $this->createUser();
         $this->round = $this->createRound();
         $this->race = Race::firstOrFail();
@@ -56,7 +54,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
 
     public function testCreate()
     {
-        $this->assertEquals(0, Dominion::count());
+        $this->assertEquals(0, $this->round->dominions()->count());
 
         $dominion = $this->dominionFactory->create(
             $this->user,
@@ -66,7 +64,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
             'Dominion Name'
         );
 
-        $this->assertEquals(1, Dominion::count());
-        $this->assertEquals($dominion->id, Dominion::first()->id);
+        $this->assertEquals(1, $this->round->dominions()->count());
+        $this->assertEquals($dominion->id, $this->round->dominions()->first()->id);
     }
 }

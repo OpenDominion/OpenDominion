@@ -18,7 +18,8 @@ class APIController extends AbstractDominionController
             $result = $invadeCalculationService->calculate(
                 $dominion,
                 Dominion::find($request->get('target_dominion')),
-                $request->get('unit')
+                $request->get('unit'),
+                $request->get('calc')
             );
         } catch (GameException $e) {
             return [

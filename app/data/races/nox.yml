@@ -1,5 +1,8 @@
 name: Nox
 alignment: evil
+description: >-
+  <p>Legends say that deep under the undead swamps there exists a supernatural void; an unholy abyss absent of all light, in which unfathomable creatures skitter about in the inky dark. Among them are the Nox.</p>
+  <p>The Nox wear darkness like a cloak, dragging night into day in vast clouds that defy reason, enveloping entire empires in an alien twilight wherever they strike. When the daylight returns, there's not a trace of their enemies left.</p>
 home_land_type: swamp
 perks:
   food_consumption: -20

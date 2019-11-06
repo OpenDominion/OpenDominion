@@ -129,21 +129,30 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('espionage')->uses('Dominion\EspionageController@getEspionage')->name('espionage');
             $router->post('espionage')->uses('Dominion\EspionageController@postEspionage');
 
+            // Search
+            $router->get('search')->uses('Dominion\SearchController@getSearch')->name('search');
+
             // Council
             $router->get('council')->uses('Dominion\CouncilController@getIndex')->name('council');
             $router->get('council/create')->uses('Dominion\CouncilController@getCreate')->name('council.create');
             $router->post('council/create')->uses('Dominion\CouncilController@postCreate');
             $router->get('council/{thread}')->uses('Dominion\CouncilController@getThread')->name('council.thread');
             $router->post('council/{thread}/reply')->uses('Dominion\CouncilController@postReply')->name('council.reply');
+            $router->get('council/{thread}/delete')->uses('Dominion\CouncilController@getDeleteThread')->name('council.delete.thread');
+            $router->post('council/{thread}/delete')->uses('Dominion\CouncilController@postDeleteThread');
+            $router->get('council/post/{post}/delete')->uses('Dominion\CouncilController@getDeletePost')->name('council.delete.post');
+            $router->post('council/post/{post}/delete')->uses('Dominion\CouncilController@postDeletePost');
 
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
-            $router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
+            //$router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
             $router->get('op-center/{dominion}')->uses('Dominion\OpCenterController@getDominion')->name('op-center.show');
             $router->get('op-center/{dominion}/{type}')->uses('Dominion\OpCenterController@getDominionArchive')->name('op-center.archive');
 
             // Government
             $router->get('government')->uses('Dominion\GovernmentController@getIndex')->name('government');
+            $router->post('government/monarch')->uses('Dominion\GovernmentController@postMonarch')->name('government.monarch');
+            $router->post('government/realm')->uses('Dominion\GovernmentController@postRealm')->name('government.realm');
             $router->post('government/royal-guard/join')->uses('Dominion\GovernmentController@postJoinRoyalGuard')->name('government.royal-guard.join');
             $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');
             $router->post('government/royal-guard/leave')->uses('Dominion\GovernmentController@postLeaveRoyalGuard')->name('government.royal-guard.leave');
@@ -157,7 +166,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('realm/change-realm')->uses('Dominion\RealmController@postChangeRealm')->name('realm.change-realm');
 
             // Town Crier
-            $router->get('town-crier')->uses('Dominion\TownCrierController@getIndex')->name('town-crier');
+            $router->get('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@getIndex')->name('town-crier');
 
             // Misc
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
@@ -177,8 +186,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 // Scribes
 
 $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Router $router) {
-
-    $router->get('/')->uses('ScribesController@getIndex')->name('index');
+    $router->get('races')->uses('ScribesController@getRaces')->name('races');
+    $router->get('construction')->uses('ScribesController@getConstruction')->name('construction');
+    $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');
+    $router->get('magic')->uses('ScribesController@getMagic')->name('magic');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
 });
 

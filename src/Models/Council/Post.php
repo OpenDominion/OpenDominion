@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models\Council;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OpenDominion\Models\AbstractModel;
 use OpenDominion\Models\Dominion;
 
@@ -23,6 +24,8 @@ use OpenDominion\Models\Dominion;
  */
 class Post extends AbstractModel
 {
+    use SoftDeletes;
+
     protected $table = 'council_posts';
 
     public function dominion()
@@ -32,6 +35,6 @@ class Post extends AbstractModel
 
     public function thread()
     {
-        return $this->belongsTo(Thread::class);
+        return $this->belongsTo(Thread::class, 'council_thread_id');
     }
 }

@@ -53,7 +53,7 @@
                                         @endphp
                                         <tr>
                                             <td>
-                                                {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                                {!! $unitHelper->getUnitTypeIconHtml($unitType, $event->source->race) !!}
                                                 <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->source->race) }}">
                                                     {{ $event->source->race->units->where('slot', $unitSlot)->first()->name }}
                                                 </span>
@@ -107,7 +107,7 @@
                                             @endphp
                                             <tr>
                                                 <td>
-                                                    {!! $unitHelper->getUnitTypeIconHtml($unitType) !!}
+                                                    {!! $unitHelper->getUnitTypeIconHtml($unitType, $event->target->race) !!}
                                                     <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $event->target->race) }}">
                                                         @if ($unitType === 'draftees')
                                                             Draftees
@@ -216,6 +216,13 @@
                                 @endif
                             @endif
 
+                            @if (isset($event->data['attacker']['landErosion']))
+                                @if ($event->source->id === $selectedDominion->id)
+                                    <p class="text-center text-green">
+                                        Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to erosion.
+                                    </p>
+                                @endif
+                            @endif
                             @if (isset($event->data['attacker']['plunder']))
                                 @if ($event->source->id === $selectedDominion->id)
                                     <p class="text-center text-green">

@@ -1,8 +1,11 @@
 name: Undead
 alignment: evil
+description: >-
+  <p>The Undead are a collection of those who have defied death - skeleton puppets, flesh-obsessed ghouls, bloodthirsty vampires and their hideous progeny. This rag-tag alliance all share one thing in common: a hatred of life. They exist to end it, or drag it kicking and screaming into the shadow of undeath.</p>
+  <p>Extremely hard to kill, the Undead are constantly bolstering their ranks with more corpses. The Undead tend to live in fetid swamps, where the cloying humid air acts a natural preservative, protecting the skin from rot. Vampires are a vain bunch.</p>
 home_land_type: swamp
 perks:
-  max_population: 15
+  max_population: 12.5
   mana_production: 5
   food_consumption: -75
   immortal_wizards: 1
@@ -48,4 +51,4 @@ units:
       defense: 3
     perks:
       immortal: 1
-      staggered_conversion: 50;12,60;3 # slot 1 and 2 below 65%, slot 3 above
+      staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above

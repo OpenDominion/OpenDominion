@@ -39,8 +39,7 @@ class GuardMembershipService
      */
     protected function getRoyalGuardJoinDate(Dominion $dominion): Carbon
     {
-        $joinDate = Carbon::parse($dominion->royal_guard_active_at);
-        return Carbon::parse($joinDate->format('Y-m-d H:00:00'));
+        return Carbon::parse($dominion->royal_guard_active_at);
     }
 
     /**
@@ -51,8 +50,7 @@ class GuardMembershipService
      */
     protected function getEliteGuardJoinDate(Dominion $dominion): Carbon
     {
-        $joinDate = Carbon::parse($dominion->elite_guard_active_at);
-        return Carbon::parse($joinDate->format('Y-m-d H:00:00'));
+        return Carbon::parse($dominion->elite_guard_active_at);
     }
 
     /**
@@ -156,7 +154,7 @@ class GuardMembershipService
 
         $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
 
-        return $modifiedJoinDate->diffInHours(Carbon::parse(now()->format('Y-m-d H:00:00')));
+        return $modifiedJoinDate->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -173,7 +171,7 @@ class GuardMembershipService
 
         $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
 
-        return $modifiedJoinDate->diffInHours(Carbon::parse(now()->format('Y-m-d H:00:00')));
+        return $modifiedJoinDate->diffInHours(now()->startOfHour());
     }
 
     /**
@@ -191,7 +189,11 @@ class GuardMembershipService
         $modifiedJoinDate = $this->getRoyalGuardJoinDate($dominion);
         $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
-        return $leaveDate->diffInHours(now()->format('Y-m-d H:00:00'));
+        if ($leaveDate > now()->startOfHour()) {
+            return $leaveDate->diffInHours(now()->startOfHour());
+        }
+
+        return 0;
     }
 
     /**
@@ -209,7 +211,11 @@ class GuardMembershipService
         $modifiedJoinDate = $this->getEliteGuardJoinDate($dominion);
         $leaveDate = $modifiedJoinDate->addHours(self::GUARD_LEAVE_WAIT_IN_HOURS);
 
-        return $leaveDate->diffInHours(now()->format('Y-m-d H:00:00'));
+        if ($leaveDate > now()->startOfHour()) {
+            return $leaveDate->diffInHours(now()->startOfHour());
+        }
+
+        return 0;
     }
 
     /**
@@ -220,7 +226,7 @@ class GuardMembershipService
      */
     public function joinRoyalGuard(Dominion $dominion): void
     {
-        $dominion->royal_guard_active_at = now()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
+        $dominion->royal_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ROYAL_GUARD]);
     }
 
@@ -232,7 +238,7 @@ class GuardMembershipService
      */
     public function joinEliteGuard(Dominion $dominion): void
     {
-        $dominion->elite_guard_active_at = now()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
+        $dominion->elite_guard_active_at = now()->startOfHour()->addHours(self::GUARD_JOIN_WAIT_IN_HOURS);
         $dominion->save(['event' => HistoryService::EVENT_ACTION_JOIN_ELITE_GUARD]);
     }
 

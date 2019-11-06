@@ -1,5 +1,8 @@
 name: Lizardfolk
 alignment: evil
+description: >-
+  <p>The Lizardfolk race took everyone by surprise when they slithered out of the oceans in great numbers less than a century ago, attacking and pillaging coastal settlements before gradually pushing further inland. Their origins are pure speculation, ranging from Human scientific experimentation to Merfolk slave liberation.</p>
+  <p>With chameleonic warriors that melt into the shadows and blend in perfectly with their environments, by the time you realise the Lizardfolk are coming... it's already too late.</p>
 home_land_type: water
 perks:
   max_population: 5
@@ -18,6 +21,7 @@ units:
     power:
       defense: 3
   - name: Chameleon
+    type: hybrid_elite
     cost:
       platinum: 900
     power:

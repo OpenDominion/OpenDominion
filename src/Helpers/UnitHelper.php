@@ -63,6 +63,15 @@ class UnitHelper
             'defense_from_land' => 'Defense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
             'offense_from_land' => 'Offense increased by 1 for every %2$s%% %1$ss (max +%3$s).',
 
+            'defense_from_pairing' => 'Defense increased by %2$s when paired with %3$s %1$s at home.',
+            'offense_from_pairing' => 'Offense increased by %2$s when paired with %3$s %1$s on attack.',
+
+            'defense_from_prestige' => 'Defense increased by 1 for every %1$s prestige (max +%2$s).',
+            'offense_from_prestige' => 'Offense increased by 1 for every %1$s prestige (max +%2$s).',
+
+            'defense_vs_building' => 'Defense decreased by 1 for every %2$s%% %1$ss of defender (max %3$s).',
+            'offense_vs_building' => 'Offense decreased by 1 for every %2$s%% %1$ss of defender (max %3$s).',
+
             'defense_vs_goblin' => 'Defense increased by %s against goblins.',
             'offense_vs_goblin' => 'Offense increased by %s against goblins.',
             'defense_vs_kobold' => 'Defense increased by %s against kobolds.',
@@ -104,11 +113,22 @@ class UnitHelper
             'faster_return' => 'Returns %s hours faster from battle.',
         ];
 
-        foreach ($race->units as $unit) {
-            foreach ($unit->perks as $perk) {
+        // Get unit - same logic as military page
+        if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4'])) {
+            $unit = $race->units->filter(function ($unit) use ($unitType) {
+                return ($unit->slot == (int)str_replace('unit', '', $unitType));
+            })->first();
 
+            list($type, $proficiency) = explode(' ', $helpStrings[$unitType]);
+            if ($unit->type) {
+                list($type, $proficiency) = explode('_', $unit->type);
+                $type = ucfirst($type);
+            }   $proficiency .= '.';
+            $helpStrings[$unitType] = "$type $proficiency";
+
+            foreach ($unit->perks as $perk) {
                 if (!array_key_exists($perk->key, $perkTypeStrings)) {
-//                    \Debugbar::warning("Missing perk help text for unit perk '{$perk->key}'' on unit '{$unit->name}''.");
+                    //\Debugbar::warning("Missing perk help text for unit perk '{$perk->key}'' on unit '{$unit->name}''.");
                     continue;
                 }
 
@@ -131,6 +151,21 @@ class UnitHelper
                     }
                 }
 
+                // Special case for pairings
+                if ($perk->key === 'defense_from_pairing' || $perk->key === 'offense_from_pairing') {
+                    $slot = (int)$perkValue[0];
+                    $pairedUnit = $race->units->filter(static function ($unit) use ($slot) {
+                        return ($unit->slot === $slot);
+                    })->first();
+
+                    $perkValue[0] = $pairedUnit->name;
+                    if (isset($perkValue[2]) && $perkValue[2] > 1) {
+                        $perkValue[0] = str_plural($perkValue[0]);
+                    } else {
+                        $perkValue[2] = 1;
+                    }
+                }
+
                 // Special case for conversions
                 if ($perk->key === 'conversion') {
                     $unitSlotsToConvertTo = array_map('intval', str_split($perkValue));
@@ -145,7 +180,6 @@ class UnitHelper
                     }
 
                     $perkValue = generate_sentence_from_array($unitNamesToConvertTo);
-
                 } elseif ($perk->key === 'staggered_conversion') {
                     foreach ($perkValue as $index => $conversion) {
                         [$convertAboveLandRatio, $slots] = $conversion;
@@ -168,54 +202,93 @@ class UnitHelper
                 if (is_array($perkValue)) {
                     if ($nestedArrays) {
                         foreach ($perkValue as $nestedKey => $nestedValue) {
-                            $helpStrings['unit' . $unit->slot] .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $nestedValue));
+                            $helpStrings[$unitType] .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $nestedValue));
                         }
                     } else {
-                        $helpStrings['unit' . $unit->slot] .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $perkValue));
+                        $helpStrings[$unitType] .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $perkValue));
                     }
                 } else {
-                    $helpStrings['unit' . $unit->slot] .= ('<br><br>' . sprintf($perkTypeStrings[$perk->key], $perkValue));
+                    $helpStrings[$unitType] .= ('<br><br>' . sprintf($perkTypeStrings[$perk->key], $perkValue));
                 }
             }
 
             if ($unit->need_boat === false) {
-                $helpStrings['unit' . $unit->slot] .= ('<br><br>No boats needed.');
+                $helpStrings[$unitType] .= ('<br><br>No boats needed.');
             }
         }
 
         return $helpStrings[$unitType] ?: null;
     }
 
-    public function getUnitTypeIconHtml(string $unitType): string
+    public function getUnitTypeIconHtml(string $unitType, Race $race = null): string
     {
         switch ($unitType) {
             case 'draftees':
-                return '<i class="fa fa-user text-green"></i>';
+                $iconClass = 'fa fa-user';
+                $colorClass = 'text-green';
+                break;
 
             case 'unit1':
-                return '<i class="ra ra-sword text-green"></i>';
+                $iconClass = 'ra ra-sword';
+                $colorClass = 'text-green';
+                break;
 
             case 'unit2':
-                return '<i class="ra ra-shield text-green"></i>';
+                $iconClass = 'ra ra-shield';
+                $colorClass = 'text-green';
+                break;
 
             case 'unit3':
-                return '<i class="ra ra-shield text-light-blue"></i>';
+                $iconClass = 'ra ra-shield';
+                $colorClass = 'text-light-blue';
+                break;
 
             case 'unit4':
-                return '<i class="ra ra-sword text-light-blue"></i>';
+                $iconClass = 'ra ra-sword';
+                $colorClass = 'text-light-blue';
+                break;
 
             case 'spies':
-                return '<i class="fa fa-user-secret text-green"></i>';
+                $iconClass = 'fa fa-user-secret';
+                $colorClass = 'text-green';
+                break;
 
             case 'wizards':
-                return '<i class="ra ra-fairy-wand text-green"></i>';
+                $iconClass = 'ra ra-fairy-wand';
+                $colorClass = 'text-green';
+                break;
 
             case 'archmages':
-                return '<i class="ra ra-fairy-wand text-light-blue"></i>';
+                $iconClass = 'ra ra-fairy-wand';
+                $colorClass = 'text-light-blue';
+                break;
 
             default:
                 return '';
         }
+
+        if ($race && in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4'])) {
+            $unit = $race->units->filter(function ($unit) use ($unitType) {
+                return ($unit->slot == (int)str_replace('unit', '', $unitType));
+            })->first();
+            if ($unit->type) {
+                list($type, $proficiency) = explode('_', $unit->type);
+                if (strtolower($type) == 'offensive') {
+                    $iconClass = 'ra ra-sword';
+                } elseif (strtolower($type) == 'defensive') {
+                    $iconClass = 'ra ra-shield';
+                } elseif (strtolower($type) == 'hybrid') {
+                    $iconClass = 'ra ra-crossed-swords';
+                }
+                if (strtolower($proficiency) == 'specialist') {
+                    $colorClass = 'text-green';
+                } elseif (strtolower($proficiency) == 'elite') {
+                    $colorClass = 'text-light-blue';
+                }
+            }
+        }
+
+        return "<i class=\"$iconClass $colorClass\"></i>";
     }
 
     public function getConvertedUnitsString(array $convertedUnits, Race $race): string

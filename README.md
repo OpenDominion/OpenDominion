@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/WaveHack/OpenDominion"><img src="https://travis-ci.org/WaveHack/OpenDominion.svg?branch=develop" alt="Build Status"></a>
+  <a href="https://github.com/WaveHack/OpenDominion/actions"><img src="https://github.com/WaveHack/OpenDominion/workflows/Tests/badge.svg" alt="Tests Status"></a>
   <a href="https://styleci.io/repos/29497480"><img src="https://styleci.io/repos/29497480/shield?branch=develop&style=flat" alt="StyleCI"></a>
   <a href="https://coveralls.io/github/WaveHack/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/WaveHack/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
   <a href="https://github.com/WaveHack/OpenDominion/blob/develop/LICENSE"><img src="https://img.shields.io/github/license/wavehack/opendominion.svg?maxAge=2592000" alt="GNU AGPLv3 licensed"></a>
@@ -37,16 +37,16 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 
 | System         | Status                                    | To do
 | -------------- | ----------------------------------------- | -----
-| Authentication | ![Progress](http://progressed.io/bar/95)  | 2FA
-| Buildings      | ![Progress](http://progressed.io/bar/90)  | Schools, and black-op bonuses for Masonry, Forest Haven and Dock
-| Land           | ![Progress](http://progressed.io/bar/100) |
-| Heroes         | ![Progress](http://progressed.io/bar/0)   | Everything
-| Notifications  | ![Progress](http://progressed.io/bar/50)  | Needs refactoring and email digests
-| Population     | ![Progress](http://progressed.io/bar/100) |
-| Races & Units  | ![Progress](http://progressed.io/bar/60)  |
-| Resources      | ![Progress](http://progressed.io/bar/95)  | Tech points
-| Wonders        | ![Progress](http://progressed.io/bar/0)   | Everything
-| Tech           | ![Progress](http://progressed.io/bar/0)   | Everything
+| Authentication | ![Progress](https://progress-bar.dev/95/)  | 2FA
+| Buildings      | ![Progress](https://progress-bar.dev/90/)  | Schools, and black-op bonuses for Masonry, Forest Haven and Dock
+| Land           | ![Progress](https://progress-bar.dev/100/) |
+| Heroes         | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Notifications  | ![Progress](https://progress-bar.dev/50/)  | Needs refactoring and email digests
+| Population     | ![Progress](https://progress-bar.dev/100/) |
+| Races & Units  | ![Progress](https://progress-bar.dev/60/)  |
+| Resources      | ![Progress](https://progress-bar.dev/95/)  | Tech points
+| Wonders        | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Tech           | ![Progress](https://progress-bar.dev/0/)   | Everything
 
 ### Pages
 
@@ -54,30 +54,30 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 
 | Page                | Status                                    | To do
 | ------------------- | ----------------------------------------- | -----
-| Status              | ![Progress](http://progressed.io/bar/100) |
-| Advisors            | ![Progress](http://progressed.io/bar/90)  | Rankings advisor
-| Daily Bonuses       | ![Progress](http://progressed.io/bar/100) |
-| Exploration         | ![Progress](http://progressed.io/bar/100) |
-| Construction        | ![Progress](http://progressed.io/bar/100) |
-| Destroy Buildings   | ![Progress](http://progressed.io/bar/100) |
-| Land Rezoning       | ![Progress](http://progressed.io/bar/100) |
-| Castle Improvements | ![Progress](http://progressed.io/bar/95)  | Towers spell damage reduction
-| National Bank       | ![Progress](http://progressed.io/bar/100) |
-| Military Training   | ![Progress](http://progressed.io/bar/100) |
-| Release Troops      | ![Progress](http://progressed.io/bar/100) |
-| Invading            | ![Progress](http://progressed.io/bar/100) |
-| Magic               | ![Progress](http://progressed.io/bar/60)  | Black ops
-| Espionage           | ![Progress](http://progressed.io/bar/35)  | Black ops
-| Messages            | ![Progress](http://progressed.io/bar/0)   | Everything
-| Realm Council       | ![Progress](http://progressed.io/bar/50)  | Needs refactoring, editing posts, and moderation
-| Op Center           | ![Progress](http://progressed.io/bar/95)  | Calculations for (estimate) DP
-| Government          | ![Progress](http://progressed.io/bar/0)   | Everything
-| Diplomacy           | ![Progress](http://progressed.io/bar/0)   | Everything
-| Realm Page          | ![Progress](http://progressed.io/bar/100) |
-| Rankings            | ![Progress](http://progressed.io/bar/100) | 
-| Town Crier          | ![Progress](http://progressed.io/bar/95)  | Black ops reports
-| Valhalla            | ![Progress](http://progressed.io/bar/20)  | More categories
-| Scribes / Manual    | ![Progress](http://progressed.io/bar/0)   | Everything
+| Status              | ![Progress](https://progress-bar.dev/100/) |
+| Advisors            | ![Progress](https://progress-bar.dev/90/)  | Rankings advisor
+| Daily Bonuses       | ![Progress](https://progress-bar.dev/100/) |
+| Exploration         | ![Progress](https://progress-bar.dev/100/) |
+| Construction        | ![Progress](https://progress-bar.dev/100/) |
+| Destroy Buildings   | ![Progress](https://progress-bar.dev/100/) |
+| Land Rezoning       | ![Progress](https://progress-bar.dev/100/) |
+| Castle Improvements | ![Progress](https://progress-bar.dev/95/)  | Towers spell damage reduction
+| National Bank       | ![Progress](https://progress-bar.dev/100/) |
+| Military Training   | ![Progress](https://progress-bar.dev/100/) |
+| Release Troops      | ![Progress](https://progress-bar.dev/100/) |
+| Invading            | ![Progress](https://progress-bar.dev/100/) |
+| Magic               | ![Progress](https://progress-bar.dev/60/)  | Black ops
+| Espionage           | ![Progress](https://progress-bar.dev/35/)  | Black ops
+| Messages            | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Realm Council       | ![Progress](https://progress-bar.dev/50/)  | Needs refactoring, editing posts, and moderation
+| Op Center           | ![Progress](https://progress-bar.dev/95/)  | Calculations for (estimate) DP
+| Government          | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Diplomacy           | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Realm Page          | ![Progress](https://progress-bar.dev/100/) |
+| Rankings            | ![Progress](https://progress-bar.dev/100/) |
+| Town Crier          | ![Progress](https://progress-bar.dev/95/)  | Black ops reports
+| Valhalla            | ![Progress](https://progress-bar.dev/20/)  | More categories
+| Scribes / Manual    | ![Progress](https://progress-bar.dev/0/)   | Everything
 
 
 ## Contributing

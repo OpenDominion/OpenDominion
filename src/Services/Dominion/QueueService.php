@@ -44,12 +44,11 @@ class QueueService
             return collect(array_get($this->queueCache, $cacheKey));
         }
 
-        $data = DB::table('dominion_queue')->where([
-            'dominion_id' => $dominion->id,
-            'source' => $source,
-        ])->get();
+        $data = $dominion->queues
+            ->where('source', $source)
+            ->where('hours', '>', 0);
 
-        array_set($this->queueCache, $cacheKey, $data->toArray());
+        array_set($this->queueCache, $cacheKey, $data);
 
         return $data;
     }

@@ -1,8 +1,12 @@
 name: Spirit
 alignment: good
+description: >-
+  <p>Tethered to the realm of the living by unknown forces, Spirits are the melancholic souls of the dead that cannot move on. They wander the lands, drawn towards life, turning thriving communities into ghost towns as people flee in terror. The living usually give them a wide berth, scared off by centuries of ghost stories.</p>
+  <p>The worst of these stories revolve around Spirits snatching the very souls from the living in a jealous rage, trapping them in limbo forever.</p>
 home_land_type: swamp
+playable: false
 perks:
-  max_population: 15
+  max_population: 12.5
   food_consumption: -90
   immortal_wizards: 1
 units:
@@ -47,4 +51,4 @@ units:
       defense: 3
     perks:
       immortal: 1
-      staggered_conversion: 50;12,60;3 # slot 1 and 2 below 65%, slot 3 above
+      staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above

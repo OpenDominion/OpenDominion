@@ -25,7 +25,7 @@ class DailyBonusesActionService
         }
 
         $platinumGained = $dominion->peasants * 4;
-        $dominion->increment('resource_platinum', $platinumGained);
+        $dominion->resource_platinum += $platinumGained;
         $dominion->daily_platinum = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
@@ -55,7 +55,8 @@ class DailyBonusesActionService
 
         $landGained = 20;
         $attribute = ('land_' . $dominion->race->home_land_type);
-        $dominion->increment($attribute, $landGained);
+        $dominion->{$attribute} += $landGained;
+        $dominion->stat_total_land_explored += $landGained;
         $dominion->daily_land = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 

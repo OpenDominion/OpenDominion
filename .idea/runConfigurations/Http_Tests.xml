@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Http Tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+    <TestRunner scope="XML" options="--testsuite Http" />
+    <method v="2" />
+  </configuration>
+</component>

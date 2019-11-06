@@ -37,11 +37,18 @@
                                         <td>
                                             <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                             <small class="text-muted">
-                                                Created {{ $thread->created_at }} by <b>{{ $thread->dominion->name }}</b>
+                                                Created {{ $thread->created_at }} by 
+                                                @if ($thread->dominion->isMonarch())
+                                                    <i class="ra ra-queen-crown text-red"></i>
+                                                @endif
+                                                <b>{{ $thread->dominion->name }}</b>
                                                 @if ($thread->dominion->name !== $thread->dominion->ruler_name)
                                                     ({{ $thread->dominion->ruler_name }})
                                                 @endif
                                             </small>
+                                            @if ($selectedDominion->isMonarch()) 
+                                                <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                                            @endif
                                         </td>
                                         <td class="text-center align-middle">
                                             {{ number_format($thread->posts->count()) }}
@@ -53,7 +60,11 @@
                                             @if (!$thread->posts->isEmpty())
                                                 {{ $thread->posts->last()->created_at }}<br>
                                                 <small class="text-muted">
-                                                    by <b>{{ $thread->posts->last()->dominion->name }}</b>
+                                                    by
+                                                    @if ($thread->posts->last()->dominion->isMonarch())
+                                                        <i class="ra ra-queen-crown text-red"></i>
+                                                    @endif
+                                                    <b>{{ $thread->posts->last()->dominion->name }}</b>
                                                     @if ($thread->posts->last()->dominion->name !== $thread->posts->last()->dominion->ruler_name)
                                                         ({{ $thread->posts->last()->dominion->ruler_name }})
                                                     @endif

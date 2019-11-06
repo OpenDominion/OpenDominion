@@ -17,10 +17,6 @@
                     <p>No recent data available.</p>
                     <p>Cast magic spell 'Clear Sight' to reveal information.</p>
                 @else
-                    @php
-                        $race = OpenDominion\Models\Race::findOrFail($infoOp->data['race_id']);
-                    @endphp
-
                     @slot('tableResponsive', false)
                     @slot('noPadding', true)
 
@@ -43,7 +39,7 @@
                                     </tr>
                                     <tr>
                                         <td>Race:</td>
-                                        <td>{{ $race->name }}</td>
+                                        <td>{{ $dominion->race->name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Land:</td>
@@ -141,19 +137,19 @@
                                         <td>{{ number_format($infoOp->data['military_draftees']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(0)->name }}:</td>
+                                        <td>{{ $dominion->race->units->get(0)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit1']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(1)->name }}:</td>
+                                        <td>{{ $dominion->race->units->get(1)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit2']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(2)->name }}:</td>
+                                        <td>{{ $dominion->race->units->get(2)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit3']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ $race->units->get(3)->name }}:</td>
+                                        <td>{{ $dominion->race->units->get(3)->name }}:</td>
                                         <td>{{ number_format($infoOp->data['military_unit4']) }}</td>
                                     </tr>
                                     <tr>
@@ -435,7 +431,7 @@
                                 <td>Draftees</td>
                                 <td colspan="12">&nbsp;</td>
                                 <td class="text-center">
-                                    {{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
+                                    ~{{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
                                 </td>
                             </tr>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
@@ -614,7 +610,7 @@
                                         <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                                     </td>
                                     <td class="text-center">{{ number_format($amount) }}</td>
-                                    <td class="text-center">{{ number_format((($amount / $landCalculator->getTotalLand($dominion)) * 100), 2) }}%</td>
+                                    <td class="text-center">{{ number_format((($amount / array_get($infoOp->data, "total_land", $landCalculator->getTotalLand($dominion))) * 100), 2) }}%</td>
                                 </tr>
                             @endforeach
                         </tbody>

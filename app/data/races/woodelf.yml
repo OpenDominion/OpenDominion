@@ -1,5 +1,8 @@
 name: Wood Elf
 alignment: good
+description: >-
+  <p>Graceful, slender and eerily beautiful, the Wood Elves are among the eldest of the races and keenly attuned with the natural world, seeking to protect their forests from the forces of evil.</p>
+  <p>Though peaceful by nature, Wood Elves are a versatile race, proficient in combat with their deadly archers and magically gifted druids that draw power from the very forest itself, and backed up by powerful wizards and skilled spies that excel at covert ops.</p>
 home_land_type: forest
 perks:
   wizard_strength: 10
@@ -17,14 +20,14 @@ units:
       defense: 0
   - name: Longbowman
     cost:
-      platinum: 325
+      platinum: 350
       ore: 10
     power:
       offense: 0
       defense: 4
   - name: Mystic
     cost:
-      platinum: 1075
+      platinum: 1125
       ore: 0
     power:
       offense: 0
@@ -33,7 +36,7 @@ units:
       defense_from_land: forest,20,5 # land type, ratio%, max
   - name: Druid
     cost:
-      platinum: 1100
+      platinum: 1050
       ore: 0
     power:
       offense: 3

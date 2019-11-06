@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-search"></i> Explore Land</h3>
+                    <h3 class="box-title"><i class="ra ra-telescope"></i> Explore Land</h3>
                 </div>
                 <form action="{{ route('dominion.explore') }}" method="post" role="form">
                     @csrf

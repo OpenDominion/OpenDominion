@@ -1,5 +1,8 @@
 name: Sylvan
 alignment: good
+description: >-
+  <p>Legends say that the Sylvan are descendents of elves that bonded their spirits with the forces of nature itself, transforming them into an eclectic patchwork of different magical beings, from tiny sprites to massive centaurs. They share a common goal: to extinguish evil wherever it takes root.</p>
+  <p>Blessed by the Goddess Gaia, the Sylvan fight fiercely with a combination of conventional weaponry and spellsong; magical arts that enchant all Sylvan within earshot, empowering them to fight with supernatural speed and strength.</p>
 home_land_type: forest
 perks:
   lumber_production: 20
