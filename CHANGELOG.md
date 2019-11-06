@@ -30,7 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cut spy losses in half for info ops
 - Land generation changed to 85:65 (from 75:75)
 - Base defensive casualties changed to 3.825% (from 3.375%)
-- Conversion multipler change to 1.75% (from 2%)
+- Conversion multiplier change to 1.75% (from 2%)
 - Adjusted explore platinum cost formula
 - Sending less than 85% of your target's defense will no longer cause defensive casualties
 - Failed invasions when sending over 85% of the target's defense will now properly reduce defensive casualties for subsequent invasions
