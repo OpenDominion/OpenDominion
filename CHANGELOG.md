@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 
-## [0.7.1] - 2019-11-04
+## [0.7.1] - 2019-11-06
 ### Added
 - Added new races: Kobold and Orc
 - Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts.
