@@ -26,9 +26,6 @@ use Throwable;
  */
 class QueueService
 {
-    /** @var array */
-    protected $queueCache = [];
-
     /**
      * Returns the queue of specific type of a dominion.
      *
@@ -36,21 +33,11 @@ class QueueService
      * @param Dominion $dominion
      * @return Collection
      */
-    public function getQueue(string $source, Dominion $dominion, bool $force = false): Collection
+    public function getQueue(string $source, Dominion $dominion): Collection
     {
-        $cacheKey = "{$source}.{$dominion->id}";
-
-        if (!$force && array_has($this->queueCache, $cacheKey)) {
-            return collect(array_get($this->queueCache, $cacheKey));
-        }
-
-        $data = $dominion->queues
+        return $dominion->queues
             ->where('source', $source)
             ->where('hours', '>', 0);
-
-        array_set($this->queueCache, $cacheKey, $data);
-
-        return $data;
     }
 
     /**
@@ -106,7 +93,7 @@ class QueueService
 
     public function dequeueResource(string $source, Dominion $dominion, string $resource, int $amount): void
     {
-        $queue = $this->getQueue($source, $dominion, true)
+        $queue = $this->getQueue($source, $dominion)
             ->filter(static function ($row) use ($resource) {
                 return ($row->resource === $resource);
             })->sortByDesc('hours');
@@ -142,9 +129,6 @@ class QueueService
                 ]);
             }
         }
-
-        // Update queue in cache!
-        $this->getQueue($source, $dominion, true);
     }
 
     /**
@@ -165,7 +149,7 @@ class QueueService
                 if ($amount === 0) {
                     continue;
                 }
-                $q = $this->getQueue($source, $dominion, true);
+                $q = $this->getQueue($source, $dominion);
                 $existingQueueRow =
                     $q->filter(static function ($row) use ($resource, $hours) {
                         return (
@@ -195,10 +179,7 @@ class QueueService
                     ]);
                 }
             }
-        });
-
-        // // Update queue in cache!
-        // $this->getQueue($source, $dominion, true);
+        }, 5);
     }
 
     /**
