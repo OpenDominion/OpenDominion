@@ -398,8 +398,24 @@ class TickService
 
         foreach ($incomingQueue as $row) {
             $tick->{$row->resource} += $row->amount;
-            // Temporarily add next hour's resources for accurate calculations
-            $dominion->{$row->resource} += $row->amount;
+            if (strpos($row->resource, 'military_unit') === false) {
+                // Temporarily add next hour's non-military resources for accurate calculations
+                $dominion->{$row->resource} += $row->amount;
+            }
+        }
+
+        // Population
+        $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
+        $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
+
+        $tick->peasants = $populationPeasantGrowth;
+        $tick->military_draftees = $drafteesGrowthRate;
+
+        foreach ($incomingQueue as $row) {
+            if (strpos($row->resource, 'military_unit') !== false) {
+                // Temporarily add next hour's military resources for accurate calculations
+                $dominion->{$row->resource} += $row->amount;
+            }
         }
 
         // Resources
@@ -434,13 +450,6 @@ class TickService
             // Food production
             $tick->resource_food += $foodNetChange;
         }
-
-        // Population
-        $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
-        $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
-
-        $tick->peasants = $populationPeasantGrowth;
-        $tick->military_draftees = $drafteesGrowthRate;
 
         // Morale
         if ($dominion->morale < 70) {
