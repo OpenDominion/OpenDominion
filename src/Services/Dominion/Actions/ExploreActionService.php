@@ -80,14 +80,14 @@ class ExploreActionService
         $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
         DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees, $totalLandToExplore) {
+            $this->queueService->queueResources('exploration', $dominion, $data);
+
             $dominion->stat_total_land_explored += $totalLandToExplore;
             $dominion->fill([
                 'morale' => $newMorale,
                 'resource_platinum' => $newPlatinum,
                 'military_draftees' => $newDraftees,
             ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
-
-            $this->queueService->queueResources('exploration', $dominion, $data);
         });
 
         return [

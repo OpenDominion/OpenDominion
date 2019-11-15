@@ -104,13 +104,6 @@ class TrainActionService
         $newWizards = ($dominion->military_wizards - $totalCosts['wizards']);
 
         DB::transaction(function () use ($dominion, $data, $newPlatinum, $newOre, $newDraftees, $newWizards) {
-            $dominion->fill([
-                'resource_platinum' => $newPlatinum,
-                'resource_ore' => $newOre,
-                'military_draftees' => $newDraftees,
-                'military_wizards' => $newWizards,
-            ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
-
             // Specialists train in 9 hours
             $nineHourData = [
                 'military_unit1' => $data['military_unit1'],
@@ -120,6 +113,13 @@ class TrainActionService
 
             $this->queueService->queueResources('training', $dominion, $nineHourData, 9);
             $this->queueService->queueResources('training', $dominion, $data);
+
+            $dominion->fill([
+                'resource_platinum' => $newPlatinum,
+                'resource_ore' => $newOre,
+                'military_draftees' => $newDraftees,
+                'military_wizards' => $newWizards,
+            ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
         });
 
         return [
