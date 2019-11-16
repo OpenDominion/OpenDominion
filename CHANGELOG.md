@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Total production of gems did not display on statistics advisor
 
+## [0.7.1-13] - 2019-11-12
+### Added
+- Skin selection with a new DC theme.
+
+### Fixed
+- Rankings on front page now reflects last round, as long as new round has not started yet. 
+
 ## [0.7.1] - 2019-11-06
 ### Added
 - Added new races: Kobold and Orc
