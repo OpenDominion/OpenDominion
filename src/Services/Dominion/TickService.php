@@ -62,6 +62,10 @@ class TickService
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->queueService = app(QueueService::class);
         $this->spellCalculator = app(SpellCalculator::class);
+
+        /* These calculators need to ignore queued resources for the following tick */
+        $this->populationCalculator->setForTick(true);
+        $this->queueService->setForTick(true);
     }
 
     /**
@@ -398,10 +402,8 @@ class TickService
 
         foreach ($incomingQueue as $row) {
             $tick->{$row->resource} += $row->amount;
-            if (strpos($row->resource, 'military_unit') === false) {
-                // Temporarily add next hour's non-military resources for accurate calculations
-                $dominion->{$row->resource} += $row->amount;
-            }
+            // Temporarily add next hour's resources for accurate calculations
+            $dominion->{$row->resource} += $row->amount;
         }
 
         // Population
@@ -410,13 +412,6 @@ class TickService
 
         $tick->peasants = $populationPeasantGrowth;
         $tick->military_draftees = $drafteesGrowthRate;
-
-        foreach ($incomingQueue as $row) {
-            if (strpos($row->resource, 'military_unit') !== false) {
-                // Temporarily add next hour's military resources for accurate calculations
-                $dominion->{$row->resource} += $row->amount;
-            }
-        }
 
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
