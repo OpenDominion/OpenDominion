@@ -29,7 +29,7 @@ class QueueService
     /** @var bool */
     protected $forTick = false;
 
-    /** 
+    /**
      * Toggle if this calculator should include the following hour's resources.
      */
     public function setForTick(bool $value)
