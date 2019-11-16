@@ -56,7 +56,7 @@ class MilitaryCalculator
         $this->spellCalculator = $spellCalculator;
     }
 
-    /** 
+    /**
      * Toggle if this calculator should include the following hour's resources.
      */
     public function setForTick(bool $value)
