@@ -14,7 +14,7 @@
 .skin-classic .table > thead > tr > td,
 .skin-classic .table > tbody > tr > td,
 .skin-classic .table > tfoot > tr > td {
-    color: #ACB9BB;
+    color: #e2ebec;
     border-top: 0px;
 }
 .skin-classic .table > thead > tr.odd,
@@ -82,7 +82,7 @@
     background: #32393e;
 }
 .skin-classic .sidebar a {
-    color: #ACB9BB;
+    color: #e2ebec;
 }
 .skin-classic .sidebar a:hover {
     text-decoration: none;
@@ -134,9 +134,14 @@
 .skin-classic .box-comment,
 .skin-classic .comment-text,
 .skin-classic .comment-text .username {
-    color: #ACB9BB;
+    color: #e2ebec;
     background-color: #332f35;
     border-color: #005566;
+}
+
+.box-footer > small > i {
+    font-family: arial;
+    color: #ffffff;
 }
 
 .skin-classic .box-comments .box-comment {
@@ -365,7 +370,7 @@
 }
 
 .skin-classic a {
-    color: #e5e3e6;
+    color: beige;
 }
 
 .skin-classic .main-header {
@@ -377,7 +382,7 @@
 }
 
 .skin-classic .text-green {
-    color: #00C851 !important;
+    color: #72f3b5 !important;
 }
 .skin-classic .text-orange {
     color: #dd9911 !important;
@@ -388,6 +393,10 @@
 .skin-classic .text-aqua,
 .skin-classic .text-light-blue {
     color: #33b5e5 !important;
+}
+
+.skin-classic .text-success {
+    color: #72f3b5;
 }
 
 .skin-classic .alert,
@@ -460,7 +469,7 @@
 .skin-classic .btn-success,
 .skin-classic .label-success,
 .skin-classic .panel-success {
-    background-color: #007D1C !important;
+    background-color: #3ea272 !important;
     border-color: #005C14 !important;
 }
 .skin-classic .btn-success:hover {
