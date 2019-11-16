@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [Unreleased]
 ### Fixed
-- Total production of gems did not display on statistics advisor
+- Incoming buildings will now only be counted once when calculating maximum population at HC
+- Total production of gems did not display on statistics advisory
 
 ## [0.7.1-13] - 2019-11-12
 ### Added
