@@ -27,6 +27,9 @@ class MilitaryCalculator
     /** @var SpellCalculator */
     protected $spellCalculator;
 
+    /** @var bool */
+    protected $forTick = false;
+
     /**
      * MilitaryCalculator constructor.
      *
@@ -51,6 +54,15 @@ class MilitaryCalculator
         $this->prestigeCalculator = $prestigeCalculator;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
+    }
+
+    /** 
+     * Toggle if this calculator should include the following hour's resources.
+     */
+    public function setForTick(bool $value)
+    {
+        $this->forTick = $value;
+        $this->queueService->setForTick($value);
     }
 
     /**

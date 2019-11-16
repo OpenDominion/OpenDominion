@@ -350,8 +350,8 @@
 .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li.footer > a,
 .skin-classic .navbar-nav > .messages-menu > .dropdown-menu > li.footer > a,
 .skin-classic .navbar-nav > .tasks-menu > .dropdown-menu > li.footer > a {
-    background-color: #005566;
-    border-bottom: 1px solid #675f6b;
+    background-color: #005566 !important;
+    border-bottom: 1px solid #675f6b !important;
     color: #fff !important;
 }
 .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a:hover,
