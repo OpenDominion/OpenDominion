@@ -470,8 +470,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - This CHANGELOG file.
 
 [Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...HEAD
-[0.7.1-14]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...0.7.1-13
-[0.7.1-13]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-13...0.7.1-14
+[0.7.1-14]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-13...0.7.1-14
+[0.7.1-13]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...0.7.1-13
 [0.7.1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...0.7.1
 [0.7.0-10]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...0.7.0-10
 [0.7.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-8...0.7.0-9
