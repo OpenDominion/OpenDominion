@@ -40,25 +40,25 @@
                                                 @if ($gameEvent->source_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->source_id, $dominionIds, true))
                                                     @if ($gameEvent->data['result']['success'])
                                                         Victorious on the battlefield,
-                                                        <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.town-crier', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
+                                                        <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
                                                         conquered
                                                         <span class="text-green text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land from
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>
-                                                        <a href="{{ route('dominion.town-crier', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                                     @else
                                                         Sadly, the forces of
-                                                        <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.town-crier', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
+                                                        <span class="text-aqua">{{ $gameEvent->source->name }} <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a></span>
                                                         were beaten back by
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>
-                                                        <a href="{{ route('dominion.town-crier', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                                     @endif
                                                 @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class)
                                                     @if ($gameEvent->data['result']['success'])
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
-                                                        <a href="{{ route('dominion.town-crier', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                         invaded
-                                                        <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.town-crier', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
+                                                        <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
                                                         and captured
                                                         <span class="text-red text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land.
@@ -66,10 +66,10 @@
                                                         @if ($gameEvent->source_realm_id == $selectedDominion->realm_id)
                                                             Fellow dominion
                                                         @endif
-                                                        <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.town-crier', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
+                                                        <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
                                                         fended off an attack from
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
-                                                        <a href="{{ route('dominion.town-crier', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
                                                     @endif
                                                 @endif
                                             @endif
