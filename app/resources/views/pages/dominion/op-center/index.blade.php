@@ -176,7 +176,7 @@
     <script type="text/javascript">
         (function ($) {
             $('#dominions-table').DataTable({
-                order: [[5, 'desc']],
+                order: [[4, 'desc']],
             });
             //$('#clairvoyance-table').DataTable({
             //    order: [[2, 'desc']],
