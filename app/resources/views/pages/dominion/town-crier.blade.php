@@ -106,11 +106,15 @@
                     @endif
                     <p>You will see only military operations, as well as death messages{{-- and important messages regarding Wonders of the World--}}. Magical and Spy attacks are not known to the Town Crier, and you will have to inquire in the council as to those types of attacks.</p>
                     <p>
-                        @if ($realm !== null)
-                            <a href="{{ route('dominion.town-crier') }}">Show All Realms</a>
-                        @else
-                            <a href="{{ route('dominion.town-crier', [$selectedDominion->realm->number]) }}">Show Only My Realm</a>
-                        @endif
+                        <label for="realm-select">Show Town Crier for:</label>
+                        <select id="realm-select" class="form-control">
+                            <option value="">All Realms</option>
+                            @for ($i=1; $i<$realmCount; $i++)
+                                <option value="{{ $i }}" {{ $realm && $realm->number == $i ? 'selected' : null }}>
+                                    #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
+                                </option>
+                            @endfor
+                        </select>
                     </p>
                 </div>
             </div>
@@ -118,3 +122,14 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('#realm-select').change(function() {
+                var selectedRealm = $(this).val();
+                window.location.href = "{!! route('dominion.town-crier') !!}/" + selectedRealm;
+            });
+        })(jQuery);
+    </script>
+@endpush
