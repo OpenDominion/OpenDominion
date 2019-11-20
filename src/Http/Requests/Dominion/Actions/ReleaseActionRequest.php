@@ -28,7 +28,7 @@ class ReleaseActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->unitHelper->getUnitTypes() as $unitType) {
-            $rules['release.' . $unitType] = 'integer|nullable';
+            $rules['release.' . $unitType] = 'integer|nullable|min:0';
         }
 
         return $rules;

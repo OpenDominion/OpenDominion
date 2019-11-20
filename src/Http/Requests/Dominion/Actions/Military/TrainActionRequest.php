@@ -28,7 +28,7 @@ class TrainActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->unitHelper->getUnitTypes() as $unitType) {
-            $rules['train.' . $unitType] = 'integer|nullable';
+            $rules['train.' . $unitType] = 'integer|nullable|min:0';
         }
 
         return $rules;

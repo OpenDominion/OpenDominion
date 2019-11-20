@@ -28,7 +28,7 @@ class ConstructActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-            $rules['construct.' . $buildingType] = 'integer|nullable';
+            $rules['construct.' . $buildingType] = 'integer|nullable|min:0';
         }
 
         return $rules;

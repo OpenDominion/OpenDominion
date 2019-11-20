@@ -28,7 +28,7 @@ class DestroyActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-            $rules['destroy.' . $buildingType] = 'integer|nullable';
+            $rules['destroy.' . $buildingType] = 'integer|nullable|min:0';
         }
 
         return $rules;

@@ -28,7 +28,7 @@ class ImproveActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->improvementHelper->getImprovementTypes() as $improvementType) {
-            $rules['improve.' . $improvementType] = 'integer|nullable';
+            $rules['improve.' . $improvementType] = 'integer|nullable|min:0';
         }
 
         return $rules;
