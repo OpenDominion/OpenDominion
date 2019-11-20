@@ -31,7 +31,6 @@ class SearchController extends AbstractDominionController
                 'race.units.perks',
             ])
             ->where('round_id', $dominion->round_id)
-            ->where('realm_id', '!=', $dominion->realm_id)
             ->get();
 
         return view('pages.dominion.search', compact(

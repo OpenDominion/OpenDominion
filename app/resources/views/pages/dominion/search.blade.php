@@ -28,8 +28,8 @@
                                 <label class="col-sm-6 control-label text-right">Limit:</label>
                                 <div class="col-sm-6">
                                     <select class="form-control" name="range">
-                                        <option value="true">My Range</option>
-                                        <option value="">No Limit</option>
+                                        <option value="true">No Limit</option>
+                                        <option value="">My Range</option>
                                     </select>
                                 </div>
                             </div>

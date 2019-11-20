@@ -71,7 +71,7 @@ class GameEventService
         $gameEvents = GameEvent::query()
             ->where('round_id', $dominion->round_id)
             ->where('created_at', '<', $createdBefore)
-            ->where('created_at', '>', now()->subDays(7))
+            ->where('created_at', '>', now()->subDays(3))
             ->orderBy('created_at', 'desc')
             ->get();
 

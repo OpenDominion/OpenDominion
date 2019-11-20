@@ -28,10 +28,13 @@ class TownCrierController extends AbstractDominionController
         $gameEvents = $townCrierData['gameEvents'];
         $dominionIds = $townCrierData['dominionIds'];
 
+        $realmCount = Realm::where('round_id', $dominion->round_id)->count();
+
         return view('pages.dominion.town-crier', compact(
+            'dominionIds',
             'gameEvents',
             'realm',
-            'dominionIds'
+            'realmCount'
         ))->with('fromOpCenter', false);
     }
 }
