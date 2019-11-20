@@ -28,8 +28,8 @@ class RezoneActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->landHelper->getLandTypes() as $landType) {
-            $rules['remove.' . $landType] = 'integer|nullable';
-            $rules['add.' . $landType] = 'integer|nullable';
+            $rules['remove.' . $landType] = 'integer|nullable|min:0';
+            $rules['add.' . $landType] = 'integer|nullable|min:0';
         }
 
         return $rules;

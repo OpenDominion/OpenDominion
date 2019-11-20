@@ -12,7 +12,7 @@ class ChangeDraftRateActionRequest extends AbstractDominionRequest
     public function rules()
     {
         return [
-            'draft_rate' => 'integer|min:0|max:100',
+            'draft_rate' => 'integer|min:0|max:90',
         ];
     }
 }
