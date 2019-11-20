@@ -3,6 +3,19 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 
+## [Unreleased]
+### Fixed
+- Default ordering in Op Center should now be on last op
+
+### Changed
+- Town Crier
+  - Will only show last 3 days
+  - Can be filtered by realm, via dropdown
+  - Realm numbers now redirect to realm page
+- Search
+  - Own realm are visible in results
+  - Default filtering will be all results now
+
 ## [0.7.1-14] - 2019-11-16
 ### Fixed
 - Incoming buildings will now only be counted once when calculating maximum population at HC
@@ -469,7 +482,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-14...HEAD
 [0.7.1-14]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-13...0.7.1-14
 [0.7.1-13]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...0.7.1-13
 [0.7.1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...0.7.1
