@@ -4,6 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.7.1-17]
+### Fixed
+- Validation for negative input has been put in place
+- Fix an issue with the search page Limit values being flipped.
+- Update daily bonuses in a single query and prevent a partial update in the event of an error.
+ 
 ## [0.7.1-16]
 ### Fixed
 - Added validation for negative values in posts
@@ -487,7 +493,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...HEAD
+[0.7.1-17]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...0.7.1-17
 [0.7.1-16]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-15...0.7.1-16
 [0.7.1-15]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-14...0.7.1-15
 [0.7.1-14]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-13...0.7.1-14
