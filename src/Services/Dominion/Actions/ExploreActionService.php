@@ -59,8 +59,14 @@ class ExploreActionService
 
         $totalLandToExplore = array_sum($data);
 
-        if ($totalLandToExplore === 0) {
+        if ($totalLandToExplore <= 0) {
             throw new GameException('Exploration was not begun due to bad input.');
+        }
+
+        foreach($data as $amount) {
+            if ($amount < 0) {
+                throw new GameException('Exploration was not completed due to bad input.');
+            }
         }
 
         $maxAfford = $this->explorationCalculator->getMaxAfford($dominion);

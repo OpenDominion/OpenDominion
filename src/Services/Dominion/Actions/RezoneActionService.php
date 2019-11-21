@@ -57,12 +57,17 @@ class RezoneActionService
 
         $totalLand = array_sum($remove);
 
-        if (($totalLand === 0) || $totalLand !== array_sum($add)) {
+        if (($totalLand <= 0) || $totalLand !== array_sum($add)) {
             throw new GameException('Re-zoning was not completed due to bad input.');
         }
 
         // Check if the requested amount of land is barren.
         foreach ($remove as $landType => $landToRemove) {
+
+            if($landToRemove < 0) {
+                throw new GameException('Re-zoning was not completed due to bad input.');
+            }
+
             $landAvailable = $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType);
             if ($landToRemove > $landAvailable) {
                 throw new GameException('You do not have enough barren land to re-zone ' . $landToRemove . ' ' . str_plural($landType, $landAvailable));
