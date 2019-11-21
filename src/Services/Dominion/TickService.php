@@ -280,15 +280,13 @@ class TickService
                     continue;
                 }
 
-                foreach ($round->dominions as $dominion) {
-                    /** @var Dominion $dominion */
-                    $dominion->update([
-                        'daily_platinum' => false,
-                        'daily_land' => false,
-                    ], [
-                        'event' => 'tick',
-                    ]);
-                }
+                // toBase required to prevent ambiguous updated_at column in query
+                $round->dominions()->toBase()->update([
+                    'daily_platinum' => false,
+                    'daily_land' => false,
+                ], [
+                    'event' => 'tick',
+                ]);
             }
         });
 
