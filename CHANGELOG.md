@@ -6,7 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [0.7.1-17]
 ### Fixed
-- Validation for negative input has been put in place
 - Fix an issue with the search page Limit values being flipped.
 - Update daily bonuses in a single query and prevent a partial update in the event of an error.
  
