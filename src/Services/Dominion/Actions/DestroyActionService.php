@@ -36,6 +36,10 @@ class DestroyActionService
                 continue;
             }
 
+            if ($amount < 0) {
+                throw new GameException('Destruction was not completed due to bad input.');
+            }
+
             if ($amount > $dominion->{'building_' . $buildingType}) {
                 throw new GameException('The destruction was not completed due to bad input.');
             }

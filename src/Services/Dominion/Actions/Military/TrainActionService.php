@@ -55,7 +55,7 @@ class TrainActionService
 
         $totalUnitsToTrain = array_sum($data);
 
-        if ($totalUnitsToTrain === 0) {
+        if ($totalUnitsToTrain <= 0) {
             throw new GameException('Training aborted due to bad input.');
         }
 
@@ -71,8 +71,12 @@ class TrainActionService
         $trainingCostsPerUnit = $this->trainingCalculator->getTrainingCostsPerUnit($dominion);
 
         foreach ($data as $unitType => $amountToTrain) {
-            if (!$amountToTrain) {
+            if (!$amountToTrain || $amountToTrain === 0) {
                 continue;
+            }
+
+            if ($amountToTrain < 0) {
+                throw new GameException('Training aborted due to bad input.');
             }
 
             $unitType = str_replace('military_', '', $unitType);
