@@ -299,7 +299,7 @@ class NotificationHelper
                 );
 
             case 'irregular_dominion.received_spy_op':
-                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+                $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
                 switch ($data['operationKey']) {
                     case 'barracks_spy':
@@ -319,14 +319,21 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new \LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented");
+                        $where = 'somewhere';//throw new \LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented");
+                }
+
+                if ($sourceDominion) {
+                    return sprintf(
+                        'Our wizards have determined that spies from %s (#%s) were %s!',
+                        $sourceDominion->name,
+                        $sourceDominion->realm->number,
+                        $where
+                    );
                 }
 
                 return sprintf(
-                    'Our wizards detected spies from %s (#%s) %s!',
-                    $sourceDominion->name,
-                    $sourceDominion->realm->number,
-                    $where
+                    'Our spies have detected a %s',
+                    $data['operationKey']
                 );
 
             case 'irregular_dominion.repelled_spy_op':

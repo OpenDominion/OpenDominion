@@ -82,6 +82,8 @@ class SpellActionService
         $this->spellHelper = app(SpellHelper::class);
     }
 
+    public const BLACK_OPS_DAYS_AFTER_ROUND_START = 7;
+
     /**
      * Casts a magic spell for a dominion, optionally aimed at another dominion.
      *
@@ -133,6 +135,10 @@ class SpellActionService
                 throw new GameException('You cannot cast offensive spells to targets outside of your range');
             }
 
+            if (now()->diffInDays($dominion->round->start_date) < self::BLACK_OPS_DAYS_AFTER_ROUND_START) {
+                throw new GameException('You cannot perform black ops for the first seven days of the round');
+            }
+
             if ($dominion->round->id !== $target->round->id) {
                 throw new GameException('Nice try, but you cannot cast spells cross-round');
             }
@@ -151,18 +157,9 @@ class SpellActionService
             } elseif ($this->spellHelper->isInfoOpSpell($spellKey)) {
                 $result = $this->castInfoOpSpell($dominion, $spellKey, $target);
 
-            } elseif ($this->spellHelper->isBlackOpSpell($spellKey)) {
-                if($dominion->round->hasOffensiveActionsDisabled())
-                {
-                    throw new GameException('Black ops have been disabled for the remainder of the round.');
-                }
-                throw new LogicException('Not yet implemented');
-            } elseif ($this->spellHelper->isWarSpell($spellKey)) {
-                if($dominion->round->hasOffensiveActionsDisabled())
-                {
-                    throw new GameException('Black ops have been disabled for the remainder of the round.');
-                }
-                throw new LogicException('Not yet implemented');
+            } elseif ($this->spellHelper->isHostileSpell($spellKey)) {
+                $result = $this->castHostileSpell($dominion, $spellKey, $target);
+
             } else {
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
@@ -391,6 +388,153 @@ class SpellActionService
             'wizardStrengthCost' => 2,
             'redirect' => $redirect,
         ];
+    }
+
+    /**
+     * Casts a hostile spell for $dominion to $target.
+     *
+     * @param Dominion $dominion
+     * @param string $spellKey
+     * @param Dominion $target
+     * @return array
+     * @throws GameException
+     * @throws LogicException
+     */
+    protected function castHostileSpell(Dominion $dominion, string $spellKey, Dominion $target): array
+    {
+        if ($dominion->round->hasOffensiveActionsDisabled())
+        {
+            throw new GameException('Black ops have been disabled for the remainder of the round.');
+        }
+
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+
+        $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
+        $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
+
+        // You need at least some positive WPA to cast info ops
+        if ($selfWpa === 0.0) {
+            // Don't reduce mana by throwing an exception here
+            throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
+        }
+
+        // 100% spell success if target has a WPA of 0
+        if ($targetWpa !== 0.0) {
+            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa,
+                static::INFO_MULTIPLIER_SUCCESS_RATE);
+
+            if (!random_chance($successRate)) {
+                // Surreal Perception
+                $sourceDominionId = null;
+                if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+                    $sourceDominionId = $dominion->id;
+                }
+
+                // Inform target that they repelled a hostile spell
+                $this->notificationService
+                    ->queueNotification('repelled_hostile_spell', [
+                        'sourceDominionId' => $sourceDominionId,
+                        'spellKey' => $spellKey,
+                    ])
+                    ->sendNotifications($target, 'irregular_dominion');
+
+                // TODO: Take wizard losses
+                // Return here, thus completing the spell cast and reducing the caster's mana
+                return [
+                    'success' => false,
+                    'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
+                    'wizardStrengthCost' => 2,
+                    'alert-type' => 'warning',
+                ];
+            } else {
+                // Inform target that they received a hostile spell
+                $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spellKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+            }
+        }
+
+        if (isset($spellInfo['duration'])) {
+            // Cast spell with duration
+            if ($this->spellCalculator->isSpellActive($target, $spellKey)) {
+
+                $where = [
+                    'dominion_id' => $target->id,
+                    'spell' => $spellKey,
+                ];
+    
+                $activeSpell = DB::table('active_spells')
+                    ->where($where)
+                    ->first();
+    
+                if ($activeSpell === null) {
+                    throw new LogicException("Active spell '{$spellKey}' for dominion id {$target->id} not found");
+                }
+    
+                DB::table('active_spells')
+                    ->where($where)
+                    ->update([
+                        'duration' => $spellInfo['duration'],
+                        'cast_by_dominion_id' => $dominion->id,
+                        'updated_at' => now(),
+                    ]);
+    
+            } else {
+
+                DB::table('active_spells')
+                    ->insert([
+                        'dominion_id' => $target->id,
+                        'spell' => $spellKey,
+                        'duration' => $spellInfo['duration'],
+                        'cast_by_dominion_id' => $dominion->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+            }
+
+            return [
+                'success' => true,
+                'message' => sprintf(
+                    'Your wizards cast the spell successfully, and it will continue to affect your target for the next %s hours.',
+                    $spellInfo['duration']
+                )
+            ];
+        } else {
+            // Cast spell instantly
+            $damageDealt = [];
+            $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
+
+            if (isset($spellInfo['decrements'])) {
+                foreach ($spellInfo['decrements'] as $attr) {
+                    $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+                    $target->{$attr} -= $damageDealt[$attr];
+                }
+            }
+            if (isset($spellInfo['increments'])) {
+                foreach ($spellInfo['increments'] as $attr) {
+                    if (!isset($damageDealt[$attr])) {
+                        $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+                    }
+                    $target->{$attr} += $damageDealt[$attr];
+                }
+            }
+            $target->save([
+                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                'action' => $spellKey
+            ]);
+
+            return [
+                'success' => true,
+                'message' => sprintf(
+                    'Your wizards cast the spell successfully, dealing %s damage to the target.',
+                    number_format(array_sum($damageDealt))
+                )
+            ];
+        }
     }
 
     /**
