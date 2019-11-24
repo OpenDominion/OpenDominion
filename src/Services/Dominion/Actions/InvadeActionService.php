@@ -231,6 +231,12 @@ class InvadeActionService
                 throw new GameException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
+            foreach($units as $amount) {
+                if($amount < 0) {
+                    throw new GameException('Invasion was canceled due to bad input.');
+                }
+            }
+
             // Handle invasion results
             $this->checkInvasionSuccess($dominion, $target, $units);
             $this->checkOverwhelmed();

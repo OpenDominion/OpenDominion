@@ -2,8 +2,43 @@
 All notable changes relevant to players in this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
-
 ## [Unreleased]
+
+## [0.7.1-17]
+### Fixed
+- Fix an issue with the search page Limit values being flipped.
+- Update daily bonuses in a single query and prevent a partial update in the event of an error.
+ 
+## [0.7.1-16]
+### Fixed
+- Added validation for negative values in posts
+
+## [0.7.1-15]
+### Fixed
+- Default ordering in Op Center should now be on last op
+
+### Changed
+- Town Crier
+  - Will only show last 3 days
+  - Can be filtered by realm, via dropdown
+  - Realm numbers now redirect to realm page
+- Search
+  - Own realm are visible in results
+  - Default filtering will be all results now
+
+## [0.7.1-14] - 2019-11-16
+### Fixed
+- Incoming buildings will now only be counted once when calculating maximum population at HC
+- Total production of gems did not display on statistics advisory
+
+## [0.7.1-13] - 2019-11-12
+### Added
+- Skin selection with a new DC theme.
+
+### Fixed
+- Rankings on front page now reflects last round, as long as new round has not started yet. 
+
+## [0.7.1] - 2019-11-06
 ### Added
 - Added new races: Kobold and Orc
 - Added monarchy: Each realm's elected monarch has the power to change the realm name, post a message of the day, and delete council posts.
@@ -11,10 +46,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added new categories to statistics advisor and valhalla
 - Added back spell mana cost of active spells to magic page
 - Added spell recharge time to magic page
+- Top 10 land rankings from current round will now be visible on start page.
 
 ### Changed
 - Gnome Juggernaut: OP changed to 7 regardless of range
-- Undead: Increased max population bonus from +15% to +12.5%
+- Undead: Decreased max population bonus from +15% to +12.5%
 - Undead Vampire: Now converts into elite dp at 65%+ (from 60%+) 
 - Wood Elf Longbowman: +25p
 - Wood Elf Mystic: +50p
@@ -27,12 +63,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cut spy losses in half for info ops
 - Land generation changed to 85:65 (from 75:75)
 - Base defensive casualties changed to 3.825% (from 3.375%)
-- Conversion multipler change to 1.75% (from 2%)
+- Conversion multiplier change to 1.75% (from 2%)
 - Adjusted explore platinum cost formula
 - Sending less than 85% of your target's defense will no longer cause defensive casualties
 - Failed invasions when sending over 85% of the target's defense will now properly reduce defensive casualties for subsequent invasions
 - Slightly tweaked starvation casualties to now kill off population types based on proportion
 - Significantly increased the speed of the hourly tick (hour change)
+- Scribes now contains more information. Construction, Espionage and Magic have now been added.
+- Other realms are now hidden before the round starts
+- Updated racial descriptions for a lot of races.
 
 ### Fixed
 - Barracks Spy should now be more clear that draftees are inaccurate
@@ -453,7 +492,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...HEAD
+[0.7.1-17]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...0.7.1-17
+[0.7.1-16]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-15...0.7.1-16
+[0.7.1-15]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-14...0.7.1-15
+[0.7.1-14]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-13...0.7.1-14
+[0.7.1-13]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...0.7.1-13
+[0.7.1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...0.7.1
 [0.7.0-10]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...0.7.0-10
 [0.7.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-8...0.7.0-9
 [0.7.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-7...0.7.0-8

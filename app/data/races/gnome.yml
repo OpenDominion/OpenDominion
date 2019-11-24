@@ -1,8 +1,8 @@
 name: Gnome
 alignment: good
 description: >-
-  <p>These ingenious little people are the masters of invention and tinkering technology.</p>
-  <p>Although slow and expensive due their metallic augments, their powerful machinery can turn the tide of battles in the late game.</p>
+  <p>Gnomes are the masters of the mechanical, always tinkering with their latest inventions. Though much of their genius is applied to improve the lives of their citizens, it also lends a significant shock and awe factor to their military.</p>
+  <p>With great hulking juggernauts of cogs and steel they are intimidating despite their small statures, and the bigger the enemy the harder they fight. Their unpredictably explosive infantry squads make taking on any Gnomish army an unnerving experience.</p>
 home_land_type: mountain
 perks:
   offense: 7.5

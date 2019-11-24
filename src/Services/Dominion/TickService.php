@@ -62,6 +62,10 @@ class TickService
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->queueService = app(QueueService::class);
         $this->spellCalculator = app(SpellCalculator::class);
+
+        /* These calculators need to ignore queued resources for the following tick */
+        $this->populationCalculator->setForTick(true);
+        $this->queueService->setForTick(true);
     }
 
     /**
@@ -217,19 +221,21 @@ class TickService
                 ->get();
 
             foreach ($dominions as $dominion) {
-                if (!empty($dominion->tick->starvation_casualties)) {
-                    $this->notificationService->queueNotification(
-                        'starvation_occurred',
-                        $dominion->tick->starvation_casualties
-                    );
-                }
+                DB::transaction(function () use ($dominion) {
+                    if (!empty($dominion->tick->starvation_casualties)) {
+                        $this->notificationService->queueNotification(
+                            'starvation_occurred',
+                            $dominion->tick->starvation_casualties
+                        );
+                    }
 
-                $this->cleanupActiveSpells($dominion);
-                $this->cleanupQueues($dominion);
+                    $this->cleanupActiveSpells($dominion);
+                    $this->cleanupQueues($dominion);
 
-                $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
+                    $this->notificationService->sendNotifications($dominion, 'hourly_dominion');
 
-                $this->precalculateTick($dominion, true);
+                    $this->precalculateTick($dominion, true);
+                }, 5);
             }
 
             Log::info(sprintf(
@@ -274,15 +280,13 @@ class TickService
                     continue;
                 }
 
-                foreach ($round->dominions as $dominion) {
-                    /** @var Dominion $dominion */
-                    $dominion->update([
-                        'daily_platinum' => false,
-                        'daily_land' => false,
-                    ], [
-                        'event' => 'tick',
-                    ]);
-                }
+                // toBase required to prevent ambiguous updated_at column in query
+                $round->dominions()->toBase()->update([
+                    'daily_platinum' => false,
+                    'daily_land' => false,
+                ], [
+                    'event' => 'tick',
+                ]);
             }
         });
 
@@ -400,6 +404,13 @@ class TickService
             $dominion->{$row->resource} += $row->amount;
         }
 
+        // Population
+        $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
+        $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
+
+        $tick->peasants = $populationPeasantGrowth;
+        $tick->military_draftees = $drafteesGrowthRate;
+
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
         $tick->resource_lumber_production += $this->productionCalculator->getLumberProduction($dominion);
@@ -433,13 +444,6 @@ class TickService
             // Food production
             $tick->resource_food += $foodNetChange;
         }
-
-        // Population
-        $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
-        $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
-
-        $tick->peasants = $populationPeasantGrowth;
-        $tick->military_draftees = $drafteesGrowthRate;
 
         // Morale
         if ($dominion->morale < 70) {

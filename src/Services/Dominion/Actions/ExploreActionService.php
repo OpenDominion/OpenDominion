@@ -59,8 +59,14 @@ class ExploreActionService
 
         $totalLandToExplore = array_sum($data);
 
-        if ($totalLandToExplore === 0) {
+        if ($totalLandToExplore <= 0) {
             throw new GameException('Exploration was not begun due to bad input.');
+        }
+
+        foreach($data as $amount) {
+            if ($amount < 0) {
+                throw new GameException('Exploration was not completed due to bad input.');
+            }
         }
 
         $maxAfford = $this->explorationCalculator->getMaxAfford($dominion);
@@ -80,14 +86,14 @@ class ExploreActionService
         $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
         DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees, $totalLandToExplore) {
+            $this->queueService->queueResources('exploration', $dominion, $data);
+
             $dominion->stat_total_land_explored += $totalLandToExplore;
             $dominion->fill([
                 'morale' => $newMorale,
                 'resource_platinum' => $newPlatinum,
                 'military_draftees' => $newDraftees,
             ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
-
-            $this->queueService->queueResources('exploration', $dominion, $data);
         });
 
         return [

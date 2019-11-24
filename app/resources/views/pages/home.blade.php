@@ -95,52 +95,55 @@
                     </div>
                 @endif
             </div>
-            <div class="box">
-                <div class="box-header with-border text-center">
-                    <h3 class="box-title">
-                        Current Rankings
-                    </h3>
-                    <div class="box-body table-responsive no-padding">
-                        @if ($currentRankings != null)
-                            <table class="table">
-                                <colgroup>
-                                    <col>
-                                    <col>
-                                    <col>
-                                    <col>
-                                </colgroup>
-                                <thead>
-                                </thead>
-                                <tbody>
-                                    @foreach ($currentRankings as $row)
-                                        <tr>
-                                            <td class="text-center">{{ $row->land_rank }}</td>
-                                            <td>
-                                                {{ $row->dominion_name }} (#{{ $row->realm_number }})
-                                            </td>
-                                            <td class="text-center">{{ number_format($row->land) }}</td>
-                                            <td class="text-center">
-                                                @php
-                                                    $rankChange = (int)$row->land_rank_change;
-                                                @endphp
-                                                @if ($rankChange > 0)
-                                                    <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
-                                                @elseif ($rankChange === 0)
-                                                    <span class="text-warning">-</span>
-                                                @else
-                                                    <span class="text-danger"><i class="fa fa-caret-down"></i> {{ abs($rankChange) }}</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+            @if ($currentRound !== null)
+                <div class="box">
+                    <div class="box-header with-border text-center">
+                        <h3 class="box-title">
+                            {{ $currentRound->hasStarted() && !$currentRound->hasEnded() ? 'Current' : 'Previous' }} Round Rankings
+                        </h3>
+                        <div class="box-body table-responsive no-padding">
+                            @if ($currentRankings !== null && !$currentRankings->isEmpty())
+                                <table class="table">
+                                    <colgroup>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($currentRankings as $row)
+                                            <tr>
+                                                <td class="text-center">{{ $row->land_rank }}</td>
+                                                <td>
+                                                    {{ $row->dominion_name }} (#{{ $row->realm_number }})
+                                                </td>
+                                                <td class="text-center">{{ number_format($row->land) }}</td>
+                                                <td class="text-center">
+                                                    @php
+                                                        $rankChange = (int)$row->land_rank_change;
+                                                    @endphp
+                                                    @if ($rankChange > 0)
+                                                        <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
+                                                    @elseif ($rankChange === 0)
+                                                        <span class="text-warning">-</span>
+                                                    @else
+                                                        <span class="text-danger"><i class="fa fa-caret-down"></i> {{ abs($rankChange) }}</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                No rankings recorded yet.
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+        @endif
         <div class="col-sm-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -157,7 +160,7 @@
 
                     <ul>
                         <li><a href="https://opendominion.miraheze.org/wiki/My_First_Round" target="_blank">My First Round <i class="fa fa-external-link"></i></a> on the <a href="https://opendominion.miraheze.org/" target="_blank">OpenDominion Wiki <i class="fa fa-external-link"></i></a>.</li>
-                        <li><a href="{{ route('scribes.index') }}">The Scribes</a></li>
+                        <li><a href="{{ route('scribes.races') }}">The Scribes</a></li>
                         <li><a href="http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide" target="_blank">The Complete Newbie Guide <i class="fa fa-external-link"></i></a> on the Web Archive</li>
                         <li>A mirror of Dominion's manual: <a href="https://dominion.opendominion.net/scribes.html" target="_blank">The Scribes <i class="fa fa-external-link"></i></a> <strong>(Outdated)</strong> </li>
                     </ul>

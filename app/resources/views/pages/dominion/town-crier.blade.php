@@ -8,7 +8,12 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">
-                        <i class="fa fa-newspaper-o"></i> Town Crier for {{ $realm->name }} (#{{ $realm->number }})
+                        <i class="fa fa-newspaper-o"></i> Town Crier for
+                        @if ($realm !== null)
+                            {{ $realm->name }} (#{{ $realm->number }})
+                        @else
+                            All Realms
+                        @endif
                     </h3>
                 </div>
 
@@ -48,7 +53,7 @@
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a>
                                                         <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                                     @endif
-                                                @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class && in_array($gameEvent->target_id, $dominionIds, true))
+                                                @elseif ($gameEvent->target_type === \OpenDominion\Models\Dominion::class)
                                                     @if ($gameEvent->data['result']['success'])
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
                                                         <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
@@ -58,7 +63,9 @@
                                                         <span class="text-red text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                         land.
                                                     @else
-                                                        Fellow dominion
+                                                        @if ($gameEvent->source_realm_id == $selectedDominion->realm_id)
+                                                            Fellow dominion
+                                                        @endif
                                                         <span class="text-aqua">{{ $gameEvent->target->name }} <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a></span>
                                                         fended off an attack from
                                                         <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>
@@ -98,9 +105,31 @@
                         <p>All the news for your realm can be seen here. The town crier gives you news for a 2 day period.</p>
                     @endif
                     <p>You will see only military operations, as well as death messages{{-- and important messages regarding Wonders of the World--}}. Magical and Spy attacks are not known to the Town Crier, and you will have to inquire in the council as to those types of attacks.</p>
+                    <p>
+                        <label for="realm-select">Show Town Crier for:</label>
+                        <select id="realm-select" class="form-control">
+                            <option value="">All Realms</option>
+                            @for ($i=1; $i<$realmCount; $i++)
+                                <option value="{{ $i }}" {{ $realm && $realm->number == $i ? 'selected' : null }}>
+                                    #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
+                                </option>
+                            @endfor
+                        </select>
+                    </p>
                 </div>
             </div>
         </div>
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('#realm-select').change(function() {
+                var selectedRealm = $(this).val();
+                window.location.href = "{!! route('dominion.town-crier') !!}/" + selectedRealm;
+            });
+        })(jQuery);
+    </script>
+@endpush

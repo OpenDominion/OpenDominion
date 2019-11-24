@@ -43,13 +43,17 @@ class ReleaseActionService
 
         $totalTroopsToRelease = array_sum($data);
 
-        if ($totalTroopsToRelease === 0) {
+        if ($totalTroopsToRelease <= 0) {
             throw new GameException('Military release aborted due to bad input.');
         }
 
         foreach ($data as $unitType => $amount) {
             if ($amount === 0) { // todo: collect()->except(amount == 0)
                 continue;
+            }
+
+            if ($amount < 0) {
+                throw new GameException('Military release aborted due to bad input.');
             }
 
             if ($amount > $dominion->{'military_' . $unitType}) {

@@ -28,7 +28,7 @@ class ExploreActionRequest extends AbstractDominionRequest
         $rules = [];
 
         foreach ($this->landHelper->getLandTypes() as $landType) {
-            $rules['explore.' . $landType] = 'integer|nullable';
+            $rules['explore.' . $landType] = 'integer|nullable|min:0';
         }
 
         return $rules;

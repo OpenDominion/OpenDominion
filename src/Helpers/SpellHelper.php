@@ -55,11 +55,9 @@ class SpellHelper
             ->merge($this->getOffensiveSpells());
     }
 
-    public function getSelfSpells(Race $race): Collection
+    public function getSelfSpells(?Race $race): Collection
     {
-        $racialSpell = $this->getRacialSelfSpell($race);
-
-        return collect(array_filter([
+        $spells = collect(array_filter([
             [
                 'name' => 'Gaia\'s Watch',
                 'description' => '+10% food production',
@@ -105,7 +103,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Surreal Perception',
-                'description' => 'Shows you the dominion upon receiving offensive spells or spy ops for 8 hours',
+                'description' => 'Reveals the dominion casting offensive spells or committing spy ops against you for 8 hours',
                 'key' => 'surreal_perception',
                 'mana_cost' => 4,
                 'duration' => 8,
@@ -116,9 +114,15 @@ class SpellHelper
 //                'key' => '',
 //                'mana_cost' => 3,
 //                'duration' => 8,
-//            ],
-            $racialSpell
+//            ]
         ]));
+
+        if($race !== null){
+            $racialSpell = $this->getRacialSelfSpell($race);
+            $spells->push($racialSpell);
+        }
+
+        return $spells;
     }
 
     public function getRacialSelfSpell(Race $race) {
@@ -290,12 +294,12 @@ class SpellHelper
                 'key' => 'revelation',
                 'mana_cost' => 1.2,
             ],
-            [
-                'name' => 'Clairvoyance',
-                'description' => 'Reveal realm town crier',
-                'key' => 'clairvoyance',
-                'mana_cost' => 1.2,
-            ],
+//            [
+//                'name' => 'Clairvoyance',
+//                'description' => 'Reveal realm town crier',
+//                'key' => 'clairvoyance',
+//                'mana_cost' => 1.2,
+//            ],
 //            [
 //                'name' => 'Disclosure',
 //                'description' => 'Reveal wonder',

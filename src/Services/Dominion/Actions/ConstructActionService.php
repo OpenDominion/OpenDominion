@@ -64,7 +64,7 @@ class ConstructActionService
 
         $totalBuildingsToConstruct = array_sum($data);
 
-        if ($totalBuildingsToConstruct === 0) {
+        if ($totalBuildingsToConstruct <= 0) {
             throw new GameException('Construction was not started due to bad input.');
         }
 
@@ -79,6 +79,10 @@ class ConstructActionService
         foreach ($data as $buildingType => $amount) {
             if ($amount === 0) {
                 continue;
+            }
+
+            if ($amount < 0) {
+                throw new GameException('Construction was not completed due to bad input.');
             }
 
             $landType = $this->landHelper->getLandTypeForBuildingByRace(
@@ -103,13 +107,13 @@ class ConstructActionService
         $lumberCost = $this->constructionCalculator->getTotalLumberCost($dominion, $totalBuildingsToConstruct);
 
         DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $totalBuildingsToConstruct) {
+            $this->queueService->queueResources('construction', $dominion, $data);
+
             $dominion->fill([
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'resource_lumber' => ($dominion->resource_lumber - $lumberCost),
                 'discounted_land' => max(0, $dominion->discounted_land - $totalBuildingsToConstruct),
             ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
-
-            $this->queueService->queueResources('construction', $dominion, $data);
         });
 
         return [

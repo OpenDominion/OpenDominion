@@ -41,6 +41,10 @@ class BankActionService
     {
         $this->guardLockedDominion($dominion);
 
+        if($amount < 0) {
+            throw new LogicException('Amount less than 0.');
+        }
+
         // Get the resource information.
         $resources = $this->bankingCalculator->getResources($dominion);
         if (empty($resources[$source])) {

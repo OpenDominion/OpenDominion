@@ -46,6 +46,8 @@ mix.copy('app/resources/images', 'public/assets/app/images');
 mix.js('app/resources/js/app.js', 'public/assets/app/js')
     .sass('app/resources/sass/app.scss', 'public/assets/app/css');
 
+mix.copy('app/resources/css', 'public/assets/app/css');
+
 if (mix.inProduction()) {
     mix.version();
 } else {

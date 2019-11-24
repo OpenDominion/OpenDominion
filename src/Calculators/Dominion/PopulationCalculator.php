@@ -33,6 +33,9 @@ class PopulationCalculator
     /** @var UnitHelper */
     protected $unitHelper;
 
+    /** @var bool */
+    protected $forTick = false;
+
     /**
      * PopulationCalculator constructor.
      *
@@ -63,6 +66,16 @@ class PopulationCalculator
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
         $this->unitHelper = $unitHelper;
+    }
+
+    /**
+     * Toggle if this calculator should include the following hour's resources.
+     */
+    public function setForTick(bool $value)
+    {
+        $this->forTick = $value;
+        $this->militaryCalculator->setForTick($value);
+        $this->queueService->setForTick($value);
     }
 
     /**

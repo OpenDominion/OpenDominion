@@ -14,7 +14,7 @@ use OpenDominion\Services\Dominion\ProtectionService;
 
 class RealmController extends AbstractDominionController
 {
-    public function getRealm(int $realmNumber = null)
+    public function getRealm(Request $request, int $realmNumber = null)
     {
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
@@ -29,6 +29,14 @@ class RealmController extends AbstractDominionController
         }
 
         $isOwnRealm = ($realmNumber === (int)$dominion->realm->number);
+
+        if (!$round->hasStarted() && !$isOwnRealm) {
+            $request->session()->flash(
+                'alert-warning',
+                'You cannot view other realms before the round has started.'
+            );
+            return redirect()->route('dominion.realm', (int)$dominion->realm->number);
+        }
 
         // Eager load some relational data to save on SQL queries down the road in NetworthCalculator and
         // ProtectionService
