@@ -241,6 +241,10 @@ class InvadeActionService
             $this->checkInvasionSuccess($dominion, $target, $units);
             $this->checkOverwhelmed();
 
+            if(!$this->passesOpAtLeast50percentOfDpRule()) {
+                throw new GameException('You are not sending enough OP to be even close to breaking the target (50% rule)');
+            }
+
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
             $this->handleBoats($dominion, $target, $units);
@@ -1097,6 +1101,15 @@ class InvadeActionService
         $targetDP = $this->invasionResult['defender']['dp'];
 
         $this->invasionResult['result']['overwhelmed'] = ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
+    }
+
+    protected function passesOpAtLeast50percentOfDpRule(): bool
+    {
+        if($this->invasionResult['result']['success']) {
+            return true;
+        }
+
+        return $this->invasionResult['attacker']['op'] / $this->invasionResult['defender']['dp'] > 0.5;
     }
 
     /**
