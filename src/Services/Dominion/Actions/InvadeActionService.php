@@ -1006,7 +1006,7 @@ class InvadeActionService
                 $unitsThatNeedsBoatsByReturnHours[$hours] += (int)$units[$unit->slot];
             }
         }
-        if ($unitsThatSinkBoats > 0) {
+        if (!$this->invasionResult['result']['overwhelmed'] && $unitsThatSinkBoats > 0) {
             $defenderBoatsProtected = (static::BOATS_PROTECTED_PER_DOCK * $target->building_dock);
             $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
             $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
