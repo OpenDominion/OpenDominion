@@ -807,4 +807,33 @@ class MilitaryCalculator
 
         return $invasionEvents->count();
     }
+
+    /**
+     * Checks Dominion was recently invaded by attacker.
+     *
+     * 'Recent' refers to the past 24 hours.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $attacker
+     * @return bool
+     */
+    public function recentlyInvadedBy(Dominion $dominion, Dominion $attacker): bool
+    {
+        // todo: this touches the db. should probably be in invasion or military service instead
+        $invasionEvents = GameEvent::query()
+            ->where('created_at', '>=', now()->subDay(1))
+            ->where([
+                'target_type' => Dominion::class,
+                'target_id' => $dominion->id,
+                'source_id' => $attacker->id,
+                'type' => 'invasion',
+            ])
+            ->get();
+
+        if (!$invasionEvents->isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
 }

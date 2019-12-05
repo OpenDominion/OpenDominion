@@ -699,12 +699,15 @@ class EspionageActionService
      */
     protected function performHostileOperation(Dominion $dominion, string $operationKey, Dominion $target): array
     {
-        if ($dominion->round->hasOffensiveActionsDisabled())
-        {
+        if ($dominion->round->hasOffensiveActionsDisabled()) {
             throw new GameException('Black ops have been disabled for the remainder of the round.');
         }
 
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
+
+        if ($this->espionageHelper->isWarOperation($operationKey) && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
+            throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
+        }
 
         $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
         $targetSpa = $this->militaryCalculator->getSpyRatio($target, 'defense');

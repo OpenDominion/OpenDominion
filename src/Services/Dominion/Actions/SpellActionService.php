@@ -402,12 +402,15 @@ class SpellActionService
      */
     protected function castHostileSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
-        if ($dominion->round->hasOffensiveActionsDisabled())
-        {
+        if ($dominion->round->hasOffensiveActionsDisabled()) {
             throw new GameException('Black ops have been disabled for the remainder of the round.');
         }
 
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+
+        if ($this->spellHelper->isWarSpell($spellKey) && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
+            throw new GameException("You cannot cast {$spellInfo['name']} outside of war.");
+        }
 
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
