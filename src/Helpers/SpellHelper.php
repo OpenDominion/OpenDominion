@@ -364,8 +364,8 @@ class SpellHelper
                 'description' => 'Turns spies into draftees',
                 'key' => 'disband_spies',
                 'mana_cost' => 3,
-                'decrements' => ['military_spies'],
-                'increments' => ['military_draftees'],
+                'decreases' => ['military_spies'],
+                'increases' => ['military_draftees'],
                 'percentage' => 2,
             ],
             [
@@ -373,7 +373,7 @@ class SpellHelper
                 'description' => 'Kills pesants and destroys crops',
                 'key' => 'fireball',
                 'mana_cost' => 3,
-                'decrements' => ['peasants', 'resource_food'],
+                'decreases' => ['peasants', 'resource_food'],
                 'percentage' => 2,
             ],
             [
@@ -381,7 +381,7 @@ class SpellHelper
                 'description' => 'Destroys resources invested in castle',
                 'key' => 'lightning_bolt',
                 'mana_cost' => 3,
-                'decrements' => [
+                'decreases' => [
                     'improvement_science',
                     'improvement_keep',
                     'improvement_towers',

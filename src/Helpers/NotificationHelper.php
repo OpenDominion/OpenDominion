@@ -319,7 +319,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        $where = 'somewhere';//throw new \LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented");
+                        throw new LogicException("Received spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
                 if ($sourceDominion) {
@@ -357,7 +357,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new \LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
+                        throw new LogicException("Repelled spy op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
                 $lastPart = '';
@@ -399,7 +399,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new \LogicException("Resource theft op notification for operation key {$data['operationKey']} not yet implemented");
+                        throw new LogicException("Resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
                 if ($sourceDominion) {
@@ -449,7 +449,7 @@ class NotificationHelper
                         break;
 
                     default:
-                        throw new \LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
+                        throw new LogicException("Repelled resource theft op notification for operation key {$data['operationKey']} not yet implemented");
                 }
 
                 $lastPart = '';

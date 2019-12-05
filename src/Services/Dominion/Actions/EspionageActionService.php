@@ -706,7 +706,7 @@ class EspionageActionService
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
         if ($this->espionageHelper->isWarOperation($operationKey) && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
-            throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
+            //throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
         }
 
         $selfSpa = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
@@ -790,17 +790,23 @@ class EspionageActionService
         $damageDealt = [];
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
 
-        if (isset($operationInfo['decrements'])) {
-            foreach ($operationInfo['decrements'] as $attr) {
+        if (isset($operationInfo['decreases'])) {
+            foreach ($operationInfo['decreases'] as $attr) {
                 $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+
+                // Damage reduction from Docks / Harbor
+                if ($attr == 'resource_boats') {
+                    $boatsProtected = 2.5 * $target->building_dock;
+                    $baseDamage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'harbor'));
+                    $damageDealt[$attr] = round(($target->{$attr} - $boatsProtected) * $baseDamage);
+                }
+
                 $target->{$attr} -= $damageDealt[$attr];
             }
         }
-        if (isset($operationInfo['increments'])) {
-            foreach ($operationInfo['increments'] as $attr) {
-                if (!isset($damageDealt[$attr])) {
-                    $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
-                }
+        if (isset($operationInfo['increases'])) {
+            foreach ($operationInfo['increases'] as $attr) {
+                $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
                 $target->{$attr} += $damageDealt[$attr];
             }
         }

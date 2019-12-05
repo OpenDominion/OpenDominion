@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use Exception;
 use LogicException;
+use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
@@ -30,6 +31,9 @@ class SpellActionService
      * @var float Info op base success rate
      */
     protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
+
+    /** @var ImprovementCalculator */
+    protected $improvementCalculator;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -69,6 +73,7 @@ class SpellActionService
      */
     public function __construct()
     {
+        $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
@@ -511,17 +516,45 @@ class SpellActionService
             $damageDealt = [];
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
 
-            if (isset($spellInfo['decrements'])) {
-                foreach ($spellInfo['decrements'] as $attr) {
+            if (isset($spellInfo['decreases'])) {
+                foreach ($spellInfo['decreases'] as $attr) {
                     $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+
+                    // Damage reduction from Forest Havens
+                    if ($attr == 'peasants') {
+                        $forestHavenFireballReduction = 8;
+                        $forestHavenFireballReductionMax = 80;
+                        $damageMultiplier = (1 - min(
+                            (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
+                            ($forestHavenFireballReductionMax / 100)
+                        ));
+                        $damageDealt[$attr] *= $damageMultiplier;
+                    }
+
+                    // Damage reduction from Masonries
+                    if (strpos($attr, 'improvement_') === 0) {
+                        $masonryLightningBoltReduction = 0.75;
+                        $masonryLightningBoltReductionMax = 25;
+                        $damageMultiplier = (1 - min(
+                            (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
+                            ($masonryLightningBoltReductionMax / 100)
+                        ));
+                        $damageDealt[$attr] *= $damageMultiplier;
+                    }
+
+                    // Damage reduction from Towers
+                    $damageDealt[$attr] *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+
                     $target->{$attr} -= $damageDealt[$attr];
                 }
             }
-            if (isset($spellInfo['increments'])) {
-                foreach ($spellInfo['increments'] as $attr) {
-                    if (!isset($damageDealt[$attr])) {
-                        $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
-                    }
+            if (isset($spellInfo['increases'])) {
+                foreach ($spellInfo['increases'] as $attr) {
+                    $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+
+                    // Damage reduction from Towers
+                    $damageDealt[$attr] *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+
                     $target->{$attr} += $damageDealt[$attr];
                 }
             }
