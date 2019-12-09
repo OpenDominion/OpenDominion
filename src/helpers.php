@@ -63,6 +63,24 @@ if (!function_exists('generate_sentence_from_array')) {
     }
 }
 
+if (!function_exists('dominion_attr_display')) {
+    /**
+     * Returns a string suitable for display with prefix removed.
+     *
+     * @param string $attribute
+     * @return string
+     */
+    function dominion_attr_display(string $attribute): string {
+        if (strpos($attribute, '_') !== false) {
+            $stringParts = explode('_', $attribute);
+            array_shift($stringParts);
+            return str_plural(implode(' ', $stringParts));
+        } else {
+            return $attribute;
+        }
+    }
+}
+
 if (!function_exists('random_chance')) {
     $mockRandomChance = false;
     /**

@@ -795,21 +795,22 @@ class EspionageActionService
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
-                $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+                $damage = round($target->{$attr} * $baseDamage);
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damageDealt[$attr] = round(($target->{$attr} - $boatsProtected) * $baseDamage);
+                    $damage = round(($target->{$attr} - $boatsProtected) * $baseDamage);
                 }
 
-                $target->{$attr} -= $damageDealt[$attr];
+                $target->{$attr} -= $damage;
+                $damageDealt[] = sprintf("%s %s", number_format($damage), dominion_attr_display($attr));
             }
         }
         if (isset($operationInfo['increases'])) {
             foreach ($operationInfo['increases'] as $attr) {
-                $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
-                $target->{$attr} += $damageDealt[$attr];
+                $damage = round($target->{$attr} * $baseDamage);
+                $target->{$attr} += $damage;
             }
         }
 
@@ -824,20 +825,21 @@ class EspionageActionService
             $sourceDominionId = $dominion->id;
         }
 
+        $damageString = generate_sentence_from_array($damageDealt);
+
         $this->notificationService
             ->queueNotification('received_spy_op', [
                 'sourceDominionId' => $sourceDominionId,
                 'operationKey' => $operationKey,
-                'amount' => '',
-                'resource' => '',
+                'damageString' => $damageString
             ])
             ->sendNotifications($target, 'irregular_dominion');
 
         return [
             'success' => true,
             'message' => sprintf(
-                'Your spies infiltrate the target\'s dominion successfully and deal %s damage.',
-                number_format(array_sum($damageDealt))
+                'Your spies infiltrate the target\'s dominion successfully, they lost %s.',
+                $damageString
             ),
             'redirect' => route('dominion.op-center.show', $target),
         ];

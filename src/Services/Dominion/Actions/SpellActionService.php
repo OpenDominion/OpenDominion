@@ -279,8 +279,8 @@ class SpellActionService
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
-        $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
-        $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
+        $selfWpa = 0;//$this->militaryCalculator->getWizardRatio($dominion, 'offense');
+        $targetWpa = 1;//$this->militaryCalculator->getWizardRatio($target, 'defense');
 
         // You need at least some positive WPA to cast info ops
         if ($selfWpa === 0.0) {
@@ -435,16 +435,10 @@ class SpellActionService
                 static::INFO_MULTIPLIER_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
-                // Surreal Perception
-                $sourceDominionId = null;
-                if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
-                    $sourceDominionId = $dominion->id;
-                }
-
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
                     ->queueNotification('repelled_hostile_spell', [
-                        'sourceDominionId' => $sourceDominionId,
+                        'sourceDominionId' => $dominion->id,
                         'spellKey' => $spellKey,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
@@ -457,14 +451,6 @@ class SpellActionService
                     'wizardStrengthCost' => 2,
                     'alert-type' => 'warning',
                 ];
-            } else {
-                // Inform target that they received a hostile spell
-                $this->notificationService
-                ->queueNotification('received_hostile_spell', [
-                    'sourceDominionId' => $dominion->id,
-                    'spellKey' => $spellKey,
-                ])
-                ->sendNotifications($target, 'irregular_dominion');
             }
         }
 
@@ -507,6 +493,19 @@ class SpellActionService
 
             }
 
+            // Surreal Perception
+            $sourceDominionId = null;
+            if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+                $sourceDominionId = $dominion->id;
+            }
+
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $sourceDominionId,
+                    'spellKey' => $spellKey
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+
             return [
                 'success' => true,
                 'message' => sprintf(
@@ -521,7 +520,7 @@ class SpellActionService
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
-                    $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+                    $damage = round($target->{$attr} * $baseDamage);
 
                     // Damage reduction from Forest Havens
                     if ($attr == 'peasants') {
@@ -531,7 +530,7 @@ class SpellActionService
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
                             ($forestHavenFireballReductionMax / 100)
                         ));
-                        $damageDealt[$attr] *= $damageMultiplier;
+                        $damage *= $damageMultiplier;
                     }
 
                     // Damage reduction from Masonries
@@ -542,23 +541,24 @@ class SpellActionService
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
                             ($masonryLightningBoltReductionMax / 100)
                         ));
-                        $damageDealt[$attr] *= $damageMultiplier;
+                        $damage *= $damageMultiplier;
                     }
 
                     // Damage reduction from Towers
-                    $damageDealt[$attr] *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                    $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    $target->{$attr} -= $damageDealt[$attr];
+                    $target->{$attr} -= $damage;
+                    $damageDealt[] = sprintf("%s %s", number_format($damage), dominion_attr_display($attr));
                 }
             }
             if (isset($spellInfo['increases'])) {
                 foreach ($spellInfo['increases'] as $attr) {
-                    $damageDealt[$attr] = round($target->{$attr} * $baseDamage);
+                    $damage = round($target->{$attr} * $baseDamage);
 
                     // Damage reduction from Towers
-                    $damageDealt[$attr] *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                    $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    $target->{$attr} += $damageDealt[$attr];
+                    $target->{$attr} += $damage;
                 }
             }
             $target->save([
@@ -566,11 +566,27 @@ class SpellActionService
                 'action' => $spellKey
             ]);
 
+            // Surreal Perception
+            $sourceDominionId = null;
+            if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+                $sourceDominionId = $dominion->id;
+            }
+
+            $damageString = generate_sentence_from_array($damageDealt);
+
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $sourceDominionId,
+                    'spellKey' => $spellKey,
+                    'damageString' => $damageString
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+
             return [
                 'success' => true,
                 'message' => sprintf(
-                    'Your wizards cast the spell successfully, dealing %s damage to the target.',
-                    number_format(array_sum($damageDealt))
+                    'Your wizards cast the spell successfully, they lost %s.',
+                    $damageString
                 )
             ];
         }

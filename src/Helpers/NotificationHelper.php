@@ -302,20 +302,20 @@ class NotificationHelper
                 $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
                 switch ($data['operationKey']) {
-                    case 'barracks_spy':
-                        $where = 'within our barracks';
+                    case 'assassinate_draftees':
+                        $resultString = "{$data['damageString']} were killed while they slept in our barracks.";
                         break;
 
-                    case 'castle_spy':
-                        $where = 'within our castle';
+                    case 'assassinate_wizards':
+                        $resultString = "{$data['damageString']} were killed while they slept in our towers.";
                         break;
 
-                    case 'survey_dominion':
-                        $where = 'amongst our buildings';
+                    case 'magic_snare':
+                        $resultString = "Our wizards have sensed their power diminish.";
                         break;
 
-                    case 'land_spy':
-                        $where = 'amongst our lands';
+                    case 'sabotage_boats':
+                        $resultString = "{$data['damageString']} have sunk mysteriously while docked.";
                         break;
 
                     default:
@@ -324,17 +324,13 @@ class NotificationHelper
 
                 if ($sourceDominion) {
                     return sprintf(
-                        'Our wizards have determined that spies from %s (#%s) were %s!',
+                        "{$resultString} Our wizards have determined that spies from %s (#%s) were responsible!",
                         $sourceDominion->name,
-                        $sourceDominion->realm->number,
-                        $where
+                        $sourceDominion->realm->number
                     );
                 }
 
-                return sprintf(
-                    'Our spies have detected a %s',
-                    $data['operationKey']
-                );
+                return $resultString;
 
             case 'irregular_dominion.repelled_spy_op':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
@@ -354,6 +350,22 @@ class NotificationHelper
 
                     case 'land_spy':
                         $where = 'amongst our lands';
+                        break;
+
+                    case 'assassinate_draftees':
+                        $where = 'attempting to assassinate our draftees';
+                        break;
+
+                    case 'assassinate_wizards':
+                        $where = 'attempting to assassinate our wizards';
+                        break;
+
+                    case 'magic_snare':
+                        $where = 'attempting to sabotage our towers';
+                        break;
+
+                    case 'sabotage_boats':
+                        $where = 'attempting to sabotage our boats';
                         break;
 
                     default:
@@ -466,23 +478,66 @@ class NotificationHelper
                 );
 
             case 'irregular_dominion.received_hostile_spell':
-                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+                $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
-                return sprintf(
-                    'Our wizards detected a %s spell cast by %s (#%s)!',
-                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
-                    $sourceDominion->name,
-                    $sourceDominion->realm->number
-                );
+                switch ($data['spellKey']) {
+                    case 'plague':
+                        $resultString = "A plague has befallen our people, slowing population growth.";
+                        break;
+
+                    case 'insect_swarm':
+                        $resultString = "A swarm of insects are eating our crops, slowing food production.";
+                        break;
+
+                    case 'great_flood':
+                        $resultString = "A great flood has damaged our docks, slowing boat production.";
+                        break;
+
+                    case 'earthquake':
+                        $resultString = "Am earthquake has damaged our mines, slowing production.";
+                        break;
+
+                    case 'disband_spies':
+                        $resultString = "{$data['damageString']} have mysteriously deserted their posts.";
+                        break;
+
+                    case 'fireball':
+                        $resultString = "A great fireball has crashed into our keep, burning {$data['damageString']}.";
+                        break;
+
+                    case 'lightning_bolt':
+                        $resultString = "A great lightning bolt crashed into our castle, dealing {$data['damageString']}.";
+                        break;
+
+                    default:
+                        throw new LogicException("Received hostile spell notification for operation key {$data['spellKey']} not yet implemented");
+                }
+
+                if ($sourceDominion) {
+                    return sprintf(
+                        "{$resultString} Our wizards have determined that %s (#%s) was responsible!",
+                        $sourceDominion->name,
+                        $sourceDominion->realm->number
+                    );
+                }
+
+                return $resultString;
 
             case 'irregular_dominion.repelled_hostile_spell':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
 
+                if ($sourceDominion) {
+                    return sprintf(
+                        'Our wizards have repelled a %s spell attempt by %s (#%s)!',
+                        $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                        $sourceDominion->name,
+                        $sourceDominion->realm->number
+                    );
+                }
+
                 return sprintf(
-                    'Our wizards have repelled a %s spell attempt by %s (#%s)!',
+                    'Our wizards have repelled a %s spell attempt!',
                     $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
-                    $sourceDominion->name,
-                    $sourceDominion->realm->number
                 );
 
             // todo: other irregular etc
