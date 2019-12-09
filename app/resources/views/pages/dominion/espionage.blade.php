@@ -28,7 +28,10 @@
                                         <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                             <option></option>
                                             @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
-                                                <option value="{{ $dominion->id }}" data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}" data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                                <option value="{{ $dominion->id }}"
+                                                        data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
+                                                        data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}"
+                                                        data-war="{{ ($selectedDominion->realm->war_realm_id == $dominion->realm->id || $dominion->realm->war_realm_id == $selectedDominion->realm->id) ? 1 : 0 }}">
                                                     {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                 </option>
                                             @endforeach
@@ -122,7 +125,7 @@
                                                 <button type="submit"
                                                         name="operation"
                                                         value="{{ $operation['key'] }}"
-                                                        class="btn btn-primary btn-block"
+                                                        class="btn btn-primary btn-block war-op disabled"
                                                         {{ $selectedDominion->isLocked() || !$espionageCalculator->canPerform($selectedDominion, $operation['key']) || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                     {{ $operation['name'] }}
                                                 </button>
@@ -172,6 +175,14 @@
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
+            $('.select2').change(function(e) {
+                var warStatus = $(this).find(":selected").data('war');
+                if (warStatus == 1) {
+                    $('.war-op').removeClass('disabled');
+                } else {
+                    $('.war-op').addClass('disabled');
+                }
+            });
             @if (session('target_dominion'))
                 $('.select2').val('{{ session('target_dominion') }}').trigger('change.select2');
             @endif
@@ -184,6 +195,7 @@
 
             const land = state.element.dataset.land;
             const percentage = state.element.dataset.percentage;
+            const war = state.element.dataset.war;
             let difficultyClass;
 
             if (percentage >= 120) {
@@ -196,8 +208,14 @@
                 difficultyClass = 'text-gray';
             }
 
+            warStatus = '';
+            if (war == 1) {
+                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
+            }
+
             return $(`
                 <div class="pull-left">${state.text}</div>
+                ${warStatus}
                 <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);

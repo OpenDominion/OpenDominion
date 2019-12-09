@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Realm\HistoryService;
@@ -55,7 +56,7 @@ class GovernmentActionService
      *
      * @param Dominion $dominion
      * @param string $name
-     * @throws RuntimeException
+     * @throws GameException
      */
     public function updateRealm(Dominion $dominion, ?string $motd, ?string $name)
     {
@@ -79,5 +80,79 @@ class GovernmentActionService
             $dominion->realm->name = $name;
         }
         $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_REALM_UPDATED]);
+    }
+
+    /**
+     * Declares war on target realm
+     * 
+     * @param Dominion $dominion
+     * @param int $realm_number
+     * @throws GameException
+     * @throws RuntimeException
+     */
+    public function declareWar(Dominion $dominion, int $realm_number)
+    {
+        $target = Realm::where(['round_id'=>$dominion->round_id, 'number'=>$realm_number])->first();
+        if ($target == null || $dominion->realm->round_id != $target->round_id) {
+            throw new RuntimeException('Realm not found.');
+        }
+
+        if (!$dominion->isMonarch()) {
+            throw new GameException('Only the monarch can declare war.');
+        }
+
+        if ($dominion->realm->id == $target->id) {
+            throw new RuntimeException('You cannot declare war against your own realm.');
+        }
+
+        if (!$this->governmentService->canDeclareWar($dominion->realm)) {
+            throw new GameException('You cannot declare additional wars at this time.');
+        }
+
+        GameEvent::create([
+            'round_id' => $dominion->realm->round_id,
+            'source_type' => Realm::class,
+            'source_id' => $dominion->realm->id,
+            'target_type' => Realm::class,
+            'target_id' => $target->id,
+            'type' => 'war_declared',
+            'data' => ['monarchDominionID' => $dominion->id],
+        ]);
+
+        $dominion->realm->war_realm_id = $target->id;
+        $dominion->realm->war_active_at = now()->startOfHour()->addHours(GovernmentService::WAR_ACTIVE_WAIT_IN_HOURS);
+        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_DECLARE_WAR]);
+    }
+
+    /**
+     * Cancels the current war
+     * 
+     * @param Dominion $dominion
+     * @throws GameException
+     */
+    public function cancelWar(Dominion $dominion)
+    {
+        if (!$dominion->isMonarch()) {
+            throw new GameException('Only the monarch can declare war.');
+        }
+
+        $hoursBeforeCancelWar = $this->governmentService->getHoursBeforeCancelWar($dominion->realm);
+        if ($hoursBeforeCancelWar > 0) {
+            throw new GameException("You cannot cancel this war for {$hoursBeforeCancelWar} hours.");
+        }
+
+        GameEvent::create([
+            'round_id' => $dominion->realm->round_id,
+            'source_type' => Realm::class,
+            'source_id' => $dominion->realm->id,
+            'target_type' => Realm::class,
+            'target_id' => $dominion->realm->war_realm_id,
+            'type' => 'war_canceled',
+            'data' => ['monarchDominionID' => $dominion->id],
+        ]);
+
+        $dominion->realm->war_realm_id = null;
+        $dominion->realm->war_active_at = null;
+        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_CANCEL_WAR]);
     }
 }

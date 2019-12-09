@@ -413,8 +413,11 @@ class SpellActionService
 
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
-        if ($this->spellHelper->isWarSpell($spellKey) && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
-            throw new GameException("You cannot cast {$spellInfo['name']} outside of war.");
+        if ($this->spellHelper->isWarSpell($spellKey)) {
+            $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);
+            if (!$warDeclared && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
+                throw new GameException("You cannot cast {$spellInfo['name']} outside of war.");
+            }
         }
 
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');

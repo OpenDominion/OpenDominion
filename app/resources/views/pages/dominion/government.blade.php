@@ -118,6 +118,102 @@
     <div class="row">
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th>Realm</th>
+                                    <th>Declared By</th>
+                                    <th>Active at</th>
+                                </tr>
+                                @if ($hasDeclaredWar)
+                                    <tr>
+                                        <td>{{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})</td>
+                                        <td>#{{ $selectedDominion->realm->number }}</td>
+                                        <td>{{ $selectedDominion->realm->war_active_at }}</td>
+                                    </tr>
+                                @endif
+                                @foreach ($selectedDominion->realm->warRealms as $realm)
+                                    <tr>
+                                        <td>{{ $realm->name }} (#{{ $realm->number }})</td>
+                                        <td>#{{ $realm->number }}</td>
+                                        <td>{{ $realm->war_active_at }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                            @if ($selectedDominion->isMonarch())
+                                @if ($canDeclareWar)
+                                    <form action="{{ route('dominion.government.war.declare') }}" method="post" role="form">
+                                        @csrf
+                                        <label for="realm_number">Select a Realm</label>
+                                        <div class="row">
+                                            <div class="col-sm-8 col-lg-10">
+                                                <div class="form-group">
+                                                    <select name="realm_number" id="realm_number" class="form-control" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                        <option></option>
+                                                        @foreach ($realms as $realm)
+                                                            <option value="{{ $realm->number }}">
+                                                                {{ $realm->name }} (#{{ $realm->number }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-danger btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                        Declare War
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                @endif
+                                @if ($hasDeclaredWar)
+                                    <form action="{{ route('dominion.government.war.cancel') }}" method="post" role="form">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-sm-8 col-lg-10">
+                                                You have declared <span class="text-red text-bold">WAR</span> on {{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})!
+                                                @if ($hoursBeforeCancelWar > 0)
+                                                <br/><small class="text-warning">You cannot cancel this war for {{ $hoursBeforeCancelWar }} hours.</small>
+                                                @endif
+                                            </div>
+                                            <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                                <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $hoursBeforeCancelWar > 0 ? 'disabled' : null }}>
+                                                    Cancel War
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                </div>
+                <div class="box-body">
+                    <p>Here you view which realms you currently have war relations with.</p>
+                    <p>Once a war is active, dominions in both realms gain 5% Offensive Power when attacking members of the opposing realm. If both realms are actively at war with one another, that bonus increases to 10% Offensive Power.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-university"></i> Guard Membership</h3>
                 </div>
@@ -246,6 +342,7 @@
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
+            $('#realm_number').select2();
         })(jQuery);
 
         function select2Template(state) {

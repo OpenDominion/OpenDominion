@@ -88,6 +88,16 @@ class Realm extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function warRealm()
+    {
+        return $this->belongsTo(Realm::class, 'war_realm_id');
+    }
+
+    public function warRealms()
+    {
+        return $this->hasMany(Realm::class, 'war_realm_id');
+    }
+
     // todo: move to eloquent events, see $dispatchesEvents
     public function save(array $options = [])
     {

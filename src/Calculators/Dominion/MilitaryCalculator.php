@@ -5,12 +5,16 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
 
 class MilitaryCalculator
 {
     /** @var BuildingCalculator */
     protected $buildingCalculator;
+
+    /** @var GovernmentService */
+    protected $governmentService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -42,6 +46,7 @@ class MilitaryCalculator
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
+        GovernmentService $governmentService,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
@@ -49,6 +54,7 @@ class MilitaryCalculator
         SpellCalculator $spellCalculator)
     {
         $this->buildingCalculator = $buildingCalculator;
+        $this->governmentService = $governmentService;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
@@ -82,7 +88,7 @@ class MilitaryCalculator
         array $calc = []
     ): float
     {
-        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units, $calc) * $this->getOffensivePowerMultiplier($dominion));
+        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units, $calc) * $this->getOffensivePowerMultiplier($dominion, $target));
 
         return ($op * $this->getMoraleMultiplier($dominion));
     }
@@ -133,7 +139,7 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getOffensivePowerMultiplier(Dominion $dominion): float
+    public function getOffensivePowerMultiplier(Dominion $dominion, Dominion $target = null): float
     {
         $multiplier = 0;
 
@@ -160,8 +166,6 @@ class MilitaryCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
         // Racial Spell
-        // todo
-        // Spell: Nightfall (+5%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'bloodrage' => $spellBloodrage,
             'crusade' => $spellCrusade,
@@ -177,6 +181,15 @@ class MilitaryCalculator
         // Tech: Military (+5%)
         // Tech: Magical Weaponry (+10%)
         // todo
+
+        // War
+        if ($target != null) {
+            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+                $multiplier += 0.1;
+            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+                $multiplier += 0.05;
+            }
+        }
 
         return (1 + $multiplier);
     }
