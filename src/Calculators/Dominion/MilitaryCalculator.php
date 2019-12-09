@@ -10,6 +10,11 @@ use OpenDominion\Services\Dominion\QueueService;
 
 class MilitaryCalculator
 {
+    /**
+     * @var float Number of boats protected per dock
+     */
+    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -771,6 +776,21 @@ class MilitaryCalculator
         // todo: check if this needs to be a float
 
         return (float)$regen;
+    }
+
+    /**
+     * Returns the number of boats protected by a Dominion's docks and harbor improvements.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getBoatsProtected(Dominion $dominion): float
+    {
+        // Docks
+        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock;
+        // Habor
+        $boatsProtected *= 1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
+        return $boatsProtected;
     }
 
     /**

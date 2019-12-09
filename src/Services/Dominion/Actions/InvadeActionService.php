@@ -24,11 +24,6 @@ class InvadeActionService
     use DominionGuardsTrait;
 
     /**
-     * @var float Number of boats protected per dock
-     */
-    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
-
-    /**
      * @var float Base percentage of boats sunk
      */
     protected const BOATS_SUNK_BASE_PERCENTAGE = 5;
@@ -1007,7 +1002,7 @@ class InvadeActionService
             }
         }
         if ($unitsThatSinkBoats > 0) {
-            $defenderBoatsProtected = (static::BOATS_PROTECTED_PER_DOCK * $target->building_dock);
+            $defenderBoatsProtected = $this->militaryCalculator->getBoatsProtected($target);
             $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
             $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
             $targetBoatTotal = $target->resource_boats + $targetQueuedBoats;
