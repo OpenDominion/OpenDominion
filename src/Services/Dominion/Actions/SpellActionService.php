@@ -435,19 +435,62 @@ class SpellActionService
                 static::INFO_MULTIPLIER_SUCCESS_RATE);
 
             if (!random_chance($successRate)) {
+                $wizardsKilledBasePercentage = 1;
+
+                $wizardLossSpaRatio = ($targetWpa / $selfWpa);
+                $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, 0.5, 1.5);
+
+                $unitsKilled = [];
+                $wizardsKilled = (int)floor($dominion->military_wizards * ($wizardsKilledPercentage / 100));
+
+                // Check for immortal wizards
+                if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
+                    $wizardsKilled = 0;
+                }
+
+                if ($wizardsKilled > 0) {
+                    $unitsKilled['wizards'] = $wizardsKilled;
+                    $dominion->military_wizards -= $wizardsKilled;
+                }
+
+                foreach ($dominion->race->units as $unit) {
+                    if ($unit->getPerkValue('counts_as_wizard_offense')) {
+                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * ($wizardsKilledPercentage / 100);
+                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                        if ($unitKilled > 0) {
+                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                        }
+                    }
+                }
+
+                $unitsKilledStringParts = [];
+                foreach ($unitsKilled as $name => $amount) {
+                    $amountLabel = number_format($amount);
+                    $unitLabel = str_plural(str_singular($name), $amount);
+                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+                }
+                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
                     ->queueNotification('repelled_hostile_spell', [
                         'sourceDominionId' => $dominion->id,
                         'spellKey' => $spellKey,
+                        'unitsKilled' => $unitsKilledString,
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
-                // TODO: Take wizard losses
+                if ($unitsKilledString) {
+                    $message = "The enemy wizards have repelled our {$spellInfo['name']} attempt and managed to kill $unitsKilledString.";
+                } else {
+                    $message = "The enemy wizards have repelled our {$spellInfo['name']} attempt.";
+                }
+
                 // Return here, thus completing the spell cast and reducing the caster's mana
                 return [
                     'success' => false,
-                    'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
+                    'message' => $message,
                     'wizardStrengthCost' => 2,
                     'alert-type' => 'warning',
                 ];
@@ -502,7 +545,7 @@ class SpellActionService
             $this->notificationService
                 ->queueNotification('received_hostile_spell', [
                     'sourceDominionId' => $sourceDominionId,
-                    'spellKey' => $spellKey
+                    'spellKey' => $spellKey,
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
@@ -578,7 +621,7 @@ class SpellActionService
                 ->queueNotification('received_hostile_spell', [
                     'sourceDominionId' => $sourceDominionId,
                     'spellKey' => $spellKey,
-                    'damageString' => $damageString
+                    'damageString' => $damageString,
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 

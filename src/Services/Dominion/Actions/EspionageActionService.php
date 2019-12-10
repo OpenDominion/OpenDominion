@@ -803,6 +803,11 @@ class EspionageActionService
                     $damage = round(($target->{$attr} - $boatsProtected) * $baseDamage);
                 }
 
+                // Check for immortal wizards
+                if ($dominion->race->getPerkValue('immortal_wizards') != 0 && $attr == 'military_wizards') {
+                    $damage = 0;
+                }
+
                 $target->{$attr} -= $damage;
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr));
             }
@@ -831,7 +836,7 @@ class EspionageActionService
             ->queueNotification('received_spy_op', [
                 'sourceDominionId' => $sourceDominionId,
                 'operationKey' => $operationKey,
-                'damageString' => $damageString
+                'damageString' => $damageString,
             ])
             ->sendNotifications($target, 'irregular_dominion');
 
@@ -844,6 +849,4 @@ class EspionageActionService
             'redirect' => route('dominion.op-center.show', $target),
         ];
     }
-
-    // don't forget that undead has immortal wizards
 }

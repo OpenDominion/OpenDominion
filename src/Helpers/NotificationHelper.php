@@ -533,18 +533,17 @@ class NotificationHelper
             case 'irregular_dominion.repelled_hostile_spell':
                 $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
 
-                if ($sourceDominion) {
-                    return sprintf(
-                        'Our wizards have repelled a %s spell attempt by %s (#%s)!',
-                        $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
-                        $sourceDominion->name,
-                        $sourceDominion->realm->number
-                    );
+                $lastPart = '!';
+                if ($data['unitsKilled']) {
+                    $lastPart = ", killing {$data['unitsKilled']}!";
                 }
 
                 return sprintf(
-                    'Our wizards have repelled a %s spell attempt!',
+                    'Our wizards have repelled a %s spell attempt by %s (#%s)%s',
                     $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $sourceDominion->name,
+                    $sourceDominion->realm->number,
+                    $lastPart
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':
