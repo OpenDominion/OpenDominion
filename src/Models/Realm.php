@@ -90,12 +90,12 @@ class Realm extends AbstractModel
 
     public function warRealm()
     {
-        return $this->belongsTo(Realm::class, 'war_realm_id');
+        return $this->belongsTo(self::class, 'war_realm_id');
     }
 
     public function warRealms()
     {
-        return $this->hasMany(Realm::class, 'war_realm_id');
+        return $this->hasMany(self::class, 'war_realm_id');
     }
 
     // todo: move to eloquent events, see $dispatchesEvents

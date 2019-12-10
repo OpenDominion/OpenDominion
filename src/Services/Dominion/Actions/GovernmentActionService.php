@@ -89,7 +89,7 @@ class GovernmentActionService
 
     /**
      * Declares war on target realm
-     * 
+     *
      * @param Dominion $dominion
      * @param int $realm_number
      * @throws GameException
@@ -151,7 +151,7 @@ class GovernmentActionService
 
     /**
      * Cancels the current war
-     * 
+     *
      * @param Dominion $dominion
      * @throws GameException
      */

@@ -88,7 +88,7 @@ class GovernmentService
 
     /**
      * Checks for existing war declaration by realm
-     * 
+     *
      * @param Realm $realm
      */
     public function hasDeclaredWar(Realm $realm): bool
@@ -101,7 +101,7 @@ class GovernmentService
 
     /**
      * Checks if war can be declared by realm
-     * 
+     *
      * @param Realm $realm
      */
     public function canDeclareWar(Realm $realm): bool
@@ -114,7 +114,7 @@ class GovernmentService
 
     /**
      * Returns the number of hours remaining before war can be canceled
-     * 
+     *
      * @param Realm $realm
      */
     public function getHoursBeforeCancelWar(Realm $realm): int
@@ -135,7 +135,7 @@ class GovernmentService
 
     /**
      * Returns the number of hours remaining before war becomes active
-     * 
+     *
      * @param Realm $realm
      */
     public function getHoursBeforeWarActive(Realm $realm)
@@ -149,7 +149,7 @@ class GovernmentService
 
     /**
      * Returns war status between two realms
-     * 
+     *
      * @param Realm $realm
      * @param Realm $target
      */
@@ -168,7 +168,7 @@ class GovernmentService
 
     /**
      * Returns mutual war status between two realms
-     * 
+     *
      * @param Realm $realm
      * @param Realm $target
      */

@@ -318,7 +318,7 @@ class NotificationHelper
                         break;
 
                     case 'magic_snare':
-                        $resultString = "Our wizards have sensed their power diminish.";
+                        $resultString = 'Our wizards have sensed their power diminish.';
                         break;
 
                     case 'sabotage_boats':
@@ -489,19 +489,19 @@ class NotificationHelper
 
                 switch ($data['spellKey']) {
                     case 'plague':
-                        $resultString = "A plague has befallen our people, slowing population growth.";
+                        $resultString = 'A plague has befallen our people, slowing population growth.';
                         break;
 
                     case 'insect_swarm':
-                        $resultString = "A swarm of insects are eating our crops, slowing food production.";
+                        $resultString = 'A swarm of insects are eating our crops, slowing food production.';
                         break;
 
                     case 'great_flood':
-                        $resultString = "A great flood has damaged our docks, slowing boat production.";
+                        $resultString = 'A great flood has damaged our docks, slowing boat production.';
                         break;
 
                     case 'earthquake':
-                        $resultString = "Am earthquake has damaged our mines, slowing production.";
+                        $resultString = 'Am earthquake has damaged our mines, slowing production.';
                         break;
 
                     case 'disband_spies':
@@ -555,7 +555,6 @@ class NotificationHelper
                     $sourceRealm->name,
                     $sourceRealm->number
                 );
-                
 
             case 'irregular_realm.declared_war_upon_enemy_realm':
                 $targetRealm = Realm::findOrFail($data['targetRealmId']);

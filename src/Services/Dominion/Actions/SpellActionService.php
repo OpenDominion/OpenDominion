@@ -462,15 +462,15 @@ class SpellActionService
                     'dominion_id' => $target->id,
                     'spell' => $spellKey,
                 ];
-    
+
                 $activeSpell = DB::table('active_spells')
                     ->where($where)
                     ->first();
-    
+
                 if ($activeSpell === null) {
                     throw new LogicException("Active spell '{$spellKey}' for dominion id {$target->id} not found");
                 }
-    
+
                 DB::table('active_spells')
                     ->where($where)
                     ->update([
@@ -478,7 +478,7 @@ class SpellActionService
                         'cast_by_dominion_id' => $dominion->id,
                         'updated_at' => now(),
                     ]);
-    
+
             } else {
 
                 DB::table('active_spells')
@@ -548,7 +548,7 @@ class SpellActionService
                     $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
                     $target->{$attr} -= $damage;
-                    $damageDealt[] = sprintf("%s %s", number_format($damage), dominion_attr_display($attr));
+                    $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr));
                 }
             }
             if (isset($spellInfo['increases'])) {
