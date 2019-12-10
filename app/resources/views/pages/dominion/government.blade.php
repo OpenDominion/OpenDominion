@@ -156,9 +156,11 @@
                                                     <select name="realm_number" id="realm_number" class="form-control" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         <option></option>
                                                         @foreach ($realms as $realm)
-                                                            <option value="{{ $realm->number }}">
-                                                                {{ $realm->name }} (#{{ $realm->number }})
-                                                            </option>
+                                                            @if ($realm->id != $selectedDominion->realm->id)
+                                                                <option value="{{ $realm->number }}">
+                                                                    {{ $realm->name }} (#{{ $realm->number }})
+                                                                </option>
+                                                            @endif
                                                         @endforeach
                                                     </select>
                                                 </div>

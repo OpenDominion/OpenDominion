@@ -7,6 +7,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\Realm\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
@@ -18,14 +19,18 @@ class GovernmentActionService
     /** @var GovernmentService */
     protected $governmentService;
 
+    /** @var NotificationService */
+    protected $notificationService;
+
     /**
      * GovernmentActionService constructor.
      *
      * @param GovernmentService $governmentService
      */
-    public function __construct(GovernmentService $governmentService)
+    public function __construct(GovernmentService $governmentService, NotificationService $notificationService)
     {
         $this->governmentService = $governmentService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -122,6 +127,26 @@ class GovernmentActionService
         $dominion->realm->war_realm_id = $target->id;
         $dominion->realm->war_active_at = now()->startOfHour()->addHours(GovernmentService::WAR_ACTIVE_WAIT_IN_HOURS);
         $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_DECLARE_WAR]);
+
+        // Send friendly notifications
+        foreach ($dominion->realm->dominions as $friendlyDominion) {
+            $this->notificationService
+                ->queueNotification('declared_war_upon_enemy_realm', [
+                    'sourceRealmId' => $dominion->realm->id,
+                    'targetRealmId' => $target->id
+                ])
+                ->sendNotifications($friendlyDominion, 'irregular_realm');
+        }
+
+        // Send hostile notifications
+        foreach ($target->dominions as $hostileDominion) {
+            $this->notificationService
+                ->queueNotification('enemy_realm_declared_war', [
+                    'sourceRealmId' => $dominion->realm->id,
+                    'targetRealmId' => $target->id
+                ])
+                ->sendNotifications($hostileDominion, 'irregular_realm');
+        }
     }
 
     /**

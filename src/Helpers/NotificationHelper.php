@@ -4,6 +4,7 @@ namespace OpenDominion\Helpers;
 
 use LogicException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Realm;
 
 class NotificationHelper
 {
@@ -21,7 +22,7 @@ class NotificationHelper
             'general' => $this->getGeneralTypes(),
             'hourly_dominion' => $this->getHourlyDominionTypes(),
             'irregular_dominion' => $this->getIrregularDominionTypes(),
-//            'irregular_realm' => $this->getIrregularRealmTypes(),
+            'irregular_realm' => $this->getIrregularRealmTypes(),
         ];
     }
 
@@ -31,7 +32,7 @@ class NotificationHelper
             'general' => 'General Notifications',
             'hourly_dominion' => 'Hourly Dominion Notifications',
             'irregular_dominion' => 'Irregular Dominion Notifications',
-//            'irregular_realm' => 'Irregular Realm Notifications',
+            'irregular_realm' => 'Irregular Realm Notifications',
         ][$key];
     }
 
@@ -154,6 +155,7 @@ class NotificationHelper
     public function getIrregularRealmTypes(): array
     {
         return [
+            /*
             'realmie_performed_info_ops' => [
                 'label' => 'A realmie performed info ops',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -174,14 +176,18 @@ class NotificationHelper
                 'label' => 'An enemy invaded a realmie',
                 'defaults' => ['email' => false, 'ingame' => true],
             ],
+            */
             'enemy_realm_declared_war' => [
                 'label' => 'An enemy realm declared war upon our realm',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-crossed-axes text-red',
             ],
             'declared_war_upon_enemy_realm' => [
                 'label' => 'Our realm declared war upon an enemy realm',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-crossed-axes text-red',
             ],
+            /*
             'wonder_attacked' => [
                 'label' => 'A wonder our realm controls was attacked',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -194,6 +200,7 @@ class NotificationHelper
                 'label' => 'A realmie has died',
                 'defaults' => ['email' => false, 'ingame' => true],
             ],
+            */
         ];
     }
 
@@ -538,6 +545,25 @@ class NotificationHelper
                 return sprintf(
                     'Our wizards have repelled a %s spell attempt!',
                     $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                );
+
+            case 'irregular_realm.enemy_realm_declared_war':
+                $sourceRealm = Realm::findOrFail($data['sourceRealmId']);
+
+                return sprintf(
+                    '%s (#%s) declared war upon our realm!',
+                    $sourceRealm->name,
+                    $sourceRealm->number
+                );
+                
+
+            case 'irregular_realm.declared_war_upon_enemy_realm':
+                $targetRealm = Realm::findOrFail($data['targetRealmId']);
+
+                return sprintf(
+                    'Our realm declared war upon %s (#%s)!',
+                    $targetRealm->name,
+                    $targetRealm->number
                 );
 
             // todo: other irregular etc
