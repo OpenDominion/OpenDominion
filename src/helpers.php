@@ -68,15 +68,34 @@ if (!function_exists('dominion_attr_display')) {
      * Returns a string suitable for display with prefix removed.
      *
      * @param string $attribute
+     * @param float $value
      * @return string
      */
-    function dominion_attr_display(string $attribute): string {
-        if (strpos($attribute, '_') !== false) {
-            $stringParts = explode('_', $attribute);
-            array_shift($stringParts);
-            return str_plural(implode(' ', $stringParts));
+    function dominion_attr_display(string $attribute, float $value): string {
+        $pluralAttributeDisplay = [
+            'prestige' => 'prestige',
+            'morale' => 'morale',
+            'spy_strength' => 'percent spy strength',
+            'wizard_strength' => 'percent wizard strength',
+            'resource_platinum' => 'platinum',
+            'resource_food' => 'food',
+            'resource_lumber' => 'lumber',
+            'resource_mana' => 'mana',
+            'resource_ore' => 'ore',
+            'resource_tech' => 'tech',
+            'land_water' => 'water',
+        ];
+
+        if (isset($pluralAttributeDisplay[$attribute])) {
+            return $pluralAttributeDisplay[$attribute];
         } else {
-            return $attribute;
+            if (strpos($attribute, '_') !== false) {
+                $stringParts = explode('_', $attribute);
+                array_shift($stringParts);
+                return str_plural(str_singular(implode(' ', $stringParts)), $value);
+            } else {
+                return str_plural(str_singular($attribute), $value);
+            }
         }
     }
 }

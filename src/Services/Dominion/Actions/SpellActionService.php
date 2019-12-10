@@ -591,7 +591,7 @@ class SpellActionService
                     $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
                     $target->{$attr} -= $damage;
-                    $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr));
+                    $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
                 }
             }
             if (isset($spellInfo['increases'])) {
