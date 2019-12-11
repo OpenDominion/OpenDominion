@@ -319,7 +319,7 @@
             var invadeButtonElement = $('#invade-button');
             var allUnitInputs = $('input[name^=\'unit\']');
 
-            $('.select2').select2({
+            $('#target_dominion').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });

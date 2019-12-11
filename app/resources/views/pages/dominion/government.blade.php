@@ -340,7 +340,7 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('.select2').select2({
+            $('#monarch').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });

@@ -171,11 +171,11 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('.select2').select2({
+            $('#target_dominion').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
-            $('.select2').change(function(e) {
+            $('#target_dominion').change(function(e) {
                 var warStatus = $(this).find(":selected").data('war');
                 if (warStatus == 1) {
                     $('.war-op').removeClass('disabled');
@@ -184,7 +184,7 @@
                 }
             });
             @if (session('target_dominion'))
-                $('.select2').val('{{ session('target_dominion') }}').trigger('change.select2');
+                $('#target_dominion').val('{{ session('target_dominion') }}').trigger('change.select2');
             @endif
         })(jQuery);
 
