@@ -20,6 +20,8 @@ class DailyBonusesActionService
      */
     public function claimPlatinum(Dominion $dominion): array
     {
+        $this->guardLockedDominion($dominion);
+
         if ($dominion->daily_platinum) {
             throw new GameException('You already claimed your platinum bonus for today.');
         }
@@ -49,6 +51,8 @@ class DailyBonusesActionService
      */
     public function claimLand(Dominion $dominion): array
     {
+        $this->guardLockedDominion($dominion);
+
         if ($dominion->daily_land) {
             throw new GameException('You already claimed your land bonus for today.');
         }

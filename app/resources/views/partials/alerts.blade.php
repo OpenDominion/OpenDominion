@@ -1,8 +1,12 @@
 @if (isset($selectedDominion) && !Route::is('home'))
     @if ($selectedDominion->isLocked())
         <div class="alert alert-warning">
-            <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.</p>
-            <p>Go to your <a href="{{ route('dashboard') }}">dashboard</a> to check if new rounds are open to play.</p>
+            @if ($selectedDominion->is_locked)
+                <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to administrative action. No actions can be performed and no ticks will be processed.</p>
+            @else
+                <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.</p>
+                <p>Go to your <a href="{{ route('dashboard') }}">dashboard</a> to check if new rounds are open to play.</p>
+            @endif
         </div>
     @endif
 

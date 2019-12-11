@@ -163,6 +163,7 @@ class Dominion extends AbstractModel
         'daily_land' => 'boolean',
         'royal_guard_active_at' => 'datetime',
         'eltie_guard_active_at' => 'datetime',
+        'is_locked' => 'boolean',
     ];
 
     // Relations
@@ -298,7 +299,7 @@ class Dominion extends AbstractModel
     }
 
     /**
-     * Returns whether this Dominion is locked due to the round having ended.
+     * Returns whether this Dominion is locked due to the round having ended or administrative action.
      *
      * Locked Dominions cannot perform actions and are read-only.
      *
@@ -306,7 +307,7 @@ class Dominion extends AbstractModel
      */
     public function isLocked()
     {
-        return (now() >= $this->round->end_date);
+        return $this->is_locked || (now() >= $this->round->end_date);
     }
 
     /**

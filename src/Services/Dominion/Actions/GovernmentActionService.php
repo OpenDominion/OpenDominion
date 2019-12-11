@@ -36,6 +36,8 @@ class GovernmentActionService
      */
     public function voteForMonarch(Dominion $dominion, ?int $monarch_id)
     {
+        $this->guardLockedDominion($dominion);
+
         $monarch = Dominion::find($monarch_id);
         if ($monarch == null) {
             throw new RuntimeException('Dominion not found.');
@@ -59,6 +61,8 @@ class GovernmentActionService
      */
     public function updateRealm(Dominion $dominion, ?string $motd, ?string $name)
     {
+        $this->guardLockedDominion($dominion);
+
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can make changes to their realm.');
         }

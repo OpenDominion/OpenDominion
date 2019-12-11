@@ -117,6 +117,7 @@ class EspionageActionService
     public function performOperation(Dominion $dominion, string $operationKey, Dominion $target): array
     {
         $this->guardLockedDominion($dominion);
+        $this->guardLockedDominion($target);
 
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
