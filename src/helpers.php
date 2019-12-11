@@ -71,7 +71,7 @@ if (!function_exists('dominion_attr_display')) {
      * @param float $value
      * @return string
      */
-    function dominion_attr_display(string $attribute, float $value): string {
+    function dominion_attr_display(string $attribute, float $value = 1): string {
         $pluralAttributeDisplay = [
             'prestige' => 'prestige',
             'morale' => 'morale',

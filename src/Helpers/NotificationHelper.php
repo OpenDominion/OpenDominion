@@ -513,7 +513,7 @@ class NotificationHelper
                         break;
 
                     case 'lightning_bolt':
-                        $resultString = "A great lightning bolt crashed into our castle, dealing {$data['damageString']}.";
+                        $resultString = "A great lightning bolt crashed into our castle, destroying {$data['damageString']}.";
                         break;
 
                     default:

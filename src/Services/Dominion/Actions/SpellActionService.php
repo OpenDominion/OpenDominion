@@ -559,11 +559,12 @@ class SpellActionService
         } else {
             // Cast spell instantly
             $damageDealt = [];
+            $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
-                    $damage = round($target->{$attr} * $baseDamage);
+                    $damage = $target->{$attr} * $baseDamage;
 
                     // Damage reduction from Forest Havens
                     if ($attr == 'peasants') {
@@ -590,18 +591,25 @@ class SpellActionService
                     // Damage reduction from Towers
                     $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    $target->{$attr} -= $damage;
+                    $totalDamage += round($damage);
+                    $target->{$attr} -= round($damage);
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
+                }
+
+                // Combine lightning bolt damage into single string
+                if ($spellInfo['key'] === 'lightning_bolt') {
+                    // Combine lightning bold damage into single string
+                    $damageDealt = [sprintf('%s %s', number_format($totalDamage), dominion_attr_display('improvement', $totalDamage))];
                 }
             }
             if (isset($spellInfo['increases'])) {
                 foreach ($spellInfo['increases'] as $attr) {
-                    $damage = round($target->{$attr} * $baseDamage);
+                    $damage = $target->{$attr} * $baseDamage;
 
                     // Damage reduction from Towers
                     $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    $target->{$attr} += $damage;
+                    $target->{$attr} += round($damage);
                 }
             }
             $target->save([
@@ -628,7 +636,7 @@ class SpellActionService
             return [
                 'success' => true,
                 'message' => sprintf(
-                    'Your wizards cast the spell successfully, they lost %s.',
+                    'Your wizards cast the spell successfully, your target lost %s.',
                     $damageString
                 )
             ];

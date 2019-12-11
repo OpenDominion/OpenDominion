@@ -795,12 +795,12 @@ class EspionageActionService
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
-                $damage = round($target->{$attr} * $baseDamage);
+                $damage = $target->{$attr} * $baseDamage;
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = round(($target->{$attr} - $boatsProtected) * $baseDamage);
+                    $damage = ($target->{$attr} - $boatsProtected) * $baseDamage;
                 }
 
                 // Check for immortal wizards
@@ -808,14 +808,14 @@ class EspionageActionService
                     $damage = 0;
                 }
 
-                $target->{$attr} -= $damage;
+                $target->{$attr} -= round($damage);
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
             }
         }
         if (isset($operationInfo['increases'])) {
             foreach ($operationInfo['increases'] as $attr) {
-                $damage = round($target->{$attr} * $baseDamage);
-                $target->{$attr} += $damage;
+                $damage = $target->{$attr} * $baseDamage;
+                $target->{$attr} += round($damage);
             }
         }
 
