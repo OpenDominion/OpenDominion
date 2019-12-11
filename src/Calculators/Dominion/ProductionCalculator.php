@@ -198,6 +198,7 @@ class ProductionCalculator
         // Values (percentages)
         $spellGaiasBlessing = 20;
         $spellGaiasWatch = 10;
+        $spellInsectSwarm = 5;
 //        $techFarmersGrowth = 10;
 
         // Racial Bonus
@@ -208,6 +209,9 @@ class ProductionCalculator
             'gaias_blessing' => $spellGaiasBlessing,
             'gaias_watch' => $spellGaiasWatch,
         ]);
+
+        // Spell: Insect Swarm
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'insect_swarm', $spellInsectSwarm);
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
@@ -530,6 +534,7 @@ class ProductionCalculator
         // Values (percentages)
         $spellMinersSight = 20;
         $spellMiningStrength = 10;
+        $spellEarthquake = 5;
 //        $techFruitsOfLabor = 20;
 
         // Racial Bonus
@@ -540,6 +545,9 @@ class ProductionCalculator
             'miners_sight' => $spellMinersSight,
             'mining_strength' => $spellMiningStrength,
         ]);
+
+        // Spell: Earthquake
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
 
         // Tech: Fruits of Labor
         // todo
@@ -598,8 +606,14 @@ class ProductionCalculator
     {
         $multiplier = 0;
 
+        // Values (percentages)
+        $spellEarthquake = 5;
+
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
+
+        // Spell: Earthquake
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
 
         // Tech: Fruits of Labor and Miner's Refining
         // todo
@@ -658,6 +672,12 @@ class ProductionCalculator
     public function getBoatProductionMultiplier(Dominion $dominion): float
     {
         $multiplier = 0;
+
+        // Values (percentages)
+        $spellGreatFlood = 25;
+
+        // Spell: Great Flood
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');

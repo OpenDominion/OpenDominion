@@ -268,6 +268,7 @@ class PopulationCalculator
 
         // Values (percentages)
         $spellHarmony = 50;
+        $spellPlague = 25;
         $templeBonus = 6;
 
         // Racial Bonus
@@ -275,6 +276,9 @@ class PopulationCalculator
 
         // Spell: Harmony
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'harmony', $spellHarmony);
+
+        // Spell: Plague
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'plague', $spellPlague);
 
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);

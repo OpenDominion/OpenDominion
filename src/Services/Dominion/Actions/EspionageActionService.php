@@ -30,6 +30,11 @@ class EspionageActionService
     use DominionGuardsTrait;
 
     /**
+     * @var float Hostile base success rate
+     */
+    protected const HOSTILE_MULTIPLIER_SUCCESS_RATE = 1.2;
+
+    /**
      * @var float Theft base success rate
      */
     protected const THEFT_MULTIPLIER_SUCCESS_RATE = 1.2;
@@ -725,7 +730,7 @@ class EspionageActionService
             $successRate = $this->opsHelper->operationSuccessChance(
                 $selfSpa,
                 $targetSpa,
-                static::THEFT_MULTIPLIER_SUCCESS_RATE
+                static::HOSTILE_MULTIPLIER_SUCCESS_RATE
             );
 
             if (!random_chance($successRate)) {
