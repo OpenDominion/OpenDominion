@@ -115,13 +115,13 @@ class SpellHelper
                 'mana_cost' => 4,
                 'duration' => 8,
             ],
-//            [
-//                'name' => 'Energy Mirror',
-//                'description' => '20% chance to reflect incoming spells',
-//                'key' => '',
-//                'mana_cost' => 3,
-//                'duration' => 8,
-//            ]
+            [
+                'name' => 'Energy Mirror',
+                'description' => '20% chance to reflect incoming spells for 8 hours',
+                'key' => 'energy_mirror',
+                'mana_cost' => 3,
+                'duration' => 8,
+            ]
         ]));
 
         if($race !== null){

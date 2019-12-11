@@ -497,6 +497,14 @@ class SpellActionService
             }
         }
 
+        $spellDeflected = false;
+        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
+            $spellDeflected = true;
+            $deflectedBy = $target;
+            $target = $dominion;
+            $dominion = $deflectedBy;
+        }
+
         if (isset($spellInfo['duration'])) {
             // Cast spell with duration
             if ($this->spellCalculator->isSpellActive($target, $spellKey)) {
@@ -549,13 +557,24 @@ class SpellActionService
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
-            return [
-                'success' => true,
-                'message' => sprintf(
-                    'Your wizards cast the spell successfully, and it will continue to affect your target for the next %s hours.',
-                    $spellInfo['duration']
-                )
-            ];
+            if ($spellDeflected) {
+                return [
+                    'success' => true,
+                    'message' => sprintf(
+                        'Your wizards cast the spell successfully, but it was deflected and it will now affect your dominion for the next %s hours.',
+                        $spellInfo['duration']
+                    ),
+                    'alert-type' => 'danger'
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => sprintf(
+                        'Your wizards cast the spell successfully, and it will continue to affect your target for the next %s hours.',
+                        $spellInfo['duration']
+                    )
+                ];
+            }
         } else {
             // Cast spell instantly
             $damageDealt = [];
@@ -633,13 +652,24 @@ class SpellActionService
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
-            return [
-                'success' => true,
-                'message' => sprintf(
-                    'Your wizards cast the spell successfully, your target lost %s.',
-                    $damageString
-                )
-            ];
+            if ($spellDeflected) {
+                return [
+                    'success' => true,
+                    'message' => sprintf(
+                        'Your wizards cast the spell successfully, but it was deflected and your dominion lost %s.',
+                        $damageString
+                    ),
+                    'alert-type' => 'danger'
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => sprintf(
+                        'Your wizards cast the spell successfully, your target lost %s.',
+                        $damageString
+                    )
+                ];
+            }
         }
     }
 
