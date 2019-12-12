@@ -87,7 +87,7 @@ class BuildingHelper
             'alchemy' => 2,
             'farm' => 2,
             'smithy' => 2,
-            'masonry' => 1, // reduce lightning bolt damage
+            'masonry' => 2,
             'ore_mine' => 2,
             'gryphon_nest' => 2,
             'tower' => 2,
@@ -96,7 +96,7 @@ class BuildingHelper
             'diamond_mine' => 2,
             'school' => 0, // produces research points
             'lumberyard' => 2,
-            'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage
+            'forest_haven' => 2,
             'factory' => 2,
             'guard_tower' => 2,
             'shrine' => 2, // todo for later: increases chance of hero level gain and increase hero bonuses
