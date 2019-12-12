@@ -815,6 +815,11 @@ class EspionageActionService
 
                 $target->{$attr} -= round($damage);
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
+
+                // Update statistics
+                if (isset($dominion->{"stat_{$operationInfo['key']}_damage"})) {
+                    $dominion->{"stat_{$operationInfo['key']}_damage"} += round($damage);
+                }
             }
         }
         if (isset($operationInfo['increases'])) {

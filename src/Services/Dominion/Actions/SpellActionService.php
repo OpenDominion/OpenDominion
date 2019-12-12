@@ -317,8 +317,6 @@ class SpellActionService
             }
         }
 
-        // todo: take Energy Mirror into account with 20% spell reflect (either show your info or give the infoop to the target)
-
         $infoOp = new InfoOp([
             'source_realm_id' => $dominion->realm->id,
             'target_realm_id' => $target->realm->id,
@@ -513,7 +511,6 @@ class SpellActionService
         if (isset($spellInfo['duration'])) {
             // Cast spell with duration
             if ($this->spellCalculator->isSpellActive($target, $spellKey)) {
-
                 $where = [
                     'dominion_id' => $target->id,
                     'spell' => $spellKey,
@@ -534,9 +531,7 @@ class SpellActionService
                         'cast_by_dominion_id' => $dominion->id,
                         'updated_at' => now(),
                     ]);
-
             } else {
-
                 DB::table('active_spells')
                     ->insert([
                         'dominion_id' => $target->id,
@@ -546,7 +541,11 @@ class SpellActionService
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
+            }
 
+            // Update statistics
+            if (isset($dominion->{"stat_{$spellInfo['key']}_hours"})) {
+                $dominion->{"stat_{$spellInfo['key']}_hours"} += $spellInfo['duration'];
             }
 
             // Surreal Perception
@@ -618,6 +617,14 @@ class SpellActionService
                     $totalDamage += round($damage);
                     $target->{$attr} -= round($damage);
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
+
+                    // Update statistics
+                    if (isset($dominion->{"stat_{$spellInfo['key']}_damage"})) {
+                        // Only count peasants killed by fireball
+                        if (!($spellInfo['key'] == 'fireball' && $attr == 'resource_food')) {
+                            $dominion->{"stat_{$spellInfo['key']}_damage"} += round($damage);
+                        }
+                    }
                 }
 
                 // Combine lightning bolt damage into single string

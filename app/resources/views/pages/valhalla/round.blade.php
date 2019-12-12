@@ -73,26 +73,22 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-mana-stolen']) }}">Top Mana Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-ore-stolen']) }}">Top Ore Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-gems-stolen']) }}">Top Gem Thieves</a><br>
-                    <!--
-                    Top Saboteurs<br>
-                    Top Magical Assassins<br>
-                    Top Military Assassins<br>
-                    Top Snare Setters<br>
-                    Top Demoralizers<br>
-                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-top-saboteurs']) }}">Top Saboteurs</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-top-magical-assassins']) }}">Top Magical Assassins</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-top-military-assassins']) }}">Top Military Assassins</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-top-snare-setters']) }}">Top Snare Setters</a><br>
+                    <!-- Top Demoralizers -->
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Wizards</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-spell-success']) }}">Most Successful Wizards</a><br>
-                    <!--
-                    Masters of Fire<br>
-                    Masters of Plague<br>
-                    Masters of Swarm<br>
-                    Masters of Lightning<br>
-                    Masters of Water<br>
-                    Masters of Earth<br>
-                    Top Spy Disbanders<br>
-                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-fire']) }}">Masters of Fire</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-plague']) }}">Masters of Plague</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-swarm']) }}">Masters of Swarm</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-lightning']) }}">Masters of Lightning</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-water']) }}">Masters of Water</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-earth']) }}">Masters of Earth</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-top-spy-disbanders']) }}">Top Spy Disbanders</a><br>
                 </div>
             </div>
 
