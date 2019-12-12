@@ -211,7 +211,7 @@ class ProductionCalculator
         ]);
 
         // Spell: Insect Swarm
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'insect_swarm', $spellInsectSwarm);
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'insect_swarm', $spellInsectSwarm);
 
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
