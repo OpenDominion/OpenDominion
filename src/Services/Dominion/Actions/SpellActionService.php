@@ -145,10 +145,6 @@ class SpellActionService
                 throw new GameException('You cannot cast offensive spells to targets outside of your range');
             }
 
-            if (now()->diffInDays($dominion->round->start_date) < self::BLACK_OPS_DAYS_AFTER_ROUND_START) {
-                throw new GameException('You cannot perform black ops for the first seven days of the round');
-            }
-
             if ($dominion->round->id !== $target->round->id) {
                 throw new GameException('Nice try, but you cannot cast spells cross-round');
             }
@@ -412,6 +408,10 @@ class SpellActionService
     {
         if ($dominion->round->hasOffensiveActionsDisabled()) {
             throw new GameException('Black ops have been disabled for the remainder of the round.');
+        }
+
+        if (now()->diffInDays($dominion->round->start_date) < self::BLACK_OPS_DAYS_AFTER_ROUND_START) {
+            throw new GameException('You cannot perform black ops for the first seven days of the round');
         }
 
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
