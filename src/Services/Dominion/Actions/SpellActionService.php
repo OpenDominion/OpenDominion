@@ -300,6 +300,7 @@ class SpellActionService
                     ->queueNotification('repelled_hostile_spell', [
                         'sourceDominionId' => $dominion->id,
                         'spellKey' => $spellKey,
+                        'unitsKilled' => '',
                     ])
                     ->sendNotifications($target, 'irregular_dominion');
 
