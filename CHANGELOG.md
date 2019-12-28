@@ -4,6 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.7.1-19]
+### Added
+- Releasing units with DP will be hindered when:
+  - Invaded in the last 24hrs
+  - Having troops returning
+
 ## [0.7.1-18]
 ### Added
 - Sending out less than 50% of defenders DP will prevent an attack
@@ -499,7 +505,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-18...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-19...HEAD
+[0.7.1-19]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-18...0.7.1-19
 [0.7.1-18]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...0.7.1-18
 [0.7.1-17]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...0.7.1-17
 [0.7.1-16]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-15...0.7.1-16
