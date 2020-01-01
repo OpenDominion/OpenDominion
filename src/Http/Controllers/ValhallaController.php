@@ -99,6 +99,17 @@ class ValhallaController extends AbstractController
             case 'stat-total-mana-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_mana_stolen'); break;
             case 'stat-total-ore-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_ore_stolen'); break;
             case 'stat-total-gems-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_gems_stolen'); break;
+            case 'stat-top-saboteurs': $data = $this->getDominionsByStatistic($round, 'stat_sabotage_boats_damage'); break;
+            case 'stat-top-magical-assassins': $data = $this->getDominionsByStatistic($round, 'stat_assassinate_wizards_damage'); break;
+            case 'stat-top-military-assassins': $data = $this->getDominionsByStatistic($round, 'stat_assassinate_draftees_damage'); break;
+            case 'stat-top-snare-setters': $data = $this->getDominionsByStatistic($round, 'stat_magic_snare_damage'); break;
+            case 'stat-masters-of-fire': $data = $this->getDominionsByStatistic($round, 'stat_fireball_damage'); break;
+            case 'stat-masters-of-plague': $data = $this->getDominionsByStatistic($round, 'stat_plague_hours'); break;
+            case 'stat-masters-of-swarm': $data = $this->getDominionsByStatistic($round, 'stat_insect_swarm_hours'); break;
+            case 'stat-masters-of-lightning': $data = $this->getDominionsByStatistic($round, 'stat_lightning_bolt_damage'); break;
+            case 'stat-masters-of-water': $data = $this->getDominionsByStatistic($round, 'stat_water_hours'); break;
+            case 'stat-masters-of-earth': $data = $this->getDominionsByStatistic($round, 'stat_earthquake_hours'); break;
+            case 'stat-top-spy-disbanders': $data = $this->getDominionsByStatistic($round, 'stat_disband_spies_damage'); break;
 
             default:
                 if (!preg_match('/(strongest|largest|stat)-([-\w]+)/', $type, $matches)) {

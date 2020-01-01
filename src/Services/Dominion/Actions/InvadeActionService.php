@@ -13,6 +13,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -22,11 +23,6 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class InvadeActionService
 {
     use DominionGuardsTrait;
-
-    /**
-     * @var float Number of boats protected per dock
-     */
-    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
 
     /**
      * @var float Base percentage of boats sunk
@@ -79,6 +75,9 @@ class InvadeActionService
     /** @var CasualtiesCalculator */
     protected $casualtiesCalculator;
 
+    /** @var GovernmentService */
+    protected $governmentService;
+
     /** @var LandCalculator */
     protected $landCalculator;
 
@@ -130,6 +129,7 @@ class InvadeActionService
      *
      * @param BuildingCalculator $buildingCalculator
      * @param CasualtiesCalculator $casualtiesCalculator
+     * @param GovernmentService $governmentService
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
@@ -141,6 +141,7 @@ class InvadeActionService
     public function __construct(
         BuildingCalculator $buildingCalculator,
         CasualtiesCalculator $casualtiesCalculator,
+        GovernmentService $governmentService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
@@ -151,6 +152,7 @@ class InvadeActionService
     ) {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
+        $this->governmentService = $governmentService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
@@ -373,7 +375,12 @@ class InvadeActionService
             ));
             $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
 
-            // todo: if wat war, increase $attackerPrestigeChange by +15%
+            // War Bonus
+            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+                $attackerPrestigeChange *= 1.25;
+            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+                $attackerPrestigeChange *= 1.15;
+            }
         }
 
         // Reduce attacker prestige gain if the target was hit recently
@@ -653,9 +660,14 @@ class InvadeActionService
         $rangeMultiplier = ($range / 100);
 
         $landGrabRatio = 1;
-        // todo: if mutual war, $landGrabRatio = 1.2
-        // todo: if non-mutual war, $landGrabRatio = 1.15
         $bonusLandRatio = 1.7647;
+
+        // War Bonus
+        if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+            $landGrabRatio = 1.2;
+        } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+            $landGrabRatio = 1.15;
+        }
 
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
 
@@ -1056,7 +1068,7 @@ class InvadeActionService
             }
         }
         if (!$this->invasionResult['result']['overwhelmed'] && $unitsThatSinkBoats > 0) {
-            $defenderBoatsProtected = (static::BOATS_PROTECTED_PER_DOCK * $target->building_dock);
+            $defenderBoatsProtected = $this->militaryCalculator->getBoatsProtected($target);
             $defenderBoatsSunkPercentage = (static::BOATS_SUNK_BASE_PERCENTAGE / 100) * ($unitsThatSinkBoats / $unitsTotal);
             $targetQueuedBoats = $this->queueService->getInvasionQueueTotalByResource($target, 'resource_boats');
             $targetBoatTotal = $target->resource_boats + $targetQueuedBoats;
