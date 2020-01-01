@@ -399,14 +399,12 @@
                                                     <strong>{{ number_format($selectedDominion->stat_total_gem_production) }}</strong>
                                                 </td>
                                             </tr>
-                                            <!--
                                             <tr>
-                                                <td>Tech Points:</td>
+                                                <td>Research Points:</td>
                                                 <td>
                                                     <strong>{{ number_format($selectedDominion->stat_total_tech_production) }}</strong>
                                                 </td>
                                             </tr>
-                                            -->
                                             <tr>
                                                 <td>Boats:</td>
                                                 <td>

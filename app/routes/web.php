@@ -107,6 +107,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
             $router->post('bank')->uses('Dominion\BankController@postBank');
 
+            // Techs
+            $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
+            $router->post('techs')->uses('Dominion\TechController@postTechs');
+
             // Military
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');

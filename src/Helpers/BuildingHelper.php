@@ -94,7 +94,7 @@ class BuildingHelper
             'wizard_guild' => 2,
             'temple' => 2,
             'diamond_mine' => 2,
-            'school' => 0, // produces research points
+            'school' => 2,
             'lumberyard' => 2,
             'forest_haven' => 1, // reduce losses on failed spy ops, reduce fireball damage
             'factory' => 2,

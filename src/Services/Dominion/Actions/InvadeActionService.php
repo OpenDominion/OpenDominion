@@ -259,6 +259,7 @@ class InvadeActionService
 
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
+            $this->handleResearchPoints($dominion, $survivingUnits);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
@@ -889,6 +890,50 @@ class InvadeActionService
         return $convertedUnits;
     }
 
+    /**
+     * Handles research point generation for attacker.
+     *
+     * Original formula:
+     * (Conquered acres) * max([(Days into the round)/3], 10)
+     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 16.6667 on day 50
+     * - This number is increased by 50% in the Base Ruleset.
+     *
+     * Removing days into round portion of the formula in favor of a static coefficient.
+     * For base ruleset, the range for the coefficent was 15-25. We are using 20 instead.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     */
+    protected function handleResearchPoints(Dominion $dominion, array $units): void
+    {
+        $researchPointsPerAcre = 20;
+
+        $isInvasionSuccessful = $this->invasionResult['result']['success'];
+        if ($isInvasionSuccessful) {
+            $landConquered = array_sum($this->invasionResult['attacker']['landConquered']);
+            $landGenerated = array_sum($this->invasionResult['attacker']['landGenerated']);
+
+            $researchPointsGained = ($landConquered + $landGenerated) * $researchPointsPerAcre;
+            $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                ['resource_tech' => $researchPointsGained],
+                $slowestTroopsReturnHours
+            );
+
+            $this->invasionResult['attacker']['researchPoints'] = $researchPointsGained;
+        }
+    }
+
+    /**
+     * Handles perks that trigger on invasion.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     */
     protected function handleAfterInvasionUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
         // todo: just hobgoblin plunder atm, need a refactor later to take into

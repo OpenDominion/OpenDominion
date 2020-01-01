@@ -419,6 +419,7 @@ class TickService
         $tick->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
         $tick->resource_ore += $this->productionCalculator->getOreProduction($dominion);
         $tick->resource_gems += $this->productionCalculator->getGemProduction($dominion);
+        $tick->resource_tech += $this->productionCalculator->getTechProduction($dominion);
         $tick->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
         $tick->resource_food_production += $this->productionCalculator->getFoodProduction($dominion);
         // Check for starvation before adjusting food
@@ -453,7 +454,10 @@ class TickService
 
         // Spy Strength
         if ($dominion->spy_strength < 100) {
-            $tick->spy_strength = min(4, 100 - $dominion->spy_strength);
+            $spyStrengthAdded = 4;
+            $spyStrengthAdded += $dominion->getTechPerkValue('spy_strength_recovery');
+
+            $tick->spy_strength = min($spyStrengthAdded, 100 - $dominion->spy_strength);
         }
 
         // Wizard Strength
@@ -467,6 +471,8 @@ class TickService
                 (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild)),
                 $wizardStrengthPerWizardGuildMax
             );
+
+            $wizardStrengthAdded += $dominion->getTechPerkValue('wizard_strength_recovery');
 
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
         }
