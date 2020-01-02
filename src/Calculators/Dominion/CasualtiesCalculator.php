@@ -304,10 +304,7 @@ class CasualtiesCalculator
             $dominion->military_unit1 +
             $dominion->military_unit2 +
             $dominion->military_unit3 +
-            $dominion->military_unit4 +
-            $dominion->military_spies +
-            $dominion->military_wizards +
-            $dominion->military_archmages
+            $dominion->military_unit4
         );
 
         $casualties = ['peasants' => (int)min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
@@ -328,7 +325,7 @@ class CasualtiesCalculator
             }
 
             $slotLostMultiplier = $slotTotal / $totalMilitary;
-            $slotLost = ceil($militaryCasualties * $slotLostMultiplier);
+            $slotLost = floor($militaryCasualties * $slotLostMultiplier);
 
             if($slotLost > $slotTotal) {
                 $slotLost = $slotTotal;
@@ -379,7 +376,7 @@ class CasualtiesCalculator
                 function ($unit) {
                     return ('military_' . $unit);
                 },
-                $this->unitHelper->getUnitTypes()
+                $this->unitHelper->getUnitTypes(true)
             ),
             ['military_draftees']
         );
