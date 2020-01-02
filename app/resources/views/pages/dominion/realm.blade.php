@@ -81,6 +81,10 @@
                                             @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
                                                 <span class="label label-success">Online</span>
                                             @endif
+
+                                            @if ($dominion->is_locked)
+                                                <i class="fa fa-lock fa-lg text-red"></i>
+                                            @endif
                                         </td>
                                         @if ($isOwnRealm && $selectedDominion->pack !== null)
                                             @if (($dominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id))

@@ -111,6 +111,10 @@
                                             @endif
 
                                             <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+
+                                            @if ($dominion->is_locked)
+                                                <i class="fa fa-lock fa-lg text-red"></i>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             {{ $dominion->realm->number }}
