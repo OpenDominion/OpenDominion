@@ -146,7 +146,7 @@ class MilitaryCalculator
      */
     public function getOffensivePowerMultiplier(Dominion $dominion, Dominion $target = null): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $opPerGryphonNest = 1.75;
@@ -195,7 +195,7 @@ class MilitaryCalculator
             }
         }
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -326,7 +326,7 @@ class MilitaryCalculator
      */
     public function getDefensivePowerMultiplier(Dominion $dominion, float $multiplierReduction = 0): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $dpPerGuardTower = 1.75;
@@ -369,11 +369,10 @@ class MilitaryCalculator
                 $spellAresCall);
         }
 
-        // Multiplier reduction when we want to factor in temples from another
-        // dominion
+        // Multiplier reduction when we want to factor in temples from another dominion
         $multiplier = max(($multiplier - $multiplierReduction), 0);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -681,15 +680,18 @@ class MilitaryCalculator
      */
     public function getSpyRatioMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
+
         // Wonder: Great Oracle (+30%)
         // todo
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -750,7 +752,7 @@ class MilitaryCalculator
      */
     public function getWizardRatioMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
@@ -758,10 +760,10 @@ class MilitaryCalculator
         // Improvement: Towers
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
 
-        // Tech: Magical Weaponry  (+15%)
-        // todo
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**

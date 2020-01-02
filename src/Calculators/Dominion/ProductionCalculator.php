@@ -114,7 +114,7 @@ class ProductionCalculator
      */
     public function getPlatinumProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellMidasTouch = 10;
@@ -137,7 +137,7 @@ class ProductionCalculator
             $multiplier += ($guardTax / 100);
         }
 
-        return min(1.5, (1 + $multiplier));
+        return min(1.5, $multiplier);
     }
 
     //</editor-fold>
@@ -197,7 +197,7 @@ class ProductionCalculator
      */
     public function getFoodProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellGaiasBlessing = 20;
@@ -223,9 +223,9 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
         // Prestige Bonus
-        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
+        $multiplier *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion));
 
-        return (1 + $multiplier) * (1 + $prestigeMultiplier);
+        return $multiplier;
     }
 
     /**
@@ -336,7 +336,7 @@ class ProductionCalculator
      */
     public function getLumberProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellGaiasBlessing = 10;
@@ -350,7 +350,7 @@ class ProductionCalculator
         // Spell: Gaia's Blessing
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'gaias_blessing', $spellGaiasBlessing);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -433,7 +433,7 @@ class ProductionCalculator
      */
     public function getManaProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('mana_production');
@@ -441,7 +441,7 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_production');
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -529,7 +529,7 @@ class ProductionCalculator
      */
     public function getOreProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellMinersSight = 20;
@@ -551,7 +551,7 @@ class ProductionCalculator
         // Spell: Earthquake
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     //</editor-fold>
@@ -603,7 +603,7 @@ class ProductionCalculator
      */
     public function getGemProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellEarthquake = 5;
@@ -617,7 +617,7 @@ class ProductionCalculator
         // Spell: Earthquake
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     //</editor-fold>
@@ -671,12 +671,12 @@ class ProductionCalculator
      */
     public function getTechProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('tech_production');
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     //</editor-fold>
@@ -726,7 +726,7 @@ class ProductionCalculator
      */
     public function getBoatProductionMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellGreatFlood = 25;
@@ -737,7 +737,7 @@ class ProductionCalculator
         // Improvement: Harbor
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     //</editor-fold>

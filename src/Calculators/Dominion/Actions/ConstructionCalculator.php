@@ -72,9 +72,10 @@ class ConstructionCalculator
         $multiplier = $this->getCostMultiplier($dominion);
 
         // Racial Bonus
-        $multiplier += $dominion->race->getPerkMultiplier('construction_cost');
+        $multiplier *= (1 + $dominion->race->getPerkMultiplier('construction_cost'));
+
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('construction_cost');
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_cost'));
 
         return $multiplier;
     }
@@ -213,7 +214,7 @@ class ConstructionCalculator
      */
     public function getCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $factoryReduction = 4;
@@ -225,6 +226,6 @@ class ConstructionCalculator
             ($factoryReductionMax / 100)
         );
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 }

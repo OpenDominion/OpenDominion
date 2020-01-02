@@ -70,7 +70,7 @@ class RezoningCalculator
      */
     public function getCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $factoryReduction = 3;
@@ -83,8 +83,8 @@ class RezoningCalculator
         );
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('rezone_cost');
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('rezone_cost'));
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 }

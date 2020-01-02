@@ -138,7 +138,7 @@ class TrainingCalculator
      */
     public function getSpecialistEliteCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $smithiesReduction = 2;
@@ -151,9 +151,9 @@ class TrainingCalculator
         );
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('military_cost');
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('military_cost'));
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -164,12 +164,12 @@ class TrainingCalculator
      */
     public function getSpyCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('spy_cost');
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('spy_cost'));
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -180,10 +180,7 @@ class TrainingCalculator
      */
     public function getWizardCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
-
-        // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('wizard_cost');
+        $multiplier = 1;
 
         // Values (percentages)
         $wizardGuildReduction = 2;
@@ -195,6 +192,9 @@ class TrainingCalculator
             ($wizardGuildReductionMax / 100)
         );
 
-        return (1 + $multiplier);
+        // Techs
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('wizard_cost'));
+
+        return $multiplier;
     }
 }

@@ -188,7 +188,7 @@ class PopulationCalculator
      */
     public function getMaxPopulationMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $techUrbanMasteryMultiplier = 7.5;
@@ -204,9 +204,9 @@ class PopulationCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
 
         // Prestige Bonus
-        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
+        $multiplier *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion));
 
-        return (1 + $multiplier) * (1 + $prestigeMultiplier);
+        return $multiplier;
     }
 
     /**
@@ -264,7 +264,7 @@ class PopulationCalculator
      */
     public function getPopulationBirthMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $spellHarmony = 50;
@@ -283,7 +283,7 @@ class PopulationCalculator
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
