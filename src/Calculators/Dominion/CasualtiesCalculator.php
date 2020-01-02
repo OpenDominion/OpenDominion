@@ -299,11 +299,22 @@ class CasualtiesCalculator
         }
 
         $peasantPopPercentage = $dominion->peasants / $this->populationCalculator->getPopulation($dominion);
-        $casualties = ['peasants' => min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
+        $totalMilitary = (
+            $dominion->military_draftees +
+            $dominion->military_unit1 +
+            $dominion->military_unit2 +
+            $dominion->military_unit3 +
+            $dominion->military_unit4 +
+            $dominion->military_spies +
+            $dominion->military_wizards +
+            $dominion->military_archmages
+        );
+
+        $casualties = ['peasants' => (int)min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
-        $totalMilitaryCasualties = $remainingCasualties;
+        $militaryCasualties = $remainingCasualties;
 
         foreach($units as $unit) {
             if($remainingCasualties == 0) {
@@ -316,12 +327,11 @@ class CasualtiesCalculator
                 continue;
             }
 
-            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;
+            $slotLostMultiplier = $slotTotal / $totalMilitary;
+            $slotLost = ceil($militaryCasualties * $slotLostMultiplier);
 
-            $slotLost = ceil($slotTotal * $slotLostMultiplier);
-
-            if($slotLost > $remainingCasualties) {
-                $slotLost = $remainingCasualties;
+            if($slotLost > $slotTotal) {
+                $slotLost = $slotTotal;
             }
 
             $casualties[$unit] += $slotLost;
