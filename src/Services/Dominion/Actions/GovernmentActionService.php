@@ -114,6 +114,8 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
+        // todo: check for days in round
+
         GameEvent::create([
             'round_id' => $dominion->realm->round_id,
             'source_type' => Realm::class,

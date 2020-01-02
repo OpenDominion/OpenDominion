@@ -202,7 +202,7 @@ class ProductionCalculator
         // Values (percentages)
         $spellGaiasBlessing = 20;
         $spellGaiasWatch = 10;
-        $spellInsectSwarm = 10;
+        $spellInsectSwarm = 15;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('food_production');
@@ -534,7 +534,7 @@ class ProductionCalculator
         // Values (percentages)
         $spellMinersSight = 20;
         $spellMiningStrength = 10;
-        $spellEarthquake = 10;
+        $spellEarthquake = 5;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');
