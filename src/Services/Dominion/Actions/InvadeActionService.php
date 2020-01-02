@@ -1281,7 +1281,7 @@ class InvadeActionService
      */
     protected function getSlowestUnitReturnHours(Dominion $dominion, array $units): int
     {
-        $hours = 12;
+        $hours = 0;
 
         foreach ($units as $slot => $amount) {
             if ($amount === 0) {
@@ -1290,9 +1290,13 @@ class InvadeActionService
 
             $hoursForUnit = $this->getUnitReturnHoursForSlot($dominion, $slot);
 
-            if ($hoursForUnit < $hours) {
+            if ($hoursForUnit > $hours) {
                 $hours = $hoursForUnit;
             }
+        }
+
+        if ($hours == 0) {
+            $hours = 12;
         }
 
         return $hours;
