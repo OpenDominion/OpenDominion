@@ -308,7 +308,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
-                    'wizardStrengthCost' => 2,
+                    'wizardStrengthCost' => 1,
                     'alert-type' => 'warning',
                 ];
             }
@@ -393,7 +393,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'wizardStrengthCost' => 2,
+            'wizardStrengthCost' => 1,
             'redirect' => $redirect,
         ];
     }
@@ -498,7 +498,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => $message,
-                    'wizardStrengthCost' => 2,
+                    'wizardStrengthCost' => 5,
                     'alert-type' => 'warning',
                 ];
             }
@@ -675,6 +675,7 @@ class SpellActionService
                         'Your wizards cast the spell successfully, but it was deflected and your dominion lost %s.',
                         $damageString
                     ),
+                    'wizardStrengthCost' => 5,
                     'alert-type' => 'danger'
                 ];
             } else {
@@ -683,7 +684,8 @@ class SpellActionService
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, your target lost %s.',
                         $damageString
-                    )
+                    ),
+                    'wizardStrengthCost' => 5,
                 ];
             }
         }

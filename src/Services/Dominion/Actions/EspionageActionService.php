@@ -171,7 +171,7 @@ class EspionageActionService
 
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $spyStrengthLost = 2;
+                $spyStrengthLost = 1;
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
 
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
@@ -811,7 +811,7 @@ class EspionageActionService
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = ($target->{$attr} - $boatsProtected) * $baseDamage;
+                    $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage;
                 }
 
                 // Check for immortal wizards
