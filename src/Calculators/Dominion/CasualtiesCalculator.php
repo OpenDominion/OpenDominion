@@ -358,7 +358,7 @@ class CasualtiesCalculator
             return 0;
         }
 
-        $casualties = (int)(abs($foodDeficit) * 2);
+        $casualties = (int)abs($foodDeficit);
         $maxCasualties = $this->populationCalculator->getPopulation($dominion) * 0.02;
 
         return min($casualties, $maxCasualties);
