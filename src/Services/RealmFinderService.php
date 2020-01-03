@@ -58,7 +58,7 @@ class RealmFinderService
                         if ($realm->packs->count() >= static::MAX_PACKS_PER_REALM) {
                             return false;
                         }
-                        // Check if new pack and an existing pack are both larger than 
+                        // Check if new pack and an existing pack are both larger than
                         $additionalPackMax = static::MAX_PACK_SIZE_AFTER_FIRST * $round->pack_size;
                         if ($slotsNeeded > $additionalPackMax) {
                             foreach ($realm->packs as $pack) {
