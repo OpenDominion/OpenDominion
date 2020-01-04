@@ -707,6 +707,9 @@ class InvadeActionService
             // Remove land
             $target->{"land_$landType"} -= $landLost;
 
+            // Add discounted land for buildings destroyed
+            $target->discounted_land += $buildingsToDestroy;
+
             // Destroy buildings
             foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
                 $builtBuildingsToDestroy = $buildingsLost['builtBuildingsToDestroy'];
