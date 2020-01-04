@@ -563,6 +563,10 @@ class InvadeActionService
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
+        // Modify casualties percentage based on relative land size
+        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $defensiveCasualtiesPercentage *= clamp($landRatio, 0.4, 1);
+
         // Scale casualties further with invading OP vs target DP
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
 
