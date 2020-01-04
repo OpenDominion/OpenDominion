@@ -57,12 +57,12 @@ class InvadeActionService
     /**
      * @var float Percentage of attacker prestige used to cap prestige gains (plus bonus)
      */
-    protected const PRESTIGE_CAP_PERCENTAGE = 10.0;
+    protected const PRESTIGE_CAP_PERCENTAGE = 30.0;
 
     /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 20;
+    protected const PRESTIGE_CHANGE_ADD = 30;
 
     /**
      * @var float Base prestige % change for both parties when invading
