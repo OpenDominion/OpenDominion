@@ -31,8 +31,7 @@ class TechCalculator
     {
         $minimumCost = 3780;
 
-        // TODO: Cost based on highest land total achieved
-        return max(6.425 * $this->landCalculator->getTotalLand($dominion), $minimumCost);
+        return max(6.425 * $dominion->highest_land_achieved, $minimumCost);
     }
 
     /**
