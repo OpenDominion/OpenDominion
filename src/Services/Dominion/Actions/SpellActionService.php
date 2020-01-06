@@ -509,9 +509,9 @@ class SpellActionService
             }
         }
 
-        $spellDeflected = false;
+        $spellReflected = false;
         if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
-            $spellDeflected = true;
+            $spellReflected = true;
             $deflectedBy = $target;
             $target = $dominion;
             $dominion = $deflectedBy;
@@ -570,7 +570,15 @@ class SpellActionService
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
-            if ($spellDeflected) {
+            if ($spellReflected) {
+                // Notification for Energy Mirror defelection
+                $this->notificationService
+                    ->queueNotification('reflected_hostile_spell', [
+                        'sourceDominionId' => $target->id,
+                        'spellKey' => $spellKey,
+                    ])
+                    ->sendNotifications($dominion, 'irregular_dominion');
+
                 return [
                     'success' => true,
                     'message' => sprintf(
@@ -682,7 +690,15 @@ class SpellActionService
                 ])
                 ->sendNotifications($target, 'irregular_dominion');
 
-            if ($spellDeflected) {
+            if ($spellReflected) {
+                // Notification for Energy Mirror defelection
+                $this->notificationService
+                    ->queueNotification('reflected_hostile_spell', [
+                        'sourceDominionId' => $target->id,
+                        'spellKey' => $spellKey,
+                    ])
+                    ->sendNotifications($dominion, 'irregular_dominion');
+
                 return [
                     'success' => true,
                     'message' => sprintf(

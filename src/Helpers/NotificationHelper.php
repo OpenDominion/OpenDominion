@@ -141,9 +141,14 @@ class NotificationHelper
                 'iconClass' => 'ra ra-fairy-wand text-orange',
             ],
             'repelled_hostile_spell' => [
-                'label' => 'Hostile spell deflected',
+                'label' => 'Hostile spell repelled',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-fairy-wand text-orange',
+            ],
+            'reflected_hostile_spell' => [
+                'label' => 'Hostile spell reflected',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-fairy-wand text-green',
             ],
 //            'scripted' => [
 //                'label' => 'Land you conquered got removed due to anti-cheating mechanics (scripted)',
@@ -551,6 +556,14 @@ class NotificationHelper
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $lastPart
+                );
+
+            case 'irregular_dominion.reflected_hostile_spell':
+                $sourceDominion = Dominion::with('realm')->findOrFail($data['sourceDominionId']);
+
+                return sprintf(
+                    'The energy mirror protecting our dominion has reflected a %s spell back at the caster.',
+                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':
