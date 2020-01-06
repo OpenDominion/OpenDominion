@@ -848,11 +848,11 @@ class EspionageActionService
         ]);
 
         // Prestige Gains
-        $prestigeGainString = "";
+        $prestigeGainString = '';
         if ($this->espionageHelper->isWarOperation($operationKey) && $this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm) && $totalDamage > 0) {
             $dominion->prestige += 2;
             $dominion->stat_spy_prestige += 2;
-            $prestigeGainString = "You were awarded 2 prestige due to mutual war.";
+            $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
         }
 
         // Surreal Perception
