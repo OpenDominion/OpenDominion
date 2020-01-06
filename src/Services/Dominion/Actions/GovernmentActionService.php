@@ -33,6 +33,8 @@ class GovernmentActionService
         $this->notificationService = $notificationService;
     }
 
+    public const WAR_DAYS_AFTER_ROUND_START = 3;
+
     /**
      * Casts a Dominion's vote for monarch.
      *
@@ -114,7 +116,9 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
-        // todo: check for days in round
+        if (now()->diffInDays($dominion->round->start_date) < self::WAR_DAYS_AFTER_ROUND_START) {
+            throw new GameException('You cannot declare war for the first three days of the round');
+        }
 
         GameEvent::create([
             'round_id' => $dominion->realm->round_id,
