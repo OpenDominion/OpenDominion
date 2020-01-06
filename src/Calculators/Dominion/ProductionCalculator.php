@@ -639,7 +639,7 @@ class ProductionCalculator
      * Returns the Dominion's raw tech production.
      *
      * Research points are produced by:
-     * - Building: School (15 per)
+     * - Building: School
      *
      * @param Dominion $dominion
      * @return float

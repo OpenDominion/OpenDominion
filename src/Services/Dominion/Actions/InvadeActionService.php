@@ -935,6 +935,9 @@ class InvadeActionService
             $researchPointsGained = ($landConquered + $landGenerated) * $researchPointsPerAcre;
             $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
 
+            // Racial Bonus
+            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
