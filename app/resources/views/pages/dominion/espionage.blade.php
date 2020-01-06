@@ -184,7 +184,7 @@
                 }
             });
             @if (session('target_dominion'))
-                $('#target_dominion').val('{{ session('target_dominion') }}').trigger('change.select2');
+                $('#target_dominion').val('{{ session('target_dominion') }}').trigger('change.select2').trigger('change');
             @endif
         })(jQuery);
 

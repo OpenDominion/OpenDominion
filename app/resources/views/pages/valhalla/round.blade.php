@@ -67,6 +67,7 @@
                 <div class="col-sm-6 text-center">
                     <b>Spies</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-espionage-success']) }}">Most Successful Spies</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spy-prestige']) }}">Most Prestigious Spies</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-platinum-stolen']) }}">Top Platinum Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-food-stolen']) }}">Top Food Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-lumber-stolen']) }}">Top Lumber Thieves</a><br>
@@ -82,6 +83,7 @@
                 <div class="col-sm-6 text-center">
                     <b>Wizards</b><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-spell-success']) }}">Most Successful Wizards</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wizard-prestige']) }}">Most Prestigious Wizards</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-fire']) }}">Masters of Fire</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-plague']) }}">Masters of Plague</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-swarm']) }}">Masters of Swarm</a><br>

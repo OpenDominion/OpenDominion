@@ -17,6 +17,7 @@ use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -36,6 +37,9 @@ class SpellActionService
      * @var float Info op base success rate
      */
     protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
+
+    /** @var GovernmentService */
+    protected $governmentService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -78,6 +82,7 @@ class SpellActionService
      */
     public function __construct()
     {
+        $this->governmentService = app(GovernmentService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
@@ -647,10 +652,19 @@ class SpellActionService
                     $target->{$attr} += round($damage);
                 }
             }
+
             $target->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
                 'action' => $spellKey
             ]);
+
+            // Prestige Gains
+            $prestigeGainString = "";
+            if ($this->spellHelper->isWarSpell($spellKey) && $this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm) && $totalDamage > 0) {
+                $dominion->prestige += 2;
+                $dominion->stat_wizard_prestige += 2;
+                $prestigeGainString = "You were awarded 2 prestige due to mutual war.";
+            }
 
             // Surreal Perception
             $sourceDominionId = null;
@@ -682,8 +696,9 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, your target lost %s.',
-                        $damageString
+                        'Your wizards cast the spell successfully, your target lost %s. %s',
+                        $damageString,
+                        $prestigeGainString
                     ),
                     'wizardStrengthCost' => 5,
                 ];

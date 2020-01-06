@@ -19,6 +19,7 @@ use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -49,6 +50,9 @@ class EspionageActionService
 
     /** @var EspionageHelper */
     protected $espionageHelper;
+
+    /** @var GovernmentService */
+    protected $governmentService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -93,6 +97,7 @@ class EspionageActionService
     {
         $this->buildingHelper = app(BuildingHelper::class);
         $this->espionageHelper = app(EspionageHelper::class);
+        $this->governmentService = app(GovernmentService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
         $this->landCalculator = app(LandCalculator::class);
@@ -802,6 +807,7 @@ class EspionageActionService
         }
 
         $damageDealt = [];
+        $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
 
         if (isset($operationInfo['decreases'])) {
@@ -819,6 +825,7 @@ class EspionageActionService
                     $damage = 0;
                 }
 
+                $totalDamage += round($damage);
                 $target->{$attr} -= round($damage);
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
@@ -840,6 +847,14 @@ class EspionageActionService
             'action' => $operationKey
         ]);
 
+        // Prestige Gains
+        $prestigeGainString = "";
+        if ($this->espionageHelper->isWarOperation($operationKey) && $this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm) && $totalDamage > 0) {
+            $dominion->prestige += 2;
+            $dominion->stat_spy_prestige += 2;
+            $prestigeGainString = "You were awarded 2 prestige due to mutual war.";
+        }
+
         // Surreal Perception
         $sourceDominionId = null;
         if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
@@ -859,8 +874,9 @@ class EspionageActionService
         return [
             'success' => true,
             'message' => sprintf(
-                'Your spies infiltrate the target\'s dominion successfully, they lost %s.',
-                $damageString
+                'Your spies infiltrate the target\'s dominion successfully, they lost %s. %s',
+                $damageString,
+                $prestigeGainString
             ),
             'redirect' => route('dominion.op-center.show', $target),
         ];
