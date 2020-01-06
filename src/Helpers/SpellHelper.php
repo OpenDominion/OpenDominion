@@ -156,7 +156,7 @@ class SpellHelper
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Dwarf', 'Gnome']),
+                'races' => collect(['Dwarf']),
             ],
             [
                 'name' => 'Killing Rage',
@@ -190,14 +190,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Icekin']),
             ],
-            /*[
+            [
                 'name' => 'Mechanical Genius',
                 'description' => '30% reduction of re-zoning costs',
                 'key' => 'mechanical_genius',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Gnome']),
-            ],*/
+            ],
             [
                 'name' => 'Bloodrage',
                 'description' => '+10% offensive strength, +10% offensive casualties',
