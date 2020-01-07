@@ -827,7 +827,7 @@ class EspionageActionService
 
         // Prestige Gains
         $prestigeGainString = '';
-        if ($this->espionageHelper->isWarOperation($operationKey) && $this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm) && $totalDamage > 0) {
+        if ($this->espionageHelper->isWarOperation($operationKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) && $totalDamage > 0) {
             $dominion->prestige += 2;
             $dominion->stat_spy_prestige += 2;
             $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';

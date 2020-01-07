@@ -17,7 +17,6 @@ use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
-use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -27,9 +26,6 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class SpellActionService
 {
     use DominionGuardsTrait;
-
-    /** @var GovernmentService */
-    protected $governmentService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -72,7 +68,6 @@ class SpellActionService
      */
     public function __construct()
     {
-        $this->governmentService = app(GovernmentService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
@@ -656,7 +651,7 @@ class SpellActionService
 
             // Prestige Gains
             $prestigeGainString = '';
-            if ($this->spellHelper->isWarSpell($spellKey) && $this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm) && $totalDamage > 0) {
+            if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) && $totalDamage > 0) {
                 $dominion->prestige += 2;
                 $dominion->stat_wizard_prestige += 2;
                 $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
