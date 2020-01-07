@@ -55,11 +55,6 @@ class InvadeActionService
     protected const OVERWHELMED_PERCENTAGE = 15.0;
 
     /**
-     * @var float Percentage of attacker prestige used to cap prestige gains (plus bonus)
-     */
-    protected const PRESTIGE_CAP_PERCENTAGE = 50.0;
-
-    /**
      * @var int Bonus prestige when invading successfully
      */
     protected const PRESTIGE_CHANGE_ADD = 30;
@@ -369,11 +364,8 @@ class InvadeActionService
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = (int)round(min(
-                (($target->prestige * (($range / 100) / 10)) + static::PRESTIGE_CHANGE_ADD), // Gained through invading
-                (($dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100)) + static::PRESTIGE_CHANGE_ADD) // But capped by depending on your current prestige
-            ));
-            $targetPrestigeChange = (int)round(($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100)));
+            $attackerPrestigeChange = (int)round(($target->prestige * (($range / 100) / 10)) + static::PRESTIGE_CHANGE_ADD);
+            $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
