@@ -387,7 +387,7 @@ class SpellHelper
                     'improvement_forges',
                     'improvement_walls',
                 ],
-                'percentage' => 0.28,
+                'percentage' => 0.40,
             ],
         ]);
     }
