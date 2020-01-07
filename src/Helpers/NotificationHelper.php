@@ -330,7 +330,7 @@ class NotificationHelper
                         break;
 
                     case 'magic_snare':
-                        $resultString = 'Our wizards have sensed their power diminish.';
+                        $resultString = "Our wizards have sensed their power diminish. You lost {$data['damageString']}.";
                         break;
 
                     case 'sabotage_boats':

@@ -30,21 +30,6 @@ class EspionageActionService
 {
     use DominionGuardsTrait;
 
-    /**
-     * @var float Hostile base success rate
-     */
-    protected const HOSTILE_MULTIPLIER_SUCCESS_RATE = 1.2;
-
-    /**
-     * @var float Theft base success rate
-     */
-    protected const THEFT_MULTIPLIER_SUCCESS_RATE = 1.2;
-
-    /**
-     * @var float Info op base success rate
-     */
-    protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
-
     /** @var BuildingHelper */
     protected $buildingHelper;
 
@@ -234,11 +219,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance(
-                $selfSpa,
-                $targetSpa,
-                static::INFO_MULTIPLIER_SUCCESS_RATE
-            );
+            $successRate = $this->opsHelper->infoOperationSuccessChance($selfSpa, $targetSpa);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -477,11 +458,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance(
-                $selfSpa,
-                $targetSpa,
-                static::THEFT_MULTIPLIER_SUCCESS_RATE
-            );
+            $successRate = $this->opsHelper->theftOperationSuccessChance($selfSpa, $targetSpa);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -562,8 +539,8 @@ class EspionageActionService
                 $resource = 'food';
                 $constraints = [
                     'target_amount' => 2,
-                    'self_production' => 0,
-                    'spy_carries' => 0,
+                    'self_production' => 100,
+                    'spy_carries' => 50,
                 ];
                 break;
 
@@ -598,7 +575,7 @@ class EspionageActionService
                 $resource = 'gems';
                 $constraints = [
                     'target_amount' => 2,
-                    'self_production' => 0,
+                    'self_production' => 100,
                     'spy_carries' => 50,
                 ];
                 break;
@@ -738,11 +715,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance(
-                $selfSpa,
-                $targetSpa,
-                static::HOSTILE_MULTIPLIER_SUCCESS_RATE
-            );
+            $successRate = $this->opsHelper->blackOperationSuccessChance($selfSpa, $targetSpa);
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
@@ -813,6 +786,11 @@ class EspionageActionService
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
                 $damage = $target->{$attr} * $baseDamage;
+
+                // Flat damage for Magic Snare
+                if ($attr == 'wizard_strength') {
+                    $damage = 100 * $baseDamage;
+                }
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {

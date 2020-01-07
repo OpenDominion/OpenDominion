@@ -132,7 +132,7 @@ class EspionageHelper
                 'description' => 'Kills untrained draftees',
                 'key' => 'assassinate_draftees',
                 'decreases' => ['military_draftees'],
-                'percentage' => 2.5,
+                'percentage' => 3.5,
             ],
         ]);
     }
@@ -145,21 +145,21 @@ class EspionageHelper
                 'description' => 'Kills wizards',
                 'key' => 'assassinate_wizards',
                 'decreases' => ['military_wizards'],
-                'percentage' => 2.5,
+                'percentage' => 2,
             ],
             [
                 'name' => 'Magic Snare',
                 'description' => 'Reduces wizard strength',
                 'key' => 'magic_snare',
                 'decreases' => ['wizard_strength'],
-                'percentage' => 2,
+                'percentage' => 3,
             ],
             [
                 'name' => 'Sabotage Boats',
                 'description' => 'Destroys boats',
                 'key' => 'sabotage_boats',
                 'decreases' => ['resource_boats'],
-                'percentage' => 2.5,
+                'percentage' => 2,
             ],
         ]);
     }

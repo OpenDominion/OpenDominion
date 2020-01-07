@@ -366,7 +366,7 @@ class SpellHelper
                 'mana_cost' => 5,
                 'decreases' => ['military_spies'],
                 'increases' => ['military_draftees'],
-                'percentage' => 2.5,
+                'percentage' => 2,
             ],
             [
                 'name' => 'Fireball',
@@ -374,7 +374,7 @@ class SpellHelper
                 'key' => 'fireball',
                 'mana_cost' => 3.3,
                 'decreases' => ['peasants', 'resource_food'],
-                'percentage' => 1.75,
+                'percentage' => 2.5,
             ],
             [
                 'name' => 'Lightning Bolt',
@@ -382,14 +382,12 @@ class SpellHelper
                 'key' => 'lightning_bolt',
                 'mana_cost' => 4,
                 'decreases' => [
-                    'improvement_science',
                     'improvement_keep',
                     'improvement_towers',
                     'improvement_forges',
                     'improvement_walls',
-                    'improvement_harbor',
                 ],
-                'percentage' => 0.15,
+                'percentage' => 0.28,
             ],
         ]);
     }

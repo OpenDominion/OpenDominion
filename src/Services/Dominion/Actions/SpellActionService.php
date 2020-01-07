@@ -28,16 +28,6 @@ class SpellActionService
 {
     use DominionGuardsTrait;
 
-    /**
-     * @var float Hostile ops base success rate
-     */
-    protected const HOSTILE_MULTIPLIER_SUCCESS_RATE = 1.2;
-
-    /**
-     * @var float Info op base success rate
-     */
-    protected const INFO_MULTIPLIER_SUCCESS_RATE = 1.4;
-
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -296,8 +286,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa,
-                static::INFO_MULTIPLIER_SUCCESS_RATE);
+            $successRate = $this->opsHelper->infoOperationSuccessChance($selfWpa, $targetWpa);
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
@@ -443,8 +432,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->operationSuccessChance($selfWpa, $targetWpa,
-                static::HOSTILE_MULTIPLIER_SUCCESS_RATE);
+            $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, $targetWpa);
 
             if (!random_chance($successRate)) {
                 $wizardsKilledBasePercentage = 1;

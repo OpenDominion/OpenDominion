@@ -455,7 +455,7 @@ class TickService
             $tick->morale = min(3, 100 - $dominion->morale);
         }
 
-        // Spy Strength
+        // Spy Strength - todo: move to military calculator
         if ($dominion->spy_strength < 100) {
             $spyStrengthAdded = 4;
             $spyStrengthAdded += $dominion->getTechPerkValue('spy_strength_recovery');
@@ -463,7 +463,7 @@ class TickService
             $tick->spy_strength = min($spyStrengthAdded, 100 - $dominion->spy_strength);
         }
 
-        // Wizard Strength
+        // Wizard Strength - todo: move to military calculator
         if ($dominion->wizard_strength < 100) {
             $wizardStrengthAdded = 4;
 
