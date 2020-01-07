@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Technological Advances!
 - Schools and invasion now reward research points.
 - Use research points to unlock bonuses from the tech tree (minimum cost based on highest land achieved).
+- New Spell: Vision reveals your target's techs.
 
 ### Changed
 - Gnome: Racial spell changed back to Mechanical Genius (from Miner's Sight)
@@ -26,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Packs with only two players may now be assigned to a realm with other packs
 
 ### Fixed
+- Theft success formula adjusted
 - Starvation will now correctly kill units proportionally
 - Population growth will now stop while starving
 - Fix for prestige returning with 9hr units
