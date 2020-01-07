@@ -57,7 +57,7 @@ class InvadeActionService
     /**
      * @var float Percentage of attacker prestige used to cap prestige gains (plus bonus)
      */
-    protected const PRESTIGE_CAP_PERCENTAGE = 30.0;
+    protected const PRESTIGE_CAP_PERCENTAGE = 50.0;
 
     /**
      * @var int Bonus prestige when invading successfully
@@ -401,6 +401,10 @@ class InvadeActionService
 
             $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
         }
+
+        // Cap for max prestige based on land size
+        $maxPrestigeChange = max(($this->landCalculator->getTotalLand($dominion) * 1.2) - $dominion->prestige, 0);
+        $attackerPrestigeChange = min($attackerPrestigeChange, $maxPrestigeChange);
 
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {

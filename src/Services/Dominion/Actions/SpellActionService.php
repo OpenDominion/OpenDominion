@@ -559,7 +559,7 @@ class SpellActionService
                 ->sendNotifications($target, 'irregular_dominion');
 
             if ($spellReflected) {
-                // Notification for Energy Mirror defelection
+                // Notification for Energy Mirror deflection
                 $this->notificationService
                     ->queueNotification('reflected_hostile_spell', [
                         'sourceDominionId' => $target->id,
