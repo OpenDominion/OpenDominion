@@ -33,10 +33,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Fix for prestige returning with 9hr units
 - Firewalker construction cost bonus with max factories adjusted
 
-## [0.7.1-18]
-### Fixed
-- Use new tooltip style for buildings from Survey Dominion
-
 ## [0.7.1-19]
 ### Added
 - Releasing units with DP will be hindered when:
@@ -46,9 +42,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [0.7.1-18]
 ### Added
 - Sending out less than 50% of defenders DP will prevent an attack
+
 ### Fixed
 - Mefolk does not sink boats on overwhelmed attacks
-
+- Use new tooltip style for buildings from Survey Dominion
 
 ## [0.7.1-17]
 ### Fixed
