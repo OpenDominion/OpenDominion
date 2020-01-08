@@ -49,7 +49,7 @@
                                     <td>{{ $operation['name'] }}</td>
                                     <td>&nbsp;</td>
                                     <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ $operation['duration'] }}</td>
+                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
                                     <td>{{ $operation['description'] }}</td>
                                 </tr>
                             @endforeach
@@ -84,7 +84,7 @@
                                     <td>{{ $operation['name'] }}</td>
                                     <td></td>
                                     <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td></td>
+                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
                                     <td>{{ $operation['description'] }}</td>
                                 </tr>
                             @endforeach
@@ -119,7 +119,7 @@
                                     <td>{{ $operation['name'] }}</td>
                                     <td></td>
                                     <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td></td>
+                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
                                     <td>{{ $operation['description'] }}</td>
                                 </tr>
                             @endforeach
@@ -154,7 +154,7 @@
                                     <td>{{ $operation['name'] }}</td>
                                     <td>{{$operation['races']->implode(', ')}}</td>
                                     <td>{{ $operation['mana_cost'] }}x</td>
-                                    <td>{{ $operation['duration'] }}</td>
+                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
                                     <td>{{ $operation['description'] }}</td>
                                 </tr>
                             @endforeach
