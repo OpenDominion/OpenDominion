@@ -4,6 +4,7 @@ namespace OpenDominion\Providers;
 
 use Cache;
 use Illuminate\Contracts\View\View;
+use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Council\Post;
@@ -54,6 +55,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum();
 
             $view->with('councilUnreadCount', $councilUnreadCount);
+
+            // Show icon for techs
+            $techCalculator = app(TechCalculator::class);
+            $techCost = $techCalculator->getTechCost($dominion);
+            $unlockableTechCount = floor($dominion->resource_tech / $techCost);
+            $view->with('unlockableTechCount', $unlockableTechCount);
         });
 
         view()->composer('partials.main-footer', function (View $view) {

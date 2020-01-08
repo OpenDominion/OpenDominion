@@ -3,6 +3,37 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- War & Black Ops!
+- Monarchs may now declare WAR on other realms.
+- War immediately allows the use of war-only black ops.
+- After 24 hours, 5% OP is added to attacks between the two realms (10% for mutual war).
+- Mutual war also awards prestige for successful black ops between the two realms.
+- New Spell: Energy Mirror reflects spells back at the caster.
+- Technological Advances!
+- Schools and invasion now reward research points.
+- Use research points to unlock bonuses from the tech tree (minimum cost based on highest land achieved).
+- New Spell: Vision reveals your target's techs.
+
+### Changed
+- Gnome: Racial spell changed back to Mechanical Genius (from Miner's Sight)
+- Merfolk: Added +5% offense racial
+- Sylvan Centaur: -20o, casualty reduction increased to -25% (from -15%)
+- Nox: Added +15% research point generation
+- Info ops spy/wizard strength cost reduced to 1% (from 2%)
+- Additional discounted land added when constructed buildings are lost to invasion
+- Defensive casualties reduced by target's relative land size (below 100%)
+- Prestige gain increased
+- Packs with only two players may now be assigned to a realm with other packs
+
+### Fixed
+- Theft success formula adjusted
+- Starvation will now correctly kill units proportionally
+- Population growth will now stop while starving
+- Fix for prestige returning with 9hr units
+- Firewalker construction cost bonus with max factories adjusted
+
+## [0.7.1-18]
 ### Fixed
 - Use new tooltip style for buildings from Survey Dominion
 
