@@ -35,6 +35,13 @@ class SpellHelper
         })->isNotEmpty();
     }
 
+    public function isHostileSpell(string $spellKey): bool
+    {
+        return $this->getHostileSpells()->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
     public function isBlackOpSpell(string $spellKey): bool
     {
         return $this->getBlackOpSpells()->filter(function ($spell) use ($spellKey) {
@@ -108,13 +115,13 @@ class SpellHelper
                 'mana_cost' => 4,
                 'duration' => 8,
             ],
-//            [
-//                'name' => 'Energy Mirror',
-//                'description' => '20% chance to reflect incoming spells',
-//                'key' => '',
-//                'mana_cost' => 3,
-//                'duration' => 8,
-//            ]
+            [
+                'name' => 'Energy Mirror',
+                'description' => '20% chance to reflect incoming offensive spells for 8 hours',
+                'key' => 'energy_mirror',
+                'mana_cost' => 3,
+                'duration' => 8,
+            ]
         ]));
 
         if($race !== null){
@@ -149,7 +156,7 @@ class SpellHelper
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Dwarf', 'Gnome']),
+                'races' => collect(['Dwarf']),
             ],
             [
                 'name' => 'Killing Rage',
@@ -183,14 +190,14 @@ class SpellHelper
                 'duration' => 12,
                 'races' => collect(['Icekin']),
             ],
-            /*[
+            [
                 'name' => 'Mechanical Genius',
                 'description' => '30% reduction of re-zoning costs',
                 'key' => 'mechanical_genius',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Gnome']),
-            ],*/
+            ],
             [
                 'name' => 'Bloodrage',
                 'description' => '+10% offensive strength, +10% offensive casualties',
@@ -282,12 +289,12 @@ class SpellHelper
                 'key' => 'clear_sight',
                 'mana_cost' => 0.5,
             ],
-//            [
-//                'name' => 'Vision',
-//                'description' => 'Reveal tech and heroes',
-//                'key' => 'vision',
-//                'mana_cost' => 0.5,
-//            ],
+            [
+                'name' => 'Vision',
+                'description' => 'Reveal tech and heroes',
+                'key' => 'vision',
+                'mana_cost' => 0.5,
+            ],
             [
                 'name' => 'Revelation',
                 'description' => 'Reveal active spells',
@@ -309,22 +316,79 @@ class SpellHelper
         ]);
     }
 
+    public function getHostileSpells(): Collection
+    {
+        return $this->getBlackOpSpells()
+            ->merge($this->getWarSpells());
+    }
+
     public function getBlackOpSpells(): Collection
     {
         return collect([
-            // plague
-            // insect swarm
-            // great flood
-            // earthquake
+            [
+                'name' => 'Plague',
+                'description' => 'Slows population growth',
+                'key' => 'plague',
+                'mana_cost' => 3,
+                'duration' => 8,
+            ],
+            [
+                'name' => 'Insect Swarm',
+                'description' => 'Slows food production',
+                'key' => 'insect_swarm',
+                'mana_cost' => 3,
+                'duration' => 8,
+            ],
+            [
+                'name' => 'Great Flood',
+                'description' => 'Slows boat production',
+                'key' => 'great_flood',
+                'mana_cost' => 3,
+                'duration' => 8,
+            ],
+            [
+                'name' => 'Earthquake',
+                'description' => 'Slows mine production',
+                'key' => 'earthquake',
+                'mana_cost' => 3,
+                'duration' => 8,
+            ],
         ]);
     }
 
     public function getWarSpells(): Collection
     {
         return collect([
-            // fireball
-            // lightning bolt
-            // disband spies
+            [
+                'name' => 'Disband Spies',
+                'description' => 'Turns spies into draftees',
+                'key' => 'disband_spies',
+                'mana_cost' => 5,
+                'decreases' => ['military_spies'],
+                'increases' => ['military_draftees'],
+                'percentage' => 2,
+            ],
+            [
+                'name' => 'Fireball',
+                'description' => 'Kills pesants and destroys crops',
+                'key' => 'fireball',
+                'mana_cost' => 3.3,
+                'decreases' => ['peasants', 'resource_food'],
+                'percentage' => 2.5,
+            ],
+            [
+                'name' => 'Lightning Bolt',
+                'description' => 'Destroys resources invested in castle',
+                'key' => 'lightning_bolt',
+                'mana_cost' => 4,
+                'decreases' => [
+                    'improvement_keep',
+                    'improvement_towers',
+                    'improvement_forges',
+                    'improvement_walls',
+                ],
+                'percentage' => 0.40,
+            ],
         ]);
     }
 }

@@ -209,6 +209,18 @@ class Dominion extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function techs()
+    {
+        return $this->hasManyThrough(
+            Tech::class,
+            DominionTech::class,
+            'dominion_id',
+            'id',
+            'id',
+            'tech_id'
+        );
+    }
+
     public function queues()
     {
         return $this->hasMany(Dominion\Queue::class);
@@ -349,5 +361,39 @@ class Dominion extends AbstractModel
         }
 
         return $bonus;
+    }
+
+    protected function getTechPerks() {
+        return $this->techs()->with('perks')->get()->flatMap(
+            function ($tech) {
+                return $tech->perks;
+            }
+        );
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getTechPerkValue(string $key): float
+    {
+        $perks = $this->getTechPerks()->groupBy('key');
+        if (isset($perks[$key])) {
+            $max = (float)$perks[$key]->max('pivot.value');
+            if ($max < 0) {
+                return (float)$perks[$key]->min('pivot.value');
+            }
+            return $max;
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getTechPerkMultiplier(string $key): float
+    {
+        return ($this->getTechPerkValue($key) / 100);
     }
 }

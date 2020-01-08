@@ -73,6 +73,8 @@ class SelectorService
                 'race.units',
                 'race.units.perks',
                 'realm',
+                'techs',
+                'techs.perks',
             ])->findOrFail($dominionId);
         }
 
