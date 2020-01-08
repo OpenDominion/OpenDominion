@@ -107,6 +107,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
             $router->post('bank')->uses('Dominion\BankController@postBank');
 
+            // Techs
+            $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
+            $router->post('techs')->uses('Dominion\TechController@postTechs');
+
             // Military
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');
@@ -157,6 +161,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');
             $router->post('government/royal-guard/leave')->uses('Dominion\GovernmentController@postLeaveRoyalGuard')->name('government.royal-guard.leave');
             $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
+            $router->post('government/war/declare')->uses('Dominion\GovernmentController@postDeclareWar')->name('government.war.declare');
+            $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');

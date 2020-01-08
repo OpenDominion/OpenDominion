@@ -40,7 +40,8 @@
                                     @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
                                         <option value="{{ $dominion->id }}"
                                                 data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
-                                                data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                                data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}"
+                                                data-war="{{ $governmentService->isAtWarWithRealm($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}">
                                             {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                         </option>
                                     @endforeach
@@ -318,7 +319,7 @@
             var invadeButtonElement = $('#invade-button');
             var allUnitInputs = $('input[name^=\'unit\']');
 
-            $('.select2').select2({
+            $('#target_dominion').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
@@ -454,6 +455,7 @@
 
             const land = state.element.dataset.land;
             const percentage = state.element.dataset.percentage;
+            const war = state.element.dataset.war;
             let difficultyClass;
 
             if (percentage >= 120) {
@@ -466,8 +468,14 @@
                 difficultyClass = 'text-gray';
             }
 
+            warStatus = '';
+            if (war == 1) {
+                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
+            }
+
             return $(`
                 <div class="pull-left">${state.text}</div>
+                ${warStatus}
                 <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);

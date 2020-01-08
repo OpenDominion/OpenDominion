@@ -2,10 +2,12 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class ReleaseActionService
@@ -15,14 +17,22 @@ class ReleaseActionService
     /** @var UnitHelper */
     protected $unitHelper;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * ReleaseActionService constructor.
      *
      * @param UnitHelper $unitHelper
      */
-    public function __construct(UnitHelper $unitHelper)
+    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, QueueService $queueService)
     {
         $this->unitHelper = $unitHelper;
+        $this->militaryCalculator = $militaryCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -42,9 +52,38 @@ class ReleaseActionService
         $troopsReleased = [];
 
         $totalTroopsToRelease = array_sum($data);
-
         if ($totalTroopsToRelease <= 0) {
             throw new GameException('Military release aborted due to bad input.');
+        }
+
+        $units = [
+            1 => $data['unit1'],
+            2 => $data['unit2'],
+            3 => $data['unit3'],
+            4 => $data['unit4']
+        ];
+
+        $rawDpRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
+
+        if($rawDpRelease > 0)
+        {
+            # Cannot release if recently invaded.
+            if ($this->militaryCalculator->getRecentlyInvadedCount($dominion))
+            {
+                throw new GameException('You cannot release military units if you have been recently invaded.');
+            }
+
+            # Cannot release if units returning from invasion.
+            $totalUnitsReturning = 0;
+            for ($slot = 1; $slot <= 4; $slot++)
+            {
+                $totalUnitsReturning += $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}");
+            }
+
+            if ($totalUnitsReturning !== 0)
+            {
+                throw new GameException('You cannot release military units if you have units returning from battle.');
+            }
         }
 
         foreach ($data as $unitType => $amount) {

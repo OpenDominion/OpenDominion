@@ -198,7 +198,7 @@
                                 </p>
                             @endif
 
-                            {{-- Only show prestige gains if we are the attacker --}}
+                            {{-- Only show prestige / research point gains if we are the attacker --}}
                             @if ($event->source->id === $selectedDominion->id)
                                 @if (isset($event->data['attacker']['prestigeChange']))
                                     @php
@@ -213,6 +213,11 @@
                                             You gain <b>{{ number_format($prestigeChange) }}</b> prestige.
                                         </p>
                                     @endif
+                                @endif
+                                @if (isset($event->data['attacker']['researchPoints']))
+                                    <p class="text-center text-green">
+                                        You gain <b>{{ number_format($event->data['attacker']['researchPoints']) }}</b> research points.
+                                    </p>
                                 @endif
                             @endif
 
