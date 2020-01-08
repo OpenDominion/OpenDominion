@@ -37,6 +37,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Use new tooltip style for buildings from Survey Dominion
 
+## [0.7.1-19]
+### Added
+- Releasing units with DP will be hindered when:
+  - Invaded in the last 24hrs
+  - Having troops returning
+
+## [0.7.1-18]
+### Added
+- Sending out less than 50% of defenders DP will prevent an attack
+### Fixed
+- Mefolk does not sink boats on overwhelmed attacks
+
+
 ## [0.7.1-17]
 ### Fixed
 - Fix an issue with the search page Limit values being flipped.
@@ -525,7 +538,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-19...HEAD
+[0.7.1-19]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-18...0.7.1-19
+[0.7.1-18]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...0.7.1-18
 [0.7.1-17]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...0.7.1-17
 [0.7.1-16]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-15...0.7.1-16
 [0.7.1-15]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-14...0.7.1-15
