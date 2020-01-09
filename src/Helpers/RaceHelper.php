@@ -15,6 +15,10 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'archmage cost';
                 break;
+            case 'boat_capacity':
+                $negativeBenefit = false;
+                $description = 'boat capacity';
+                break;
             case 'construction_cost':
                 $negativeBenefit = true;
                 $description = 'construction cost';
@@ -71,9 +75,17 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'platinum production';
                 break;
+            case 'population_growth':
+                $negativeBenefit = false;
+                $description = 'Population growth';
+                break;
             case 'spy_strength':
                 $negativeBenefit = false;
                 $description = 'spy strength';
+                break;
+            case 'tech_production':
+                $negativeBenefit = false;
+                $description = 'research point gains';
                 break;
             case 'wizard_strength':
                 $negativeBenefit = false;
@@ -107,6 +119,11 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'Archmage cost';
                 $valueType = 'p';
+                break;
+            case 'boat_capacity':
+                $negativeBenefit = false;
+                $description = 'Boat capacity';
+                $valueType = '';
                 break;
             case 'construction_cost':
                 $negativeBenefit = true;
@@ -166,6 +183,14 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Platinum production';
                 break;
+            case 'population_growth':
+                $negativeBenefit = false;
+                $description = 'Population growth';
+                break;
+            case 'tech_production':
+                $negativeBenefit = false;
+                $description = 'Research point gains';
+                break;
             case 'spy_strength':
                 $negativeBenefit = false;
                 $description = 'Spy strength';
@@ -173,15 +198,6 @@ class RaceHelper
             case 'wizard_strength':
                 $negativeBenefit = false;
                 $description = 'Wizard strength';
-                break;
-            case 'boat_capacity':
-                $negativeBenefit = false;
-                $description = 'Boat capacity';
-                $valueType = '';
-                break;
-            case 'population_growth':
-                $negativeBenefit = false;
-                $description = 'Population growth';
                 break;
             default:
                 return null;
