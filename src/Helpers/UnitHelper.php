@@ -41,10 +41,10 @@ class UnitHelper
     {
         $helpStrings = [
             'draftees' => 'Basic military unit.<br><br>Used for exploring and training other units.',
-            'unit1' => 'Offensive specialist.',
-            'unit2' => 'Defensive specialist.',
-            'unit3' => 'Defensive elite.',
-            'unit4' => 'Offensive elite.',
+            'unit1' => 'Offensive specialist',
+            'unit2' => 'Defensive specialist',
+            'unit3' => 'Defensive elite',
+            'unit4' => 'Offensive elite',
             'spies' => 'Used for espionage.',
             'wizards' => 'Used for casting offensive spells.',
             'archmages' => 'Used for casting offensive spells.<br><br>Immortal and twice as strong as regular wizards.',
