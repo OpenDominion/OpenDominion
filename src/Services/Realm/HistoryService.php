@@ -9,6 +9,8 @@ use OpenDominion\Models\Realm;
 class HistoryService
 {
     public const EVENT_ACTION_REALM_UPDATED = 'updated realm';
+    public const EVENT_ACTION_DECLARE_WAR = 'declare war';
+    public const EVENT_ACTION_CANCEL_WAR = 'cancel war';
 
     /**
      * Records history changes in delta of a realm.

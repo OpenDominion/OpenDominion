@@ -102,7 +102,8 @@ class CasualtiesCalculator
             $nonUnitBonusMultiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'bloodrage', $spellBloodrage);
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
-            // todo: Tech (eg Tactical Battle)
+            // Techs
+            $nonUnitBonusMultiplier += $dominion->getTechPerkValue('fewer_casualties_offense');
 
             // todo: Wonders
 
@@ -205,12 +206,13 @@ class CasualtiesCalculator
 
             // todo: Heroes
 
-            // todo: Tech
-
-            // todo: Wonders
-
             // Spells
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+
+            // Techs
+            $nonUnitBonusMultiplier += $dominion->getTechPerkValue('fewer_casualties_defense');
+
+            // todo: Wonders
 
             // Cap at -80% and apply to multiplier (additive)
             $multiplier -= min(0.8, $nonUnitBonusMultiplier);

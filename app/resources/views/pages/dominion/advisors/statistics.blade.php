@@ -105,7 +105,7 @@
                                 </colgroup>
                                 <thead class="hidden-xs">
                                     <tr>
-                                        <th colspan="2">&nbsp;</th>
+                                        <th colspan="2">Invasions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -200,6 +200,25 @@
                                         </td>
                                     </tr>
                                 </tbody>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Success Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Espionage Success:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_espionage_success) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Magic Success:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_spell_success) }}</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4">
@@ -208,6 +227,37 @@
                                     <col width="50%">
                                     <col width="50%">
                                 </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Black Ops (Spy)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Draftees Assassinated:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_assassinate_draftees_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wizards Assassinated:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_assassinate_wizards_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Snare Impact:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_magic_snare_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Boats Sunk:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_sabotage_boats_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
                                 <thead>
                                     <tr>
                                         <th colspan="2">Theft</th>
@@ -259,22 +309,52 @@
                                     <col width="50%">
                                     <col width="50%">
                                 </colgroup>
-                                <thead class="hidden-xs">
+                                <thead>
                                     <tr>
-                                        <th colspan="2">&nbsp;</th>
+                                        <th colspan="2">Black Ops (Wizard)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Espionage Success:</td>
+                                        <td>Spies Disbanded:</td>
                                         <td>
-                                            <strong>{{ number_format($selectedDominion->stat_espionage_success) }}</strong>
+                                            <strong>{{ number_format($selectedDominion->stat_disband_spies_damage) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Magic Success:</td>
+                                        <td>Fireball Damage:</td>
                                         <td>
-                                            <strong>{{ number_format($selectedDominion->stat_spell_success) }}</strong>
+                                            <strong>{{ number_format($selectedDominion->stat_fireball_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lightning Bolt Damage:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_lightning_bolt_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Earthquake Hours:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_earthquake_hours) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Great Flood Hours:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_great_flood_hours) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Insect Swarm Hours:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_insect_swarm_hours) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Plague Hours:</td>
+                                        <td>
+                                            <strong>{{ number_format($selectedDominion->stat_plague_hours) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -399,14 +479,12 @@
                                                     <strong>{{ number_format($selectedDominion->stat_total_gem_production) }}</strong>
                                                 </td>
                                             </tr>
-                                            <!--
                                             <tr>
-                                                <td>Tech Points:</td>
+                                                <td>Research Points:</td>
                                                 <td>
                                                     <strong>{{ number_format($selectedDominion->stat_total_tech_production) }}</strong>
                                                 </td>
                                             </tr>
-                                            -->
                                             <tr>
                                                 <td>Boats:</td>
                                                 <td>

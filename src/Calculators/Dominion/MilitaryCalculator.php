@@ -5,12 +5,21 @@ namespace OpenDominion\Calculators\Dominion;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
 
 class MilitaryCalculator
 {
+    /**
+     * @var float Number of boats protected per dock
+     */
+    protected const BOATS_PROTECTED_PER_DOCK = 2.5;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
+
+    /** @var GovernmentService */
+    protected $governmentService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -42,6 +51,7 @@ class MilitaryCalculator
      */
     public function __construct(
         BuildingCalculator $buildingCalculator,
+        GovernmentService $governmentService,
         ImprovementCalculator $improvementCalculator,
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
@@ -49,6 +59,7 @@ class MilitaryCalculator
         SpellCalculator $spellCalculator)
     {
         $this->buildingCalculator = $buildingCalculator;
+        $this->governmentService = $governmentService;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;
         $this->prestigeCalculator = $prestigeCalculator;
@@ -82,7 +93,7 @@ class MilitaryCalculator
         array $calc = []
     ): float
     {
-        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units, $calc) * $this->getOffensivePowerMultiplier($dominion));
+        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units, $calc) * $this->getOffensivePowerMultiplier($dominion, $target));
 
         return ($op * $this->getMoraleMultiplier($dominion));
     }
@@ -133,9 +144,9 @@ class MilitaryCalculator
      * @param Dominion $dominion
      * @return float
      */
-    public function getOffensivePowerMultiplier(Dominion $dominion): float
+    public function getOffensivePowerMultiplier(Dominion $dominion, Dominion $target = null): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $opPerGryphonNest = 1.75;
@@ -156,12 +167,13 @@ class MilitaryCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('offense');
+
         // Improvement: Forges
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
 
         // Racial Spell
-        // todo
-        // Spell: Nightfall (+5%)
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'bloodrage' => $spellBloodrage,
             'crusade' => $spellCrusade,
@@ -174,11 +186,16 @@ class MilitaryCalculator
         // Prestige
         $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
-        // Tech: Military (+5%)
-        // Tech: Magical Weaponry (+10%)
-        // todo
+        // War
+        if ($target != null) {
+            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+                $multiplier += 0.1;
+            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+                $multiplier += 0.05;
+            }
+        }
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -309,7 +326,7 @@ class MilitaryCalculator
      */
     public function getDefensivePowerMultiplier(Dominion $dominion, float $multiplierReduction = 0): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $dpPerGuardTower = 1.75;
@@ -327,6 +344,9 @@ class MilitaryCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('defense');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('defense');
 
         // Improvement: Walls
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
@@ -349,11 +369,10 @@ class MilitaryCalculator
                 $spellAresCall);
         }
 
-        // Multiplier reduction when we want to factor in temples from another
-        // dominion
+        // Multiplier reduction when we want to factor in temples from another dominion
         $multiplier = max(($multiplier - $multiplierReduction), 0);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -661,15 +680,18 @@ class MilitaryCalculator
      */
     public function getSpyRatioMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
+
         // Wonder: Great Oracle (+30%)
         // todo
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -730,7 +752,7 @@ class MilitaryCalculator
      */
     public function getWizardRatioMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
@@ -738,10 +760,10 @@ class MilitaryCalculator
         // Improvement: Towers
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
 
-        // Tech: Magical Weaponry  (+15%)
-        // todo
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**
@@ -758,6 +780,21 @@ class MilitaryCalculator
         // todo: check if this needs to be a float
 
         return (float)$regen;
+    }
+
+    /**
+     * Returns the number of boats protected by a Dominion's docks and harbor improvements.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getBoatsProtected(Dominion $dominion): float
+    {
+        // Docks
+        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock;
+        // Habor
+        $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor'));
+        return $boatsProtected;
     }
 
     /**
@@ -806,5 +843,34 @@ class MilitaryCalculator
         });
 
         return $invasionEvents->count();
+    }
+
+    /**
+     * Checks Dominion was recently invaded by attacker.
+     *
+     * 'Recent' refers to the past 24 hours.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $attacker
+     * @return bool
+     */
+    public function recentlyInvadedBy(Dominion $dominion, Dominion $attacker): bool
+    {
+        // todo: this touches the db. should probably be in invasion or military service instead
+        $invasionEvents = GameEvent::query()
+            ->where('created_at', '>=', now()->subDay(1))
+            ->where([
+                'target_type' => Dominion::class,
+                'target_id' => $dominion->id,
+                'source_id' => $attacker->id,
+                'type' => 'invasion',
+            ])
+            ->get();
+
+        if (!$invasionEvents->isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -12,7 +12,12 @@ class RealmFinderService
     /**
      * @var int Maximum number of packs that can exist in a single realm
      */
-    protected const MAX_PACKS_PER_REALM = 1;
+    protected const MAX_PACKS_PER_REALM = 2;
+
+    /**
+     * @var int Coefficent for maximum number of players allowed in packs after the first
+     */
+    protected const MAX_PACK_SIZE_AFTER_FIRST = 0.5;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
@@ -47,8 +52,28 @@ class RealmFinderService
             ->get()
             ->filter(static function ($realm) use ($round, $slotsNeeded, $forPack) {
                 // Check pack status
-                if ($forPack && (static::MAX_PACKS_PER_REALM !== null) && ($realm->packs->count() >= static::MAX_PACKS_PER_REALM)) {
-                    return false;
+                if ($forPack) {
+                    if (static::MAX_PACKS_PER_REALM !== null) {
+                        // Reached maximum number of packs
+                        if ($realm->packs->count() >= static::MAX_PACKS_PER_REALM) {
+                            return false;
+                        }
+                        // Check if new pack and an existing pack are both larger than
+                        $additionalPackMax = static::MAX_PACK_SIZE_AFTER_FIRST * $round->pack_size;
+                        if ($slotsNeeded > $additionalPackMax) {
+                            foreach ($realm->packs as $pack) {
+                                if ($pack->isClosed()) {
+                                    if ($pack->dominions->count() > $additionalPackMax) {
+                                        return false;
+                                    }
+                                } else {
+                                    if ($pack->size > $additionalPackMax) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 $availableSlots = ($round->realm_size - $realm->dominions_count);
@@ -73,16 +98,13 @@ class RealmFinderService
             return null;
         }
 
+        // Weight the random selection so that smallest realms
+        // are chosen twice as often as ones with one additional player
+        // and always chosen when all realms have two additional players
         $smallestRealmSize = (int)$realms->min('dominions_count');
-        $largestRealmSize = (int)$realms->max('dominions_count');
-        $realmSizeRange = $largestRealmSize - $smallestRealmSize;
-
-        // Weight the random selection
-        // for every possible realm size between smallest and largest, duplicate smaller realms
         $realmsWeightedBySize = $realms->where('dominions_count', '=', $smallestRealmSize);
-        for ($i=1; $i<=$realmSizeRange; $i++) {
-            $realmsWeightedBySize = $realmsWeightedBySize->concat($realms->where('dominions_count', '<=', $smallestRealmSize + $i));
-        }
+        $realmsWeightedBySize = $realmsWeightedBySize->concat($realms->where('dominions_count', '<=', $smallestRealmSize + 1));
+
         return $realmsWeightedBySize->random();
     }
 }

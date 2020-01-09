@@ -88,8 +88,14 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="nyi">Research points:</td>
-                                        <td class="nyi">NYI</td>
+                                        <td>Research points:</td>
+                                        <td>
+                                            @if ($techProduction = $productionCalculator->getTechProduction($selectedDominion))
+                                                <span class="text-green">+{{ number_format($techProduction) }}</span>
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Boats:</td>
