@@ -3,6 +3,11 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+ - Fix issue where town crier dropdown excluding the last realm
+ - Fix 500 error on master of water valhalla page
+ - Fix issue with decimals places on invasion page
+ - Fix duplicate periods at end of unit descriptions
+ - Fix missing race perks on registration/scribes page
 
 ## [0.8.0]
 ### Added
