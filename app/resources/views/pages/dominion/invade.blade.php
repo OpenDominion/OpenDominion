@@ -147,6 +147,7 @@
                                             </td>
                                             <td>
                                                 <input type="number"
+                                                       step="any"
                                                        name="calc[{{ $buildingType }}_percent]"
                                                        class="form-control text-center"
                                                        min="0"

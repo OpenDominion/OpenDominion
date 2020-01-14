@@ -109,7 +109,7 @@ class ValhallaController extends AbstractController
             case 'stat-masters-of-plague': $data = $this->getDominionsByStatistic($round, 'stat_plague_hours'); break;
             case 'stat-masters-of-swarm': $data = $this->getDominionsByStatistic($round, 'stat_insect_swarm_hours'); break;
             case 'stat-masters-of-lightning': $data = $this->getDominionsByStatistic($round, 'stat_lightning_bolt_damage'); break;
-            case 'stat-masters-of-water': $data = $this->getDominionsByStatistic($round, 'stat_water_hours'); break;
+            case 'stat-masters-of-water': $data = $this->getDominionsByStatistic($round, 'stat_great_flood_hours'); break;
             case 'stat-masters-of-earth': $data = $this->getDominionsByStatistic($round, 'stat_earthquake_hours'); break;
             case 'stat-top-spy-disbanders': $data = $this->getDominionsByStatistic($round, 'stat_disband_spies_damage'); break;
 

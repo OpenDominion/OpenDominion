@@ -4,6 +4,19 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.8.0-1] - 2020-01-14
+### Added
+- Added techs to the Scribes
+
+### Fixed
+- Fixed an issue where the Town Crier dropdown excluded the last realm
+- Fixed a server error on Master of Water Valhalla page
+- Fixed an issue with decimals places on invasion page
+- Fixed duplicate sentence periods at end of unit descriptions
+- Fixed missing race perks on registration and scribes pages
+- Fixed starvation casualties not killing off the intended unit types
+- Fixed a bug regarding invading with mixed 9 and 12 hour returning units causing prestige and resource points to incorrectly return faster than intended
+
 ## [0.8.0]
 ### Added
 - War & Black Ops!
@@ -537,7 +550,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-1...HEAD
+[0.8.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0...0.8.0-1
 [0.8.0]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-19...0.8.0
 [0.7.1-19]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-18...0.7.1-19
 [0.7.1-18]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...0.7.1-18
