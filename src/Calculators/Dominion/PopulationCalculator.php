@@ -264,6 +264,11 @@ class PopulationCalculator
      */
     public function getPopulationBirthMultiplier(Dominion $dominion): float
     {
+        // Check for Starvation
+        if ($dominion->resource_food == 0) {
+            return 0;
+        }
+
         $multiplier = 1;
 
         // Values (percentages)
