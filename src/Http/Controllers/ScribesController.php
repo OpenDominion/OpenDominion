@@ -7,6 +7,7 @@ use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Race;
 
@@ -72,6 +73,13 @@ class ScribesController extends AbstractController
     {
         return view('pages.scribes.magic', [
             'spellHelper' => app(SpellHelper::class)
+        ]);
+    }
+
+    public function getTechs()
+    {
+        return view('pages.scribes.techs', [
+            'techHelper' => app(TechHelper::class)
         ]);
     }
 }
