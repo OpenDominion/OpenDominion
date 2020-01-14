@@ -301,11 +301,19 @@ class CasualtiesCalculator
         }
 
         $peasantPopPercentage = $dominion->peasants / $this->populationCalculator->getPopulation($dominion);
-        $casualties = ['peasants' => min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
+        $totalMilitary = (
+            $dominion->military_draftees +
+            $dominion->military_unit1 +
+            $dominion->military_unit2 +
+            $dominion->military_unit3 +
+            $dominion->military_unit4
+        );
+
+        $casualties = ['peasants' => (int)min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
-        $totalMilitaryCasualties = $remainingCasualties;
+        $militaryCasualties = $remainingCasualties;
 
         foreach($units as $unit) {
             if($remainingCasualties == 0) {
@@ -318,12 +326,11 @@ class CasualtiesCalculator
                 continue;
             }
 
-            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;
+            $slotLostMultiplier = $slotTotal / $totalMilitary;
+            $slotLost = floor($militaryCasualties * $slotLostMultiplier);
 
-            $slotLost = ceil($slotTotal * $slotLostMultiplier);
-
-            if($slotLost > $remainingCasualties) {
-                $slotLost = $remainingCasualties;
+            if($slotLost > $slotTotal) {
+                $slotLost = $slotTotal;
             }
 
             $casualties[$unit] += $slotLost;
@@ -353,7 +360,7 @@ class CasualtiesCalculator
             return 0;
         }
 
-        $casualties = (int)(abs($foodDeficit) * 2);
+        $casualties = (int)abs($foodDeficit);
         $maxCasualties = $this->populationCalculator->getPopulation($dominion) * 0.02;
 
         return min($casualties, $maxCasualties);
@@ -371,7 +378,7 @@ class CasualtiesCalculator
                 function ($unit) {
                     return ('military_' . $unit);
                 },
-                $this->unitHelper->getUnitTypes()
+                $this->unitHelper->getUnitTypes(true)
             ),
             ['military_draftees']
         );

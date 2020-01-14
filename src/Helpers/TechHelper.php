@@ -6,6 +6,11 @@ use OpenDominion\Models\Tech;
 
 class TechHelper
 {
+    public function getTechs()
+    {
+        return Tech::all()->keyBy('key');
+    }
+
     public function getTechDescription(Tech $tech): string
     {
         $perkTypeStrings = [
