@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+- Fixed a bug that sometimes prevented building discounted land
+- Fixed a bug where casualty reduction techs were too powerful
 
 ## [0.8.0-2] - 2020-01-14
 ## [0.8.0-1] - 2020-01-14
