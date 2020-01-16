@@ -201,7 +201,7 @@ class ConstructionCalculator
         // Check for discounted acres after invasion
         if ($dominion->discounted_land > 0) {
             //  25% cost acres regained after lost due to invasion
-            $reboundAcres = max($dominion->discounted_land - $this->landCalculator->getTotalBarrenLand($dominion), 0);
+            $reboundAcres = max($dominion->discounted_land - $barrenLand, 0);
             $maxFromDiscountedPlatinum = (int)floor($platinumToSpend / ($platinumCost / 4));
             $maxFromDiscountedLumber = (int)floor($lumberToSpend / ($lumberCost / 4));
             // Set the number of afforded discounted buildings
@@ -216,7 +216,7 @@ class ConstructionCalculator
             $lumberToSpend -= (int)ceil(($lumberCost * $reboundBuildings) / 4);
 
             // 50% cost acres from invasion
-            $discountedAcres = $dominion->discounted_land - $reboundAcres;
+            $discountedAcres = max($dominion->discounted_land - $reboundAcres, 0);
             $maxFromDiscountedPlatinum = (int)floor($platinumToSpend / ($platinumCost / 2));
             $maxFromDiscountedLumber = (int)floor($lumberToSpend / ($lumberCost / 2));
             // Set the number of afforded discounted buildings
@@ -224,7 +224,7 @@ class ConstructionCalculator
                 $maxFromDiscountedPlatinum,
                 $maxFromDiscountedLumber,
                 $discountedAcres,
-                $barrenLand - $reboundAcres
+                max($barrenLand - $reboundAcres, 0)
             );
             // Subtract discounted building cost from available resources
             $platinumToSpend -= (int)ceil(($platinumCost * $discountedBuildings) / 2);
@@ -234,7 +234,7 @@ class ConstructionCalculator
         return $reboundBuildings + $discountedBuildings + min(
                 floor($platinumToSpend / $platinumCost),
                 floor($lumberToSpend / $lumberCost),
-                ($barrenLand - $discountedBuildings)
+                ($barrenLand - $reboundBuildings - $discountedBuildings)
             );
     }
 
