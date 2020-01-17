@@ -236,7 +236,7 @@ class EspionageActionService
                 $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.25, 1);
 
                 // Techs
-                $spiesKilledPercentage += $dominion->getTechPerkMultiplier('spy_losses');
+                $spiesKilledPercentage *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
 
                 $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
@@ -475,7 +475,7 @@ class EspionageActionService
                 $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
 
                 // Techs
-                $spiesKilledPercentage += $dominion->getTechPerkMultiplier('spy_losses');
+                $spiesKilledPercentage *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
 
                 $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
@@ -730,6 +730,9 @@ class EspionageActionService
 
                 $spyLossSpaRatio = ($targetSpa / $selfSpa);
                 $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
+
+                // Techs
+                $spiesKilledPercentage *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
 
                 $unitsKilled = [];
                 $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
