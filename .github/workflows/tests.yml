@@ -23,7 +23,7 @@ jobs:
       run: mysql -h127.0.0.1 -uroot -proot -e 'CREATE DATABASE opendominion;'
 
     - name: debug
-      run: php -v
+      run: php7.3 -v
 
     - name: Run database migrations
       run: php artisan migrate
