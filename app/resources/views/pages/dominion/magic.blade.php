@@ -140,7 +140,11 @@
                                                 @endphp
                                                 <div class="col-xs-6 col-sm-3 col-md-6 col-lg-3 text-center">
                                                     <div class="form-group">
-                                                        <button type="submit" name="spell" value="{{ $spell['key'] }}" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
+                                                        <button type="submit"
+                                                                name="spell"
+                                                                value="{{ $spell['key'] }}"
+                                                                class="btn btn-primary btn-block"
+                                                                {{ $selectedDominion->isLocked() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                             {{ $spell['name'] }}
                                                         </button>
                                                         <p>{{ $spell['description'] }}</p>
@@ -175,7 +179,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell['key'] }}"
                                                                 class="btn btn-primary btn-block war-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || !$canCast ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                             {{ $spell['name'] }}
                                                         </button>
                                                         <p>{{ $spell['description'] }}</p>
