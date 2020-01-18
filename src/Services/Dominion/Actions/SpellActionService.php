@@ -163,7 +163,7 @@ class SpellActionService
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= ($result['wizardStrengthCost'] ?? 5);
 
-            if (!$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
+            if ($result['success'] && !$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $dominion->stat_spell_success += 1;
             }
 
