@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.8.0-4] - 2020-01-18
 ### Fixed
 - Black ops spell buttons are now grayed out before day 8
 - Spy losses tech perk is now multiplicative instead of additive
