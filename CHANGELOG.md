@@ -3,6 +3,11 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Fixed
+- Black ops spell buttons are now grayed out before day 8
+- Spy losses tech perk is now multiplicative instead of additive
+- Failed spy/wiz operations no longer count as a success in statistics advisor
+- Draftees no longer counted as attacking DP when checking 33% rule
 
 ## [0.8.0-3] - 2020-01-16
 ### Fixed
