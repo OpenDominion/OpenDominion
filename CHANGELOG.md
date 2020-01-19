@@ -4,6 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.8.0-6] - 2020-01-19
+### Fixed
+- Fixed a bug where exploration platinum costs were higher than expected upon joining the Elite Guard
+- Fixed a bug where Snare caused a server error upon dealing negative damage
+
 ## [0.8.0-5] - 2020-01-19
 ### Fixed
 - Fixed a server error when stealing gems
@@ -567,7 +572,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-3...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...HEAD
+[0.8.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-5...0.8.0-6
+[0.8.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-4...0.8.0-5
+[0.8.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-3...0.8.0-4
 [0.8.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-2...0.8.0-3
 [0.8.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-1...0.8.0-2
 [0.8.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0...0.8.0-1
