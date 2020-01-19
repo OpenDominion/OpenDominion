@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.8.0-5] - 2020-01-19
+### Fixed
+- Fixed a server error when stealing gemshttps://github.com/WaveHack/OpenDominion/commit/181e6f6e5e1904434137aa3638392affa100c494/checks?check_suite_id=408242216
+
 ## [0.8.0-4] - 2020-01-18
 ### Fixed
 - Black ops spell buttons are now grayed out before day 8
