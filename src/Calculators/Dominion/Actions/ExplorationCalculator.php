@@ -54,7 +54,7 @@ class ExplorationCalculator
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
-            $multiplier += 25;
+            $multiplier += 0.25;
         }
 
         return round($platinum * $multiplier);

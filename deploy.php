@@ -53,6 +53,12 @@ task('supervisorctl:restart', function () {
     run('sudo supervisorctl restart all');
 });
 
+desc('Enable maintenance mode');
+task('artisan:down', function () {
+    $output = run('if [ -f {{deploy_path}}/current/artisan ]; then {{bin/php}} {{deploy_path}}/current/artisan down --retry=120 --message="Deploying new update"; fi');
+    writeln('<info>' . $output . '</info>');
+});
+
 // Execute tasks
 
 // Task list is based off the Laravel recipe
