@@ -797,6 +797,9 @@ class EspionageActionService
                 // Flat damage for Magic Snare
                 if ($attr == 'wizard_strength') {
                     $damage = 100 * $baseDamage;
+                    if ($damage > $target->wizard_strength) {
+                        $damage = (int)$target->wizard_strength;
+                    }
                 }
 
                 // Damage reduction from Docks / Harbor
