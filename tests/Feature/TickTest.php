@@ -189,7 +189,6 @@ class TickTest extends AbstractBrowserKitTestCase
 
         // cast self spell for dominion 2 ONLY
 
-        /** @noinspection PhpUnhandledExceptionInspection */
         $spellActionService->castSpell($dominion2, 'midas_touch');
 
         // Refresh active spells
@@ -242,7 +241,6 @@ class TickTest extends AbstractBrowserKitTestCase
         // 6888 - 7553 - 275 = -940 food
         $this->assertEquals(-940, $productionCalculator->getFoodNetChange($dominion));
 
-        /** @noinspection PhpUnhandledExceptionInspection */
         $spellActionService->castSpell($dominion, 'gaias_watch');
 
         // Refresh active spells
