@@ -635,12 +635,16 @@ class SpellActionService
             }
             if (isset($spellInfo['increases'])) {
                 foreach ($spellInfo['increases'] as $attr) {
-                    $damage = $target->{$attr} * $baseDamage;
+                    if ($attr == 'military_draftees') {
+                        $target->{$attr} += $totalDamage;
+                    } else {
+                        $damage = $target->{$attr} * $baseDamage;
 
-                    // Damage reduction from Towers
-                    $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                        // Damage reduction from Towers
+                        $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    $target->{$attr} += round($damage);
+                        $target->{$attr} += round($damage);
+                    }
                 }
             }
 
