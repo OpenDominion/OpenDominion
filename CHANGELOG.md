@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 - Assassinate wizards will no longer work against undead
 - Disband spies will now add the correct number of draftees
+- Late signups will now be awarded additional starting resources after the third day of the round
 
 ## [0.8.0-6] - 2020-01-19
 ### Fixed
