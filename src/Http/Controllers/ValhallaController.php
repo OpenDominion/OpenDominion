@@ -144,7 +144,23 @@ class ValhallaController extends AbstractController
 
     public function getUser(User $user)
     {
-        // show valhalla of single user
+        $landCalculator = app(LandCalculator::class);
+        $networthCalculator = app(NetworthCalculator::class);
+
+        $dominions = $user->dominions()
+            ->with(['queues', 'realm', 'race.units.perks'])
+            ->orderByDesc('round_id')
+            ->get()
+            ->filter(function (Dominion $dominion) {
+                if ($dominion->round->end_date < now()) return $dominion;
+            });
+
+        return view('pages.valhalla.user', [
+            'player' => $user,
+            'dominions' => $dominions,
+            'landCalculator' => $landCalculator,
+            'networthCalculator' => $networthCalculator,
+        ]);
     }
 
     // todo: search user
@@ -185,7 +201,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => $dominion->user->display_name,
+                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
                 ];
 
                 if ($race === null) {
@@ -310,7 +326,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => $dominion->user->display_name,
+                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
                 ];
 
                 if ($race === null) {
@@ -426,7 +442,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => $dominion->user->display_name,
+                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,
                     'value' => $dominion->{$stat},
