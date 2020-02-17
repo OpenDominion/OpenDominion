@@ -854,7 +854,7 @@ class MilitaryCalculator
      * @param Dominion $attacker
      * @return bool
      */
-    public function recentlyInvadedBy(Dominion $dominion, Dominion $attacker): bool
+    public function getRecentlyInvadedBy(Dominion $dominion): array
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
@@ -862,15 +862,11 @@ class MilitaryCalculator
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
-                'source_id' => $attacker->id,
                 'type' => 'invasion',
             ])
-            ->get();
+            ->pluck('source_id')
+            ->all();
 
-        if (!$invasionEvents->isEmpty()) {
-            return true;
-        }
-
-        return false;
+        return $invasionEvents;
     }
 }
