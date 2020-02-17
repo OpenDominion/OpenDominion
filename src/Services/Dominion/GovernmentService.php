@@ -113,6 +113,23 @@ class GovernmentService
     }
 
     /**
+     * Returns the hour of war declaration
+     *
+     * @param Realm $realm
+     */
+    public function getWarDeclaredAt(Realm $realm): string
+    {
+        if ($realm->war_realm_id === null) {
+            return '';
+        }
+
+        $modifiedDate = Carbon::parse($realm->war_active_at);
+        $declaredDate = $modifiedDate->addHours(-self::WAR_ACTIVE_WAIT_IN_HOURS);
+
+        return $declaredDate->startOfHour();
+    }
+
+    /**
      * Returns the number of hours remaining before war can be canceled
      *
      * @param Realm $realm

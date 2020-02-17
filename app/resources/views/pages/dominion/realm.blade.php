@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -142,6 +141,57 @@
                 @endif
             </div>
         </div>
+    </div>
 
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><i class="ra ra-crossed-axes"></i> War</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th>Realm</th>
+                                    <th>Declared By</th>
+                                    <th>Declared at</th>
+                                    <th>Bonus active at</th>
+                                </tr>
+                                @if ($governmentService->hasDeclaredWar($realm))
+                                    <tr>
+                                        <td>{{ $realm->warRealm->name }} (#{{ $realm->warRealm->number }})</td>
+                                        <td>#{{ $realm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
+                                        <td>{{ $realm->war_active_at }}</td>
+                                    </tr>
+                                @endif
+                                @foreach ($realm->warRealms as $warRealm)
+                                    <tr>
+                                        <td>{{ $warRealm->name }} (#{{ $warRealm->number }})</td>
+                                        <td>#{{ $warRealm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($warRealm) }}</td>
+                                        <td>{{ $warRealm->war_active_at }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Information</h3>
+                </div>
+                <div class="box-body">
+                    <p>Here you view which realms currently have war relations with this one.</p>
+                    <p>Once a war is active, dominions in both realms gain 5% Offensive Power when attacking members of the opposing realm. If both realms are actively at war with one another, that bonus increases to 10% Offensive Power.</p>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

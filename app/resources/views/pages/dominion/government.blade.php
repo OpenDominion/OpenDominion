@@ -128,12 +128,14 @@
                                 <tr>
                                     <th>Realm</th>
                                     <th>Declared By</th>
-                                    <th>Active at</th>
+                                    <th>Declared at</th>
+                                    <th>Bonus active at</th>
                                 </tr>
-                                @if ($hasDeclaredWar)
+                                @if ($governmentService->hasDeclaredWar($selectedDominion->realm))
                                     <tr>
                                         <td>{{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})</td>
                                         <td>#{{ $selectedDominion->realm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($selectedDominion->realm) }}</td>
                                         <td>{{ $selectedDominion->realm->war_active_at }}</td>
                                     </tr>
                                 @endif
@@ -141,12 +143,13 @@
                                     <tr>
                                         <td>{{ $realm->name }} (#{{ $realm->number }})</td>
                                         <td>#{{ $realm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
                                         <td>{{ $realm->war_active_at }}</td>
                                     </tr>
                                 @endforeach
                             </table>
                             @if ($selectedDominion->isMonarch())
-                                @if ($canDeclareWar)
+                                @if ($governmentService->canDeclareWar($selectedDominion->realm))
                                     <form action="{{ route('dominion.government.war.declare') }}" method="post" role="form">
                                         @csrf
                                         <label for="realm_number">Select a Realm</label>
@@ -177,18 +180,21 @@
                                         </div>
                                     </form>
                                 @endif
-                                @if ($hasDeclaredWar)
+                                @if ($governmentService->hasDeclaredWar($selectedDominion->realm))
                                     <form action="{{ route('dominion.government.war.cancel') }}" method="post" role="form">
                                         @csrf
                                         <div class="row">
                                             <div class="col-sm-8 col-lg-10">
                                                 You have declared <span class="text-red text-bold">WAR</span> on {{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})!
-                                                @if ($hoursBeforeCancelWar > 0)
-                                                <br/><small class="text-warning">You cannot cancel this war for {{ $hoursBeforeCancelWar }} hours.</small>
+                                                @if ($governmentService->getHoursBeforeWarActive($selectedDominion->realm) > 0)
+                                                    <br/><small class="text-info">War bonus will be active in {{ $governmentService->getHoursBeforeWarActive($selectedDominion->realm) }} hours.</small>
+                                                @endif
+                                                @if ($governmentService->getHoursBeforeCancelWar($selectedDominion->realm) > 0)
+                                                    <br/><small class="text-warning">You cannot cancel this war for {{ $governmentService->getHoursBeforeCancelWar($selectedDominion->realm) }} hours.</small>
                                                 @endif
                                             </div>
                                             <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
-                                                <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $hoursBeforeCancelWar > 0 ? 'disabled' : null }}>
+                                                <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $governmentService->getHoursBeforeCancelWar($selectedDominion->realm) > 0 ? 'disabled' : null }}>
                                                     Cancel War
                                                 </button>
                                             </div>
