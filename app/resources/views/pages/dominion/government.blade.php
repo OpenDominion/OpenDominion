@@ -155,13 +155,15 @@
                                                 <div class="form-group">
                                                     <select name="realm_number" id="realm_number" class="form-control" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         <option></option>
-                                                        @foreach ($realms as $realm)
-                                                            @if ($realm->id != $selectedDominion->realm->id)
-                                                                <option value="{{ $realm->number }}">
-                                                                    {{ $realm->name }} (#{{ $realm->number }})
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
+                                                        @if ($selectedDominion->round->start_date <= now())
+                                                            @foreach ($realms as $realm)
+                                                                @if ($realm->id != $selectedDominion->realm->id)
+                                                                    <option value="{{ $realm->number }}">
+                                                                        {{ $realm->name }} (#{{ $realm->number }})
+                                                                    </option>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div>
