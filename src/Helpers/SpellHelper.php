@@ -370,7 +370,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Fireball',
-                'description' => 'Kills pesants and destroys crops',
+                'description' => 'Kills peasants and destroys crops',
                 'key' => 'fireball',
                 'mana_cost' => 3.3,
                 'decreases' => ['peasants', 'resource_food'],
