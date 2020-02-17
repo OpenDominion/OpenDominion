@@ -3,8 +3,16 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Show war information on each realm page
+- Valhalla pages for each user
+
+### Fixed
 - Assassinate wizards will no longer work against undead
 - Disband spies will now add the correct number of draftees
+- War ops buttons are no longer dimmed when targeting a dominion that recently invaded you
+- Generated land from invasion will now count toward total land conquered
+- Total number of realms no longer visible before round start
 
 ## [0.8.0-6] - 2020-01-19
 ### Fixed
