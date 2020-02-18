@@ -704,7 +704,7 @@ class EspionageActionService
 
         if ($this->espionageHelper->isWarOperation($operationKey)) {
             $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);
-            if (!$warDeclared && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
+            if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion))) {
                 throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
             }
         }
@@ -809,7 +809,7 @@ class EspionageActionService
                 }
 
                 // Check for immortal wizards
-                if ($dominion->race->getPerkValue('immortal_wizards') != 0 && $attr == 'military_wizards') {
+                if ($target->race->getPerkValue('immortal_wizards') != 0 && $attr == 'military_wizards') {
                     $damage = 0;
                 }
 

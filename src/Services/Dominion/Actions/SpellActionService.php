@@ -411,7 +411,7 @@ class SpellActionService
 
         if ($this->spellHelper->isWarSpell($spellKey)) {
             $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);
-            if (!$warDeclared && !$this->militaryCalculator->recentlyInvadedBy($dominion, $target)) {
+            if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion))) {
                 throw new GameException("You cannot cast {$spellInfo['name']} outside of war.");
             }
         }
@@ -635,12 +635,16 @@ class SpellActionService
             }
             if (isset($spellInfo['increases'])) {
                 foreach ($spellInfo['increases'] as $attr) {
-                    $damage = $target->{$attr} * $baseDamage;
+                    if ($attr == 'military_draftees') {
+                        $target->{$attr} += $totalDamage;
+                    } else {
+                        $damage = $target->{$attr} * $baseDamage;
 
-                    // Damage reduction from Towers
-                    $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                        // Damage reduction from Towers
+                        $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    $target->{$attr} += round($damage);
+                        $target->{$attr} += round($damage);
+                    }
                 }
             }
 

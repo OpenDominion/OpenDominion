@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.8.0-7] - 2020-02-17
+### Fixed
+- Assassinate wizards will no longer work against undead
+- Disband spies will now add the correct number of draftees
+- War ops buttons are no longer dimmed when targeting a dominion that recently invaded you
+- Percentage calculations in archived survey dominion operations have been corrected
+
 ## [0.8.0-6] - 2020-01-19
 ### Fixed
 - Fixed a bug where exploration platinum costs were higher than expected upon joining the Elite Guard
