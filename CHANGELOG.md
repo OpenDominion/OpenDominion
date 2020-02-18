@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 - Assassinate wizards will no longer work against undead
 - Disband spies will now add the correct number of draftees
+- War ops buttons are no longer dimmed when targeting a dominion that recently invaded you
+- Percentage calculations in archived survey dominion operations have been corrected
 
 ## [0.8.0-6] - 2020-01-19
 ### Fixed
