@@ -477,6 +477,10 @@ class TickService
 
             $wizardStrengthAdded += $dominion->getTechPerkValue('wizard_strength_recovery');
 
+            if ($dominion->wizard_strength < 30) {
+                $wizardStrengthAdded += 1;
+            }
+
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
         }
 
