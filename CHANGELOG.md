@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Reduced damage and cost of Disband Spies to 1.5% and 4.3x (from 2% and 5x)
 - War cannot declared during the first 5 days of the round (up from 3)
 - Wizard strength refresh rate increased by 1% when below 30%
+- Mana production bonus added to Towers improvement and increased rate of investment
 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered
