@@ -363,10 +363,10 @@ class SpellHelper
                 'name' => 'Disband Spies',
                 'description' => 'Turns spies into draftees',
                 'key' => 'disband_spies',
-                'mana_cost' => 5,
+                'mana_cost' => 4.3,
                 'decreases' => ['military_spies'],
                 'increases' => ['military_draftees'],
-                'percentage' => 2,
+                'percentage' => 1.5,
             ],
             [
                 'name' => 'Fireball',

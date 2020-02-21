@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Show war information on each realm page
 - Valhalla pages for each user
 
+### Changed
+- Info ops spy/wizard strength cost reverted to 2% (from 1%)
+
 ### Fixed
 - Generated land from invasion will now count toward total land conquered
 - Total number of realms no longer visible before round start
