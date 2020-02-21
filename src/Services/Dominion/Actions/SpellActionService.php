@@ -432,6 +432,15 @@ class SpellActionService
             if (!random_chance($successRate)) {
                 $wizardsKilledBasePercentage = 1;
 
+                // Wizard Guilds
+                $wizardGuildCasualtyReduction = 3;
+                $wizardGuildWizardCasualtyReductionMax = 30;
+
+                $wizardsKilledBasePercentage = (1 - min(
+                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
+                    ($wizardGuildWizardCasualtyReductionMax / 100)
+                ));
+
                 $wizardLossSpaRatio = ($targetWpa / $selfWpa);
                 $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, 0.5, 1.5);
 
@@ -591,7 +600,7 @@ class SpellActionService
 
                     // Damage reduction from Forest Havens
                     if ($attr == 'peasants') {
-                        $forestHavenFireballReduction = 8;
+                        $forestHavenFireballReduction = 10;
                         $forestHavenFireballReductionMax = 80;
                         $damageMultiplier = (1 - min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),

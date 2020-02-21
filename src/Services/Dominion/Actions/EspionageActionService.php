@@ -227,7 +227,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.25; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 0.25;
+
+                // Forest Havens
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -466,7 +468,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 1;
+
+                // Forest Havens
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -672,18 +676,6 @@ class EspionageActionService
             $maxCarried = $this->militaryCalculator->getSpyRatioRaw($dominion) * $this->landCalculator->getTotalLand($dominion) * $constraints['spy_carries'];
         }
 
-        // Forest Haven reduction
-        if ($resource === 'platinum') {
-            $forestHavenStolenPlatinumReduction = 8;
-            $forestHavenStolenPlatinumReductionMax = 80;
-            $stolenPlatinumMultiplier = (1 - min(
-                    (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenStolenPlatinumReduction),
-                    ($forestHavenStolenPlatinumReductionMax / 100)
-                ));
-
-            $maxTarget *= $stolenPlatinumMultiplier;
-        }
-
         return min($maxTarget, $maxDominion, $maxCarried);
     }
 
@@ -723,7 +715,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 1;
+
+                // Forest Havens
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 

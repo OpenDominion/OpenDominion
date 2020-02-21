@@ -269,8 +269,6 @@ class MilitaryCalculator
         // Values
         $minDPPerAcre = 1.5;
         $dpPerDraftee = 1;
-        $forestHavenDpPerPeasant = 0.75;
-        $peasantsPerForestHaven = 20;
 
         // Military
         foreach ($dominion->race->units as $unit) {
@@ -304,12 +302,6 @@ class MilitaryCalculator
         // Attacking Forces skip land-based defenses
         if ($units !== null)
             return $dp;
-
-        // Forest Havens
-        $dp += min(
-            ($dominion->peasants * $forestHavenDpPerPeasant),
-            ($dominion->building_forest_haven * $forestHavenDpPerPeasant * $peasantsPerForestHaven)
-        ); // todo: recheck this
 
         return max(
             $dp,

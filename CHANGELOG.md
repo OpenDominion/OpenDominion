@@ -13,6 +13,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - War cannot declared during the first 5 days of the round (up from 3)
 - Wizard strength refresh rate increased by 1% when below 30%
 - Mana production bonus added to Towers improvement and increased rate of investment
+- Wizard Guilds now reduce losses on failed black op spells by 3% per 1% owned up to a maximum of 30% at 10% owned
+- Forest Havens reworked
+  - Spy Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned
+  - Spy training reduced by 2% per 1% owned, up to a maximum of 40% at 20% owned
+  - Fireball protection increased to 10% per 1% owned
+  - Platinum theft protection removed
+  - Defense bonus removed
 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered

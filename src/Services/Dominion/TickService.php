@@ -458,6 +458,15 @@ class TickService
         // Spy Strength - todo: move to military calculator
         if ($dominion->spy_strength < 100) {
             $spyStrengthAdded = 4;
+
+            $spyStrengthPerForestHaven = 0.1;
+            $spyStrengthPerForestHavenMax = 2;
+
+            $spyStrengthAdded += min(
+                (($dominion->building_forest_haven / $totalLand) * (100 * $spyStrengthPerForestHaven)),
+                $spyStrengthPerForestHavenMax
+            );
+
             $spyStrengthAdded += $dominion->getTechPerkValue('spy_strength_recovery');
 
             $tick->spy_strength = min($spyStrengthAdded, 100 - $dominion->spy_strength);
