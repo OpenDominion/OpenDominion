@@ -297,7 +297,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
-                    'wizardStrengthCost' => 1,
+                    'wizardStrengthCost' => 2,
                     'alert-type' => 'warning',
                 ];
             }
@@ -382,7 +382,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'wizardStrengthCost' => 1,
+            'wizardStrengthCost' => 2,
             'redirect' => $redirect,
         ];
     }
