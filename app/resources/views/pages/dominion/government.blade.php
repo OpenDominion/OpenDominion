@@ -214,7 +214,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Here you view which realms you currently have war relations with.</p>
+                    <p>Here you view which realms you currently have war relations with. You cannot declare war for the first five days of the round.</p>
                     <p>Once a war is active, dominions in both realms gain 5% Offensive Power when attacking members of the opposing realm. If both realms are actively at war with one another, that bonus increases to 10% Offensive Power.</p>
                 </div>
             </div>

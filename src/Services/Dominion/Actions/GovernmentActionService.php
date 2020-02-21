@@ -33,7 +33,7 @@ class GovernmentActionService
         $this->notificationService = $notificationService;
     }
 
-    public const WAR_DAYS_AFTER_ROUND_START = 3;
+    public const WAR_DAYS_AFTER_ROUND_START = 5;
 
     /**
      * Casts a Dominion's vote for monarch.
