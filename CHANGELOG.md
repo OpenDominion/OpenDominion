@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Fireball protection increased to 10% per 1% owned
   - Platinum theft protection removed
   - Defense bonus removed
+- Research points gained on invasion reduced to 17 per acre (from 20 per acre)
+- Tech cost multiplier reduced to 6.4 (from 6.426)
 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered

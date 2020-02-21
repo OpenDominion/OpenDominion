@@ -921,7 +921,7 @@ class InvadeActionService
      */
     protected function handleResearchPoints(Dominion $dominion, array $units): void
     {
-        $researchPointsPerAcre = 20;
+        $researchPointsPerAcre = 17;
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
