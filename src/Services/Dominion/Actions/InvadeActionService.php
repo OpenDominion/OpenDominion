@@ -483,10 +483,6 @@ class InvadeActionService
                 }
             }
         } else {
-            if ($isOverwhelmed) {
-                $offensiveCasualtiesPercentage *= 2;
-            }
-
             foreach ($units as $slot => $amount) {
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
                 if ($fixedCasualtiesPerk) {
