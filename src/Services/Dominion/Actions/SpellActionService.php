@@ -624,7 +624,7 @@ class SpellActionService
                         $masonryLightningBoltReduction = 0.75;
                         $masonryLightningBoltReductionMax = 25;
                         $damageMultiplier = (1 - min(
-                            (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
+                            (($target->building_masonry / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
                             ($masonryLightningBoltReductionMax / 100)
                         ));
                         $damage *= $damageMultiplier;
