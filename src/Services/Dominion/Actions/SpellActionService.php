@@ -437,7 +437,7 @@ class SpellActionService
                 $wizardGuildWizardCasualtyReductionMax = 30;
 
                 $wizardsKilledBasePercentage = (1 - min(
-                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
+                    (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
                     ($wizardGuildWizardCasualtyReductionMax / 100)
                 ));
 
@@ -605,6 +605,16 @@ class SpellActionService
                         $damageMultiplier = (1 - min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
                             ($forestHavenFireballReductionMax / 100)
+                        ));
+                        $damage *= $damageMultiplier;
+                    }
+
+                    if ($attr == 'military_spies') {
+                        $forestHavenSpyCasualtyReduction = 3;
+                        $forestHavenSpyCasualtyReductionMax = 30;
+                        $damageMultiplier = (1 - min(
+                            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
+                            ($forestHavenSpyCasualtyReductionMax / 100)
                         ));
                         $damage *= $damageMultiplier;
                     }
