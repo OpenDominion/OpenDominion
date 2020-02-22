@@ -598,7 +598,7 @@ class SpellActionService
                 foreach ($spellInfo['decreases'] as $attr) {
                     $damage = $target->{$attr} * $baseDamage;
 
-                    // Damage reduction from Forest Havens
+                    // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
                         $forestHavenFireballReduction = 10;
                         $forestHavenFireballReductionMax = 80;
@@ -609,11 +609,12 @@ class SpellActionService
                         $damage *= $damageMultiplier;
                     }
 
+                    // Disband Spies damage reduction from Forest Havens
                     if ($attr == 'military_spies') {
                         $forestHavenSpyCasualtyReduction = 3;
                         $forestHavenSpyCasualtyReductionMax = 30;
                         $damageMultiplier = (1 - min(
-                            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
+                            (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
                             ($forestHavenSpyCasualtyReductionMax / 100)
                         ));
                         $damage *= $damageMultiplier;
