@@ -20,9 +20,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Fireball protection increased to 10% per 1% owned
   - Platinum theft protection removed
   - Defense bonus removed
+- Surreal Perception now applies to info ops, duration increased to 12 (from 8), cost reduced to 3x (from 4x)
+- Energy Mirror duration increased to 12 (from 8), cost increased to 4x (from 3x)
+- Fool's Gold cooldown reduced to 20 (from 22)
 - Research points gained on invasion reduced to 17 per acre (from 20 per acre)
 - Tech cost multiplier reduced to 6.4 (from 6.426)
+- Land bonus now awards 128 research points
 - Attacks that fail by 85% or more no longer cause double casualties
+- Nox: research point generation bonus reduced to 10% (from 15%)
 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered
