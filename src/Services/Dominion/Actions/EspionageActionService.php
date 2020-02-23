@@ -429,6 +429,16 @@ class EspionageActionService
                 throw new LogicException("Unknown info gathering operation {$operationKey}");
         }
 
+        // Surreal Perception
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_spy_op', [
+                    'sourceDominionId' => $dominion->id,
+                    'operationKey' => $operationKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
         $infoOp->save();
 
         return [

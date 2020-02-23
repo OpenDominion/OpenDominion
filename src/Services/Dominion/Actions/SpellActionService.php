@@ -372,6 +372,16 @@ class SpellActionService
                 throw new LogicException("Unknown info op spell {$spellKey}");
         }
 
+        // Surreal Perception
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spellKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
         $infoOp->save();
 
         $redirect = route('dominion.op-center.show', $target);

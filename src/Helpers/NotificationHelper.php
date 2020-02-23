@@ -321,6 +321,22 @@ class NotificationHelper
                 $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
                 switch ($data['operationKey']) {
+                    case 'barracks_spy':
+                        $resultString = 'A hostile presence was detected within our barracks.';
+                        break;
+
+                    case 'castle_spy':
+                        $resultString = 'An hostile presence was detected within our castle.';
+                        break;
+
+                    case 'survey_dominion':
+                        $resultString = 'An hostile presence was detected amongst our buildings.';
+                        break;
+
+                    case 'land_spy':
+                        $resultString = 'An hostile presence was detected amongst our lands.';
+                        break;
+
                     case 'assassinate_draftees':
                         $resultString = "{$data['damageString']} were killed while they slept in our barracks.";
                         break;
@@ -500,6 +516,18 @@ class NotificationHelper
                 $sourceDominion = Dominion::with('realm')->find($data['sourceDominionId']);
 
                 switch ($data['spellKey']) {
+                    case 'clear_sight':
+                        $resultString = 'A magical presence was detected within our advisor\'s quarters.';
+                        break;
+
+                    case 'vision':
+                        $resultString = 'A magical precence was detected within our schools.';
+                        break;
+
+                    case 'revelation':
+                        $resultString = 'A magical precence was detected within our towers.';
+                        break;
+
                     case 'plague':
                         $resultString = 'A plague has befallen our people, slowing population growth.';
                         break;

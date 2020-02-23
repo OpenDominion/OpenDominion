@@ -102,25 +102,25 @@ class SpellHelper
             ],
             [
                 'name' => 'Fool\'s Gold',
-                'description' => 'Platinum theft protection for 10 hours, 22 hour recharge',
+                'description' => 'Platinum theft protection for 10 hours, 20 hour recharge',
                 'key' => 'fools_gold',
                 'mana_cost' => 5,
                 'duration' => 10,
-                'cooldown' => 22,
+                'cooldown' => 20,
             ],
             [
                 'name' => 'Surreal Perception',
-                'description' => 'Reveals the dominion casting offensive spells or committing spy ops against you for 8 hours',
+                'description' => 'Reveals the dominion casting offensive spells or committing spy ops against you for 12 hours',
                 'key' => 'surreal_perception',
-                'mana_cost' => 4,
-                'duration' => 8,
+                'mana_cost' => 3,
+                'duration' => 12,
             ],
             [
                 'name' => 'Energy Mirror',
-                'description' => '20% chance to reflect incoming offensive spells for 8 hours',
+                'description' => '20% chance to reflect incoming offensive spells for 12 hours',
                 'key' => 'energy_mirror',
-                'mana_cost' => 3,
-                'duration' => 8,
+                'mana_cost' => 4,
+                'duration' => 12,
             ]
         ]));
 
