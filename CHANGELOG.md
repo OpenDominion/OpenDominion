@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Tech cost multiplier reduced to 6.4 (from 6.426)
 - Land bonus now awards 128 research points
 - Attacks that fail by 85% or more no longer cause double casualties
+- Prestige gains reduced on first hit, but increased on subsequent hits
 - Nox: research point generation bonus reduced to 10% (from 15%)
 
 ### Fixed

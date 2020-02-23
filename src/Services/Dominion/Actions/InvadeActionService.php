@@ -57,7 +57,7 @@ class InvadeActionService
     /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 30;
+    protected const PRESTIGE_CHANGE_ADD = 20;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -364,12 +364,12 @@ class InvadeActionService
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = (int)round(($target->prestige * (($range / 100) / 10)) + static::PRESTIGE_CHANGE_ADD);
+            $attackerPrestigeChange = (int)round($target->prestige * (($range / 100) / 10));
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
-                $attackerPrestigeChange *= 1.25;
+                $attackerPrestigeChange *= 1.2;
             } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
                 $attackerPrestigeChange *= 1.15;
             }
@@ -380,22 +380,24 @@ class InvadeActionService
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
 
             if ($recentlyInvadedCount === 1) {
-                $attackerPrestigeChange *= 0.75;
+                $attackerPrestigeChange *= 0.8;
             } elseif ($recentlyInvadedCount === 2) {
-                $attackerPrestigeChange *= 0.5;
+                $attackerPrestigeChange *= 0.6;
             } elseif ($recentlyInvadedCount === 3) {
-                $attackerPrestigeChange *= 0.25;
+                $attackerPrestigeChange *= 0.4;
             } elseif ($recentlyInvadedCount === 4) {
-                $attackerPrestigeChange *= -0.25;
-            } elseif ($recentlyInvadedCount >= 5) {
-                $attackerPrestigeChange *= -0.5;
+                $attackerPrestigeChange *= 0.2;
             }
 
-            $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
+            $attackerPrestigeChange += static::PRESTIGE_CHANGE_ADD;
+
+            if ($recentlyInvadedCount >= 5) {
+                $attackerPrestigeChange = 0;
+            }
         }
 
         // Cap for max prestige based on land size
-        $maxPrestigeChange = max(($this->landCalculator->getTotalLand($dominion) * 1.2) - $dominion->prestige, 0);
+        $maxPrestigeChange = max(($this->landCalculator->getTotalLand($dominion)) - $dominion->prestige, 0);
         $attackerPrestigeChange = min($attackerPrestigeChange, $maxPrestigeChange);
 
         if ($attackerPrestigeChange !== 0) {
