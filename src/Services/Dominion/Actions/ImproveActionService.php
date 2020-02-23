@@ -82,6 +82,13 @@ class ImproveActionService
             }
 
             $points = ($amount * $worth[$resource]);
+
+            // Racial bonus multiplier
+            if ($resource == 'ore') {
+                $multiplier = (1 + $dominion->race->getPerkMultiplier('invest_bonus_ore'));
+                $points *= $multiplier;
+            }
+
             $investmentStringParts[] = (number_format($points) . ' ' . $improvementType);
         }
 

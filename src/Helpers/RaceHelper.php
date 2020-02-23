@@ -51,6 +51,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'castle bonuses';
                 break;
+            case 'invest_bonus_ore':
+                $negativeBenefit = false;
+                $description = 'ore investment';
+                break;
             case 'lumber_production':
                 $negativeBenefit = false;
                 $description = 'lumber production';
@@ -158,6 +162,10 @@ class RaceHelper
             case 'invest_bonus':
                 $negativeBenefit = false;
                 $description = 'Castle bonuses';
+                break;
+            case 'invest_bonus_ore':
+                $negativeBenefit = false;
+                $description = 'Ore investment';
                 break;
             case 'lumber_production':
                 $negativeBenefit = false;

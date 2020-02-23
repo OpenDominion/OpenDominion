@@ -8,6 +8,7 @@ perks:
   max_population: 7.5
   extra_barren_max_population: 5
   ore_production: 10
+  invest_bonus_ore: 5
 units:
   - name: Soldier
     cost:
