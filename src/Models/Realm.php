@@ -100,14 +100,14 @@ class Realm extends AbstractModel
 
     public function totalPackSize(): int
     {
-        return $this->packs->sum(function($pack) {
+        return $this->packs->sum(function ($pack) {
             return $pack->sizeAllocated();
         });
     }
 
     public function sizeAllocated(): int
     {
-        return $this->packs->sum(function($pack) {
+        return $this->packs->sum(function ($pack) {
             return $pack->remainingSlots();
         }) + $this->dominions->count();
     }

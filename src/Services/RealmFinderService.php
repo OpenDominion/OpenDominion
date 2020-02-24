@@ -78,16 +78,16 @@ class RealmFinderService
         // Weight the random selection so that smallest realms
         // are chosen twice as often as ones with one additional player
         // and always chosen when all realms have two additional players
-        $realmsBySize = $realms->sortBy(function($realm) {
+        $realmsBySize = $realms->sortBy(function ($realm) {
             return $realm->sizeAllocated();
         });
         $smallestRealmSize = $realmsBySize->first()->sizeAllocated();
 
-        $realmsWeightedBySize = $realms->filter(function($realm) use ($smallestRealmSize) {
+        $realmsWeightedBySize = $realms->filter(function ($realm) use ($smallestRealmSize) {
             if ($realm->sizeAllocated() == $smallestRealmSize) {
                 return true;
             }
-        })->concat($realms->filter(function($realm) use ($smallestRealmSize) {
+        })->concat($realms->filter(function ($realm) use ($smallestRealmSize) {
             if ($realm->sizeAllocated() == ($smallestRealmSize + 1)) {
                 return true;
             }
