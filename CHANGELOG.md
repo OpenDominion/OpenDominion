@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Prestige gains reduced on first hit, but increased on subsequent hits
 - Nox: research point generation bonus reduced to 10% (from 15%)
 - Sylvan: Added -10% rezone cost
+- Sylvan: Dryad changed to 1/3 wizard on defense (from 1/2)
+- Dark Elf: Adept changed to 1/3 wizard on defense (from 1/2)
 - Dwarf: ore investments increased by 5%
 - Dwarf: Clerics now kill spirits and the undead
 - Undead: Mana production increased to +10% (from 5%)
