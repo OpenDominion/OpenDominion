@@ -117,7 +117,7 @@ class GovernmentActionService
         }
 
         if (now()->diffInDays($dominion->round->start_date) < self::WAR_DAYS_AFTER_ROUND_START) {
-            throw new GameException('You cannot declare war for the first three days of the round');
+            throw new GameException('You cannot declare war for the first five days of the round');
         }
 
         GameEvent::create([

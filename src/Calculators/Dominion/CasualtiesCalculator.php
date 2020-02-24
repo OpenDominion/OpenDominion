@@ -90,7 +90,7 @@ class CasualtiesCalculator
                 $unitKey = "military_unit{$slot}";
 
                 $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
-                if ($unit->defense > 0) {
+                if ($unit->power_defense > 0) {
                     $totalUnitsAtHome += $target->{$unitKey};
                 }
 
@@ -234,7 +234,7 @@ class CasualtiesCalculator
 
                 // We have a unit with KI!
                 if ($unitsSentKISlot !== null) {
-                    $totalUnitsSent = array_sum($unitsSentKISlot);
+                    $totalUnitsSent = array_sum($unitsSentPerSlot);
                     $multiplier = ($unitsSentPerSlot[$unitsSentKISlot] / $totalUnitsSent);
                 }
             }
@@ -284,7 +284,7 @@ class CasualtiesCalculator
                 $slot = $unit->slot;
                 $unitKey = "military_unit{$slot}";
 
-                $unitsAtHomePerSlot[$slot] = $dominion->$unitKey;
+                $unitsAtHomePerSlot[$slot] = $dominion->{$unitKey};
 
                 if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
                     $unitsAtHomeRCLSlot = $slot;

@@ -396,10 +396,6 @@ class InvadeActionService
             }
         }
 
-        // Cap for max prestige based on land size
-        $maxPrestigeChange = max(($this->landCalculator->getTotalLand($dominion)) - $dominion->prestige, 0);
-        $attackerPrestigeChange = min($attackerPrestigeChange, $maxPrestigeChange);
-
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
                 // Unsuccessful invasions (bounces) give negative prestige immediately
@@ -566,6 +562,7 @@ class InvadeActionService
 
         // Reduce casualties if target has been hit recently
         $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
+        $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
 
         if ($recentlyInvadedCount === 1) {
             $defensiveCasualtiesPercentage *= 0.8;
@@ -592,7 +589,7 @@ class InvadeActionService
             $drafteesLost = 0;
         } else {
             $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion));
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null));
         }
         if ($drafteesLost > 0) {
             $target->military_draftees -= $drafteesLost;

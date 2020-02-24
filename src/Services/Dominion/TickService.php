@@ -407,6 +407,11 @@ class TickService
 
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
+        // Prestige Cap
+        if ($dominion->prestige > $totalLand) {
+            $tick->prestige -= ($dominion->prestige - $totalLand);
+        }
+
         // Population
         $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
