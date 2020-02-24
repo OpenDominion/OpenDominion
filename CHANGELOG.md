@@ -33,6 +33,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sylvan: Added -10% rezone cost
 - Dwarf: ore investments increased by 5%
 - Dwarf: Clerics now kill spirits and the undead
+- Undead: Mana production increased to +10% (from 5%)
+- Spirit: Food consumption increased to -80% (from -90%)
 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered

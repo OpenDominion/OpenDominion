@@ -6,7 +6,7 @@ description: >-
 home_land_type: swamp
 perks:
   max_population: 12.5
-  food_consumption: -90
+  food_consumption: -80
   immortal_wizards: 1
 units:
   - name: Phantom
