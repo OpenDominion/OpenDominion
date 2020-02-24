@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Nox: research point generation bonus reduced to 10% (from 15%)
 - Sylvan: Added -10% rezone cost
 - Dwarf: ore investments increased by 5%
+- Dwarf: Clerics now kill spirits and the undead
 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered

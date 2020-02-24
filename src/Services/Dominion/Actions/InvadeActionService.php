@@ -248,7 +248,7 @@ class InvadeActionService
             $this->handlePrestigeChanges($dominion, $target, $units);
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
-            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target);
+            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target, $units);
             $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties);
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
@@ -546,7 +546,7 @@ class InvadeActionService
      * @param Dominion $target
      * @return int
      */
-    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
+    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): int
     {
         if ($this->invasionResult['result']['overwhelmed'])
         {
@@ -592,7 +592,7 @@ class InvadeActionService
             $drafteesLost = 0;
         } else {
             $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null));
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion));
         }
         if ($drafteesLost > 0) {
             $target->military_draftees -= $drafteesLost;
@@ -608,7 +608,7 @@ class InvadeActionService
             }
 
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot));
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units));
 
             if ($slotLost > 0) {
                 $defensiveUnitsLost[$unit->slot] = $slotLost;
