@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Attacks that fail by 85% or more no longer cause double casualties
 - Prestige gains reduced on first hit, but increased on subsequent hits
 - Nox: research point generation bonus reduced to 10% (from 15%)
+- Sylvan: Added -10% rezone cost
 - Dwarf: ore investments increased by 5%
 
 ### Fixed

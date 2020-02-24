@@ -7,6 +7,7 @@ home_land_type: forest
 perks:
   lumber_production: 20
   food_production: 10
+  rezone_cost: -10
 units:
   - name: Satyr
     cost:
