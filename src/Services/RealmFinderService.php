@@ -15,9 +15,9 @@ class RealmFinderService
     protected const MAX_PACKS_PER_REALM = 2;
 
     /**
-     * @var int Coefficent for maximum number of players allowed in packs after the first
+     * @var int Maximum number of players allowed in packs in a single realm
      */
-    protected const MAX_PACK_SIZE_AFTER_FIRST = 0.5;
+    protected const MAX_PACKED_PLAYERS_PER_REALM = 5;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.
@@ -38,17 +38,13 @@ class RealmFinderService
         // Get a list of realms which are not full, disregarding pack status for now
         $realmQuery = Realm::query()
             ->with('packs.dominions')
-            ->withCount('dominions')
-            ->where([
-                'realms.round_id' => $round->id
-            ]);
+            ->where('round_id', $round->id);
 
         if (!$round->mixed_alignment) {
             $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);
         }
 
         $realms = $realmQuery->groupBy('realms.id')
-            ->having('dominions_count', '<', $round->realm_size)
             ->get()
             ->filter(static function ($realm) use ($round, $slotsNeeded, $forPack) {
                 // Check pack status
@@ -58,41 +54,22 @@ class RealmFinderService
                         if ($realm->packs->count() >= static::MAX_PACKS_PER_REALM) {
                             return false;
                         }
-                        // Check if new pack and an existing pack are both larger than
-                        $additionalPackMax = static::MAX_PACK_SIZE_AFTER_FIRST * $round->pack_size;
-                        if ($slotsNeeded > $additionalPackMax) {
-                            foreach ($realm->packs as $pack) {
-                                if ($pack->isClosed()) {
-                                    if ($pack->dominions->count() > $additionalPackMax) {
-                                        return false;
-                                    }
-                                } else {
-                                    if ($pack->size > $additionalPackMax) {
-                                        return false;
-                                    }
-                                }
-                            }
+                        // Check if multiple packs would exceed the per realm max
+                        if (($realm->totalPackSize() + $slotsNeeded) > static::MAX_PACKED_PLAYERS_PER_REALM) {
+                            return false;
                         }
                     }
                 }
 
-                $availableSlots = ($round->realm_size - $realm->dominions_count);
-                foreach ($realm->packs as $pack) {
-                    if ($pack->isClosed()) {
-                        continue;
-                    }
-
-                    $availableSlots -= ($pack->size - $pack->dominions->count());
-                }
-
+                // Check if realm has enough space
+                $availableSlots = ($round->realm_size - $realm->sizeAllocated());
                 /** @noinspection IfReturnReturnSimplificationInspection */
                 if ($availableSlots < $slotsNeeded) {
                     return false;
                 }
 
                 return true;
-            })
-            ->sortBy('dominions_count');
+            });
 
         if ($realms->count() == 0) {
             return null;
@@ -101,9 +78,20 @@ class RealmFinderService
         // Weight the random selection so that smallest realms
         // are chosen twice as often as ones with one additional player
         // and always chosen when all realms have two additional players
-        $smallestRealmSize = (int)$realms->min('dominions_count');
-        $realmsWeightedBySize = $realms->where('dominions_count', '=', $smallestRealmSize);
-        $realmsWeightedBySize = $realmsWeightedBySize->concat($realms->where('dominions_count', '<=', $smallestRealmSize + 1));
+        $realmsBySize = $realms->sortBy(function($realm) {
+            return $realm->sizeAllocated();
+        });
+        $smallestRealmSize = $realmsBySize->first()->sizeAllocated();
+
+        $realmsWeightedBySize = $realms->filter(function($realm) use ($smallestRealmSize) {
+            if ($realm->sizeAllocated() == $smallestRealmSize) {
+                return true;
+            }
+        })->concat($realms->filter(function($realm) use ($smallestRealmSize) {
+            if ($realm->sizeAllocated() == ($smallestRealmSize + 1)) {
+                return true;
+            }
+        }));
 
         return $realmsWeightedBySize->random();
     }
