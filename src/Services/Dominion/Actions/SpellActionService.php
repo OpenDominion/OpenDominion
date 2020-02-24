@@ -165,12 +165,21 @@ class SpellActionService
 
             if ($result['success'] && !$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $dominion->stat_spell_success += 1;
+            } else {
+                $dominion->stat_spell_failure += 1;
             }
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
                 'action' => $spellKey
             ]);
+
+            if ($target !== null) {
+                $target->save([
+                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'action' => $spellKey
+                ]);
+            }
         });
 
         if ($target !== null) {
@@ -478,6 +487,8 @@ class SpellActionService
                     }
                 }
 
+                $target->stat_wizards_executed += array_sum($unitsKilled);
+
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
                     $amountLabel = number_format($amount);
@@ -514,9 +525,10 @@ class SpellActionService
         $spellReflected = false;
         if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
             $spellReflected = true;
-            $deflectedBy = $target;
+            $reflectedBy = $target;
             $target = $dominion;
-            $dominion = $deflectedBy;
+            $dominion = $reflectedBy;
+            $dominion->stat_spells_reflected += 1;
         }
 
         if (isset($spellInfo['duration'])) {
@@ -584,7 +596,7 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, but it was deflected and it will now affect your dominion for the next %s hours.',
+                        'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for the next %s hours.',
                         $spellInfo['duration']
                     ),
                     'alert-type' => 'danger'
@@ -678,11 +690,6 @@ class SpellActionService
                 }
             }
 
-            $target->save([
-                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => $spellKey
-            ]);
-
             // Prestige Gains
             $prestigeGainString = '';
             if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) && $totalDamage > 0) {
@@ -719,7 +726,7 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, but it was deflected and your dominion lost %s.',
+                        'Your wizards cast the spell successfully, but it was reflected and your dominion lost %s.',
                         $damageString
                     ),
                     'wizardStrengthCost' => 5,

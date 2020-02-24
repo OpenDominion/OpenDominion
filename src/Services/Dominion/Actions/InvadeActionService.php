@@ -266,8 +266,10 @@ class InvadeActionService
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landConquered']);
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landGenerated']);
                 $dominion->stat_attacking_success += 1;
+                $target->stat_defending_failure += 1;
             } else {
                 $target->stat_defending_success += 1;
+                $dominion->stat_attacking_failure += 1;
             }
 
             // todo: move to GameEventService
