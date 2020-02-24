@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Valhalla pages for each user
 
 ### Changed
+- Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
 - Info ops spy/wizard strength cost reverted to 2% (from 1%)
 - Reduced damage and cost of Disband Spies to 1.5% and 4.3x (from 2% and 5x)
 - War cannot declared during the first 5 days of the round (up from 3)
