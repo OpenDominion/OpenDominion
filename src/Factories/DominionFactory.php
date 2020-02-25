@@ -45,6 +45,8 @@ class DominionFactory
             $startingBuildings
         );
 
+        $startingResources = $this->getStartingResources($realm->round);
+
         return Dominion::create([
             'user_id' => $user->id,
             'round_id' => $realm->round->id,
@@ -56,7 +58,7 @@ class DominionFactory
             'name' => $dominionName,
             'prestige' => 250,
 
-            'peasants' => 1300,
+            'peasants' => $startingResources['peasants'],
             'peasants_last_hour' => 0,
 
             'draft_rate' => 10,
@@ -64,11 +66,11 @@ class DominionFactory
             'spy_strength' => 100,
             'wizard_strength' => 100,
 
-            'resource_platinum' => 100000,
-            'resource_food' => 15000,
-            'resource_lumber' => 15000,
-            'resource_mana' => 0,
-            'resource_ore' => 0,
+            'resource_platinum' => $startingResources['resource_platinum'],
+            'resource_food' => $startingResources['resource_food'],
+            'resource_lumber' => $startingResources['resource_lumber'],
+            'resource_mana' => $startingResources['resource_mana'],
+            'resource_ore' => $startingResources['resource_ore'],
             'resource_gems' => 10000,
             'resource_tech' => 0,
             'resource_boats' => 0,
@@ -80,9 +82,9 @@ class DominionFactory
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
 
-            'military_draftees' => 100,
+            'military_draftees' => $startingResources['military_draftees'],
             'military_unit1' => 0,
-            'military_unit2' => 150,
+            'military_unit2' => $startingResources['military_unit2'],
             'military_unit3' => 0,
             'military_unit4' => 0,
             'military_spies' => 25,
@@ -208,5 +210,38 @@ class DominionFactory
         $startingLand[$race->home_land_type] += $startingBuildings['home'];
 
         return $startingLand;
+    }
+
+    /**
+     * Get amount of total starting non-land, non-building resources,
+     * factoring in additional resources due to late start.
+     *
+     * @param Round $round
+     * @return array
+     */
+    protected function getStartingResources(Round $round): array
+    {
+        $days = 0;
+        if ($round->hasStarted()) {
+            $daysLate = now()->diffInDays($round->start_date);
+            if ($daysLate >= 3) {
+                // Additional resources are not added until after the third day of the round
+                $days = $daysLate;
+            }
+        }
+
+        // Based on additional starting resource formula in Blackreign's Sim
+        $startingResources = [
+            'peasants' => 1300 + (100 * $days),
+            'resource_platinum' => 100000 + (5000 * $days),
+            'resource_food' => 15000 + (1500 * $days),
+            'resource_lumber' => 15000 + (2500 * $days),
+            'resource_ore' => 0 + (2500 * $days),
+            'resource_mana' => 0 + (1000 * $days),
+            'military_unit2' => 150 + (30 * $days),
+            'military_draftees' => 100 + (30 * $days),
+        ];
+
+        return $startingResources;
     }
 }
