@@ -7,6 +7,7 @@ home_land_type: forest
 perks:
   lumber_production: 20
   food_production: 10
+  rezone_cost: -10
 units:
   - name: Satyr
     cost:
@@ -31,7 +32,7 @@ units:
       defense: 3
     perks:
       counts_as_wizard_offense: 0.2
-      counts_as_wizard_defense: 0.5
+      counts_as_wizard_defense: 0.333
       defense_from_land: forest,20,4 # land type, ratio%, max
   - name: Centaur
     cost:

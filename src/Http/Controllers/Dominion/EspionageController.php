@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\EspionageCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\EspionageHelper;
@@ -22,6 +23,7 @@ class EspionageController extends AbstractDominionController
             'espionageCalculator' => app(EspionageCalculator::class),
             'espionageHelper' => app(EspionageHelper::class),
             'landCalculator' => app(LandCalculator::class),
+            'militaryCalculator' => app(MilitaryCalculator::class),
             'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class),
         ]);

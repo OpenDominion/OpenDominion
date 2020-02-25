@@ -51,6 +51,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'castle bonuses';
                 break;
+            case 'invest_bonus_ore':
+                $negativeBenefit = false;
+                $description = 'ore investment';
+                break;
             case 'lumber_production':
                 $negativeBenefit = false;
                 $description = 'lumber production';
@@ -78,6 +82,10 @@ class RaceHelper
             case 'population_growth':
                 $negativeBenefit = false;
                 $description = 'Population growth';
+                break;
+            case 'rezone_cost':
+                $negativeBenefit = true;
+                $description = 'rezone cost';
                 break;
             case 'spy_strength':
                 $negativeBenefit = false;
@@ -159,6 +167,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Castle bonuses';
                 break;
+            case 'invest_bonus_ore':
+                $negativeBenefit = false;
+                $description = 'Ore investment';
+                break;
             case 'lumber_production':
                 $negativeBenefit = false;
                 $description = 'Lumber production';
@@ -187,13 +199,17 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Population growth';
                 break;
-            case 'tech_production':
-                $negativeBenefit = false;
-                $description = 'Research point gains';
+            case 'rezone_cost':
+                $negativeBenefit = true;
+                $description = 'Rezone cost';
                 break;
             case 'spy_strength':
                 $negativeBenefit = false;
                 $description = 'Spy strength';
+                break;
+            case 'tech_production':
+                $negativeBenefit = false;
+                $description = 'Research point gains';
                 break;
             case 'wizard_strength':
                 $negativeBenefit = false;

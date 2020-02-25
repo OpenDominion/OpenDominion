@@ -83,6 +83,9 @@ class RezoningCalculator
             ($factoryReductionMax / 100)
         );
 
+        // Racial Bonus
+        $multiplier *= (1 + $dominion->race->getPerkMultiplier('rezone_cost'));
+
         // Techs
         $multiplier *= (1 + $dominion->getTechPerkMultiplier('rezone_cost'));
 

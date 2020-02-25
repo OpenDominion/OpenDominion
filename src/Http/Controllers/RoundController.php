@@ -180,10 +180,8 @@ class RoundController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
-        if ($round->isActive()) {
-            $dominionSelectorService = app(SelectorService::class);
-            $dominionSelectorService->selectUserDominion($dominion);
-        }
+        $dominionSelectorService = app(SelectorService::class);
+        $dominionSelectorService->selectUserDominion($dominion);
 
         // todo: fire laravel event
         $analyticsService = app(AnalyticsService::class);

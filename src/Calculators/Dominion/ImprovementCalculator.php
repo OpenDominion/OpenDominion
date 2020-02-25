@@ -73,7 +73,7 @@ class ImprovementCalculator
         $coefficients = [
             'science' => 4000,
             'keep' => 4000,
-            'towers' => 5000,
+            'towers' => 4000,
             'forges' => 7500,
             'walls' => 7500,
             'harbor' => 5000,

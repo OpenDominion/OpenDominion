@@ -2,7 +2,7 @@ name: Halfling
 alignment: good
 description: >-
   <p>The only creature to match drinking pace with a Dwarf, Halflings are a cheerful and adventurous race with a mischievous streak. Hairy feet and light fingers characterise Halflings, who are just as quick to steal a pie from a neighbour as they are to line their pockets with the hard-earned platinum of a foreigner.</p>
-  <p>Despite their happy-go-lucky natures, Halflings can be very dangerous when cornered, flying into a wild frenzy whenever their friends are threatened.</p>>
+  <p>Despite their happy-go-lucky natures, Halflings can be very dangerous when cornered, flying into a wild frenzy whenever their friends are threatened.</p>
 home_land_type: hill
 perks:
   max_population: 5

@@ -6,7 +6,7 @@ description: >-
 home_land_type: swamp
 perks:
   max_population: 12.5
-  mana_production: 5
+  mana_production: 10
   food_consumption: -75
   immortal_wizards: 1
 units:

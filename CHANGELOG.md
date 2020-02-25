@@ -3,9 +3,53 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
-- Assassinate wizards will no longer work against undead
-- Disband spies will now add the correct number of draftees
+### Added
+- Spirit and Nomad have returned!
+- Show war information on each realm page
+- Valhalla pages for each user
 - Late signups will now be awarded additional starting resources after the third day of the round
+
+### Changed
+- Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
+- Info ops spy/wizard strength cost reverted to 2% (from 1%)
+- Reduced damage and cost of Disband Spies to 1.5% and 4.3x (from 2% and 5x)
+- War cannot declared during the first 5 days of the round (up from 3)
+- Wizard strength refresh rate increased by 1% when below 30%
+- Mana production bonus added to Towers improvement and increased rate of investment
+- Wizard Guilds now reduce losses on failed black op spells by 3% per 1% owned up to a maximum of 30% at 10% owned
+- Forest Havens reworked
+  - Spy Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned
+  - Spy training reduced by 2% per 1% owned, up to a maximum of 40% at 20% owned
+  - Fireball protection increased to 10% per 1% owned
+  - Platinum theft protection removed
+  - Defense bonus removed
+- Surreal Perception now applies to info ops, duration increased to 12 (from 8), cost reduced to 3x (from 4x)
+- Energy Mirror duration increased to 12 (from 8), cost increased to 4x (from 3x)
+- Fool's Gold cooldown reduced to 20 (from 22)
+- Research points gained on invasion reduced to 17 per acre (from 20 per acre)
+- Tech cost multiplier reduced to 6.4 (from 6.426)
+- Land bonus now awards 128 research points
+- Attacks that fail by 85% or more no longer cause double casualties
+- Prestige gains reduced on first hit, but increased on subsequent hits
+- Nox: research point generation bonus reduced to 10% (from 15%)
+- Sylvan: Added -10% rezone cost
+- Sylvan: Dryad changed to 1/3 wizard on defense (from 1/2)
+- Dark Elf: Adept changed to 1/3 wizard on defense (from 1/2)
+- Dwarf: ore investments increased by 5%
+- Dwarf: Clerics now kill spirits and the undead
+- Undead: Mana production increased to +10% (from 5%)
+- Spirit: Food consumption increased to -80% (from -90%)
+
+### Fixed
+- Generated land from invasion will now count toward total land conquered
+- Total number of realms no longer visible before round start
+
+## [0.8.0-7] - 2020-02-17
+### Fixed
+- Assassinate wizards will no longer work against undead
+- Disband spies will now add the correct number of draftees]
+- War ops buttons are no longer dimmed when targeting a dominion that recently invaded you
+- Percentage calculations in archived survey dominion operations have been corrected
 
 ## [0.8.0-6] - 2020-01-19
 ### Fixed
