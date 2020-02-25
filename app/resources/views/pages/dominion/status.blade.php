@@ -187,6 +187,17 @@
                         <p>You will leave protection on {{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}.</p>
                         @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
                             <p>No production occurs until you have less than 71 hours of protection remaining.</p>
+                            <p>Made a mistake? You can restart your dominion before the first tick.</p>
+                            <form id="restart-dominion" class="form-inline" action="{{ route('dominion.misc.restart') }}" method="post">
+                                @csrf
+                                <div class="form-group">
+                                    <select class="form-control">
+                                        <option value="0">Restart?</option>
+                                        <option value="1">Confirm Restart</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary" disabled>Submit</button>
+                                </div>
+                            </form>
                         @endif
                     </div>
                 </div>
@@ -302,3 +313,18 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('#restart-dominion select').change(function() {
+                var confirm = $(this).val();
+                if (confirm == "1") {
+                    $('#restart-dominion button').prop('disabled', false);
+                } else {
+                    $('#restart-dominion button').prop('disabled', true);
+                }
+            });
+        })(jQuery);
+    </script>
+@endpush
