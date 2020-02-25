@@ -28,16 +28,28 @@ class ImprovementCalculator
      */
     public function getImprovementMultiplierBonus(Dominion $dominion, string $improvementType): float
     {
-        $efficiencyPerMasonry = 2.75;
-
         $improvementPoints = $dominion->{'improvement_' . $improvementType};
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         $multiplier = $this->getImprovementMaximum($improvementType)
             * (1 - exp(-$improvementPoints / ($this->getImprovementCoefficient($improvementType) * $totalLand + 15000)))
-            * (1 + (($dominion->building_masonry * $efficiencyPerMasonry) / $totalLand));
+            * $this->getImprovementMultiplier($dominion);
 
         return round($multiplier, 4);
+    }
+
+    /**
+     * Returns the Dominion's improvement multiplier.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getImprovementMultiplier(Dominion $dominion): float
+    {
+        $efficiencyPerMasonry = 2.75;
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+
+        return (1 + (($dominion->building_masonry * $efficiencyPerMasonry) / $totalLand));
     }
 
     /**
