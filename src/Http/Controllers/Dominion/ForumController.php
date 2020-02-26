@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Forum\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Forum\CreateThreadRequest;
-use OpenDominion\Models\Forum;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Forum;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\ForumService;
 

@@ -4,8 +4,8 @@ namespace OpenDominion\Services;
 
 use DB;
 use Illuminate\Database\Eloquent\Collection;
-use OpenDominion\Models\Forum;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Forum;
 use OpenDominion\Models\Round;
 use OpenDominion\Traits\DominionGuardsTrait;
 use RuntimeException;
@@ -100,7 +100,7 @@ class ForumService
                 'deleted_at' => now(),
             ]);
 
-            $thread->body = "_This post has been deleted._";
+            $thread->body = '_This post has been deleted._';
             $thread->save();
         }
     }
