@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
-@section('page-header', 'Council')
+@section('page-header', 'Forum')
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-group"></i> Council: Create Thread</h3>
+            <h3 class="box-title"><i class="fa fa-comments"></i> Forum: Create Thread</h3>
         </div>
-        <form action="{{ route('dominion.council.create') }}" method="post" class="form-horizontal" role="form">
+        <form action="{{ route('dominion.forum.create') }}" method="post" class="form-horizontal" role="form">
             @csrf
             <div class="box-body">
 

@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
-@section('page-header', 'Council')
+@section('page-header', 'Forum')
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-group"></i> Council Thread: {{ $thread->title }}</h3>
+            <h3 class="box-title"><i class="fa fa-comments"></i> Forum Thread: {{ $thread->title }}</h3>
             <div class="pull-right">
-                <a href="{{ route('dominion.council') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
+                <a href="{{ route('dominion.forum') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
             </div>
         </div>
         <div class="box-body">
@@ -20,14 +20,12 @@
                     @if ($thread->dominion->isMonarch())
                         <i class="ra ra-queen-crown text-red"></i>
                     @endif
-                    <b>{{ $thread->dominion->name }}</b>
-                    @if ($thread->dominion->name !== $thread->dominion->ruler_name)
-                        ({{ $thread->dominion->ruler_name }})
-                    @endif
+                    <b>{{ $thread->dominion->ruler_name }}</b> ruler of <b>{{ $thread->dominion->name }}</b>
+                    (#{{ $thread->dominion->realm->number }})
                 </i>
             </small>
-            @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
-                <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+            @if ($selectedDominion->id == $thread->dominion->id)
+                <a href="{{ route('dominion.forum.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
             @endif
         </div>
     </div>
@@ -45,14 +43,12 @@
                             @if ($post->dominion->isMonarch())
                                 <i class="ra ra-queen-crown text-red"></i>
                             @endif
-                            <b>{{ $post->dominion->name }}</b>
-                            @if ($post->dominion->name !== $post->dominion->ruler_name)
-                                ({{ $post->dominion->ruler_name }})
-                            @endif
+                            <b>{{ $post->dominion->name }}</b> ruler of <b>{{ $post->dominion->ruler_name }}</b>
+                            (#{{ $post->dominion->realm->number }})
                         </i>
                     </small>
-                    @if ($selectedDominion->isMonarch() || $selectedDominion->id == $post->dominion->id)
-                        <a href="{{ route('dominion.council.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
+                    @if ($selectedDominion->id == $post->dominion->id)
+                        <a href="{{ route('dominion.forum.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
                     @endif
                 </div>
             </div>
@@ -63,7 +59,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">Post Reply</h3>
         </div>
-        <form action="{{ route('dominion.council.reply', $thread) }}" method="post" class="form-horizontal" role="form">
+        <form action="{{ route('dominion.forum.reply', $thread) }}" method="post" class="form-horizontal" role="form">
             @csrf
             <div class="box-body">
 

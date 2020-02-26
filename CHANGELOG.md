@@ -4,8 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Added
-- Spirit and Nomad have returned!
-- Show war information on each realm page
+- Spirit and Nomad are playable once again
+- Global Forum for all dominions
+- War information on each realm page
+- New magic and espionage statistics
 - Valhalla pages for each user
 - A dominion can now be restarted prior to the first tick
 - Late signups will now be awarded additional starting resources after the third day of the round
@@ -44,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Generated land from invasion will now count toward total land conquered
 - Total number of realms no longer visible before round start
+- Unfilled pack slots are now considered during realm assignment
 
 ## [0.8.0-7] - 2020-02-17
 ### Fixed

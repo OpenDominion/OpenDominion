@@ -4,46 +4,46 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
-use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
-use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
-use OpenDominion\Models\Council;
+use OpenDominion\Http\Requests\Dominion\Forum\CreatePostRequest;
+use OpenDominion\Http\Requests\Dominion\Forum\CreateThreadRequest;
+use OpenDominion\Models\Forum;
 use OpenDominion\Models\Dominion;
-use OpenDominion\Models\Realm;
-use OpenDominion\Services\CouncilService;
+use OpenDominion\Models\Round;
+use OpenDominion\Services\ForumService;
 
-class CouncilController extends AbstractDominionController
+class ForumController extends AbstractDominionController
 {
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
-        $this->updateDominionCouncilLastRead($dominion);
-        $councilService = app(CouncilService::class);
+        //$this->updateDominionForumLastRead($dominion);
+        $forumService = app(ForumService::class);
 
-        $threads = $councilService->getThreads($dominion->realm);
+        $threads = $forumService->getThreads($dominion->round);
 
-        return view('pages.dominion.council.index', [
-            'councilThreads' => $threads,
-            'realm' => $dominion->realm,
+        return view('pages.dominion.forum.index', [
+            'forumThreads' => $threads,
+            'round' => $dominion->round,
         ]);
     }
 
     public function getCreate() // getCreateThread?
     {
         $dominion = $this->getSelectedDominion();
-        $realm = $dominion->realm;
+        $round = $dominion->round;
 
-        return view('pages.dominion.council.create', compact(
-            'realm'
+        return view('pages.dominion.forum.create', compact(
+            'round'
         ));
     }
 
     public function postCreate(CreateThreadRequest $request) // postCreateThread
     {
         $dominion = $this->getSelectedDominion();
-        $councilService = app(CouncilService::class);
+        $forumService = app(ForumService::class);
 
         try {
-            $thread = $councilService->createThread(
+            $thread = $forumService->createThread(
                 $dominion,
                 $request->get('title'),
                 $request->get('body')
@@ -58,52 +58,52 @@ class CouncilController extends AbstractDominionController
         // todo: fire laravel event
 //        $analyticsService = app(AnalyticsService::class);
 //        $analyticsService->queueFlashEvent(new Event( // todo: contract
-//            'council',
+//            'forum',
 //            'create-thread',
 //            $thread->title, // ?
 //            null
 //        ));
 
         $request->session()->flash('alert-success', 'Your thread has been created');
-        return redirect()->route('dominion.council.thread', $thread);
+        return redirect()->route('dominion.forum.thread', $thread);
     }
 
-    public function getThread(Council\Thread $thread)
+    public function getThread(Forum\Thread $thread)
     {
         try {
-            $this->guardAgainstCrossRealm($thread);
+            $this->guardAgainstCrossRound($thread);
         } catch (GameException $e) {
             return redirect()
-                ->route('dominion.council')
+                ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
         $dominion = $this->getSelectedDominion();
-        $this->updateDominionCouncilLastRead($dominion);
+        //$this->updateDominionForumLastRead($dominion);
 
         $thread->load(['dominion.user', 'posts.dominion.user']);
 
-        return view('pages.dominion.council.thread', compact(
+        return view('pages.dominion.forum.thread', compact(
             'thread'
         ));
     }
 
-    public function postReply(CreatePostRequest $request, Council\Thread $thread)
+    public function postReply(CreatePostRequest $request, Forum\Thread $thread)
     {
         try {
-            $this->guardAgainstCrossRealm($thread);
+            $this->guardAgainstCrossRound($thread);
         } catch (GameException $e) {
             return redirect()
-                ->route('dominion.council')
+                ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
         $dominion = $this->getSelectedDominion();
-        $councilService = app(CouncilService::class);
+        $forumService = app(ForumService::class);
 
         try {
             // todo: $post = ... and navigate to anchor with post id on page?
-            $councilService->postReply($dominion, $thread, $request->get('body'));
+            $forumService->postReply($dominion, $thread, $request->get('body'));
 
         } catch (GameException $e) {
             return redirect()->back()
@@ -114,134 +114,132 @@ class CouncilController extends AbstractDominionController
         // todo: fire laravel event
 //        $analyticsService = app(AnalyticsService::class);
 //        $analyticsService->queueFlashEvent(new Event( // todo: contract
-//            'dominion.council',
+//            'dominion.forum',
 //            'create-post',
 //            $thread->title, // ?
 //            null
 //        ));
 
         $request->session()->flash('alert-success', 'Your message has been posted');
-        return redirect()->route('dominion.council.thread', $thread);
+        return redirect()->route('dominion.forum.thread', $thread);
     }
 
-    public function getDeletePost(Council\Post $post)
+    public function getDeletePost(Forum\Post $post)
     {
         try {
             $this->guardForPost($post);
         } catch (GameException $e) {
             return redirect()
-                ->route('dominion.council')
+                ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
         $post->load(['dominion.user']);
 
-        return view('pages.dominion.council.delete-post', compact(
+        return view('pages.dominion.forum.delete-post', compact(
             'post'
         ));
     }
 
-    public function postDeletePost(Request $request, Council\Post $post)
+    public function postDeletePost(Request $request, Forum\Post $post)
     {
         $dominion = $this->getSelectedDominion();
-        $councilService = app(CouncilService::class);
+        $forumService = app(ForumService::class);
 
         try {
             $this->guardForPost($post);
         } catch (GameException $e) {
             return redirect()
-                ->route('dominion.council')
+                ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
-        $councilService->deletePost($dominion, $post);
+        $forumService->deletePost($dominion, $post);
 
         $request->session()->flash('alert-success', 'Post successfully deleted.');
-        return redirect()->route('dominion.council.thread', $post->thread);
+        return redirect()->route('dominion.forum.thread', $post->thread);
     }
 
-    public function getDeleteThread(Council\Thread $thread)
+    public function getDeleteThread(Forum\Thread $thread)
     {
         try {
             $this->guardForThread($thread);
         } catch (GameException $e) {
             return redirect()
-                ->route('dominion.council')
+                ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
         $thread->load(['dominion.user', 'posts.dominion.user']);
 
-        return view('pages.dominion.council.delete-thread', compact(
+        return view('pages.dominion.forum.delete-thread', compact(
             'thread'
         ));
     }
 
-    public function postDeleteThread(Request $request, Council\Thread $thread)
+    public function postDeleteThread(Request $request, Forum\Thread $thread)
     {
         $dominion = $this->getSelectedDominion();
-        $councilService = app(CouncilService::class);
+        $forumService = app(ForumService::class);
 
         try {
             $this->guardForThread($thread);
         } catch (GameException $e) {
             return redirect()
-                ->route('dominion.council')
+                ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
-        if ($dominion->isMonarch() || $thread->posts->isEmpty()) {
-            $councilService->deleteThread($dominion, $thread);
-            $request->session()->flash('alert-success', 'Thread successfully deleted.');
-        } else {
-            $request->session()->flash('alert-danger', 'Cannot delete a non-empty thread.');
-        }
+        $forumService->deleteThread($dominion, $thread);
 
-        return redirect()->route('dominion.council');
+        $request->session()->flash('alert-success', 'Thread successfully deleted.');
+        return redirect()->route('dominion.forum');
     }
 
     /**
-     * Throws exception if trying to view a thread outside of your realm.
+     * Throws exception if trying to view a thread outside of the round.
      *
-     * @param Council\Thread $thread
+     * @param Forum\Thread $thread
      * @throws GameException
      */
-    protected function guardAgainstCrossRealm(Council\Thread $thread): void
+    protected function guardAgainstCrossRound(Forum\Thread $thread): void
     {
-        if ($this->getSelectedDominion()->realm->id !== (int)$thread->realm_id) {
+        if ($this->getSelectedDominion()->round_id !== (int)$thread->round_id) {
             throw new GameException('No permission to view thread.');
         }
     }
 
     /**
-     * Throws exception if the selected dominion is not the thread's creator or realm monarch.
+     * Throws exception if the selected dominion is not the thread's creator.
      *
      * @param Thread $thread
      * @throws GameException
      */
-    protected function guardForThread(Council\Thread $thread): void
+    protected function guardForThread(Forum\Thread $thread): void
     {
-        if ($this->getSelectedDominion()->id !== (int)$thread->dominion_id && $this->getSelectedDominion()->id !== (int)$thread->realm->monarch_dominion_id) {
+        if ($this->getSelectedDominion()->id !== (int)$thread->dominion_id) {
             throw new GameException('No permission to moderate thread.');
         }
     }
 
     /**
-     * Throws exception if the selected dominion is not the post's creator or realm monarch.
+     * Throws exception if the selected dominion is not the post's creator.
      *
      * @param Post $post
      * @throws GameException
      */
-    protected function guardForPost(Council\Post $post): void
+    protected function guardForPost(Forum\Post $post): void
     {
-        if ($this->getSelectedDominion()->id !== (int)$post->dominion_id && $this->getSelectedDominion()->id !== (int)$post->thread->realm->monarch_dominion_id) {
+        if ($this->getSelectedDominion()->id !== (int)$post->dominion_id) {
             throw new GameException('No permission to moderate post.');
         }
     }
 
-    protected function updateDominionCouncilLastRead(Dominion $dominion): void
+    /*
+    protected function updateDominionForumLastRead(Dominion $dominion): void
     {
-        $dominion->council_last_read = now();
+        $dominion->forum_last_read = now();
         $dominion->save();
     }
+    */
 }

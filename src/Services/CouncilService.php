@@ -78,4 +78,32 @@ class CouncilService
             'body' => $body,
         ]);
     }
+
+    /**
+     * Deletes a council thread.
+     *
+     * @param Dominion $dominion
+     * @param Council\Thread $thread
+     * @return void
+     * @throws RuntimeException
+     */
+    public function deleteThread(Dominion $dominion, Council\Thread $thread): void
+    {
+        $this->guardLockedDominion($dominion);
+        $thread->delete();
+    }
+
+    /**
+     * Deletes a council post.
+     *
+     * @param Dominion $dominion
+     * @param Council\Post $post
+     * @return void
+     * @throws RuntimeException
+     */
+    public function deletePost(Dominion $dominion, Council\Post $post): void
+    {
+        $this->guardLockedDominion($dominion);
+        $post->delete();
+    }
 }

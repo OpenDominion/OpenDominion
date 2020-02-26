@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', 'Council')
+@section('page-header', 'Forum')
 
 @section('content')
     <div class="row">
@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-group"></i> Council: {{ $realm->name }} (#{{ number_format($realm->number) }})</h3>
+                    <h3 class="box-title"><i class="fa fa-comments"></i> Forum: {{ $round->name }}</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
@@ -28,27 +28,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (!$councilThreads->isEmpty())
-                                @foreach ($councilThreads as $thread)
+                            @if (!$forumThreads->isEmpty())
+                                @foreach ($forumThreads as $thread)
                                     <tr>
                                         {{--<td class="text-center align-middle">
                                             <i class="fa fa-star"></i>
                                         </td>--}}
                                         <td>
-                                            <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
+                                            <a href="{{ route('dominion.forum.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                             <small class="text-muted">
                                                 Created {{ $thread->created_at }} by 
                                                 @if ($thread->dominion->isMonarch())
                                                     <i class="ra ra-queen-crown text-red"></i>
                                                 @endif
                                                 <b>{{ $thread->dominion->name }}</b>
-                                                @if ($thread->dominion->name !== $thread->dominion->ruler_name)
-                                                    ({{ $thread->dominion->ruler_name }})
-                                                @endif
+                                                (#{{ $thread->dominion->realm->number }})
                                             </small>
-                                            @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
-                                                <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
-                                            @endif
                                         </td>
                                         <td class="text-center align-middle">
                                             {{ number_format($thread->posts->count()) }}
@@ -65,9 +60,7 @@
                                                         <i class="ra ra-queen-crown text-red"></i>
                                                     @endif
                                                     <b>{{ $thread->posts->last()->dominion->name }}</b>
-                                                    @if ($thread->posts->last()->dominion->name !== $thread->posts->last()->dominion->ruler_name)
-                                                        ({{ $thread->posts->last()->dominion->ruler_name }})
-                                                    @endif
+                                                    (#{{ $thread->posts->last()->dominion->realm->number }})
                                                 </small>
                                             @else
                                                 None
@@ -85,7 +78,7 @@
                 </div>
                 <div class="box-footer {{--clearfix--}}">
                     @if (!$selectedDominion->isLocked())
-                        <a href="{{ route('dominion.council.create') }}" class="btn btn-primary">New Thread</a>
+                        <a href="{{ route('dominion.forum.create') }}" class="btn btn-primary">New Thread</a>
                     @else
                         <button class="btn btn-primary disabled">New Thread</button>
                     @endif
@@ -99,9 +92,9 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The council is where you can communicate with the rest of your realm. Only you and other dominions inside your realm can view and post in here.</p>
-                    {{--<p>Your realm monarch is X and has the power to moderate the council board.</p>--}}
-                    <p>There {{ ($councilThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($councilThreads->count()) }} {{ str_plural('thread', $councilThreads->count()) }} {{--and {{ number_format($councilThreads->posts->count()) }} {{ str_plural('post', $councilThreads->posts->count()) }} --}}in the council.</p>
+                    <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here.</p>
+                    {{--<p>Your realm monarch is X and has the power to moderate the forum board.</p>--}}
+                    <p>There {{ ($forumThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($forumThreads->count()) }} {{ str_plural('thread', $forumThreads->count()) }} {{--and {{ number_format($forumThreads->posts->count()) }} {{ str_plural('post', $forumThreads->posts->count()) }} --}}in the forum.</p>
                 </div>
             </div>
         </div>
