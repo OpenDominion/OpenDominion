@@ -32,7 +32,7 @@ class ForumService
             ->groupBy('forum_threads.id')
             ->orderBy('last_activity', 'desc')
             ->get(['forum_threads.*'])
-            ->filter(function($thread) {
+            ->filter(function ($thread) {
                 if ($thread->flagged_for_removal && $thread->unflaggedPosts->isEmpty()) {
                     return false;
                 }
@@ -137,7 +137,7 @@ class ForumService
     {
         $this->guardLockedDominion($dominion);
 
-        if (!$thread->flagged_by || !isset($thread->flagged_by['dominion_ids']) || !isset($thread->flagged_by['realm_ids']) ) {
+        if (!$thread->flagged_by || !isset($thread->flagged_by['dominion_ids']) || !isset($thread->flagged_by['realm_ids'])) {
             $dominion_ids = [$dominion->id];
             $realm_ids = [$dominion->realm_id];
         } else {
@@ -154,7 +154,7 @@ class ForumService
             'realm_ids' => $realm_ids,
         ];
 
-        // Remove thread if it has been flagged by 
+        // Remove thread if it has been flagged by
         // 5 different dominions from at least 3 different realms
         if (count($dominion_ids) >= 5 && count($realm_ids) >= 3) {
             $thread->flagged_for_removal = true;
@@ -175,7 +175,7 @@ class ForumService
     {
         $this->guardLockedDominion($dominion);
 
-        if (!$post->thread->flagged_by || !isset($post->thread->flagged_by['dominion_ids']) || !isset($post->thread->flagged_by['realm_ids']) ) {
+        if (!$post->thread->flagged_by || !isset($post->thread->flagged_by['dominion_ids']) || !isset($post->thread->flagged_by['realm_ids'])) {
             $dominion_ids = [$dominion->id];
             $realm_ids = [$dominion->realm_id];
         } else {
@@ -192,7 +192,7 @@ class ForumService
             'realm_ids' => $realm_ids,
         ];
 
-        // Remove post if it has been flagged by 
+        // Remove post if it has been flagged by
         // 5 different dominions from at least 3 different realms
         if (count($dominion_ids) >= 5 && count($realm_ids) >= 3) {
             $post->thread->flagged_for_removal = true;
