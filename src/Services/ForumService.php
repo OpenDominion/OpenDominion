@@ -31,7 +31,13 @@ class ForumService
             ->leftJoin('forum_posts', 'forum_posts.forum_thread_id', '=', 'forum_threads.id')
             ->groupBy('forum_threads.id')
             ->orderBy('last_activity', 'desc')
-            ->get(['forum_threads.*']);
+            ->get(['forum_threads.*'])
+            ->filter(function($thread) {
+                if ($thread->flagged_for_removal && $thread->unflaggedPosts->isEmpty()) {
+                    return false;
+                }
+                return true;
+            });
     }
 
     /**
@@ -117,5 +123,81 @@ class ForumService
     {
         $this->guardLockedDominion($dominion);
         $post->delete();
+    }
+
+    /**
+     * Flags a forum thread for removal.
+     *
+     * @param Dominion $dominion
+     * @param Forum\Thread $thread
+     * @return void
+     * @throws RuntimeException
+     */
+    public function flagThread(Dominion $dominion, Forum\Thread $thread): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        if (!$thread->flagged_by || !isset($thread->flagged_by['dominion_ids']) || !isset($thread->flagged_by['realm_ids']) ) {
+            $dominion_ids = [$dominion->id];
+            $realm_ids = [$dominion->realm_id];
+        } else {
+            $dominion_ids = $thread->flagged_by['dominion_ids'];
+            $dominion_ids[] = $dominion->id;
+            $dominion_ids = array_unique($dominion_ids);
+            $realm_ids = $thread->flagged_by['realm_ids'];
+            $realm_ids[] = $dominion->realm_id;
+            $realm_ids = array_unique($realm_ids);
+        }
+
+        $thread->flagged_by = [
+            'dominion_ids' => $dominion_ids,
+            'realm_ids' => $realm_ids,
+        ];
+
+        // Remove thread if it has been flagged by 
+        // 5 different dominions from at least 3 different realms
+        if (count($dominion_ids) >= 5 && count($realm_ids) >= 3) {
+            $thread->flagged_for_removal = true;
+        }
+
+        $thread->save();
+    }
+
+    /**
+     * Flags a forum post for removal.
+     *
+     * @param Dominion $dominion
+     * @param Forum\Post $post
+     * @return void
+     * @throws RuntimeException
+     */
+    public function flagPost(Dominion $dominion, Forum\Post $post): void
+    {
+        $this->guardLockedDominion($dominion);
+
+        if (!$post->thread->flagged_by || !isset($post->thread->flagged_by['dominion_ids']) || !isset($post->thread->flagged_by['realm_ids']) ) {
+            $dominion_ids = [$dominion->id];
+            $realm_ids = [$dominion->realm_id];
+        } else {
+            $dominion_ids = $post->thread->flagged_by['dominion_ids'];
+            $dominion_ids[] = $dominion->id;
+            $dominion_ids = array_unique($dominion_ids);
+            $realm_ids = $post->thread->flagged_by['realm_ids'];
+            $realm_ids[] = $dominion->realm_id;
+            $realm_ids = array_unique($realm_ids);
+        }
+
+        $post->thread->flagged_by = [
+            'dominion_ids' => $dominion_ids,
+            'realm_ids' => $realm_ids,
+        ];
+
+        // Remove post if it has been flagged by 
+        // 5 different dominions from at least 3 different realms
+        if (count($dominion_ids) >= 5 && count($realm_ids) >= 3) {
+            $post->thread->flagged_for_removal = true;
+        }
+
+        $post->thread->save();
     }
 }

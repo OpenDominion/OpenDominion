@@ -155,8 +155,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('forum/{thread}/reply')->uses('Dominion\ForumController@postReply')->name('forum.reply');
             $router->get('forum/{thread}/delete')->uses('Dominion\ForumController@getDeleteThread')->name('forum.delete.thread');
             $router->post('forum/{thread}/delete')->uses('Dominion\ForumController@postDeleteThread');
+            $router->get('forum/{thread}/flag')->uses('Dominion\ForumController@getFlagThread')->name('forum.flag.thread');
             $router->get('forum/post/{post}/delete')->uses('Dominion\ForumController@getDeletePost')->name('forum.delete.post');
             $router->post('forum/post/{post}/delete')->uses('Dominion\ForumController@postDeletePost');
+            $router->get('forum/post/{post}/flag')->uses('Dominion\ForumController@getFlagPost')->name('forum.flag.post');
 
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');

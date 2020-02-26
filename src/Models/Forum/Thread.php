@@ -15,6 +15,8 @@ use OpenDominion\Models\Round;
  * @property int $dominion_id
  * @property string $title
  * @property string $body
+ * @property bool $flagged_for_removal
+ * @property array $flagged_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
@@ -31,6 +33,10 @@ class Thread extends AbstractModel
 
     protected $table = 'forum_threads';
 
+    protected $casts = [
+        'flagged_by' => 'array',
+    ];
+
     public function dominion()
     {
         return $this->belongsTo(Dominion::class);
@@ -39,6 +45,11 @@ class Thread extends AbstractModel
     public function posts()
     {
         return $this->hasMany(Post::class, 'forum_thread_id');
+    }
+
+    public function unflaggedPosts()
+    {
+        return $this->posts()->where('flagged_for_removal', false);
     }
 
     public function round()

@@ -43,12 +43,12 @@ class ForumController extends AbstractDominionController
         $forumService = app(ForumService::class);
 
         try {
+            $this->guardAgainstRepeatOffenders();
             $thread = $forumService->createThread(
                 $dominion,
                 $request->get('title'),
                 $request->get('body')
             );
-
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
@@ -92,6 +92,7 @@ class ForumController extends AbstractDominionController
     {
         try {
             $this->guardAgainstCrossRound($thread);
+            $this->guardAgainstRepeatOffenders();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
@@ -196,6 +197,28 @@ class ForumController extends AbstractDominionController
         return redirect()->route('dominion.forum');
     }
 
+    public function getFlagPost(Request $request, Forum\Post $post)
+    {
+        $dominion = $this->getSelectedDominion();
+        $forumService = app(ForumService::class);
+
+        $forumService->flagPost($dominion, $post);
+
+        $request->session()->flash('alert-success', 'Post successfully flagged for removal.');
+        return redirect()->route('dominion.forum.thread', $post->thread);
+    }
+
+    public function getFlagThread(Request $request, Forum\Thread $thread)
+    {
+        $dominion = $this->getSelectedDominion();
+        $forumService = app(ForumService::class);
+
+        $forumService->flagThread($dominion, $thread);
+
+        $request->session()->flash('alert-success', 'Thread successfully flagged for removal.');
+        return redirect()->route('dominion.forum.thread', $thread);
+    }
+
     /**
      * Throws exception if trying to view a thread outside of the round.
      *
@@ -232,6 +255,20 @@ class ForumController extends AbstractDominionController
     {
         if ($this->getSelectedDominion()->id !== (int)$post->dominion_id) {
             throw new GameException('No permission to moderate post.');
+        }
+    }
+
+    /**
+     * Throws exception if the selected dominion has abused posting privileges
+     *
+     * @throws GameException
+     */
+    protected function guardAgainstRepeatOffenders(): void
+    {
+        $flaggedThreadCount = Forum\Post::where('flagged_for_removal', true)->where('dominion_id', $this->getSelectedDominion()->id)->count();
+        $flaggedPostCount = Forum\Post::where('flagged_for_removal', true)->where('dominion_id', $this->getSelectedDominion()->id)->count();
+        if (($flaggedThreadCount + $flaggedPostCount) >= 5) {
+            throw new GameException('You have been banned from posting for the remainder of the round.');
         }
     }
 

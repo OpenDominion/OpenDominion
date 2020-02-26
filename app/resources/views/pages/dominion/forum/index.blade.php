@@ -93,8 +93,8 @@
                 </div>
                 <div class="box-body">
                     <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here.</p>
-                    {{--<p>Your realm monarch is X and has the power to moderate the forum board.</p>--}}
                     <p>There {{ ($forumThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($forumThreads->count()) }} {{ str_plural('thread', $forumThreads->count()) }} {{--and {{ number_format($forumThreads->posts->count()) }} {{ str_plural('post', $forumThreads->posts->count()) }} --}}in the forum.</p>
+                    @include('partials.forum-rules')
                 </div>
             </div>
         </div>

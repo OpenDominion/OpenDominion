@@ -11,7 +11,12 @@
             </div>
         </div>
         <div class="box-body">
-            {!! Markdown::convertToHtml($thread->body) !!}
+            @if ($thread->flagged_for_removal)
+                <p class="text-danger"><i>This post has been flagged for removal.</i></p>
+                @include('partials.forum-rules')
+            @else
+                {!! Markdown::convertToHtml($thread->body) !!}
+            @endif
         </div>
         <div class="box-footer">
             <small>
@@ -24,9 +29,13 @@
                     (#{{ $thread->dominion->realm->number }})
                 </i>
             </small>
-            @if ($selectedDominion->id == $thread->dominion->id)
-                <a href="{{ route('dominion.forum.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
-            @endif
+            <div class="pull-right">
+                @if ($selectedDominion->id == $thread->dominion->id)
+                    <a href="{{ route('dominion.forum.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                @else
+                    <a href="{{ route('dominion.forum.flag.thread', $thread) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
+                @endif
+            </div>
         </div>
     </div>
 
@@ -34,7 +43,12 @@
         @foreach ($thread->posts as $post)
             <div class="box">
                 <div class="box-body">
-                    {!! Markdown::convertToHtml($post->body) !!}
+                    @if ($post->flagged_for_removal)
+                        <p class="text-danger"><i>This post has been flagged for removal.</i></p>
+                        @include('partials.forum-rules')
+                    @else
+                        {!! Markdown::convertToHtml($post->body) !!}
+                    @endif
                 </div>
                 <div class="box-footer">
                     <small>
@@ -47,9 +61,13 @@
                             (#{{ $post->dominion->realm->number }})
                         </i>
                     </small>
-                    @if ($selectedDominion->id == $post->dominion->id)
-                        <a href="{{ route('dominion.forum.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
-                    @endif
+                    <div class="pull-right">
+                        @if ($selectedDominion->id == $post->dominion->id)
+                            <a href="{{ route('dominion.forum.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
+                        @else
+                            <a href="{{ route('dominion.forum.flag.post', $post) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
+                        @endif
+                    </div>
                 </div>
             </div>
         @endforeach

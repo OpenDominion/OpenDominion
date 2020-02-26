@@ -13,6 +13,8 @@ use OpenDominion\Models\Dominion;
  * @property int $forum_thread_id
  * @property int $dominion_id
  * @property string $body
+ * @property bool $flagged_for_removal
+ * @property array $flagged_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Dominion $dominion
@@ -27,6 +29,10 @@ class Post extends AbstractModel
     use SoftDeletes;
 
     protected $table = 'forum_posts';
+
+    protected $casts = [
+        'flagged_by' => 'array',
+    ];
 
     public function dominion()
     {
