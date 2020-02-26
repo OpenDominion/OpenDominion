@@ -27,7 +27,7 @@ class ForumService
                 'forum_threads.*',
                 DB::raw('IFNULL(MAX(forum_posts.created_at), forum_threads.created_at) as last_activity')
             ])
-            ->with(['dominion.user', 'posts.dominion.user'])
+            ->with(['dominion.realm', 'posts.dominion.realm'])
             ->leftJoin('forum_posts', 'forum_posts.forum_thread_id', '=', 'forum_threads.id')
             ->groupBy('forum_threads.id')
             ->orderBy('last_activity', 'desc')

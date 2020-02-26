@@ -81,7 +81,7 @@ class CouncilController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $this->updateDominionCouncilLastRead($dominion);
 
-        $thread->load(['dominion.user', 'posts.dominion.user']);
+        $thread->load('dominion.realm', 'posts.dominion.realm');
 
         return view('pages.dominion.council.thread', compact(
             'thread'
@@ -134,8 +134,6 @@ class CouncilController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $post->load(['dominion.user']);
-
         return view('pages.dominion.council.delete-post', compact(
             'post'
         ));
@@ -170,7 +168,7 @@ class CouncilController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $thread->load(['dominion.user', 'posts.dominion.user']);
+        $thread->load('dominion.realm', 'posts.dominion.realm');
 
         return view('pages.dominion.council.delete-thread', compact(
             'thread'

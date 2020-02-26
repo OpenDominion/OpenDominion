@@ -81,7 +81,7 @@ class ForumController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         //$this->updateDominionForumLastRead($dominion);
 
-        $thread->load(['dominion.user', 'posts.dominion.user']);
+        $thread->load('dominion.realm', 'posts.dominion.realm');
 
         return view('pages.dominion.forum.thread', compact(
             'thread'
@@ -135,8 +135,6 @@ class ForumController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $post->load(['dominion.user']);
-
         return view('pages.dominion.forum.delete-post', compact(
             'post'
         ));
@@ -171,7 +169,7 @@ class ForumController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $thread->load(['dominion.user', 'posts.dominion.user']);
+        $thread->load('dominion.realm', 'posts.dominion.realm');
 
         return view('pages.dominion.forum.delete-thread', compact(
             'thread'

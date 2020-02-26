@@ -27,7 +27,7 @@ class CouncilService
                 'council_threads.*',
                 DB::raw('IFNULL(MAX(council_posts.created_at), council_threads.created_at) as last_activity')
             ])
-            ->with(['dominion.user', 'posts.dominion.user'])
+            ->with(['dominion.realm', 'posts.dominion.realm'])
             ->leftJoin('council_posts', 'council_posts.council_thread_id', '=', 'council_threads.id')
             ->groupBy('council_threads.id')
             ->orderBy('last_activity', 'desc')

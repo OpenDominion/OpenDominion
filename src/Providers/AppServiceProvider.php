@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\Actions\BankingCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
+use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
@@ -18,6 +19,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -30,6 +32,8 @@ use OpenDominion\Services\Dominion\Actions\DailyBonusesActionService;
 use OpenDominion\Services\Dominion\Actions\DestroyActionService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
+use OpenDominion\Services\Dominion\Actions\GovernmentActionService;
+use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
 use OpenDominion\Services\Dominion\Actions\InvadeActionService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
@@ -37,13 +41,18 @@ use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
 use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\Actions\TechActionService;
+use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
+use OpenDominion\Services\ForumService;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\PackService;
 use OpenDominion\Services\RealmFinderService;
 use Schema;
 
@@ -89,9 +98,11 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(LandCalculator::class);
         $this->app->singleton(MilitaryCalculator::class);
         $this->app->singleton(PopulationCalculator::class);
+        $this->app->singleton(PrestigeCalculator::class);
         $this->app->singleton(ProductionCalculator::class);
         $this->app->singleton(RangeCalculator::class);
         $this->app->singleton(SpellCalculator::class);
+        $this->app->singleton(TechCalculator::class);
 
         // Dominion Action Calculators
         $this->app->singleton(BankingCalculator::class);
@@ -111,6 +122,8 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(RealmFinderService::class);
 
         // Dominion Services
+        $this->app->singleton(GovernmentService::class);
+        $this->app->singleton(GuardMembershipService::class);
         $this->app->singleton(HistoryService::class);
         $this->app->singleton(InfoOpService::class);
         $this->app->singleton(ProtectionService::class);
@@ -127,10 +140,13 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(DestroyActionService::class);
         $this->app->singleton(EspionageActionService::class);
         $this->app->singleton(ExploreActionService::class);
+        $this->app->singleton(GovernmentActionService::class);
+        $this->app->singleton(GuardMembershipActionService::class);
         $this->app->singleton(ImproveActionService::class);
         $this->app->singleton(InvadeActionService::class);
         $this->app->singleton(ReleaseActionService::class);
         $this->app->singleton(RezoneActionService::class);
         $this->app->singleton(SpellActionService::class);
+        $this->app->singleton(TechActionService::class);
     }
 }
