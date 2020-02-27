@@ -22,7 +22,7 @@
                                 <col>
                                 <col width="10%">
                                 {{--<col width="100">--}}
-                                <col width="20%">
+                                <col width="25%">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -43,9 +43,9 @@
                                                 <a href="{{ route('dominion.forum.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                                 <small class="text-muted">
                                                     Created {{ $thread->created_at }} by 
-                                                    @if ($thread->dominion->isMonarch())
+                                                    {{--@if ($thread->dominion->isMonarch())
                                                         <i class="ra ra-queen-crown text-red"></i>
-                                                    @endif
+                                                    @endif--}}
                                                     <b>{{ $thread->dominion->name }}</b>
                                                     (#{{ $thread->dominion->realm->number }})
                                                 </small>
@@ -61,9 +61,9 @@
                                                     {{ $thread->posts->last()->created_at }}<br>
                                                     <small class="text-muted">
                                                         by
-                                                        @if ($thread->posts->last()->dominion->isMonarch())
+                                                        {{--@if ($thread->posts->last()->dominion->isMonarch())
                                                             <i class="ra ra-queen-crown text-red"></i>
-                                                        @endif
+                                                        @endif--}}
                                                         <b>{{ $thread->posts->last()->dominion->name }}</b>
                                                         (#{{ $thread->posts->last()->dominion->realm->number }})
                                                     </small>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="box-body">
                     <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here.</p>
-                    <p>There {{ ($forumThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($forumThreads->count()) }} {{ str_plural('thread', $forumThreads->count()) }} {{--and {{ number_format($forumThreads->posts->count()) }} {{ str_plural('post', $forumThreads->posts->count()) }} --}}in the forum.</p>
+                    <p>There {{ ($forumThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($forumThreads->count()) }} {{ str_plural('thread', $forumThreads->count()) }} in the forum.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>

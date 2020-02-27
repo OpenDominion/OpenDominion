@@ -17,7 +17,7 @@
                             <col>
                             <col width="10%">
                             {{--<col width="100">--}}
-                            <col width="20%">
+                            <col width="25%">
                         </colgroup>
                         <thead>
                             <tr>

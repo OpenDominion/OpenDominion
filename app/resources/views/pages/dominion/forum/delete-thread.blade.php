@@ -33,11 +33,7 @@
             <small>
                 <i>
                     Posted {{ $thread->created_at }} by
-                    @if ($thread->dominion->isMonarch())
-                        <i class="ra ra-queen-crown text-red"></i>
-                    @endif
-                    <b>{{ $thread->dominion->ruler_name }}</b> ruler of <b>{{ $thread->dominion->name }}</b>
-                    (#{{ $thread->dominion->realm->number }})
+                    <b>{{ $thread->dominion->name }}</b> (#{{ $thread->dominion->realm->number }})
                 </i>
             </small>
         </div>

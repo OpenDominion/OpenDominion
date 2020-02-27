@@ -29,11 +29,7 @@
             <small>
                 <i>
                     Posted {{ $post->created_at }} by
-                    @if ($post->dominion->isMonarch())
-                        <i class="ra ra-queen-crown text-red"></i>
-                    @endif
-                    <b>{{ $post->dominion->name }}</b> ruler of <b>{{ $post->dominion->ruler_name }}</b>
-                    (#{{ $post->dominion->realm->number }})
+                    <b>{{ $post->dominion->name }}</b> (#{{ $post->dominion->realm->number }})
                 </i>
             </small>
         </div>
