@@ -9,6 +9,7 @@ use OpenDominion\Http\Requests\Dominion\Forum\CreateThreadRequest;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Forum;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\ForumService;
 
 class ForumController extends AbstractDominionController
@@ -18,12 +19,14 @@ class ForumController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         //$this->updateDominionForumLastRead($dominion);
         $forumService = app(ForumService::class);
+        $protectionService = app(ProtectionService::class);
 
         $threads = $forumService->getThreads($dominion->round);
 
         return view('pages.dominion.forum.index', [
             'forumThreads' => $threads,
             'round' => $dominion->round,
+            'protectionService' => $protectionService,
         ]);
     }
 
@@ -31,6 +34,14 @@ class ForumController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $round = $dominion->round;
+
+        try {
+            $this->guardAgainstProtection();
+        } catch (GameException $e) {
+            return redirect()
+                ->route('dominion.forum')
+                ->withErrors([$e->getMessage()]);
+        }
 
         return view('pages.dominion.forum.create', compact(
             'round'
@@ -44,6 +55,7 @@ class ForumController extends AbstractDominionController
 
         try {
             $this->guardAgainstRepeatOffenders();
+            $this->guardAgainstProtection();
             $thread = $forumService->createThread(
                 $dominion,
                 $request->get('title'),
@@ -72,13 +84,14 @@ class ForumController extends AbstractDominionController
     {
         try {
             $this->guardAgainstCrossRound($thread);
+            $this->guardAgainstProtection();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
                 ->withErrors([$e->getMessage()]);
         }
 
-        $dominion = $this->getSelectedDominion();
+        //$dominion = $this->getSelectedDominion();
         //$this->updateDominionForumLastRead($dominion);
 
         $thread->load('dominion.realm', 'posts.dominion.realm');
@@ -93,6 +106,7 @@ class ForumController extends AbstractDominionController
         try {
             $this->guardAgainstCrossRound($thread);
             $this->guardAgainstRepeatOffenders();
+            $this->guardAgainstProtection();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
@@ -129,6 +143,7 @@ class ForumController extends AbstractDominionController
     {
         try {
             $this->guardForPost($post);
+            $this->guardAgainstProtection();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
@@ -147,6 +162,7 @@ class ForumController extends AbstractDominionController
 
         try {
             $this->guardForPost($post);
+            $this->guardAgainstProtection();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
@@ -163,6 +179,7 @@ class ForumController extends AbstractDominionController
     {
         try {
             $this->guardForThread($thread);
+            $this->guardAgainstProtection();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
@@ -183,6 +200,7 @@ class ForumController extends AbstractDominionController
 
         try {
             $this->guardForThread($thread);
+            $this->guardAgainstProtection();
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.forum')
@@ -267,6 +285,19 @@ class ForumController extends AbstractDominionController
         $flaggedPostCount = Forum\Post::where('flagged_for_removal', true)->where('dominion_id', $this->getSelectedDominion()->id)->count();
         if (($flaggedThreadCount + $flaggedPostCount) >= 5) {
             throw new GameException('You have been banned from posting for the remainder of the round.');
+        }
+    }
+
+    /**
+     * Throws exception if the selected dominion is still under protection
+     *
+     * @throws GameException
+     */
+    protected function guardAgainstProtection(): void
+    {
+        $protectionService = app(ProtectionService::class);
+        if ($protectionService->isUnderProtection($this->getSelectedDominion())) {
+            throw new GameException('You cannot access the forum while under protection.');
         }
     }
 
