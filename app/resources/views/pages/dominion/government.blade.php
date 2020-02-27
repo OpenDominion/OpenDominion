@@ -215,7 +215,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you view which realms you currently have war relations with. You cannot declare war for the first five days of the round.</p>
-                    <p>Once a war is active, dominions in both realms gain 5% Offensive Power when attacking members of the opposing realm. If both realms are actively at war with one another, that bonus increases to 10% Offensive Power.</p>
+                    <p>Once a war is active, dominions in both realms gain +5% Offensive Power as well as +15% land and prestige gains when attacking members of the opposing realm. If both realms are actively at war with one another, those bonuses increase to +10% Offensive Power and +20% land and prestige gains. Mutual war also awards prestige for successful black ops.</p>
                 </div>
             </div>
         </div>
