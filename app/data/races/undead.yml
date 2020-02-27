@@ -11,7 +11,7 @@ perks:
   immortal_wizards: 1
 units:
   - name: Skeleton
-    need_boat: false
+    need_boat: true
     cost:
       platinum: 225
       ore: 0
