@@ -270,7 +270,7 @@
                             </h4>
                             <ul class="text-left" style="padding: 0 50px;">
                                 <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
-                                <li>Hourly platinum production reduced by 2%.</li>
+                                <li>Hourly platinum production reduced by 2% (from Royal Guard).</li>
                                 <li>Exploration platinum cost increased by 25%.</li>
                             </ul>
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)
