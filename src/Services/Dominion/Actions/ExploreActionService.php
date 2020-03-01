@@ -76,23 +76,20 @@ class ExploreActionService
         }
 
         // todo: refactor. see training action service. same with other action services
-        $newMorale = max(0, ($dominion->morale - $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));
-        $moraleDrop = ($dominion->morale - $newMorale);
-
+        $moraleDrop = max(0, ($dominion->morale - $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));
         $platinumCost = ($this->explorationCalculator->getPlatinumCost($dominion) * $totalLandToExplore);
-        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
-
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
-        $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
-        DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees, $totalLandToExplore) {
+        DB::transaction(function () use ($dominion, $data, $moraleDrop, $platinumCost, $drafteeCost, $totalLandToExplore) {
+            // Refresh in transaction to prevent race condition
+            $dominion->refresh();
             $this->queueService->queueResources('exploration', $dominion, $data);
 
             $dominion->stat_total_land_explored += $totalLandToExplore;
             $dominion->fill([
-                'morale' => $newMorale,
-                'resource_platinum' => $newPlatinum,
-                'military_draftees' => $newDraftees,
+                'morale' => ($dominion->morale - $moraleDrop),
+                'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
+                'military_draftees' => ($dominion->military_draftees - $drafteeCost),
             ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
         });
 

@@ -102,28 +102,23 @@ class TrainActionService
             throw new GameException('Training aborted due to lack of wizards');
         }
 
-        $newPlatinum = ($dominion->resource_platinum - $totalCosts['platinum']);
-        $newOre = ($dominion->resource_ore - $totalCosts['ore']);
-        $newDraftees = ($dominion->military_draftees - $totalCosts['draftees']);
-        $newWizards = ($dominion->military_wizards - $totalCosts['wizards']);
+        // Specialists train in 9 hours
+        $nineHourData = [
+            'military_unit1' => $data['military_unit1'],
+            'military_unit2' => $data['military_unit2'],
+        ];
+        unset($data['military_unit1'], $data['military_unit2']);
 
-        DB::transaction(function () use ($dominion, $data, $newPlatinum, $newOre, $newDraftees, $newWizards) {
-            // Specialists train in 9 hours
-            $nineHourData = [
-                'military_unit1' => $data['military_unit1'],
-                'military_unit2' => $data['military_unit2'],
-            ];
-            unset($data['military_unit1'], $data['military_unit2']);
-
+        DB::transaction(function() use ($dominion, $totalCosts, $data, $nineHourData) {
+            // Refresh in transaction to prevent race condition
+            $dominion->refresh();
             $this->queueService->queueResources('training', $dominion, $nineHourData, 9);
             $this->queueService->queueResources('training', $dominion, $data);
-
-            $dominion->fill([
-                'resource_platinum' => $newPlatinum,
-                'resource_ore' => $newOre,
-                'military_draftees' => $newDraftees,
-                'military_wizards' => $newWizards,
-            ])->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
+            $dominion->resource_platinum -= $totalCosts['platinum'];
+            $dominion->resource_ore -= $totalCosts['ore'];
+            $dominion->military_draftees -= $totalCosts['draftees'];
+            $dominion->military_wizards -= $totalCosts['wizards'];
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
         });
 
         return [
