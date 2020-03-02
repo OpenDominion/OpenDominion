@@ -169,15 +169,22 @@ class SpellActionService
                 $dominion->stat_spell_failure += 1;
             }
 
-            $dominion->save([
-                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => $spellKey
-            ]);
-
-            if ($target !== null) {
-                $target->save([
+            if ($target == null) {
+                $dominion->save([
                     'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
                     'action' => $spellKey
+                ]);
+            } else {
+                $dominion->save([
+                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'action' => $spellKey,
+                    'target_dominion_id' => $target->id
+                ]);
+
+                $target->save([
+                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'action' => $spellKey,
+                    'source_dominion_id' => $dominion->id
                 ]);
             }
         });
