@@ -88,7 +88,7 @@ class ExploreActionService
         if (!$this->protectionService->isUnderProtection($dominion)) {
             $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
             if ($totalLandToExplore + $incomingLand > $this->landCalculator->getTotalLand($dominion) / 2) {
-                throw new GameException("You cannot explore for more than 50% of your current land total.");
+                throw new GameException('You cannot explore for more than 50% of your current land total.');
             }
         }
 
