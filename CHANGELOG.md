@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Valhalla pages for each user
 - A dominion can now be restarted prior to the first tick
 - Late signups will now be awarded additional starting resources after the third day of the round
+- Attacking/exploring/blackops will now be disabled 9-18 hours before the end of the round (from 1-16)
 
 ### Changed
 - Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
