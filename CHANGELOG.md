@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Excessive release restriction: you can no longer release more than 15% of your defense within a 24 hour period
 
 ### Changed
+- Dominion names must contain 3 consecutive alphanumeric characters for searchability
 - Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
 - Info ops spy/wizard strength cost reverted to 2% (from 1%)
 - Reduced damage and cost of Disband Spies to 1.5% and 4.3x (from 2% and 5x)
