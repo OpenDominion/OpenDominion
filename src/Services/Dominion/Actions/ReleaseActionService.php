@@ -63,26 +63,15 @@ class ReleaseActionService
             4 => $data['unit4']
         ];
 
-        $rawDpRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
+        $rawDpReleased = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
 
-        if($rawDpRelease > 0)
+        if ($rawDpReleased > 0)
         {
-            # Cannot release if recently invaded.
-            if ($this->militaryCalculator->getRecentlyInvadedCount($dominion))
-            {
-                throw new GameException('You cannot release military units if you have been recently invaded.');
-            }
-
-            # Cannot release if units returning from invasion.
-            $totalUnitsReturning = 0;
-            for ($slot = 1; $slot <= 4; $slot++)
-            {
-                $totalUnitsReturning += $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}");
-            }
-
-            if ($totalUnitsReturning !== 0)
-            {
-                throw new GameException('You cannot release military units if you have units returning from battle.');
+            // Check for excessive release restriction
+            $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, null, false);
+            $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
+            if ((($rawDpReleased + $defenseReducedRecently) / ($defenseBeforeRelease + $defenseReducedRecently)) > 0.15) {
+                throw new GameException('You cannot release more than 15% of your raw defense during a 24 hour period.');
             }
         }
 
@@ -116,7 +105,10 @@ class ReleaseActionService
             $troopsReleased[$unitType] = $amount;
         }
 
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_RELEASE]);
+        $dominion->save([
+            'event' => HistoryService::EVENT_ACTION_RELEASE,
+            'defense_reduced' => $rawDpReleased
+        ]);
 
         return [
             'message' => $this->getReturnMessageString($dominion, $troopsReleased),

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators\Dominion;
 
+use DB;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
@@ -860,5 +861,33 @@ class MilitaryCalculator
             ->all();
 
         return $invasionEvents;
+    }
+
+    /**
+     * Gets amount of raw DP that Dominion has relased.
+     * 
+     * 'Recent' refers to the past 24 hours.
+     * 
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefenseReducedRecently(Dominion $dominion): float
+    {
+        $defenseReduced = 0;
+
+        $releaseEvents = DB::table('dominion_history')
+            ->where('dominion_id', $dominion->id)
+            ->where('event', 'release')
+            ->where('created_at', '>=', now()->subDay(1))
+            ->get();
+
+        foreach ($releaseEvents as $release) {
+            $delta = json_decode($release->delta);
+            if (isset($delta->defense_reduced)) {
+                $defenseReduced += $delta->defense_reduced;
+            }
+        }
+
+        return $defenseReduced;
     }
 }
