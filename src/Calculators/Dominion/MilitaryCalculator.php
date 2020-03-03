@@ -865,9 +865,9 @@ class MilitaryCalculator
 
     /**
      * Gets amount of raw DP that Dominion has relased.
-     * 
+     *
      * 'Recent' refers to the past 24 hours.
-     * 
+     *
      * @param Dominion $dominion
      * @return float
      */
