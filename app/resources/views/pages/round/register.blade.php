@@ -17,7 +17,7 @@
                     <label for="dominion_name" class="col-sm-3 control-label">Dominion Name</label>
                     <div class="col-sm-9">
                         <input type="text" name="dominion_name" id="dominion_name" class="form-control" placeholder="Dominion Name" value="{{ old('dominion_name') }}" required autofocus>
-                        <p class="help-block">Your dominion name is shown when viewing and interacting with other players.</p>
+                        <p class="help-block">Your dominion name is shown when viewing and interacting with other players. Must contain 3 consecutive alphanumeric characters.</p>
                     </div>
                 </div>
 

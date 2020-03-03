@@ -7,6 +7,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -20,6 +21,9 @@ class ReleaseActionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var ProtectionService */
+    protected $protectionService;
+
     /** @var QueueService */
     protected $queueService;
 
@@ -28,10 +32,11 @@ class ReleaseActionService
      *
      * @param UnitHelper $unitHelper
      */
-    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, QueueService $queueService)
+    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, QueueService $queueService)
     {
         $this->unitHelper = $unitHelper;
         $this->militaryCalculator = $militaryCalculator;
+        $this->protectionService = $protectionService;
         $this->queueService = $queueService;
     }
 
@@ -65,7 +70,7 @@ class ReleaseActionService
 
         $rawDpReleased = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
 
-        if ($rawDpReleased > 0)
+        if ($rawDpReleased > 0 && !$this->protectionService->isUnderProtection($dominion))
         {
             // Check for excessive release restriction
             $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, null, false);
