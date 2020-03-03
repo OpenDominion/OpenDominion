@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Late signups will now be awarded additional starting resources after the third day of the round
 - Attacking/exploring/blackops will now be disabled 9-18 hours before the end of the round (from 1-16)
 - Mass exploration restriction: you can no longer explore for more than 50% of your current land total
+- Excessive release restriction: you can no longer release more than 15% of your defense within a 24 hour period
 
 ### Changed
 - Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
@@ -36,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Land bonus now awards 128 research points
 - Attacks that fail by 85% or more no longer cause double casualties
 - Prestige gains reduced on first hit, but increased on subsequent hits
+- Prestige gains capped at 15% of your current prestige (before multipliers and base gain)
 - Nox: research point generation bonus reduced to 10% (from 15%)
 - Sylvan: Added -10% rezone cost
 - Sylvan: Dryad changed to 1/3 wizard on defense (from 1/2)
