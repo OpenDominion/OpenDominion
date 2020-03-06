@@ -374,7 +374,7 @@ class InvadeActionService
             $attackerPrestigeChange = (int)round(min(
                 $target->prestige * (($range / 100) / 10), // Gained through invading
                 $dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100) // But capped based on your current prestige
-            ));
+            )) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
@@ -397,11 +397,7 @@ class InvadeActionService
                 $attackerPrestigeChange *= 0.4;
             } elseif ($recentlyInvadedCount === 4) {
                 $attackerPrestigeChange *= 0.2;
-            }
-
-            $attackerPrestigeChange += static::PRESTIGE_CHANGE_ADD;
-
-            if ($recentlyInvadedCount >= 5) {
+            } elseif ($recentlyInvadedCount >= 5) {
                 $attackerPrestigeChange = 0;
             }
         }
