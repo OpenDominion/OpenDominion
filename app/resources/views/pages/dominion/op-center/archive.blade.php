@@ -261,7 +261,11 @@
                                         <td>{{ $spellInfo['description'] }}</td>
                                         <td class="text-center">{{ $spell['duration'] }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('dominion.realm', $castByDominion->realm->number) }}">{{ $castByDominion->name }} (#{{ $castByDominion->realm->number }})</a>
+                                            @if ($castByDominion->id == $dominion->id || $castByDominion->realm_id == $selectedDominion->realm_id)
+                                                <a href="{{ route('dominion.realm', $castByDominion->realm->number) }}">{{ $castByDominion->name }} (#{{ $castByDominion->realm->number }})</a>
+                                            @else
+                                                <em>Unknown</em>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

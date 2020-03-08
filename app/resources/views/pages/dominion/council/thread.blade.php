@@ -5,7 +5,10 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Thread: {{ $thread->title }}</h3>
+            <h3 class="box-title"><i class="fa fa-group"></i> Council Thread: {{ $thread->title }}</h3>
+            <div class="pull-right">
+                <a href="{{ route('dominion.council') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
+            </div>
         </div>
         <div class="box-body">
             {!! Markdown::convertToHtml($thread->body) !!}
@@ -23,7 +26,7 @@
                     @endif
                 </i>
             </small>
-            @if ($selectedDominion->isMonarch()) 
+            @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
                 <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
             @endif
         </div>
@@ -48,7 +51,7 @@
                             @endif
                         </i>
                     </small>
-                    @if ($selectedDominion->isMonarch()) 
+                    @if ($selectedDominion->isMonarch() || $selectedDominion->id == $post->dominion->id)
                         <a href="{{ route('dominion.council.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
                     @endif
                 </div>

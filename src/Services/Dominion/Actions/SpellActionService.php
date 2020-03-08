@@ -165,12 +165,28 @@ class SpellActionService
 
             if ($result['success'] && !$this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $dominion->stat_spell_success += 1;
+            } else {
+                $dominion->stat_spell_failure += 1;
             }
 
-            $dominion->save([
-                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => $spellKey
-            ]);
+            if ($target == null) {
+                $dominion->save([
+                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'action' => $spellKey
+                ]);
+            } else {
+                $dominion->save([
+                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'action' => $spellKey,
+                    'target_dominion_id' => $target->id
+                ]);
+
+                $target->save([
+                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'action' => $spellKey,
+                    'source_dominion_id' => $dominion->id
+                ]);
+            }
         });
 
         if ($target !== null) {
@@ -297,7 +313,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
-                    'wizardStrengthCost' => 1,
+                    'wizardStrengthCost' => 2,
                     'alert-type' => 'warning',
                 ];
             }
@@ -372,6 +388,16 @@ class SpellActionService
                 throw new LogicException("Unknown info op spell {$spellKey}");
         }
 
+        // Surreal Perception
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_hostile_spell', [
+                    'sourceDominionId' => $dominion->id,
+                    'spellKey' => $spellKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
         $infoOp->save();
 
         $redirect = route('dominion.op-center.show', $target);
@@ -382,7 +408,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'wizardStrengthCost' => 1,
+            'wizardStrengthCost' => 2,
             'redirect' => $redirect,
         ];
     }
@@ -432,6 +458,15 @@ class SpellActionService
             if (!random_chance($successRate)) {
                 $wizardsKilledBasePercentage = 1;
 
+                // Wizard Guilds
+                $wizardGuildCasualtyReduction = 3;
+                $wizardGuildWizardCasualtyReductionMax = 30;
+
+                $wizardsKilledBasePercentage = (1 - min(
+                    (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
+                    ($wizardGuildWizardCasualtyReductionMax / 100)
+                ));
+
                 $wizardLossSpaRatio = ($targetWpa / $selfWpa);
                 $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, 0.5, 1.5);
 
@@ -458,6 +493,8 @@ class SpellActionService
                         }
                     }
                 }
+
+                $target->stat_wizards_executed += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -495,9 +532,10 @@ class SpellActionService
         $spellReflected = false;
         if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
             $spellReflected = true;
-            $deflectedBy = $target;
+            $reflectedBy = $target;
             $target = $dominion;
-            $dominion = $deflectedBy;
+            $dominion = $reflectedBy;
+            $dominion->stat_spells_reflected += 1;
         }
 
         if (isset($spellInfo['duration'])) {
@@ -565,7 +603,7 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, but it was deflected and it will now affect your dominion for the next %s hours.',
+                        'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for the next %s hours.',
                         $spellInfo['duration']
                     ),
                     'alert-type' => 'danger'
@@ -589,13 +627,24 @@ class SpellActionService
                 foreach ($spellInfo['decreases'] as $attr) {
                     $damage = $target->{$attr} * $baseDamage;
 
-                    // Damage reduction from Forest Havens
+                    // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
-                        $forestHavenFireballReduction = 8;
+                        $forestHavenFireballReduction = 10;
                         $forestHavenFireballReductionMax = 80;
                         $damageMultiplier = (1 - min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
                             ($forestHavenFireballReductionMax / 100)
+                        ));
+                        $damage *= $damageMultiplier;
+                    }
+
+                    // Disband Spies damage reduction from Forest Havens
+                    if ($attr == 'military_spies') {
+                        $forestHavenSpyCasualtyReduction = 3;
+                        $forestHavenSpyCasualtyReductionMax = 30;
+                        $damageMultiplier = (1 - min(
+                            (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
+                            ($forestHavenSpyCasualtyReductionMax / 100)
                         ));
                         $damage *= $damageMultiplier;
                     }
@@ -648,11 +697,6 @@ class SpellActionService
                 }
             }
 
-            $target->save([
-                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => $spellKey
-            ]);
-
             // Prestige Gains
             $prestigeGainString = '';
             if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) && $totalDamage > 0) {
@@ -689,7 +733,7 @@ class SpellActionService
                 return [
                     'success' => true,
                     'message' => sprintf(
-                        'Your wizards cast the spell successfully, but it was deflected and your dominion lost %s.',
+                        'Your wizards cast the spell successfully, but it was reflected and your dominion lost %s.',
                         $damageString
                     ),
                     'wizardStrengthCost' => 5,

@@ -8,7 +8,7 @@
 
     @if (!$selectedDominion->round->hasStarted())
         <div class="alert alert-warning">
-            <p><i class="fa fa-warning"></i> The round has not yet started, but actions for the first hour can be performed in advance.</p>
+            <p><i class="fa fa-warning"></i> The round has not yet started, but actions for the first hour can be performed in advance. The round will commence in {{ now()->diffInHours($selectedDominion->round->start_date) }} hours.</p>
         </div>
     @endif
 @endif

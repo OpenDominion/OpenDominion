@@ -79,6 +79,31 @@ class CasualtiesCalculator
                 }
             }
 
+            // Unit Perk: Kills Immortal
+            $unitsAtHomePerSlot = [];
+            $unitsAtHomeKISlot = null;
+            $totalUnitsAtHome = 0;
+
+            // todo: inefficient to do run this code per slot. needs refactoring
+            foreach ($target->race->units as $unit) {
+                $slot = $unit->slot;
+                $unitKey = "military_unit{$slot}";
+
+                $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
+                if ($unit->power_defense > 0) {
+                    $totalUnitsAtHome += $target->{$unitKey};
+                }
+
+                if ($unit->getPerkValue('kills_immortal') !== 0) {
+                    $unitsAtHomeKISlot = $slot;
+                }
+            }
+
+            // We have a unit with KI!
+            if ($unitsAtHomeKISlot !== null) {
+                $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
+            }
+
             // Race perk-based immortality
             if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
                 $multiplier = 0;
@@ -162,7 +187,7 @@ class CasualtiesCalculator
      * @param int|null $slot Null is for non-racial units and thus used as draftees casualties multiplier
      * @return float
      */
-    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot): float
+    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot, ?array $units): float
     {
         $multiplier = 1;
 
@@ -187,6 +212,30 @@ class CasualtiesCalculator
                 // We're only immortal if they're not Deus-Vult'ing into our unholy lands :^)
                 if (!$attackerHasCrusadeActive) {
                     $multiplier = 0;
+                }
+
+                // Unit Perk: Kills Immortal
+                $unitsSentPerSlot = [];
+                $unitsSentKISlot = null;
+
+                // todo: inefficient to do run this code per slot. needs refactoring
+                foreach ($attacker->race->units as $unit) {
+                    $slot = $unit->slot;
+
+                    if (!isset($units[$slot])) {
+                        continue;
+                    }
+                    $unitsSentPerSlot[$slot] = $units[$slot];
+
+                    if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
+                        $unitsSentKISlot = $slot;
+                    }
+                }
+
+                // We have a unit with KI!
+                if ($unitsSentKISlot !== null) {
+                    $totalUnitsSent = array_sum($unitsSentPerSlot);
+                    $multiplier = ($unitsSentPerSlot[$unitsSentKISlot] / $totalUnitsSent);
                 }
             }
 
@@ -235,7 +284,7 @@ class CasualtiesCalculator
                 $slot = $unit->slot;
                 $unitKey = "military_unit{$slot}";
 
-                $unitsAtHomePerSlot[$slot] = $dominion->$unitKey;
+                $unitsAtHomePerSlot[$slot] = $dominion->{$unitKey};
 
                 if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
                     $unitsAtHomeRCLSlot = $slot;

@@ -112,6 +112,10 @@ class ValhallaController extends AbstractController
             case 'stat-masters-of-water': $data = $this->getDominionsByStatistic($round, 'stat_great_flood_hours'); break;
             case 'stat-masters-of-earth': $data = $this->getDominionsByStatistic($round, 'stat_earthquake_hours'); break;
             case 'stat-top-spy-disbanders': $data = $this->getDominionsByStatistic($round, 'stat_disband_spies_damage'); break;
+            case 'realm-stat-prestige': $data = $this->getRealmsByStatistic($round, 'prestige'); break;
+            case 'realm-stat-attacking-success': $data = $this->getRealmsByStatistic($round, 'stat_attacking_success'); break;
+            case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'stat_total_land_explored'); break;
+            case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'stat_total_land_conquered'); break;
 
             default:
                 if (!preg_match('/(strongest|largest|stat)-([-\w]+)/', $type, $matches)) {
@@ -144,7 +148,23 @@ class ValhallaController extends AbstractController
 
     public function getUser(User $user)
     {
-        // show valhalla of single user
+        $landCalculator = app(LandCalculator::class);
+        $networthCalculator = app(NetworthCalculator::class);
+
+        $dominions = $user->dominions()
+            ->with(['queues', 'realm', 'race.units.perks'])
+            ->orderByDesc('round_id')
+            ->get()
+            ->filter(function (Dominion $dominion) {
+                if ($dominion->round->end_date < now()) return $dominion;
+            });
+
+        return view('pages.valhalla.user', [
+            'player' => $user,
+            'dominions' => $dominions,
+            'landCalculator' => $landCalculator,
+            'networthCalculator' => $networthCalculator,
+        ]);
     }
 
     // todo: search user
@@ -185,7 +205,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => $dominion->user->display_name,
+                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
                 ];
 
                 if ($race === null) {
@@ -310,7 +330,7 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => $dominion->user->display_name,
+                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
                 ];
 
                 if ($race === null) {
@@ -426,10 +446,47 @@ class ValhallaController extends AbstractController
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => $dominion->user->display_name,
+                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,
                     'value' => $dominion->{$stat},
+                ];
+                return $data;
+            })
+            ->sortByDesc(function ($row) {
+                return $row['value'];
+            })
+            ->take(100)
+            ->values()
+            ->map(function ($row, $key) {
+                $row['#'] = ($key + 1);
+                $row['value'] = number_format($row['value']);
+                return $row;
+            });
+    }
+
+    protected function getRealmsByStatistic(Round $round, string $stat)
+    {
+        $builder = $round->realms()
+            ->with(['dominions']);
+
+        return $builder->get()
+            ->map(function ($realm) use ($stat) {
+                $realm->{$stat} = $realm->dominions->sum($stat);
+                return $realm;
+            })
+            ->filter(function ($realm) use ($stat) {
+                if ($realm->{$stat} > 0) {
+                    return $realm;
+                }
+            })
+            ->map(function (Realm $realm) use ($stat) {
+                $data = [
+                    '#' => null,
+                    'realm name' => $realm->name,
+                    'alignment' => ucfirst($realm->alignment),
+                    'number' => $realm->number,
+                    'value' => $realm->{$stat},
                 ];
                 return $data;
             })

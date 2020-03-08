@@ -31,6 +31,7 @@ class GameEventService
             ->toArray();
 
         $gameEvents = GameEvent::query()
+            ->with(['source', 'target'])
             ->where('round_id', $realm->round->id)
             ->where('created_at', '<', $createdBefore)
             ->where('created_at', '>', now()->subDays(7))
@@ -69,6 +70,7 @@ class GameEventService
             ->toArray();
 
         $gameEvents = GameEvent::query()
+            ->with(['source', 'target'])
             ->where('round_id', $dominion->round_id)
             ->where('created_at', '<', $createdBefore)
             ->where('created_at', '>', now()->subDays(3))

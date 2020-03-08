@@ -27,7 +27,7 @@ class CouncilService
                 'council_threads.*',
                 DB::raw('IFNULL(MAX(council_posts.created_at), council_threads.created_at) as last_activity')
             ])
-            ->with(['dominion.user', 'posts.dominion.user'])
+            ->with(['dominion.realm', 'posts.dominion.realm'])
             ->leftJoin('council_posts', 'council_posts.council_thread_id', '=', 'council_threads.id')
             ->groupBy('council_threads.id')
             ->orderBy('last_activity', 'desc')
@@ -77,5 +77,33 @@ class CouncilService
             'dominion_id' => $dominion->id,
             'body' => $body,
         ]);
+    }
+
+    /**
+     * Deletes a council thread.
+     *
+     * @param Dominion $dominion
+     * @param Council\Thread $thread
+     * @return void
+     * @throws RuntimeException
+     */
+    public function deleteThread(Dominion $dominion, Council\Thread $thread): void
+    {
+        $this->guardLockedDominion($dominion);
+        $thread->delete();
+    }
+
+    /**
+     * Deletes a council post.
+     *
+     * @param Dominion $dominion
+     * @param Council\Post $post
+     * @return void
+     * @throws RuntimeException
+     */
+    public function deletePost(Dominion $dominion, Council\Post $post): void
+    {
+        $this->guardLockedDominion($dominion);
+        $post->delete();
     }
 }

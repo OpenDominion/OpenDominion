@@ -7,7 +7,7 @@ home_land_type: swamp
 perks:
   food_consumption: -20
   mana_production: 10
-  tech_production: 15
+  tech_production: 10
 units:
   - name: Imp
     cost:

@@ -105,7 +105,7 @@ class ImprovementCalculatorTest extends AbstractBrowserKitTestCase
             // Towers: 250 land, 120k points (invest 10k starter gems)
             [
                 'attributes' => ['land' => 250, 'improvement_type' => 'towers', 'improvement_points' => 120000],
-                'expected' => 0.0362, // +3.62%
+                'expected' => 0.0446, // +4.46%
             ],
 
             // Forges: 250 land, 120k points (invest 10k starter gems)

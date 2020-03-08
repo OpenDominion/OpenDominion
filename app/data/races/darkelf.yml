@@ -33,7 +33,7 @@ units:
       defense: 4
     perks:
       counts_as_wizard_offense: 0.2
-      counts_as_wizard_defense: 0.5
+      counts_as_wizard_defense: 0.333
       offense_from_building: wizard_guild,10,5 # building type, ratio%, max
       defense_from_building: wizard_guild,10,5 # building type, ratio%, max
   - name: Spirit Warrior

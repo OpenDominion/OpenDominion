@@ -81,7 +81,7 @@ class CouncilController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $this->updateDominionCouncilLastRead($dominion);
 
-        $thread->load(['dominion.user', 'posts.dominion.user']);
+        $thread->load('dominion.realm', 'posts.dominion.realm');
 
         return view('pages.dominion.council.thread', compact(
             'thread'
@@ -127,14 +127,12 @@ class CouncilController extends AbstractDominionController
     public function getDeletePost(Council\Post $post)
     {
         try {
-            $this->guardForMonarchy($post->thread);
+            $this->guardForPost($post);
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.council')
                 ->withErrors([$e->getMessage()]);
         }
-
-        $post->load(['dominion.user']);
 
         return view('pages.dominion.council.delete-post', compact(
             'post'
@@ -143,31 +141,34 @@ class CouncilController extends AbstractDominionController
 
     public function postDeletePost(Request $request, Council\Post $post)
     {
+        $dominion = $this->getSelectedDominion();
+        $councilService = app(CouncilService::class);
+
         try {
-            $this->guardForMonarchy($post->thread);
+            $this->guardForPost($post);
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.council')
                 ->withErrors([$e->getMessage()]);
         }
 
-        $post->delete();
+        $councilService->deletePost($dominion, $post);
 
         $request->session()->flash('alert-success', 'Post successfully deleted.');
-        return redirect()->route('dominion.council');
+        return redirect()->route('dominion.council.thread', $post->thread);
     }
 
     public function getDeleteThread(Council\Thread $thread)
     {
         try {
-            $this->guardForMonarchy($thread);
+            $this->guardForThread($thread);
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.council')
                 ->withErrors([$e->getMessage()]);
         }
 
-        $thread->load(['dominion.user', 'posts.dominion.user']);
+        $thread->load('dominion.realm', 'posts.dominion.realm');
 
         return view('pages.dominion.council.delete-thread', compact(
             'thread'
@@ -176,17 +177,24 @@ class CouncilController extends AbstractDominionController
 
     public function postDeleteThread(Request $request, Council\Thread $thread)
     {
+        $dominion = $this->getSelectedDominion();
+        $councilService = app(CouncilService::class);
+
         try {
-            $this->guardForMonarchy($thread);
+            $this->guardForThread($thread);
         } catch (GameException $e) {
             return redirect()
                 ->route('dominion.council')
                 ->withErrors([$e->getMessage()]);
         }
 
-        $thread->delete();
+        if ($dominion->isMonarch() || $thread->posts->isEmpty()) {
+            $councilService->deleteThread($dominion, $thread);
+            $request->session()->flash('alert-success', 'Thread successfully deleted.');
+        } else {
+            $request->session()->flash('alert-danger', 'Cannot delete a non-empty thread.');
+        }
 
-        $request->session()->flash('alert-success', 'Thread successfully deleted.');
         return redirect()->route('dominion.council');
     }
 
@@ -204,15 +212,28 @@ class CouncilController extends AbstractDominionController
     }
 
     /**
-     * Throws exception if the selected dominion is not the realm's monarch.
+     * Throws exception if the selected dominion is not the thread's creator or realm monarch.
      *
-     * @param Realm $realm
+     * @param Thread $thread
      * @throws GameException
      */
-    protected function guardForMonarchy(Council\Thread $thread): void
+    protected function guardForThread(Council\Thread $thread): void
     {
-        if ($this->getSelectedDominion()->id !== (int)$thread->realm->monarch_dominion_id) {
-            throw new GameException('No permission to moderate council.');
+        if ($this->getSelectedDominion()->id !== (int)$thread->dominion_id && $this->getSelectedDominion()->id !== (int)$thread->realm->monarch_dominion_id) {
+            throw new GameException('No permission to moderate thread.');
+        }
+    }
+
+    /**
+     * Throws exception if the selected dominion is not the post's creator or realm monarch.
+     *
+     * @param Post $post
+     * @throws GameException
+     */
+    protected function guardForPost(Council\Post $post): void
+    {
+        if ($this->getSelectedDominion()->id !== (int)$post->dominion_id && $this->getSelectedDominion()->id !== (int)$post->thread->realm->monarch_dominion_id) {
+            throw new GameException('No permission to moderate post.');
         }
     }
 

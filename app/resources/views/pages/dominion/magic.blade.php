@@ -38,7 +38,7 @@
                                                                 ({{ $spellCalculator->getSpellDuration($selectedDominion, $spell['key']) }} hours remaining)<br/>
                                                             @endif
                                                             @if ($cooldownHours)
-                                                                (<span class="text-danger">{{ $cooldownHours }} hour recharge</span>)<br/>
+                                                                (<span class="text-danger">{{ $cooldownHours }} hours until recast</span>)<br/>
                                                             @endif
                                                             @if ($canCast)
                                                                 Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
