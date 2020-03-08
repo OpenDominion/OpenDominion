@@ -441,6 +441,9 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_production');
 
+        // Improvement: Towers
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
+
         return $multiplier;
     }
 

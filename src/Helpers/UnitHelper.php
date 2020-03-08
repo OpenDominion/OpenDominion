@@ -101,6 +101,7 @@ class UnitHelper
             'immortal_except_vs' => 'Almost never dies, except vs %s.',
             'immortal_vs_land_range' => 'Almost never dies when attacking dominions %s%%+ of your size.',
 
+            'kills_immortal' => 'Can kill spirits and the undead.',
             'reduce_combat_losses' => 'Reduces combat losses.',
 
             // Resource related

@@ -256,8 +256,11 @@ class Dominion extends AbstractModel
         if ($recordChanges) {
             $dominionHistoryService = app(HistoryService::class);
             $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
-            if (isset($options['action'])) {
-                $deltaAttributes['action'] = $options['action'];
+            $extraAttributes = ['action', 'defense_reduced', 'source_dominion_id', 'target_dominion_id'];
+            foreach ($extraAttributes as $attr) {
+                if (isset($options[$attr])) {
+                    $deltaAttributes[$attr] = $options[$attr];
+                }
             }
         }
 
@@ -364,7 +367,7 @@ class Dominion extends AbstractModel
     }
 
     protected function getTechPerks() {
-        return $this->techs()->with('perks')->get()->flatMap(
+        return $this->techs->flatMap(
             function ($tech) {
                 return $tech->perks;
             }

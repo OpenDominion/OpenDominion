@@ -18,7 +18,6 @@ class GovernmentController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
-        $governmentService = app(GovernmentService::class);
         $guardMembershipService = app(GuardMembershipService::class);
 
         $dominions = $dominion->realm->dominions()
@@ -34,6 +33,7 @@ class GovernmentController extends AbstractDominionController
                 return app(LandCalculator::class)->getTotalLand($dominion);
             });
 
+        // todo: move all guardMembershipService calls to template?
         return view('pages.dominion.government', [
             'dominions' => $dominions,
             'realms' => $dominion->round->realms,
@@ -48,10 +48,7 @@ class GovernmentController extends AbstractDominionController
             'hoursBeforeEliteGuardMember' => $guardMembershipService->getHoursBeforeEliteGuardMember($dominion),
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
             'hoursBeforeLeaveEliteGuard' => $guardMembershipService->getHoursBeforeLeaveEliteGuard($dominion),
-            'hasDeclaredWar' => $governmentService->hasDeclaredWar($dominion->realm),
-            'canDeclareWar' => $governmentService->canDeclareWar($dominion->realm),
-            'hoursBeforeCancelWar' => $governmentService->getHoursBeforeCancelWar($dominion->realm),
-            'hoursBeforeWarActive' => $governmentService->getHoursBeforeWarActive($dominion->realm),
+            'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class)

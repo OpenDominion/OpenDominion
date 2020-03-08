@@ -54,17 +54,20 @@ class DailyBonusesActionService
         }
 
         $landGained = 20;
+        $researchPointsGained = 128;
         $attribute = ('land_' . $dominion->race->home_land_type);
         $dominion->{$attribute} += $landGained;
         $dominion->stat_total_land_explored += $landGained;
+        $dominion->resource_tech = $researchPointsGained;
         $dominion->daily_land = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
         return [
             'message' => sprintf(
-                'You gain %d acres of %s.',
+                'You gain %d acres of %s and %s research points.',
                 $landGained,
-                str_plural($dominion->race->home_land_type)
+                str_plural($dominion->race->home_land_type),
+                $researchPointsGained
             ),
             'data' => [
                 'landGained' => $landGained,

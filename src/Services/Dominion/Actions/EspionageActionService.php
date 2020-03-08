@@ -161,7 +161,7 @@ class EspionageActionService
 
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $spyStrengthLost = 1;
+                $spyStrengthLost = 2;
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
 
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
@@ -180,11 +180,20 @@ class EspionageActionService
 
             if ($result['success']) {
                 $dominion->stat_espionage_success += 1;
+            } else {
+                $dominion->stat_espionage_failure += 1;
             }
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
-                'action' => $operationKey
+                'action' => $operationKey,
+                'target_dominion_id' => $target->id
+            ]);
+
+            $target->save([
+                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+                'action' => $operationKey,
+                'source_dominion_id' => $dominion->id
             ]);
         });
 
@@ -227,7 +236,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 0.25; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 0.25;
+
+                // Forest Havens
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -259,6 +270,8 @@ class EspionageActionService
                         }
                     }
                 }
+
+                $target->stat_spies_executed += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -427,6 +440,16 @@ class EspionageActionService
                 throw new LogicException("Unknown info gathering operation {$operationKey}");
         }
 
+        // Surreal Perception
+        if ($this->spellCalculator->isSpellActive($target, 'surreal_perception')) {
+            $this->notificationService
+                ->queueNotification('received_spy_op', [
+                    'sourceDominionId' => $dominion->id,
+                    'operationKey' => $operationKey,
+                ])
+                ->sendNotifications($target, 'irregular_dominion');
+        }
+
         $infoOp->save();
 
         return [
@@ -466,7 +489,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 1;
+
+                // Forest Havens
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -498,6 +523,8 @@ class EspionageActionService
                         }
                     }
                 }
+
+                $target->stat_spies_executed += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -590,20 +617,9 @@ class EspionageActionService
 
         $amountStolen = $this->getResourceTheftAmount($dominion, $target, $resource, $constraints);
 
-        DB::transaction(static function () use ($dominion, $target, $resource, $amountStolen, $operationKey) {
-            $dominion->{"resource_{$resource}"} += $amountStolen;
-            $dominion->{"stat_total_{$resource}_stolen"} += $amountStolen;
-            $dominion->save([
-                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
-                'action' => $operationKey
-            ]);
-
-            $target->{"resource_{$resource}"} -= $amountStolen;
-            $target->save([
-                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
-                'action' => $operationKey
-            ]);
-        });
+        $dominion->{"resource_{$resource}"} += $amountStolen;
+        $dominion->{"stat_total_{$resource}_stolen"} += $amountStolen;
+        $target->{"resource_{$resource}"} -= $amountStolen;
 
         // Surreal Perception
         $sourceDominionId = null;
@@ -672,18 +688,6 @@ class EspionageActionService
             $maxCarried = $this->militaryCalculator->getSpyRatioRaw($dominion) * $this->landCalculator->getTotalLand($dominion) * $constraints['spy_carries'];
         }
 
-        // Forest Haven reduction
-        if ($resource === 'platinum') {
-            $forestHavenStolenPlatinumReduction = 8;
-            $forestHavenStolenPlatinumReductionMax = 80;
-            $stolenPlatinumMultiplier = (1 - min(
-                    (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenStolenPlatinumReduction),
-                    ($forestHavenStolenPlatinumReductionMax / 100)
-                ));
-
-            $maxTarget *= $stolenPlatinumMultiplier;
-        }
-
         return min($maxTarget, $maxDominion, $maxCarried);
     }
 
@@ -723,7 +727,9 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 // Values (percentage)
-                $spiesKilledBasePercentage = 1; // TODO: Higher for black ops.
+                $spiesKilledBasePercentage = 1;
+
+                // Forest Havens
                 $forestHavenSpyCasualtyReduction = 3;
                 $forestHavenSpyCasualtyReductionMax = 30;
 
@@ -755,6 +761,8 @@ class EspionageActionService
                         }
                     }
                 }
+
+                $target->stat_spies_executed += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -829,11 +837,6 @@ class EspionageActionService
                 $target->{$attr} += round($damage);
             }
         }
-
-        $target->save([
-            'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
-            'action' => $operationKey
-        ]);
 
         // Prestige Gains
         $prestigeGainString = '';

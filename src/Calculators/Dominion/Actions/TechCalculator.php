@@ -31,7 +31,7 @@ class TechCalculator
     {
         $minimumCost = 3780;
 
-        return max(6.425 * $dominion->highest_land_achieved, $minimumCost);
+        return max(6.4 * $dominion->highest_land_achieved, $minimumCost);
     }
 
     /**

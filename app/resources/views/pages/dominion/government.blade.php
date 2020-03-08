@@ -128,12 +128,14 @@
                                 <tr>
                                     <th>Realm</th>
                                     <th>Declared By</th>
-                                    <th>Active at</th>
+                                    <th>Declared at</th>
+                                    <th>Bonus active at</th>
                                 </tr>
-                                @if ($hasDeclaredWar)
+                                @if ($governmentService->hasDeclaredWar($selectedDominion->realm))
                                     <tr>
                                         <td>{{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})</td>
                                         <td>#{{ $selectedDominion->realm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($selectedDominion->realm) }}</td>
                                         <td>{{ $selectedDominion->realm->war_active_at }}</td>
                                     </tr>
                                 @endif
@@ -141,12 +143,13 @@
                                     <tr>
                                         <td>{{ $realm->name }} (#{{ $realm->number }})</td>
                                         <td>#{{ $realm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
                                         <td>{{ $realm->war_active_at }}</td>
                                     </tr>
                                 @endforeach
                             </table>
                             @if ($selectedDominion->isMonarch())
-                                @if ($canDeclareWar)
+                                @if ($governmentService->canDeclareWar($selectedDominion->realm))
                                     <form action="{{ route('dominion.government.war.declare') }}" method="post" role="form">
                                         @csrf
                                         <label for="realm_number">Select a Realm</label>
@@ -155,13 +158,15 @@
                                                 <div class="form-group">
                                                     <select name="realm_number" id="realm_number" class="form-control" required style="width: 100%" data-placeholder="Select a realm" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                         <option></option>
-                                                        @foreach ($realms as $realm)
-                                                            @if ($realm->id != $selectedDominion->realm->id)
-                                                                <option value="{{ $realm->number }}">
-                                                                    {{ $realm->name }} (#{{ $realm->number }})
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
+                                                        @if ($selectedDominion->round->start_date <= now())
+                                                            @foreach ($realms as $realm)
+                                                                @if ($realm->id != $selectedDominion->realm->id)
+                                                                    <option value="{{ $realm->number }}">
+                                                                        {{ $realm->name }} (#{{ $realm->number }})
+                                                                    </option>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div>
@@ -175,18 +180,21 @@
                                         </div>
                                     </form>
                                 @endif
-                                @if ($hasDeclaredWar)
+                                @if ($governmentService->hasDeclaredWar($selectedDominion->realm))
                                     <form action="{{ route('dominion.government.war.cancel') }}" method="post" role="form">
                                         @csrf
                                         <div class="row">
                                             <div class="col-sm-8 col-lg-10">
                                                 You have declared <span class="text-red text-bold">WAR</span> on {{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})!
-                                                @if ($hoursBeforeCancelWar > 0)
-                                                <br/><small class="text-warning">You cannot cancel this war for {{ $hoursBeforeCancelWar }} hours.</small>
+                                                @if ($governmentService->getHoursBeforeWarActive($selectedDominion->realm) > 0)
+                                                    <br/><small class="text-info">War bonus will be active in {{ $governmentService->getHoursBeforeWarActive($selectedDominion->realm) }} hours.</small>
+                                                @endif
+                                                @if ($governmentService->getHoursBeforeCancelWar($selectedDominion->realm) > 0)
+                                                    <br/><small class="text-warning">You cannot cancel this war for {{ $governmentService->getHoursBeforeCancelWar($selectedDominion->realm) }} hours.</small>
                                                 @endif
                                             </div>
                                             <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
-                                                <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $hoursBeforeCancelWar > 0 ? 'disabled' : null }}>
+                                                <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $governmentService->getHoursBeforeCancelWar($selectedDominion->realm) > 0 ? 'disabled' : null }}>
                                                     Cancel War
                                                 </button>
                                             </div>
@@ -206,8 +214,8 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Here you view which realms you currently have war relations with.</p>
-                    <p>Once a war is active, dominions in both realms gain 5% Offensive Power when attacking members of the opposing realm. If both realms are actively at war with one another, that bonus increases to 10% Offensive Power.</p>
+                    <p>Here you view which realms you currently have war relations with. You cannot declare war for the first five days of the round.</p>
+                    <p>Once a war is active, dominions in both realms gain +5% Offensive Power as well as +15% land and prestige gains when attacking members of the opposing realm. If both realms are actively at war with one another, those bonuses increase to +10% Offensive Power and +20% land and prestige gains. Mutual war also awards prestige for successful black ops.</p>
                 </div>
             </div>
         </div>
@@ -262,7 +270,7 @@
                             </h4>
                             <ul class="text-left" style="padding: 0 50px;">
                                 <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
-                                <li>Hourly platinum production reduced by 2%.</li>
+                                <li>Hourly platinum production reduced by 2% (from Royal Guard).</li>
                                 <li>Exploration platinum cost increased by 25%.</li>
                             </ul>
                             @if ($isEliteGuardApplicant || $isEliteGuardMember)

@@ -55,6 +55,22 @@ class Pack extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
+    public function sizeAllocated(): int
+    {
+        if ($this->isClosed()) {
+            return $this->dominions->count();
+        }
+        return $this->size;
+    }
+
+    public function remainingSlots(): int
+    {
+        if ($this->isClosed()) {
+            return 0;
+        }
+        return $this->size - $this->dominions->count();
+    }
+
     public function isFull(): bool
     {
         return ($this->dominions->count() === $this->size);

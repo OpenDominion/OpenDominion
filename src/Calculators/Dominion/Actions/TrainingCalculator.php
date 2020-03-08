@@ -166,6 +166,16 @@ class TrainingCalculator
     {
         $multiplier = 1;
 
+        // Values (percentages)
+        $forestHavenReduction = 2;
+        $forestHavenReductionMax = 40;
+
+        // Forest Havens
+        $multiplier -= min(
+            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenReduction),
+            ($forestHavenReductionMax / 100)
+        );
+
         // Techs
         $multiplier *= (1 + $dominion->getTechPerkMultiplier('spy_cost'));
 

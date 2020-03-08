@@ -55,9 +55,14 @@ class InvadeActionService
     protected const OVERWHELMED_PERCENTAGE = 15.0;
 
     /**
+     * @var float Percentage of attacker prestige used to cap prestige gains
+     */
+    protected const PRESTIGE_CAP_PERCENTAGE = 15.0;
+
+    /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 30;
+    protected const PRESTIGE_CHANGE_ADD = 20;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -248,7 +253,7 @@ class InvadeActionService
             $this->handlePrestigeChanges($dominion, $target, $units);
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
-            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target);
+            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target, $units);
             $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties);
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
@@ -264,10 +269,12 @@ class InvadeActionService
             // todo: move to own method
             if ($this->invasionResult['result']['success']) {
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landConquered']);
-                $dominion->stat_total_land_explored += (int)array_sum($this->invasionResult['attacker']['landGenerated']);
+                $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landGenerated']);
                 $dominion->stat_attacking_success += 1;
+                $target->stat_defending_failure += 1;
             } else {
                 $target->stat_defending_success += 1;
+                $dominion->stat_attacking_failure += 1;
             }
 
             // todo: move to GameEventService
@@ -364,12 +371,15 @@ class InvadeActionService
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = (int)round(($target->prestige * (($range / 100) / 10)) + static::PRESTIGE_CHANGE_ADD);
+            $attackerPrestigeChange = (int)round(min(
+                $target->prestige * (($range / 100) / 10), // Gained through invading
+                $dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100) // But capped based on your current prestige
+            )) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
-                $attackerPrestigeChange *= 1.25;
+                $attackerPrestigeChange *= 1.2;
             } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
                 $attackerPrestigeChange *= 1.15;
             }
@@ -380,23 +390,17 @@ class InvadeActionService
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
 
             if ($recentlyInvadedCount === 1) {
-                $attackerPrestigeChange *= 0.75;
+                $attackerPrestigeChange *= 0.8;
             } elseif ($recentlyInvadedCount === 2) {
-                $attackerPrestigeChange *= 0.5;
+                $attackerPrestigeChange *= 0.6;
             } elseif ($recentlyInvadedCount === 3) {
-                $attackerPrestigeChange *= 0.25;
+                $attackerPrestigeChange *= 0.4;
             } elseif ($recentlyInvadedCount === 4) {
-                $attackerPrestigeChange *= -0.25;
+                $attackerPrestigeChange *= 0.2;
             } elseif ($recentlyInvadedCount >= 5) {
-                $attackerPrestigeChange *= -0.5;
+                $attackerPrestigeChange = 0;
             }
-
-            $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
         }
-
-        // Cap for max prestige based on land size
-        $maxPrestigeChange = max(($this->landCalculator->getTotalLand($dominion) * 1.2) - $dominion->prestige, 0);
-        $attackerPrestigeChange = min($attackerPrestigeChange, $maxPrestigeChange);
 
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
@@ -483,10 +487,6 @@ class InvadeActionService
                 }
             }
         } else {
-            if ($isOverwhelmed) {
-                $offensiveCasualtiesPercentage *= 2;
-            }
-
             foreach ($units as $slot => $amount) {
                 $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
                 if ($fixedCasualtiesPerk) {
@@ -548,7 +548,7 @@ class InvadeActionService
      * @param Dominion $target
      * @return int
      */
-    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target): int
+    protected function handleDefensiveCasualties(Dominion $dominion, Dominion $target, array $units): int
     {
         if ($this->invasionResult['result']['overwhelmed'])
         {
@@ -568,6 +568,7 @@ class InvadeActionService
 
         // Reduce casualties if target has been hit recently
         $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
+        $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
 
         if ($recentlyInvadedCount === 1) {
             $defensiveCasualtiesPercentage *= 0.8;
@@ -594,7 +595,7 @@ class InvadeActionService
             $drafteesLost = 0;
         } else {
             $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null));
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null));
         }
         if ($drafteesLost > 0) {
             $target->military_draftees -= $drafteesLost;
@@ -610,7 +611,7 @@ class InvadeActionService
             }
 
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot));
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units));
 
             if ($slotLost > 0) {
                 $defensiveUnitsLost[$unit->slot] = $slotLost;
@@ -921,7 +922,7 @@ class InvadeActionService
      */
     protected function handleResearchPoints(Dominion $dominion, array $units): void
     {
-        $researchPointsPerAcre = 20;
+        $researchPointsPerAcre = 17;
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {

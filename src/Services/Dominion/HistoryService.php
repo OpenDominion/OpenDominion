@@ -27,6 +27,7 @@ class HistoryService
     public const EVENT_ACTION_JOIN_ELITE_GUARD = 'join elite guard';
     public const EVENT_ACTION_LEAVE_ROYAL_GUARD = 'leave royal guard';
     public const EVENT_ACTION_LEAVE_ELITE_GUARD = 'leave elite guard';
+    public const EVENT_ACTION_RESTART = 'restart';
 
     /**
      * Returns a cloned dominion instance with state at a certain time.
