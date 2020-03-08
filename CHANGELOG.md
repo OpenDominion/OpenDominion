@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.8.1] - 2020-03-08
 ### Added
 - Spirit and Nomad are playable once again
 - Global Forum for all dominions
@@ -628,7 +630,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.1...HEAD
+[0.8.1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-7...0.8.1
+[0.8.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...0.8.0-7
 [0.8.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-5...0.8.0-6
 [0.8.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-4...0.8.0-5
 [0.8.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-3...0.8.0-4
