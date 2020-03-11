@@ -170,6 +170,11 @@ class DominionFactory
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART
         ]);
+
+        // Reset Queues - duplicate to prevent race condition
+        DB::table('dominion_queue')
+            ->where('dominion_id', $dominion->id)
+            ->delete();
     }
 
     /**
