@@ -43,14 +43,4 @@ class ImprovementHelper
 
         return $helpStrings[$improvementType] ?: null;
     }
-
-    // temp
-    public function getImprovementImplementedString(string $improvementType): ?string
-    {
-        if ($improvementType === 'towers') {
-            return '<abbr title="Partially implemented" class="label label-warning">PI</abbr>';
-        }
-
-        return null;
-    }
 }
