@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.8.1] - 2020-03-08
 ### Added
 - Spirit and Nomad are playable once again
 - Global Forum for all dominions
@@ -11,8 +13,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Valhalla pages for each user
 - A dominion can now be restarted prior to the first tick
 - Late signups will now be awarded additional starting resources after the third day of the round
+- Attacking/exploring/blackops will now be disabled 9-18 hours before the end of the round (from 1-16)
+- Mass exploration restriction: you can no longer explore for more than 50% of your current land total
+- Excessive release restriction: you can no longer release more than 15% of your defense within a 24 hour period
 
 ### Changed
+- Dominion names must contain 3 consecutive alphanumeric characters for searchability
 - Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
 - Info ops spy/wizard strength cost reverted to 2% (from 1%)
 - Reduced damage and cost of Disband Spies to 1.5% and 4.3x (from 2% and 5x)
@@ -34,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Land bonus now awards 128 research points
 - Attacks that fail by 85% or more no longer cause double casualties
 - Prestige gains reduced on first hit, but increased on subsequent hits
+- Prestige gains capped at 15% of your current prestige (before multipliers and base gain)
 - Nox: research point generation bonus reduced to 10% (from 15%)
 - Sylvan: Added -10% rezone cost
 - Sylvan: Dryad changed to 1/3 wizard on defense (from 1/2)
@@ -623,7 +630,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.1...HEAD
+[0.8.1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-7...0.8.1
+[0.8.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...0.8.0-7
 [0.8.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-5...0.8.0-6
 [0.8.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-4...0.8.0-5
 [0.8.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-3...0.8.0-4

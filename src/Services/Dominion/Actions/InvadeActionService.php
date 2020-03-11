@@ -55,6 +55,11 @@ class InvadeActionService
     protected const OVERWHELMED_PERCENTAGE = 15.0;
 
     /**
+     * @var float Percentage of attacker prestige used to cap prestige gains
+     */
+    protected const PRESTIGE_CAP_PERCENTAGE = 15.0;
+
+    /**
      * @var int Bonus prestige when invading successfully
      */
     protected const PRESTIGE_CHANGE_ADD = 20;
@@ -366,7 +371,10 @@ class InvadeActionService
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = (int)round($target->prestige * (($range / 100) / 10));
+            $attackerPrestigeChange = (int)round(min(
+                $target->prestige * (($range / 100) / 10), // Gained through invading
+                $dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100) // But capped based on your current prestige
+            )) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
@@ -389,11 +397,7 @@ class InvadeActionService
                 $attackerPrestigeChange *= 0.4;
             } elseif ($recentlyInvadedCount === 4) {
                 $attackerPrestigeChange *= 0.2;
-            }
-
-            $attackerPrestigeChange += static::PRESTIGE_CHANGE_ADD;
-
-            if ($recentlyInvadedCount >= 5) {
+            } elseif ($recentlyInvadedCount >= 5) {
                 $attackerPrestigeChange = 0;
             }
         }
