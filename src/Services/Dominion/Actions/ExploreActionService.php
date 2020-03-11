@@ -93,7 +93,7 @@ class ExploreActionService
         }
 
         // todo: refactor. see training action service. same with other action services
-        $moraleDrop = max(0, ($dominion->morale - $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));
+        $moraleDrop = min($dominion->morale, $this->explorationCalculator->getMoraleDrop($totalLandToExplore));
         $platinumCost = ($this->explorationCalculator->getPlatinumCost($dominion) * $totalLandToExplore);
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
 
