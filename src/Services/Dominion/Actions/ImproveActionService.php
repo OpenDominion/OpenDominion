@@ -56,8 +56,6 @@ class ImproveActionService
         }
 
         DB::transaction(function() use ($dominion, $resource, $totalImprovements, $totalResourcesToInvest) {
-            // Refresh in transaction to prevent race condition
-            $dominion->refresh();
             foreach ($totalImprovements as $attr => $points) {
                 $dominion->{$attr} += $points;
             }
