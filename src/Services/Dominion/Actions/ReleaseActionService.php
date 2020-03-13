@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use DB;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class ReleaseActionService
@@ -24,20 +24,16 @@ class ReleaseActionService
     /** @var ProtectionService */
     protected $protectionService;
 
-    /** @var QueueService */
-    protected $queueService;
-
     /**
      * ReleaseActionService constructor.
      *
      * @param UnitHelper $unitHelper
      */
-    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, QueueService $queueService)
+    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, ProtectionService $protectionService)
     {
         $this->unitHelper = $unitHelper;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
-        $this->queueService = $queueService;
     }
 
     /**
@@ -98,22 +94,24 @@ class ReleaseActionService
             if ($amount === 0) {
                 continue;
             }
-
-            $dominion->{'military_' . $unitType} -= $amount;
-
-            if ($unitType === 'draftees') {
-                $dominion->peasants += $amount;
-            } else {
-                $dominion->military_draftees += $amount;
-            }
-
             $troopsReleased[$unitType] = $amount;
         }
 
-        $dominion->save([
-            'event' => HistoryService::EVENT_ACTION_RELEASE,
-            'defense_reduced' => $rawDpReleased
-        ]);
+        DB::transaction(function () use ($dominion, $troopsReleased, $rawDpReleased) {
+            foreach ($troopsReleased as $unitType => $amount) {
+                $dominion->{'military_' . $unitType} -= $amount;
+                if ($unitType === 'draftees') {
+                    $dominion->peasants += $amount;
+                } else {
+                    $dominion->military_draftees += $amount;
+                }
+            }
+
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_RELEASE,
+                'defense_reduced' => $rawDpReleased
+            ]);
+        });
 
         return [
             'message' => $this->getReturnMessageString($dominion, $troopsReleased),

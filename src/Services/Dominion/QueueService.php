@@ -157,45 +157,42 @@ class QueueService
      */
     public function queueResources(string $source, Dominion $dominion, array $data, int $hours = 12): void
     {
-        DB::transaction(function () use ($source, $dominion, $data, $hours) {
-            $data = array_map('\intval', $data);
-            $now = now();
+        $data = array_map('\intval', $data);
+        $now = now();
 
-            foreach ($data as $resource => $amount) {
-                if ($amount === 0) {
-                    continue;
-                }
-                $q = $this->getQueue($source, $dominion);
-                $existingQueueRow =
-                    $q->filter(static function ($row) use ($resource, $hours) {
-                        return (
-                            ($row->resource === $resource) &&
-                            ((int)$row->hours === $hours)
-                        );
-                    })->first();
-
-                if ($existingQueueRow === null) {
-                    DB::table('dominion_queue')->insert([
-                        'dominion_id' => $dominion->id,
-                        'source' => $source,
-                        'resource' => $resource,
-                        'hours' => $hours,
-                        'amount' => $amount,
-                        'created_at' => $now,
-                    ]);
-
-                } else {
-                    DB::table('dominion_queue')->where([
-                        'dominion_id' => $dominion->id,
-                        'source' => $source,
-                        'resource' => $resource,
-                        'hours' => $hours,
-                    ])->update([
-                        'amount' => ($existingQueueRow->amount + $amount),
-                    ]);
-                }
+        foreach ($data as $resource => $amount) {
+            if ($amount === 0) {
+                continue;
             }
-        }, 5);
+            $q = $this->getQueue($source, $dominion);
+            $existingQueueRow =
+                $q->filter(static function ($row) use ($resource, $hours) {
+                    return (
+                        ($row->resource === $resource) &&
+                        ((int)$row->hours === $hours)
+                    );
+                })->first();
+
+            if ($existingQueueRow === null) {
+                DB::table('dominion_queue')->insert([
+                    'dominion_id' => $dominion->id,
+                    'source' => $source,
+                    'resource' => $resource,
+                    'hours' => $hours,
+                    'amount' => $amount,
+                    'created_at' => $now,
+                ]);
+            } else {
+                DB::table('dominion_queue')->where([
+                    'dominion_id' => $dominion->id,
+                    'source' => $source,
+                    'resource' => $resource,
+                    'hours' => $hours,
+                ])->update([
+                    'amount' => DB::raw("amount + $amount"),
+                ]);
+            }
+        }
     }
 
     /**
