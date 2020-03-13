@@ -52,16 +52,11 @@ class ImproveActionService
             }
 
             $points = (($amount * $worth[$resource]) * $multiplier);
-            $totalImprovements["improvement_{$improvementType}"] = $points;
+            $dominion->{"improvement_{$improvementType}"} += $points;
         }
 
-        DB::transaction(function() use ($dominion, $resource, $totalImprovements, $totalResourcesToInvest) {
-            foreach ($totalImprovements as $attr => $points) {
-                $dominion->{$attr} += $points;
-            }
-            $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
-        });
+        $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
+        $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
 
         return [
             'message' => $this->getReturnMessageString($resource, $data, $totalResourcesToInvest),

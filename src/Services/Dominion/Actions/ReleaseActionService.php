@@ -94,24 +94,21 @@ class ReleaseActionService
             if ($amount === 0) {
                 continue;
             }
+
+            $dominion->{'military_' . $unitType} -= $amount;
+            if ($unitType === 'draftees') {
+                $dominion->peasants += $amount;
+            } else {
+                $dominion->military_draftees += $amount;
+            }
+
             $troopsReleased[$unitType] = $amount;
         }
 
-        DB::transaction(function () use ($dominion, $troopsReleased, $rawDpReleased) {
-            foreach ($troopsReleased as $unitType => $amount) {
-                $dominion->{'military_' . $unitType} -= $amount;
-                if ($unitType === 'draftees') {
-                    $dominion->peasants += $amount;
-                } else {
-                    $dominion->military_draftees += $amount;
-                }
-            }
-
-            $dominion->save([
-                'event' => HistoryService::EVENT_ACTION_RELEASE,
-                'defense_reduced' => $rawDpReleased
-            ]);
-        });
+        $dominion->save([
+            'event' => HistoryService::EVENT_ACTION_RELEASE,
+            'defense_reduced' => $rawDpReleased
+        ]);
 
         return [
             'message' => $this->getReturnMessageString($dominion, $troopsReleased),
