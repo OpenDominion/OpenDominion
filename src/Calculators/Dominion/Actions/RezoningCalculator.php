@@ -70,11 +70,12 @@ class RezoningCalculator
      */
     public function getCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $factoryReduction = 3;
         $factoryReductionMax = 75;
+        $spellMechanicalGeniusReduction = 30;
 
         // Factories
         $multiplier -= min(
@@ -82,8 +83,20 @@ class RezoningCalculator
             ($factoryReductionMax / 100)
         );
 
-        $multiplier = max($multiplier, -0.75);
+        // Racial Bonus
+        $multiplier *= (1 + $dominion->race->getPerkMultiplier('rezone_cost'));
 
-        return (1 + $multiplier);
+        // Techs
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('rezone_cost'));
+
+        // Racial Spell
+        $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
+            $dominion,
+            'mechanical_genius',
+            $spellMechanicalGeniusReduction
+        );
+        $multiplier *= (1 - $mechanicalGeniusReduction);
+
+        return $multiplier;
     }
 }

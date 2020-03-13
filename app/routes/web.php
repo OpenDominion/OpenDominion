@@ -107,6 +107,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
             $router->post('bank')->uses('Dominion\BankController@postBank');
 
+            // Techs
+            $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
+            $router->post('techs')->uses('Dominion\TechController@postTechs');
+
             // Military
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');
@@ -143,6 +147,19 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('council/post/{post}/delete')->uses('Dominion\CouncilController@getDeletePost')->name('council.delete.post');
             $router->post('council/post/{post}/delete')->uses('Dominion\CouncilController@postDeletePost');
 
+            // Forum
+            $router->get('forum')->uses('Dominion\ForumController@getIndex')->name('forum');
+            $router->get('forum/create')->uses('Dominion\ForumController@getCreate')->name('forum.create');
+            $router->post('forum/create')->uses('Dominion\ForumController@postCreate');
+            $router->get('forum/{thread}')->uses('Dominion\ForumController@getThread')->name('forum.thread');
+            $router->post('forum/{thread}/reply')->uses('Dominion\ForumController@postReply')->name('forum.reply');
+            $router->get('forum/{thread}/delete')->uses('Dominion\ForumController@getDeleteThread')->name('forum.delete.thread');
+            $router->post('forum/{thread}/delete')->uses('Dominion\ForumController@postDeleteThread');
+            $router->get('forum/{thread}/flag')->uses('Dominion\ForumController@getFlagThread')->name('forum.flag.thread');
+            $router->get('forum/post/{post}/delete')->uses('Dominion\ForumController@getDeletePost')->name('forum.delete.post');
+            $router->post('forum/post/{post}/delete')->uses('Dominion\ForumController@postDeletePost');
+            $router->get('forum/post/{post}/flag')->uses('Dominion\ForumController@getFlagPost')->name('forum.flag.post');
+
             // Op Center
             $router->get('op-center')->uses('Dominion\OpCenterController@getIndex')->name('op-center');
             //$router->get('op-center/clairvoyance/{realmNumber}')->uses('Dominion\OpCenterController@getClairvoyance')->name('op-center.clairvoyance');
@@ -157,6 +174,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/elite-guard/join')->uses('Dominion\GovernmentController@postJoinEliteGuard')->name('government.elite-guard.join');
             $router->post('government/royal-guard/leave')->uses('Dominion\GovernmentController@postLeaveRoyalGuard')->name('government.royal-guard.leave');
             $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
+            $router->post('government/war/declare')->uses('Dominion\GovernmentController@postDeclareWar')->name('government.war.declare');
+            $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
@@ -171,6 +190,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Misc
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
+            $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion')->name('misc.restart');
 
             // Debug
             // todo: remove me later
@@ -190,6 +210,7 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Rou
     $router->get('construction')->uses('ScribesController@getConstruction')->name('construction');
     $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');
     $router->get('magic')->uses('ScribesController@getMagic')->name('magic');
+    $router->get('tech')->uses('ScribesController@getTechs')->name('techs');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
 });
 

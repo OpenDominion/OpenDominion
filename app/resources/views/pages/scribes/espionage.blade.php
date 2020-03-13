@@ -39,6 +39,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <p>&nbsp;</p>
                 </div>
                 <div class="col-md-12 col-md-6">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Theft</h4>
@@ -56,6 +57,25 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <p>&nbsp;</p>
+                </div>
+                <div class="col-md-12 col-md-6">
+                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Black Ops</h4>
+                    <table class="table table-striped" style="margin-bottom: 0">
+                        <colgroup>
+                            <col width="200px">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                            @foreach($espionageHelper->getHostileOperations()->sortBy('name') as $operation)
+                                <tr>
+                                    <td>{{ $operation['name'] }}</td>
+                                    <td>{{ $operation['description'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <p>&nbsp;</p>
                 </div>
             </div>
         </div>

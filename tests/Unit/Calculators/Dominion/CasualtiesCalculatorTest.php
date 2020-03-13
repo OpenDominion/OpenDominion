@@ -70,13 +70,16 @@ class CasualtiesCalculatorTest extends AbstractBrowserKitTestCase
                     'resource_food' => -100,
                     'peasants' => 1300,
                     'military_draftees' => 100,
+                    'military_unit1' => 50,
                     'military_unit2' => 150,
                     'military_spies' => 25,
                     'military_wizards' => 25,
                 ],
                 'expected' => [
-                    'peasants' => 26,
-                    'military_unit2' => 6,
+                    'peasants' => 27,
+                    'military_draftees' => 2,
+                    'military_unit1' => 1,
+                    'military_unit2' => 3,
                 ],
             ],
 

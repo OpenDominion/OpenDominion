@@ -166,6 +166,7 @@ class TickService
                         'dominions.stat_total_gem_production' => DB::raw('dominions.stat_total_gem_production + dominion_tick.resource_gems'),
                         'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
                         'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
+                        'dominions.highest_land_achieved' => DB::raw('dominions.highest_land_achieved + dominion_tick.highest_land_achieved'),
                         'dominions.last_tick_at' => DB::raw('now()')
                     ]);
 
@@ -405,6 +406,13 @@ class TickService
             $dominion->{$row->resource} += $row->amount;
         }
 
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+
+        // Prestige Cap
+        if ($dominion->prestige > $totalLand) {
+            $tick->prestige -= ($dominion->prestige - $totalLand);
+        }
+
         // Population
         $drafteesGrowthRate = $this->populationCalculator->getPopulationDrafteeGrowth($dominion);
         $populationPeasantGrowth = $this->populationCalculator->getPopulationPeasantGrowth($dominion);
@@ -420,6 +428,7 @@ class TickService
         $tick->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
         $tick->resource_ore += $this->productionCalculator->getOreProduction($dominion);
         $tick->resource_gems += $this->productionCalculator->getGemProduction($dominion);
+        $tick->resource_tech += $this->productionCalculator->getTechProduction($dominion);
         $tick->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
         $tick->resource_food_production += $this->productionCalculator->getFoodProduction($dominion);
         // Check for starvation before adjusting food
@@ -452,12 +461,24 @@ class TickService
             $tick->morale = min(3, 100 - $dominion->morale);
         }
 
-        // Spy Strength
+        // Spy Strength - todo: move to military calculator
         if ($dominion->spy_strength < 100) {
-            $tick->spy_strength = min(4, 100 - $dominion->spy_strength);
+            $spyStrengthAdded = 4;
+
+            $spyStrengthPerForestHaven = 0.1;
+            $spyStrengthPerForestHavenMax = 2;
+
+            $spyStrengthAdded += min(
+                (($dominion->building_forest_haven / $totalLand) * (100 * $spyStrengthPerForestHaven)),
+                $spyStrengthPerForestHavenMax
+            );
+
+            $spyStrengthAdded += $dominion->getTechPerkValue('spy_strength_recovery');
+
+            $tick->spy_strength = min($spyStrengthAdded, 100 - $dominion->spy_strength);
         }
 
-        // Wizard Strength
+        // Wizard Strength - todo: move to military calculator
         if ($dominion->wizard_strength < 100) {
             $wizardStrengthAdded = 4;
 
@@ -465,11 +486,22 @@ class TickService
             $wizardStrengthPerWizardGuildMax = 2;
 
             $wizardStrengthAdded += min(
-                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild)),
+                (($dominion->building_wizard_guild / $totalLand) * (100 * $wizardStrengthPerWizardGuild)),
                 $wizardStrengthPerWizardGuildMax
             );
 
+            $wizardStrengthAdded += $dominion->getTechPerkValue('wizard_strength_recovery');
+
+            if ($dominion->wizard_strength < 30) {
+                $wizardStrengthAdded += 1;
+            }
+
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
+        }
+
+        // Store highest land total
+        if ($totalLand > $dominion->highest_land_achieved) {
+            $tick->highest_land_achieved += $totalLand - $dominion->highest_land_achieved;
         }
 
         foreach ($incomingQueue as $row) {

@@ -35,7 +35,11 @@
                         <tr>
                             @foreach ($row as $column => $value)
                                 <td{!! (isset($headers[$column]['align-center']) && $headers[$column]['align-center']) ? ' class="text-center"' : null !!}>
-                                    {{ $value }}
+                                    @if ($column == 'player')
+                                        {!! $value !!}
+                                    @else
+                                        {{ $value }}
+                                    @endif
                                 </td>
                             @endforeach
                         </tr>

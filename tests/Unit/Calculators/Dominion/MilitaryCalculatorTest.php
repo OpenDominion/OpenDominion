@@ -13,6 +13,7 @@ use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Unit;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Tests\AbstractBrowserKitTestCase;
 
@@ -23,6 +24,9 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 {
     /** @var Mock|BuildingCalculator */
     protected $buildingCalculator;
+
+    /** @var Mock|GovernmentService */
+    protected $governmentService;
 
     /** @var Mock|ImprovementCalculator */
     protected $improvementCalculator;
@@ -51,6 +55,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
 
         $this->sut = m::mock(MilitaryCalculator::class, [
             $this->buildingCalculator = m::mock(BuildingCalculator::class),
+            $this->governmentService = m::mock(GovernmentService::class),
             $this->improvementCalculator = m::mock(ImprovementCalculator::class),
             $this->landCalculator = m::mock(LandCalculator::class),
             $this->prestigeCalculator = m::mock(PrestigeCalculator::class),

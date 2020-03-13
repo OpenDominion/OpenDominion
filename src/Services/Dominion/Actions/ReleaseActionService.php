@@ -2,10 +2,13 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class ReleaseActionService
@@ -15,14 +18,26 @@ class ReleaseActionService
     /** @var UnitHelper */
     protected $unitHelper;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var ProtectionService */
+    protected $protectionService;
+
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * ReleaseActionService constructor.
      *
      * @param UnitHelper $unitHelper
      */
-    public function __construct(UnitHelper $unitHelper)
+    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, QueueService $queueService)
     {
         $this->unitHelper = $unitHelper;
+        $this->militaryCalculator = $militaryCalculator;
+        $this->protectionService = $protectionService;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -42,9 +57,27 @@ class ReleaseActionService
         $troopsReleased = [];
 
         $totalTroopsToRelease = array_sum($data);
-
         if ($totalTroopsToRelease <= 0) {
             throw new GameException('Military release aborted due to bad input.');
+        }
+
+        $units = [
+            1 => $data['unit1'],
+            2 => $data['unit2'],
+            3 => $data['unit3'],
+            4 => $data['unit4']
+        ];
+
+        $rawDpReleased = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
+
+        if ($rawDpReleased > 0 && !$this->protectionService->isUnderProtection($dominion))
+        {
+            // Check for excessive release restriction
+            $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, null, false);
+            $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
+            if ((($rawDpReleased + $defenseReducedRecently) / ($defenseBeforeRelease + $defenseReducedRecently)) > 0.15) {
+                throw new GameException('You cannot release more than 15% of your raw defense during a 24 hour period.');
+            }
         }
 
         foreach ($data as $unitType => $amount) {
@@ -77,7 +110,10 @@ class ReleaseActionService
             $troopsReleased[$unitType] = $amount;
         }
 
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_RELEASE]);
+        $dominion->save([
+            'event' => HistoryService::EVENT_ACTION_RELEASE,
+            'defense_reduced' => $rawDpReleased
+        ]);
 
         return [
             'message' => $this->getReturnMessageString($dominion, $troopsReleased),

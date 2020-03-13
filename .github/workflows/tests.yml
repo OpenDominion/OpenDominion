@@ -8,6 +8,22 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    # Apparently Laravel 5.7 doesn't work on PHP 7.4 (More info: https://github.com/laravel/framework/issues/30737)
+    - name: Set PHP version to PHP 7.3
+      run: sudo update-alternatives --set php /usr/bin/php7.3 > /dev/null
+
+    - name: Shut down MySQL server
+      run: sudo service mysql stop
+
+    # Using MariaDB instead of MYSQL since it breaks the TickTest
+    - name: Set up MariaDB
+      uses: getong/mariadb-action@v1.1
+      with:
+        mariadb version: '10.0.38'
+        mysql database: opendominion
+        mysql user: opendominion-user
+        mysql password: opendominion-password
+
     - name: Install PHP dependencies
       run: composer install --no-interaction --prefer-dist
 
@@ -18,9 +34,6 @@ jobs:
 
     - name: Create dummy mix-manifest.json file
       run: echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
-
-    - name: Create database
-      run: mysql -h127.0.0.1 -uroot -proot -e 'CREATE DATABASE opendominion;'
 
     - name: Run database migrations
       run: php artisan migrate

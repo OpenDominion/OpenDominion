@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -45,13 +46,24 @@ class ImproveActionService
             // Racial bonus multiplier
             $multiplier = (1 + $dominion->race->getPerkMultiplier('invest_bonus'));
 
-            $points = (($amount * $worth[$resource]) * $multiplier);
+            // Racial bonus ore multiplier
+            if ($resource == 'ore') {
+                $multiplier += $dominion->race->getPerkMultiplier('invest_bonus_ore');
+            }
 
-            $dominion->{'improvement_' . $improvementType} += $points;
+            $points = (($amount * $worth[$resource]) * $multiplier);
+            $totalImprovements["improvement_{$improvementType}"] = $points;
         }
 
-        $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
+        DB::transaction(function() use ($dominion, $resource, $totalImprovements, $totalResourcesToInvest) {
+            // Refresh in transaction to prevent race condition
+            $dominion->refresh();
+            foreach ($totalImprovements as $attr => $points) {
+                $dominion->{$attr} += $points;
+            }
+            $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
+        });
 
         return [
             'message' => $this->getReturnMessageString($resource, $data, $totalResourcesToInvest),

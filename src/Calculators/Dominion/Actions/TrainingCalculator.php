@@ -35,14 +35,17 @@ class TrainingCalculator
     public function getTrainingCostsPerUnit(Dominion $dominion): array
     {
         $costsPerUnit = [];
+        $spyBaseCost = 500;
+        $wizardBaseCost = 500;
         $archmageBaseCost = 1000;
         $archmageBaseCost += $dominion->race->getPerkValue('archmage_cost');
 
+        $spyCostMultiplier = $this->getSpyCostMultiplier($dominion);
         $wizardCostMultiplier = $this->getWizardCostMultiplier($dominion);
 
         // Values
-        $spyPlatinumCost = 500;
-        $wizardPlatinumCost = (int)ceil(500 * $wizardCostMultiplier);
+        $spyPlatinumCost = (int)ceil($spyBaseCost * $spyCostMultiplier);
+        $wizardPlatinumCost = (int)ceil($wizardBaseCost * $wizardCostMultiplier);
         $archmagePlatinumCost = (int)ceil($archmageBaseCost * $wizardCostMultiplier);
 
         $units = $dominion->race->units;
@@ -135,7 +138,7 @@ class TrainingCalculator
      */
     public function getSpecialistEliteCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $smithiesReduction = 2;
@@ -147,9 +150,36 @@ class TrainingCalculator
             ($smithiesReductionMax / 100)
         );
 
-        // todo: Master of Resources Tech
+        // Techs
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('military_cost'));
 
-        return (1 + $multiplier);
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's training platinum cost multiplier for spies.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getSpyCostMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Values (percentages)
+        $forestHavenReduction = 2;
+        $forestHavenReductionMax = 40;
+
+        // Forest Havens
+        $multiplier -= min(
+            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenReduction),
+            ($forestHavenReductionMax / 100)
+        );
+
+        // Techs
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('spy_cost'));
+
+        return $multiplier;
     }
 
     /**
@@ -160,7 +190,7 @@ class TrainingCalculator
      */
     public function getWizardCostMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $wizardGuildReduction = 2;
@@ -172,6 +202,9 @@ class TrainingCalculator
             ($wizardGuildReductionMax / 100)
         );
 
-        return (1 + $multiplier);
+        // Techs
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('wizard_cost'));
+
+        return $multiplier;
     }
 }

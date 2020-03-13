@@ -16,6 +16,7 @@ class HistoryService
     public const EVENT_ACTION_REZONE = 'rezone';
     public const EVENT_ACTION_IMPROVE = 'improve';
     public const EVENT_ACTION_BANK = 'bank';
+    public const EVENT_ACTION_TECH = 'tech';
     public const EVENT_ACTION_CHANGE_DRAFT_RATE = 'change draft rate';
     public const EVENT_ACTION_TRAIN = 'train';
     public const EVENT_ACTION_RELEASE = 'release';
@@ -26,6 +27,7 @@ class HistoryService
     public const EVENT_ACTION_JOIN_ELITE_GUARD = 'join elite guard';
     public const EVENT_ACTION_LEAVE_ROYAL_GUARD = 'leave royal guard';
     public const EVENT_ACTION_LEAVE_ELITE_GUARD = 'leave elite guard';
+    public const EVENT_ACTION_RESTART = 'restart';
 
     /**
      * Returns a cloned dominion instance with state at a certain time.

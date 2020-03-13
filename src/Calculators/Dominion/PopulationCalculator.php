@@ -188,7 +188,7 @@ class PopulationCalculator
      */
     public function getMaxPopulationMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        $multiplier = 1;
 
         // Values (percentages)
         $techUrbanMasteryMultiplier = 7.5;
@@ -197,16 +197,16 @@ class PopulationCalculator
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('max_population');
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('max_population');
+
         // Improvement: Keep
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
 
-        // Tech: Urban Mastery or Construction
-        // todo
-
         // Prestige Bonus
-        $prestigeMultiplier = $this->prestigeCalculator->getPrestigeMultiplier($dominion);
+        $multiplier *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion));
 
-        return (1 + $multiplier) * (1 + $prestigeMultiplier);
+        return $multiplier;
     }
 
     /**
@@ -264,10 +264,16 @@ class PopulationCalculator
      */
     public function getPopulationBirthMultiplier(Dominion $dominion): float
     {
-        $multiplier = 0;
+        // Check for Starvation
+        if ($dominion->resource_food == 0) {
+            return 0;
+        }
+
+        $multiplier = 1;
 
         // Values (percentages)
         $spellHarmony = 50;
+        $spellPlague = 50;
         $templeBonus = 6;
 
         // Racial Bonus
@@ -276,10 +282,13 @@ class PopulationCalculator
         // Spell: Harmony
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'harmony', $spellHarmony);
 
+        // Spell: Plague
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'plague', $spellPlague);
+
         // Temples
         $multiplier += (($dominion->building_temple / $this->landCalculator->getTotalLand($dominion)) * $templeBonus);
 
-        return (1 + $multiplier);
+        return $multiplier;
     }
 
     /**

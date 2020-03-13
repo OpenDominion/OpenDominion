@@ -134,8 +134,8 @@
                                             <td>{{ number_format($infoOp->data['resource_gems']) }}</td>
                                         </tr>
                                         <tr>
-                                            <td class="nyi">Research Points:</td>
-                                            <td class="nyi">{{ number_format($infoOp->data['resource_tech']) }}</td>
+                                            <td>Research Points:</td>
+                                            <td>{{ number_format($infoOp->data['resource_tech']) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Boats:</td>
@@ -261,7 +261,11 @@
                                         <td>{{ $spellInfo['description'] }}</td>
                                         <td class="text-center">{{ $spell['duration'] }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('dominion.realm', $castByDominion->realm->number) }}">{{ $castByDominion->name }} (#{{ $castByDominion->realm->number }})</a>
+                                            @if ($castByDominion->id == $dominion->id || $castByDominion->realm_id == $selectedDominion->realm_id)
+                                                <a href="{{ route('dominion.realm', $castByDominion->realm->number) }}">{{ $castByDominion->name }} (#{{ $castByDominion->realm->number }})</a>
+                                            @else
+                                                <em>Unknown</em>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -308,7 +312,6 @@
                                     <tr>
                                         <td>
                                             {{ ucfirst($improvementType) }}
-                                            {!! $improvementHelper->getImprovementImplementedString($improvementType) !!}
                                             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $improvementHelper->getImprovementHelpString($improvementType) }}"></i>
                                         </td>
                                         <td>
@@ -519,7 +522,7 @@
                                                     <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
                                                 </td>
                                                 <td class="text-center">{{ number_format($amount) }}</td>
-                                                <td class="text-center">{{ number_format((($amount / $landCalculator->getTotalLand($dominion)) * 100), 2) }}%</td>
+                                                <td class="text-center">{{ number_format((($amount / array_get($infoOp->data, "total_land", $landCalculator->getTotalLand($dominion))) * 100), 2) }}%</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -706,6 +709,85 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            @endcomponent
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if ($infoOp->type == 'vision')
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            @component('partials.dominion.op-center.box')
+                                @slot('title', 'Technological Advancements')
+                                @slot('titleIconClass', 'fa fa-flask')
+
+                                @if ($infoOp === null)
+                                    <p>No recent data available.</p>
+                                    <p>Cast magic spell 'Vision' to reveal information.</p>
+                                @else
+                                    @slot('noPadding', true)
+
+                                    <table class="table">
+                                        <colgroup>
+                                            <col width="150">
+                                            <col>
+                                            <col width="100">
+                                            <col width="200">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>Tech</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($infoOp->data['techs'] as $techKey => $techName)
+                                                @php
+                                                    $techDescription = $techHelper->getTechDescription(OpenDominion\Models\Tech::where('key', $techKey)->firstOrFail());
+                                                @endphp
+                                                <tr>
+                                                    <td>{{ $techName }}</td>
+                                                    <td>{{ $techDescription }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+
+                                @slot('boxFooter')
+                                    @if ($infoOp !== null)
+                                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                                        @if ($infoOp->isInvalid())
+                                            <span class="label label-danger">Invalid</span>
+                                        @elseif ($infoOp->isStale())
+                                            <span class="label label-warning">Stale</span>
+                                        @endif
+                                    @endif
+
+                                    <div class="pull-right">
+                                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                                            @csrf
+                                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                            <input type="hidden" name="spell" value="vision">
+                                            <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'vision')) }} mana)</button>
+                                        </form>
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                    <div class="text-center">
+                                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'vision']) }}">View Archives</a>
+                                    </div>
+                                @endslot
+                            @endcomponent
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            @component('partials.dominion.op-center.box')
+                                @slot('title', 'Heroes')
+                                @slot('titleIconClass', 'ra ra-knight-helmet')
+                                <p>Not yet implemented.</p>
                             @endcomponent
                         </div>
                     </div>

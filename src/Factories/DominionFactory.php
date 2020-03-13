@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Factories;
 
+use DB;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
@@ -45,6 +46,8 @@ class DominionFactory
             $startingBuildings
         );
 
+        $startingAttributes = $this->getStartingAttributes($realm->round);
+
         return Dominion::create([
             'user_id' => $user->id,
             'round_id' => $realm->round->id,
@@ -56,7 +59,7 @@ class DominionFactory
             'name' => $dominionName,
             'prestige' => 250,
 
-            'peasants' => 1300,
+            'peasants' => $startingAttributes['peasants'],
             'peasants_last_hour' => 0,
 
             'draft_rate' => 10,
@@ -64,11 +67,11 @@ class DominionFactory
             'spy_strength' => 100,
             'wizard_strength' => 100,
 
-            'resource_platinum' => 100000,
-            'resource_food' => 15000,
-            'resource_lumber' => 15000,
-            'resource_mana' => 0,
-            'resource_ore' => 0,
+            'resource_platinum' => $startingAttributes['resource_platinum'],
+            'resource_food' => $startingAttributes['resource_food'],
+            'resource_lumber' => $startingAttributes['resource_lumber'],
+            'resource_mana' => $startingAttributes['resource_mana'],
+            'resource_ore' => $startingAttributes['resource_ore'],
             'resource_gems' => 10000,
             'resource_tech' => 0,
             'resource_boats' => 0,
@@ -80,26 +83,26 @@ class DominionFactory
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
 
-            'military_draftees' => 100,
+            'military_draftees' => $startingAttributes['military_draftees'],
             'military_unit1' => 0,
-            'military_unit2' => 150,
+            'military_unit2' => $startingAttributes['military_unit2'],
             'military_unit3' => 0,
             'military_unit4' => 0,
             'military_spies' => 25,
             'military_wizards' => 25,
             'military_archmages' => 0,
 
-            'land_plain' => $startingLand['plain'],
-            'land_mountain' => $startingLand['mountain'],
-            'land_swamp' => $startingLand['swamp'],
-            'land_cavern' => $startingLand['cavern'],
-            'land_forest' => $startingLand['forest'],
-            'land_hill' => $startingLand['hill'],
-            'land_water' => $startingLand['water'],
+            'land_plain' => $startingLand['land_plain'],
+            'land_mountain' => $startingLand['land_mountain'],
+            'land_swamp' => $startingLand['land_swamp'],
+            'land_cavern' => $startingLand['land_cavern'],
+            'land_forest' => $startingLand['land_forest'],
+            'land_hill' => $startingLand['land_hill'],
+            'land_water' => $startingLand['land_water'],
 
-            'building_home' => $startingBuildings['home'],
-            'building_alchemy' => $startingBuildings['alchemy'],
-            'building_farm' => $startingBuildings['farm'],
+            'building_home' => $startingBuildings['building_home'],
+            'building_alchemy' => $startingBuildings['building_alchemy'],
+            'building_farm' => $startingBuildings['building_farm'],
             'building_smithy' => 0,
             'building_masonry' => 0,
             'building_ore_mine' => 0,
@@ -109,7 +112,7 @@ class DominionFactory
             'building_temple' => 0,
             'building_diamond_mine' => 0,
             'building_school' => 0,
-            'building_lumberyard' => $startingBuildings['lumberyard'],
+            'building_lumberyard' => $startingBuildings['building_lumberyard'],
             'building_forest_haven' => 0,
             'building_factory' => 0,
             'building_guard_tower' => 0,
@@ -117,6 +120,61 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
         ]);
+    }
+
+    /**
+     * Resets a Dominion to an equivalent state as a new registration.
+     *
+     * @param  Dominion $dominion
+     * @throws GameException
+     */
+    public function restart(Dominion $dominion): void
+    {
+        // Reset Queues
+        DB::table('dominion_queue')
+            ->where('dominion_id', $dominion->id)
+            ->delete();
+
+        // Reset Spells
+        DB::table('active_spells')
+            ->where('dominion_id', $dominion->id)
+            ->delete();
+
+        // Reset starting buildings
+        $startingBuildings = $this->getStartingBuildings();
+        foreach ($startingBuildings as $building_type => $value) {
+            $dominion->{$building_type} = $value;
+        }
+
+        // Reset starting land
+        $startingLand = $this->getStartingLand($dominion->race, $this->getStartingBarrenLand(), $startingBuildings);
+        foreach ($startingLand as $land_type => $value) {
+            $dominion->{$land_type} = $value;
+        }
+
+        // Reset other starting attributes
+        $startingAttributes = $this->getStartingAttributes($dominion->round);
+        foreach ($startingAttributes as $attribute => $value) {
+            $dominion->{$attribute} = $value;
+        }
+
+        // Reset statistics
+        $modelAttributes = $dominion->getAttributes();
+        foreach ($modelAttributes as $attr => $value) {
+            if (substr_compare($attr, 'stat_', 0, 5) === 0) {
+                $dominion->{$attr} = 0;
+            }
+        }
+
+        $dominion->created_at = now();
+        $dominion->save([
+            'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART
+        ]);
+
+        // Reset Queues - duplicate to prevent race condition
+        DB::table('dominion_queue')
+            ->where('dominion_id', $dominion->id)
+            ->delete();
     }
 
     /**
@@ -159,13 +217,13 @@ class DominionFactory
     protected function getStartingBarrenLand(): array
     {
         return [
-            'plain' => 40,
-            'mountain' => 20,
-            'swamp' => 20,
-            'cavern' => 20,
-            'forest' => 20,
-            'hill' => 20,
-            'water' => 20,
+            'land_plain' => 40,
+            'land_mountain' => 20,
+            'land_swamp' => 20,
+            'land_cavern' => 20,
+            'land_forest' => 20,
+            'land_hill' => 20,
+            'land_water' => 20,
         ];
     }
 
@@ -177,10 +235,25 @@ class DominionFactory
     protected function getStartingBuildings(): array
     {
         return [
-            'home' => 10,
-            'alchemy' => 30,
-            'farm' => 30,
-            'lumberyard' => 20,
+            'building_home' => 10,
+            'building_alchemy' => 30,
+            'building_farm' => 30,
+            'building_smithy' => 0,
+            'building_masonry' => 0,
+            'building_ore_mine' => 0,
+            'building_gryphon_nest' => 0,
+            'building_tower' => 0,
+            'building_wizard_guild' => 0,
+            'building_temple' => 0,
+            'building_diamond_mine' => 0,
+            'building_school' => 0,
+            'building_lumberyard' => 20,
+            'building_forest_haven' => 0,
+            'building_factory' => 0,
+            'building_guard_tower' => 0,
+            'building_shrine' => 0,
+            'building_barracks' => 0,
+            'building_dock' => 0,
         ];
     }
 
@@ -196,17 +269,83 @@ class DominionFactory
     protected function getStartingLand(Race $race, array $startingBarrenLand, array $startingBuildings): array
     {
         $startingLand = [
-            'plain' => $startingBarrenLand['plain'] + $startingBuildings['alchemy'] + $startingBuildings['farm'],
-            'mountain' => $startingBarrenLand['mountain'],
-            'swamp' => $startingBarrenLand['swamp'],
-            'cavern' => $startingBarrenLand['cavern'],
-            'forest' => $startingBarrenLand['forest'] + $startingBuildings['lumberyard'],
-            'hill' => $startingBarrenLand['hill'],
-            'water' => $startingBarrenLand['water'],
+            'land_plain' => $startingBarrenLand['land_plain'] + $startingBuildings['building_alchemy'] + $startingBuildings['building_farm'],
+            'land_mountain' => $startingBarrenLand['land_mountain'],
+            'land_swamp' => $startingBarrenLand['land_swamp'],
+            'land_cavern' => $startingBarrenLand['land_cavern'],
+            'land_forest' => $startingBarrenLand['land_forest'] + $startingBuildings['building_lumberyard'],
+            'land_hill' => $startingBarrenLand['land_hill'],
+            'land_water' => $startingBarrenLand['land_water'],
         ];
 
-        $startingLand[$race->home_land_type] += $startingBuildings['home'];
+        $startingLand["land_{$race->home_land_type}"] += $startingBuildings['building_home'];
 
         return $startingLand;
+    }
+
+    /**
+     * Get amount of total starting non-land, non-building attributes,
+     * factoring in additional resources due to late start.
+     *
+     * @param Round $round
+     * @return array
+     */
+    protected function getStartingAttributes(Round $round): array
+    {
+        $days = 0;
+        if ($round->hasStarted()) {
+            $daysLate = now()->diffInDays($round->start_date);
+            if ($daysLate >= 3) {
+                // Additional resources are not added until after the third day of the round
+                $days = $daysLate;
+            }
+        }
+
+        // Based on additional starting resource formula in Blackreign's Sim
+        $startingAttributes = [
+            'prestige' => 250,
+            'peasants' => 1300 + (100 * $days),
+            'peasants_last_hour' => 0,
+
+            'draft_rate' => 10,
+            'morale' => 100,
+            'spy_strength' => 100,
+            'wizard_strength' => 100,
+            'daily_platinum' => 0,
+            'daily_land' => 0,
+
+            'resource_platinum' => 100000 + (5000 * $days),
+            'resource_food' => 15000 + (1500 * $days),
+            'resource_lumber' => 15000 + (2500 * $days),
+            'resource_ore' => 0 + (2500 * $days),
+            'resource_mana' => 0 + (1000 * $days),
+            'resource_gems' => 10000,
+            'resource_tech' => 0,
+            'resource_boats' => 0,
+
+            'improvement_science' => 0,
+            'improvement_keep' => 0,
+            'improvement_towers' => 0,
+            'improvement_forges' => 0,
+            'improvement_walls' => 0,
+            'improvement_harbor' => 0,
+
+            'military_draftees' => 100 + (30 * $days),
+            'military_unit1' => 0,
+            'military_unit2' => 150 + (30 * $days),
+            'military_unit3' => 0,
+            'military_unit4' => 0,
+            'military_spies' => 25,
+            'military_wizards' => 25,
+            'military_archmages' => 0,
+
+            'discounted_land' => 0,
+            'highest_land_achieved' => 250,
+            'royal_guard_active_at' => null,
+            'elite_guard_active_at' => null,
+            'last_tick_at' => null,
+        ];
+
+        return $startingAttributes;
     }
 }

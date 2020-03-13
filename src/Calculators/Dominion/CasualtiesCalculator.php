@@ -79,6 +79,31 @@ class CasualtiesCalculator
                 }
             }
 
+            // Unit Perk: Kills Immortal
+            $unitsAtHomePerSlot = [];
+            $unitsAtHomeKISlot = null;
+            $totalUnitsAtHome = 0;
+
+            // todo: inefficient to do run this code per slot. needs refactoring
+            foreach ($target->race->units as $unit) {
+                $slot = $unit->slot;
+                $unitKey = "military_unit{$slot}";
+
+                $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
+                if ($unit->power_defense > 0) {
+                    $totalUnitsAtHome += $target->{$unitKey};
+                }
+
+                if ($unit->getPerkValue('kills_immortal') !== 0) {
+                    $unitsAtHomeKISlot = $slot;
+                }
+            }
+
+            // We have a unit with KI!
+            if ($unitsAtHomeKISlot !== null) {
+                $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
+            }
+
             // Race perk-based immortality
             if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
                 $multiplier = 0;
@@ -102,7 +127,8 @@ class CasualtiesCalculator
             $nonUnitBonusMultiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'bloodrage', $spellBloodrage);
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
-            // todo: Tech (eg Tactical Battle)
+            // Techs
+            $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_offense');
 
             // todo: Wonders
 
@@ -161,7 +187,7 @@ class CasualtiesCalculator
      * @param int|null $slot Null is for non-racial units and thus used as draftees casualties multiplier
      * @return float
      */
-    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot): float
+    public function getDefensiveCasualtiesMultiplierForUnitSlot(Dominion $dominion, Dominion $attacker, ?int $slot, ?array $units): float
     {
         $multiplier = 1;
 
@@ -187,6 +213,30 @@ class CasualtiesCalculator
                 if (!$attackerHasCrusadeActive) {
                     $multiplier = 0;
                 }
+
+                // Unit Perk: Kills Immortal
+                $unitsSentPerSlot = [];
+                $unitsSentKISlot = null;
+
+                // todo: inefficient to do run this code per slot. needs refactoring
+                foreach ($attacker->race->units as $unit) {
+                    $slot = $unit->slot;
+
+                    if (!isset($units[$slot])) {
+                        continue;
+                    }
+                    $unitsSentPerSlot[$slot] = $units[$slot];
+
+                    if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
+                        $unitsSentKISlot = $slot;
+                    }
+                }
+
+                // We have a unit with KI!
+                if ($unitsSentKISlot !== null) {
+                    $totalUnitsSent = array_sum($unitsSentPerSlot);
+                    $multiplier = ($unitsSentPerSlot[$unitsSentKISlot] / $totalUnitsSent);
+                }
             }
 
             // Race perk-based immortality
@@ -205,12 +255,13 @@ class CasualtiesCalculator
 
             // todo: Heroes
 
-            // todo: Tech
-
-            // todo: Wonders
-
             // Spells
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+
+            // Techs
+            $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_defense');
+
+            // todo: Wonders
 
             // Cap at -80% and apply to multiplier (additive)
             $multiplier -= min(0.8, $nonUnitBonusMultiplier);
@@ -233,7 +284,7 @@ class CasualtiesCalculator
                 $slot = $unit->slot;
                 $unitKey = "military_unit{$slot}";
 
-                $unitsAtHomePerSlot[$slot] = $dominion->$unitKey;
+                $unitsAtHomePerSlot[$slot] = $dominion->{$unitKey};
 
                 if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
                     $unitsAtHomeRCLSlot = $slot;
@@ -299,11 +350,19 @@ class CasualtiesCalculator
         }
 
         $peasantPopPercentage = $dominion->peasants / $this->populationCalculator->getPopulation($dominion);
-        $casualties = ['peasants' => min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
+        $totalMilitary = (
+            $dominion->military_draftees +
+            $dominion->military_unit1 +
+            $dominion->military_unit2 +
+            $dominion->military_unit3 +
+            $dominion->military_unit4
+        );
+
+        $casualties = ['peasants' => (int)min($totalCasualties * $peasantPopPercentage, $dominion->peasants)];
         $casualties += array_fill_keys($units, 0);
 
         $remainingCasualties = ($totalCasualties - array_sum($casualties));
-        $totalMilitaryCasualties = $remainingCasualties;
+        $militaryCasualties = $remainingCasualties;
 
         foreach($units as $unit) {
             if($remainingCasualties == 0) {
@@ -316,12 +375,11 @@ class CasualtiesCalculator
                 continue;
             }
 
-            $slotLostMultiplier = $slotTotal / $totalMilitaryCasualties;
+            $slotLostMultiplier = $slotTotal / $totalMilitary;
+            $slotLost = floor($militaryCasualties * $slotLostMultiplier);
 
-            $slotLost = ceil($slotTotal * $slotLostMultiplier);
-
-            if($slotLost > $remainingCasualties) {
-                $slotLost = $remainingCasualties;
+            if($slotLost > $slotTotal) {
+                $slotLost = $slotTotal;
             }
 
             $casualties[$unit] += $slotLost;
@@ -351,7 +409,7 @@ class CasualtiesCalculator
             return 0;
         }
 
-        $casualties = (int)(abs($foodDeficit) * 2);
+        $casualties = (int)abs($foodDeficit);
         $maxCasualties = $this->populationCalculator->getPopulation($dominion) * 0.02;
 
         return min($casualties, $maxCasualties);
@@ -369,7 +427,7 @@ class CasualtiesCalculator
                 function ($unit) {
                     return ('military_' . $unit);
                 },
-                $this->unitHelper->getUnitTypes()
+                $this->unitHelper->getUnitTypes(true)
             ),
             ['military_draftees']
         );

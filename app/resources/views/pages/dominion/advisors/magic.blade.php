@@ -38,7 +38,7 @@
                                     <td>{{ $spellInfo['description'] }}</td>
                                     <td class="text-center">{{ $spell->duration }}</td>
                                     <td class="text-center">
-                                        @if ($spell->cast_by_dominion_id !== null)
+                                        @if ($spell->cast_by_dominion_id !== null && ($spell->cast_by_dominion_id == $selectedDominion->id || $spellCalculator->isSpellActive($selectedDominion, 'surreal_perception')))
                                             <a href="{{ route('dominion.realm', $spell->cast_by_dominion_realm_number) }}">{{ $spell->cast_by_dominion_name }} (#{{ $spell->cast_by_dominion_realm_number }})</a>
                                         @else
                                             <em>Unknown</em>

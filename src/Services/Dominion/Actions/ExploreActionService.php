@@ -4,10 +4,12 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -18,8 +20,14 @@ class ExploreActionService
     /** @var ExplorationCalculator */
     protected $explorationCalculator;
 
+    /** @var LandCalculator */
+    protected $landCalculator;
+
     /** @var LandHelper */
     protected $landHelper;
+
+    /** @var ProtectionService */
+    protected $protectionService;
 
     /** @var QueueService */
     protected $queueService;
@@ -30,7 +38,9 @@ class ExploreActionService
     public function __construct()
     {
         $this->explorationCalculator = app(ExplorationCalculator::class);
+        $this->landCalculator = app(LandCalculator::class);
         $this->landHelper = app(LandHelper::class);
+        $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
     }
 
@@ -75,24 +85,28 @@ class ExploreActionService
             throw new GameException("You do not have enough platinum and/or draftees to explore for {$totalLandToExplore} acres.");
         }
 
+        if (!$this->protectionService->isUnderProtection($dominion)) {
+            $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
+            if ($totalLandToExplore + $incomingLand > $this->landCalculator->getTotalLand($dominion) / 2) {
+                throw new GameException('You cannot explore for more than 50% of your current land total.');
+            }
+        }
+
         // todo: refactor. see training action service. same with other action services
-        $newMorale = max(0, ($dominion->morale - $this->explorationCalculator->getMoraleDrop($totalLandToExplore)));
-        $moraleDrop = ($dominion->morale - $newMorale);
-
+        $moraleDrop = min($dominion->morale, $this->explorationCalculator->getMoraleDrop($totalLandToExplore));
         $platinumCost = ($this->explorationCalculator->getPlatinumCost($dominion) * $totalLandToExplore);
-        $newPlatinum = ($dominion->resource_platinum - $platinumCost);
-
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
-        $newDraftees = ($dominion->military_draftees - $drafteeCost);
 
-        DB::transaction(function () use ($dominion, $data, $newMorale, $newPlatinum, $newDraftees, $totalLandToExplore) {
+        DB::transaction(function () use ($dominion, $data, $moraleDrop, $platinumCost, $drafteeCost, $totalLandToExplore) {
+            // Refresh in transaction to prevent race condition
+            $dominion->refresh();
             $this->queueService->queueResources('exploration', $dominion, $data);
 
             $dominion->stat_total_land_explored += $totalLandToExplore;
             $dominion->fill([
-                'morale' => $newMorale,
-                'resource_platinum' => $newPlatinum,
-                'military_draftees' => $newDraftees,
+                'morale' => ($dominion->morale - $moraleDrop),
+                'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
+                'military_draftees' => ($dominion->military_draftees - $drafteeCost),
             ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
         });
 

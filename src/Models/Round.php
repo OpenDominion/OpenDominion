@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \OpenDominion\Models\RoundLeague $league
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Pack[] $packs
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm[] $realms
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Forum\Thread[] $forumThreads
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round active()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Round newQuery()
@@ -73,6 +74,11 @@ class Round extends AbstractModel
     public function realms()
     {
         return $this->hasMany(Realm::class);
+    }
+
+    public function forumThreads()
+    {
+        return $this->hasMany(Forum\Thread::class);
     }
 
     // Query Scopes

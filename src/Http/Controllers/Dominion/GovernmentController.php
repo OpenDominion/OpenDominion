@@ -10,6 +10,7 @@ use OpenDominion\Http\Requests\Dominion\Actions\GovernmentActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\GuardMembershipActionRequest;
 use OpenDominion\Services\Dominion\Actions\GovernmentActionService;
 use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
 
 class GovernmentController extends AbstractDominionController
@@ -32,8 +33,10 @@ class GovernmentController extends AbstractDominionController
                 return app(LandCalculator::class)->getTotalLand($dominion);
             });
 
+        // todo: move all guardMembershipService calls to template?
         return view('pages.dominion.government', [
             'dominions' => $dominions,
+            'realms' => $dominion->round->realms,
             'monarch' => $dominion->realm->monarch,
             'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),
@@ -45,6 +48,7 @@ class GovernmentController extends AbstractDominionController
             'hoursBeforeEliteGuardMember' => $guardMembershipService->getHoursBeforeEliteGuardMember($dominion),
             'hoursBeforeLeaveRoyalGuard' => $guardMembershipService->getHoursBeforeLeaveRoyalGuard($dominion),
             'hoursBeforeLeaveEliteGuard' => $guardMembershipService->getHoursBeforeLeaveEliteGuard($dominion),
+            'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class)
@@ -70,7 +74,15 @@ class GovernmentController extends AbstractDominionController
 
         $motd = $request->get('realm_motd');
         $name = $request->get('realm_name');
-        $governmentActionService->updateRealm($dominion, $motd, $name);
+
+        try {
+            $governmentActionService->updateRealm($dominion, $motd, $name);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
 
         $request->session()->flash('alert-success', 'Your realm has been updated!');
         return redirect()->route('dominion.government');
@@ -145,6 +157,44 @@ class GovernmentController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', $result['message']);
+        return redirect()->route('dominion.government');
+    }
+
+    public function postDeclareWar(GovernmentActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $governmentActionService = app(GovernmentActionService::class);
+
+        $realm_number = $request->get('realm_number');
+
+        try {
+            $governmentActionService->declareWar($dominion, $realm_number);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', "You have declared WAR on realm #{$realm_number}!");
+        return redirect()->route('dominion.government');
+    }
+
+    public function postCancelWar(GovernmentActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+        $governmentActionService = app(GovernmentActionService::class);
+
+        try {
+            $governmentActionService->cancelWar($dominion);
+        } catch (GameException $e) {
+            return redirect()
+                ->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Your realm is no longer at war.');
         return redirect()->route('dominion.government');
     }
 }

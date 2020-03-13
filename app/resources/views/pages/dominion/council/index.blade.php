@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-group"></i> {{ $realm->name }} (#{{ number_format($realm->number) }})</h3>
+                    <h3 class="box-title"><i class="fa fa-group"></i> Council: {{ $realm->name }} (#{{ number_format($realm->number) }})</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
@@ -17,14 +17,14 @@
                             <col>
                             <col width="10%">
                             {{--<col width="100">--}}
-                            <col width="20%">
+                            <col width="25%">
                         </colgroup>
                         <thead>
                             <tr>
                                 <th{{-- colspan="2"--}}>Topics</th>
                                 <th class="text-center">Replies</th>
                                 {{--<th class="text-center">Views</th>--}}
-                                <th class="text-center">Last Post</th>
+                                <th class="text-center">Last Reply</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,7 +46,7 @@
                                                     ({{ $thread->dominion->ruler_name }})
                                                 @endif
                                             </small>
-                                            @if ($selectedDominion->isMonarch()) 
+                                            @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
                                                 <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
                                             @endif
                                         </td>

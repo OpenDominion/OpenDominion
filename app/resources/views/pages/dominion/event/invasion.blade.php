@@ -174,11 +174,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            @php
-                                $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($event->target);
-                            @endphp
-
-                            @if ($recentlyInvadedCount > 0 && $event->data['result']['success'])
+                            @if ($event->data['defender']['recentlyInvadedCount'] > 0 && $event->data['result']['success'])
                                 <p class="text-center">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because the target was recently invaded, your prestige gains and their defensive losses are reduced.
@@ -198,7 +194,7 @@
                                 </p>
                             @endif
 
-                            {{-- Only show prestige gains if we are the attacker --}}
+                            {{-- Only show prestige / research point gains if we are the attacker --}}
                             @if ($event->source->id === $selectedDominion->id)
                                 @if (isset($event->data['attacker']['prestigeChange']))
                                     @php
@@ -213,6 +209,11 @@
                                             You gain <b>{{ number_format($prestigeChange) }}</b> prestige.
                                         </p>
                                     @endif
+                                @endif
+                                @if (isset($event->data['attacker']['researchPoints']))
+                                    <p class="text-center text-green">
+                                        You gain <b>{{ number_format($event->data['attacker']['researchPoints']) }}</b> research points.
+                                    </p>
                                 @endif
                             @endif
 

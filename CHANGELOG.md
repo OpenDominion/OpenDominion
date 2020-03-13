@@ -4,6 +4,154 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.8.1-2] - 2020-03-13
+### Fixed
+- Daily land bonus no longer overwrites research point total
+- Self spells no longer increasing spell failure statistic
+
+## [0.8.1-1] - 2020-03-11
+### Fixed
+- Removed 'Partially Implemented' tag from Towers improvement
+- Prevent possible exploits due to race conditions
+
+## [0.8.1] - 2020-03-08
+### Added
+- Spirit and Nomad are playable once again
+- Global Forum for all dominions
+- War information on each realm page
+- New magic and espionage statistics
+- Valhalla pages for each user
+- A dominion can now be restarted prior to the first tick
+- Late signups will now be awarded additional starting resources after the third day of the round
+- Attacking/exploring/blackops will now be disabled 9-18 hours before the end of the round (from 1-16)
+- Mass exploration restriction: you can no longer explore for more than 50% of your current land total
+- Excessive release restriction: you can no longer release more than 15% of your defense within a 24 hour period
+
+### Changed
+- Dominion names must contain 3 consecutive alphanumeric characters for searchability
+- Maximum of 5 packed players per realm (4 packs no longer land with 2 packs)
+- Info ops spy/wizard strength cost reverted to 2% (from 1%)
+- Reduced damage and cost of Disband Spies to 1.5% and 4.3x (from 2% and 5x)
+- War cannot declared during the first 5 days of the round (up from 3)
+- Wizard strength refresh rate increased by 1% when below 30%
+- Mana production bonus added to Towers improvement and increased rate of investment
+- Wizard Guilds now reduce losses on failed black op spells by 3% per 1% owned up to a maximum of 30% at 10% owned
+- Forest Havens reworked
+  - Spy Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned
+  - Spy training reduced by 2% per 1% owned, up to a maximum of 40% at 20% owned
+  - Fireball protection increased to 10% per 1% owned
+  - Platinum theft protection removed
+  - Defense bonus removed
+- Surreal Perception now applies to info ops, duration increased to 12 (from 8), cost reduced to 3x (from 4x)
+- Energy Mirror duration increased to 12 (from 8), cost increased to 4x (from 3x)
+- Fool's Gold cooldown reduced to 20 (from 22)
+- Research points gained on invasion reduced to 17 per acre (from 20 per acre)
+- Tech cost multiplier reduced to 6.4 (from 6.426)
+- Land bonus now awards 128 research points
+- Attacks that fail by 85% or more no longer cause double casualties
+- Prestige gains reduced on first hit, but increased on subsequent hits
+- Prestige gains capped at 15% of your current prestige (before multipliers and base gain)
+- Nox: research point generation bonus reduced to 10% (from 15%)
+- Sylvan: Added -10% rezone cost
+- Sylvan: Dryad changed to 1/3 wizard on defense (from 1/2)
+- Dark Elf: Adept changed to 1/3 wizard on defense (from 1/2)
+- Dwarf: ore investments increased by 5%
+- Dwarf: Clerics now kill spirits and the undead
+- Undead: Mana production increased to +10% (from 5%)
+- Spirit: Food consumption increased to -80% (from -90%)
+
+### Fixed
+- Generated land from invasion will now count toward total land conquered
+- Total number of realms no longer visible before round start
+- Unfilled pack slots are now considered during realm assignment
+
+## [0.8.0-7] - 2020-02-17
+### Fixed
+- Assassinate wizards will no longer work against undead
+- Disband spies will now add the correct number of draftees
+- War ops buttons are no longer dimmed when targeting a dominion that recently invaded you
+- Percentage calculations in archived survey dominion operations have been corrected
+
+## [0.8.0-6] - 2020-01-19
+### Fixed
+- Fixed a bug where exploration platinum costs were higher than expected upon joining the Elite Guard
+- Fixed a bug where Snare caused a server error upon dealing negative damage
+
+## [0.8.0-5] - 2020-01-19
+### Fixed
+- Fixed a server error when stealing gems
+
+## [0.8.0-4] - 2020-01-18
+### Fixed
+- Black ops spell buttons are now grayed out before day 8
+- Spy losses tech perk is now multiplicative instead of additive
+- Failed spy/wiz operations no longer count as a success in statistics advisor
+- Draftees no longer counted as attacking DP when checking 33% rule
+
+## [0.8.0-3] - 2020-01-16
+### Fixed
+- Fixed a bug that sometimes prevented building discounted land
+- Fixed a bug where casualty reduction techs were too powerful
+
+## [0.8.0-2] - 2020-01-14
+## [0.8.0-1] - 2020-01-14
+### Added
+- Added techs to the Scribes
+
+### Fixed
+- Fixed an issue where the Town Crier dropdown excluded the last realm
+- Fixed a server error on Master of Water Valhalla page
+- Fixed an issue with decimals places on invasion page
+- Fixed duplicate sentence periods at end of unit descriptions
+- Fixed missing race perks on registration and scribes pages
+- Fixed starvation casualties not killing off the intended unit types
+- Fixed a bug regarding invading with mixed 9 and 12 hour returning units causing prestige and resource points to incorrectly return faster than intended
+
+## [0.8.0]
+### Added
+- War & Black Ops!
+- Monarchs may now declare WAR on other realms.
+- War immediately allows the use of war-only black ops.
+- After 24 hours, 5% OP is added to attacks between the two realms (10% for mutual war).
+- Mutual war also awards prestige for successful black ops between the two realms.
+- New Spell: Energy Mirror reflects spells back at the caster.
+- Technological Advances!
+- Schools and invasion now reward research points.
+- Use research points to unlock bonuses from the tech tree (minimum cost based on highest land achieved).
+- New Spell: Vision reveals your target's techs.
+
+### Changed
+- Gnome: Racial spell changed back to Mechanical Genius (from Miner's Sight)
+- Merfolk: Added +5% offense racial
+- Sylvan Centaur: -20o, casualty reduction increased to -25% (from -15%)
+- Nox: Added +15% research point generation
+- Info ops spy/wizard strength cost reduced to 1% (from 2%)
+- Additional discounted land added when constructed buildings are lost to invasion
+- Defensive casualties reduced by target's relative land size (below 100%)
+- Prestige gain increased
+- Packs with only two players may now be assigned to a realm with other packs
+
+### Fixed
+- Theft success formula adjusted
+- Starvation will now correctly kill units proportionally
+- Population growth will now stop while starving
+- Fix for prestige returning with 9hr units
+- Firewalker construction cost bonus with max factories adjusted
+
+## [0.7.1-19]
+### Added
+- Releasing units with DP will be hindered when:
+  - Invaded in the last 24hrs
+  - Having troops returning
+
+## [0.7.1-18]
+### Added
+- Sending out less than 50% of defenders DP will prevent an attack
+
+### Fixed
+- Mefolk does not sink boats on overwhelmed attacks
+- Use new tooltip style for buildings from Survey Dominion
+
 ## [0.7.1-17]
 ### Fixed
 - Fix an issue with the search page Limit values being flipped.
@@ -492,7 +640,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.1...HEAD
+[0.8.1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-7...0.8.1
+[0.8.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...0.8.0-7
+[0.8.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-5...0.8.0-6
+[0.8.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-4...0.8.0-5
+[0.8.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-3...0.8.0-4
+[0.8.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-2...0.8.0-3
+[0.8.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-1...0.8.0-2
+[0.8.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0...0.8.0-1
+[0.8.0]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-19...0.8.0
+[0.7.1-19]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-18...0.7.1-19
+[0.7.1-18]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...0.7.1-18
 [0.7.1-17]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...0.7.1-17
 [0.7.1-16]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-15...0.7.1-16
 [0.7.1-15]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-14...0.7.1-15

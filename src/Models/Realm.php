@@ -88,6 +88,30 @@ class Realm extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
+    public function warRealm()
+    {
+        return $this->belongsTo(self::class, 'war_realm_id');
+    }
+
+    public function warRealms()
+    {
+        return $this->hasMany(self::class, 'war_realm_id');
+    }
+
+    public function totalPackSize(): int
+    {
+        return $this->packs->sum(function ($pack) {
+            return $pack->sizeAllocated();
+        });
+    }
+
+    public function sizeAllocated(): int
+    {
+        return $this->packs->sum(function ($pack) {
+            return $pack->remainingSlots();
+        }) + $this->dominions->count();
+    }
+
     // todo: move to eloquent events, see $dispatchesEvents
     public function save(array $options = [])
     {
