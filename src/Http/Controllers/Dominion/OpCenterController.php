@@ -55,10 +55,6 @@ class OpCenterController extends AbstractDominionController
     {
         $infoOpService = app(InfoOpService::class);
 
-        if (!$infoOpService->hasInfoOps($this->getSelectedDominion()->realm, $dominion)) {
-            return redirect()->route('dominion.op-center');
-        }
-
         $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
             ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
