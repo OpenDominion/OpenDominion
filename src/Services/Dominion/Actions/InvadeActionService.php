@@ -1267,7 +1267,7 @@ class InvadeActionService
     protected function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
-        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, true);
+        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
 
         $unitsReturning = [];
@@ -1275,7 +1275,7 @@ class InvadeActionService
             $unitsReturning[$slot] = $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}");
         }
 
-        $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, true);
+        $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, 0, true);
 
         $totalDP = $currentHomeForcesDP + $returningForcesDP;
 
