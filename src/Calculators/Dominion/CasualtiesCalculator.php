@@ -134,8 +134,8 @@ class CasualtiesCalculator
 
             // todo: Wonders
 
-            // Cap at -80% and apply to multiplier (additive)
-            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
+            // Cap at -80% (additive) and apply to multiplier
+            $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;
