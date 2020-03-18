@@ -174,7 +174,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            @if ($event->data['defender']['recentlyInvadedCount'] > 0 && $event->data['result']['success'])
+                            @if (isset($event->data['defender']['recentlyInvadedCount']) && $event->data['defender']['recentlyInvadedCount'] > 0 && $event->data['result']['success'])
                                 <p class="text-center">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Because the target was recently invaded, your prestige gains and their defensive losses are reduced.
@@ -187,9 +187,9 @@
                             @if (isset($event->data['result']['overwhelmed']) && $event->data['result']['overwhelmed'])
                                 <p class="text-center text-red">
                                     @if ($event->source->id === $selectedDominion->id)
-                                        Because you were severely outmatched, you suffered extra casualties.
+                                        Because you were severely outmatched, you inflicted no casualties.
                                     @else
-                                        Because {{ $event->source->name }} (# {{ $event->source->realm->number }}) was severely outmatched, they suffered extra casualties.
+                                        Because {{ $event->source->name }} (# {{ $event->source->realm->number }}) was severely outmatched, they inflicted no casualties.
                                     @endif
                                 </p>
                             @endif

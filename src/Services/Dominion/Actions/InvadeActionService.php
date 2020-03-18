@@ -249,6 +249,7 @@ class InvadeActionService
 
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
+            $this->invasionResult['defender']['recentlyInvadedCount'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
 
@@ -387,7 +388,7 @@ class InvadeActionService
 
         // Reduce attacker prestige gain if the target was hit recently
         if($attackerPrestigeChange > 0) {
-            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
+            $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
             if ($recentlyInvadedCount === 1) {
                 $attackerPrestigeChange *= 0.8;
@@ -567,8 +568,7 @@ class InvadeActionService
         $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
 
         // Reduce casualties if target has been hit recently
-        $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target);
-        $this->invasionResult['defender']['recentlyInvadedCount'] = $recentlyInvadedCount;
+        $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
         if ($recentlyInvadedCount === 1) {
             $defensiveCasualtiesPercentage *= 0.8;

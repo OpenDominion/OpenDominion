@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Links to Dominions without any ops no longer redirect to op center
 - 33 percent rule no longer adds draftees to invasion force DP
+- Fixed a bug where 33 percent rule could be ignored
+- Battle reports for overwhelmed invasions no longer cause an error
 
 ## [0.8.1-2] - 2020-03-13
 ### Fixed
