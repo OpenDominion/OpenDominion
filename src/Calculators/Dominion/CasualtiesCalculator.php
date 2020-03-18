@@ -79,29 +79,31 @@ class CasualtiesCalculator
                 }
             }
 
-            // Unit Perk: Kills Immortal
-            $unitsAtHomePerSlot = [];
-            $unitsAtHomeKISlot = null;
-            $totalUnitsAtHome = 0;
+            if ($multiplier == 0) {
+                // Unit Perk: Kills Immortal
+                $unitsAtHomePerSlot = [];
+                $unitsAtHomeKISlot = null;
+                $totalUnitsAtHome = 0;
 
-            // todo: inefficient to do run this code per slot. needs refactoring
-            foreach ($target->race->units as $unit) {
-                $slot = $unit->slot;
-                $unitKey = "military_unit{$slot}";
+                // todo: inefficient to do run this code per slot. needs refactoring
+                foreach ($target->race->units as $unit) {
+                    $slot = $unit->slot;
+                    $unitKey = "military_unit{$slot}";
 
-                $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
-                if ($unit->power_defense > 0) {
-                    $totalUnitsAtHome += $target->{$unitKey};
+                    $unitsAtHomePerSlot[$slot] = $target->{$unitKey};
+                    if ($unit->power_defense > 0) {
+                        $totalUnitsAtHome += $target->{$unitKey};
+                    }
+
+                    if ($unit->getPerkValue('kills_immortal') !== 0) {
+                        $unitsAtHomeKISlot = $slot;
+                    }
                 }
 
-                if ($unit->getPerkValue('kills_immortal') !== 0) {
-                    $unitsAtHomeKISlot = $slot;
+                // We have a unit with KI!
+                if ($unitsAtHomeKISlot !== null && $totalUnitsAtHome > 0) {
+                    $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
                 }
-            }
-
-            // We have a unit with KI!
-            if ($unitsAtHomeKISlot !== null) {
-                $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
             }
 
             // Race perk-based immortality
