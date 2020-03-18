@@ -180,23 +180,11 @@ class TickService
                     ]);
 
                 // Update queues
-                // Two-step process to avoid getting UNIQUE constraint integrity errors
-                // since we can't reliably use deferred transactions, deferred update
-                // queries or update+orderby cross-database vendors
                 DB::table('dominion_queue')
                     ->join('dominions', 'dominion_queue.dominion_id', '=', 'dominions.id')
                     ->where('dominions.round_id', $round->id)
-                    ->where('hours', '>', 0)
                     ->update([
-                        'hours' => DB::raw('-(`hours` - 1)'),
-                    ]);
-
-                DB::table('dominion_queue')
-                    ->join('dominions', 'dominion_queue.dominion_id', '=', 'dominions.id')
-                    ->where('dominions.round_id', $round->id)
-                    ->where('hours', '<', 0)
-                    ->update([
-                        'hours' => DB::raw('-`hours`'),
+                        'hours' => DB::raw('`hours` - 1'),
                         'dominion_queue.updated_at' => $this->now,
                     ]);
             }, 5);

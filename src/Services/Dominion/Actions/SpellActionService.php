@@ -225,34 +225,26 @@ class SpellActionService
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 
-        if ($this->spellCalculator->isSpellActive($dominion, $spellKey)) {
+        $where = [
+            'dominion_id' => $dominion->id,
+            'spell' => $spellKey,
+        ];
 
-            $where = [
-                'dominion_id' => $dominion->id,
-                'spell' => $spellKey,
-            ];
+        $activeSpell = DB::table('active_spells')
+            ->where($where)
+            ->first();
 
-            $activeSpell = DB::table('active_spells')
-                ->where($where)
-                ->first();
-
-            if ($activeSpell === null) {
-                throw new LogicException("Active spell '{$spellKey}' for dominion id {$dominion->id} not found");
-            }
-
+        if ($activeSpell !== null) {
             if ((int)$activeSpell->duration === $spellInfo['duration']) {
                 throw new GameException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
             }
-
             DB::table('active_spells')
                 ->where($where)
                 ->update([
                     'duration' => $spellInfo['duration'],
                     'updated_at' => now(),
                 ]);
-
         } else {
-
             DB::table('active_spells')
                 ->insert([
                     'dominion_id' => $dominion->id,
@@ -262,7 +254,6 @@ class SpellActionService
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-
         }
 
         return [
