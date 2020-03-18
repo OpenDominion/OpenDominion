@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.8.1-3] - 2020-03-18
 ### Fixed
 - Links to Dominions without any ops no longer redirect to op center
 - Battle reports for overwhelmed invasions no longer cause an error
