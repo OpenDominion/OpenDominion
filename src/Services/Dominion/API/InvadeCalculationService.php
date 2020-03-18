@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\QueueService;
 
 class InvadeCalculationService
 {
@@ -48,17 +49,21 @@ class InvadeCalculationService
     /**
      * InvadeActionService constructor.
      *
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
+     * @param QueueService $queueService
      * @param RangeCalculator $rangeCalculator
      */
     public function __construct(
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
+        QueueService $queueService,
         RangeCalculator $rangeCalculator
     )
     {
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+        $this->queueService = $queueService;
         $this->rangeCalculator = $rangeCalculator;
     }
 
@@ -138,8 +143,16 @@ class InvadeCalculationService
         $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $unitsHome, $calc);
         $this->calculationResult['home_dpa'] = $this->calculationResult['home_defense'] / $this->landCalculator->getTotalLand($dominion);
 
+        // Calculate returning defense
+        $unitsReturning = [];
+        for ($slot = 1; $slot <= 4; $slot++) {
+            $unitsReturning[$slot] = $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}");
+        }
+        $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, 0, true);
+        $homeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+
         $this->calculationResult['max_op'] = $this->calculationResult['home_defense'] * 1.25;
-        $this->calculationResult['min_dp'] = $this->calculationResult['away_offense'] / 3;
+        $this->calculationResult['min_dp'] = ($returningForcesDP + $homeForcesDP) / 3;
 
         return $this->calculationResult;
     }

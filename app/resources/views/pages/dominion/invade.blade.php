@@ -257,7 +257,7 @@
                                                     <i class="fa fa-question-circle"
                                                        data-toggle="tooltip"
                                                        data-placement="top"
-                                                       title="You must leave at least 33% of your invasion force OP in DP at home. (33% rule)"></i>
+                                                       title="You must leave at least 33% of your total DP at home. (33% rule)"></i>
                                                 </td>
                                                 <td id="home-forces-min-dp" data-amount="0">0</td>
                                             </tr>
@@ -441,7 +441,7 @@
                 }
 
                 // Check if invade button should be disabled
-                if (!hasEnoughBoats || minDefenseRule || maxOffenseRule) {
+                if (!hasEnoughBoats || maxOffenseRule) {
                     invadeButtonElement.attr('disabled', 'disabled');
                 } else {
                     invadeButtonElement.removeAttr('disabled');
