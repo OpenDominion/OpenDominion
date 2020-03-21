@@ -21,7 +21,7 @@ class ImprovementHelper
         $ratingStrings = [
             'science' => '+%s%% platinum production',
             'keep' => '+%s%% max population',
-            'towers' => '+%1$s%% wizard power, -%1$s%% damage from spells',
+            'towers' => '+%s%% wizard power, mana production, spell damage reduction',
             'forges' => '+%s%% offensive power',
             'walls' => '+%s%% defensive power',
             'harbor' => '+%s%% food production, boat production & protection',
