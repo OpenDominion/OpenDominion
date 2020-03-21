@@ -17,7 +17,7 @@ class ForumController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
-        //$this->updateDominionForumLastRead($dominion);
+        $this->updateDominionForumLastRead($dominion);
         $forumService = app(ForumService::class);
         $protectionService = app(ProtectionService::class);
 
@@ -91,8 +91,8 @@ class ForumController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        //$dominion = $this->getSelectedDominion();
-        //$this->updateDominionForumLastRead($dominion);
+        $dominion = $this->getSelectedDominion();
+        $this->updateDominionForumLastRead($dominion);
 
         $thread->load('dominion.realm', 'posts.dominion.realm');
 
@@ -301,11 +301,9 @@ class ForumController extends AbstractDominionController
         }
     }
 
-    /*
     protected function updateDominionForumLastRead(Dominion $dominion): void
     {
         $dominion->forum_last_read = now();
         $dominion->save();
     }
-    */
 }

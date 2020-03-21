@@ -7,8 +7,8 @@ use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
-use OpenDominion\Models\Council\Post;
-use OpenDominion\Models\Council\Thread;
+use OpenDominion\Models\Council;
+use OpenDominion\Models\Forum;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\SelectorService;
 
@@ -35,26 +35,43 @@ class ComposerServiceProvider extends AbstractServiceProvider
             /** @var Dominion $dominion */
             $dominion = $selectorService->getUserSelectedDominion();
 
-            $lastRead = $dominion->council_last_read;
-
+            $councilLastRead = $dominion->council_last_read;
             $councilUnreadCount = $dominion->realm
                 ->councilThreads()
                 ->with('posts')
                 ->get()
-                ->map(static function (Thread $thread) use ($lastRead) {
-                    $unreadCount = $thread->posts->filter(static function (Post $post) use ($lastRead) {
-                        return $post->created_at > $lastRead;
+                ->map(static function (Council\Thread $thread) use ($councilLastRead) {
+                    $unreadCount = $thread->posts->filter(static function (Council\Post $post) use ($councilLastRead) {
+                        return $post->created_at > $councilLastRead;
                     })->count();
 
-                    if ($thread->created_at > $lastRead) {
+                    if ($thread->created_at > $councilLastRead) {
                         $unreadCount++;
                     }
 
                     return $unreadCount;
                 })
                 ->sum();
-
             $view->with('councilUnreadCount', $councilUnreadCount);
+
+            $forumLastRead = $dominion->forum_last_read;
+            $forumUnreadCount = $dominion->round
+                ->forumThreads()
+                ->with('posts')
+                ->get()
+                ->map(static function (Forum\Thread $thread) use ($forumLastRead) {
+                    $unreadCount = $thread->posts->filter(static function (Forum\Post $post) use ($forumLastRead) {
+                        return $post->created_at > $forumLastRead;
+                    })->count();
+
+                    if ($thread->created_at > $forumLastRead) {
+                        $unreadCount++;
+                    }
+
+                    return $unreadCount;
+                })
+                ->sum();
+            $view->with('forumUnreadCount', $forumUnreadCount);
 
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);

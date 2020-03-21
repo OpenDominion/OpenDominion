@@ -77,6 +77,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_barracks
  * @property int $building_dock
  * @property \Illuminate\Support\Carbon|null $council_last_read
+ * @property \Illuminate\Support\Carbon|null $forum_last_read
  * @property \Illuminate\Support\Carbon|null $royal_guard
  * @property \Illuminate\Support\Carbon|null $elite_guard
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -161,6 +162,8 @@ class Dominion extends AbstractModel
         'building_dock' => 'integer',
         'daily_platinum' => 'boolean',
         'daily_land' => 'boolean',
+        'council_last_read' => 'datetime',
+        'forum_last_read' => 'datetime',
         'royal_guard_active_at' => 'datetime',
         'eltie_guard_active_at' => 'datetime',
     ];
