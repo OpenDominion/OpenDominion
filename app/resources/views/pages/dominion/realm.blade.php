@@ -161,7 +161,7 @@
                                 </tr>
                                 @if ($governmentService->hasDeclaredWar($realm))
                                     <tr>
-                                        <td>{{ $realm->warRealm->name }} (#{{ $realm->warRealm->number }})</td>
+                                        <td><a href="{{ route('dominion.realm', [$realm->warRealm->number]) }}">{{ $realm->warRealm->name }} (#{{ $realm->warRealm->number }})</a></td>
                                         <td>#{{ $realm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
                                         <td>{{ $realm->war_active_at }}</td>
@@ -169,7 +169,7 @@
                                 @endif
                                 @foreach ($realm->warRealms as $warRealm)
                                     <tr>
-                                        <td>{{ $warRealm->name }} (#{{ $warRealm->number }})</td>
+                                        <td><a href="{{ route('dominion.realm', [$warRealm->number]) }}">{{ $warRealm->name }} (#{{ $warRealm->number }})</a></td>
                                         <td>#{{ $warRealm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($warRealm) }}</td>
                                         <td>{{ $warRealm->war_active_at }}</td>
