@@ -62,11 +62,11 @@
 }
 .skin-classic .user-panel > .info,
 .skin-classic .user-panel > .info > a {
-    color: #e5e3e6;
+    color: #d5e3e6;
 }
 .skin-classic .sidebar-menu > li.header {
     background: #1c191d;
-    color: #e5e3e6;
+    color: #d5e3e6;
 }
 .skin-classic .sidebar-menu > li > a {
     border-left: 3px solid transparent;
@@ -158,7 +158,7 @@
 .skin-classic .box > .box-header a,
 .skin-classic .box-solid > .box-header .btn,
 .skin-classic .box > .box-header .btn {
-    color: #e5e3e6;
+    color: #d5e3e6;
 }
 .skin-classic .box.box-info,
 .skin-classic .box.box-primary,
@@ -329,7 +329,7 @@
 }
 
 .skin-classic .navbar-nav {
-    color: #e5e3e6 !important;
+    color: #d5e3e6 !important;
 }
 
 .skin-classic .navbar-nav > .user-menu > .dropdown-menu > .user-body a,
@@ -337,7 +337,7 @@
 .skin-classic .dropdown-menu li {
     background-color: #332f35 !important;
     border-color: #675f6b !important;
-    color: #e5e3e6 !important;
+    color: #d5e3e6 !important;
 }
 
 .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li,
@@ -345,7 +345,7 @@
 .skin-classic .navbar-nav > .tasks-menu > .dropdown-menu > li {
     background-color: #332f35 !important;
     border-color: #675f6b !important;
-    color: #e5e3e6 !important;
+    color: #d5e3e6 !important;
 }
 .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li.footer > a,
 .skin-classic .navbar-nav > .messages-menu > .dropdown-menu > li.footer > a,
@@ -360,12 +360,12 @@
     background: #4d4750;
 }
 .skin-classic .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a {
-    color: #e5e3e6;
+    color: #d5e3e6;
     border-color: #675f6b;
 }
 
 .skin-classic a {
-    color: #e5e3e6;
+    color: #d5e3e6;
 }
 
 .skin-classic .main-header {
@@ -399,7 +399,7 @@
 .skin-classic .alert .text-muted,
 .skin-classic .panel .text-muted,
 .skin-classic .label .text-muted {
-    color: #e5e3e6 !important;
+    color: #d5e3e6 !important;
 }
 
 .skin-classic label.btn:hover {
@@ -407,7 +407,7 @@
     color: #ACB9BB;
 }
 .skin-classic .btn-link {
-    color: #e5e3e6;
+    color: #d5e3e6;
 }
 .skin-classic .btn-link:hover {
     color: #ACB9BB;
@@ -486,7 +486,7 @@
 
 .skin-classic .content-header,
 .skin-classic .box .box-title {
-    color: #e5e3e6;
+    color: #d5e3e6;
 }
 
 .skin-classic .btn-primary,
@@ -518,8 +518,9 @@
     background-color: #005C14 !important;
 }
 
+.skin-classic .help-block,
 .skin-classic .text-muted {
-    color: #817786;
+    color: #95a3a6;
 }
 .skin-classic pre {
     color: #949fa8;
