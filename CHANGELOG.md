@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Added unread count badge to the forum page menu item in the sidebar to indicate new messages since your last forum visit
 - Added links to other realms in the war table on each realm page
+- Dominion dropdowns will now show the target's race
 
 ## [0.8.1-4] - 2020-03-18
 ### Fixed
