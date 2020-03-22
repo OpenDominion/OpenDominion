@@ -38,12 +38,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $councilLastRead = $dominion->council_last_read;
             $councilUnreadCount = $dominion->realm
                 ->councilThreads()
-                ->with('posts')
+                ->with(['posts' => function($query) use ($councilLastRead) {
+                    $query->where('created_at', '>', $councilLastRead);
+                }])
                 ->get()
                 ->map(static function (Council\Thread $thread) use ($councilLastRead) {
-                    $unreadCount = $thread->posts->filter(static function (Council\Post $post) use ($councilLastRead) {
-                        return $post->created_at > $councilLastRead;
-                    })->count();
+                    $unreadCount = $thread->posts->count();
 
                     if ($thread->created_at > $councilLastRead) {
                         $unreadCount++;
@@ -57,12 +57,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $forumLastRead = $dominion->forum_last_read;
             $forumUnreadCount = $dominion->round
                 ->forumThreads()
-                ->with('posts')
+                ->with(['posts' => function($query) use ($forumLastRead) {
+                    $query->where('created_at', '>', $forumLastRead);
+                }])
                 ->get()
                 ->map(static function (Forum\Thread $thread) use ($forumLastRead) {
-                    $unreadCount = $thread->posts->filter(static function (Forum\Post $post) use ($forumLastRead) {
-                        return $post->created_at > $forumLastRead;
-                    })->count();
+                    $unreadCount = $thread->posts->count();
 
                     if ($thread->created_at > $forumLastRead) {
                         $unreadCount++;
