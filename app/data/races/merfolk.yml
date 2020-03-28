@@ -12,6 +12,7 @@ units:
   - name: Merman
     cost:
       platinum: 275
+      ore: 0
     power:
       offense: 3
       defense: 0
@@ -19,12 +20,14 @@ units:
   - name: Siren
     cost:
       platinum: 300
+      ore: 0
     power:
       offense: 0
       defense: 3
   - name: Leviathan
     cost:
       platinum: 1350
+      ore: 0
     power:
       offense: 0
       defense: 7
@@ -33,6 +36,7 @@ units:
   - name: Kraken
     cost:
       platinum: 600
+      ore: 0
     power:
       offense: 4
       defense: 2

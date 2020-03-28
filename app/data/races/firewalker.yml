@@ -13,23 +13,30 @@ units:
   - name: Fire Sprite
     cost:
       platinum: 300
+      ore: 0
     power:
       offense: 3
+      defense: 0
   - name: Flamewolf
     cost:
       platinum: 300
+      ore: 0
     power:
+      offense: 0
       defense: 3
   - name: Phoenix
     cost:
       platinum: 925
+      ore: 0
     power:
+      offense: 0
       defense: 4.5
     perks:
       immortal_except_vs: icekin
   - name: Salamander
     cost:
       platinum: 925
+      ore: 0
     power:
       offense: 5
       defense: 3
