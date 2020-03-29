@@ -39,7 +39,9 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $councilUnreadCount = $dominion->realm
                 ->councilThreads()
                 ->with(['posts' => function($query) use ($councilLastRead) {
-                    $query->where('created_at', '>', $councilLastRead);
+                    if ($councilLastRead !== null) {
+                        $query->where('created_at', '>', $councilLastRead);
+                    }
                 }])
                 ->get()
                 ->map(static function (Council\Thread $thread) use ($councilLastRead) {
@@ -58,7 +60,9 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $forumUnreadCount = $dominion->round
                 ->forumThreads()
                 ->with(['posts' => function($query) use ($forumLastRead) {
-                    $query->where('created_at', '>', $forumLastRead);
+                    if ($forumLastRead !== null) {
+                        $query->where('created_at', '>', $forumLastRead);
+                    }
                 }])
                 ->get()
                 ->map(static function (Forum\Thread $thread) use ($forumLastRead) {
