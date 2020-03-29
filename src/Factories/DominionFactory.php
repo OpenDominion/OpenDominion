@@ -119,6 +119,8 @@ class DominionFactory
             'building_shrine' => 0,
             'building_barracks' => 0,
             'building_dock' => 0,
+
+            'protection_ticks_remaining' => $startingAttributes['protection_ticks_remaining'],
         ]);
     }
 
@@ -344,6 +346,7 @@ class DominionFactory
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
             'last_tick_at' => null,
+            'protection_ticks_remaining' => 72,
         ];
 
         return $startingAttributes;
