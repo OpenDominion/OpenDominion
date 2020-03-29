@@ -2,13 +2,13 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use DB;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
-use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class ReleaseActionService
@@ -24,20 +24,16 @@ class ReleaseActionService
     /** @var ProtectionService */
     protected $protectionService;
 
-    /** @var QueueService */
-    protected $queueService;
-
     /**
      * ReleaseActionService constructor.
      *
      * @param UnitHelper $unitHelper
      */
-    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, ProtectionService $protectionService, QueueService $queueService)
+    public function __construct(UnitHelper $unitHelper, MilitaryCalculator $militaryCalculator, ProtectionService $protectionService)
     {
         $this->unitHelper = $unitHelper;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
-        $this->queueService = $queueService;
     }
 
     /**
@@ -100,7 +96,6 @@ class ReleaseActionService
             }
 
             $dominion->{'military_' . $unitType} -= $amount;
-
             if ($unitType === 'draftees') {
                 $dominion->peasants += $amount;
             } else {
