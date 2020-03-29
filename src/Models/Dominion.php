@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
+use OpenDominion\Services\Dominion\TickService;
 
 /**
  * OpenDominion\Models\Dominion
@@ -279,7 +280,7 @@ class Dominion extends AbstractModel
         }
 
         // Recalculate next tick
-        $tickService = app(\OpenDominion\Services\Dominion\TickService::class);
+        $tickService = app(TickService::class);
         $tickService->precalculateTick($this);
 
         return $saved;

@@ -191,6 +191,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
             $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion')->name('misc.restart');
+            $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
 
             // Debug
             // todo: remove me later

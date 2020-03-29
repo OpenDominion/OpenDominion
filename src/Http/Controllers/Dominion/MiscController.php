@@ -5,6 +5,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use LogicException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\TickService;
 
 // misc functions, probably could use a refactor later
 class MiscController extends AbstractDominionController
@@ -44,6 +45,22 @@ class MiscController extends AbstractDominionController
         }
 
         $dominionFactory->restart($dominion);
+
+        return redirect()->back();
+    }
+
+    public function getTickDominion() {
+        $dominion = $this->getSelectedDominion();
+
+        if ($dominion->protection_ticks_remaining == 0) {
+            throw new LogicException('You have no protection ticks remaining.');
+        }
+
+        $tickService = app(TickService::class);
+        $tickService->performTick($dominion->round, $dominion);
+
+        $dominion->protection_ticks_remaining -= 1;
+        $dominion->save();
 
         return redirect()->back();
     }

@@ -183,7 +183,7 @@
                     </div>
                     <div class="box-body">
                         <p>You are under a magical state of protection. During this time you cannot be attacked or attack other dominions. Nor can you cast any offensive spells or engage in espionage.</p>
-                        <p>You are have <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks remaining.</p>
+                        <p>You are have <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks remaining. <a href="{{ route('dominion.misc.tick') }}">Proceed to next tick.</a></p>
                         @php
                             $hoursLeft = $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion);
                         @endphp
