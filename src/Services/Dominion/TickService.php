@@ -490,61 +490,59 @@ class TickService
         $tick->save();
     }
 
-    protected function updateDailyRankings(Collection $activeDominions): void
+    public function updateDailyRankings(): void
     {
-        $dominionIds = $activeDominions->pluck('id')->toArray();
+        // Update rankings
+        $activeRounds = Round::active()->get();
 
-        // First pass: Saving land and networth
-        Dominion::with(['race', 'realm'])
-            ->whereIn('id', $dominionIds)
-            ->chunk(50, function ($dominions) {
-                foreach ($dominions as $dominion) {
-                    $where = [
-                        'round_id' => (int)$dominion->round_id,
-                        'dominion_id' => $dominion->id,
-                    ];
+        foreach ($activeRounds as $round) {
+            $dominionIds = $round->dominions->pluck('id')->toArray();
 
-                    $data = [
-                        'dominion_name' => $dominion->name,
-                        'race_name' => $dominion->race->name,
-                        'realm_number' => $dominion->realm->number,
-                        'realm_name' => $dominion->realm->name,
-                        'land' => $this->landCalculator->getTotalLand($dominion),
-                        'networth' => $this->networthCalculator->getDominionNetworth($dominion),
-                    ];
+            // First pass: Saving land and networth
+            Dominion::with(['race', 'realm'])
+                ->whereIn('id', $dominionIds)
+                ->chunk(50, function ($dominions) {
+                    foreach ($dominions as $dominion) {
+                        $where = [
+                            'round_id' => (int)$dominion->round_id,
+                            'dominion_id' => $dominion->id,
+                        ];
 
-                    $result = DB::table('daily_rankings')->where($where)->get();
+                        $data = [
+                            'dominion_name' => $dominion->name,
+                            'race_name' => $dominion->race->name,
+                            'realm_number' => $dominion->realm->number,
+                            'realm_name' => $dominion->realm->name,
+                            'land' => $this->landCalculator->getTotalLand($dominion),
+                            'networth' => $this->networthCalculator->getDominionNetworth($dominion),
+                        ];
 
-                    if ($result->isEmpty()) {
-                        $row = $where + $data + [
-                                'created_at' => $dominion->created_at,
-                                'updated_at' => $this->now,
-                            ];
+                        $result = DB::table('daily_rankings')->where($where)->get();
 
-                        DB::table('daily_rankings')->insert($row);
-                    } else {
-                        $row = $data + [
-                                'updated_at' => $this->now,
-                            ];
+                        if ($result->isEmpty()) {
+                            $row = $where + $data + [
+                                    'created_at' => $dominion->created_at,
+                                    'updated_at' => $this->now,
+                                ];
 
-                        DB::table('daily_rankings')->where($where)->update($row);
+                            DB::table('daily_rankings')->insert($row);
+                        } else {
+                            $row = $data + [
+                                    'updated_at' => $this->now,
+                                ];
+
+                            DB::table('daily_rankings')->where($where)->update($row);
+                        }
                     }
-                }
-            });
+                });
 
-        // Second pass: Calculating ranks
-        $result = DB::table('daily_rankings')
-            ->orderBy('land', 'desc')
-            ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
-            ->get();
+            // Second pass: Calculating ranks
+            $result = DB::table('daily_rankings')
+                ->orderBy('land', 'desc')
+                ->orderBy(DB::raw('COALESCE(land_rank, created_at)'))
+                ->get();
 
-        //Getting all rounds
-        $rounds = DB::table('rounds')
-            ->where('start_date', '<=', $this->now)
-            ->where('end_date', '>', $this->now)
-            ->get();
-
-        foreach ($rounds as $round) {
+            // Saving updates
             $rank = 1;
 
             foreach ($result as $row) {
