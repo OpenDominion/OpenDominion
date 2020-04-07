@@ -98,8 +98,6 @@ class ExploreActionService
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
 
         DB::transaction(function () use ($dominion, $data, $moraleDrop, $platinumCost, $drafteeCost, $totalLandToExplore) {
-            // Refresh in transaction to prevent race condition
-            $dominion->refresh();
             $this->queueService->queueResources('exploration', $dominion, $data);
 
             $dominion->stat_total_land_explored += $totalLandToExplore;

@@ -107,8 +107,6 @@ class ConstructActionService
         $lumberCost = $this->constructionCalculator->getTotalLumberCost($dominion, $totalBuildingsToConstruct);
 
         DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $totalBuildingsToConstruct) {
-            // Refresh in transaction to prevent race condition
-            $dominion->refresh();
             $this->queueService->queueResources('construction', $dominion, $data);
 
             $reboundAcres = max($dominion->discounted_land - $this->landCalculator->getTotalBarrenLand($dominion), 0);

@@ -1255,6 +1255,9 @@ class InvadeActionService
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
+        if ($attackingForceDP == 0) {
+            return true;
+        }
         $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
 
         $unitsReturning = [];
