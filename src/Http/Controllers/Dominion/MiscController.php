@@ -4,6 +4,8 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use LogicException;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
+use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\TickService;
 
@@ -32,19 +34,25 @@ class MiscController extends AbstractDominionController
         return redirect()->back();
     }
 
-    public function postRestartDominion()
+    public function postRestartDominion(RestartActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
 
         $dominionFactory = app(DominionFactory::class);
         $protectionService = app(ProtectionService::class);
+        $race = Race::findOrFail($request->get('race'));
 
-        // Can only restart a dominion with more than 71 hours of proteciton left
-        if ($protectionService->getUnderProtectionHoursLeft($dominion) < 71) {
-            throw new LogicException('You can only restart your dominion before the first tick.');
+        if (!$protectionService->isUnderProtection($dominion)) {
+            throw new LogicException('You can only restart your dominion during protection.');
         }
 
-        $dominionFactory->restart($dominion);
+        if ($dominion->realm->alignment !== 'neutral') {
+            if ($dominion->realm->alignment !== $race->alignment) {
+                throw new LogicException('You cannot change alignment.');
+            }
+        }
+
+        $dominionFactory->restart($dominion, $race);
 
         return redirect()->back();
     }

@@ -183,7 +183,7 @@
                     </div>
                     <div class="box-body">
                         <p>You are under a magical state of protection. During this time you cannot be attacked or attack other dominions. Nor can you cast any offensive spells or engage in espionage.</p>
-                        <p>You are have <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks remaining. <a href="{{ route('dominion.misc.tick') }}">Proceed to next tick.</a></p>
+                        <p>You are have <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks remaining.</p>
                         @php
                             $hoursLeft = $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion);
                         @endphp
@@ -192,13 +192,24 @@
                         @endif
                         <p>No production occurs until you have left protection.</p>
                         <p>Made a mistake? You can restart your dominion.</p>
-                        <form id="restart-dominion" class="form-inline" action="{{ route('dominion.misc.restart') }}" method="post">
+                        <form id="restart-dominion" class="form" action="{{ route('dominion.misc.restart') }}" method="post">
                             @csrf
                             <div class="form-group">
-                                <select class="form-control">
+                                <select name="race" class="form-control">
+                                    @foreach ($races as $race)
+                                        <option value="{{ $race->id }}" {{ $selectedDominion->race_id == $race->id ? 'selected' : null }}>
+                                            {{ $race->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="confirm" class="form-control">
                                     <option value="0">Restart?</option>
                                     <option value="1">Confirm Restart</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
                                 <button type="submit" class="btn btn-sm btn-primary" disabled>Submit</button>
                             </div>
                         </form>
@@ -320,7 +331,7 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#restart-dominion select').change(function() {
+            $('#restart-dominion select[name=confirm]').change(function() {
                 var confirm = $(this).val();
                 if (confirm == "1") {
                     $('#restart-dominion button').prop('disabled', false);

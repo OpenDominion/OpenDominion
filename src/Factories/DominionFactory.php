@@ -130,7 +130,7 @@ class DominionFactory
      * @param  Dominion $dominion
      * @throws GameException
      */
-    public function restart(Dominion $dominion): void
+    public function restart(Dominion $dominion, Race $race): void
     {
         // Reset Queues
         DB::table('dominion_queue')
@@ -149,7 +149,7 @@ class DominionFactory
         }
 
         // Reset starting land
-        $startingLand = $this->getStartingLand($dominion->race, $this->getStartingBarrenLand(), $startingBuildings);
+        $startingLand = $this->getStartingLand($race, $this->getStartingBarrenLand(), $startingBuildings);
         foreach ($startingLand as $land_type => $value) {
             $dominion->{$land_type} = $value;
         }
@@ -168,6 +168,7 @@ class DominionFactory
             }
         }
 
+        $dominion->race_id = $race->id;
         $dominion->created_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART
@@ -345,7 +346,6 @@ class DominionFactory
             'highest_land_achieved' => 250,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
-            'last_tick_at' => null,
             'protection_ticks_remaining' => 72,
         ];
 
