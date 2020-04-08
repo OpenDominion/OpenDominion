@@ -326,15 +326,15 @@ class NotificationHelper
                         break;
 
                     case 'castle_spy':
-                        $resultString = 'An hostile presence was detected within our castle.';
+                        $resultString = 'A hostile presence was detected within our castle.';
                         break;
 
                     case 'survey_dominion':
-                        $resultString = 'An hostile presence was detected amongst our buildings.';
+                        $resultString = 'A hostile presence was detected amongst our buildings.';
                         break;
 
                     case 'land_spy':
-                        $resultString = 'An hostile presence was detected amongst our lands.';
+                        $resultString = 'A hostile presence was detected amongst our lands.';
                         break;
 
                     case 'assassinate_draftees':
@@ -541,7 +541,7 @@ class NotificationHelper
                         break;
 
                     case 'earthquake':
-                        $resultString = 'Am earthquake has damaged our mines, slowing production.';
+                        $resultString = 'An earthquake has damaged our mines, slowing production.';
                         break;
 
                     case 'disband_spies':
