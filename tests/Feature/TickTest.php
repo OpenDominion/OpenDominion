@@ -22,9 +22,10 @@ class TickTest extends AbstractBrowserKitTestCase
     public function testMoraleTick()
     {
         $user = $this->createUser();
-        $round = $this->createRound('yesterday'); // todo: check why develop branch works w/o this x_x
+        $round = $this->createRound('last week'); // todo: check why develop branch works w/o this x_x
         $dominion = $this->createDominion($user, $round);
 
+        $dominion->protection_ticks_remaining = 0;
         $dominion->morale = 64;
         $dominion->save();
 
@@ -49,6 +50,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $dominion = $this->createDominion($user, $round);
         $queueService = app(QueueService::class);
 
+        $dominion->protection_ticks_remaining = 0;
         $dominion->land_plain = 0;
         $dominion->building_home = 0;
         $dominion->save();
@@ -97,6 +99,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'resource_platinum' => 0,
             'building_home' => 100,
             'building_alchemy' => 100,
+            'protection_ticks_remaining' => 0,
         ])->save();
 
         $this->assertTrue($dominion->isLocked());
@@ -127,6 +130,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $queueService = app(QueueService::class);
         $tickService = app(TickService::class);
 
+        $dominion->protection_ticks_remaining = 0;
         $dominion->resource_gems = 0;
         $dominion->resource_mana = 0;
         $dominion->save();
@@ -164,6 +168,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'resource_platinum' => 1000,
             'resource_mana' => 9999999,
             'building_alchemy' => 850,
+            'protection_ticks_remaining' => 0,
         ])->save();
 
         // just duplicate values, yolo
@@ -172,6 +177,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'resource_platinum' => 1000,
             'resource_mana' => 9999999,
             'building_alchemy' => 850,
+            'protection_ticks_remaining' => 0,
         ])->save();
 
         // 850 alch * 45 plat = 38,250 plat
@@ -231,6 +237,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'military_unit2' => 0,
             'military_spies' => 0,
             'military_wizards' => 0,
+            'protection_ticks_remaining' => 0,
         ])->save();
 
         // 80 farms * 80 food * 1.05 human * 1.025 prestige = 6888 food
