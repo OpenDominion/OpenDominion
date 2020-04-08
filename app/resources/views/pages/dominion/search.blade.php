@@ -96,7 +96,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($selectedDominion->round->hasStarted())
+                            @if ($protectionService->getProtectionEndDate($selectedDominion) <= now())
                                 @foreach ($dominions as $dominion)
                                     <tr>
                                         <td data-search="{{ $dominion->name }}">
