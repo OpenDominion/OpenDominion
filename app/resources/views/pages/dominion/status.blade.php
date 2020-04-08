@@ -191,7 +191,7 @@
                             <p>You will remain in protection until the fourth day of the round ({{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}).</p>
                         @endif
                         <p>No production occurs until you have left protection.</p>
-                        <p>Made a mistake? You can restart your dominion.</p>
+                        <p>Made a mistake? You can restart your dominion while under protection.</p>
                         <form id="restart-dominion" class="form" action="{{ route('dominion.misc.restart') }}" method="post">
                             @csrf
                             <div class="form-group">
