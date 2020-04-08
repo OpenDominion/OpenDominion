@@ -52,14 +52,26 @@ class MiscController extends AbstractDominionController
     public function getTickDominion() {
         $dominion = $this->getSelectedDominion();
 
+        $protectionService = app(ProtectionService::class);
+        $tickService = app(TickService::class);
+
         if ($dominion->protection_ticks_remaining == 0) {
             throw new LogicException('You have no protection ticks remaining.');
         }
 
-        $tickService = app(TickService::class);
+        // Dominions still in protection or newly registered are forced
+        // to wait for a short time following OOP to preven abuse
+        if (!$protectionService->canLeaveProtection()) {
+            throw new LogicException('You cannot leave protection at this time.');
+        }
+
         $tickService->performTick($dominion->round, $dominion);
 
         $dominion->protection_ticks_remaining -= 1;
+        if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24) {
+            $dominion->daily_platinum = false;
+            $dominion->daily_land = false;
+        }
         $dominion->save();
 
         return redirect()->back();

@@ -8,6 +8,7 @@ use OpenDominion\Models\Dominion;
 class ProtectionService
 {
     public const PROTECTION_DURATION_IN_HOURS = 72; // todo: move to config?
+    public const WAIT_PERIOD_DURATION_IN_HOURS = 24;
 
     /**
      * Returns the Dominion's 'under protection' start date.
@@ -33,6 +34,37 @@ class ProtectionService
         $modifiedStartDate = Carbon::parse($this->getProtectionStartDate($dominion)->format('Y-m-d H:00:00'));
 
         return $modifiedStartDate->addHours(self::PROTECTION_DURATION_IN_HOURS);
+    }
+
+    /**
+     * Returns the Dominion's 'wait period' end date.
+     *
+     * @param Dominion $dominion
+     * @return Carbon
+     */
+    public function getWaitPeriodEndDate(Dominion $dominion): Carbon
+    {
+        $protectionEndDate = $this->getProtectionEndDate($dominion);
+
+        return $protectionEndDate->addHours(self::WAIT_PERIOD_DURATION_IN_HOURS);
+    }
+
+    /**
+     * Returns whether this Dominion instance is able to leave protection.
+     *
+     * @param Dominion $dominion
+     * @return bool
+     */
+    public function canLeaveProtection(Dominion $dominion): bool
+    {
+        $protectionEndDate = $this->getProtectionEndDate($dominion);
+        $waitPeriodEndDate = $this->getWaitPeriodEndDate($dominion);
+
+        if ($protectionEndDate < now() && $waitPeriodEndDate > now()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
