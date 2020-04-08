@@ -37,6 +37,7 @@
 
     <div class="content-wrapper">
         @include('partials.beta-indicator')
+        @include('partials.protection-indicator')
 
         @hasSection('page-header')
             <div class="content-header">
