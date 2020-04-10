@@ -25,6 +25,7 @@
     "spatie/laravel-backup": "^5.10",
     "spatie/laravel-honeypot": "^1.1",
     "spatie/laravel-permission": "~2.9",
+    "staudenmeir/laravel-upsert": "~1.0",
     "superbalist/laravel-google-cloud-storage": "^2.0",
     "symfony/yaml": "^4.1",
     "thomaswelton/laravel-gravatar": "~1.0",

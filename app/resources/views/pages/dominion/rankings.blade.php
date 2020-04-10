@@ -9,10 +9,10 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <span class="pull-right">
-                        @if ($type === 'land')
-                            <b>Land</b> - <a href="{{ route('dominion.rankings', ['networth'] + Request::query()) }}">Networth</a>
+                        @if ($type === 'largest-dominions')
+                            <b>Land</b> - <a href="{{ route('dominion.rankings', ['strongest-dominions'] + Request::query()) }}">Networth</a>
                         @else
-                            <a href="{{ route('dominion.rankings', ['land'] + Request::query()) }}">Land</a> - <b>Networth</b>
+                            <a href="{{ route('dominion.rankings', ['largest-dominions'] + Request::query()) }}">Land</a> - <b>Networth</b>
                         @endif
                     </span>
                     <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings</h3>
@@ -33,14 +33,14 @@
                                 <th>Dominion</th>
                                 <th class="text-center">Realm</th>
                                 <th class="text-center">Race</th>
-                                <th class="text-center">{{ ucfirst($type) }}</th>
+                                <th class="text-center">Value</th>
                                 <th class="text-center">Change</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($rankings as $row)
                                 <tr>
-                                    <td class="text-center">{{ $row->{$type . '_rank'} }}</td>
+                                    <td class="text-center">{{ $row->rank }}</td>
                                     <td>
                                         @if ($selectedDominion->id === (int)$row->dominion_id)
                                             <b>{{ $row->dominion_name }}</b> (you)
@@ -52,10 +52,10 @@
                                         <a href="{{ route('dominion.realm', $row->realm_number) }}">{{ $row->realm_name }} (#{{ $row->realm_number }})</a>
                                     </td>
                                     <td class="text-center">{{ $row->race_name }}</td>
-                                    <td class="text-center">{{ number_format($row->$type) }}</td>
+                                    <td class="text-center">{{ number_format($row->value) }}</td>
                                     <td class="text-center">
                                         @php
-                                            $rankChange = (int)$row->{$type . '_rank_change'};
+                                            $rankChange = (int) ($row->previous_rank - $row->rank);
                                         @endphp
                                         @if ($rankChange > 0)
                                             <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
