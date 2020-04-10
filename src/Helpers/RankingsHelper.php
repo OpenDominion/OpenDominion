@@ -170,6 +170,6 @@ class RankingsHelper
                 'title' => 'the Spy Bane',
                 'title_icon' => 'ra-player-pain',
             ],
-        ])->keyBy('key');
+        ])->keyBy('key')->toArray();
     }
 }

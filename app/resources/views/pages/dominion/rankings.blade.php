@@ -8,14 +8,18 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <span class="pull-right">
-                        @if ($type === 'largest-dominions')
-                            <b>Land</b> - <a href="{{ route('dominion.rankings', ['strongest-dominions'] + Request::query()) }}">Networth</a>
-                        @else
-                            <a href="{{ route('dominion.rankings', ['largest-dominions'] + Request::query()) }}">Land</a> - <b>Networth</b>
-                        @endif
-                    </span>
-                    <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings</h3>
+                    <h3 class="box-title">
+                        <div class="form-inline">
+                            <i class="fa fa-trophy"></i> Rankings - 
+                            <select id="ranking-select" class="form-control">
+                                @foreach ($rankings as $ranking)
+                                    <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
+                                        {{ $ranking['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
@@ -38,7 +42,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($rankings as $row)
+                            @foreach ($daily_rankings as $row)
                                 <tr>
                                     <td class="text-center">{{ $row->rank }}</td>
                                     <td>
@@ -72,7 +76,7 @@
                 </div>
                 <div class="box-footer">
                     <div class="pull-right">
-                        {{ $rankings->links() }}
+                        {{ $daily_rankings->links() }}
                     </div>
                 </div>
             </div>
@@ -84,16 +88,15 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>This page shows you the rankings of all the dominions in this round.</p>
-                    <p>Rankings are updated every 6 hours.</p>
-                    @if (!empty($rankings))
+                    <p>This page shows you the rankings of all the dominions in this round and is updated every 24 hours.</p>
+                    @if (!empty($daily_rankings))
                         @php
-                            $rankingsUpdatedHoursAgo = (now()->hour % 6);
+                            $rankingsUpdatedHoursAgo = (now()->hour % 24);
                         @endphp
                         @if ($rankingsUpdatedHoursAgo === 0)
-                            <p>Current displayed rankings are from this hour.</p>
+                            <p>Current displayed rankings were updated this hour.</p>
                         @else
-                            <p>Current displayed rankings are from {{ $rankingsUpdatedHoursAgo }} {{ str_plural('hour', $rankingsUpdatedHoursAgo) }} ago.</p>
+                            <p>Current displayed rankings were updated {{ $rankingsUpdatedHoursAgo }} {{ str_plural('hour', $rankingsUpdatedHoursAgo) }} ago.</p>
                         @endif
                     @endif
                     <p><a href="{{ route('dominion.rankings', request('type')) }}">My Ranking</a></p>
@@ -103,3 +106,14 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('#ranking-select').change(function() {
+                var selectedRanking = $(this).val();
+                window.location.href = "{!! route('dominion.rankings') !!}/" + selectedRanking;
+            });
+        })(jQuery);
+    </script>
+@endpush

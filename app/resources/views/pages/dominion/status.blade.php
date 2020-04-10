@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row">
-<?php $ts = app(OpenDominion\Services\Dominion\TickService::class); $ts->updateDailyRankings(); ?>
+
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
