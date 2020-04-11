@@ -10,9 +10,11 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\RankingsService;
 
 class AdvisorsController extends AbstractDominionController
 {
@@ -66,7 +68,10 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsRankings()
     {
-        // todo
+        return view('pages.dominion.advisors.rankings', [
+            'rankingsHelper' => app(RankingsHelper::class),
+            'rankingsService' => app(RankingsService::class),
+        ]);
     }
 
     public function getAdvisorsStatistics()
