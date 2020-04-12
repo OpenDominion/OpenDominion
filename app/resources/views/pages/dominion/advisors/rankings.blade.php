@@ -16,13 +16,16 @@
                     <table class="table table-striped">
                         <colgroup>
                             <col>
+                            <col>
+                            <col width="100">
                             <col width="100">
                             <col width="100">
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Category</th>
-                                <th>Value</th>
+                                <th>Ranking</th>
+                                <th class="text-right">Statistic</th>
+                                <th></th>
                                 <th class="text-center">Rank</th>
                                 <th class="text-center">Change</th>
                             </tr>
@@ -32,6 +35,9 @@
                             @foreach ($rankingsHelper->getRankings() as $ranking)
                                 <tr>
                                     <td>{{ $ranking['name'] }}</td>
+                                    <td class="text-right">
+                                        {{ $ranking['stat_label'] }}:
+                                    </td>
                                     @if (array_key_exists($ranking['key'], $myRankings))
                                         <td>
                                             {{ number_format($myRankings[$ranking['key']]['value']) }}

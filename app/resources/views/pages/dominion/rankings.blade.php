@@ -28,7 +28,7 @@
                             <col>
                             <col width="150">
                             <col width="100">
-                            <col width="100">
+                            <col>
                             <col width="50">
                         </colgroup>
                         <thead>
@@ -37,7 +37,7 @@
                                 <th>Dominion</th>
                                 <th class="text-center">Realm</th>
                                 <th class="text-center">Race</th>
-                                <th class="text-center">Value</th>
+                                <th class="text-center">{{ $rankings[$type]['stat_label'] }}</th>
                                 <th class="text-center">Change</th>
                             </tr>
                         </thead>
