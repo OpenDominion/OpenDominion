@@ -163,7 +163,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            {{-- todo: message about black ops not being enabled until 8th day in the round --}}
 
             <div class="box">
                 <div class="box-header with-border">
@@ -220,7 +219,7 @@
 
         @if ($selectedDominion->realm->motd && ($selectedDominion->realm->motd_updated_at > now()->subDays(3)))
             <div class="col-sm-12 col-md-9">
-                <div class="panel panel-warning">
+                <div class="panel panel-info">
                     <div class="panel-body">
                         <b>Message of the Day:</b> {{ $selectedDominion->realm->motd }}
                         <br/><small class="text-muted">Posted {{ $selectedDominion->realm->motd_updated_at }}</small>

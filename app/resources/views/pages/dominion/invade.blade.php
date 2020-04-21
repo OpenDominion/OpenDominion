@@ -307,6 +307,11 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
+            // Prevent accidental submit
+            $(document).on("keydown", "form", function(event) { 
+                return event.key != "Enter";
+            });
+
             var invasionForceOPElement = $('#invasion-force-op');
             var invasionForceDPElement = $('#invasion-force-dp');
             var invasionForceBoatsElement = $('#invasion-force-boats');
