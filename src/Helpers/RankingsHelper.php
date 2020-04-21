@@ -23,7 +23,7 @@ class RankingsHelper
                 'stat' => 'land',
                 'stat_label' => 'Land',
                 'title' => 'the Powerful',
-                'title_icon' => 'ra-trophy',
+                'title_icon' => 'ra-helmet',
             ],
             [
                 'name' => 'The Strongest Dominions',
@@ -234,5 +234,16 @@ class RankingsHelper
                 'title_icon' => 'ra-player-pain',
             ],
         ])->keyBy('key')->toArray();
+    }
+
+    function getFirstRanking(array $keys): array
+    {
+        foreach ($this->getRankings() as $ranking) {
+            if (in_array($ranking['key'], $keys)) {
+                return $ranking;
+            }
+        }
+
+        return [];
     }
 }

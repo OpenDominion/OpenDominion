@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use DB;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Round;
 
 class RankingsService
 {
@@ -22,27 +23,20 @@ class RankingsService
         return $rankings;
     }
 
-    public function getTopRankingsForDominion(Dominion $dominion): array
+    public function getTopRankedDominions(Round $round): array
     {
         $rankings = DB::table('daily_rankings')
-            ->select('key')
+            ->select('dominion_id', 'key')
             ->where([
-                'dominion_id' => $dominion->id,
+                'round_id' => $round->id,
                 'rank' => 1,
             ])
             ->get()
+            ->mapToGroups(function ($item, $key) {
+                return [$item->dominion_id => $item->key];
+            })
             ->toArray();
 
         return $rankings;
-    }
-
-    public function getDominionTitle(Dominion $dominion): string
-    {
-        return '';
-    }
-
-    public function getDominionTitleIcon(Dominion $dominion): string
-    {
-        return '';
     }
 }

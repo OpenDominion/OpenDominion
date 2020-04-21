@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Http\Requests\Dominion\Forum\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Forum\CreateThreadRequest;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Forum;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\RankingsService;
 use OpenDominion\Services\ForumService;
 
 class ForumController extends AbstractDominionController
@@ -95,9 +97,13 @@ class ForumController extends AbstractDominionController
         $this->updateDominionForumLastRead($dominion);
 
         $thread->load('dominion.realm', 'posts.dominion.realm');
+        $rankingsHelper = app(RankingsHelper::class);
+        $rankingsService = app(RankingsService::class);
 
         return view('pages.dominion.forum.thread', compact(
-            'thread'
+            'thread',
+            'rankingsHelper',
+            'rankingsService'
         ));
     }
 
