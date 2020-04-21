@@ -115,14 +115,14 @@
                                     <tbody>
                                         @foreach ($currentRankings as $row)
                                             <tr>
-                                                <td class="text-center">{{ $row->land_rank }}</td>
+                                                <td class="text-center">{{ $row->rank }}</td>
                                                 <td>
                                                     {{ $row->dominion_name }} (#{{ $row->realm_number }})
                                                 </td>
-                                                <td class="text-center">{{ number_format($row->land) }}</td>
+                                                <td class="text-center">{{ number_format($row->value) }}</td>
                                                 <td class="text-center">
                                                     @php
-                                                        $rankChange = (int)$row->land_rank_change;
+                                                        $rankChange = (int) ($row->rank - $row->previous_rank);
                                                     @endphp
                                                     @if ($rankChange > 0)
                                                         <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
