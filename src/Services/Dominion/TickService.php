@@ -87,32 +87,32 @@ class TickService
 
         foreach ($activeRounds as $round) {
             $this->performTick($round);
-        }
 
-        // Generate Non-Player Dominions
-        if ($round_start_date > $this->now) {
-            $hoursUntilStart = $this->now->diffInHours($round->start_date);
-            if ($hoursUntilStart == 2) {
-                $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
-                $names_json = json_decode(file_get_contents(base_path('app/data/dominion_names.json')));
-                $names = collect($names_json->dominion_names);
-                $races = Race::all();
-                foreach ($round->realms as $realm) {
-                    if ($realm->alignment != 'neutral') {
-                        $race = $races->where('alignment', $realm->alignment)->random();
-                    } else {
-                        $race = $races->random();
-                    }
-                    $dominion = null;
-                    while ($dominion == null) {
-                        $rulerName = $names->random();
-                        $dominionName = $names->random();
-                        if (strlen($rulerName) > strlen($dominionName)) {
-                            $swap = $rulerName;
-                            $rulerName = $dominionName;
-                            $dominionName = $swap;
+            // Generate Non-Player Dominions
+            if ($round->start_date > $this->now) {
+                $hoursUntilStart = $this->now->diffInHours($round->start_date);
+                if ($hoursUntilStart == 2) {
+                    $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
+                    $names_json = json_decode(file_get_contents(base_path('app/data/dominion_names.json')));
+                    $names = collect($names_json->dominion_names);
+                    $races = Race::all();
+                    foreach ($round->realms as $realm) {
+                        if ($realm->alignment != 'neutral') {
+                            $race = $races->where('alignment', $realm->alignment)->random();
+                        } else {
+                            $race = $races->random();
                         }
-                        $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                        $dominion = null;
+                        while ($dominion == null) {
+                            $rulerName = $names->random();
+                            $dominionName = $names->random();
+                            if (strlen($rulerName) > strlen($dominionName)) {
+                                $swap = $rulerName;
+                                $rulerName = $dominionName;
+                                $dominionName = $swap;
+                            }
+                            $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                        }
                     }
                 }
             }
