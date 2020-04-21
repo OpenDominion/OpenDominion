@@ -51,6 +51,9 @@ class NotificationService
     public function sendNotifications(Dominion $dominion, string $category): void
     {
         $user = $dominion->user;
+        if ($user == null) {
+            return;
+        }
 
         $emailNotifications = [];
         $defaultSettings = $this->notificationHelper->getDefaultUserNotificationSettings();

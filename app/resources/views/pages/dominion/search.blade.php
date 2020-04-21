@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-search"></i> Search Dominions</h3>
                 </div>
-                <div class="box-body table-responsive" id="dominion-search">
+                <div class="box-body" id="dominion-search">
                     <div class="row no-margin">
                         <div class="col-sm-6 col-md-4 form-horizontal">
                             <div class="form-group">
@@ -76,65 +76,66 @@
                         </div>
                     </div>
 
-                    <table class="table table-hover" id="dominions-table">
-                        <colgroup>
-                            <col>
-                            <col width="100">
-                            <col width="100">
-                            <col width="100">
-                            <col width="100">
-                            <col width="100" class="hidden">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Dominion</th>
-                                <th class="text-center">Realm</th>
-                                <th class="text-center">Race</th>
-                                <th class="text-center">Land</th>
-                                <th class="text-center">Networth</th>
-                                <th class="text-center hidden">My Range</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($protectionService->getProtectionEndDate($selectedDominion) <= now())
-                                @foreach ($dominions as $dominion)
-                                    <tr>
-                                        <td data-search="{{ $dominion->name }}">
-                                            @if ($protectionService->isUnderProtection($dominion))
-                                                <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
-                                            @endif
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="dominions-table">
+                            <colgroup>
+                                <col>
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
+                                <col width="100" class="hidden">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Dominion</th>
+                                    <th class="text-center">Realm</th>
+                                    <th class="text-center">Race</th>
+                                    <th class="text-center">Land</th>
+                                    <th class="text-center">Networth</th>
+                                    <th class="text-center hidden">My Range</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($protectionService->getProtectionEndDate($selectedDominion) <= now())
+                                    @foreach ($dominions as $dominion)
+                                        <tr>
+                                            <td data-search="{{ $dominion->name }}">
+                                                @if ($protectionService->isUnderProtection($dominion))
+                                                    <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
+                                                @endif
 
-                                            @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
-                                            @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
-                                                <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
-                                            @endif
+                                                @if ($guardMembershipService->isEliteGuardMember($dominion))
+                                                    <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
+                                                @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
+                                                    <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
+                                                @endif
 
-                                            <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
-                                        </td>
-                                        <td class="text-center">
-                                            {{ $dominion->realm->number }}
-                                        </td>
-                                        <td class="text-center">
-                                            {{ $dominion->race->name }}
-                                        </td>
-                                        <td class="text-center" data-order="{{ $landCalculator->getTotalLand($dominion) }}" data-search="{{ $landCalculator->getTotalLand($dominion) }}">
-                                            {{ number_format($landCalculator->getTotalLand($dominion)) }}
-                                        </td>
-                                        <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
-                                            {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
-                                        </td>
-                                        <td class="hidden">
-                                            @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
-                                                true
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-
+                                                <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $dominion->realm->number }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $dominion->race->name }}
+                                            </td>
+                                            <td class="text-center" data-order="{{ $landCalculator->getTotalLand($dominion) }}" data-search="{{ $landCalculator->getTotalLand($dominion) }}">
+                                                {{ number_format($landCalculator->getTotalLand($dominion)) }}
+                                            </td>
+                                            <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
+                                                {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
+                                            </td>
+                                            <td class="hidden">
+                                                @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
+                                                    true
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

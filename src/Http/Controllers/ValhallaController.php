@@ -202,10 +202,16 @@ class ValhallaController extends AbstractController
 
         return $builder->get()
             ->map(function (Dominion $dominion) use ($networthCalculator, $race) {
+                if ($dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
+                    'player' => $player,
                 ];
 
                 if ($race === null) {
@@ -327,10 +333,16 @@ class ValhallaController extends AbstractController
 
         return $builder->get()
             ->map(function (Dominion $dominion) use ($landCalculator, $race) {
+                if ($dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
+                    'player' => $player,
                 ];
 
                 if ($race === null) {
@@ -443,10 +455,16 @@ class ValhallaController extends AbstractController
 
         return $builder->get()
             ->map(function (Dominion $dominion) use ($stat) {
+                if ($dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
+                    'player' => $player,
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,
                     'value' => $dominion->{$stat},

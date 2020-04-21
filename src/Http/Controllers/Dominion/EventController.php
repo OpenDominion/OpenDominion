@@ -46,7 +46,7 @@ class EventController extends AbstractDominionController
 
     private function canView(GameEvent $event, Dominion $dominion): bool
     {
-        if($dominion->user->isStaff()) {
+        if($dominion->user && $dominion->user->isStaff()) {
             return true;
         }
 
