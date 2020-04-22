@@ -32,7 +32,7 @@ class InvadeActionService
     /**
      * @var float Base percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.825;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.05;
 
     /**
      * @var float Max percentage of defensive casualties
@@ -657,7 +657,7 @@ class InvadeActionService
         $rangeMultiplier = ($range / 100);
 
         $landGrabRatio = 1;
-        $bonusLandRatio = 1.7647;
+        $bonusLandRatio = 1.6667;
 
         // War Bonus
         if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
@@ -676,7 +676,7 @@ class InvadeActionService
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
 
-        $acresLost *= 0.85;
+        $acresLost *= 0.90;
 
         $acresLost = (int)max(floor($acresLost), 10);
 
@@ -861,7 +861,7 @@ class InvadeActionService
             $totalConvertingUnits += $units[$unit->slot];
         }
 
-        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 1.75) * $landRatio;
+        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 1.65) * $landRatio;
 
         foreach ($unitsWithConversionPerk as $unit) {
             $conversionPerk = $unit->getPerkValue('conversion');
