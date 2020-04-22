@@ -13,7 +13,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Rankings Advisor page will show all of your current standings
 
 ### Changed
+- Icekin Ice Elemental: offense increased for every 1 WPA (from 0.85 WPA)
+- Land loss/generation ratio changed to 90:60 (from 85:65)
+- Base defensive casualties changed to 4.05% (from 3.825)
+- Base conversion rate from casualties changed to 1.65x (from 1.75x)
+- Construction discount from lost buildings no longer stacks with the discount gained from successful attacks
+- Minimum defense increased to 5 x [Land - 150] (from 1.5 x Land)
+- Adjusted font colors in Town Crier to better show in-realm events
 - Pressing 'Enter' on the invasion page will no longer submit the form
+
+### Fixed
 - Increased the size of some input fields on mobile
 
 ## [0.8.1-6] - 2020-03-29
