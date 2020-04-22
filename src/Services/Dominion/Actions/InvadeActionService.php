@@ -1291,7 +1291,7 @@ class InvadeActionService
             4 => $dominion->military_unit4 - (isset($units[4]) ? $units[4] : 0)
         ];
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
-        $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome);
+        $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
 
         $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
 

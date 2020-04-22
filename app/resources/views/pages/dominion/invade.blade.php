@@ -205,6 +205,16 @@
                                                 </td>
                                                 <td id="invasion-force-max-op" data-amount="0">0</td>
                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    Target Min DP:
+                                                    <i class="fa fa-question-circle"
+                                                       data-toggle="tooltip"
+                                                       data-placement="top"
+                                                       title="The minimum defense for a dominion is based on their land size. 5 * (Land - 150)"></i>
+                                                </td>
+                                                <td id="target-min-dp" data-amount="0">0</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -316,6 +326,7 @@
             var invasionForceDPElement = $('#invasion-force-dp');
             var invasionForceBoatsElement = $('#invasion-force-boats');
             var invasionForceMaxOPElement = $('#invasion-force-max-op');
+            var targetMinDPElement = $('#target-min-dp');
             var homeForcesOPElement = $('#home-forces-op');
             var homeForcesDPElement = $('#home-forces-dp');
             var homeForcesBoatsElement = $('#home-forces-boats');
@@ -365,6 +376,7 @@
                             invasionForceDPElement.data('amount', response.away_defense);
                             invasionForceBoatsElement.data('amount', response.boats_needed);
                             invasionForceMaxOPElement.data('amount', response.max_op);
+                            targetMinDPElement.data('amount', response.target_min_dp);
                             homeForcesOPElement.data('amount', response.home_offense);
                             homeForcesDPElement.data('amount', response.home_defense);
                             homeForcesBoatsElement.data('amount', response.boats_remaining);
@@ -375,6 +387,7 @@
                             invasionForceDPElement.text(response.away_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             invasionForceBoatsElement.text(response.boats_needed.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             invasionForceMaxOPElement.text(response.max_op.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            targetMinDPElement.text(response.target_min_dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesOPElement.text(response.home_offense.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesDPElement.text(response.home_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesBoatsElement.text(response.boats_remaining.toLocaleString(undefined, {maximumFractionDigits: 2}));

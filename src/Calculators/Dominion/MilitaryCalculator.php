@@ -238,7 +238,8 @@ class MilitaryCalculator
         float $landRatio = null,
         array $units = null,
         float $multiplierReduction = 0,
-        bool $ignoreDraftees = false
+        bool $ignoreDraftees = false,
+        bool $ignoreMinDefense = false
         ): float
     {
         $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees);
@@ -262,13 +263,13 @@ class MilitaryCalculator
         Dominion $target = null,
         float $landRatio = null,
         array $units = null,
-        bool $ignoreDraftees = false
+        bool $ignoreDraftees = false,
+        bool $ignoreMinDefense = false
     ): float
     {
         $dp = 0;
 
         // Values
-        $minDPPerAcre = 1.5;
         $dpPerDraftee = 1;
 
         // Military
@@ -301,13 +302,11 @@ class MilitaryCalculator
         }
 
         // Attacking Forces skip land-based defenses
-        if ($units !== null)
+        if ($units !== null || $ignoreMinDefense) {
             return $dp;
+        }
 
-        return max(
-            $dp,
-            ($minDPPerAcre * $this->landCalculator->getTotalLand($dominion))
-        );
+        return max($dp, $this->getMinimumDefense($dominion));
     }
 
     /**
@@ -889,5 +888,24 @@ class MilitaryCalculator
         }
 
         return $defenseReduced;
+    }
+
+    /**
+     * Gets minimum DP for a Dominion based on land size.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getMinimumDefense(?Dominion $dominion): float
+    {
+        if ($dominion === null) {
+            return 0;
+        }
+
+        // Values
+        $minDefenseMultiplier = 5;
+        $minDefenseConstant = -150;
+
+        return $minDefenseMultiplier * ($this->landCalculator->getTotalLand($dominion) + $minDefenseConstant);
     }
 }
