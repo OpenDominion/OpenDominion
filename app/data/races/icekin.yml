@@ -42,4 +42,4 @@ units:
       offense: 4
       defense: 2
     perks:
-      offense_raw_wizard_ratio: 0.85,3 # ratio%, max
+      offense_raw_wizard_ratio: 1,3 # ratio%, max
