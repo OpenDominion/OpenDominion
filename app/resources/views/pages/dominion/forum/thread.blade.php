@@ -16,8 +16,9 @@
                 <div class="box-header with-border">
                     <div class="user-block pull-left">
                         @php
-                            $rankings = $rankingsService->getTopRankedDominions($selectedDominion->round);
-                            $ranking = $rankingsHelper->getFirstRanking($rankings[$selectedDominion->id]);
+                            $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
+                            $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
+                            $ranking = $rankingsHelper->getFirstRanking($titles);
                         @endphp
                         <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" style="font-size: 36px;"></i>
                         <span class="username">
@@ -48,7 +49,8 @@
                             <div class="box-comment">
                                 @php
                                     $rankings = $rankingsService->getTopRankedDominions($post->dominion->round);
-                                    $ranking = $rankingsHelper->getFirstRanking($rankings[$post->dominion->id]);
+                                    $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
+                                    $ranking = $rankingsHelper->getFirstRanking($titles);
                                 @endphp
                                 <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" style="font-size: 26px;"></i>
                                 <div class="comment-text">
