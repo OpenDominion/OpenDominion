@@ -112,6 +112,7 @@ class TickService
                                 $dominionName = $swap;
                             }
                             $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                            $this->precalculateTick($dominion);
                         }
                     }
                 }
