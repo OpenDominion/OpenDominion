@@ -99,38 +99,35 @@
                             <tbody>
                                 @if ($protectionService->getProtectionEndDate($selectedDominion) <= now())
                                     @foreach ($dominions as $dominion)
-                                        <tr>
-                                            <td data-search="{{ $dominion->name }}">
-                                                @if ($protectionService->isUnderProtection($dominion))
-                                                    <i class="ra ra-shield ra-lg text-aqua" title="Under Protection"></i>
-                                                @endif
-
-                                                @if ($guardMembershipService->isEliteGuardMember($dominion))
-                                                    <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
-                                                @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
-                                                    <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
-                                                @endif
-
-                                                <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
-                                            </td>
-                                            <td class="text-center">
-                                                {{ $dominion->realm->number }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ $dominion->race->name }}
-                                            </td>
-                                            <td class="text-center" data-order="{{ $landCalculator->getTotalLand($dominion) }}" data-search="{{ $landCalculator->getTotalLand($dominion) }}">
-                                                {{ number_format($landCalculator->getTotalLand($dominion)) }}
-                                            </td>
-                                            <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
-                                                {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
-                                            </td>
-                                            <td class="hidden">
-                                                @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
-                                                    true
-                                                @endif
-                                            </td>
-                                        </tr>
+                                        @if (!$protectionService->isUnderProtection($dominion))
+                                            <tr>
+                                                <td data-search="{{ $dominion->name }}" data-order="{{ $dominion->name }}">
+                                                    @if ($guardMembershipService->isEliteGuardMember($dominion))
+                                                        <i class="ra ra-heavy-shield ra-lg text-yellow" title="Elite Guard"></i>
+                                                    @elseif ($guardMembershipService->isRoyalGuardMember($dominion))
+                                                        <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
+                                                    @endif
+                                                    <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $dominion->realm->number }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $dominion->race->name }}
+                                                </td>
+                                                <td class="text-center" data-order="{{ $landCalculator->getTotalLand($dominion) }}" data-search="{{ $landCalculator->getTotalLand($dominion) }}">
+                                                    {{ number_format($landCalculator->getTotalLand($dominion)) }}
+                                                </td>
+                                                <td class="text-center" data-order="{{ $networthCalculator->getDominionNetworth($dominion) }}" data-search="{{ $networthCalculator->getDominionNetworth($dominion) }}">
+                                                    {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
+                                                </td>
+                                                <td class="hidden">
+                                                    @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
+                                                        true
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 @endif
                             </tbody>
@@ -210,7 +207,7 @@
         (function ($) {
             var table = $('#dominions-table').DataTable({
                 order: [[3, 'desc']],
-                paging: false,
+                paging: false
             });
             $('#dominion-search').click(function() {
                 table.draw();
