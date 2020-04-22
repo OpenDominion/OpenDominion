@@ -3,6 +3,18 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Click-Through Protection!
+- You can now perform all of your protection logins at your own pace during the first three days of the round
+- You can now change your race when restarting your account during protection
+- One non-player dominion will now be added to each realm on the third day of the round
+- Daily rankings have been reworked! Most of the existing valhalla rankings will now be recorded during the round
+- Players holding the top spot in certain rankings will now gain a new title and avatar when posting on the Global Forum!
+- New Rankings Advisor page will show all of your current standings
+
+### Changed
+- Pressing 'Enter' on the invasion page will no longer submit the form
+- Increased the size of some input fields on mobile
 
 ## [0.8.1-6] - 2020-03-29
 ### Fixed
