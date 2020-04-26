@@ -68,9 +68,9 @@ class MiscController extends AbstractDominionController
         }
 
         // Dominions still in protection or newly registered are forced
-        // to wait for a short time following OOP to preven abuse
+        // to wait for a short time following OOP to prevent abuse
         if (!$protectionService->canLeaveProtection($dominion)) {
-            throw new LogicException('You cannot leave protection at this time.');
+            throw new LogicException('You cannot leave protection during the fourth day of the round.');
         }
 
         $tickService->performTick($dominion->round, $dominion);

@@ -118,6 +118,7 @@ class TickService
                                 $this->precalculateTick($dominion);
                                 $this->performTick($round, $dominion);
                                 $this->performTick($round, $dominion);
+                                $this->performTick($round, $dominion);
                             } else {
                                 $failCount++;
                             }
