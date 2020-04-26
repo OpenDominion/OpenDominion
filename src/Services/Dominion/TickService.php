@@ -91,7 +91,7 @@ class TickService
             // Generate Non-Player Dominions
             if ($round->start_date > $this->now) {
                 $hoursUntilStart = $this->now->diffInHours($round->start_date);
-                if ($hoursUntilStart == 2) {
+                if ($hoursUntilStart == 1) {
                     $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
                     $names_json = json_decode(file_get_contents(base_path('app/data/dominion_names.json')));
                     $names = collect($names_json->dominion_names);
@@ -103,7 +103,8 @@ class TickService
                             $race = $races->random();
                         }
                         $dominion = null;
-                        while ($dominion == null) {
+                        $failCount = 0;
+                        while ($dominion == null && $failCount < 3) {
                             $rulerName = $names->random();
                             $dominionName = $names->random();
                             if (strlen($rulerName) > strlen($dominionName)) {
@@ -112,7 +113,14 @@ class TickService
                                 $dominionName = $swap;
                             }
                             $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
-                            $this->precalculateTick($dominion);
+                            if ($dominion) {
+                                // Tick ahead a few times
+                                $this->precalculateTick($dominion);
+                                $this->performTick($round, $dominion);
+                                $this->performTick($round, $dominion);
+                            } else {
+                                $failCount++;
+                            }
                         }
                     }
                 }

@@ -497,18 +497,18 @@ class DominionFactory
             $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
             $incSpecs = (int) $dominion->military_unit2 * (mt_rand(25, 50) / 100);
             $incElites = (int) $dominion->military_unit3 * (mt_rand(25, 50) / 100);
-            $hours = array_rand(range(0, 8), mt_rand(2, 5));
+            $hours = array_rand(range(4, 12), mt_rand(2, 5));
             foreach ($hours as $key => $hour) {
                 if ($key === array_key_last($hours)) {
-                    $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour + 3);
+                    $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
                 } else {
                     if ($incElites > 0 && random_chance(0.5)) {
                         $amount = max(10, mt_rand($incElites / 5, $incElites));
                         $incElites -= $amount;
-                        $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour + 3);
+                        $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour);
                     } elseif ($incSpecs > 0) {
                         $amount = max(10, mt_rand($incSpecs / 5, $incSpecs));
-                        $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour + 3);
+                        $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour);
                         $incSpecs -= $amount;
                     }
                 }
