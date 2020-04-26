@@ -6,6 +6,94 @@
             <h3 class="box-title"><i class="ra ra-angel-wings"></i> Valhalla for round {{ number_format($round->number) }}: {{ $round->name }}</h3>
         </div>
         <div class="box-body">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <b>Round information</b>
+                </div>
+            </div>
+            <div class="row row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4 text-center">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center">Statistics</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Date</td>
+                                <td class="text-center">
+                                    {{ $round->start_date->toFormattedDateString() }} to {{ $round->end_date->toFormattedDateString() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Days</td>
+                                <td class="text-center">
+                                    {{ $round->durationInDays() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Players</td>
+                                <td class="text-center">
+                                    {{ $round->dominions->count() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Realms</td>
+                                <td class="text-center">
+                                    {{ $round->realms->count() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Packs</td>
+                                <td class="text-center">
+                                    {{ $round->packs->count() }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4 text-center">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center">Rules</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Realm size</td>
+                                <td class="text-center">
+                                    {{ $round->realm_size }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pack size</td>
+                                <td class="text-center">
+                                    {{ $round->pack_size }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Players per race</td>
+                                <td class="text-center">
+                                    {{ $round->players_per_race }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mixed alignment</td>
+                                <td class="text-center">
+                                    {{ $round->mixed_alignment }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+        </div>
+        <div class="box-body">
 
             <div class="row">
                 <div class="col-md-12 text-center">
