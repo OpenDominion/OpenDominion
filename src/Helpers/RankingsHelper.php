@@ -82,6 +82,14 @@ class RankingsHelper
                 'title_icon' => 'ra-hood',
             ],
             [
+                'name' => 'Most Spies Executed',
+                'key' => 'spies-executed',
+                'stat' => 'stat_spies_executed',
+                'stat_label' => 'Spies Executed',
+                'title' => 'the Executioner',
+                'title_icon' => 'ra-guillotine',
+            ],
+            [
                 'name' => 'Top Saboteurs',
                 'key' => 'saboteurs',
                 'stat' => 'stat_sabotage_boats_damage',
@@ -176,6 +184,14 @@ class RankingsHelper
                 'stat_label' => 'Wizard Prestige',
                 'title' => 'the Archmage',
                 'title_icon' => 'ra-crystal-wand',
+            ],
+            [
+                'name' => 'Most Wizards Executed',
+                'key' => 'wizards-executed',
+                'stat' => 'stat_wizards_executed',
+                'stat_label' => 'Wizards Executed',
+                'title' => '',
+                'title_icon' => '',
             ],
             [
                 'name' => 'Masters of Fire',

@@ -20,7 +20,7 @@
                             $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
                             $ranking = $rankingsHelper->getFirstRanking($titles);
                         @endphp
-                        <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" style="font-size: 36px;"></i>
+                        <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                         <span class="username">
                             {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }}) <em>{{ $ranking ? $ranking['title'] : null }}</em>
                         </span>
@@ -52,7 +52,7 @@
                                     $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
                                     $ranking = $rankingsHelper->getFirstRanking($titles);
                                 @endphp
-                                <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" style="font-size: 26px;"></i>
+                                <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
                                         {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }}) <em>{{ $ranking ? $ranking['title'] : null }}</em>
