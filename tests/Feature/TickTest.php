@@ -22,7 +22,7 @@ class TickTest extends AbstractBrowserKitTestCase
     public function testMoraleTick()
     {
         $user = $this->createUser();
-        $round = $this->createRound('last week'); // todo: check why develop branch works w/o this x_x
+        $round = $this->createRound('last week');
         $dominion = $this->createDominion($user, $round);
 
         $dominion->protection_ticks_remaining = 0;
@@ -46,7 +46,7 @@ class TickTest extends AbstractBrowserKitTestCase
     public function testQueuesTick()
     {
         $user = $this->createUser();
-        $round = $this->createRound();
+        $round = $this->createRound('last week');
         $dominion = $this->createDominion($user, $round);
         $queueService = app(QueueService::class);
 
@@ -125,7 +125,7 @@ class TickTest extends AbstractBrowserKitTestCase
     public function testResourcesGetGeneratedOnTheSameHourThatBuildingsComeIn()
     {
         $user = $this->createUser();
-        $round = $this->createRound();
+        $round = $this->createRound('last week');
         $dominion = $this->createDominion($user, $round);
         $queueService = app(QueueService::class);
         $tickService = app(TickService::class);
@@ -154,7 +154,7 @@ class TickTest extends AbstractBrowserKitTestCase
     {
         $user1 = $this->createUser();
         $user2 = $this->createUser();
-        $round = $this->createRound();
+        $round = $this->createRound('last week');
         $dominion1 = $this->createDominion($user1, $round);
         $dominion2 = $this->createDominion($user2, $round);
 
@@ -218,7 +218,7 @@ class TickTest extends AbstractBrowserKitTestCase
     public function testTheProperAmountOfFoodGetsAddedOnTick()
     {
         $user = $this->createUser();
-        $round = $this->createRound();
+        $round = $this->createRound('last week');
         $tickService = app(TickService::class);
         // don't use a race that has food-related perks
         $race = \OpenDominion\Models\Race::where('name', 'Human')->first();
