@@ -229,7 +229,7 @@ class CasualtiesCalculator
                     }
                     $unitsSentPerSlot[$slot] = $units[$slot];
 
-                    if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
+                    if ($unit->getPerkValue('kills_immortal') !== 0) {
                         $unitsSentKISlot = $slot;
                     }
                 }
