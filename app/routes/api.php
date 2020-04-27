@@ -13,4 +13,8 @@ $router->group(['prefix' => 'v1', 'as' => 'api.'], static function (Router $rout
         $router->get('invasion')->uses('Dominion\APIController@calculateInvasion')->name('invasion');
     });
 
+    $router->group(['prefix' => 'calculator', 'middleware' => ['api', 'auth'], 'as' => 'calculator.'], static function (Router $router) {
+        $router->get('defense')->uses('Dominion\APIController@calculateDefense')->name('defense');
+    });
+
 });

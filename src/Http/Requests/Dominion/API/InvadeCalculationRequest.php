@@ -14,6 +14,7 @@ class InvadeCalculationRequest extends AbstractDominionRequest
         return [
             'target_dominion' => 'nullable|integer',
             'unit' => 'nullable|array',
+            'calc' => 'nullable|array',
         ];
     }
 }
