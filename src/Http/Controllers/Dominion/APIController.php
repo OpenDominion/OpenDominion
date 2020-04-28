@@ -35,25 +35,50 @@ class APIController extends AbstractDominionController
     public function calculateDefense(InvadeCalculationRequest $request): array
     {
         $calc = $request->get('calc');
+        $units = array_fill(0, 5, 0);
+
+        // Calculate units home and away
+        if (isset($calc['draftees'])) {
+            $units[0] = $calc['draftees'];
+        } elseif (isset($calc['draftees_home'])) {
+            $units[0] = (int) ($calc['draftees_home'] / 0.85);
+        }
+        foreach(range(1, 4) as $slot) {
+            if (isset($calc["unit{$slot}"])) {
+                $units[$slot] = $calc["unit{$slot}"];
+                if (isset($calc["unit{$slot}_away"])) {
+                    $unitsAway = (int) ($calc["unit{$slot}_away"] * 0.85);
+                    $units[$slot] = max($units[$slot] - $unitsAway, 0);
+                    if (isset($calc["unit{$slot}_home"])) {
+                        $unitsHome = (int) ($calc["unit{$slot}_home"] / 0.85);
+                        if ($unitsHome < $units[$slot]) {
+                            $units[$slot] = $unitsHome;
+                        }
+                    }
+                }
+            } elseif (isset($calc["unit{$slot}_home"])) {
+                $units[$slot] = (int) ($calc["unit{$slot}_home"] / 0.85);
+            }
+        }
 
         $dominion = new Dominion([
             'race_id' => $request->get('race'),
             'prestige' => isset($calc['prestige']) ? $calc['prestige'] : 250,
             'morale' => isset($calc['morale']) ? $calc['morale'] : 100,
 
-            'military_draftees' => isset($calc['draftees']) ? $calc['draftees'] : 0,
-            'military_unit1' => isset($calc['unit1']) ? $calc['unit1'] : 0,
-            'military_unit2' => isset($calc['unit2']) ? $calc['unit2'] : 0,
-            'military_unit3' => isset($calc['unit3']) ? $calc['unit3'] : 0,
-            'military_unit4' => isset($calc['unit4']) ? $calc['unit4'] : 0,
+            'military_draftees' => $units[0],
+            'military_unit1' => $units[1],
+            'military_unit2' => $units[2],
+            'military_unit3' => $units[3],
+            'military_unit4' => $units[4],
 
-            'land_plain' => 110,
-            'land_mountain' => 20,
-            'land_swamp' => 20,
-            'land_cavern' => 20,
-            'land_forest' => 40,
-            'land_hill' => 20,
-            'land_water' => 20,
+            'land_plain' => isset($calc['land']) ? $calc['land'] : 250,
+            'land_mountain' => 0,
+            'land_swamp' => 0,
+            'land_cavern' => 0,
+            'land_forest' => 0,
+            'land_hill' => 0,
+            'land_water' => 0,
 
             'building_home' => 0,
             'building_alchemy' => 0,

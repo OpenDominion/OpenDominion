@@ -11,7 +11,7 @@
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-calculator"></i> Defense Calculator</h3>
                     </div>
-                    <div class="box-body table-responsive">
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="race">Race</label>
                             <select name="race" id="race" class="form-control" style="width: 100%;">
@@ -24,256 +24,277 @@
                             </select>
                         </div>
 
-                        <table class="table">
-                            <colgroup>
-                                <col>
-                                <col width="100">
-                                <col width="150">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Unit</th>
-                                    <th class="text-center">Home</th>
-                                    <th class="text-center">Subtotal</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Draftees
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="number"
-                                                name="calc[draftees]"
-                                                class="form-control text-center"
-                                                placeholder="0"
-                                                min="0" />
-                                    </td>
-                                    <td class="text-center" id="draftees_stats">
-                                        0
-                                    </td>
-                                </tr>
-                            </thead>
-                            @foreach ($races as $race)
+                        <div class="form-group row">
+                            <div class="col-xs-3 text-right">
+                                Land
+                            </div>
+                            <div class="col-xs-3 text-left">
+                                <input type="number"
+                                        name="calc[land]"
+                                        class="form-control text-center"
+                                        placeholder="250"
+                                        min="0" />
+                            </div>
+                            <div class="col-xs-3 text-right">
+                                Morale
+                            </div>
+                            <div class="col-xs-3 text-left">
+                                <input type="number"
+                                        name="calc[morale]"
+                                        class="form-control text-center"
+                                        placeholder="100"
+                                        min="0"
+                                        max="100" />
+                            </div>
+                        </div>
+
+                        @foreach ($races as $race)
+                            <div id="race_{{ $race->id }}" class="race_units table-responsive" style="display: none;">
                                 @php
                                     $buildingFieldsRequired = [];
                                     $landFieldsRequired = [];
                                     $prestigeRequired = false;
                                 @endphp
-                                <thead id="race_{{ $race->id }}" class="race_units" style="display: none;">
-                                    @foreach ($race->units()->orderBy('slot')->get() as $unit)
-                                        @php
-                                            $buildingPerks = $unit->perks->where('key', 'defense_from_building');
-                                            foreach ($buildingPerks as $perk) {
-                                                $building = explode(',', $perk->pivot->value)[0];
-                                                if (!isset($buildingFieldsRequired[$building])) {
-                                                    $buildingFieldsRequired[] = $building;
-                                                }
-                                            }
-                                            $landPerks = $unit->perks->where('key', 'defense_from_land');
-                                            foreach ($landPerks as $perk) {
-                                                $land = explode(',', $perk->pivot->value)[0];
-                                                if (!isset($landFieldsRequired[$building])) {
-                                                    $landFieldsRequired[] = $land;
-                                                }
-                                            }
-                                            if ($unit->perks->where('key', 'defense_from_prestige')->count()) {
-                                                $prestigeRequired = true;
-                                            }
-                                        @endphp
+                                <table class="table table-condensed">
+                                    <colgroup>
+                                        <col>
+                                        <col width="100">
+                                        <col width="150">
+                                        <col width="150">
+                                        <col width="150">
+                                    </colgroup>
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
-                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) }}">
-                                                    {{ $unitHelper->getUnitName("unit{$unit->slot}", $race) }}
+                                            <th>Unit</th>
+                                            <th>DP</th>
+                                            <th class="text-center">
+                                                <span data-toggle="tooltip" data-placement="top" title="Total units from a Clear Sight">
+                                                    Accurate
                                                 </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="number"
-                                                        name="calc[unit{{ $unit->slot }}]"
-                                                        class="form-control text-center"
-                                                        placeholder="0"
-                                                        min="0"
-                                                        data-slot="{{ $unit->slot }}"
-                                                        data-dp="{{ $unit->power_defense }}"
-                                                        disabled />
-                                            </td>
-                                            <td class="text-center" id="unit{{ $unit->slot }}_stats">
-                                                <span class="dp">0</span>
-                                            </td>
+                                            </th>
+                                            <th class="text-center">
+                                                <span data-toggle="tooltip" data-placement="top" title="Estimated units home from a Barracks Spy<br><br>Ignored if accurate count is provided without also providing an away count.">
+                                                    Home
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span data-toggle="tooltip" data-placement="top" title="Estimated units away from a Barracks Spy<br><br>Ignored if accurate count is not provided.">
+                                                    Away
+                                                </span>
+                                            </th>
                                         </tr>
-                                    @endforeach
-                                    @foreach ($buildingFieldsRequired as $building)
+                                    </thead>
+                                    <thead>
                                         <tr>
                                             <td>
-                                                {{ ucwords(dominion_attr_display("building_{$building}")) }}
+                                                Draftees
+                                            </td>
+                                            <td>
+                                                1
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
-                                                        step="any"
-                                                        name="calc[{{ $building }}_percent]"
+                                                        name="calc[draftees]"
                                                         class="form-control text-center"
                                                         placeholder="0"
-                                                        min="0"
-                                                        value="50" />
-                                            </td>
-                                            <td class="text-center" id="{{ $building }}_percent_stats">
-                                                0
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    @foreach ($landFieldsRequired as $land)
-                                        <tr>
-                                            <td>
-                                                {{ ucwords(dominion_attr_display("land_{$land}")) }}
+                                                        min="0" />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
-                                                        step="any"
-                                                        name="calc[{{ $land }}_percent]"
+                                                        name="calc[draftees_home]"
                                                         class="form-control text-center"
-                                                        placeholder="0"
-                                                        min="0"
-                                                        value="60" />
+                                                        placeholder="--"
+                                                        min="0" />
                                             </td>
-                                            <td class="text-center" id="{{ $land }}_percent_stats">
-                                                0
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    @if ($prestigeRequired)
-                                        <tr>
                                             <td>
-                                                Prestige
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="number"
-                                                        name="calc[prestige]"
-                                                        class="form-control text-center"
-                                                        placeholder="250"
-                                                        min="0"
-                                                        max="250"
-                                                        value="250" />
-                                            </td>
-                                            <td class="text-center" id="prestige_stats">
-                                                0
+                                                <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
                                             </td>
                                         </tr>
-                                    @endif
+                                        @foreach ($race->units()->orderBy('slot')->get() as $unit)
+                                            @php
+                                                $buildingPerks = $unit->perks->where('key', 'defense_from_building');
+                                                foreach ($buildingPerks as $perk) {
+                                                    $building = explode(',', $perk->pivot->value)[0];
+                                                    if (!isset($buildingFieldsRequired[$building])) {
+                                                        $buildingFieldsRequired[] = $building;
+                                                    }
+                                                }
+                                                $landPerks = $unit->perks->where('key', 'defense_from_land');
+                                                foreach ($landPerks as $perk) {
+                                                    $land = explode(',', $perk->pivot->value)[0];
+                                                    if (!isset($landFieldsRequired[$building])) {
+                                                        $landFieldsRequired[] = $land;
+                                                    }
+                                                }
+                                                if ($unit->perks->where('key', 'defense_from_prestige')->count()) {
+                                                    $prestigeRequired = true;
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
+                                                    <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) }}">
+                                                        {{ $unitHelper->getUnitName("unit{$unit->slot}", $race) }}
+                                                    </span>
+                                                </td>
+                                                <td class="unit{{ $unit->slot }}_stats">
+                                                    <span class="dp">{{ $unit->power_defense }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number"
+                                                            name="calc[unit{{ $unit->slot }}]"
+                                                            class="form-control text-center"
+                                                            placeholder="0"
+                                                            min="0"
+                                                            disabled />
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number"
+                                                            name="calc[unit{{ $unit->slot }}_home]"
+                                                            class="form-control text-center"
+                                                            placeholder="--"
+                                                            min="0"
+                                                            disabled />
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($unit->power_offense > 0)
+                                                        <input type="number"
+                                                                name="calc[unit{{ $unit->slot }}_away]"
+                                                                class="form-control text-center"
+                                                                placeholder="--"
+                                                                min="0"
+                                                                disabled />
+                                                    @else
+                                                        <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </thead>
+                                </table>
+
+                                <div class="form-group row">
                                     @php
                                         $racialSpell = $spellHelper->getRacialSelfSpell($race);
                                     @endphp
-                                    @if (in_array($racialSpell['key'], ['blizzard', 'defensive_frenzy', 'howling']))
-                                        <tr>
-                                            <td>
-                                                {{ $racialSpell['name'] }}
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="checkbox"
-                                                        step="any"
-                                                        name="calc[{{ $racialSpell['key'] }}]"
-                                                        id="{{ $racialSpell['key'] }}"
-                                                        checked />
-                                            </td>
-                                            <td class="text-center" id="{{ $racialSpell['key'] }}_stats">
-                                                0
-                                            </td>
-                                        </tr>
+                                    <div class="col-xs-3 text-right">
+                                        @if (in_array($racialSpell['key'], ['blizzard', 'defensive_frenzy', 'howling']))
+                                            {{ $racialSpell['name'] }}
+                                        @endif
+                                    </div>
+                                    <div class="col-xs-3 text-left">
+                                        @if (in_array($racialSpell['key'], ['blizzard', 'defensive_frenzy', 'howling']))
+                                            <input type="checkbox"
+                                                    step="any"
+                                                    name="calc[{{ $racialSpell['key'] }}]"
+                                                    id="{{ $racialSpell['key'] }}"
+                                                    checked />
+                                        @endif
+                                    </div>
+                                    @foreach ($buildingFieldsRequired as $building)
+                                        <div class="col-xs-3 text-right">
+                                            {{ ucwords(dominion_attr_display("building_{$building}")) }} %
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <input type="number"
+                                                    step="any"
+                                                    name="calc[{{ $building }}_percent]"
+                                                    class="form-control text-center"
+                                                    placeholder="0"
+                                                    min="0"
+                                                    value="50" />
+                                        </div>
+                                    @endforeach
+                                    @foreach ($landFieldsRequired as $land)
+                                        <div class="col-xs-3 text-right">
+                                            {{ ucwords(dominion_attr_display("land_{$land}")) }} %
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <input type="number"
+                                                    step="any"
+                                                    name="calc[{{ $land }}_percent]"
+                                                    class="form-control text-center"
+                                                    placeholder="0"
+                                                    min="0"
+                                                    value="60" />
+                                        </div>
+                                    @endforeach
+                                    @if ($prestigeRequired)
+                                        <div class="col-xs-3 text-right">
+                                            Prestige
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <input type="number"
+                                                    name="calc[prestige]"
+                                                    class="form-control text-center"
+                                                    placeholder="250"
+                                                    min="0"
+                                                    max="250" />
+                                        </div>
                                     @endif
-                                </thead>
-                            @endforeach
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        Ares Call
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="checkbox"
-                                                step="any"
-                                                name="calc[ares_call]"
-                                                id="ares_call"
-                                                checked />
-                                    </td>
-                                    <td class="text-center" id="ares_call_stats">
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Morale
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="number"
-                                                name="calc[morale]"
-                                                class="form-control text-center"
-                                                placeholder="100"
-                                                min="0"
-                                                max="100"
-                                                value="100" />
-                                    </td>
-                                    <td class="text-center" id="morale_stats">
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Walls
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="number"
-                                                step="any"
-                                                name="calc[walls_percent]"
-                                                class="form-control text-center"
-                                                placeholder="0"
-                                                min="0" />
-                                    </td>
-                                    <td class="text-center" id="walls_percent_stats">
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Guard Tower
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="number"
-                                                step="any"
-                                                name="calc[guard_tower_percent]"
-                                                class="form-control text-center"
-                                                placeholder="0"
-                                                min="0"
-                                                max="20" />
-                                    </td>
-                                    <td class="text-center" id="guard_tower_percent_stats">
-                                        0
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Attacker's Temples
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="number"
-                                                step="any"
-                                                name="calc[temple_percent]"
-                                                class="form-control text-center"
-                                                placeholder="0"
-                                                min="0"
-                                                max="16.67" />
-                                    </td>
-                                    <td class="text-center" id="temple_percent_stats">
-                                        0
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-block" type="button" id="calculate-button">Calculate</button>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <div class="form-group row">
+                            <div class="col-xs-3 text-right">
+                                    Ares Call
+                            </div>
+                            <div class="col-xs-3 text-left">
+                                <input type="checkbox"
+                                        step="any"
+                                        name="calc[ares_call]"
+                                        id="ares_call"
+                                        checked />
+                            </div>
+                            <div class="col-xs-3 text-right">
+                                Walls %
+                            </div>
+                            <div class="col-xs-3 text-left">
+                                <input type="number"
+                                        step="any"
+                                        name="calc[walls_percent]"
+                                        class="form-control text-center"
+                                        placeholder="0"
+                                        min="0" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-xs-3 text-right">
+                                Attacker's Temples %
+                            </div>
+                            <div class="col-xs-3 text-left">
+                                <input type="number"
+                                        step="any"
+                                        name="calc[temple_percent]"
+                                        class="form-control text-center"
+                                        placeholder="0"
+                                        min="0"
+                                        max="16.67" />
+                            </div>
+                            <div class="col-xs-3 text-right">
+                                Guard Tower %
+                            </div>
+                            <div class="col-xs-3 text-left">
+                                <input type="number"
+                                        step="any"
+                                        name="calc[guard_tower_percent]"
+                                        class="form-control text-center"
+                                        placeholder="0"
+                                        min="0"
+                                        max="20" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-9 text-right">
+                                &nbsp;
+                            </div>
+                            <div class="col-xs-3 text-right">
+                                <button class="btn btn-primary btn-block" type="button" id="calculate-button">Calculate</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -309,6 +330,20 @@
 
 @push('page-styles')
     <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
+@endpush
+
+@push('inline-styles')
+    <style type="text/css">
+        #calculate_form,
+        #calculate_form .table>thead>tr>td,
+        #calculate_form .table>tbody>tr>td {
+            line-height: 2;
+        }
+        #calculate_form .form-control {
+            height: 30px;
+            padding: 3px 6px;
+        }
+    </style>
 @endpush
 
 @push('page-scripts')
@@ -347,16 +382,14 @@
                     function(response) {
                         if(response.result == 'success') {
                             $.each(response.units, function(slot, stats) {
-                                // Update unit stats data attributes
-                                $('#race_'+response.race+' .unit'+slot).data('dp', stats.dp);
                                 // Update unit stats display
-                                $('#race_'+response.race+' .unit'+slot).text(stats.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                                $('#race_'+response.race+' .unit'+slot+'_stats span.dp').text(stats.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             });
                             // Update OP / DP display
                             DPTotalElement.text(response.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             DPMultiplierElement.text(response.dp_multiplier.toLocaleString(undefined, {maximumFractionDigits: 2}) + '%');
                             DPRawElement.text(response.dp_raw.toLocaleString(undefined, {maximumFractionDigits: 2}));
-                            calculate();
+                            //calculate();
                         }
                     }
                 );

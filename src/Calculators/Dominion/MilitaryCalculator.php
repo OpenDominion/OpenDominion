@@ -506,7 +506,7 @@ class MilitaryCalculator
 
         if ($dominion->calc !== null) {
             if (isset($dominion->calc["{$landType}_percent"])) {
-                $landPercentage = ($dominion->calc["{$landType}_percent"] / 100);
+                $landPercentage = (float) $dominion->calc["{$landType}_percent"];
             }
         }
 
