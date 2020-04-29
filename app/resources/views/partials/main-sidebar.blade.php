@@ -48,7 +48,7 @@
                 <li class="{{ Route::is('dominion.magic') ? 'active' : null }}"><a href="{{ route('dominion.magic') }}"><i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span></a></li>
                 <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}"><a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a></li>
                 <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}"><a href="{{ route('dominion.op-center') }}"><i class="fa fa-globe fa-fw"></i> <span>Op Center</span></a></li>
-                <li class="{{ Route::is('dominion.calculations*') ? 'active' : null }}"><a href="{{ route('dominion.calculations.defense') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculator</span></a></li>
+                <li class="{{ Route::is('dominion.calculations*') ? 'active' : null }}"><a href="{{ route('dominion.calculations.defense') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculator</span> <small class="label pull-right bg-orange">beta</small></span></a></li>
 
                 <li class="header">RELATIONS</li>
                 <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group fa-fw"></i> <span>The Council</span> {!! $councilUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $councilUnreadCount . '</small></span>') : null !!}</a></li>
