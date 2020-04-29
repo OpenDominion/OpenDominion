@@ -80,9 +80,6 @@ class TickService
         Log::debug('Hourly tick started');
 
         // Hourly tick
-
-        //DB::connection()->enableQueryLog();
-
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
@@ -534,7 +531,7 @@ class TickService
     public function updateDailyRankings(): void
     {
         // Update rankings
-        $activeRounds = Round::active()->get();
+        $activeRounds = Round::live()->get();
 
         foreach ($activeRounds as $round) {
             $activeDominions = $round->dominions()->with([
