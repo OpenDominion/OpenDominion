@@ -169,6 +169,10 @@ class Dominion extends AbstractModel
         'eltie_guard_active_at' => 'datetime',
     ];
 
+    // Transient properties
+
+    public $calc = null;
+
     // Relations
 
     public function councilThreads()

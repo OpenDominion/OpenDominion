@@ -73,6 +73,7 @@ class InvadeCalculationService
      * @param Dominion $dominion
      * @param Dominion|null $target
      * @param array $units
+     * @param array $calc
      * @return array
      */
     public function calculate(Dominion $dominion, ?Dominion $target, ?array $units, ?array $calc): array
@@ -87,8 +88,8 @@ class InvadeCalculationService
 
         // Sanitize input
         $units = array_map('intval', array_filter($units));
-        if ($calc === null) {
-            $calc = ['api' => true];
+        if($calc !== null) {
+            $dominion->calc = $calc;
         }
 
         if ($target !== null) {
@@ -113,8 +114,7 @@ class InvadeCalculationService
                 $target,
                 $landRatio,
                 $unit,
-                'offense',
-                $calc
+                'offense'
             );
             // Calculate boats needed
             if (isset($units[$unit->slot]) && $unit->need_boat) {
@@ -129,7 +129,7 @@ class InvadeCalculationService
         $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
 
         $this->calculationResult['away_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
-        $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units, $calc);
+        $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
 
         $unitsHome = [
             0 => $dominion->military_draftees,
@@ -140,7 +140,7 @@ class InvadeCalculationService
         ];
 
         $this->calculationResult['home_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
-        $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $unitsHome, $calc);
+        $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $unitsHome);
         $this->calculationResult['home_dpa'] = $this->calculationResult['home_defense'] / $this->landCalculator->getTotalLand($dominion);
 
         // Calculate returning defense

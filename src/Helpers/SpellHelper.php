@@ -200,7 +200,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Bloodrage',
-                'description' => '+10% offensive strength, +10% offensive casualties',
+                'description' => '+10% offensive power, +10% offensive casualties',
                 'key' => 'bloodrage',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -216,7 +216,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Defensive Frenzy',
-                'description' => '+20% defensive strength (not cumulative with Ares Call)',
+                'description' => '+20% defensive power (not cumulative with Ares Call)',
                 'key' => 'defensive_frenzy',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -224,7 +224,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Howling',
-                'description' => '+10% offensive strength, +10% defensive strength (not cumulative with Ares Call)',
+                'description' => '+10% offensive power, +10% defensive power (not cumulative with Ares Call)',
                 'key' => 'howling',
                 'mana_cost' => 5,
                 'duration' => 12,

@@ -90,11 +90,10 @@ class MilitaryCalculator
         Dominion $dominion,
         Dominion $target = null,
         float $landRatio = null,
-        array $units = null,
-        array $calc = []
+        array $units = null
     ): float
     {
-        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units, $calc) * $this->getOffensivePowerMultiplier($dominion, $target));
+        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->getOffensivePowerMultiplier($dominion, $target));
 
         return ($op * $this->getMoraleMultiplier($dominion));
     }
@@ -112,14 +111,13 @@ class MilitaryCalculator
         Dominion $dominion,
         Dominion $target = null,
         float $landRatio = null,
-        array $units = null,
-        array $calc = []
+        array $units = null
     ): float
     {
         $op = 0;
 
         foreach ($dominion->race->units as $unit) {
-            $powerOffense = $this->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense', $calc);
+            $powerOffense = $this->getUnitPowerWithPerks($dominion, $target, $landRatio, $unit, 'offense');
             $numberOfUnits = 0;
 
             if ($units === null) {
@@ -240,9 +238,9 @@ class MilitaryCalculator
         float $multiplierReduction = 0,
         bool $ignoreDraftees = false,
         bool $ignoreMinDefense = false
-        ): float
+    ): float
     {
-        $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees);
+        $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees, $ignoreMinDefense);
         $dp *= $this->getDefensivePowerMultiplier($dominion, $multiplierReduction);
 
         return ($dp * $this->getMoraleMultiplier($dominion));
@@ -329,10 +327,19 @@ class MilitaryCalculator
         $spellHowling = 10;
 
         // Guard Towers
-        $multiplier += min(
-            (($dpPerGuardTower * $dominion->building_guard_tower) / $this->landCalculator->getTotalLand($dominion)),
-            ($guardTowerMaxDp / 100)
-        );
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['guard_tower_percent'])) {
+                $multiplier += min(
+                    (($dpPerGuardTower * $dominion->calc['guard_tower_percent']) / 100),
+                    ($guardTowerMaxDp / 100)
+                );
+            }
+        } else {
+            $multiplier += min(
+                (($dpPerGuardTower * $dominion->building_guard_tower) / $this->landCalculator->getTotalLand($dominion)),
+                ($guardTowerMaxDp / 100)
+            );
+        }
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('defense');
@@ -341,28 +348,51 @@ class MilitaryCalculator
         $multiplier += $dominion->getTechPerkMultiplier('defense');
 
         // Improvement: Walls
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['walls_percent'])) {
+                $multiplier += ($dominion->calc['walls_percent'] / 100);
+            }
+        } else {
+            $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
+        }
 
-        // Spell: Howling (+10%)
-        $multiplierFromHowling = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'howling', $spellHowling);
-        $multiplier += $multiplierFromHowling;
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['howling'])) {
+                $multiplier += ($spellHowling / 100);
+            }
 
-        // Spell: Blizzard (+15%)
-        $multiplierFromBlizzard = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'blizzard', $spellBlizzard);
-        $multiplier += $multiplierFromBlizzard;
+            if (isset($dominion->calc['blizzard'])) {
+                $multiplier += ($spellBlizzard / 100);
+            }
 
-        // Spell: Frenzy (Halfling) (+20%)
-        $multiplierFromFrenzy = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'defensive_frenzy', $spellFrenzy);
-        $multiplier += $multiplierFromFrenzy;
+            if (isset($dominion->calc['defensive_frenzy'])) {
+                $multiplier += ($spellFrenzy / 100);
+            }
 
-        // Spell: Ares' Call (+10%)
-        if ($multiplierFromHowling == 0 && $multiplierFromBlizzard == 0 && $multiplierFromFrenzy == 0) {
-            $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call',
-                $spellAresCall);
+            if (!isset($dominion->calc['howling']) && !isset($dominion->calc['blizzard']) && !isset($dominion->calc['defensive_frenzy']) && isset($dominion->calc['ares_call'])) {
+                $multiplier += ($spellAresCall / 100);
+            }
+        } else {
+            // Spell: Howling (+10%)
+            $multiplierFromHowling = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'howling', $spellHowling);
+            $multiplier += $multiplierFromHowling;
+
+            // Spell: Blizzard (+15%)
+            $multiplierFromBlizzard = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'blizzard', $spellBlizzard);
+            $multiplier += $multiplierFromBlizzard;
+
+            // Spell: Frenzy (Halfling) (+20%)
+            $multiplierFromFrenzy = $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'defensive_frenzy', $spellFrenzy);
+            $multiplier += $multiplierFromFrenzy;
+
+            // Spell: Ares' Call (+10%)
+            if ($multiplierFromHowling == 0 && $multiplierFromBlizzard == 0 && $multiplierFromFrenzy == 0) {
+                $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
+            }
         }
 
         // Multiplier reduction when we want to factor in temples from another dominion
-        $multiplier = max(($multiplier - $multiplierReduction), 0);
+        $multiplier = max(($multiplier - $multiplierReduction), 1);
 
         return $multiplier;
     }
@@ -389,13 +419,45 @@ class MilitaryCalculator
         return ($this->getDefensivePowerRaw($dominion) / $this->landCalculator->getTotalLand($dominion));
     }
 
+    /**
+     * Returns the Dominion's modifier reduction from temples.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @return float
+     */
+    public function getTempleReduction(Dominion $dominion): float
+    {
+        // Values (percentages)
+        $dpReductionPerTemple = 1.5;
+        $templeMaxDpReduction = 25;
+        $dpMultiplierReduction = 0;
+
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['temple_percent'])) {
+                $dpMultiplierReduction = min(
+                    (($dpReductionPerTemple * $dominion->calc['temple_percent']) / 100),
+                    ($templeMaxDpReduction / 100)
+                );
+            }
+        } else {
+            if ($attacker !== null) {
+                $dpMultiplierReduction = min(
+                    (($dpReductionPerTemple * $attacker->building_temple) / $this->landCalculator->getTotalLand($attacker)),
+                    ($templeMaxDpReduction / 100)
+                );
+            }
+        }
+
+        return $dpMultiplierReduction;
+    }
+
     public function getUnitPowerWithPerks(
         Dominion $dominion,
         ?Dominion $target,
         ?float $landRatio,
         Unit $unit,
-        string $powerType,
-        array $calc = []
+        string $powerType
     ): float
     {
         $unitPower = $unit->{"power_$powerType"};
@@ -409,9 +471,9 @@ class MilitaryCalculator
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
         }
 
-        if ($target !== null || !empty($calc)) {
+        if ($target !== null || $dominion->calc !== null) {
             $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
-            $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType, $calc);
+            $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType);
         }
 
         return $unitPower;
@@ -439,8 +501,13 @@ class MilitaryCalculator
         else
         {
             $buildingsForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
-
             $landPercentage = ($buildingsForLandType / $totalLand) * 100;
+        }
+
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc["{$landType}_percent"])) {
+                $landPercentage = (float) $dominion->calc["{$landType}_percent"];
+            }
         }
 
         $powerFromLand = $landPercentage / $ratio;
@@ -580,9 +647,9 @@ class MilitaryCalculator
         return $powerFromPerk;
     }
 
-    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType, array $calc = []): float
+    protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType): float
     {
-        if ($target === null && empty($calc)) {
+        if ($target === null && $dominion->calc == null) {
             return 0;
         }
 
@@ -596,10 +663,10 @@ class MilitaryCalculator
         $max = (int)$versusBuildingPerkData[2];
 
         $landPercentage = 0;
-        if (!empty($calc)) {
-            # Override building percentage for invasion calculator
-            if (isset($calc["{$buildingType}_percent"])) {
-                $landPercentage = (float) $calc["{$buildingType}_percent"];
+        if ($dominion->calc !== null) {
+            # Override building percentage for calculators
+            if (isset($dominion->calc["target_{$buildingType}_percent"])) {
+                $landPercentage = (float) $dominion->calc["target_{$buildingType}_percent"];
             }
         } elseif ($target !== null) {
             $totalLand = $this->landCalculator->getTotalLand($target);
