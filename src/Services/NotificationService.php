@@ -67,6 +67,11 @@ class NotificationService
                 $dominion->notify(new WebNotification($category, $type, $data));
             }
 
+            if ($dominion->protection_ticks_remaining) {
+                // Disable email notfications during protection
+                continue;
+            }
+
             $emailSetting = $user->getSetting("notifications.{$category}.{$type}.email");
             if ($emailSetting === null) {
                 $emailSetting = $defaultSettings[$category][$type]['email'];
