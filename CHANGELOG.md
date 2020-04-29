@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - You can now perform all of your protection logins at your own pace during the first three days of the round
 - You can now change your race when restarting your account during protection
 - One non-player dominion will now be added to each realm on the third day of the round
+- Added an experimental Defense Calculator!
 - Daily rankings have been reworked! Most of the existing valhalla rankings will now be recorded during the round
 - Players holding the top spot in certain rankings will now gain a new title and avatar when posting on the Global Forum!
 - New Rankings Advisor page will show all of your current standings
