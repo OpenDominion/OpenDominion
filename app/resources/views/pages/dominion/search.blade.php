@@ -110,7 +110,9 @@
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $dominion->realm->number }}
+                                                    <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">
+                                                        {{ $dominion->realm->number }}
+                                                    </a>
                                                 </td>
                                                 <td class="text-center">
                                                     {{ $dominion->race->name }}
