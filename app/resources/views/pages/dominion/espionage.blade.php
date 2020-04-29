@@ -31,7 +31,7 @@
                                                 <option value="{{ $dominion->id }}"
                                                         data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                         data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}"
-                                                        data-war="{{ ($selectedDominion->realm->war_realm_id == $dominion->realm->id || $dominion->realm->war_realm_id == $selectedDominion->realm->id || in_array($dominion->id, $militaryCalculator->getRecentlyInvadedBy($selectedDominion))) ? 1 : 0 }}">
+                                                        data-war="{{ ($selectedDominion->realm->war_realm_id == $dominion->realm->id || $dominion->realm->war_realm_id == $selectedDominion->realm->id || in_array($dominion->id, $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12))) ? 1 : 0 }}">
                                                     {{ $dominion->name }} (#{{ $dominion->realm->number }}) - {{ $dominion->race->name }}
                                                 </option>
                                             @endforeach

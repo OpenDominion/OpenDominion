@@ -441,9 +441,9 @@ class MilitaryCalculator
                 );
             }
         } else {
-            if ($attacker !== null) {
+            if ($dominion !== null) {
                 $dpMultiplierReduction = min(
-                    (($dpReductionPerTemple * $attacker->building_temple) / $this->landCalculator->getTotalLand($attacker)),
+                    (($dpReductionPerTemple * $dominion->building_temple) / $this->landCalculator->getTotalLand($dominion)),
                     ($templeMaxDpReduction / 100)
                 );
             }
@@ -874,18 +874,19 @@ class MilitaryCalculator
     }
 
     /**
-     * Returns the number of time the Dominion was recently invaded.
+     * Returns the number of times the Dominion was recently invaded.
      *
-     * 'Recent' refers to the past 24 hours.
+     * 'Recent' defaults to the past 24 hours.
      *
      * @param Dominion $dominion
+     * @param int $hours
      * @return int
      */
-    public function getRecentlyInvadedCount(Dominion $dominion): int
+    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24): int
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subDay(1))
+            ->where('created_at', '>=', now()->subHours($hours))
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
@@ -905,19 +906,19 @@ class MilitaryCalculator
     }
 
     /**
-     * Checks Dominion was recently invaded by attacker.
+     * Returns ids of attackers that recently invaded a Dominion.
      *
-     * 'Recent' refers to the past 24 hours.
+     * 'Recent' defaults to the past 24 hours.
      *
      * @param Dominion $dominion
-     * @param Dominion $attacker
+     * @param int $hours
      * @return bool
      */
-    public function getRecentlyInvadedBy(Dominion $dominion): array
+    public function getRecentlyInvadedBy(Dominion $dominion, int $hours = 24): array
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subDay(1))
+            ->where('created_at', '>=', now()->subHours($hours))
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,

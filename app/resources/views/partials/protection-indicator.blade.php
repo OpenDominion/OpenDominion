@@ -1,7 +1,7 @@
 @if (isset($selectedDominion) && $selectedDominion->protection_ticks_remaining > 0)
     <div class="alert-info" style="padding: 10px 15px; font-size: 12px;">
         <div class="pull-left">
-            <i class="icon ra ra-shield"></i> Under Protection - Hour <b>{{ 73 - $selectedDominion->protection_ticks_remaining }}</b>
+            <i class="icon ra ra-shield"></i> Under Protection - <b>Hour {{ 73 - $selectedDominion->protection_ticks_remaining }}</b> ({{ $selectedDominion->protection_ticks_remaining }} ticks remaining)
         </div>
         <div class="pull-right">
             <a href="{{ route('dominion.misc.tick') }}" class="alert-link">
