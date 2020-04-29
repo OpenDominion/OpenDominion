@@ -101,7 +101,7 @@ class Round extends AbstractModel
      * @param Builder $query
      * @return Builder
      */
-    public function scopeLive(Builder $query): Builder
+    public function scopeCurrent(Builder $query): Builder
     {
         $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
 

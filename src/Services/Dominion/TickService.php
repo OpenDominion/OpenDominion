@@ -531,7 +531,7 @@ class TickService
     public function updateDailyRankings(): void
     {
         // Update rankings
-        $activeRounds = Round::live()->get();
+        $activeRounds = Round::current()->get();
 
         foreach ($activeRounds as $round) {
             $activeDominions = $round->dominions()->with([
