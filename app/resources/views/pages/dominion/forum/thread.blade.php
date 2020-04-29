@@ -22,7 +22,10 @@
                         @endphp
                         <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                         <span class="username">
-                            {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }}) <em>{{ $ranking ? $ranking['title'] : null }}</em>
+                            {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
+                            @if ($ranking)
+                                <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                            @endif
                         </span>
                         <span class="description">
                             posted at {{ $thread->created_at }}
@@ -55,7 +58,10 @@
                                 <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
-                                        {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }}) <em>{{ $ranking ? $ranking['title'] : null }}</em>
+                                        {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }})
+                                        @if ($ranking)
+                                            <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                        @endif
                                         <span class="text-muted pull-right">
                                             {{ $post->created_at }}&nbsp;
                                             @if ($selectedDominion->id == $post->dominion->id)
