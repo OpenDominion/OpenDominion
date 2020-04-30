@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-1] - 2020-04-30
+### Fixed
+- Invade button will actually be disabled at round end
+- Restarting your account no longer circumvents racial pack restrictions
+- Display some missing ranking titles/icons
+- Cleaned up various UI issues
+
 ## [0.9.0] - 2020-04-30
 ### Added
 - Click-Through Protection!
@@ -16,7 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Rankings Advisor page will show all of your current standings
 
 ### Changed
-- Icekin Ice Elemental: offense increased for every 1 WPA (from 0.85 WPA)
+- Icekin Ice Elemental: offense increased by 1 for every WPA (from 0.85 for every WPA)
 - Land loss/generation ratio changed to 90:60 (from 85:65)
 - Base defensive casualties changed to 4.05% (from 3.825)
 - Base conversion rate from casualties changed to 1.65x (from 1.75x)
@@ -27,6 +34,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Increased the size of some input fields on mobile
+- Fixed a bug where Bashers could kill Spirit/Undead
+- Fixed a bug where Clerics didn't always kill Spirit/Undead with fewer casualties tech
 
 ## [0.8.1-7] - 2020-04-29
 ### Fixed
