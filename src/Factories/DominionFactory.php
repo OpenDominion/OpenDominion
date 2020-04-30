@@ -467,7 +467,7 @@ class DominionFactory
 
         if ($landSize > 270) {
             //  Calculate Defense
-            $accuracy = 1 - (mt_rand(-10, 10) / 100);
+            $accuracy = 1 - (mt_rand(-10, 0) / 100);
             $defense = $landSize * ((0.008 * $landSize) + 0.9);
             $defense *= $accuracy;
             $specRatio = 1;
