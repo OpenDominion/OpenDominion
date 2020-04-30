@@ -459,7 +459,7 @@
                 }
 
                 // Check if invade button should be disabled
-                if (!hasEnoughBoats || maxOffenseRule) {
+                if (!hasEnoughBoats || maxOffenseRule || {{ $selectedDominion->round->hasOffensiveActionsDisabled() ? 1 : 0 }}) {
                     invadeButtonElement.attr('disabled', 'disabled');
                 } else {
                     invadeButtonElement.removeAttr('disabled');
