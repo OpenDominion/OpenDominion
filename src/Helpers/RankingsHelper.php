@@ -44,7 +44,7 @@ class RankingsHelper
             [
                 'name' => 'Largest Exploring Dominions',
                 'key' => 'total-land-explored',
-                'stat' => 'stat_total_land_conquered',
+                'stat' => 'stat_total_land_explored',
                 'stat_label' => 'Land Explored',
                 'title' => 'the Adventurous',
                 'title_icon' => 'ra-fedora',
