@@ -127,7 +127,7 @@ class RankingsHelper
                 'stat' => 'stat_total_platinum_stolen',
                 'stat_label' => 'Platinum Stolen',
                 'title' => 'the Devious',
-                'title_icon' => '', // ra-gold-bar
+                'title_icon' => 'ra-gold-bar',
             ],
             [
                 'name' => 'Top Lumber Thieves',
@@ -135,7 +135,7 @@ class RankingsHelper
                 'stat' => 'stat_total_lumber_stolen',
                 'stat_label' => 'Lumber Stolen',
                 'title' => 'the Sly',
-                'title_icon' => '', // ra-wooden-sign
+                'title_icon' => 'ra-wooden-sign',
             ],
             [
                 'name' => 'Top Gem Thieves',
@@ -143,7 +143,7 @@ class RankingsHelper
                 'stat' => 'stat_total_gems_stolen',
                 'stat_label' => 'Gems Stolen',
                 'title' => 'the Cutpurse ',
-                'title_icon' => '', // ra-diamond
+                'title_icon' => 'ra-diamond',
             ],
             [
                 'name' => 'Top Ore Thieves',
@@ -151,7 +151,7 @@ class RankingsHelper
                 'stat' => 'stat_total_ore_stolen',
                 'stat_label' => 'Ore Stolen',
                 'title' => 'the Crafty',
-                'title_icon' => '', // ra-mine-wagon
+                'title_icon' => 'ra-mine-wagon',
             ],
             [
                 'name' => 'Top Food Thieves',
@@ -159,7 +159,7 @@ class RankingsHelper
                 'stat' => 'stat_total_food_stolen',
                 'stat_label' => 'Food Stolen',
                 'title' => 'the Hungry',
-                'title_icon' => '', // ra-carrot
+                'title_icon' => 'ra-carrot',
             ],
             [
                 'name' => 'Top Mana Thieves',
@@ -167,7 +167,7 @@ class RankingsHelper
                 'stat' => 'stat_total_mana_stolen',
                 'stat_label' => 'Mana Stolen',
                 'title' => 'the Shifty',
-                'title_icon' => '', // ra-crystal-ball
+                'title_icon' => 'ra-crystal-ball',
             ],
             [
                 'name' => 'Most Successful Wizards',
@@ -230,7 +230,7 @@ class RankingsHelper
                 'key' => 'masters-of-water',
                 'stat' => 'stat_great_flood_hours',
                 'stat_label' => 'Great Flood Hours',
-                'title' => '',
+                'title' => 'the Master of Water',
                 'title_icon' => '', // ra-ocean-emblem
             ],
             [
@@ -238,7 +238,7 @@ class RankingsHelper
                 'key' => 'masters-of-earth',
                 'stat' => 'stat_earthquake_hours',
                 'stat_label' => 'Earthquake Hours',
-                'title' => '',
+                'title' => 'the Master of Earth',
                 'title_icon' => '',
             ],
             [
