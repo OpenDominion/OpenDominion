@@ -51,13 +51,13 @@
                 <li class="{{ Route::is('dominion.calculations*') ? 'active' : null }}"><a href="{{ route('dominion.calculations.defense') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculator</span> <small class="label pull-right bg-orange">beta</small></span></a></li>
 
                 <li class="header">RELATIONS</li>
-                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group fa-fw"></i> <span>The Council</span> {!! $councilUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $councilUnreadCount . '</small></span>') : null !!}</a></li>
-                <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a></li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>Realms</span></a></li>
                 <li class="{{ Route::is('dominion.search') ? 'active' : null }}"><a href="{{ route('dominion.search') }}"><i class="fa fa-search fa-fw"></i> <span>Search</span></a></li>
-                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}"><a href="{{ route('dominion.town-crier') }}"><i class="fa fa-newspaper-o fa-fw"></i> <span>Town Crier</span></a></li>
+                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group fa-fw"></i> <span>The Council</span> {!! $councilUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $councilUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a></li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
                 <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}"><a href="{{ route('dominion.forum') }}"><i class="fa fa-comments fa-fw"></i> <span>Global Forum</span> {!! $forumUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $forumUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}"><a href="{{ route('dominion.town-crier') }}"><i class="fa fa-newspaper-o fa-fw"></i> <span>Town Crier</span></a></li>
 
                 @if (app()->environment() !== 'production')
                     <li class="header">SECRET</li>

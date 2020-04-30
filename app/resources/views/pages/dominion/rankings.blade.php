@@ -9,17 +9,15 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">
-                        <div class="form-inline">
-                            <i class="fa fa-trophy"></i> Rankings - 
-                            <select id="ranking-select" class="form-control">
-                                @foreach ($rankings as $ranking)
-                                    <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
-                                        {{ $ranking['name'] }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <i class="fa fa-trophy"></i> Rankings
                     </h3>
+                    <select id="ranking-select" class="form-control pull-right">
+                        @foreach ($rankings as $ranking)
+                            <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
+                                {{ $ranking['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
@@ -107,13 +105,22 @@
     </div>
 @endsection
 
+@push('page-styles')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/select2/css/select2.min.css') }}">
+@endpush
+
+@push('page-scripts')
+    <script type="text/javascript" src="{{ asset('assets/vendor/select2/js/select2.full.min.js') }}"></script>
+@endpush
+
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#ranking-select').change(function() {
+            $('#ranking-select').select2({ width: 'auto' }).change(function() {
                 var selectedRanking = $(this).val();
                 window.location.href = "{!! route('dominion.rankings') !!}/" + selectedRanking;
             });
+            $('#ranking-select + .select2-container').addClass('pull-right');
         })(jQuery);
     </script>
 @endpush
