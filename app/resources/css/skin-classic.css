@@ -255,8 +255,13 @@
     border-right: 1px solid #332f35;
 }
 .skin-classic .form-control {
-    border-color: #332f35;
     background-color: #29252a;
+    border-color: #332f35;
+}
+.skin-classic .form-control[disabled],
+.skin-classic .form-control[readonly] {
+    background-color: #4d4750;
+    border-color: #29252a;
 }
 .skin-classic .select2 .select2-selection {
     background-color: #29252a;
