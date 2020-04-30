@@ -229,7 +229,7 @@ class CasualtiesCalculator
                     }
                     $unitsSentPerSlot[$slot] = $units[$slot];
 
-                    if ($unit->getPerkValue('reduce_combat_losses') !== 0) {
+                    if ($unit->getPerkValue('kills_immortal') !== 0) {
                         $unitsSentKISlot = $slot;
                     }
                 }
@@ -266,7 +266,7 @@ class CasualtiesCalculator
             // todo: Wonders
 
             // Cap at -80% and apply to multiplier (additive)
-            $multiplier -= min(0.8, $nonUnitBonusMultiplier);
+            $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;

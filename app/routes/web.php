@@ -59,7 +59,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], static function (Router $router) {
 
         // Dominion Select
-//        $router->get('{dominion}/select')->uses(function () { return redirect()->route('dashboard'); });
+        //$router->get('{dominion}/select')->uses(function () { return redirect()->route('dashboard'); });
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
@@ -77,7 +77,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
             $router->get('advisors/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construct');
             $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
-//            $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
+            $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
             // Daily
@@ -124,6 +124,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Event result
             $router->get('event/{uuid}')->uses('Dominion\EventController@index')->name('event');
+
+            // Calculations
+            $router->get('calculations/defense')->uses('Dominion\CalculationsController@getDefense')->name('calculations.defense');
 
             // Magic
             $router->get('magic')->uses('Dominion\MagicController@getMagic')->name('magic');
@@ -191,6 +194,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
             $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion')->name('misc.restart');
+            $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
 
             // Debug
             // todo: remove me later

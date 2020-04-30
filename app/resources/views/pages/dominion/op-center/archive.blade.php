@@ -9,7 +9,7 @@
                 @slot('title', ('Archived Ops (' . $dominion->name . ')'))
                 @slot('titleIconClass', 'fa fa-book')
 
-                <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm {{ $dominion->realm->name }} (#{{ $dominion->realm->number }}).</p>
+                <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
 
                 <p>
                     @if (!$infoOpArchive->count())

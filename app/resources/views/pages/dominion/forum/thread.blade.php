@@ -15,9 +15,17 @@
                 </div>
                 <div class="box-header with-border">
                     <div class="user-block pull-left">
-                        <i class="ra ra-knight-helmet text-muted pull-left" style="font-size: 36px;"></i>
+                        @php
+                            $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
+                            $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
+                            $ranking = $rankingsHelper->getFirstRanking($titles);
+                        @endphp
+                        <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                         <span class="username">
                             {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
+                            @if ($ranking)
+                                <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                            @endif
                         </span>
                         <span class="description">
                             posted at {{ $thread->created_at }}
@@ -42,10 +50,18 @@
                     <div class="box-footer box-comments">
                         @foreach ($thread->posts as $post)
                             <div class="box-comment">
-                                <i class="ra ra-knight-helmet text-muted pull-left" style="font-size: 26px;"></i>
+                                @php
+                                    $rankings = $rankingsService->getTopRankedDominions($post->dominion->round);
+                                    $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
+                                    $ranking = $rankingsHelper->getFirstRanking($titles);
+                                @endphp
+                                <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
                                         {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }})
+                                        @if ($ranking)
+                                            <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                        @endif
                                         <span class="text-muted pull-right">
                                             {{ $post->created_at }}&nbsp;
                                             @if ($selectedDominion->id == $post->dominion->id)

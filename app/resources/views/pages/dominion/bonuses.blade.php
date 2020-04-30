@@ -84,7 +84,7 @@
                 </div>
                 <div class="box-body">
                     <p>The Platinum Bonus instantly gives you {{ number_format($selectedDominion->peasants * 4) }} platinum.</p>
-                    <p>The Land Bonus instantly gives you 20 acres of {{ str_plural($selectedDominion->race->home_land_type) }}.</p>
+                    <p>The Land Bonus instantly gives you 20 acres of {{ str_plural($selectedDominion->race->home_land_type) }} and 128 research points.</p>
                     <p>Both bonuses can be claimed once per day.</p>
                 </div>
             </div>

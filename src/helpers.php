@@ -122,6 +122,25 @@ if (!function_exists('random_chance')) {
     }
 }
 
+if (!function_exists('random_distribution')) {
+    /**
+     * Returns a random value from a normal probability distribution.
+     *
+     * Uses the Box-Muller Transform method.
+     *
+     * @param float $mean
+     * @param float $standard_deviation
+     * @return bool
+     * @throws Exception
+     */
+    function random_distribution(float $mean, float $standard_deviation): float
+    {
+        $x = mt_rand()/mt_getrandmax();
+        $y = mt_rand()/mt_getrandmax();
+        return sqrt(-2 * log($x)) * cos(2 * pi() * $y) * $standard_deviation + $mean;
+    }
+}
+
 if (!function_exists('number_string')) {
     /**
      * Generates a string from a number with number_format, and optionally an

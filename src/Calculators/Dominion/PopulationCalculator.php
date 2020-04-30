@@ -190,10 +190,6 @@ class PopulationCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $techUrbanMasteryMultiplier = 7.5;
-        $techConstructionMultiplier = 2;
-
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('max_population');
 

@@ -122,8 +122,8 @@ class RoundOpenCommand extends Command implements CommandInterface
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
 
         if ($round->mixed_alignment) {
-            // Prepopulate round with 18 mixed realms
-            for ($i = 1; $i <= 18; $i++) {
+            // Prepopulate round with 20 mixed realms
+            for ($i = 1; $i <= 20; $i++) {
                 $realm = $this->realmFactory->create($round);
                 $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
             }

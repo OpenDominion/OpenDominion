@@ -12,6 +12,7 @@ use OpenDominion\Services\Dominion\Actions\GovernmentActionService;
 use OpenDominion\Services\Dominion\Actions\GuardMembershipActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
+use OpenDominion\Services\Dominion\ProtectionService;
 
 class GovernmentController extends AbstractDominionController
 {
@@ -51,6 +52,7 @@ class GovernmentController extends AbstractDominionController
             'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
+            'protectionService' => app(ProtectionService::class),
             'rangeCalculator' => app(RangeCalculator::class)
         ]);
     }

@@ -1,0 +1,39 @@
+name: Titan
+alignment: good
+description: >-
+  <p>Unknown</p>
+home_land_type: plain
+playable: false
+perks:
+  max_population: -10
+units:
+  - name: Behemoth
+    cost:
+      platinum: 350
+      ore: 0
+    power:
+      offense: 4
+      defense: 0
+    need_boat: false
+  - name: Protector
+    cost:
+      platinum: 350
+      ore: 0
+    power:
+      offense: 0
+      defense: 4
+  - name: Cyclops
+    cost:
+      platinum: 1000
+      ore: 0
+    power:
+      offense: 0
+      defense: 6
+  - name: Giant
+    cost:
+      platinum: 1050
+      ore: 0
+    power:
+      offense: 6
+      defense: 2
+    need_boat: false

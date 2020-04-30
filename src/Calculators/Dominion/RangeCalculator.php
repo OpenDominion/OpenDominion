@@ -28,13 +28,15 @@ class RangeCalculator
      * @param GuardMembershipService $guardMembershipService
      */
     public function __construct(
+        GuardMembershipService $guardMembershipService,
         LandCalculator $landCalculator,
-        ProtectionService $protectionService,
-        GuardMembershipService $guardMembershipService
+        MilitaryCalculator $militaryCalculator,
+        ProtectionService $protectionService
     ) {
-        $this->landCalculator = $landCalculator;
-        $this->protectionService = $protectionService;
         $this->guardMembershipService = $guardMembershipService;
+        $this->landCalculator = $landCalculator;
+        $this->militaryCalculator = $militaryCalculator;
+        $this->protectionService = $protectionService;
     }
 
     /**
@@ -46,6 +48,11 @@ class RangeCalculator
      */
     public function isInRange(Dominion $self, Dominion $target): bool
     {
+        $recentlyInvadedByDominionIds = $this->militaryCalculator->getRecentlyInvadedBy($self, 12);
+        if (in_array($target->id, $recentlyInvadedByDominionIds)) {
+            return true;
+        }
+
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
 

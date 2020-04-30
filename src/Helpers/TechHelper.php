@@ -33,13 +33,13 @@ class TechHelper
             // Spy related
             'spy_cost' => '%s%% cost of spies',
             'spy_losses' => '%s%% spy losses on failed operations',
-            'spy_strength' => '%s%% spy strength',
+            'spy_strength' => '%s%% spy power',
             'spy_strength_recovery' => '%s spy strength per hour',
 
             // Wizard related
             'spell_cost' => '%s%% cost of spells',
             'wizard_cost' => '%s%% cost of wizards',
-            'wizard_strength' => '%s%% wizard strength',
+            'wizard_strength' => '%s%% wizard power',
             'wizard_strength_recovery' => '%s wizard strength per hour',
 
             // Resource related

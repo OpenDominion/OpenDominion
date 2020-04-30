@@ -30,7 +30,9 @@
                                 $racialSpell = $spellHelper->getRacialSelfSpell($race);
                             @endphp
                             <p>
-                                <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
+                                @if ($racialSpell)
+                                    <strong>{{ $racialSpell['name'] }}</strong>: {{ $racialSpell['description'] }}
+                                @endif
                             </p>
                         </div>
                     </div>

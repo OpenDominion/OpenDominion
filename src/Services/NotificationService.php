@@ -51,6 +51,9 @@ class NotificationService
     public function sendNotifications(Dominion $dominion, string $category): void
     {
         $user = $dominion->user;
+        if ($user == null) {
+            return;
+        }
 
         $emailNotifications = [];
         $defaultSettings = $this->notificationHelper->getDefaultUserNotificationSettings();
@@ -62,6 +65,11 @@ class NotificationService
             }
             if ($ingameSetting) {
                 $dominion->notify(new WebNotification($category, $type, $data));
+            }
+
+            if ($dominion->protection_ticks_remaining) {
+                // Disable email notfications during protection
+                continue;
             }
 
             $emailSetting = $user->getSetting("notifications.{$category}.{$type}.email");

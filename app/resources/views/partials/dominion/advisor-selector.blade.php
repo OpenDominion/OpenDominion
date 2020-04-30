@@ -24,9 +24,9 @@
             <i class="ra ra-burning-embers"></i> Magic
         </a>
 
-        {{--<a href="{{ route('dominion.advisors.rankings', 'land') }}" class="btn btn-app">
+        <a href="{{ route('dominion.advisors.rankings') }}" class="btn btn-app">
             <i class="fa fa-trophy"></i> Rankings
-        </a>--}}
+        </a>
 
         <a href="{{ route('dominion.advisors.statistics') }}" class="btn btn-app">
             <i class="fa fa-bar-chart"></i> Statistics

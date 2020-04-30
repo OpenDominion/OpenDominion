@@ -89,7 +89,7 @@ class RaceHelper
                 break;
             case 'spy_strength':
                 $negativeBenefit = false;
-                $description = 'spy strength';
+                $description = 'spy power';
                 break;
             case 'tech_production':
                 $negativeBenefit = false;
@@ -97,7 +97,7 @@ class RaceHelper
                 break;
             case 'wizard_strength':
                 $negativeBenefit = false;
-                $description = 'wizard strength';
+                $description = 'wizard power';
                 break;
             default:
                 return '';
@@ -205,7 +205,7 @@ class RaceHelper
                 break;
             case 'spy_strength':
                 $negativeBenefit = false;
-                $description = 'Spy strength';
+                $description = 'Spy power';
                 break;
             case 'tech_production':
                 $negativeBenefit = false;
@@ -213,7 +213,7 @@ class RaceHelper
                 break;
             case 'wizard_strength':
                 $negativeBenefit = false;
-                $description = 'Wizard strength';
+                $description = 'Wizard power';
                 break;
             default:
                 return null;

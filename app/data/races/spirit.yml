@@ -10,7 +10,6 @@ perks:
   immortal_wizards: 1
 units:
   - name: Phantom
-    need_boat: false
     cost:
       platinum: 225
       ore: 0
@@ -19,8 +18,8 @@ units:
       defense: 0
     perks:
       immortal: 1
-  - name: Banshee
     need_boat: false
+  - name: Banshee
     cost:
       platinum: 225
       ore: 0
@@ -30,7 +29,6 @@ units:
     perks:
       immortal: 1
   - name: Ghost
-    need_boat: false
     cost:
       platinum: 900
       ore: 0
@@ -40,8 +38,8 @@ units:
     perks:
       immortal: 1
       conversion: 12 # slot 1 and slot 2 aka specs
-  - name: Spectre
     need_boat: false
+  - name: Spectre
     cost:
       platinum: 1000
       ore: 0
@@ -51,3 +49,4 @@ units:
     perks:
       immortal: 1
       staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above
+    need_boat: false

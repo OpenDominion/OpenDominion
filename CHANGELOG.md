@@ -4,9 +4,33 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0] - 2020-04-30
+### Added
+- Click-Through Protection!
+- You can now perform all of your protection logins at your own pace during the first three days of the round
+- You can now change your race when restarting your account during protection
+- One non-player dominion will now be added to each realm on the third day of the round
+- Added an experimental Defense Calculator!
+- Daily rankings have been reworked! Most of the existing valhalla rankings will now be recorded during the round
+- Players holding the top spot in certain rankings will now gain a new title and avatar when posting on the Global Forum!
+- New Rankings Advisor page will show all of your current standings
+
+### Changed
+- Icekin Ice Elemental: offense increased for every 1 WPA (from 0.85 WPA)
+- Land loss/generation ratio changed to 90:60 (from 85:65)
+- Base defensive casualties changed to 4.05% (from 3.825)
+- Base conversion rate from casualties changed to 1.65x (from 1.75x)
+- Construction discount from lost buildings no longer stacks with the discount gained from successful attacks
+- Minimum defense increased to 5 x [Land - 150] (from 1.5 x Land)
+- Adjusted font colors in Town Crier to better show in-realm events
+- Pressing 'Enter' on the invasion page will no longer submit the form
+
+### Fixed
+- Increased the size of some input fields on mobile
+
 ## [0.8.1-7] - 2020-04-29
 ### Fixed
-- After offensive actions have been disabled for the round, buttons for initiating these actions (invade, explore, hostile spells, and hostile spy ops) will be disabled. 
+- After offensive actions have been disabled for the round, buttons for initiating these actions (invade, explore, hostile spells, and hostile spy ops) will be disabled
 
 ## [0.8.1-6] - 2020-03-29
 ### Fixed

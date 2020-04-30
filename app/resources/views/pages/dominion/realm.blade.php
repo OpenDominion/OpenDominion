@@ -77,8 +77,14 @@
                                                 @endif
                                             @endif
 
-                                            @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
-                                                <span class="label label-success">Online</span>
+                                            @if ($isOwnRealm)
+                                                @if ($dominion->user)
+                                                    @if ($dominion->round->isActive() && $dominion->user->isOnline())
+                                                        <span class="label label-success">Online</span>
+                                                    @endif
+                                                @else
+                                                    <span class="label label-info">Bot</span>
+                                                @endif
                                             @endif
                                         </td>
                                         @if ($isOwnRealm && $selectedDominion->pack !== null)

@@ -16,10 +16,12 @@ units:
       ore: 15
     power:
       offense: 3
+      defense: 0
   - name: Defender
     cost:
       platinum: 300
     power:
+      offense: 0
       defense: 3
   - name: Master Thief
     cost:

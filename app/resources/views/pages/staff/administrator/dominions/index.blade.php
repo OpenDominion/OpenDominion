@@ -44,7 +44,11 @@
                                 <a href="#">{{ $dominion->round->name }} (#{{ $dominion->round->number }})</a>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('staff.administrator.users.show', $dominion->user) }}">{{ $dominion->user->display_name }}</a>
+                                @if ($dominion->user)
+                                    <a href="{{ route('staff.administrator.users.show', $dominion->user) }}">{{ $dominion->user->display_name }}</a>
+                                @else
+                                    Bot
+                                @endif
                             </td>
                             <td class="text-center" data-order="{{ $land }}" data-search="">
                                 {{ number_format($land) }}

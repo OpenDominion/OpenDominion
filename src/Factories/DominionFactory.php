@@ -36,8 +36,6 @@ class DominionFactory
         $this->guardAgainstMultipleDominionsInARound($user, $realm->round);
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
-        // todo: get starting values from config
-
         $startingBuildings = $this->getStartingBuildings();
 
         $startingLand = $this->getStartingLand(
@@ -72,7 +70,7 @@ class DominionFactory
             'resource_lumber' => $startingAttributes['resource_lumber'],
             'resource_mana' => $startingAttributes['resource_mana'],
             'resource_ore' => $startingAttributes['resource_ore'],
-            'resource_gems' => 10000,
+            'resource_gems' => $startingAttributes['resource_gems'],
             'resource_tech' => 0,
             'resource_boats' => 0,
 
@@ -119,6 +117,8 @@ class DominionFactory
             'building_shrine' => 0,
             'building_barracks' => 0,
             'building_dock' => 0,
+
+            'protection_ticks_remaining' => $startingAttributes['protection_ticks_remaining'],
         ]);
     }
 
@@ -128,7 +128,7 @@ class DominionFactory
      * @param  Dominion $dominion
      * @throws GameException
      */
-    public function restart(Dominion $dominion): void
+    public function restart(Dominion $dominion, Race $race): void
     {
         // Reset Queues
         DB::table('dominion_queue')
@@ -147,7 +147,7 @@ class DominionFactory
         }
 
         // Reset starting land
-        $startingLand = $this->getStartingLand($dominion->race, $this->getStartingBarrenLand(), $startingBuildings);
+        $startingLand = $this->getStartingLand($race, $this->getStartingBarrenLand(), $startingBuildings);
         foreach ($startingLand as $land_type => $value) {
             $dominion->{$land_type} = $value;
         }
@@ -166,6 +166,7 @@ class DominionFactory
             }
         }
 
+        $dominion->race_id = $race->id;
         $dominion->created_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART
@@ -343,9 +344,276 @@ class DominionFactory
             'highest_land_achieved' => 250,
             'royal_guard_active_at' => null,
             'elite_guard_active_at' => null,
-            'last_tick_at' => null,
+            'protection_ticks_remaining' => 72,
         ];
 
         return $startingAttributes;
+    }
+
+    /**
+     * Creates and returns a new Dominion instance.
+     *
+     * @param Realm $realm
+     * @param Race $race
+     * @param string $rulerName
+     * @param string $dominionName
+     * @return Dominion
+     * @throws GameException
+     */
+    public function createNonPlayer(
+        Realm $realm,
+        Race $race,
+        string $rulerName,
+        string $dominionName
+    ): ?Dominion {
+        $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
+
+        $startingBuildings = $this->getStartingBuildings();
+
+        $startingLand = $this->getStartingLand(
+            $race,
+            $this->getStartingBarrenLand(),
+            $startingBuildings
+        );
+
+        $startingAttributes = $this->getStartingAttributes($realm->round);
+
+        // Generate random starting build
+        $landSize = (int) random_distribution(500, 100);
+        if ($landSize < 325 || $landSize > 600) {
+            // Clamp land size, those out of range converted to 270 acres
+            $landSize = 270;
+            $startingLand["land_{$race->home_land_type}"] += 20;
+        }
+        if ($landSize > 270) {
+            $startingBuildings = $this->getNonPlayerBuildings($race, $landSize);
+            $startingLand = $this->getNonPlayerLand($race, $startingBuildings);
+        }
+
+        $dominion = new Dominion([
+            'user_id' => null,
+            'round_id' => $realm->round->id,
+            'realm_id' => $realm->id,
+            'race_id' => $race->id,
+            'pack_id' => null,
+
+            'ruler_name' => $rulerName,
+            'name' => $dominionName,
+            'prestige' => 250,
+
+            'peasants' => 10 * $landSize,
+            'peasants_last_hour' => 0,
+
+            'draft_rate' => 30,
+            'morale' => 100,
+            'spy_strength' => 100,
+            'wizard_strength' => 100,
+
+            'resource_platinum' => 0,
+            'resource_food' => 100 * $landSize,
+            'resource_lumber' => 0,
+            'resource_mana' => 0,
+            'resource_ore' => 0,
+            'resource_gems' => 0,
+            'resource_tech' => 0,
+            'resource_boats' => 0,
+
+            'improvement_science' => 0,
+            'improvement_keep' => 0,
+            'improvement_towers' => 0,
+            'improvement_forges' => 0,
+            'improvement_walls' => 0,
+            'improvement_harbor' => 0,
+
+            'military_draftees' => 0,
+            'military_unit1' => 0,
+            'military_unit2' => 0,
+            'military_unit3' => 0,
+            'military_unit4' => 0,
+            'military_spies' => 20,
+            'military_wizards' => 20,
+            'military_archmages' => 0,
+
+            'land_plain' => $startingLand['land_plain'],
+            'land_mountain' => $startingLand['land_mountain'],
+            'land_swamp' => $startingLand['land_swamp'],
+            'land_cavern' => $startingLand['land_cavern'],
+            'land_forest' => $startingLand['land_forest'],
+            'land_hill' => $startingLand['land_hill'],
+            'land_water' => $startingLand['land_water'],
+
+            'building_home' => $startingBuildings['building_home'],
+            'building_alchemy' => $startingBuildings['building_alchemy'],
+            'building_farm' => $startingBuildings['building_farm'],
+            'building_smithy' => $startingBuildings['building_smithy'],
+            'building_masonry' => 0,
+            'building_ore_mine' => $startingBuildings['building_ore_mine'],
+            'building_gryphon_nest' => 0,
+            'building_tower' => $startingBuildings['building_tower'],
+            'building_wizard_guild' => 0,
+            'building_temple' => $startingBuildings['building_temple'],
+            'building_diamond_mine' => 0,
+            'building_school' => 0,
+            'building_lumberyard' => $startingBuildings['building_lumberyard'],
+            'building_forest_haven' => 0,
+            'building_factory' => $startingBuildings['building_factory'],
+            'building_guard_tower' => $startingBuildings['building_guard_tower'],
+            'building_shrine' => 0,
+            'building_barracks' => 0,
+            'building_dock' => 0,
+
+            'protection_ticks_remaining' => 0,
+        ]);
+
+        if ($landSize > 270) {
+            //  Calculate Defense
+            $accuracy = 1 - (mt_rand(-10, 10) / 100);
+            $defense = $landSize * ((0.008 * $landSize) + 0.9);
+            $defense *= $accuracy;
+            $specRatio = 1;
+            if (random_chance(0.85)) {
+                $specRatio = mt_rand(50, 75) / 100;
+            }
+
+            $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
+            $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
+            $specPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[1], 'defense');
+            $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
+
+            $dominion->military_unit2 = (int) $defense / $defenseMod / $specPower * $specRatio;
+            $dominion->military_unit3 = (int) $defense / $defenseMod / $elitePower * (1 - $specRatio);
+        } else {
+            $dominion->military_unit2 = 150;
+        }
+
+        try {
+            $dominion->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+            return null;
+        }
+
+        //  Add incoming units
+        if ($landSize > 270) {
+            $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
+            $incSpecs = (int) $dominion->military_unit2 * (mt_rand(25, 50) / 100);
+            $incElites = (int) $dominion->military_unit3 * (mt_rand(25, 50) / 100);
+            $hours = array_rand(range(4, 12), mt_rand(2, 5));
+            foreach ($hours as $key => $hour) {
+                if ($key === array_key_last($hours)) {
+                    $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
+                } else {
+                    if ($incElites > 0 && random_chance(0.5)) {
+                        $amount = max(10, mt_rand($incElites / 5, $incElites));
+                        $incElites -= $amount;
+                        $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour);
+                    } elseif ($incSpecs > 0) {
+                        $amount = max(10, mt_rand($incSpecs / 5, $incSpecs));
+                        $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour);
+                        $incSpecs -= $amount;
+                    }
+                }
+            }
+        }
+
+        return $dominion;
+    }
+
+    /**
+     * Get the number of buildings a non player Dominion starts with.
+     *
+     * @param Race $race
+     * @param int $landSize
+     * @return array
+     */
+    protected function getNonPlayerBuildings(Race $race, int $landSize): array
+    {
+        $startingBuildings = [
+            'building_home' => 10,
+            'building_alchemy' => 30,
+            'building_farm' => 30,
+            'building_smithy' => 0,
+            'building_masonry' => 0,
+            'building_ore_mine' => 0,
+            'building_gryphon_nest' => 0,
+            'building_tower' => mt_rand(13, 0.044 * $landSize),
+            'building_wizard_guild' => 0,
+            'building_temple' => 0,
+            'building_diamond_mine' => 0,
+            'building_school' => 0,
+            'building_lumberyard' => 20,
+            'building_forest_haven' => 0,
+            'building_factory' => 56 * random_chance(0.75),
+            'building_guard_tower' => 0,
+            'building_shrine' => 0,
+            'building_barracks' => 0,
+            'building_dock' => 0,
+        ];
+
+        $landAvailable = $landSize - array_sum($startingBuildings);
+
+        // Ore Mines
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Spirit', 'Sylvan', 'Undead'];
+        if (!in_array($race->name, $racesWithoutOre)) {
+            $startingBuildings['building_ore_mine'] = 20;
+            $landAvailable -= $startingBuildings['building_ore_mine'];
+        }
+
+        // Temples for larger doms
+        if ($landAvailable > 100) {
+            $startingBuildings['building_temple'] = min(mt_rand(15, max(30, 0.05 * $landSize)), $landAvailable);
+            $landAvailable -= $startingBuildings['building_temple'];
+        }
+
+        // Alchemies
+        $startingBuildings['building_alchemy'] = min(mt_rand(0.33 * $landSize, 250), $landAvailable);
+        $landAvailable -= $startingBuildings['building_alchemy'];
+
+        // Up to max Smithies
+        if ($landAvailable > 50) {
+            $maxSmithies = (int) round(0.18 * $landSize);
+            if ($maxSmithies < $landAvailable) {
+                $startingBuildings['building_smithy'] = $maxSmithies;
+            } else {
+                $startingBuildings['building_smithy'] = mt_rand(50, $landAvailable);
+            }
+            $landAvailable -= $startingBuildings['building_smithy'];
+        }
+
+        // Guard Towers
+        if ($landAvailable > 25) {
+            $startingBuildings['building_guard_tower'] = min(mt_rand(25, 0.20 * $landSize), $landAvailable);
+            $landAvailable -= $startingBuildings['building_guard_tower'];
+        }
+
+        // Remainder into Homes
+        if ($landAvailable > 0) {
+            $startingBuildings['building_home'] += $landAvailable;
+        }
+
+        return $startingBuildings;
+    }
+
+    /**
+     * Get amount of total starting land a non player Dominion starts with.
+     *
+     * @param Race $race
+     * @param array $startingBuildings
+     * @return array
+     */
+    protected function getNonPlayerLand(Race $race, array $startingBuildings): array
+    {
+        $startingLand = [
+            'land_plain' => $startingBuildings['building_alchemy'] + $startingBuildings['building_farm'] + $startingBuildings['building_smithy'],
+            'land_mountain' => $startingBuildings['building_ore_mine'],
+            'land_swamp' => $startingBuildings['building_temple'] + $startingBuildings['building_tower'],
+            'land_cavern' => 0,
+            'land_forest' => $startingBuildings['building_lumberyard'],
+            'land_hill' => $startingBuildings['building_factory'] + $startingBuildings['building_guard_tower'],
+            'land_water' => 0,
+        ];
+
+        $startingLand["land_{$race->home_land_type}"] += $startingBuildings['building_home'];
+
+        return $startingLand;
     }
 }

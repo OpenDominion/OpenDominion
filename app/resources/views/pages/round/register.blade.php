@@ -113,6 +113,7 @@
                             <option value="join_pack" {{ (old('realm_type') === 'join_pack') ? 'selected' : null }}>Join an existing pack</option>
                             <option value="create_pack" {{ (old('realm_type') === 'create_pack') ? 'selected' : null }}>Create a new pack</option>
                         </select>
+                        <p class="help-block">If you choose to join/create a pack, you will not be able to change it after registration.</p>
                     </div>
                 </div>
 
@@ -148,9 +149,20 @@
                     </div>
                 </div>
 
+                <!-- Rules -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Rules</label>
+                    <div class="col-sm-9">
+                        <ul>
+                            <li>One account per player and no account sharing.</li>
+                            <li>No actions are to be performed via scripting/automation of any kind.</li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="box-footer">
+            <div class="box-footer text-right">
                 <button type="submit" class="btn btn-primary">Register</button>
             </div>
 

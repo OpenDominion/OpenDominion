@@ -109,14 +109,10 @@ class ConstructActionService
         DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $totalBuildingsToConstruct) {
             $this->queueService->queueResources('construction', $dominion, $data);
 
-            $reboundAcres = max($dominion->discounted_land - $this->landCalculator->getTotalBarrenLand($dominion), 0);
-            $reboundBuildings = min($reboundAcres, $totalBuildingsToConstruct);
-            $discountedLandToRemove = min($dominion->discounted_land, $totalBuildingsToConstruct + $reboundBuildings);
-
             $dominion->fill([
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'resource_lumber' => ($dominion->resource_lumber - $lumberCost),
-                'discounted_land' => max(0, $dominion->discounted_land - $discountedLandToRemove),
+                'discounted_land' => max(0, $dominion->discounted_land - $totalBuildingsToConstruct),
             ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
         });
 

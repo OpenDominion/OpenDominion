@@ -79,17 +79,35 @@ class Round extends AbstractModel
     // Query Scopes
 
     /**
-     * Scope a query to include only active rounds.
+     * Scope a query to include only active rounds (after protection).
+     * Used by TickService to process ticks.
      *
      * @param Builder $query
      * @return Builder
      */
     public function scopeActive(Builder $query): Builder
     {
-        $now = new Carbon();
+        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
 
-        return $query->where('start_date', '<=', $now)
-            ->where('end_date', '>', $now);
+        return $query
+            ->where('start_date', '<=', now()->subHours($protectionHours + 1))
+            ->where('end_date', '>', now());
+    }
+
+    /**
+     * Scope a query to include only active rounds (after protection) including a final update at round end.
+     * Used by TickService to process daily rankings.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeCurrent(Builder $query): Builder
+    {
+        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
+
+        return $query
+            ->where('start_date', '<=', now()->subHours($protectionHours + 1))
+            ->where('end_date', '>', now()->addHours(1));
     }
 
     /**

@@ -5,13 +5,17 @@ namespace OpenDominion\Http\Controllers\Dominion;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use OpenDominion\Helpers\RankingsHelper;
 
 class RankingsController extends AbstractDominionController
 {
     public function getRankings(Request $request, string $type = null)
     {
-        if (($type === null) || !in_array($type, ['land', 'networth'], true)) {
-            return redirect()->route('dominion.rankings', ['land']);
+        $rankingsHelper = app(RankingsHelper::class);
+        $rankings = $rankingsHelper->getRankings();
+
+        if (($type === null) || !array_key_exists($type, $rankings)) {
+            return redirect()->route('dominion.rankings', ['largest-dominions']);
         }
 
         $resultsPerPage = 10;
@@ -21,12 +25,13 @@ class RankingsController extends AbstractDominionController
         if (empty($request->query())) {
             $myRankings = DB::table('daily_rankings')
                 ->where('dominion_id', $selectedDominion->id)
+                ->where('key', $type)
                 ->get();
 
             if (!$myRankings->isEmpty()) {
                 $myRankings = $myRankings->first();
 
-                $myPage = ceil($myRankings->{$type . '_rank'} / $resultsPerPage);
+                $myPage = ceil($myRankings->rank / $resultsPerPage);
 
                 Paginator::currentPageResolver(function () use ($myPage) {
                     return $myPage;
@@ -34,14 +39,16 @@ class RankingsController extends AbstractDominionController
             }
         }
 
-        $rankings = DB::table('daily_rankings')
+        $daily_rankings = DB::table('daily_rankings')
             ->where('round_id', $selectedDominion->round_id)
-            ->orderBy($type . '_rank')
+            ->where('key', $type)
+            ->orderBy('rank')
             ->paginate($resultsPerPage);
 
         return view('pages.dominion.rankings', [
             'type' => $type,
             'rankings' => $rankings,
+            'daily_rankings' => $daily_rankings,
         ]);
     }
 }

@@ -163,7 +163,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            {{-- todo: message about black ops not being enabled until 8th day in the round --}}
 
             <div class="box">
                 <div class="box-header with-border">
@@ -175,38 +174,11 @@
                     <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
                 </div>
             </div>
-
-            @if ($dominionProtectionService->isUnderProtection($selectedDominion))
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
-                    </div>
-                    <div class="box-body">
-                        <p>You are under a magical state of protection for <b>{{ number_format($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> {{ str_plural('hour', $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion)) }}.</p>
-                        <p>During protection you cannot be attacked or attack other dominions. You can neither cast any offensive spells or engage in espionage.</p>
-                        <p>You will leave protection on {{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}.</p>
-                        @if ($dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion) > 71)
-                            <p>No production occurs until you have less than 71 hours of protection remaining.</p>
-                            <p>Made a mistake? You can restart your dominion before the first tick.</p>
-                            <form id="restart-dominion" class="form-inline" action="{{ route('dominion.misc.restart') }}" method="post">
-                                @csrf
-                                <div class="form-group">
-                                    <select class="form-control">
-                                        <option value="0">Restart?</option>
-                                        <option value="1">Confirm Restart</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-primary" disabled>Submit</button>
-                                </div>
-                            </form>
-                        @endif
-                    </div>
-                </div>
-            @endif
         </div>
 
         @if ($selectedDominion->realm->motd && ($selectedDominion->realm->motd_updated_at > now()->subDays(3)))
             <div class="col-sm-12 col-md-9">
-                <div class="panel panel-warning">
+                <div class="panel panel-info">
                     <div class="panel-body">
                         <b>Message of the Day:</b> {{ $selectedDominion->realm->motd }}
                         <br/><small class="text-muted">Posted {{ $selectedDominion->realm->motd_updated_at }}</small>
@@ -264,8 +236,49 @@
             </div>
         </div>
 
-        @if ($selectedDominion->pack !== null)
-            <div class="col-sm-12 col-md-3">
+        <div class="col-sm-12 col-md-3">
+            @if ($dominionProtectionService->isUnderProtection($selectedDominion))
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You are under a magical state of protection. During this time you cannot be attacked or attack other dominions. Nor can you cast any offensive spells or engage in espionage.</p>
+                        <p>You are have <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks remaining.</p>
+                        @php
+                            $hoursLeft = $dominionProtectionService->getUnderProtectionHoursLeft($selectedDominion);
+                        @endphp
+                        @if ($hoursLeft > 0)
+                            <p>You will remain in protection until the fourth day of the round ({{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}).</p>
+                        @endif
+                        <p>No production occurs until you have left protection.</p>
+                        <p>Made a mistake? You can restart your dominion while under protection.</p>
+                        <form id="restart-dominion" class="form" action="{{ route('dominion.misc.restart') }}" method="post">
+                            @csrf
+                            <div class="form-group">
+                                <select name="race" class="form-control">
+                                    @foreach ($races as $race)
+                                        <option value="{{ $race->id }}" {{ $selectedDominion->race_id == $race->id ? 'selected' : null }}>
+                                            {{ $race->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="confirm" class="form-control">
+                                    <option value="0">Restart?</option>
+                                    <option value="1">Confirm Restart</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-sm btn-primary" disabled>Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            @endif
+
+            @if ($selectedDominion->pack !== null)
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">Pack</h3>
@@ -308,16 +321,15 @@
                         @endif
                     </div>
                 </div>
-            </div>
-        @endif
-
+            @endif
+        </div>
     </div>
 @endsection
 
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#restart-dominion select').change(function() {
+            $('#restart-dominion select[name=confirm]').change(function() {
                 var confirm = $(this).val();
                 if (confirm == "1") {
                     $('#restart-dominion button').prop('disabled', false);

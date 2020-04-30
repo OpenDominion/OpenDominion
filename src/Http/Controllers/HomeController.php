@@ -46,7 +46,8 @@ class HomeController extends AbstractController
         {
             $currentRankings = DB::table('daily_rankings')
                 ->where('round_id', $rankingsRound->id)
-                ->orderBy('land_rank')
+                ->where('key', 'largest-dominions')
+                ->orderBy('value', 'desc')
                 ->take(10)
                 ->get();
         }

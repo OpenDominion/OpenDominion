@@ -364,7 +364,8 @@
     border-color: #675f6b;
 }
 
-.skin-classic a {
+.skin-classic a,
+.skin-classic .alert-link {
     color: #d5e3e6;
 }
 

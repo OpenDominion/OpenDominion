@@ -85,6 +85,8 @@ class ValhallaController extends AbstractController
             case 'stat-spell-success': $data = $this->getDominionsByStatistic($round, 'stat_spell_success'); break;
             case 'stat-spy-prestige': $data = $this->getDominionsByStatistic($round, 'stat_spy_prestige'); break;
             case 'stat-wizard-prestige': $data = $this->getDominionsByStatistic($round, 'stat_wizard_prestige'); break;
+            case 'stat-spies-executed': $data = $this->getDominionsByStatistic($round, 'stat_spies_executed'); break;
+            case 'stat-wizards-executed': $data = $this->getDominionsByStatistic($round, 'stat_wizards_executed'); break;
             //case 'stat-total-platinum-production': $data = $this->getDominionsByStatistic($round, 'stat_total_platinum_production'); break;
             //case 'stat-total-food-production': $data = $this->getDominionsByStatistic($round, 'stat_total_food_production'); break;
             //case 'stat-total-lumber-production': $data = $this->getDominionsByStatistic($round, 'stat_total_lumber_production'); break;
@@ -202,10 +204,16 @@ class ValhallaController extends AbstractController
 
         return $builder->get()
             ->map(function (Dominion $dominion) use ($networthCalculator, $race) {
+                if ($dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
+                    'player' => $player,
                 ];
 
                 if ($race === null) {
@@ -327,10 +335,16 @@ class ValhallaController extends AbstractController
 
         return $builder->get()
             ->map(function (Dominion $dominion) use ($landCalculator, $race) {
+                if ($dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
+                    'player' => $player,
                 ];
 
                 if ($race === null) {
@@ -443,10 +457,16 @@ class ValhallaController extends AbstractController
 
         return $builder->get()
             ->map(function (Dominion $dominion) use ($stat) {
+                if ($dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+
                 $data = [
                     '#' => null,
                     'dominion' => $dominion->name,
-                    'player' => '<a href="' . route('valhalla.user', $dominion->user->id) . '">' . htmlentities($dominion->user->display_name) . '</a>',
+                    'player' => $player,
                     'race' => $dominion->race->name,
                     'realm' => $dominion->realm->number,
                     'value' => $dominion->{$stat},

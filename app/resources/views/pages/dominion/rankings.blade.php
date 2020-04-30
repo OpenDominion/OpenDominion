@@ -8,14 +8,18 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <span class="pull-right">
-                        @if ($type === 'land')
-                            <b>Land</b> - <a href="{{ route('dominion.rankings', ['networth'] + Request::query()) }}">Networth</a>
-                        @else
-                            <a href="{{ route('dominion.rankings', ['land'] + Request::query()) }}">Land</a> - <b>Networth</b>
-                        @endif
-                    </span>
-                    <h3 class="box-title"><i class="fa fa-trophy"></i> Rankings</h3>
+                    <h3 class="box-title">
+                        <div class="form-inline">
+                            <i class="fa fa-trophy"></i> Rankings - 
+                            <select id="ranking-select" class="form-control">
+                                @foreach ($rankings as $ranking)
+                                    <option value="{{ $ranking['key'] }}" {{ $type == $ranking['key'] ? 'selected' : null }}>
+                                        {{ $ranking['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
@@ -24,7 +28,7 @@
                             <col>
                             <col width="150">
                             <col width="100">
-                            <col width="100">
+                            <col>
                             <col width="50">
                         </colgroup>
                         <thead>
@@ -33,14 +37,14 @@
                                 <th>Dominion</th>
                                 <th class="text-center">Realm</th>
                                 <th class="text-center">Race</th>
-                                <th class="text-center">{{ ucfirst($type) }}</th>
+                                <th class="text-center">{{ $rankings[$type]['stat_label'] }}</th>
                                 <th class="text-center">Change</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($rankings as $row)
+                            @foreach ($daily_rankings as $row)
                                 <tr>
-                                    <td class="text-center">{{ $row->{$type . '_rank'} }}</td>
+                                    <td class="text-center">{{ $row->rank }}</td>
                                     <td>
                                         @if ($selectedDominion->id === (int)$row->dominion_id)
                                             <b>{{ $row->dominion_name }}</b> (you)
@@ -52,10 +56,10 @@
                                         <a href="{{ route('dominion.realm', $row->realm_number) }}">{{ $row->realm_name }} (#{{ $row->realm_number }})</a>
                                     </td>
                                     <td class="text-center">{{ $row->race_name }}</td>
-                                    <td class="text-center">{{ number_format($row->$type) }}</td>
+                                    <td class="text-center">{{ number_format($row->value) }}</td>
                                     <td class="text-center">
                                         @php
-                                            $rankChange = (int)$row->{$type . '_rank_change'};
+                                            $rankChange = (int) ($row->previous_rank - $row->rank);
                                         @endphp
                                         @if ($rankChange > 0)
                                             <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
@@ -72,7 +76,7 @@
                 </div>
                 <div class="box-footer">
                     <div class="pull-right">
-                        {{ $rankings->links() }}
+                        {{ $daily_rankings->links() }}
                     </div>
                 </div>
             </div>
@@ -84,16 +88,15 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>This page shows you the rankings of all the dominions in this round.</p>
-                    <p>Rankings are updated every 6 hours.</p>
-                    @if (!empty($rankings))
+                    <p>This page shows you the rankings of all the dominions in this round and is updated every 24 hours.</p>
+                    @if (!empty($daily_rankings))
                         @php
-                            $rankingsUpdatedHoursAgo = (now()->hour % 6);
+                            $rankingsUpdatedHoursAgo = (now()->hour % 24);
                         @endphp
                         @if ($rankingsUpdatedHoursAgo === 0)
-                            <p>Current displayed rankings are from this hour.</p>
+                            <p>Current displayed rankings were updated this hour.</p>
                         @else
-                            <p>Current displayed rankings are from {{ $rankingsUpdatedHoursAgo }} {{ str_plural('hour', $rankingsUpdatedHoursAgo) }} ago.</p>
+                            <p>Current displayed rankings were updated {{ $rankingsUpdatedHoursAgo }} {{ str_plural('hour', $rankingsUpdatedHoursAgo) }} ago.</p>
                         @endif
                     @endif
                     <p><a href="{{ route('dominion.rankings', request('type')) }}">My Ranking</a></p>
@@ -103,3 +106,14 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('#ranking-select').change(function() {
+                var selectedRanking = $(this).val();
+                window.location.href = "{!! route('dominion.rankings') !!}/" + selectedRanking;
+            });
+        })(jQuery);
+    </script>
+@endpush
