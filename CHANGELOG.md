@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.9.0] - 2020-04-30
 ### Added
 - Click-Through Protection!
 - You can now perform all of your protection logins at your own pace during the first three days of the round
@@ -28,7 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ## [0.8.1-7] - 2020-04-29
 ### Fixed
-- After offensive actions have been disabled for the round, buttons for initiating these actions (invade, explore, hostile spells, and hostile spy ops) will be disabled. 
+- After offensive actions have been disabled for the round, buttons for initiating these actions (invade, explore, hostile spells, and hostile spy ops) will be disabled
 
 ## [0.8.1-6] - 2020-03-29
 ### Fixed
