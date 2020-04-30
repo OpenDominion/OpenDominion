@@ -20,10 +20,10 @@
                             $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
                             $ranking = $rankingsHelper->getFirstRanking($titles);
                         @endphp
-                        <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
+                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                         <span class="username">
                             {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
-                            @if ($ranking)
+                            @if ($ranking && $ranking['title'])
                                 <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
                             @endif
                         </span>
@@ -55,11 +55,11 @@
                                     $titles = isset($rankings[$post->dominion->id]) ? $rankings[$post->dominion->id] : [];
                                     $ranking = $rankingsHelper->getFirstRanking($titles);
                                 @endphp
-                                <i class="ra {{ $ranking ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
+                                <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
                                         {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }})
-                                        @if ($ranking)
+                                        @if ($ranking && $ranking['title'])
                                             <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
                                         @endif
                                         <span class="text-muted pull-right">
