@@ -96,7 +96,7 @@ class PackService
         }
 
         if (((int)$round->players_per_race !== 0) && ($pack->players_with_race >= $round->players_per_race)) {
-            throw new GameException('Selected race has already been selected by the maximum amount of players.');
+            throw new GameException('Selected race has already been chosen by the maximum amount of players.');
         }
 
         if (!$round->mixed_alignment && ($pack->realm->alignment !== $race->alignment)) {
