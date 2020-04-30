@@ -221,8 +221,8 @@
                                 <div class="box-footer">
                                     <button type="submit"
                                             class="btn btn-danger"
-                                            {{ $selectedDominion->isLocked() ? 'disabled' : null }}
-                                            id="invade-button">
+                                            id="invade-button"
+                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
                                         <i class="ra ra-crossed-swords"></i>
                                         Invade
                                     </button>

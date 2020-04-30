@@ -144,7 +144,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell['key'] }}"
                                                                 class="btn btn-primary btn-block"
-                                                                {{ $selectedDominion->isLocked() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                             {{ $spell['name'] }}
                                                         </button>
                                                         <p>{{ $spell['description'] }}</p>
@@ -179,7 +179,7 @@
                                                                 name="spell"
                                                                 value="{{ $spell['key'] }}"
                                                                 class="btn btn-primary btn-block war-spell disabled"
-                                                                {{ $selectedDominion->isLocked() || !$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
+                                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ||!$canCast || (now()->diffInDays($selectedDominion->round->start_date) < 7) ? 'disabled' : null }}>
                                                             {{ $spell['name'] }}
                                                         </button>
                                                         <p>{{ $spell['description'] }}</p>

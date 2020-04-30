@@ -26,6 +26,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Increased the size of some input fields on mobile
 
+## [0.8.1-7] - 2020-04-29
+### Fixed
+- After offensive actions have been disabled for the round, buttons for initiating these actions (invade, explore, hostile spells, and hostile spy ops) will be disabled. 
+
 ## [0.8.1-6] - 2020-03-29
 ### Fixed
 - Improved pageload time
