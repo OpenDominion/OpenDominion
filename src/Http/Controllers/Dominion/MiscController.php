@@ -123,7 +123,7 @@ class MiscController extends AbstractDominionController
         $tickService->performTick($dominion->round, $dominion);
 
         $dominion->protection_ticks_remaining -= 1;
-        if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24) {
+        if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
             $dominion->daily_platinum = false;
             $dominion->daily_land = false;
         }
