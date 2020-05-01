@@ -38,7 +38,7 @@ class RankingsHelper
                 'key' => 'total-land-conquered',
                 'stat' => 'stat_total_land_conquered',
                 'stat_label' => 'Land Conquered',
-                'title' => 'the Mighty',
+                'title' => 'the Savage',
                 'title_icon' => 'ra-battered-axe',
             ],
             [
@@ -70,7 +70,7 @@ class RankingsHelper
                 'key' => 'espionage-success',
                 'stat' => 'stat_espionage_success',
                 'stat_label' => 'Successful Spy Ops',
-                'title' => 'the Thief',
+                'title' => 'the Sneaky',
                 'title_icon' => 'ra-hood',
             ],
             [
@@ -78,7 +78,7 @@ class RankingsHelper
                 'key' => 'spy-prestige',
                 'stat' => 'stat_spy_prestige',
                 'stat_label' => 'Spy Prestige',
-                'title' => 'the Sneaky',
+                'title' => 'the Shadow',
                 'title_icon' => 'ra-hood',
             ],
             [
@@ -94,7 +94,7 @@ class RankingsHelper
                 'key' => 'saboteurs',
                 'stat' => 'stat_sabotage_boats_damage',
                 'stat_label' => 'Boats Sabotaged',
-                'title' => 'the Sinker',
+                'title' => 'the Saboteur',
                 'title_icon' => 'ra-bomb-explosion',
             ],
             [
@@ -102,7 +102,7 @@ class RankingsHelper
                 'key' => 'magical-assassins',
                 'stat' => 'stat_assassinate_wizards_damage',
                 'stat_label' => 'Wizards Assassinated',
-                'title' => 'the Wizard Bane',
+                'title' => 'the Magebane',
                 'title_icon' => 'ra-decapitation',
             ],
             [
@@ -119,14 +119,14 @@ class RankingsHelper
                 'stat' => 'stat_magic_snare_damage',
                 'stat_label' => 'Snare Impact',
                 'title' => 'the Trickster',
-                'title_icon' => 'ra-fire-ring', // ra-burning-eye
+                'title_icon' => 'ra-fire-ring',
             ],
             [
                 'name' => 'Top Platinum Thieves',
                 'key' => 'platinum-thieves',
                 'stat' => 'stat_total_platinum_stolen',
                 'stat_label' => 'Platinum Stolen',
-                'title' => 'the Devious',
+                'title' => 'the Wealthy',
                 'title_icon' => 'ra-gold-bar',
             ],
             [
@@ -134,15 +134,15 @@ class RankingsHelper
                 'key' => 'lumber-thieves',
                 'stat' => 'stat_total_lumber_stolen',
                 'stat_label' => 'Lumber Stolen',
-                'title' => 'the Sly',
-                'title_icon' => 'ra-wooden-sign',
+                'title' => 'the Carpenter',
+                'title_icon' => 'ra-hand-saw',
             ],
             [
                 'name' => 'Top Gem Thieves',
                 'key' => 'gem-thieves',
                 'stat' => 'stat_total_gems_stolen',
                 'stat_label' => 'Gems Stolen',
-                'title' => 'the Cutpurse ',
+                'title' => 'the Greedy ',
                 'title_icon' => 'ra-diamond',
             ],
             [
@@ -150,7 +150,7 @@ class RankingsHelper
                 'key' => 'ore-thieves',
                 'stat' => 'stat_total_ore_stolen',
                 'stat_label' => 'Ore Stolen',
-                'title' => 'the Crafty',
+                'title' => 'the Muscular',
                 'title_icon' => 'ra-mine-wagon',
             ],
             [
@@ -166,15 +166,15 @@ class RankingsHelper
                 'key' => 'mana-thieves',
                 'stat' => 'stat_total_mana_stolen',
                 'stat_label' => 'Mana Stolen',
-                'title' => 'the Shifty',
-                'title_icon' => 'ra-crystal-ball',
+                'title' => 'the Luminous',
+                'title_icon' => 'ra-aura',
             ],
             [
                 'name' => 'Most Successful Wizards',
                 'key' => 'spell-success',
                 'stat' => 'stat_spell_success',
                 'stat_label' => 'Successful Wizard Ops',
-                'title' => 'the Magical',
+                'title' => 'the Gifted',
                 'title_icon' => 'ra-crystal-wand',
             ],
             [
@@ -182,7 +182,7 @@ class RankingsHelper
                 'key' => 'wizard-prestige',
                 'stat' => 'stat_wizard_prestige',
                 'stat_label' => 'Wizard Prestige',
-                'title' => 'the Archmage',
+                'title' => 'the Master of Magi',
                 'title_icon' => 'ra-crystal-wand',
             ],
             [
@@ -190,15 +190,15 @@ class RankingsHelper
                 'key' => 'wizards-executed',
                 'stat' => 'stat_wizards_executed',
                 'stat_label' => 'Wizards Executed',
-                'title' => '',
-                'title_icon' => '',
+                'title' => 'the Determined',
+                'title_icon' => 'ra-lightning-sword',
             ],
             [
                 'name' => 'Masters of Fire',
                 'key' => 'masters-of-fire',
                 'stat' => 'stat_fireball_damage',
                 'stat_label' => 'Peasants Killed',
-                'title' => 'the Master of Fire',
+                'title' => 'the Pyromancer',
                 'title_icon' => 'ra-fire',
             ],
             [
@@ -206,7 +206,7 @@ class RankingsHelper
                 'key' => 'masters-of-lightning',
                 'stat' => 'stat_lightning_bolt_damage',
                 'stat_label' => 'Lightning Damage',
-                'title' => 'the Master of Lightning',
+                'title' => 'the Aeromancer',
                 'title_icon' => 'ra-lightning-trio',
             ],
             [
@@ -214,15 +214,15 @@ class RankingsHelper
                 'key' => 'masters-of-plague',
                 'stat' => 'stat_plague_hours',
                 'stat_label' => 'Plague Hours',
-                'title' => 'the Master of Plague',
-                'title_icon' => 'ra-vial', // ra-acid
+                'title' => 'the Pestilent',
+                'title_icon' => 'ra-biohazard',
             ],
             [
                 'name' => 'Masters of Swarm',
                 'key' => 'masters-of-swarm',
                 'stat' => 'stat_insect_swarm_hours',
                 'stat_label' => 'Swarm Hours',
-                'title' => 'the Master of Swarm',
+                'title' => 'the Swarm',
                 'title_icon' => 'ra-insect-jaws',
             ],
             [
@@ -230,24 +230,24 @@ class RankingsHelper
                 'key' => 'masters-of-water',
                 'stat' => 'stat_great_flood_hours',
                 'stat_label' => 'Great Flood Hours',
-                'title' => 'the Master of Water',
-                'title_icon' => '', // ra-ocean-emblem
+                'title' => 'the Hydromancer',
+                'title_icon' => 'ra-aquarius',
             ],
             [
                 'name' => 'Masters of Earth',
                 'key' => 'masters-of-earth',
                 'stat' => 'stat_earthquake_hours',
                 'stat_label' => 'Earthquake Hours',
-                'title' => 'the Master of Earth',
-                'title_icon' => '',
+                'title' => 'the Terramancer',
+                'title_icon' => 'ra-groundbreaker',
             ],
             [
                 'name' => 'Top Spy Disbanders',
                 'key' => 'spy-disbanders',
                 'stat' => 'stat_disband_spies_damage',
                 'stat_label' => 'Spies Disbanded',
-                'title' => 'the Spy Bane',
-                'title_icon' => 'ra-player-pain',
+                'title' => 'the Mentalist',
+                'title_icon' => 'ra-aware',
             ],
         ])->keyBy('key')->toArray();
     }
