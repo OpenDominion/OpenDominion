@@ -140,6 +140,17 @@ class DominionFactory
             ->where('dominion_id', $dominion->id)
             ->delete();
 
+        // Reset Techs
+        DB::table('dominion_techs')
+            ->where('dominion_id', $dominion->id)
+            ->delete();
+
+        // Reset Notifications
+        DB::table('notifications')
+            ->where('notifiable_type', Dominion::class)
+            ->where('notifiable_id', $dominion->id)
+            ->delete();
+
         // Reset starting buildings
         $startingBuildings = $this->getStartingBuildings();
         foreach ($startingBuildings as $building_type => $value) {
