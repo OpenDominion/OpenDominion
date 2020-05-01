@@ -4,6 +4,15 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-2] - 2020-05-01
+### Added
+- Added title icons to top ranked dominions in Rankings
+- Added titles to Rankings Advisor
+
+### Fixed
+- Restarting your account will now reset techs and notifications
+- Daily bonuses will now reset when you finish your protection instead of waiting until OOP
+
 ## [0.9.0-1] - 2020-04-30
 ### Fixed
 - Invade button will actually be disabled at round end
