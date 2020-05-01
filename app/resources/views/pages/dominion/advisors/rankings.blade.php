@@ -95,7 +95,7 @@
                     <p style="font-size: 16px; line-height: 26px;">
                         @if ($myRankings)
                             @foreach ($rankingsHelper->getRankings() as $ranking)
-                                @if (array_key_exists($ranking['key'], $myRankings))
+                                @if (array_key_exists($ranking['key'], $myRankings) && $myRankings[$ranking['key']]['rank'] == 1)
                                     @if ($ranking['title'])
                                         <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $ranking['name'] }}" style="font-size: 22px; vertical-align: text-bottom;"></i>
                                         {{ $ranking['title'] }}<br/>
