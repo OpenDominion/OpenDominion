@@ -97,7 +97,7 @@
                             <p>Current displayed rankings were updated {{ $rankingsUpdatedHoursAgo }} {{ str_plural('hour', $rankingsUpdatedHoursAgo) }} ago.</p>
                         @endif
                     @endif
-                    <p><a href="{{ route('dominion.rankings', request('type')) }}">My Ranking</a></p>
+                    <p><a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a></p>
                 </div>
             </div>
         </div>
@@ -116,7 +116,7 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#ranking-select').select2({ width: 'auto' }).change(function() {
+            $('#ranking-select').select2({ width: '225px' }).change(function() {
                 var selectedRanking = $(this).val();
                 window.location.href = "{!! route('dominion.rankings') !!}/" + selectedRanking;
             });

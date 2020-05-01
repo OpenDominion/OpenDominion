@@ -21,24 +21,6 @@ class RankingsController extends AbstractDominionController
         $resultsPerPage = 10;
         $selectedDominion = $this->getSelectedDominion();
 
-        // If no page is set, then navigate to our dominion's page
-        if (empty($request->query())) {
-            $myRankings = DB::table('daily_rankings')
-                ->where('dominion_id', $selectedDominion->id)
-                ->where('key', $type)
-                ->get();
-
-            if (!$myRankings->isEmpty()) {
-                $myRankings = $myRankings->first();
-
-                $myPage = ceil($myRankings->rank / $resultsPerPage);
-
-                Paginator::currentPageResolver(function () use ($myPage) {
-                    return $myPage;
-                });
-            }
-        }
-
         $daily_rankings = DB::table('daily_rankings')
             ->where('round_id', $selectedDominion->round_id)
             ->where('key', $type)
