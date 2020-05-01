@@ -69,11 +69,12 @@ class DefenseCalculationService
         }
 
         // Calculate total defense
+        $templeReduction = $this->militaryCalculator->getTempleReduction($dominion);
         $this->calculationResult['race'] = $dominion->race->id;
-        $this->calculationResult['temple_reduction'] = $this->militaryCalculator->getTempleReduction($dominion);
+        $this->calculationResult['temple_reduction'] = $templeReduction * 100;
         $this->calculationResult['dp_raw'] = $this->militaryCalculator->getDefensivePowerRaw($dominion);
-        $this->calculationResult['dp_multiplier'] = ($this->militaryCalculator->getDefensivePowerMultiplier($dominion, $this->militaryCalculator->getTempleReduction($dominion)) - 1) * 100;
-        $this->calculationResult['dp'] = $this->militaryCalculator->getDefensivePower($dominion);
+        $this->calculationResult['dp_multiplier'] = ($this->militaryCalculator->getDefensivePowerMultiplier($dominion, $templeReduction) - 1) * 100;
+        $this->calculationResult['dp'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, null, $templeReduction);
 
         return $this->calculationResult;
     }

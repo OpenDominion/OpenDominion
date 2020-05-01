@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Added titles to Rankings Advisor
 
 ### Fixed
+- Defense calculator will properly apply temples to final defense
 - Restarting your account will now reset techs and notifications
 - Daily bonuses will now reset when you finish your protection instead of waiting until OOP
 
