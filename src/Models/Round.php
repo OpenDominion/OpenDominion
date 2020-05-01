@@ -107,7 +107,7 @@ class Round extends AbstractModel
 
         return $query
             ->where('start_date', '<=', now()->subHours($protectionHours + 1))
-            ->where('end_date', '>', now()->addHours(1));
+            ->where('end_date', '>', now()->subHours(1));
     }
 
     /**
