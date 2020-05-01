@@ -86,6 +86,28 @@
                     <p>Rankings are updated every day.</p>
                 </div>
             </div>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Titles</h3>
+                </div>
+                <div class="box-body">
+                    <p style="font-size: 16px; line-height: 26px;">
+                        @if ($myRankings)
+                            @foreach ($rankingsHelper->getRankings() as $ranking)
+                                @if (array_key_exists($ranking['key'], $myRankings))
+                                    @if ($ranking['title'])
+                                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $ranking['name'] }}" style="font-size: 22px; vertical-align: text-bottom;"></i>
+                                        {{ $ranking['title'] }}<br/>
+                                    @endif
+                                @endif
+                            @endforeach
+                        @else
+                            You do not hold any titles.
+                        @endif
+                    </p>
+                </div>
+            </div>
         </div>
 
     </div>

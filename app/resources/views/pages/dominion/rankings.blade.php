@@ -44,6 +44,9 @@
                                 <tr>
                                     <td class="text-center">{{ $row->rank }}</td>
                                     <td>
+                                        @if ($row->rank == 1)
+                                            <i class="ra {{ $rankings[$type]['title_icon'] ? $rankings[$type]['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $rankings[$type]['title'] }}"></i>
+                                        @endif
                                         @if ($selectedDominion->id === (int)$row->dominion_id)
                                             <b>{{ $row->dominion_name }}</b> (you)
                                         @else

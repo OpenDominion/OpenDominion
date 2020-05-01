@@ -24,7 +24,7 @@
                         <span class="username">
                             {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
                             @if ($ranking && $ranking['title'])
-                                <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                <em data-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
                             @endif
                         </span>
                         <span class="description">
@@ -60,7 +60,7 @@
                                     <span class="username">
                                         {{ $post->dominion->name }} (#{{ $post->dominion->realm->number }})
                                         @if ($ranking && $ranking['title'])
-                                            <em data-toggle="tooltip" data-placement="right" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                            <em data-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
                                         @endif
                                         <span class="text-muted pull-right">
                                             {{ $post->created_at }}&nbsp;
