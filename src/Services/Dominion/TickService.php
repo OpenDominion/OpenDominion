@@ -294,7 +294,7 @@ class TickService
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
                 // toBase required to prevent ambiguous updated_at column in query
-                $round->dominions()->toBase()->update([
+                $round->dominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                     'daily_platinum' => false,
                     'daily_land' => false,
                 ], [
