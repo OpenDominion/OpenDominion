@@ -415,14 +415,14 @@ class DominionFactory
             'peasants' => 10 * $landSize,
             'peasants_last_hour' => 0,
 
-            'draft_rate' => 30,
+            'draft_rate' => 15,
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
 
             'resource_platinum' => 0,
             'resource_food' => 100 * $landSize,
-            'resource_lumber' => 0,
+            'resource_lumber' => 5 * $landSize,
             'resource_mana' => 0,
             'resource_ore' => 0,
             'resource_gems' => 0,
@@ -477,8 +477,8 @@ class DominionFactory
         ]);
 
         if ($landSize > 270) {
-            //  Calculate Defense
-            $accuracy = 1 - (mt_rand(-10, 0) / 100);
+            // Calculate Defense
+            $accuracy = 1 - (mt_rand(0, 15) / 100);
             $defense = $landSize * ((0.008 * $landSize) + 0.9);
             $defense *= $accuracy;
             $specRatio = 1;
@@ -503,8 +503,8 @@ class DominionFactory
             return null;
         }
 
-        //  Add incoming units
         if ($landSize > 270) {
+            // Add incoming units
             $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
             $incSpecs = (int) $dominion->military_unit2 * (mt_rand(25, 50) / 100);
             $incElites = (int) $dominion->military_unit3 * (mt_rand(25, 50) / 100);
@@ -514,16 +514,36 @@ class DominionFactory
                     $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
                 } else {
                     if ($incElites > 0 && random_chance(0.5)) {
-                        $amount = max(10, mt_rand($incElites / 5, $incElites));
+                        $amount = mt_rand($incElites / 4, $incElites / 2);
                         $incElites -= min($amount, $incElites);
                         $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour);
                     } elseif ($incSpecs > 0) {
-                        $amount = max(10, mt_rand($incSpecs / 5, $incSpecs));
+                        $amount = mt_rand($incSpecs / 4, $incSpecs / 2);
                         $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour);
-                        $incSpecs -= mmin($amount, $incSpecs);
+                        $incSpecs -= min($amount, $incSpecs);
                     }
                 }
             }
+
+            // Cast spells
+            DB::table('active_spells')
+                ->insert([
+                    'dominion_id' => $dominion->id,
+                    'spell' => 'ares_call',
+                    'duration' => 12,
+                    'cast_by_dominion_id' => $dominion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            DB::table('active_spells')
+                ->insert([
+                    'dominion_id' => $dominion->id,
+                    'spell' => 'midas_touch',
+                    'duration' => 12,
+                    'cast_by_dominion_id' => $dominion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
         }
 
         return $dominion;
@@ -576,7 +596,7 @@ class DominionFactory
         }
 
         // Alchemies
-        $startingBuildings['building_alchemy'] = min(mt_rand(0.33 * $landSize, 250), $landAvailable);
+        $startingBuildings['building_alchemy'] = min(mt_rand(0.33 * $landSize, 280), $landAvailable);
         $landAvailable -= $startingBuildings['building_alchemy'];
 
         // Up to max Smithies
@@ -591,7 +611,7 @@ class DominionFactory
         }
 
         // Guard Towers
-        if ($landAvailable > 25) {
+        if ($landAvailable > 50) {
             $startingBuildings['building_guard_tower'] = min(mt_rand(25, 0.20 * $landSize), $landAvailable);
             $landAvailable -= $startingBuildings['building_guard_tower'];
         }

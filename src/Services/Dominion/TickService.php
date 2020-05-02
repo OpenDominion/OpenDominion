@@ -16,6 +16,7 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Dominion\Tick;
+use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\NotificationService;
 use Throwable;
@@ -84,42 +85,41 @@ class TickService
 
         foreach ($activeRounds as $round) {
             $this->performTick($round);
+        }
 
-            // Generate Non-Player Dominions
-            if ($round->start_date > $this->now) {
-                $hoursUntilStart = $this->now->diffInHours($round->start_date);
-                if ($hoursUntilStart == 1) {
-                    $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
-                    $names_json = json_decode(file_get_contents(base_path('app/data/dominion_names.json')));
-                    $names = collect($names_json->dominion_names);
-                    $races = Race::all();
-                    foreach ($round->realms as $realm) {
-                        if ($realm->alignment != 'neutral') {
-                            $race = $races->where('alignment', $realm->alignment)->random();
-                        } else {
-                            $race = $races->random();
-                        }
-                        $dominion = null;
-                        $failCount = 0;
-                        while ($dominion == null && $failCount < 3) {
-                            $rulerName = $names->random();
-                            $dominionName = $names->random();
-                            if (strlen($rulerName) > strlen($dominionName)) {
-                                $swap = $rulerName;
-                                $rulerName = $dominionName;
-                                $dominionName = $swap;
-                            }
-                            $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
-                            if ($dominion) {
-                                // Tick ahead a few times
-                                $this->precalculateTick($dominion);
-                                $this->performTick($round, $dominion);
-                                $this->performTick($round, $dominion);
-                                $this->performTick($round, $dominion);
-                            } else {
-                                $failCount++;
-                            }
-                        }
+        // Generate Non-Player Dominions
+        $rounds = Round::activeSoon()->get();
+
+        foreach ($rounds as $round) {
+            $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
+            $names_json = json_decode(file_get_contents(base_path('app/data/dominion_names.json')));
+            $names = collect($names_json->dominion_names);
+            $races = Race::all();
+            foreach ($round->realms as $realm) {
+                if ($realm->alignment != 'neutral') {
+                    $race = $races->where('alignment', $realm->alignment)->random();
+                } else {
+                    $race = $races->random();
+                }
+                $dominion = null;
+                $failCount = 0;
+                while ($dominion == null && $failCount < 3) {
+                    $rulerName = $names->random();
+                    $dominionName = $names->random();
+                    if (strlen($rulerName) > strlen($dominionName)) {
+                        $swap = $rulerName;
+                        $rulerName = $dominionName;
+                        $dominionName = $swap;
+                    }
+                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                    if ($dominion) {
+                        // Tick ahead a few times
+                        $this->precalculateTick($dominion);
+                        $this->performTick($round, $dominion);
+                        $this->performTick($round, $dominion);
+                        $this->performTick($round, $dominion);
+                    } else {
+                        $failCount++;
                     }
                 }
             }
@@ -526,7 +526,7 @@ class TickService
     public function updateDailyRankings(): void
     {
         // Update rankings
-        $activeRounds = Round::current()->get();
+        $activeRounds = Round::activeRankings()->get();
 
         foreach ($activeRounds as $round) {
             $activeDominions = $round->dominions()->with([
