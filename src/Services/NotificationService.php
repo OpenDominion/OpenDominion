@@ -52,6 +52,8 @@ class NotificationService
     {
         $user = $dominion->user;
         if ($user == null) {
+            // Clear notifications queued for Non-Player Dominions
+            $this->notifications = [];
             return;
         }
 
