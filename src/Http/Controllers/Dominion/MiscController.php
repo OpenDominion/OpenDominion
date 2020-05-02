@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
@@ -104,20 +105,26 @@ class MiscController extends AbstractDominionController
         return redirect()->back();
     }
 
-    public function getTickDominion() {
+    public function getTickDominion(Request $request) {
         $dominion = $this->getSelectedDominion();
 
         $protectionService = app(ProtectionService::class);
         $tickService = app(TickService::class);
 
-        if ($dominion->protection_ticks_remaining == 0) {
-            throw new GameException('You have no protection ticks remaining.');
-        }
+        try {
+            if ($dominion->protection_ticks_remaining == 0) {
+                throw new GameException('You have no protection ticks remaining.');
+            }
 
-        // Dominions still in protection or newly registered are forced
-        // to wait for a short time following OOP to prevent abuse
-        if (!$protectionService->canLeaveProtection($dominion)) {
-            throw new GameException('You cannot leave protection during the fourth day of the round.');
+            // Dominions still in protection or newly registered are forced
+            // to wait for a short time following OOP to prevent abuse
+            if ($dominion->protection_ticks_remaining == 1 && !$protectionService->canLeaveProtection($dominion)) {
+                throw new GameException('You cannot leave protection during the fourth day of the round.');
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
         }
 
         $tickService->performTick($dominion->round, $dominion);
