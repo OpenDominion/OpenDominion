@@ -575,9 +575,10 @@ class TickService
             // Calculate ranks
             $ranks = DB::table('daily_rankings AS a')
                 ->select(DB::raw('a.*, COUNT(b.value)+1 AS new_rank'))
-                ->leftJoin('daily_rankings AS b', function ($join) {
+                ->leftJoin('daily_rankings AS b', function ($join) use ($round) {
                     $join->on('a.value', '<', 'b.value');
                     $join->on('a.key', '=', 'b.key');
+                    $join->where('b.round_id', $round->id)
                 })
                 ->where('a.round_id', $round->id)
                 ->groupBy('a.dominion_id', 'a.key', 'a.value')
