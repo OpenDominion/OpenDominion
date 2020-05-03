@@ -4,6 +4,14 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-3] - 2020-05-02
+### Fixed
+- Defense calculator will now treat wizard guilds correctly
+- NPDs can no longer have negative incoming troops
+- NPDs will no longer send notifications to other players
+- Rankings update will now calculate correctly based only on the current round
+- Attempting to leave protection during the lockout period no longer results in a 500 error
+
 ## [0.9.0-2] - 2020-05-01
 ### Added
 - Added title icons to top ranked dominions in Rankings
