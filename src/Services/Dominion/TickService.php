@@ -578,7 +578,7 @@ class TickService
                 ->leftJoin('daily_rankings AS b', function ($join) use ($round) {
                     $join->on('a.value', '<', 'b.value');
                     $join->on('a.key', '=', 'b.key');
-                    $join->where('b.round_id', $round->id)
+                    $join->where('b.round_id', $round->id);
                 })
                 ->where('a.round_id', $round->id)
                 ->groupBy('a.dominion_id', 'a.key', 'a.value')
