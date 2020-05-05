@@ -89,8 +89,8 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>This page shows you the rankings of all the dominions in this round and is updated every 24 hours.</p>
-                    @if (!empty($daily_rankings))
+                    <p>This page shows you the rankings of all dominions in this round and is updated every 24 hours starting on the 5th day of the round.</p>
+                    @if (!empty($daily_rankings) && $selectedDominion->round->start_date <= now()->subDays(4))
                         @php
                             $rankingsUpdatedHoursAgo = (now()->hour % 24);
                         @endphp

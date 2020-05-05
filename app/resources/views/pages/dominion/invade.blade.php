@@ -12,7 +12,13 @@
                         <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
                     <div class="box-body">
-                        You are currently under protection for <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours and may not invade during that time.
+                        You are currently under protection for
+                        @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
+                            <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
+                        @else
+                            <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks
+                        @endif
+                        and may not invade during that time.
                     </div>
                 </div>
             @elseif ($selectedDominion->morale < 70)

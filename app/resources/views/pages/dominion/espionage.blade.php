@@ -13,7 +13,13 @@
 
                 @if ($protectionService->isUnderProtection($selectedDominion))
                     <div class="box-body">
-                        You are currently under protection for <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours and may not perform any espionage operations during that time.
+                        You are currently under protection for
+                        @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
+                            <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
+                        @else
+                            <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks
+                        @endif
+                        and may not perform any espionage operations during that time.
                     </div>
                 @else
                     <form action="{{ route('dominion.espionage') }}" method="post" role="form">

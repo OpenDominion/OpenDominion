@@ -163,7 +163,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
@@ -171,9 +170,54 @@
                 <div class="box-body">
                     <p>This section gives you a quick overview of your dominion.</p>
                     <p>Your total land size is {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} and networth is {{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}.</p>
-                    <p><a href="{{ route('dominion.rankings', 'land') }}">My Rankings</a></p>
+                    <p><a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a></p>
                 </div>
             </div>
+
+            @if ($selectedDominion->pack !== null)
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Pack</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
+                        <ul>
+                            @foreach ($selectedDominion->pack->dominions as $dominion)
+                                <li>
+                                    @if ($dominion->ruler_name === $dominion->name)
+                                        <strong>{{ $dominion->name }}</strong>
+                                    @else
+                                        {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
+                                    @endif
+
+                                    @if($dominion->ruler_name !== $dominion->user->display_name)
+                                        ({{ $dominion->user->display_name }})
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                        <p>
+                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
+                            @if ($selectedDominion->pack->isFull())
+                                (full)
+                            @elseif ($selectedDominion->pack->isClosed())
+                                (closed)
+                            @endif
+                        </p>
+                        @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
+                            <p>Your pack will automatically close on <strong>{{ $selectedDominion->pack->getClosingDate() }}</strong> to make space for random players in your realm.</p>
+                            @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
+                                <p>
+                                    <form action="{{ route('dominion.misc.close-pack') }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
+                                    </form>
+                                </p>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
 
         @if ($selectedDominion->realm->motd && ($selectedDominion->realm->motd_updated_at > now()->subDays(3)))
@@ -250,6 +294,7 @@
                         @endphp
                         @if ($hoursLeft > 0)
                             <p>You will remain in protection until the fourth day of the round ({{ $dominionProtectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}).</p>
+                            <p>If you have not completed your protection prior to this time, you will be unable to leave for an additional 24 hours.</p>
                         @endif
                         <p>No production occurs until you have left protection.</p>
                         <p>Made a mistake? You can restart your dominion while under protection.</p>
@@ -274,51 +319,6 @@
                                 <button type="submit" class="btn btn-sm btn-primary" disabled>Submit</button>
                             </div>
                         </form>
-                    </div>
-                </div>
-            @endif
-
-            @if ($selectedDominion->pack !== null)
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Pack</h3>
-                    </div>
-                    <div class="box-body">
-                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
-                        <ul>
-                            @foreach ($selectedDominion->pack->dominions as $dominion)
-                                <li>
-                                    @if ($dominion->ruler_name === $dominion->name)
-                                        <strong>{{ $dominion->name }}</strong>
-                                    @else
-                                        {{ $dominion->ruler_name }} of <strong>{{ $dominion->name }}</strong>
-                                    @endif
-
-                                    @if($dominion->ruler_name !== $dominion->user->display_name)
-                                        ({{ $dominion->user->display_name }})
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                        <p>
-                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
-                            @if ($selectedDominion->pack->isFull())
-                                (full)
-                            @elseif ($selectedDominion->pack->isClosed())
-                                (closed)
-                            @endif
-                        </p>
-                        @if (!$selectedDominion->pack->isFull() && !$selectedDominion->pack->isClosed())
-                            <p>Your pack will automatically close on <strong>{{ $selectedDominion->pack->getClosingDate() }}</strong> to make space for random players in your realm.</p>
-                            @if ($selectedDominion->pack->creator_dominion_id === $selectedDominion->id)
-                                <p>
-                                    <form action="{{ route('dominion.misc.close-pack') }}" method="post">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link" style="padding: 0;">Close Pack Now</button>
-                                    </form>
-                                </p>
-                            @endif
-                        @endif
                     </div>
                 </div>
             @endif
