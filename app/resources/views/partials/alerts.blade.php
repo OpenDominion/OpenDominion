@@ -1,4 +1,4 @@
-@if (isset($selectedDominion) && !Route::is('home'))
+@if (isset($selectedDominion) && !Route::is(['home', 'valhalla*', 'scribes*', 'user-agreement']))
     @if ($selectedDominion->isLocked())
         <div class="alert alert-warning">
             @if ($selectedDominion->locked_at !== null)
