@@ -306,9 +306,10 @@ class EspionageActionService
 
         $infoOp = new InfoOp([
             'source_realm_id' => $dominion->realm->id,
-            'target_dominion_id' => $target->id,
+            'target_realm_id' => $target->realm->id,
             'type' => $operationKey,
             'source_dominion_id' => $dominion->id,
+            'target_dominion_id' => $target->id,
         ]);
 
         switch ($operationKey) {
