@@ -122,7 +122,7 @@
                                                 <td class="text-center">{{ number_format($row->value) }}</td>
                                                 <td class="text-center">
                                                     @php
-                                                        $rankChange = (int) ($row->rank - $row->previous_rank);
+                                                        $rankChange = (int) ($row->previous_rank - $row->rank);
                                                     @endphp
                                                     @if ($rankChange > 0)
                                                         <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
