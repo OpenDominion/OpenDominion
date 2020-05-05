@@ -4,6 +4,14 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-4] - 2020-05-05
+### Added
+- Added User Agreement at round registration
+- Added rules enforcement mechanism
+
+### Fixed
+- Cleaned up some information display referencing round start time
+
 ## [0.9.0-3] - 2020-05-02
 ### Fixed
 - Defense calculator will now treat wizard guilds correctly
