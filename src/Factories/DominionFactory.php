@@ -307,8 +307,8 @@ class DominionFactory
         $days = 0;
         if ($round->hasStarted()) {
             $daysLate = now()->diffInDays($round->start_date);
-            if ($daysLate >= 3) {
-                // Additional resources are not added until after the third day of the round
+            if ($daysLate >= 5) {
+                // Additional resources are not added until the fifth day of the round
                 $days = $daysLate;
             }
         }
