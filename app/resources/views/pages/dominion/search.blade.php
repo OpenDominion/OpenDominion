@@ -108,6 +108,9 @@
                                                         <i class="ra ra-heavy-shield ra-lg text-green" title="Royal Guard"></i>
                                                     @endif
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
+                                                    @if ($dominion->locked_at !== null)
+                                                        <span class="label label-danger">Locked</span>
+                                                    @endif
                                                 </td>
                                                 <td class="text-center">
                                                     <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">

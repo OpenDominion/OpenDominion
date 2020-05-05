@@ -86,6 +86,10 @@
                                                     <span class="label label-info">Bot</span>
                                                 @endif
                                             @endif
+
+                                            @if ($dominion->locked_at !== null)
+                                                <span class="label label-danger">Locked</span>
+                                            @endif
                                         </td>
                                         @if ($isOwnRealm && $selectedDominion->pack !== null)
                                             @if (($dominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id))

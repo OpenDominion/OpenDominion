@@ -44,6 +44,8 @@ class GovernmentActionService
      */
     public function voteForMonarch(Dominion $dominion, ?int $monarch_id)
     {
+        $this->guardLockedDominion($dominion);
+
         $monarch = Dominion::find($monarch_id);
         if ($monarch == null) {
             throw new RuntimeException('Dominion not found.');
@@ -67,6 +69,8 @@ class GovernmentActionService
      */
     public function updateRealm(Dominion $dominion, ?string $motd, ?string $name)
     {
+        $this->guardLockedDominion($dominion);
+
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can make changes to their realm.');
         }
@@ -99,6 +103,8 @@ class GovernmentActionService
      */
     public function declareWar(Dominion $dominion, int $realm_number)
     {
+        $this->guardLockedDominion($dominion);
+
         $target = Realm::where(['round_id'=>$dominion->round_id, 'number'=>$realm_number])->first();
         if ($target == null || $dominion->realm->round_id != $target->round_id) {
             throw new RuntimeException('Realm not found.');
@@ -163,6 +169,8 @@ class GovernmentActionService
      */
     public function cancelWar(Dominion $dominion)
     {
+        $this->guardLockedDominion($dominion);
+
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can declare war.');
         }

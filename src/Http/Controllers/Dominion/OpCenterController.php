@@ -53,6 +53,10 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominion(Dominion $dominion)
     {
+        if ($this->getSelectedDominion()->round_id != $dominion->round_id) {
+            return redirect()->route('dominion.op-center');
+        }
+
         $infoOpService = app(InfoOpService::class);
 
         $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
@@ -79,6 +83,10 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominionArchive(Dominion $dominion, string $type)
     {
+        if ($this->getSelectedDominion()->round_id != $dominion->round_id) {
+            return redirect()->route('dominion.op-center');
+        }
+
         $resultsPerPage = 10;
         $valid_types = ['clear_sight', 'vision', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
         $infoOpService = app(InfoOpService::class);

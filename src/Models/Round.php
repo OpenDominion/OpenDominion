@@ -51,6 +51,11 @@ class Round extends AbstractModel
         return $this->hasManyThrough(Dominion::class, Realm::class);
     }
 
+    public function activeDominions()
+    {
+        return $this->dominions()->where('locked_at', null);
+    }
+
     public function gameEvents()
     {
         return $this->hasMany(GameEvent::class);
