@@ -17,8 +17,12 @@ class CouncilController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
         $this->updateDominionCouncilLastRead($dominion);
-        $councilService = app(CouncilService::class);
 
+        if ($dominion->locked_at !== null) {
+            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
+        }
+
+        $councilService = app(CouncilService::class);
         $threads = $councilService->getThreads($dominion->realm);
 
         return view('pages.dominion.council.index', [
@@ -80,6 +84,10 @@ class CouncilController extends AbstractDominionController
 
         $dominion = $this->getSelectedDominion();
         $this->updateDominionCouncilLastRead($dominion);
+
+        if ($dominion->locked_at !== null) {
+            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
+        }
 
         $thread->load('dominion.realm', 'posts.dominion.realm');
 

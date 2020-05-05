@@ -153,20 +153,40 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Rules</label>
                     <div class="col-sm-9">
-                        <ul>
-                            <li>One account per player and no account sharing.</li>
-                            <li>No actions are to be performed via scripting/automation of any kind.</li>
-                        </ul>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="agreement_rules" name="agreement_rules" />
+                                I will adhere to the rules described in the OpenDominion <a href="#" data-toggle="modal" data-target="#user-agreement">User Agreement</a>.
+                            </label>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-            <div class="box-footer text-right">
-                <button type="submit" class="btn btn-primary">Register</button>
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary" id="register_submit" disabled>Register</button>
             </div>
 
         </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="user-agreement" tabindex="-1" role="dialog" aria-labelledby="user-agreement-label">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="user-agreement-label">User Agreement</h4>
+            </div>
+            <div class="modal-body">
+                @include('partials.user-agreement')
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -197,6 +217,14 @@
             realmTypeEl.on('change', updatePackInputs);
 
             updatePackInputs();
+
+            $('#agreement_rules').change(function() {
+                if ($(this).is(":checked")) {
+                    $('#register_submit').prop('disabled', false);
+                } else {
+                    $('#register_submit').prop('disabled', true);
+                }
+            });
         })(jQuery);
     </script>
 @endpush

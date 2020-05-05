@@ -97,6 +97,9 @@ class SpellActionService
     public function castSpell(Dominion $dominion, string $spellKey, ?Dominion $target = null): array
     {
         $this->guardLockedDominion($dominion);
+        if ($target !== null) {
+            $this->guardLockedDominion($target);
+        }
 
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
 

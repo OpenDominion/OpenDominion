@@ -2,8 +2,8 @@
 
 namespace OpenDominion\Traits;
 
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
-use RuntimeException;
 
 trait DominionGuardsTrait
 {
@@ -16,7 +16,7 @@ trait DominionGuardsTrait
     public function guardLockedDominion(Dominion $dominion): void
     {
         if ($dominion->isLocked()) {
-            throw new RuntimeException("Dominion {$dominion->name} is locked");
+            throw new GameException("Dominion {$dominion->name} is locked");
         }
     }
 }

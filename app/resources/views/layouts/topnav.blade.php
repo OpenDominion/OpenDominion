@@ -59,6 +59,7 @@
                         <li class="{{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}">Valhalla</a></li>
                         <li class="{{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.races') }}">Scribes</a></li>
                         @include('partials.wiki-nav')
+                        <li class="{{ Route::is('user-agreement') ? 'active' : null }}"><a href="{{ route('user-agreement') }}">Rules</a></li>
                         @auth
                             @if ($selectorService->hasUserSelectedDominion())
                                 <li><a href="{{ route('dominion.status') }}"><b>Play</b></a></li>

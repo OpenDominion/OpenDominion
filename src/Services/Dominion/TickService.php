@@ -134,7 +134,7 @@ class TickService
     public function performTick(Round $round, Dominion $dominion = null)
     {
         if ($dominion == null) {
-            $where = ['dominions.round_id' => $round->id, 'protection_ticks_remaining' => 0];
+            $where = ['dominions.round_id' => $round->id, 'protection_ticks_remaining' => 0, 'locked_at' => null];
         } else {
             $where = ['dominions.id' => $dominion->id];
         }
@@ -229,7 +229,7 @@ class TickService
         if ($dominion == null) {
             Log::info(sprintf(
                 'Ticked %s dominions in %s ms in %s',
-                number_format($round->dominions->count()),
+                number_format($round->activeDominions->count()),
                 number_format($this->now->diffInMilliseconds(now())),
                 $round->name
             ));
@@ -238,7 +238,7 @@ class TickService
         $this->now = now();
 
         if ($dominion == null) {
-            $dominions = $round->dominions()
+            $dominions = $round->activeDominions()
                 ->with([
                     'queues',
                     'race',
@@ -273,7 +273,7 @@ class TickService
         if ($dominion == null) {
             Log::info(sprintf(
                 'Cleaned up queues, sent notifications, and precalculated %s dominions in %s ms in %s',
-                number_format($round->dominions->count()),
+                number_format($round->activeDominions->count()),
                 number_format($this->now->diffInMilliseconds(now())),
                 $round->name
             ));
@@ -294,7 +294,7 @@ class TickService
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
                 // toBase required to prevent ambiguous updated_at column in query
-                $round->dominions()->where('protection_ticks_remaining', 0)->toBase()->update([
+                $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                     'daily_platinum' => false,
                     'daily_land' => false,
                 ], [

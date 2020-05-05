@@ -57,4 +57,9 @@ class HomeController extends AbstractController
             'currentRankings' => $currentRankings
         ]);
     }
+
+    public function getUserAgreement()
+    {
+        return view('pages.user-agreement');
+    }
 }

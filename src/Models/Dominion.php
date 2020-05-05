@@ -166,7 +166,10 @@ class Dominion extends AbstractModel
         'council_last_read' => 'datetime',
         'forum_last_read' => 'datetime',
         'royal_guard_active_at' => 'datetime',
-        'eltie_guard_active_at' => 'datetime',
+        'elite_guard_active_at' => 'datetime',
+        'last_tick_at' => 'datetime',
+        'locked_at' => 'datetime',
+        'protection_ticks_remaining' => 'integer',
     ];
 
     // Transient properties
@@ -338,7 +341,7 @@ class Dominion extends AbstractModel
     }
 
     /**
-     * Returns whether this Dominion is locked due to the round having ended.
+     * Returns whether this Dominion is locked due to the round having ended or administrative action.
      *
      * Locked Dominions cannot perform actions and are read-only.
      *
@@ -346,7 +349,7 @@ class Dominion extends AbstractModel
      */
     public function isLocked()
     {
-        return (now() >= $this->round->end_date);
+        return (now() >= $this->round->end_date) || ($this->locked_at !== null);
     }
 
     /**
