@@ -301,6 +301,7 @@
                         <form id="restart-dominion" class="form" action="{{ route('dominion.misc.restart') }}" method="post">
                             @csrf
                             <div class="form-group">
+                                <label class="form-label">Race:</label>
                                 <select name="race" class="form-control">
                                     @foreach ($races as $race)
                                         <option value="{{ $race->id }}" {{ $selectedDominion->race_id == $race->id ? 'selected' : null }}>
@@ -308,6 +309,14 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Dominion Name:</label>
+                                <input name="dominion_name" class="form-control" type="text" placeholder="{{ $selectedDominion->name }}" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ruler Name:</label>
+                                <input name="ruler_name" class="form-control" type="text" placeholder="{{ $selectedDominion->ruler_name }}" />
                             </div>
                             <div class="form-group">
                                 <select name="confirm" class="form-control">

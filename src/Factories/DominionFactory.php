@@ -126,9 +126,12 @@ class DominionFactory
      * Resets a Dominion to an equivalent state as a new registration.
      *
      * @param  Dominion $dominion
+     * @param  Race $race
+     * @param string $name
+     * @param string $ruler_name
      * @throws GameException
      */
-    public function restart(Dominion $dominion, Race $race): void
+    public function restart(Dominion $dominion, Race $race, ?string $name, ?string $ruler_name): void
     {
         // Reset Queues
         DB::table('dominion_queue')
@@ -178,6 +181,12 @@ class DominionFactory
         }
 
         $dominion->race_id = $race->id;
+        if ($name !== null) {
+            $dominion->name = $name;
+        }
+        if ($ruler_name !== null) {
+            $dominion->ruler_name = $ruler_name;
+        }
         $dominion->created_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART

@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
@@ -43,8 +44,31 @@ class MiscController extends AbstractDominionController
 
         $dominionFactory = app(DominionFactory::class);
         $protectionService = app(ProtectionService::class);
-        $race = Race::findOrFail($request->get('race'));
 
+        $this->validate($request, [
+            'race' => 'required|exists:races,id',
+            'dominion_name' => [
+                'nullable',
+                'string',
+                'min:3',
+                'max:50',
+                'regex:/[a-zA-Z0-9]{3,}/i',
+                Rule::unique('dominions', 'name')->where(function ($query) use ($dominion) {
+                    return $query->where('round_id', $dominion->round_id);
+                })->ignore($dominion->id)
+            ],
+            'ruler_name' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('dominions', 'ruler_name')->where(function ($query) use ($dominion) {
+                    return $query->where('round_id', $dominion->round_id);
+                })->ignore($dominion->id)
+            ]
+        ]);
+
+        // Additional Race validation
+        $race = Race::findOrFail($request->get('race'));
         try {
             if (!$race->playable) {
                 throw new GameException('Invalid race selection');
@@ -78,7 +102,7 @@ class MiscController extends AbstractDominionController
                         $otherRaceId = Race::where('name', 'Nomad')->firstOrFail()->id;
                     }
                 }
-        
+
                 $pack = Pack::where('id', $dominion->pack->id)->withCount([
                     'dominions',
                     'dominions AS players_with_race' => static function (Builder $query) use ($dominion, $race, $otherRaceId) {
@@ -100,7 +124,11 @@ class MiscController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $dominionFactory->restart($dominion, $race);
+        try {
+            $dominionFactory->restart($dominion, $race, $request->get('dominion_name'), $request->get('ruler_name'));
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->withErrors(['There was a problem restarting your account.']);
+        }
 
         return redirect()->back();
     }

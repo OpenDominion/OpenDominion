@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-5] - 2020-05-06
+### Added
+- You can now change your dominion and ruler names when restarting
+
 ## [0.9.0-4] - 2020-05-05
 ### Added
 - Added User Agreement at round registration
