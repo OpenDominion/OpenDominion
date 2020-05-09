@@ -144,6 +144,10 @@ class MiscController extends AbstractDominionController
                 throw new GameException('You have no protection ticks remaining.');
             }
 
+            if ($dominion->last_tick_at > now()->subSeconds(1)) {
+                throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+            }
+
             // Dominions still in protection or newly registered are forced
             // to wait for a short time following OOP to prevent abuse
             if ($dominion->protection_ticks_remaining == 1 && !$protectionService->canLeaveProtection($dominion)) {

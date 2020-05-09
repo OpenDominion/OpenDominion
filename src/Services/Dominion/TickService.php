@@ -203,7 +203,7 @@ class TickService
                     'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
                     'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
                     'dominions.highest_land_achieved' => DB::raw('dominions.highest_land_achieved + dominion_tick.highest_land_achieved'),
-                    'dominions.last_tick_at' => DB::raw('now()')
+                    'dominions.last_tick_at' => $this->now,
                 ]);
 
             // Update spells
@@ -226,6 +226,8 @@ class TickService
                 ]);
         }, 5);
 
+        $this->now = now();
+
         if ($dominion == null) {
             Log::info(sprintf(
                 'Ticked %s dominions in %s ms in %s',
@@ -234,8 +236,6 @@ class TickService
                 $round->name
             ));
         }
-
-        $this->now = now();
 
         if ($dominion == null) {
             $dominions = $round->activeDominions()
@@ -270,6 +270,8 @@ class TickService
             }, 5);
         }
 
+        $this->now = now();
+
         if ($dominion == null) {
             Log::info(sprintf(
                 'Cleaned up queues, sent notifications, and precalculated %s dominions in %s ms in %s',
@@ -278,8 +280,6 @@ class TickService
                 $round->name
             ));
         }
-
-        $this->now = now();
     }
 
     /**
