@@ -22,6 +22,10 @@ class OpCenterController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
 
+        if ($dominion->locked_at !== null) {
+            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
         $latestInfoOps = $dominion->realm->infoOps()
             ->with('sourceDominion')
             ->with('targetDominion')
@@ -53,7 +57,13 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominion(Dominion $dominion)
     {
-        if ($this->getSelectedDominion()->round_id != $dominion->round_id) {
+        $selectedDominion = $this->getSelectedDominion();
+
+        if ($selectedDominion->locked_at !== null) {
+            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($selectedDominion->round_id != $dominion->round_id) {
             return redirect()->route('dominion.op-center');
         }
 
@@ -83,7 +93,13 @@ class OpCenterController extends AbstractDominionController
 
     public function getDominionArchive(Dominion $dominion, string $type)
     {
-        if ($this->getSelectedDominion()->round_id != $dominion->round_id) {
+        $selectedDominion = $this->getSelectedDominion();
+
+        if ($selectedDominion->locked_at !== null) {
+            return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($selectedDominion->round_id != $dominion->round_id) {
             return redirect()->route('dominion.op-center');
         }
 
