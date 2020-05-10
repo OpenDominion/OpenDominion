@@ -80,6 +80,10 @@
                             <form action="{{ route('dominion.magic') }}" method="post" role="form">
                                 @csrf
 
+                                @php
+                                    $recentlyInvadedByDominionIds = $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12);
+                                @endphp
+
                                 <div class="box-body">
 
                                     <div class="row">
@@ -88,11 +92,11 @@
                                                 <label for="target_dominion">Select a target</label>
                                                 <select name="target_dominion" id="target_dominion" class="form-control select2" required style="width: 100%" data-placeholder="Select a target dominion" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                                     <option></option>
-                                                    @foreach ($rangeCalculator->getDominionsInRange($selectedDominion) as $dominion)
+                                                    @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true) as $dominion)
                                                         <option value="{{ $dominion->id }}"
                                                                 data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                                 data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}"
-                                                                data-war="{{ ($selectedDominion->realm->war_realm_id == $dominion->realm->id || $dominion->realm->war_realm_id == $selectedDominion->realm->id || in_array($dominion->id, $militaryCalculator->getRecentlyInvadedBy($selectedDominion, 12))) ? 1 : 0 }}">
+                                                                data-war="{{ ($selectedDominion->realm->war_realm_id == $dominion->realm->id || $dominion->realm->war_realm_id == $selectedDominion->realm->id || in_array($dominion->id, $recentlyInvadedByDominionIds)) ? 1 : 0 }}">
                                                             {{ $dominion->name }} (#{{ $dominion->realm->number }}) - {{ $dominion->race->name }}
                                                         </option>
                                                     @endforeach

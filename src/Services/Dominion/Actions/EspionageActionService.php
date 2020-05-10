@@ -133,7 +133,8 @@ class EspionageActionService
             throw new GameException('You cannot perform espionage operations on targets which are under protection');
         }
 
-        if (!$this->rangeCalculator->isInRange($dominion, $target)) {
+
+        if (!$this->rangeCalculator->isInRange($dominion, $target) && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
             throw new GameException('You cannot perform espionage operations on targets outside of your range');
         }
 

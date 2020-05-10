@@ -129,6 +129,8 @@
                                                 <td class="hidden">
                                                     @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
                                                         true
+                                                    @else
+                                                        false
                                                     @endif
                                                 </td>
                                             </tr>

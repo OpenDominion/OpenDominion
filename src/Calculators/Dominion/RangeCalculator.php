@@ -48,11 +48,6 @@ class RangeCalculator
      */
     public function isInRange(Dominion $self, Dominion $target): bool
     {
-        $recentlyInvadedByDominionIds = $this->militaryCalculator->getRecentlyInvadedBy($self, 12);
-        if (in_array($target->id, $recentlyInvadedByDominionIds)) {
-            return true;
-        }
-
         $selfLand = $this->landCalculator->getTotalLand($self);
         $targetLand = $this->landCalculator->getTotalLand($target);
 
@@ -168,20 +163,27 @@ class RangeCalculator
      * Returns all dominions in range of a dominion.
      *
      * @param Dominion $self
+     * @param bool $recentlyInvaded
      * @return Collection
      */
-    public function getDominionsInRange(Dominion $self): Collection
+    public function getDominionsInRange(Dominion $self, bool $recentlyInvaded = false): Collection
     {
+        if ($recentlyInvaded) {
+            $recentlyInvadedByDominionIds = $this->militaryCalculator->getRecentlyInvadedBy($self, 12);
+        } else {
+            $recentlyInvadedByDominionIds = [];
+        }
+
         // todo: this doesn't belong here since it touches the db. Move to RangeService?
         return $self->round->activeDominions()
-            ->with(['realm', 'round'])
+            ->with(['race', 'realm', 'round'])
             ->get()
-            ->filter(function ($dominion) use ($self) {
+            ->filter(function ($dominion) use ($self, $recentlyInvadedByDominionIds) {
                 return (
                     ($dominion->realm->id !== $self->realm->id) &&
                     $this->isInRange($self, $dominion) &&
                     !$this->protectionService->isUnderProtection($dominion)
-                );
+                ) || in_array($dominion->id, $recentlyInvadedByDominionIds);
             })
             ->sortByDesc(function ($dominion) {
                 return $this->landCalculator->getTotalLand($dominion);
