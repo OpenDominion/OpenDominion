@@ -4,6 +4,7 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
@@ -85,6 +86,7 @@ use OpenDominion\Services\Dominion\TickService;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $pack_id
  * @property int|null $monarch_dominion_id
+ * @property int $calculated_networth
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsSource
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsTarget
@@ -268,6 +270,9 @@ class Dominion extends AbstractModel
         if ($this->exists && $this->last_tick_at != $this->fresh()->last_tick_at) {
             throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
         }
+
+        $networkCalculator = app(NetworthCalculator::class);
+        $this->calculated_networth = $networkCalculator->getDominionNetworth($this, true);
 
         $saved = parent::save($options);
 
