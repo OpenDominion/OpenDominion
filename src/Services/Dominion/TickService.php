@@ -517,7 +517,7 @@ class TickService
         }
 
         // Calculate networth
-        $tick->calculated_networth = $this->networthCalculator->getDominionNetworth($dominion);
+        $tick->calculated_networth = $this->networthCalculator->getDominionNetworth($dominion, true);
 
         foreach ($incomingQueue as $row) {
             // Reset current resources in case object is saved later
