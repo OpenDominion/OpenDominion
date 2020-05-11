@@ -60,10 +60,17 @@ class NetworthCalculator
      * Returns a Dominion's networth.
      *
      * @param Dominion $dominion
+     * @param bool $fresh
      * @return int
      */
-    public function getDominionNetworth(Dominion $dominion): int
+    public function getDominionNetworth(Dominion $dominion, bool $fresh = false): int
     {
+        $networth = $dominion->calculated_networth;
+
+        if(!$fresh && $networth > 0) {
+            return $networth;
+        }
+
         $networth = 0;
 
         // Values

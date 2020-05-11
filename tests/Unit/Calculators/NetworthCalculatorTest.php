@@ -79,7 +79,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     /**
      * @covers ::getDominionNetworth
      */
-    public function testGetDominionNetworth()
+    public function testGetDominionNetworthFresh()
     {
         /** @var Mock|Dominion $dominion */
         $dominion = m::mock(Dominion::class);
@@ -108,11 +108,89 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
-
+        $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(1000);
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
         $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
 
-        $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion));
+        $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion, true));
+    }
+
+    /**
+     * @covers ::getDominionNetworth
+     */
+    public function testGetDominionNetworthWithEmptyPreCalculatedNetworthForcesCalculation()
+    {
+        /** @var Mock|Dominion $dominion */
+        $dominion = m::mock(Dominion::class);
+
+        $this->buildingCalculator->shouldReceive('setDominion')->with($dominion);
+        $this->landCalculator->shouldReceive('setDominion')->with($dominion);
+
+        $units = [];
+        for ($slot = 1; $slot <= 4; $slot++) {
+            $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, $slot)->andReturn(100);
+
+            /** @var Mock|Unit $unit */
+            $unit = m::mock(Unit::class);
+            $unit->shouldReceive('getAttribute')->with('slot')->andReturn($slot);
+            $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit, 'offense')->andReturn(5);
+            $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit, 'defense')->andReturn(5);
+
+            $units[] = $unit;
+        }
+
+        /** @var Mock|Race $race */
+        $race = m::mock(Race::class);
+        $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
+
+        $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
+        $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
+        $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(0);
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
+        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
+
+        $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion, false));
+    }
+
+    /**
+     * @covers ::getDominionNetworth
+     */
+    public function testGetDominionNetworthWithPreCalculatedNetworth()
+    {
+        /** @var Mock|Dominion $dominion */
+        $dominion = m::mock(Dominion::class);
+
+        $this->buildingCalculator->shouldReceive('setDominion')->with($dominion);
+        $this->landCalculator->shouldReceive('setDominion')->with($dominion);
+
+        $units = [];
+        for ($slot = 1; $slot <= 4; $slot++) {
+            $this->militaryCalculator->shouldReceive('getTotalUnitsForSlot')->with($dominion, $slot)->andReturn(100);
+
+            /** @var Mock|Unit $unit */
+            $unit = m::mock(Unit::class);
+            $unit->shouldReceive('getAttribute')->with('slot')->andReturn($slot);
+            $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit, 'offense')->andReturn(5);
+            $this->militaryCalculator->shouldReceive('getUnitPowerWithPerks')->with($dominion, null, 1, $unit, 'defense')->andReturn(5);
+
+            $units[] = $unit;
+        }
+
+        /** @var Mock|Race $race */
+        $race = m::mock(Race::class);
+        $race->shouldReceive('getAttribute')->with('units')->andReturn($units);
+
+        $dominion->shouldReceive('getAttribute')->with('race')->andReturn($race);
+        $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
+        $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
+        $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(1000);
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(1000);
+        $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
+
+        $this->assertEquals(1000, $this->sut->getDominionNetworth($dominion, false));
     }
 
     /**
