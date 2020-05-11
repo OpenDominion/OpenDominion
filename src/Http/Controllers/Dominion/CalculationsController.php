@@ -12,7 +12,7 @@ class CalculationsController extends AbstractDominionController
     public function getDefense()
     {
         return view('pages.dominion.calculate-defense', [
-            'races' => Race::orderBy('name')->get(),
+            'races' => Race::with(['units', 'units.perks'])->orderBy('name')->get(),
             'raceHelper' => app(RaceHelper::class),
             'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),
