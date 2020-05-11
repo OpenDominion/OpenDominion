@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddCalculatedNwColumnToDominionsTable extends Migration
 {
@@ -14,7 +14,11 @@ class AddCalculatedNwColumnToDominionsTable extends Migration
     public function up()
     {
         Schema::table('dominions', function (Blueprint $table) {
-            $table->unsignedInteger('calculated_networth')->after('last_tick_at')->default(0);
+            $table->unsignedInteger('calculated_networth')->after('highest_land_achieved')->default(0);
+        });
+
+        Schema::table('dominion_tick', function (Blueprint $table) {
+            $table->unsignedInteger('calculated_networth')->after('highest_land_achieved')->default(0);
         });
     }
 
@@ -26,6 +30,10 @@ class AddCalculatedNwColumnToDominionsTable extends Migration
     public function down()
     {
         Schema::table('dominions', function (Blueprint $table) {
+            $table->dropColumn('calculated_networth');
+        });
+
+        Schema::table('dominion_tick', function (Blueprint $table) {
             $table->dropColumn('calculated_networth');
         });
     }

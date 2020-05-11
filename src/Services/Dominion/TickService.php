@@ -203,6 +203,7 @@ class TickService
                     'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
                     'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
                     'dominions.highest_land_achieved' => DB::raw('dominions.highest_land_achieved + dominion_tick.highest_land_achieved'),
+                    'dominions.calculated_networth' => DB::raw('dominion_tick.calculated_networth'),
                     'dominions.last_tick_at' => $this->now,
                 ]);
 
@@ -514,6 +515,9 @@ class TickService
         if ($totalLand > $dominion->highest_land_achieved) {
             $tick->highest_land_achieved += $totalLand - $dominion->highest_land_achieved;
         }
+
+        // Calculate networth
+        $tick->calculated_networth = $this->networthCalculator->getDominionNetworth($dominion);
 
         foreach ($incomingQueue as $row) {
             // Reset current resources in case object is saved later

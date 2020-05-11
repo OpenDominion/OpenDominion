@@ -22,15 +22,9 @@ class SearchController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $dominions = Dominion::query()
             ->with([
-                'queues' => function($query) {
-                    $query->where('source', 'invasion');
-                },
                 'round',
                 'realm',
                 'race',
-                'race.perks',
-                'race.units',
-                'race.units.perks',
             ])
             ->where('round_id', $dominion->round_id)
             ->get();
