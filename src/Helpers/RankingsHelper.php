@@ -63,7 +63,7 @@ class RankingsHelper
                 'stat' => 'prestige',
                 'stat_label' => 'Prestige',
                 'title' => 'the Renowned',
-                'title_icon' => 'ra-all-for-one',
+                'title_icon' => 'ra-gem-pendant',
             ],
             [
                 'name' => 'Most Successful Spies',
@@ -87,7 +87,7 @@ class RankingsHelper
                 'stat' => 'stat_spies_executed',
                 'stat_label' => 'Spies Executed',
                 'title' => 'the Executioner',
-                'title_icon' => 'ra-guillotine',
+                'title_icon' => 'ra-scythe',
             ],
             [
                 'name' => 'Top Saboteurs',
