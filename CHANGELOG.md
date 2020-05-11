@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-7] - 2020-05-11
+### Fixed
+- Optimized networth calculation, greatly improving search/realm page performance
+
 ## [0.9.0-6] - 2020-05-10
 ### Fixed
 - Range queries optimized on Search/Invade/Espionage/Magic pages
