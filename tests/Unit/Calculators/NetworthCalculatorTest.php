@@ -118,7 +118,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
     /**
      * @covers ::getDominionNetworth
      */
-    public function testGetDominionNetworth()
+    public function testGetDominionNetworthWithEmptyPreCalculatedNetworthForcesCalculation()
     {
         /** @var Mock|Dominion $dominion */
         $dominion = m::mock(Dominion::class);
@@ -147,7 +147,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('military_spies')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
-        $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(1000);
+        $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(0);
         $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(0);
         $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
 
