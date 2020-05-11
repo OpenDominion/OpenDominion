@@ -148,7 +148,7 @@ class NetworthCalculatorTest extends AbstractBrowserKitTestCase
         $dominion->shouldReceive('getAttribute')->with('military_wizards')->andReturn(25);
         $dominion->shouldReceive('getAttribute')->with('military_archmages')->andReturn(0);
         $dominion->shouldReceive('getAttribute')->with('calculated_networth')->andReturn(0);
-        $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(0);
+        $this->buildingCalculator->shouldReceive('getTotalBuildings')->with($dominion)->andReturn(90);
         $this->landCalculator->shouldReceive('getTotalLand')->with($dominion)->andReturn(250);
 
         $this->assertEquals(8950, $this->sut->getDominionNetworth($dominion, false));
