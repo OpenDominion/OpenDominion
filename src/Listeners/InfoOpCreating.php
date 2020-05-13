@@ -26,6 +26,5 @@ class InfoOpCreating
                 ->where('type', '=', $event->infoOp->type)
                 ->update(['latest' => false]);
         }
-
     }
 }

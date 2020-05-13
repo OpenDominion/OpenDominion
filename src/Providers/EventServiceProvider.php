@@ -3,8 +3,10 @@
 namespace OpenDominion\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use OpenDominion\Events\DominionSavedEvent;
 use OpenDominion\Events\InfoOpCreatingEvent;
 use OpenDominion\Events\UserRegisteredEvent;
+use OpenDominion\Listeners\DominionSaved;
 use OpenDominion\Listeners\InfoOpCreating;
 use OpenDominion\Listeners\SendUserRegistrationNotification;
 use OpenDominion\Listeners\SetUserDefaultSettings;
@@ -19,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        DominionSavedEvent::class => [
+            DominionSaved::class,
+        ],
         InfoOpCreatingEvent::class => [
             InfoOpCreating::class,
         ],

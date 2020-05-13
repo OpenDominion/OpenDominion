@@ -5,6 +5,7 @@ namespace OpenDominion\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Events\DominionSavedEvent;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
@@ -174,6 +175,10 @@ class Dominion extends AbstractModel
         'protection_ticks_remaining' => 'integer',
     ];
 
+    protected $dispatchesEvents = [
+        'saved' => DominionSavedEvent::class,
+    ];
+
     // Transient properties
 
     public $calc = null;
@@ -270,9 +275,6 @@ class Dominion extends AbstractModel
         if ($this->exists && $this->last_tick_at != $this->fresh()->last_tick_at) {
             throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
         }
-
-        $networkCalculator = app(NetworthCalculator::class);
-        $this->calculated_networth = $networkCalculator->getDominionNetworth($this, true);
 
         $saved = parent::save($options);
 
