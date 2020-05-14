@@ -9,9 +9,9 @@ use OpenDominion\Models\Race;
 
 class CalculationsController extends AbstractDominionController
 {
-    public function getDefense()
+    public function getIndex()
     {
-        return view('pages.dominion.calculate-defense', [
+        return view('pages.dominion.calculations', [
             'races' => Race::with(['units', 'units.perks'])->orderBy('name')->get(),
             'raceHelper' => app(RaceHelper::class),
             'spellHelper' => app(SpellHelper::class),
