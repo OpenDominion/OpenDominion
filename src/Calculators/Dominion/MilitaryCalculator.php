@@ -154,43 +154,96 @@ class MilitaryCalculator
         $spellCrusade = 5;
         $spellHowling = 10;
         $spellKillingRage = 10;
-        $spellWarsong = 10;
         $spellNightfall = 5;
+        $spellWarsong = 10;
 
         // Gryphon Nests
-        $multiplier += min(
-            (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
-            ($gryphonNestMaxOp / 100)
-        );
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['gryphon_nest_percent'])) {
+                $multiplier += min(
+                    (($opPerGryphonNest * $dominion->calc['gryphon_nest_percent']) / 100),
+                    ($gryphonNestMaxOp / 100)
+                );
+            }
+        } else {
+            $multiplier += min(
+                (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
+                ($gryphonNestMaxOp / 100)
+            );
+        }
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
         // Techs
-        $multiplier += $dominion->getTechPerkMultiplier('offense');
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['tech_offense'])) {
+                $multiplier += ($dominion->calc['tech_offense'] / 100);
+            }
+        } else {
+            $multiplier += $dominion->getTechPerkMultiplier('offense');
+        }
 
         // Improvement: Forges
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['forges_percent'])) {
+                $multiplier += ($dominion->calc['forges_percent'] / 100);
+            }
+        } else {
+            $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
+        }
 
         // Racial Spell
-        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
-            'bloodrage' => $spellBloodrage,
-            'crusade' => $spellCrusade,
-            'howling' => $spellHowling,
-            'killing_rage' => $spellKillingRage,
-            'warsong' => $spellWarsong,
-            'nightfall' => $spellNightfall,
-        ]);
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['bloodrage'])) {
+                $multiplier += ($spellBloodrage / 100);
+            }
+
+            if (isset($dominion->calc['crusade'])) {
+                $multiplier += ($spellCrusade / 100);
+            }
+
+            if (isset($dominion->calc['howling'])) {
+                $multiplier += ($spellHowling / 100);
+            }
+
+            if (isset($dominion->calc['killing_rage'])) {
+                $multiplier += ($spellKillingRage / 100);
+            }
+
+            if (isset($dominion->calc['nightfall'])) {
+                $multiplier += ($spellNightfall / 100);
+            }
+
+            if (isset($dominion->calc['warsong'])) {
+                $multiplier += ($spellWarsong / 100);
+            }
+        } else {
+            $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
+                'bloodrage' => $spellBloodrage,
+                'crusade' => $spellCrusade,
+                'howling' => $spellHowling,
+                'killing_rage' => $spellKillingRage,
+                'nightfall' => $spellNightfall,
+                'warsong' => $spellWarsong,
+            ]);
+        }
 
         // Prestige
         $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
         // War
-        if ($target != null) {
-            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
-                $multiplier += 0.1;
-            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
-                $multiplier += 0.05;
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc['war_bonus'])) {
+                $multiplier += ($dominion->calc['war_bonus'] / 100);
+            }
+        } else {
+            if ($target !== null && $dominion->realm !== null) {
+                if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+                    $multiplier += 0.1;
+                } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+                    $multiplier += 0.05;
+                }
             }
         }
 
@@ -356,6 +409,7 @@ class MilitaryCalculator
             $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
         }
 
+        // Racial Spell
         if ($dominion->calc !== null) {
             if (isset($dominion->calc['howling'])) {
                 $multiplier += ($spellHowling / 100);
@@ -556,6 +610,15 @@ class MilitaryCalculator
         $max = (int)$wizardRatioPerk[1];
 
         $wizardRawRatio = $this->getWizardRatioRaw($dominion, 'offense');
+
+        if ($dominion->calc !== null) {
+            if (isset($dominion->calc["wizard_ratio"])) {
+                $wizardRawRatio = (float) $dominion->calc["wizard_ratio"];
+            } else {
+                $wizardRawRatio = 3;
+            }
+        }
+
         $powerFromWizardRatio = $wizardRawRatio * $ratio;
         $powerFromPerk = min($powerFromWizardRatio, $max);
 
