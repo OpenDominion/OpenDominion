@@ -55,7 +55,7 @@ class GameEventService
                     });
             })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(100);
 
         return [
             'dominionIds' => $dominionIds,
@@ -73,9 +73,9 @@ class GameEventService
             ->with(['source', 'target'])
             ->where('round_id', $dominion->round_id)
             ->where('created_at', '<', $createdBefore)
-            ->where('created_at', '>', now()->subDays(3))
+            ->where('created_at', '>', now()->subDays(7))
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(100);
 
         return [
             'dominionIds' => $dominionIds,

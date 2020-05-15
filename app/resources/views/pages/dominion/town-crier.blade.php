@@ -105,6 +105,11 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="box-footer">
+                        <div class="pull-right">
+                            {{ $gameEvents->links() }}
+                        </div>
+                    </div>
                 @endif
                 @if ($fromOpCenter)
                     <div class="box-footer">
