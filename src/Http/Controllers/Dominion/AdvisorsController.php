@@ -27,7 +27,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsProduction(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.production', [
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
@@ -37,7 +37,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsMilitary(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.military', [
             'queueService' => app(QueueService::class),
             'unitHelper' => app(UnitHelper::class),
@@ -47,7 +47,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsLand(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.land', [
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
@@ -58,7 +58,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsConstruction(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.construction', [
             'buildingCalculator' => app(BuildingCalculator::class),
             'buildingHelper' => app(BuildingHelper::class),
@@ -70,7 +70,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsMagic(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.magic', [
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
@@ -80,7 +80,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsRankings(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.rankings', [
             'rankingsHelper' => app(RankingsHelper::class),
             'rankingsService' => app(RankingsService::class),
@@ -90,7 +90,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisorsStatistics(Dominion $target = null)
     {
-        $this->guardSameRealm($target);
+        $this->guardPackRealm($target);
         return view('pages.dominion.advisors.statistics', [
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
@@ -99,7 +99,7 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    private function guardSameRealm(?Dominion $target)
+    private function guardPackRealm(?Dominion $target)
     {
         if($target == null) {
             return;
@@ -107,12 +107,12 @@ class AdvisorsController extends AbstractDominionController
 
         $dominion = $this->getSelectedDominion();
 
-        if ($dominion->locked_at !== null) {
-            throw new GameException('Locked dominions are not allowed to look at realm advisors.');
+        if($dominion->pack_id == null || $dominion->pack_id !== $target->pack_id) {
+            throw new GameException('You are only allowed to look at dominions in your pack.');
         }
 
-        if ($dominion->realm->id !== $target->realm->id) {
-            throw new GameException('Nice try, but you cannot look at dominions outside your realm.');
+        if ($dominion->locked_at !== null) {
+            throw new GameException('Locked dominions are not allowed to look at realm advisors.');
         }
     }
 }
