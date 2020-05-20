@@ -194,7 +194,7 @@ class MilitaryCalculator
         }
 
         // Racial Spell
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['bloodrage'])) {
                 $multiplier += ($spellBloodrage / 100);
             }
@@ -410,7 +410,7 @@ class MilitaryCalculator
         }
 
         // Racial Spell
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['howling'])) {
                 $multiplier += ($spellHowling / 100);
             }

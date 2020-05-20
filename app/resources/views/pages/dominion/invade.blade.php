@@ -160,6 +160,7 @@
                                                        max="100"
                                                        placeholder="0"
                                                        {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <input type="hidden" name="calc[invasion]" value="1" />
                                             </td>
                                             <td>&nbsp;</td>
                                         </tr>
