@@ -4,7 +4,13 @@
 
 @section('content')
     @include('partials.dominion.advisor-selector')
+    @php
+        $target = $selectedDominion;
 
+        if($targetDominion != null) {
+            $target = $targetDominion;
+        }
+    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
@@ -33,13 +39,13 @@
                                 <tr>
                                     <td>
                                         {{ ucfirst($landType) }}
-                                        @if ($landType === $selectedDominion->race->home_land_type)
+                                        @if ($landType === $target->race->home_land_type)
                                             <small class="text-muted"><i>(home)</i></small>
                                         @endif
                                     </td>
-                                    <td class="text-center">{{ number_format($selectedDominion->{'land_' . $landType}) }}</td>
-                                    <td class="text-center">{{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
-                                    <td class="text-center">{{ number_format($landCalculator->getTotalBarrenLandByLandType($selectedDominion, $landType)) }}</td>
+                                    <td class="text-center">{{ number_format($target->{'land_' . $landType}) }}</td>
+                                    <td class="text-center">{{ number_format((($target->{'land_' . $landType} / $landCalculator->getTotalLand($target)) * 100), 2) }}%</td>
+                                    <td class="text-center">{{ number_format($landCalculator->getTotalBarrenLandByLandType($target, $landType)) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -72,32 +78,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach ($landHelper->getLandTypes() as $landType)
-                            <tr>
-                                <td>
-                                    {{ ucfirst($landType) }}
-                                    @if ($landType === $selectedDominion->race->home_land_type)
-                                        <small class="text-muted"><i>(home)</i></small>
-                                    @endif
-                                </td>
-                                @for ($i = 1; $i <= 12; $i++)
-                                    @php
-                                        $land = (
-                                            $queueService->getExplorationQueueAmount($selectedDominion, "land_{$landType}", $i) +
-                                            $queueService->getInvasionQueueAmount($selectedDominion, "land_{$landType}", $i)
-                                        );
-                                    @endphp
-                                    <td class="text-center">
-                                        @if ($land === 0)
-                                            -
-                                        @else
-                                            {{ number_format($land) }}
+                            @foreach ($landHelper->getLandTypes() as $landType)
+                                <tr>
+                                    <td>
+                                        {{ ucfirst($landType) }}
+                                        @if ($landType === $target->race->home_land_type)
+                                            <small class="text-muted"><i>(home)</i></small>
                                         @endif
                                     </td>
-                                @endfor
-                                <td class="text-center">{{ number_format($queueService->getExplorationQueueTotalByResource($selectedDominion, "land_{$landType}") + $queueService->getInvasionQueueTotalByResource($selectedDominion, "land_{$landType}")) }}</td>
-                            </tr>
-                        @endforeach
+                                    @for ($i = 1; $i <= 12; $i++)
+                                        @php
+                                            $land = (
+                                                $queueService->getExplorationQueueAmount($target, "land_{$landType}", $i) +
+                                                $queueService->getInvasionQueueAmount($target, "land_{$landType}", $i)
+                                            );
+                                        @endphp
+                                        <td class="text-center">
+                                            @if ($land === 0)
+                                                -
+                                            @else
+                                                {{ number_format($land) }}
+                                            @endif
+                                        </td>
+                                    @endfor
+                                    <td class="text-center">{{ number_format($queueService->getExplorationQueueTotalByResource($target, "land_{$landType}") + $queueService->getInvasionQueueTotalByResource($target, "land_{$landType}")) }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

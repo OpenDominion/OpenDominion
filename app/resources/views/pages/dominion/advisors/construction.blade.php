@@ -4,14 +4,20 @@
 
 @section('content')
     @include('partials.dominion.advisor-selector')
+    @php
+        $target = $selectedDominion;
 
+        if($targetDominion != null) {
+            $target = $targetDominion;
+        }
+    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-home"></i> Construction Advisor</h3>
-                    <span class="pull-right">Barren Land: <strong>{{ number_format($landCalculator->getTotalBarrenLand($selectedDominion)) }}</strong></span>
+                    <span class="pull-right">Barren Land: <strong>{{ number_format($landCalculator->getTotalBarrenLand($target)) }}</strong></span>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
@@ -36,8 +42,8 @@
                                         </span>
                                         {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                                     </td>
-                                    <td class="text-center">{{ number_format($selectedDominion->{'building_' . $buildingType}) }}</td>
-                                    <td class="text-center">{{ number_format((($selectedDominion->{'building_' . $buildingType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 2) }}%</td>
+                                    <td class="text-center">{{ number_format($target->{'building_' . $buildingType}) }}</td>
+                                    <td class="text-center">{{ number_format((($target->{'building_' . $buildingType} / $landCalculator->getTotalLand($target)) * 100), 2) }}%</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -80,14 +86,14 @@
                                     </td>
                                     @for ($i = 1; $i <= 12; $i++)
                                         <td class="text-center">
-                                            @if ($queueService->getConstructionQueueAmount($selectedDominion, "building_{$buildingType}", $i) === 0)
+                                            @if ($queueService->getConstructionQueueAmount($target, "building_{$buildingType}", $i) === 0)
                                                 -
                                             @else
-                                                {{ number_format($queueService->getConstructionQueueAmount($selectedDominion, "building_{$buildingType}", $i)) }}
+                                                {{ number_format($queueService->getConstructionQueueAmount($target, "building_{$buildingType}", $i)) }}
                                             @endif
                                         </td>
                                     @endfor
-                                    <td class="text-center">{{ number_format($queueService->getConstructionQueueTotalByResource($selectedDominion, "building_{$buildingType}")) }}</td>
+                                    <td class="text-center">{{ number_format($queueService->getConstructionQueueTotalByResource($target, "building_{$buildingType}")) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

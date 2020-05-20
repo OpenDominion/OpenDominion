@@ -4,7 +4,13 @@
 
 @section('content')
     @include('partials.dominion.advisor-selector')
+    @php
+        $target = $selectedDominion;
 
+        if($targetDominion != null) {
+            $target = $targetDominion;
+        }
+    @endphp
     <div class="row">
 
         <div class="col-md-12 col-md-9">
@@ -31,7 +37,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $myRankings = $rankingsService->getRankingsForDominion($selectedDominion); @endphp
+                            @php $myRankings = $rankingsService->getRankingsForDominion($target); @endphp
                             @foreach ($rankingsHelper->getRankings() as $ranking)
                                 <tr>
                                     <td>{{ $ranking['name'] }}</td>

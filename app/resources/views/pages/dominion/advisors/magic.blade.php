@@ -4,7 +4,13 @@
 
 @section('content')
     @include('partials.dominion.advisor-selector')
+    @php
+        $target = $selectedDominion;
 
+        if($targetDominion != null) {
+            $target = $targetDominion;
+        }
+    @endphp
     <div class="row">
 
         <div class="col-md-12 col-md-9">
@@ -29,16 +35,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($spellCalculator->getActiveSpells($selectedDominion) as $spell)
+                            @foreach ($spellCalculator->getActiveSpells($target) as $spell)
                                 @php
-                                    $spellInfo = $spellHelper->getSpellInfo($spell->spell, $selectedDominion->race);
+                                    $spellInfo = $spellHelper->getSpellInfo($spell->spell, $target->race);
                                 @endphp
                                 <tr>
                                     <td>{{ $spellInfo['name'] }}</td>
                                     <td>{{ $spellInfo['description'] }}</td>
                                     <td class="text-center">{{ $spell->duration }}</td>
                                     <td class="text-center">
-                                        @if ($spell->cast_by_dominion_id !== null && ($spell->cast_by_dominion_id == $selectedDominion->id || $spellCalculator->isSpellActive($selectedDominion, 'surreal_perception')))
+                                        @if ($spell->cast_by_dominion_id !== null && ($spell->cast_by_dominion_id == $target->id || $spellCalculator->isSpellActive($target, 'surreal_perception')))
                                             <a href="{{ route('dominion.realm', $spell->cast_by_dominion_realm_number) }}">{{ $spell->cast_by_dominion_name }} (#{{ $spell->cast_by_dominion_realm_number }})</a>
                                         @else
                                             <em>Unknown</em>
