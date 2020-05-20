@@ -1,12 +1,14 @@
 @php
+    $title = 'Consult advisor';
     $baseRoute = 'dominion.advisors.';
     if($targetDominion != null) {
-        $baseRoute .= 'realmie.';
+        $baseRoute = 'dominion.realm.advisors.';
+        $title .= ' for '.$targetDominion->name;
     }
 @endphp
 <div class="box">
     <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-question-circle"></i> Consult advisor</h3>
+        <h3 class="box-title"><i class="fa fa-question-circle"></i> {{ $title }}</h3>
     </div>
     <div class="box-body text-center">
 

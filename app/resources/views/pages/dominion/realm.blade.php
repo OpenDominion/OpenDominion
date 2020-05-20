@@ -71,7 +71,7 @@
                                                 <b>{{ $dominion->name }}</b> (you)
                                             @else
                                                 @if ($isOwnRealm)
-                                                    {{ $dominion->name }}
+                                                    <a href="{{ route('dominion.realm.advisors.production', $dominion) }}">{{ $dominion->name }}</a>
                                                 @else
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                 @endif

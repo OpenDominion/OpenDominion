@@ -107,6 +107,10 @@ class AdvisorsController extends AbstractDominionController
 
         $dominion = $this->getSelectedDominion();
 
+        if ($dominion->locked_at !== null) {
+            throw new GameException('Locked dominions are not allowed to look at realm advisors.');
+        }
+
         if ($dominion->realm->id !== $target->realm->id) {
             throw new GameException('Nice try, but you cannot look at dominions outside your realm.');
         }

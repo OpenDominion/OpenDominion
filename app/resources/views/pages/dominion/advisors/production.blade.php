@@ -1,22 +1,23 @@
 @extends('layouts.master')
-
-@section('page-header', 'Production Advisor')
+@php
+    $target = $selectedDominion;
+    $pageHeader = 'Production Advisor';
+    if($targetDominion != null) {
+        $target = $targetDominion;
+        $pageHeader .= ' for '.$target->name;
+    }
+@endphp
+@section('page-header', $pageHeader)
 
 @section('content')
 @include('partials.dominion.advisor-selector')
-@php
-    $target = $selectedDominion;
 
-    if($targetDominion != null) {
-        $target = $targetDominion;
-    }
-@endphp
     <div class="row">
 
         <div class="col-md-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-industry"></i> Production Advisor</h3>
+                    <h3 class="box-title"><i class="fa fa-industry"></i> {{ $pageHeader }}</h3>
                 </div>
                 <div class="box-body no-padding">
                     <div class="row">

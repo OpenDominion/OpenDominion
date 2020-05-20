@@ -1,16 +1,18 @@
 @extends('layouts.master')
 
-@section('page-header', 'Military Advisor')
+@php
+    $target = $selectedDominion;
+    $pageHeader = 'Military Advisor';
+    if($targetDominion != null) {
+        $target = $targetDominion;
+        $pageHeader .= ' for '.$target->name;
+    }
+@endphp
+
+@section('page-header', $pageHeader)
 
 @section('content')
 @include('partials.dominion.advisor-selector')
-@php
-    $target = $selectedDominion;
-
-    if($targetDominion != null) {
-        $target = $targetDominion;
-    }
-@endphp
 
     <div class="row">
 

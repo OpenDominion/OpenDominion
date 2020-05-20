@@ -1,6 +1,15 @@
 @extends('layouts.master')
 
-@section('page-header', 'Land Advisor')
+@php
+    $target = $selectedDominion;
+    $pageHeader = 'Land Advisor';
+    if($targetDominion != null) {
+        $target = $targetDominion;
+        $pageHeader .= ' for '.$target->name;
+    }
+@endphp
+
+@section('page-header', $pageHeader)
 
 @section('content')
     @include('partials.dominion.advisor-selector')
@@ -16,7 +25,7 @@
         <div class="col-sm-12 col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="ra ra-honeycomb"></i> Land Advisor</h3>
+                    <h3 class="box-title"><i class="ra ra-honeycomb"></i> {{ $pageHeader }}</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
