@@ -90,6 +90,7 @@ class InvadeCalculationService
         $units = array_map('intval', array_filter($units));
         if($calc !== null) {
             $dominion->calc = $calc;
+            $dominion->calc['invasion'] = true;
         }
 
         if ($target !== null) {
