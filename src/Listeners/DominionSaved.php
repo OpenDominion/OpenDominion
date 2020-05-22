@@ -18,7 +18,7 @@ class DominionSaved
      */
     public function handle(DominionSavedEvent $event)
     {
-        $dominion = $event->dominion->fresh('queues');
+        $dominion = $event->dominion->fresh();
 
         // Update networth
         $networthCalculator = app(NetworthCalculator::class);

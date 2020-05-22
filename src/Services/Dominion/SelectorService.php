@@ -68,6 +68,7 @@ class SelectorService
 
         if ($this->selectedDominion === null || ($dominionId !== $this->selectedDominion->id)) {
             $this->selectedDominion = Dominion::with([
+                'queues',
                 'race',
                 'race.perks',
                 'race.units',

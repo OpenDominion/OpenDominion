@@ -242,7 +242,10 @@ class TickService
                     'race.perks',
                     'race.units',
                     'race.units.perks',
+                    'techs',
+                    'techs.perks',
                     'tick',
+                    'user',
                 ])
                 ->get();
         } else {
@@ -405,6 +408,8 @@ class TickService
 
         // Hacky refresh for dominion
         $dominion->refresh();
+
+        // Active spells
         $this->spellCalculator->getActiveSpells($dominion, true);
 
         // Queues
@@ -539,11 +544,7 @@ class TickService
 
         foreach ($activeRounds as $round) {
             $activeDominions = $round->dominions()->with([
-                'queues',
                 'race',
-                'race.perks',
-                'race.units',
-                'race.units.perks',
                 'realm',
             ])->get();
 
