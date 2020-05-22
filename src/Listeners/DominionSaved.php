@@ -6,6 +6,7 @@ use DB;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Events\DominionSavedEvent;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\TickService;
 
 class DominionSaved
 {
@@ -17,8 +18,9 @@ class DominionSaved
      */
     public function handle(DominionSavedEvent $event)
     {
-        $dominion = Dominion::with('queues')->find($event->dominion->id);
+        $dominion = $event->dominion->fresh('queues');
 
+        // Update networth
         $networthCalculator = app(NetworthCalculator::class);
         $networth = $networthCalculator->getDominionNetworth($dominion, true);
 
@@ -27,5 +29,9 @@ class DominionSaved
             ->update([
                 'calculated_networth' => $networth
             ]);
+
+        // Recalculate next tick
+        $tickService = app(TickService::class);
+        $tickService->precalculateTick($dominion);
     }
 }

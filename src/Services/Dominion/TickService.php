@@ -65,10 +65,6 @@ class TickService
         $this->queueService = app(QueueService::class);
         $this->rankingsHelper = app(RankingsHelper::class);
         $this->spellCalculator = app(SpellCalculator::class);
-
-        /* These calculators need to ignore queued resources for the following tick */
-        $this->populationCalculator->setForTick(true);
-        $this->queueService->setForTick(true);
     }
 
     /**
@@ -393,6 +389,11 @@ class TickService
             $dominionHistoryService->record($dominion, $changes, HistoryService::EVENT_TICK);
         }
 
+        /* These calculators need to ignore queued resources for the following tick */
+        $this->networthCalculator->setForTick(true);
+        $this->populationCalculator->setForTick(true);
+        $this->queueService->setForTick(true);
+
         // Reset tick values
         foreach ($tick->getAttributes() as $attr => $value) {
             if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties'], true)) {
@@ -525,6 +526,10 @@ class TickService
         }
 
         $tick->save();
+
+        $this->networthCalculator->setForTick(false);
+        $this->populationCalculator->setForTick(false);
+        $this->queueService->setForTick(false);
     }
 
     public function updateDailyRankings(): void

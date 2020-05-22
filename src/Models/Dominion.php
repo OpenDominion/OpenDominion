@@ -9,7 +9,6 @@ use OpenDominion\Events\DominionSavedEvent;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\SelectorService;
-use OpenDominion\Services\Dominion\TickService;
 
 /**
  * OpenDominion\Models\Dominion
@@ -290,10 +289,6 @@ class Dominion extends AbstractModel
             /** @noinspection PhpUndefinedVariableInspection */
             $dominionHistoryService->record($this, $deltaAttributes, $options['event']);
         }
-
-        // Recalculate next tick
-        $tickService = app(TickService::class);
-        $tickService->precalculateTick($this);
 
         return $saved;
     }
