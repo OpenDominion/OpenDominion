@@ -505,7 +505,7 @@
                                                 <td>
                                                     <strong>{{ number_format($populationCalculator->getMaxPopulation($selectedDominion)) }}</strong>
                                                     @if ($populationCalculator->getMaxPopulationMultiplier($selectedDominion) !== 1.0)
-                                                        <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion)) }} raw)</small>
+                                                        <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($selectedDominion) + $populationCalculator->getMaxPopulationMilitaryBonus($selectedDominion)) }} raw)</small>
                                                     @endif
                                                 </td>
                                             </tr>
