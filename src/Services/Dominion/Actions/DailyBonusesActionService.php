@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -59,8 +60,14 @@ class DailyBonusesActionService
 
         $landGained = 20;
         $researchPointsGained = 128;
+
+        $landCalculator = app(LandCalculator::class);
+        $landTotal = $landCalculator->getTotalLand($dominion);
+        $dominion->highest_land_achieved = max($dominion->highest_land_achieved, $landTotal + $landGained);
+
         $attribute = ('land_' . $dominion->race->home_land_type);
         $dominion->{$attribute} += $landGained;
+
         $dominion->stat_total_land_explored += $landGained;
         $dominion->resource_tech += $researchPointsGained;
         $dominion->daily_land = true;
