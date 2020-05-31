@@ -105,9 +105,13 @@ class AdvisorsController extends AbstractDominionController
             return;
         }
 
+        if ($target->user->getSetting('packadvisors') === false) {
+            throw new GameException('This user has opted not to share their advisors.');
+        }
+
         $dominion = $this->getSelectedDominion();
 
-        if($dominion->pack_id == null || $dominion->pack_id !== $target->pack_id) {
+        if ($dominion->pack_id == null || $dominion->pack_id !== $target->pack_id) {
             throw new GameException('You are only allowed to look at dominions in your pack.');
         }
 

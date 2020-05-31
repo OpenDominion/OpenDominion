@@ -12,8 +12,7 @@
 @section('page-header', $pageHeader)
 
 @section('content')
-@include('partials.dominion.advisor-selector')
-
+    @include('partials.dominion.advisor-selector')
     <div class="row">
 
         <div class="col-sm-12 col-md-6">

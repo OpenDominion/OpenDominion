@@ -13,13 +13,6 @@
 
 @section('content')
     @include('partials.dominion.advisor-selector')
-    @php
-        $target = $selectedDominion;
-
-        if($targetDominion != null) {
-            $target = $targetDominion;
-        }
-    @endphp
     <div class="row">
 
         <div class="col-sm-12 col-md-6">

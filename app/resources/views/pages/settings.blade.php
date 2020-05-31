@@ -55,6 +55,19 @@
                                 </div>
                             </div>
 
+                            {{-- Advisors --}}
+                            <div class="form-group">
+                                <label for="skin" class="col-sm-3 control-label">Pack Advisors</label>
+                                <div class="col-sm-9">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="packadvisors" {{ $user->getSetting('packadvisors') === false ? null : 'checked' }} />
+                                            Allow packmates to view your advisors.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col-md-6">
 

@@ -74,18 +74,21 @@ class SettingsController extends AbstractController
 
     protected function updateUser(array $data)
     {
-        if (!isset($data['skin']) || empty($data['skin'])) {
-            return;
-        }
-
         /** @var User $user */
         $user = Auth::user();
 
-        if ($user->skin == $data['skin'] || !in_array($data['skin'], ['skin-blue', 'skin-classic'])) {
-            return;
+        if (in_array($data['skin'], ['skin-blue', 'skin-classic'])) {
+            $user->skin = $data['skin'];
         }
 
-        $user->skin = $data['skin'];
+        $settings = ($user->settings ?? []);
+        if (isset($data['packadvisors'])) {
+            $settings['packadvisors'] = true;
+        } else {
+            $settings['packadvisors'] = false;
+        }
+        $user->settings = $settings;
+
         $user->save();
     }
 
