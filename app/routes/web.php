@@ -81,6 +81,14 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
+            $router->get('realm/advisors/{target}/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('realm.advisors.production');
+            $router->get('realm/advisors/{target}/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('realm.advisors.military');
+            $router->get('realm/advisors/{target}/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('realm.advisors.land');
+            $router->get('realm/advisors/{target}/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('realm.advisors.construct');
+            $router->get('realm/advisors/{target}/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('realm.advisors.magic');
+            $router->get('realm/advisors/{target}/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('realm.advisors.rankings');
+            $router->get('realm/advisors/{target}/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('realm.advisors.statistics');
+
             // Daily
             $router->get('bonuses')->uses('Dominion\DailyBonusesController@getBonuses')->name('bonuses');
             $router->post('bonuses/platinum')->uses('Dominion\DailyBonusesController@postBonusesPlatinum')->name('bonuses.platinum');

@@ -67,8 +67,6 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center');
         }
 
-        $infoOpService = app(InfoOpService::class);
-
         $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
             ->with('sourceDominion')
             ->where('target_dominion_id', '=', $dominion->id)
@@ -105,7 +103,6 @@ class OpCenterController extends AbstractDominionController
 
         $resultsPerPage = 10;
         $valid_types = ['clear_sight', 'vision', 'revelation', 'barracks_spy', 'castle_spy', 'survey_dominion', 'land_spy'];
-        $infoOpService = app(InfoOpService::class);
 
         if (!in_array($type, $valid_types)) {
             return redirect()->route('dominion.op-center.show', $dominion);
