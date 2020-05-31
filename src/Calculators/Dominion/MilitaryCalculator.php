@@ -158,7 +158,7 @@ class MilitaryCalculator
         $spellWarsong = 10;
 
         // Gryphon Nests
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['gryphon_nest_percent'])) {
                 $multiplier += min(
                     (($opPerGryphonNest * $dominion->calc['gryphon_nest_percent']) / 100),
@@ -176,7 +176,7 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('offense');
 
         // Techs
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['tech_offense'])) {
                 $multiplier += ($dominion->calc['tech_offense'] / 100);
             }
@@ -185,7 +185,7 @@ class MilitaryCalculator
         }
 
         // Improvement: Forges
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['forges_percent'])) {
                 $multiplier += ($dominion->calc['forges_percent'] / 100);
             }
@@ -194,7 +194,7 @@ class MilitaryCalculator
         }
 
         // Racial Spell
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['bloodrage'])) {
                 $multiplier += ($spellBloodrage / 100);
             }
@@ -233,7 +233,7 @@ class MilitaryCalculator
         $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
 
         // War
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['war_bonus'])) {
                 $multiplier += ($dominion->calc['war_bonus'] / 100);
             }
@@ -380,7 +380,7 @@ class MilitaryCalculator
         $spellHowling = 10;
 
         // Guard Towers
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['guard_tower_percent'])) {
                 $multiplier += min(
                     (($dpPerGuardTower * $dominion->calc['guard_tower_percent']) / 100),
@@ -401,7 +401,7 @@ class MilitaryCalculator
         $multiplier += $dominion->getTechPerkMultiplier('defense');
 
         // Improvement: Walls
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['walls_percent'])) {
                 $multiplier += ($dominion->calc['walls_percent'] / 100);
             }
@@ -410,7 +410,7 @@ class MilitaryCalculator
         }
 
         // Racial Spell
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['howling'])) {
                 $multiplier += ($spellHowling / 100);
             }
@@ -487,7 +487,7 @@ class MilitaryCalculator
         $templeMaxDpReduction = 25;
         $dpMultiplierReduction = 0;
 
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['temple_percent'])) {
                 $dpMultiplierReduction = min(
                     (($dpReductionPerTemple * $dominion->calc['temple_percent']) / 100),
@@ -525,7 +525,7 @@ class MilitaryCalculator
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
         }
 
-        if ($target !== null || $dominion->calc !== null) {
+        if ($target !== null || ($dominion->calc !== null && !isset($dominion->calc['invasion']))) {
             $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
             $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType);
         }
@@ -558,7 +558,7 @@ class MilitaryCalculator
             $landPercentage = ($buildingsForLandType / $totalLand) * 100;
         }
 
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc["{$landType}_percent"])) {
                 $landPercentage = (float) $dominion->calc["{$landType}_percent"];
             }
@@ -584,7 +584,7 @@ class MilitaryCalculator
         $totalLand = $this->landCalculator->getTotalLand($dominion);
         $landPercentage = ($dominion->{"building_{$buildingType}"} / $totalLand) * 100;
 
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc["{$buildingType}_percent"])) {
                 $landPercentage = (float) $dominion->calc["{$buildingType}_percent"];
             }
@@ -611,7 +611,7 @@ class MilitaryCalculator
 
         $wizardRawRatio = $this->getWizardRatioRaw($dominion, 'offense');
 
-        if ($dominion->calc !== null) {
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc["wizard_ratio"])) {
                 $wizardRawRatio = (float) $dominion->calc["wizard_ratio"];
             } else {

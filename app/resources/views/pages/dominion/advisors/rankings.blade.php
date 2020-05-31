@@ -62,7 +62,7 @@
                                         </td>
                                         <td class="text-center">
                                             @php
-                                                $rankChange = (int) ($myRankings[$ranking['key']]['rank'] - $myRankings[$ranking['key']]['previous_rank']);
+                                                $rankChange = (int) ($myRankings[$ranking['key']]['previous_rank'] - $myRankings[$ranking['key']]['rank']);
                                             @endphp
                                             @if ($rankChange > 0)
                                                 <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>

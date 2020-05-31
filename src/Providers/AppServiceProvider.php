@@ -48,9 +48,11 @@ use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
+use OpenDominion\Services\Dominion\RankingsService;
 use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\ForumService;
+use OpenDominion\Services\GameEventService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Services\RealmFinderService;
@@ -118,6 +120,8 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ActivityService::class);
         $this->app->singleton(AnalyticsService::class);
         $this->app->singleton(CouncilService::class);
+        $this->app->singleton(ForumService::class);
+        $this->app->singleton(GameEventService::class);
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(RealmFinderService::class);
 
@@ -128,6 +132,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(InfoOpService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(QueueService::class);
+        $this->app->singleton(RankingsService::class);
         $this->app->singleton(SelectorService::class);
         $this->app->singleton(TickService::class);
 

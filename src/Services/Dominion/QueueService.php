@@ -128,15 +128,13 @@ class QueueService
             $newAmount = $amountEnqueued - $amountDequeued;
 
             if($newAmount == 0) {
-                DB::table('dominion_queue')->where([
-                    'dominion_id' => $dominion->id,
+                $dominion->queues()->where([
                     'source' => $source,
                     'resource' => $resource,
                     'hours' => $value->hours,
                 ])->delete();
             } else {
-                DB::table('dominion_queue')->where([
-                    'dominion_id' => $dominion->id,
+                $dominion->queues()->where([
                     'source' => $source,
                     'resource' => $resource,
                     'hours' => $value->hours,
@@ -174,7 +172,7 @@ class QueueService
                 })->first();
 
             if ($existingQueueRow === null) {
-                DB::table('dominion_queue')->insert([
+                $dominion->queues()->insert([
                     'dominion_id' => $dominion->id,
                     'source' => $source,
                     'resource' => $resource,
@@ -183,8 +181,7 @@ class QueueService
                     'created_at' => $now,
                 ]);
             } else {
-                DB::table('dominion_queue')->where([
-                    'dominion_id' => $dominion->id,
+                $dominion->queues()->where([
                     'source' => $source,
                     'resource' => $resource,
                     'hours' => $hours,

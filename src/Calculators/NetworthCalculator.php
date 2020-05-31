@@ -20,6 +20,9 @@ class NetworthCalculator
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var bool */
+    protected $forTick = false;
+
     /**
      * NetworthCalculator constructor.
      *
@@ -35,6 +38,15 @@ class NetworthCalculator
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
+    }
+
+    /**
+     * Toggle if this calculator should include the following hour's resources.
+     */
+    public function setForTick(bool $value)
+    {
+        $this->forTick = $value;
+        $this->militaryCalculator->setForTick($value);
     }
 
     /**

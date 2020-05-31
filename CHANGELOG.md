@@ -4,6 +4,14 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-9] - 2020-05-23
+### Fixed
+- Additional pageload optimizations
+- Networth calculations will now be more reliable
+- Daily land bonus will now properly increase tech cost
+- Squashed several bugs related to Orc invade screen calculations
+- Max population (raw) in statistics advisor now includes barracks
+
 ## [0.9.0-8] - 2020-05-15
 ### Added
 - Offense Calculator added to Calculators page

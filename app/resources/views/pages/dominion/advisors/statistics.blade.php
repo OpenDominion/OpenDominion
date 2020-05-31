@@ -513,7 +513,7 @@
                                                 <td>
                                                     <strong>{{ number_format($populationCalculator->getMaxPopulation($target)) }}</strong>
                                                     @if ($populationCalculator->getMaxPopulationMultiplier($target) !== 1.0)
-                                                        <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($target)) }} raw)</small>
+                                                        <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($target) + $populationCalculator->getMaxPopulationMilitaryBonus($target)) }} raw)</small>
                                                     @endif
                                                 </td>
                                             </tr>
