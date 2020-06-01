@@ -23,13 +23,22 @@ class ForumController extends AbstractDominionController
         $forumService = app(ForumService::class);
         $protectionService = app(ProtectionService::class);
 
+        $announcements = $dominion->round->forumAnnouncements()->get();
         $threads = $forumService->getThreads($dominion->round);
 
         return view('pages.dominion.forum.index', [
+            'announcements' => $announcements,
             'forumThreads' => $threads,
             'round' => $dominion->round,
             'protectionService' => $protectionService,
         ]);
+    }
+
+    public function getAnnouncement(Forum\Announcement $announcement)
+    {
+        return view('pages.dominion.forum.announcement', compact(
+            'announcement',
+        ));
     }
 
     public function getCreate() // getCreateThread?

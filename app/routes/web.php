@@ -161,6 +161,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Forum
             $router->get('forum')->uses('Dominion\ForumController@getIndex')->name('forum');
+            $router->get('forum/announcement/{announcement}')->uses('Dominion\ForumController@getAnnouncement')->name('forum.announcement');
             $router->get('forum/create')->uses('Dominion\ForumController@getCreate')->name('forum.create');
             $router->post('forum/create')->uses('Dominion\ForumController@postCreate');
             $router->get('forum/{thread}')->uses('Dominion\ForumController@getThread')->name('forum.thread');

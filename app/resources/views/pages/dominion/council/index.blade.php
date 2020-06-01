@@ -34,7 +34,7 @@
                                         {{--<td class="text-center align-middle">
                                             <i class="fa fa-star"></i>
                                         </td>--}}
-                                        <td>
+                                        <td class="align-middle">
                                             <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                             <small class="text-muted">
                                                 Created {{ $thread->created_at }} by 

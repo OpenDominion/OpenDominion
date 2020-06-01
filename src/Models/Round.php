@@ -76,6 +76,11 @@ class Round extends AbstractModel
         return $this->hasMany(Realm::class);
     }
 
+    public function forumAnnouncements()
+    {
+        return $this->hasMany(Forum\Announcement::class);
+    }
+
     public function forumThreads()
     {
         return $this->hasMany(Forum\Thread::class);

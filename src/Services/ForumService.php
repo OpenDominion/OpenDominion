@@ -15,7 +15,7 @@ class ForumService
     use DominionGuardsTrait;
 
     /**
-     * Returns the round's
+     * Returns the round's forum threads.
      *
      * @param Round $round
      * @return Collection|Forum\Thread[]
