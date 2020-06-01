@@ -166,7 +166,11 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Morale:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("morale") }}">
+                                                Morale:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->morale) }}%</td>
                                     </tr>
                                     <tr>
