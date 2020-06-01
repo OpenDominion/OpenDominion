@@ -38,19 +38,35 @@
                                         <td>{{ number_format($landCalculator->getTotalLand($selectedDominion)) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Peasants:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("peasants") }}">
+                                                Peasants:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->peasants) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Employment:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("employment") }}">
+                                                Employment:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($populationCalculator->getEmploymentPercentage($selectedDominion), 2) }}%</td>
                                     </tr>
                                     <tr>
-                                        <td>Networth:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("networth") }}">
+                                                Networth:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Prestige:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("prestige") }}">
+                                                Prestige:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->prestige) }}</td>
                                     </tr>
                                 </tbody>
@@ -70,7 +86,6 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-
                                         <td>
                                             <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("platinum") }}">
                                                 Platinum:

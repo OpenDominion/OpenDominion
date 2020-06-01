@@ -6,7 +6,7 @@ class MiscHelper
 {
     public function getResourceHelpString(string $resource): ?string {
         $helpStrings = [
-            'platinum' => 'Produced via alchemies and peasants paying taxes.<br>Each peasant pays 2.7p/h in taxes.',
+            'platinum' => 'Produced via alchemies and peasants paying taxes.',
             'food' => 'Produced via farms and docks.<br>Each citizen (peasants and military) eat 0.25 bushels per hour',
             'lumber' => 'Produced via lumberyards.<br>Used for constructing buildings.',
             'mana' => 'Produced via towers.<br>Used for casting spells.',
@@ -20,6 +20,13 @@ class MiscHelper
     }
 
     public function getGeneralHelpString(string $type) {
+        $helpStrings = [
+            'peasants' => 'Peasants are the non-military part of your population. They pay taxes and get drafted into military service.',
+            'employment' => 'Each employed peasant pays 2.7p/h in taxes.',
+            'networth' => 'Used to determine power of a dominion.<br>Buildings, land, and units give networth.',
+            'prestige' => 'Gained via invasion or sometimes via ops.<br>Increases offensive power, platinum and food production.'
+        ];
 
+        return $helpStrings[$type] ?: null;
     }
 }
