@@ -4,6 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.9.0-10] - 2020-06-01
+### Added
+- Announcements section added to the global forum
+- Ability to view packmates' advisors (can be disabled in settings)
+- Tooltips on Status page and Op Center
+
 ## [0.9.0-9] - 2020-05-23
 ### Fixed
 - Additional pageload optimizations
