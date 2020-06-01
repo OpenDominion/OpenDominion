@@ -6,6 +6,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Race;
@@ -35,6 +36,7 @@ class StatusController extends AbstractDominionController
             'populationCalculator' => app(PopulationCalculator::class),
             'queueService' => app(QueueService::class),
             'unitHelper' => app(UnitHelper::class),
+            'miscHelper' => app(MiscHelper::class),
             'races' => $races,
             'notifications' => $notifications
         ]);

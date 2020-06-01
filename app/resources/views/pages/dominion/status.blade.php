@@ -70,35 +70,68 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Platinum:</td>
+
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("platinum") }}">
+                                                Platinum:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_platinum) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Food:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("food") }}">
+                                                Food:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_food) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Lumber:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("lumber") }}">
+                                                Lumber:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_lumber) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Mana:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("mana") }}">
+                                                Mana:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_mana) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Ore:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("ore") }}">
+                                                Ore:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_ore) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Gems:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("gems") }}">
+                                                Gems:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_gems) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Research Points:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("tech") }}">
+                                                Research Points:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($selectedDominion->resource_tech) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Boats:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getResourceHelpString("boats") }}">
+                                                Boats:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format(floor($selectedDominion->resource_boats + $queueService->getInvasionQueueTotalByResource($selectedDominion, "resource_boats"))) }}</td>
                                     </tr>
                                 </tbody>
