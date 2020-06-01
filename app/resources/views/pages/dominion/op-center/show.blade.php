@@ -162,7 +162,7 @@
                                             </td>
                                             @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
                                                 <td>
-                                                    {{ number_format($infoOp->data["military_unit$unit->slot"]) }}<
+                                                    {{ number_format($infoOp->data["military_unit$unit->slot"]) }}
                                                 </td>
                                             @else
                                                 <td>
