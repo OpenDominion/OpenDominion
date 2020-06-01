@@ -37,10 +37,19 @@ class UnitHelper
         return $race->units[$unitSlot]->name;
     }
 
-    public function getUnitHelpString(string $unitType, Race $race): ?string
+    public function getUnitHelpString(string $unitType, Race $race, bool $withOpDp = false): ?string
     {
+        if ($unitType == 'draftees') {
+            $drafteeHelpString = 'Basic military unit.';
+
+            if ($withOpDp) {
+                $drafteeHelpString .= '<br>Offensive Power: 0<br>Defensive Power: 1';
+            }
+
+            return $drafteeHelpString . '<br><br>Used for exploring and training other units.';
+        }
+
         $helpStrings = [
-            'draftees' => 'Basic military unit.<br><br>Used for exploring and training other units.',
             'unit1' => 'Offensive specialist',
             'unit2' => 'Defensive specialist',
             'unit3' => 'Defensive elite',
@@ -114,20 +123,32 @@ class UnitHelper
             'faster_return' => 'Returns %s hours faster from battle.',
         ];
 
+        $unitHelpString = $helpStrings[$unitType];
+        $unitPowerHelpString = "";
+        $unitPerkHelpString = "";
         // Get unit - same logic as military page
         if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4'])) {
             $unit = $race->units->filter(function ($unit) use ($unitType) {
                 return ($unit->slot == (int)str_replace('unit', '', $unitType));
             })->first();
 
-            list($type, $proficiency) = explode(' ', $helpStrings[$unitType]);
+            list($type, $proficiency) = explode(' ', $unitHelpString);
+
             if ($unit->type) {
                 list($type, $proficiency) = explode('_', $unit->type);
                 $type = ucfirst($type);
-            }   $proficiency .= '.';
-            $helpStrings[$unitType] = "$type $proficiency";
+            }
+
+            $proficiency .= '.';
+            $unitHelpString = "$type $proficiency";
+            $hasOffensivePowerPerk = false;
+            $hasDefensivePowerPerk = false;
 
             foreach ($unit->perks as $perk) {
+
+                $hasOffensivePowerPerk = strpos($perk->key, 'offense_from') !== false;
+                $hasDefensivePowerPerk = strpos($perk->key, 'defense_from') !== false;
+
                 if (!array_key_exists($perk->key, $perkTypeStrings)) {
                     //\Debugbar::warning("Missing perk help text for unit perk '{$perk->key}'' on unit '{$unit->name}''.");
                     continue;
@@ -203,22 +224,38 @@ class UnitHelper
                 if (is_array($perkValue)) {
                     if ($nestedArrays) {
                         foreach ($perkValue as $nestedKey => $nestedValue) {
-                            $helpStrings[$unitType] .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $nestedValue));
+                            $unitPerkHelpString .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $nestedValue));
                         }
                     } else {
-                        $helpStrings[$unitType] .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $perkValue));
+                        $unitPerkHelpString .= ('<br><br>' . vsprintf($perkTypeStrings[$perk->key], $perkValue));
                     }
                 } else {
-                    $helpStrings[$unitType] .= ('<br><br>' . sprintf($perkTypeStrings[$perk->key], $perkValue));
+                    $unitPerkHelpString .= ('<br><br>' . sprintf($perkTypeStrings[$perk->key], $perkValue));
                 }
             }
 
             if ($unit->need_boat === false) {
-                $helpStrings[$unitType] .= ('<br><br>No boats needed.');
+                $unitPerkHelpString .= ('<br><br>No boats needed.');
+            }
+
+            if ($withOpDp) {
+                $offensivePower = $unit->power_offense;
+                $defensivePower = $unit->power_defense;
+                $unitPowerHelpString .= "<br>Offensive Power: $offensivePower";
+                if ($hasOffensivePowerPerk) {
+                    $unitPowerHelpString .= '*';
+                }
+                $unitPowerHelpString .= "<br>Defensive Power: $defensivePower";
+                if ($hasDefensivePowerPerk) {
+                    $unitPowerHelpString .= '*';
+                }
             }
         }
 
-        return $helpStrings[$unitType] ?: null;
+        $unitHelpString .= $unitPowerHelpString;
+        $unitHelpString .= $unitPerkHelpString;
+
+        return $unitHelpString ?: null;
     }
 
     public function getUnitTypeIconHtml(string $unitType, Race $race = null): string

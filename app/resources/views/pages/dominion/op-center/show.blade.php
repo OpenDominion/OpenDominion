@@ -129,41 +129,44 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Morale:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("morale") }}">
+                                                Morale:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($infoOp->data['morale']) }}%</td>
                                     </tr>
                                     <tr>
-                                        <td>Draftees:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $dominion->race, true) }}">
+                                                Draftees:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($infoOp->data['military_draftees']) }}</td>
                                     </tr>
-                                    <tr>
-                                        <td>{{ $dominion->race->units->get(0)->name }}:</td>
-                                        <td>{{ number_format($infoOp->data['military_unit1']) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ $dominion->race->units->get(1)->name }}:</td>
-                                        <td>{{ number_format($infoOp->data['military_unit2']) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ $dominion->race->units->get(2)->name }}:</td>
-                                        <td>{{ number_format($infoOp->data['military_unit3']) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ $dominion->race->units->get(3)->name }}:</td>
-                                        <td>{{ number_format($infoOp->data['military_unit4']) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Spies:</td>
-                                        <td>???</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Wizards:</td>
-                                        <td>???</td>
-                                    </tr>
-                                    <tr>
-                                        <td>ArchMages:</td>
-                                        <td>???</td>
-                                    </tr>
+                                    @foreach ($unitHelper->getUnitTypes() as $unitType)
+                                        @php
+                                            $unit = $dominion->race->units->filter(function ($unit) use ($unitType) {
+                                                return ($unit->slot == (int)str_replace('unit', '', $unitType));
+                                            })->first();
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $dominion->race, true) }}">
+                                                    {{ $unitHelper->getUnitName($unitType, $dominion->race) }}:
+                                                </span>
+                                            </td>
+                                            @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
+                                                <td>
+                                                    {{ number_format($infoOp->data["military_unit$unit->slot"]) }}<
+                                                </td>
+                                            @else
+                                                <td>
+                                                    ???
+                                                </td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -431,7 +434,11 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Draftees</td>
+                                <td>
+                                    <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $dominion->race, true) }}">
+                                        Draftees:
+                                    </span>
+                                </td>
                                 <td colspan="12">&nbsp;</td>
                                 <td class="text-center">
                                     ~{{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
@@ -439,7 +446,11 @@
                             </tr>
                             @foreach ($unitHelper->getUnitTypes() as $unitType)
                                 <tr>
-                                    <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
+                                    <td>
+                                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $dominion->race, true) }}">
+                                            {{ $unitHelper->getUnitName($unitType, $dominion->race) }}:
+                                        </span>
+                                    </td>
                                     @for ($i = 1; $i <= 12; $i++)
                                         @php
                                             $amount = array_get($infoOp->data, "units.training.{$unitType}.{$i}", 0);
