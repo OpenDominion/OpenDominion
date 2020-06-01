@@ -63,7 +63,11 @@
                                         <td>{{ number_format($infoOp->data['networth']) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Prestige:</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("prestige") }}">
+                                                Prestige:
+                                            </span>
+                                        </td>
                                         <td>{{ number_format($infoOp->data['prestige']) }}</td>
                                     </tr>
                                 </tbody>
