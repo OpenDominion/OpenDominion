@@ -24,7 +24,7 @@ class MiscHelper
             'peasants' => 'Peasants are the non-military part of your population. They pay taxes and get drafted into military service.',
             'employment' => 'Each employed peasant pays 2.7p/h in taxes.',
             'networth' => 'Used to determine power of a dominion.<br>Buildings, land, and units give networth.',
-            'prestige' => 'Gained via invasion or sometimes via ops.<br>Increases offensive power, platinum and food production.',
+            'prestige' => 'Gained via invasion or sometimes via ops.<br>Increases offensive power, maximum population, and food production.',
             'morale' => 'Morale below 100% gives a defensive penalty.<br>Morale is lowered by exploring and invading.'
         ];
 
