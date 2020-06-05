@@ -3,8 +3,10 @@
 @section('page-header', "Dominion: {$dominion->name}")
 
 @section('content')
-    {{ $dominion->name }}
-    {{ $dominion->created_at }}
+    Used ips: {{ $ipsUsedCount }}
+    <br>
+    Other users with ips: {{ $otherUserCount }}
+
     <table class="table table-striped">
         <thead>
             <tr>

@@ -9,10 +9,29 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>
+                    Performed at
+                </th>
+                <th>
+                    Type
+                </th>
             </tr>
         </thead>
         <tbody>
+            @php
+                $markedOlderOps = false;
+            @endphp
             @foreach ($infoOps as $infoOp)
+                @if(!$markedOlderOps && $infoOp->created_at < $lastDay)
+                @php
+                    $markedOlderOps = true;
+                @endphp
+                    <tr>
+                        <td colspan="2" class="text-center">
+                            Ops taken 24 hours or more before event
+                        </td>
+                    </tr>
+                @endif
                 <tr>
                     <td>
                         <span>{{ $infoOp->created_at }}</span>
