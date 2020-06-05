@@ -278,6 +278,11 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
     });
 
     // Moderator
+    $router->group(['middleware' => 'role:Administrator|Moderator', 'prefix' => 'moderator', 'as' => 'moderator.'], static function (Router $router) {
+
+        $router->get('dominions/{dominion}/event/{gameEvent}', 'Staff\Moderator\DominionController@showGameEvent')->name('dominion.event');
+        $router->resource('dominions', 'Staff\Moderator\DominionController');
+    });
 
     // todo
     // view flagged posts

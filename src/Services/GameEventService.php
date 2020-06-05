@@ -3,6 +3,7 @@
 namespace OpenDominion\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
@@ -17,6 +18,16 @@ class GameEventService
         }
 
         return $this->getGameEventsForRealm($realm, now());
+    }
+
+    public function getGameEventsForDominion(Dominion $dominion) : Collection
+    {
+        return GameEvent::query()
+            ->with(['source', 'target'])
+            ->where('source_id', $dominion->id)
+            ->orWhere('target_id', $dominion->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function getClairvoyance(Realm $realm, Carbon $clairvoyanceCreatedAt): array
