@@ -113,7 +113,9 @@
                             <option value="join_pack" {{ (old('realm_type') === 'join_pack') ? 'selected' : null }}>Join an existing pack</option>
                             <option value="create_pack" {{ (old('realm_type') === 'create_pack') ? 'selected' : null }}>Create a new pack</option>
                         </select>
-                        <p class="help-block">If you choose to join/create a pack, you will not be able to change it after registration.</p>
+                        <p class="help-block">
+                            <span class="text-danger">If you choose to join/create a pack, you will not be able to change your selection after registration.</span>
+                        </p>
                     </div>
                 </div>
 
@@ -145,7 +147,10 @@
                                 <option value="{{ $i }}" {{ (old('pack_size') == $i) ? 'selected' : null }}>{{ $i }}</option>
                             @endfor
                         </select>
-                        <p class="help-block">The amount of players that will be in your pack (including yourself).</p>
+                        <p class="help-block">
+                            The amount of players that will be in your pack (including yourself).<br/>
+                            <span class="text-danger">Packs of size <b>{{ $round->pack_size }}</b> require each player to select a unique race.</span>
+                        </p>
                     </div>
                 </div>
 
