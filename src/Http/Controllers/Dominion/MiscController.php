@@ -86,13 +86,13 @@ class MiscController extends AbstractDominionController
                 }
             }
 
-            if ($dominion->pack_id !== null && (int)$dominion->round->players_per_race !== 0) {
-                if (!$packService->checkRaceLimitForPack($pack, $race)) {
-                    throw new GameException('Selected race has already been chosen by the maximum number of players.');
+            if ($dominion->pack_id !== null && $dominion->race_id !== $race->id && (int)$dominion->round->players_per_race !== 0) {
+                if (!$packService->checkRaceLimitForPack($dominion->pack, $race)) {
+                    throw new GameException('Selected race has already been chosen by the maximum number of players in your pack.');
                 }
 
-                if ($dominion->race !== $race && !$packService->checkRaceLimitForRealm($dominion->realm, $race)) {
-                    throw new GameException('Selected race has already been chosen by the maximum number of players.');
+                if (!$packService->checkRaceLimitForRealm($dominion->realm, $race)) {
+                    throw new GameException('Selected race has already been chosen by the maximum number of players in your realm.');
                 }
             }
         } catch (GameException $e) {

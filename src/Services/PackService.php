@@ -7,6 +7,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 
 class PackService
@@ -127,8 +128,6 @@ class PackService
 
     public function checkRaceLimitForRealm(Realm $realm, Race $race): bool
     {
-        $packs = $realm->packs()->dominions()->sum('players_with_race');
-
         $packCount = $realm->packs()->count();
         if ($packCount > 1) {
             $playersWithRace = $realm->packs->sum(
