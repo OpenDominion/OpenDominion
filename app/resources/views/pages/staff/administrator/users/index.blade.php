@@ -15,11 +15,11 @@
                     <col width="200">
                     <col width="200">
                     <col width="50">
-                    <col width="50">
+                    <col width="100">
                 </colgroup>
                 <thead>
                     <tr>
-                        <th class="text-center">#</th>
+                        <th class="text-center">ID</th>
                         <th>Display Name</th>
                         <th class="text-center">Last Online</th>
                         <th class="text-center">Registered</th>
@@ -55,6 +55,11 @@
                 </tbody>
             </table>
         </div>
+        <div class="box-footer">
+            <div class="pull-right">
+                {{ $users->links() }}
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -70,7 +75,7 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
-            $('#users-table').DataTable();
+            //$('#users-table').DataTable();
         })(jQuery);
     </script>
 @endpush
