@@ -4,6 +4,11 @@
 
 @section('content')
     <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-info">
+                <pre>{{ print_r(json_decode($dominion), true) }}</pre>
+            </div>
+        </div>
 
         <div class="col-lg-6">
             <div class="box box-info">
@@ -56,11 +61,8 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 
-    <pre>{{ print_r(json_decode($dominion), true) }}</pre>
 @endsection
 
 @push('page-scripts')

@@ -9,7 +9,7 @@ class UserController extends AbstractController
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::paginate(100);
 
         return view('pages.staff.administrator.users.index', [
             'users' => $users,

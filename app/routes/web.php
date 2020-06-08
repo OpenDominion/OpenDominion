@@ -251,18 +251,6 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
 
     $router->get('/')->uses('Staff\StaffController@getIndex')->name('index');
 
-    // Developer
-
-//    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
-//
-//        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
-//
-//        // simulate dominion by state string
-//        // take over dominion & traverse state history
-//        // set dominion state/attributes?
-//
-//    });
-
     // Administrator
 
     $router->group(['middleware' => 'role:Administrator', 'prefix' => 'administrator', 'as' => 'administrator.'], static function (Router $router) {
@@ -276,6 +264,18 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
         // view all council boards
 
     });
+
+    // Developer
+
+//    $router->group(['middleware' => 'role:Developer', 'prefix' => 'developer', 'as' => 'developer.'], function (Router $router) {
+//
+//        $router->get('/')->uses('Staff\DeveloperController@getIndex')->name('index');
+//
+//        // simulate dominion by state string
+//        // take over dominion & traverse state history
+//        // set dominion state/attributes?
+//
+//    });
 
     // Moderator
 

@@ -4,18 +4,40 @@ namespace OpenDominion\Http\Controllers\Staff\Administrator;
 
 use Carbon\Carbon;
 use DateInterval;
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Round;
 
 class DominionController extends AbstractController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $dominions = Dominion::with(['race.units', 'round', 'user'])->get();
+        $rounds = Round::all()->sortByDesc('start_date');
+
+        $selectedRound = $request->input('round');
+        if ($selectedRound) {
+            $round = Round::findOrFail($selectedRound);
+        } else {
+            $round = $rounds->first();
+        }
+
+        $dominions = Dominion::with([
+            'queues',
+            'race',
+            'race.perks',
+            'race.units',
+            'race.units.perks',
+            'techs',
+            'techs.perks',
+            'user'
+        ])->where('round_id', $round->id)->get();
 
         return view('pages.staff.administrator.dominions.index', [
+            'round' => $round,
+            'rounds' => $rounds,
             'dominions' => $dominions,
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
