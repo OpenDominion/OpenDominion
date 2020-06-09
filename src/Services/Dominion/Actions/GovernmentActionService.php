@@ -122,8 +122,18 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
+        $recentWars = GameEvent::where([
+            'type' => 'war_canceled',
+            'source_id' => $dominion->realm->id,
+            'target_id' => $target->id,
+        ])->where('created_at', '>', now()->startOfHour()->subHours(23))->get();
+
+        if (!$recentWars->isEmpty()) {
+            throw new GameException('You cannot redeclare war on the same realm within 24 of canceling.');
+        }
+
         if (now()->diffInDays($dominion->round->start_date) < self::WAR_DAYS_AFTER_ROUND_START) {
-            throw new GameException('You cannot declare war for the first five days of the round');
+            throw new GameException('You cannot declare war for the first five days of the round.');
         }
 
         GameEvent::create([
