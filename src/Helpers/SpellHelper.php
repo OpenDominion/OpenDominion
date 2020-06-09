@@ -293,13 +293,13 @@ class SpellHelper
                 'name' => 'Vision',
                 'description' => 'Reveal tech and heroes',
                 'key' => 'vision',
-                'mana_cost' => 0.5,
+                'mana_cost' => 1,
             ],
             [
                 'name' => 'Revelation',
                 'description' => 'Reveal active spells',
                 'key' => 'revelation',
-                'mana_cost' => 1.2,
+                'mana_cost' => 1,
             ],
 //            [
 //                'name' => 'Clairvoyance',
