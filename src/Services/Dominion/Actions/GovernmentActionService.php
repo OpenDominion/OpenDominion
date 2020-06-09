@@ -129,7 +129,7 @@ class GovernmentActionService
         ])->where('created_at', '>', now()->startOfHour()->subHours(23))->get();
 
         if (!$recentWars->isEmpty()) {
-            throw new GameException('You cannot redeclare war on the same realm within 24 of canceling.');
+            throw new GameException('You cannot redeclare war on the same realm within 24 hours of canceling.');
         }
 
         if (now()->diffInDays($dominion->round->start_date) < self::WAR_DAYS_AFTER_ROUND_START) {

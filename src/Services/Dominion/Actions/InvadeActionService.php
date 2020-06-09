@@ -368,10 +368,10 @@ class InvadeActionService
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = (int)round(min(
+            $attackerPrestigeChange = min(
                 $target->prestige * (($range / 100) / 10), // Gained through invading
                 $dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100) // But capped based on your current prestige
-            )) + static::PRESTIGE_CHANGE_ADD;
+            ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
@@ -399,6 +399,7 @@ class InvadeActionService
             }
         }
 
+        $attackerPrestigeChange = (int)round($attackerPrestigeChange);
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
                 // Unsuccessful invasions (bounces) give negative prestige immediately
