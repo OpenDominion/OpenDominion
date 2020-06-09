@@ -4,21 +4,34 @@ namespace OpenDominion\Http\Controllers\Staff\Moderator;
 
 use Carbon\Carbon;
 use DateInterval;
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\UserActivity;
 use OpenDominion\Services\GameEventService;
 
 class DominionController extends AbstractController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $dominions = Dominion::with(['round'])->get();
+        $rounds = Round::all()->sortByDesc('start_date');
+
+        $selectedRound = $request->input('round');
+        if ($selectedRound) {
+            $round = Round::findOrFail($selectedRound);
+        } else {
+            $round = $rounds->first();
+        }
+
+        $dominions = Dominion::with(['round'])->where('round_id', $round->id)->get();
 
         return view('pages.staff.moderator.dominions.index', [
+            'round' => $round,
+            'rounds' => $rounds,
             'dominions' => $dominions,
             'landCalculator' => app(LandCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
