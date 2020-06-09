@@ -269,6 +269,10 @@ class Dominion extends AbstractModel
     public function save(array $options = [])
     {
         $recordChanges = isset($options['event']);
+        if ($recordChanges) {
+            $dominionHistoryService = app(HistoryService::class);
+            $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
+        }
 
         // Verify tick hasn't happened during this request
         if ($this->exists && $this->last_tick_at != $this->fresh()->last_tick_at) {
@@ -278,8 +282,6 @@ class Dominion extends AbstractModel
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
-            $dominionHistoryService = app(HistoryService::class);
-            $deltaAttributes = $dominionHistoryService->getDeltaAttributes($this);
             $extraAttributes = ['action', 'defense_reduced', 'source_dominion_id', 'target_dominion_id'];
             foreach ($extraAttributes as $attr) {
                 if (isset($options[$attr])) {
