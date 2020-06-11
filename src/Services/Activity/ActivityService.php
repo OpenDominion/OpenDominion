@@ -31,7 +31,7 @@ class ActivityService
      *
      * @return string|null
      */
-    protected function getDeviceString(): ?string
+    public function getDeviceString(): ?string
     {
         $userAgent = request()->userAgent();
 
