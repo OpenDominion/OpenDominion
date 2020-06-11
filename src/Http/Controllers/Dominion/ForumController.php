@@ -23,7 +23,7 @@ class ForumController extends AbstractDominionController
         $forumService = app(ForumService::class);
         $protectionService = app(ProtectionService::class);
 
-        $announcements = $dominion->round->forumAnnouncements()->get();
+        $announcements = $dominion->round->forumAnnouncements()->orderBy('created_at', 'desc')->get();
         $threads = $forumService->getThreads($dominion->round);
 
         return view('pages.dominion.forum.index', [
