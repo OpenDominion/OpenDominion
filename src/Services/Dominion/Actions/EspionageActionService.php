@@ -192,6 +192,10 @@ class EspionageActionService
                 'target_dominion_id' => $target->id
             ]);
 
+            if ($dominion->fresh()->spy_strength < 25) {
+                throw new GameException("Your spies have run out of strength");
+            }
+
             $target->save([
                 'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
                 'action' => $operationKey,
