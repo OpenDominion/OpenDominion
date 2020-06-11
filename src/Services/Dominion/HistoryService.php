@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion;
 use DateTime;
 use LogicException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Activity\ActivityService;
 
 class HistoryService
 {
@@ -81,9 +82,13 @@ class HistoryService
             return;
         }
 
+        $activityService = app(ActivityService::class);
+
         $dominion->history()->create([
             'event' => $event,
             'delta' => $deltaAttributes,
+            'ip' => request()->ip(),
+            'device' => $activityService->getDeviceString(),
         ]);
     }
 
