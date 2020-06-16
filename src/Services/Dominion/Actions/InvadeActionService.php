@@ -725,9 +725,11 @@ class InvadeActionService
             if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'warsong')) {
                 // todo: needs a more generic solution later
                 if ($this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+                    $eventName = 'landVerdantBloom';
                     $landRezoneType = 'forest';
                     $landRezonePercentage = 35;
                 } else {
+                    $eventName = 'landErosion';
                     $landRezoneType = 'water';
                     $landRezonePercentage = 20;
                 }
@@ -747,10 +749,10 @@ class InvadeActionService
                 }
                 $this->invasionResult['attacker']['landGenerated'][$landRezoneType] += $landRezonedGenerated;
 
-                if (!isset($this->invasionResult['attacker']['landErosion'])) {
-                    $this->invasionResult['attacker']['landErosion'] = 0;
+                if (!isset($this->invasionResult['attacker'][$eventName])) {
+                    $this->invasionResult['attacker'][$eventName] = 0;
                 }
-                $this->invasionResult['attacker']['landErosion'] += ($landRezonedConquered + $landRezonedGenerated);
+                $this->invasionResult['attacker'][$eventName] += ($landRezonedConquered + $landRezonedGenerated);
             }
 
             if (!isset($landGainedPerLandType["land_{$landType}"])) {

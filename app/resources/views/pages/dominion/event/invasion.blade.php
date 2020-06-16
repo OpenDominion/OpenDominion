@@ -217,10 +217,17 @@
                                 @endif
                             @endif
 
+                            @if (isset($event->data['attacker']['landVerdantBloom']))
+                                @if ($event->source->id === $selectedDominion->id)
+                                    <p class="text-center text-green">
+                                        Additionally, {{ number_format($event->data['attacker']['landVerdantBloom']) }} acres will be converted to forest due to Verdant Bloom.
+                                    </p>
+                                @endif
+                            @endif
                             @if (isset($event->data['attacker']['landErosion']))
                                 @if ($event->source->id === $selectedDominion->id)
                                     <p class="text-center text-green">
-                                        Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to erosion.
+                                        Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to Erosion.
                                     </p>
                                 @endif
                             @endif
