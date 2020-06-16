@@ -155,7 +155,6 @@ class MilitaryCalculator
         $spellHowling = 10;
         $spellKillingRage = 10;
         $spellNightfall = 5;
-        $spellWarsong = 10;
 
         // Gryphon Nests
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -214,10 +213,6 @@ class MilitaryCalculator
             if (isset($dominion->calc['nightfall'])) {
                 $multiplier += ($spellNightfall / 100);
             }
-
-            if (isset($dominion->calc['warsong'])) {
-                $multiplier += ($spellWarsong / 100);
-            }
         } else {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
                 'bloodrage' => $spellBloodrage,
@@ -225,7 +220,6 @@ class MilitaryCalculator
                 'howling' => $spellHowling,
                 'killing_rage' => $spellKillingRage,
                 'nightfall' => $spellNightfall,
-                'warsong' => $spellWarsong,
             ]);
         }
 
@@ -810,6 +804,16 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
+        // Values (percentages)
+        $forestHavenBonus = 2;
+        $forestHavenBonusMax = 20;
+
+        // Forest Havens
+        $multiplier += min(
+            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenBonus),
+            ($forestHavenBonusMax / 100)
+        );
+
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('spy_strength');
 
@@ -881,6 +885,16 @@ class MilitaryCalculator
     public function getWizardRatioMultiplier(Dominion $dominion): float
     {
         $multiplier = 1;
+
+        // Values (percentages)
+        $wizardGuildBonus = 2;
+        $wizardGuildBonusMax = 20;
+
+        // Wizard Guilds
+        $multiplier += min(
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
+            ($wizardGuildBonusMax / 100)
+        );
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');

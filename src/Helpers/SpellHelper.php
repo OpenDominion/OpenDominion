@@ -231,8 +231,8 @@ class SpellHelper
                 'races' => collect(['Kobold']),
             ],
             [
-                'name' => 'Warsong',
-                'description' => '+10% offensive power',
+                'name' => 'Verdant Bloom',
+                'description' => '35% of captured land re-zoned into forest',
                 'key' => 'warsong',
                 'mana_cost' => 5,
                 'duration' => 12,

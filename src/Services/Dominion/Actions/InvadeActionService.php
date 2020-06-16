@@ -55,9 +55,9 @@ class InvadeActionService
     protected const OVERWHELMED_PERCENTAGE = 15.0;
 
     /**
-     * @var float Percentage of attacker prestige used to cap prestige gains
+     * @var float Used to cap prestige gain formula
      */
-    protected const PRESTIGE_CAP_PERCENTAGE = 15.0;
+    protected const PRESTIGE_CAP = 130;
 
     /**
      * @var int Bonus prestige when invading successfully
@@ -370,7 +370,7 @@ class InvadeActionService
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = min(
                 $target->prestige * (($range / 100) / 10), // Gained through invading
-                $dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100) // But capped based on your current prestige
+                static::PRESTIGE_CAP // But capped at 130
             ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
@@ -721,11 +721,16 @@ class InvadeActionService
             $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
             $landGained = ($landConquered + $landGenerated);
 
-            // Racial Spell: Erosion (Lizardfolk, Merfolk)
-            if ($this->spellCalculator->isSpellActive($dominion, 'erosion')) {
+            // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan, formerly Warsong)
+            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'warsong')) {
                 // todo: needs a more generic solution later
-                $landRezoneType = 'water';
-                $landRezonePercentage = 20;
+                if ($this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+                    $landRezoneType = 'forest';
+                    $landRezonePercentage = 35;
+                } else {
+                    $landRezoneType = 'water';
+                    $landRezonePercentage = 20;
+                }
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
                 $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
