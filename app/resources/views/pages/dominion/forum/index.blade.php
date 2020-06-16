@@ -46,6 +46,7 @@
                             @endif
                         </tbody>
                         <thead>
+                            <tr><td colspan="3"><!-- Separator --></td></tr>
                             <tr>
                                 <th>Topics</th>
                                 <th class="text-center">Replies</th>
