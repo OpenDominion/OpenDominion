@@ -72,13 +72,6 @@ class CasualtiesCalculator
                 $multiplier = 0;
             }
 
-            // Range-based immortality
-            if (($multiplier !== 0) && (($immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) !== 0)) {
-                if ($landRatio >= ($immortalVsLandRange / 100)) {
-                    $multiplier = 0;
-                }
-            }
-
             if ($multiplier == 0) {
                 // Unit Perk: Kills Immortal
                 $unitsAtHomePerSlot = [];
@@ -103,6 +96,13 @@ class CasualtiesCalculator
                 // We have a unit with KI!
                 if ($unitsAtHomeKISlot !== null && $totalUnitsAtHome > 0) {
                     $multiplier = ($unitsAtHomePerSlot[$unitsAtHomeKISlot] / $totalUnitsAtHome);
+                }
+            }
+
+            // Range-based immortality
+            if (($multiplier !== 0) && (($immortalVsLandRange = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'immortal_vs_land_range')) !== 0)) {
+                if ($landRatio >= ($immortalVsLandRange / 100)) {
+                    $multiplier = 0;
                 }
             }
 
