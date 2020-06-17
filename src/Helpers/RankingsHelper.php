@@ -34,7 +34,7 @@ class RankingsHelper
                 'title_icon' => 'ra-helmet',
             ],
             [
-                'name' => 'Largest Attacking Dominions',
+                'name' => 'Most Land Conquered',
                 'key' => 'total-land-conquered',
                 'stat' => 'stat_total_land_conquered',
                 'stat_label' => 'Land Conquered',
@@ -42,7 +42,7 @@ class RankingsHelper
                 'title_icon' => 'ra-battered-axe',
             ],
             [
-                'name' => 'Largest Exploring Dominions',
+                'name' => 'Most Land Explored',
                 'key' => 'total-land-explored',
                 'stat' => 'stat_total_land_explored',
                 'stat_label' => 'Land Explored',
@@ -64,6 +64,22 @@ class RankingsHelper
                 'stat_label' => 'Prestige',
                 'title' => 'the Renowned',
                 'title_icon' => 'ra-gem-pendant',
+            ],
+            [
+                'name' => 'Most Fortified Dominions',
+                'key' => 'defending-success',
+                'stat' => 'stat_defending_success',
+                'stat_label' => 'Defending Successes',
+                'title' => 'the Indomitable',
+                'title_icon' => 'ra-bolt-shield',
+            ],
+            [
+                'name' => 'Most Invaded Dominions',
+                'key' => 'defending-failure',
+                'stat' => 'stat_defending_failure',
+                'stat_label' => 'Defending Failures',
+                'title' => 'the Defeated',
+                'title_icon' => 'ra-player-shot',
             ],
             [
                 'name' => 'Most Successful Spies',
@@ -248,7 +264,7 @@ class RankingsHelper
                 'stat_label' => 'Spies Disbanded',
                 'title' => 'the Mentalist',
                 'title_icon' => 'ra-aware',
-            ],
+            ]
         ])->keyBy('key')->toArray();
     }
 
