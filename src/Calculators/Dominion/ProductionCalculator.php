@@ -160,7 +160,7 @@ class ProductionCalculator
      *
      * Food is produced by:
      * - Building: Farm (80 per)
-     * - Building: Dock (35 per)
+     * - Building: Dock (40 per)
      *
      * @param Dominion $dominion
      * @return float
@@ -171,7 +171,7 @@ class ProductionCalculator
 
         // Values
         $foodPerFarm = 80;
-        $foodPerDock = 35;
+        $foodPerDock = 40;
 
         // Building: Farm
         $food += ($dominion->building_farm * $foodPerFarm);
@@ -738,7 +738,7 @@ class ProductionCalculator
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2;
 
         return $multiplier;
     }

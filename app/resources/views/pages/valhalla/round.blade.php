@@ -128,15 +128,14 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-conquered']) }}">Largest Attacking Realms<br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-attacking-success']) }}">Most Victorious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-attacking-success']) }}">Most Victorious Realms</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-success']) }}">Most Fortified Dominions</a><br>
                 </div>
                 <div class="col-sm-6 text-center">
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-explored']) }}">Largest Exploring Dominions<br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-explored']) }}">Largest Exploring Realms<br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-prestige']) }}">Most Prestigious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-prestige']) }}">Most Prestigious Realms</a><br>
-                    <!--
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-success']) }}">Most Fortified Dominions</a><br>
-                    -->
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-failure']) }}">Most Invaded Dominions</a><br>
                 </div>
             </div>
 
