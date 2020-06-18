@@ -372,7 +372,7 @@ class SpellHelper
                 'name' => 'Fireball',
                 'description' => 'Kills peasants and destroys crops',
                 'key' => 'fireball',
-                'mana_cost' => 3.3,
+                'mana_cost' => 3,
                 'decreases' => ['peasants', 'resource_food'],
                 'percentage' => 2.5,
             ],
@@ -380,7 +380,7 @@ class SpellHelper
                 'name' => 'Lightning Bolt',
                 'description' => 'Destroys resources invested in castle',
                 'key' => 'lightning_bolt',
-                'mana_cost' => 4,
+                'mana_cost' => 3.5,
                 'decreases' => [
                     'improvement_keep',
                     'improvement_towers',
