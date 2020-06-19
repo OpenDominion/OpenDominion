@@ -160,7 +160,7 @@ class ProductionCalculator
      *
      * Food is produced by:
      * - Building: Farm (80 per)
-     * - Building: Dock (40 per)
+     * - Building: Dock (35 per)
      *
      * @param Dominion $dominion
      * @return float
@@ -171,7 +171,7 @@ class ProductionCalculator
 
         // Values
         $foodPerFarm = 80;
-        $foodPerDock = 40;
+        $foodPerDock = 35;
 
         // Building: Farm
         $food += ($dominion->building_farm * $foodPerFarm);
