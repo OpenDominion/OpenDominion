@@ -519,10 +519,8 @@ class MilitaryCalculator
             $unitPower += $this->getUnitPowerFromStaggeredLandRangePerk($dominion, $landRatio, $unit, $powerType);
         }
 
-        if ($target !== null || ($dominion->calc !== null && !isset($dominion->calc['invasion']))) {
-            $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
-            $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType);
-        }
+        $unitPower += $this->getUnitPowerFromVersusRacePerk($dominion, $target, $unit, $powerType);
+        $unitPower += $this->getUnitPowerFromVersusBuildingPerk($dominion, $target, $unit, $powerType);
 
         return $unitPower;
     }
@@ -712,7 +710,7 @@ class MilitaryCalculator
 
     protected function getUnitPowerFromVersusBuildingPerk(Dominion $dominion, Dominion $target = null, Unit $unit, string $powerType): float
     {
-        if ($target === null && $dominion->calc == null) {
+        if ($target === null && $dominion->calc === null) {
             return 0;
         }
 
