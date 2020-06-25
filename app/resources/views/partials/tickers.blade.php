@@ -2,7 +2,7 @@
     use Carbon\Carbon;
     use OpenDominion\Services\Dominion\SelectorService;
     $selectedDominion = app(SelectorService::class)->getUserSelectedDominion();
-
+    $secondsUntilStart = 0;
     if($selectedDominion) {
         $round = $selectedDominion->round;
         $secondsUntilStart = $round->start_date->diffInSeconds(Carbon::now());
