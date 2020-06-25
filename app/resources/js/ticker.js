@@ -7,6 +7,8 @@ class Ticker {
     constructor() {
         this.tickerServerElement = null;
         this.tickerNextHourElement = null;
+        this.tickerNextRoundElement = null;
+        this.nextRoundStartDate = null;
     }
 
     /**
@@ -15,11 +17,16 @@ class Ticker {
     start() {
         this.tickerServerElement = document.getElementById('ticker-server');
         this.tickerNextHourElement = document.getElementById('ticker-next-tick');
+        this.tickerNextRoundElement = document.getElementById('ticker-next-round');
 
         // Only tick if the ticker element is visible; i.e. not on the homepage
         if (this.tickerServerElement !== null) {
             const self = this;
             setInterval(() => self.tick(), 1000);
+        }
+
+        if(this.tickerNextRoundElement !== null) {
+            this.nextRoundStartDate = new Date(this.tickerNextRoundElement.dataset.value);
         }
     }
 
@@ -33,15 +40,29 @@ class Ticker {
         const currentTime = new Date('1970-01-01T' + currentServerTime + 'Z');
         currentTime.setUTCSeconds(currentTime.getUTCSeconds() + 1);
 
-        const nextHour = new Date(currentTime.toString());
-        nextHour.setUTCHours(currentTime.getUTCHours() + 1);
-        nextHour.setMinutes(0);
-        nextHour.setSeconds(0);
-
-        const diffDate = (nextHour - currentTime);
-
         this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
-        this.tickerNextHourElement.innerHTML = Ticker.hms(diffDate);
+        if (this.tickerNextHourElement !== null) {
+
+            const nextHour = new Date(currentTime.toString());
+            nextHour.setUTCHours(currentTime.getUTCHours() + 1);
+            nextHour.setMinutes(0);
+            nextHour.setSeconds(0);
+
+            const diffDate = (nextHour - currentTime);
+            this.tickerNextHourElement.innerHTML = Ticker.hms(diffDate);
+        } else if(this.tickerNextRoundElement !== null){
+            // const nextRoundIn = this.tickerNextRoundElement.innerHTML;
+            // const nextRoundTime = new Date('1970-01-01T' + nextRoundIn + 'Z');
+            // nextRoundTime.setUTCSeconds(nextRoundTime.getUTCSeconds() - 1);
+
+            // this.tickerNextRoundElement.innerHTML = Ticker.hms(Ticker.utc(nextRoundTime));
+
+            const diffDate = (this.nextRoundStartDate - new Date());
+
+            if(diffDate > 0) {
+                this.tickerNextRoundElement.innerHTML = Ticker.hms(diffDate);
+            }
+        }
     }
 
     /**
@@ -63,9 +84,19 @@ class Ticker {
 
         } else if (typeof value === 'number') {
             value /= 1000;
-            seconds = value % 60;
-            minutes = (value - seconds) / 60;
-            hours = (value - (minutes * 60) - seconds) / 60;
+
+            if(value < 3600) {
+                seconds = value % 60;
+                minutes = (value - seconds) / 60;
+                hours = (value - (minutes * 60) - seconds) / 60;
+            } else {
+                let tempValue = value;
+                hours = Math.floor(tempValue / 3600);
+                tempValue -= hours * 3600;
+                minutes = Math.floor(tempValue / 60);
+                tempValue -= minutes * 60;
+                seconds = Math.floor(tempValue);
+            }
         }
 
         return (
