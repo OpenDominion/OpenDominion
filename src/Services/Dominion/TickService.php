@@ -551,7 +551,10 @@ class TickService
             // Calculate current statistics
             $statistics = [];
             foreach ($activeDominions as $dominion) {
+                $isLocked = $dominion->locked_at !== null;
+
                 foreach ($this->rankingsHelper->getRankings() as $ranking) {
+
                     if ($ranking['stat'] == 'land') {
                         $value = $this->landCalculator->getTotalLand($dominion);
                     } elseif ($ranking['stat'] == 'networth') {
@@ -560,7 +563,13 @@ class TickService
                         $value = $dominion->{$ranking['stat']};
                     }
 
-                    if ($value != 0) {
+                    $zeroOutRank = false;
+                    if($value != 0 && $isLocked) {
+                        $value = 0;
+                        $zeroOutRank = true;
+                    }
+
+                    if ($value != 0 || $zeroOutRank) {
                         $statistics[] = [
                             'round_id' => $round->id,
                             'dominion_id' => $dominion->id,
