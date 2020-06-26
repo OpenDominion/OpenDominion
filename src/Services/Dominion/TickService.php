@@ -120,6 +120,8 @@ class TickService
                 }
             }
         }
+
+        Log::debug('Hourly tick finished');
     }
 
     /**
@@ -289,10 +291,13 @@ class TickService
      */
     public function tickDaily()
     {
-        Log::debug('Daily tick started');
-
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
+                // Only runs once daily
+                if ($round->start_date->hour != now()->hour) {
+                    continue;
+                }
+
                 // toBase required to prevent ambiguous updated_at column in query
                 $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                     'daily_platinum' => false,
@@ -302,8 +307,6 @@ class TickService
                 ]);
             }
         });
-
-        Log::info('Daily tick finished');
     }
 
     protected function cleanupActiveSpells(Dominion $dominion)
@@ -539,10 +542,17 @@ class TickService
 
     public function updateDailyRankings(): void
     {
+        Log::debug('Daily rankings started');
+
         // Update rankings
         $activeRounds = Round::activeRankings()->get();
 
         foreach ($activeRounds as $round) {
+            // Only run once daily
+            if ($round->start_date->hour != now()->hour) {
+                continue;
+            }
+
             $activeDominions = $round->dominions()->with([
                 'race',
                 'realm',
@@ -618,5 +628,7 @@ class TickService
                 ['rank', 'previous_rank'],
             );
         }
+
+        Log::debug('Daily rankings finished');
     }
 }
