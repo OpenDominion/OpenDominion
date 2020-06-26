@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.10.0] - 2020-06-25
 ### Added
 - Two new Titles: the Indomitable (defending success) and the Defeated (defending failure)!
 
@@ -11,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Maximum number of packed players per realm increased to 7 (from 5)
 - Players in packs of maximum size must select 5 unique races
 - Race changes are limited to 3 players of a specific race amongst all packed players in a realm
+- NPDs per realm increased to 2, realm size increased
 - You can no longer redeclare war on the same realm for 24 hours after canceling
 - Prestige cap for invasion changed to a flat 150 (from 15% of current prestige)
 - Spell mana costs: Revelation decreased to 1x (from 1.2x), Vision increased to 1x (from 0.5x), Fireball decreased to 3x (from 3.3x), Lightning Bolt decreased to 3.5x (from 4x)
