@@ -1,5 +1,6 @@
 'use strict';
 
+require('./momentum.js');
 require('./bootstrap');
 
 $(() => {
