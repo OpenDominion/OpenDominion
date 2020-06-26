@@ -24,7 +24,7 @@ class ImprovementHelper
             'towers' => '+%s%% wizard power, mana production, spell damage reduction',
             'forges' => '+%s%% offensive power',
             'walls' => '+%s%% defensive power',
-            'harbor' => '+%s%% food production, boat production & protection',
+            'harbor' => '+%s%% food production, +%s%% boat production & protection',
         ];
 
         return $ratingStrings[$improvementType] ?: null;

@@ -7,7 +7,6 @@ home_land_type: forest
 perks:
   lumber_production: 20
   food_production: 10
-  rezone_cost: -10
 units:
   - name: Satyr
     cost:
@@ -39,7 +38,7 @@ units:
       platinum: 900
       ore: 70
     power:
-      offense: 5
+      offense: 5.5
       defense: 2
     perks:
       faster_return: 3

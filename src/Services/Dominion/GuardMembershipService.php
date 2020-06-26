@@ -8,7 +8,7 @@ use OpenDominion\Models\Dominion;
 class GuardMembershipService
 {
     // todo: use these constants in views/messages
-    public const GUARD_DAYS_AFTER_ROUND_START = 5;
+    public const GUARD_HOURS_AFTER_ROUND_START = 24 * 5;
     public const GUARD_JOIN_WAIT_IN_HOURS = 24;
     public const GUARD_LEAVE_WAIT_IN_HOURS = 48;
 
@@ -24,7 +24,7 @@ class GuardMembershipService
     public function canJoinGuards(Dominion $dominion): bool
     {
         /** @noinspection IfReturnReturnSimplificationInspection */
-        if (now()->diffInDays($dominion->round->start_date) < self::GUARD_DAYS_AFTER_ROUND_START) {
+        if (now()->diffInHours($dominion->round->start_date) < self::GUARD_HOURS_AFTER_ROUND_START) {
             return false;
         }
 

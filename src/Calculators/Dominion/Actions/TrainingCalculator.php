@@ -167,7 +167,7 @@ class TrainingCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $forestHavenReduction = 2;
+        $forestHavenReduction = 4;
         $forestHavenReductionMax = 40;
 
         // Forest Havens
@@ -193,7 +193,7 @@ class TrainingCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $wizardGuildReduction = 2;
+        $wizardGuildReduction = 4;
         $wizardGuildReductionMax = 40;
 
         // Wizard Guilds

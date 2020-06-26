@@ -33,7 +33,7 @@ class GovernmentActionService
         $this->notificationService = $notificationService;
     }
 
-    public const WAR_DAYS_AFTER_ROUND_START = 5;
+    public const WAR_HOURS_AFTER_ROUND_START = 24 * 5;
 
     /**
      * Casts a Dominion's vote for monarch.
@@ -122,8 +122,18 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
-        if (now()->diffInDays($dominion->round->start_date) < self::WAR_DAYS_AFTER_ROUND_START) {
-            throw new GameException('You cannot declare war for the first five days of the round');
+        $recentWars = GameEvent::where([
+            'type' => 'war_canceled',
+            'source_id' => $dominion->realm->id,
+            'target_id' => $target->id,
+        ])->where('created_at', '>', now()->startOfHour()->subHours(23))->get();
+
+        if (!$recentWars->isEmpty()) {
+            throw new GameException('You cannot redeclare war on the same realm within 24 hours of canceling.');
+        }
+
+        if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {
+            throw new GameException('You cannot declare war for the first five days of the round.');
         }
 
         GameEvent::create([

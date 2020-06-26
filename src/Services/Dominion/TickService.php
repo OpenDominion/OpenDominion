@@ -92,34 +92,39 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::all();
             foreach ($round->realms as $realm) {
-                if ($realm->alignment != 'neutral') {
-                    $race = $races->where('alignment', $realm->alignment)->random();
-                } else {
-                    $race = $races->random();
-                }
-                $dominion = null;
-                $failCount = 0;
-                while ($dominion == null && $failCount < 3) {
-                    $rulerName = $names->random();
-                    $dominionName = $names->random();
-                    if (strlen($rulerName) > strlen($dominionName)) {
-                        $swap = $rulerName;
-                        $rulerName = $dominionName;
-                        $dominionName = $swap;
-                    }
-                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
-                    if ($dominion) {
-                        // Tick ahead a few times
-                        $this->precalculateTick($dominion);
-                        $this->performTick($round, $dominion);
-                        $this->performTick($round, $dominion);
-                        $this->performTick($round, $dominion);
+                // Number of NPDs per realm (count = 2)
+                for($cnt=0; $cnt<2; $cnt++) {
+                    if ($realm->alignment != 'neutral') {
+                        $race = $races->where('alignment', $realm->alignment)->random();
                     } else {
-                        $failCount++;
+                        $race = $races->random();
+                    }
+                    $dominion = null;
+                    $failCount = 0;
+                    while ($dominion == null && $failCount < 3) {
+                        $rulerName = $names->random();
+                        $dominionName = $names->random();
+                        if (strlen($rulerName) > strlen($dominionName)) {
+                            $swap = $rulerName;
+                            $rulerName = $dominionName;
+                            $dominionName = $swap;
+                        }
+                        $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                        if ($dominion) {
+                            // Tick ahead a few times
+                            $this->precalculateTick($dominion);
+                            $this->performTick($round, $dominion);
+                            $this->performTick($round, $dominion);
+                            $this->performTick($round, $dominion);
+                        } else {
+                            $failCount++;
+                        }
                     }
                 }
             }
         }
+
+        Log::debug('Hourly tick finished');
     }
 
     /**
@@ -289,10 +294,13 @@ class TickService
      */
     public function tickDaily()
     {
-        Log::debug('Daily tick started');
-
         DB::transaction(function () {
             foreach (Round::with('dominions')->active()->get() as $round) {
+                // Only runs once daily
+                if ($round->start_date->hour != now()->hour) {
+                    continue;
+                }
+
                 // toBase required to prevent ambiguous updated_at column in query
                 $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                     'daily_platinum' => false,
@@ -302,8 +310,6 @@ class TickService
                 ]);
             }
         });
-
-        Log::info('Daily tick finished');
     }
 
     protected function cleanupActiveSpells(Dominion $dominion)
@@ -510,7 +516,7 @@ class TickService
 
             $wizardStrengthAdded += $dominion->getTechPerkValue('wizard_strength_recovery');
 
-            if ($dominion->wizard_strength < 30) {
+            if ($dominion->wizard_strength < 25) {
                 $wizardStrengthAdded += 1;
             }
 
@@ -539,10 +545,17 @@ class TickService
 
     public function updateDailyRankings(): void
     {
+        Log::debug('Daily rankings started');
+
         // Update rankings
         $activeRounds = Round::activeRankings()->get();
 
         foreach ($activeRounds as $round) {
+            // Only run once daily
+            if ($round->start_date->hour != now()->hour) {
+                continue;
+            }
+
             $activeDominions = $round->dominions()->with([
                 'race',
                 'realm',
@@ -551,7 +564,10 @@ class TickService
             // Calculate current statistics
             $statistics = [];
             foreach ($activeDominions as $dominion) {
+                $isLocked = $dominion->locked_at !== null;
+
                 foreach ($this->rankingsHelper->getRankings() as $ranking) {
+
                     if ($ranking['stat'] == 'land') {
                         $value = $this->landCalculator->getTotalLand($dominion);
                     } elseif ($ranking['stat'] == 'networth') {
@@ -560,7 +576,13 @@ class TickService
                         $value = $dominion->{$ranking['stat']};
                     }
 
-                    if ($value != 0) {
+                    $zeroOutRank = false;
+                    if($value != 0 && $isLocked) {
+                        $value = 0;
+                        $zeroOutRank = true;
+                    }
+
+                    if ($value != 0 || $zeroOutRank) {
                         $statistics[] = [
                             'round_id' => $round->id,
                             'dominion_id' => $dominion->id,
@@ -609,5 +631,7 @@ class TickService
                 ['rank', 'previous_rank'],
             );
         }
+
+        Log::debug('Daily rankings finished');
     }
 }

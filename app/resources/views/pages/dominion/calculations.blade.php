@@ -491,12 +491,12 @@
                                         $racialSpell = $spellHelper->getRacialSelfSpell($race);
                                     @endphp
                                     <div class="col-xs-3 text-right">
-                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'howling', 'killing_rage', 'nightfall', 'warsong']))
+                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'howling', 'killing_rage', 'nightfall']))
                                             {{ $racialSpell['name'] }}
                                         @endif
                                     </div>
                                     <div class="col-xs-3 text-left">
-                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'howling', 'killing_rage', 'nightfall', 'warsong']))
+                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'howling', 'killing_rage', 'nightfall']))
                                             <input type="checkbox"
                                                     step="any"
                                                     name="calc[{{ $racialSpell['key'] }}]"

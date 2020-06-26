@@ -3,6 +3,26 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Two new Titles: the Indomitable (defending success) and the Defeated (defending failure)!
+
+### Changed
+- Maximum pack size increased to 5 (from 4)
+- Maximum number of packed players per realm increased to 7 (from 5)
+- Players in packs of maximum size must select 5 unique races
+- Race changes are limited to 3 players of a specific race amongst all packed players in a realm
+- You can no longer redeclare war on the same realm for 24 hours after canceling
+- Prestige cap for invasion changed to a flat 150 (from 15% of current prestige)
+- Spell mana costs: Revelation decreased to 1x (from 1.2x), Vision increased to 1x (from 0.5x), Fireball decreased to 3x (from 3.3x), Lightning Bolt decreased to 3.5x (from 4x)
+- Harbor Improvement: bonuses are doubled for boat protection/production
+- Forest Havens: now increase spy power by 2% per 1% owned (max +20% at 10%), training cost reduction increased to 4% per 1% owned (max -40% at 10%)
+- Wizard Guilds: now increase wizard power by 2% per 1% owned (max +20% at 10%), training cost reduction increased to 4% per 1% owned (max -40% at 10%), spell cost reduction changed to 3% per 1% owned (max -30% at 10%)
+- Dark Elf: Removed +10% wizard strength
+- Dark Elf Adept: Wizard Guild requirement decreased to 8% (from 10%) per point
+- Lycanthrope: Homes moved to forest (from cavern)
+- Orc Voodoo Magi: Added reduces combat losses, prestige requirement decreased to 500 (from 600) per point, +30p
+- Sylvan: Removed -10% rezone cost, Warsong removed, new spell Verdant Bloom: 35% of conquered acres are automatically rezoned to forest
+- Sylvan Centaur: Offense increased to 5.5 (from 5)
 
 ## [0.9.0-11] - 2020-06-11
 ### Added

@@ -12,6 +12,7 @@ use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\TickService;
+use OpenDominion\Services\PackService;
 
 // misc functions, probably could use a refactor later
 class MiscController extends AbstractDominionController
@@ -43,6 +44,7 @@ class MiscController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
 
         $dominionFactory = app(DominionFactory::class);
+        $packService = app(PackService::class);
         $protectionService = app(ProtectionService::class);
 
         $this->validate($request, [
@@ -84,38 +86,13 @@ class MiscController extends AbstractDominionController
                 }
             }
 
-            if ($dominion->pack_id !== null && (int)$dominion->round->players_per_race !== 0) {
-                $otherRaceId = null;
-
-                if (((int)$dominion->round->players_per_race !== 0)) {
-                    if ($race->name === 'Spirit') {
-                        // Count Undead with Spirit
-                        $otherRaceId = Race::where('name', 'Undead')->firstOrFail()->id;
-                    } elseif ($race->name === 'Undead') {
-                        // Count Spirit with Undead
-                        $otherRaceId = Race::where('name', 'Spirit')->firstOrFail()->id;
-                    } elseif ($race->name === 'Nomad') {
-                        // Count Human with Nomad
-                        $otherRaceId = Race::where('name', 'Human')->firstOrFail()->id;
-                    } elseif ($race->name === 'Human') {
-                        // Count Nomad with Human
-                        $otherRaceId = Race::where('name', 'Nomad')->firstOrFail()->id;
-                    }
+            if ($dominion->pack_id !== null && $dominion->race_id !== $race->id && (int)$dominion->round->players_per_race !== 0) {
+                if (!$packService->checkRaceLimitForPack($dominion->pack, $race)) {
+                    throw new GameException('Selected race has already been chosen by the maximum number of players in your pack.');
                 }
 
-                $pack = Pack::where('id', $dominion->pack->id)->withCount([
-                    'dominions',
-                    'dominions AS players_with_race' => static function (Builder $query) use ($dominion, $race, $otherRaceId) {
-                        $query->where('race_id', $race->id)->where('id', '!=', $dominion->id);
-        
-                        if ($otherRaceId) {
-                            $query->orWhere('race_id', $otherRaceId)->where('id', '!=', $dominion->id);
-                        }
-                    }
-                ])->first();
-
-                if ($pack->players_with_race >= $dominion->round->players_per_race) {
-                    throw new GameException('Selected race has already been chosen by the maximum amount of players.');
+                if (!$packService->checkRaceLimitForRealm($dominion->realm, $race)) {
+                    throw new GameException('Selected race has already been chosen by the maximum number of players in your realm.');
                 }
             }
         } catch (GameException $e) {

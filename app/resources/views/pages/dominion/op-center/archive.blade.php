@@ -317,7 +317,8 @@
                                         <td>
                                             {{ sprintf(
                                                 $improvementHelper->getImprovementRatingString($improvementType),
-                                                number_format((array_get($infoOp->data, "{$improvementType}.rating") * 100), 2)
+                                                number_format((array_get($infoOp->data, "{$improvementType}.rating") * 100), 2),
+                                                number_format((array_get($infoOp->data, "{$improvementType}.rating") * 100 * 2), 2)
                                             ) }}
                                         </td>
                                         <td class="text-center">{{ number_format(array_get($infoOp->data, "{$improvementType}.points")) }}</td>

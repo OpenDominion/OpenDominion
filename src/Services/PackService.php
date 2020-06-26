@@ -7,6 +7,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 
 class PackService
@@ -54,9 +55,45 @@ class PackService
      */
     public function getPack(Round $round, string $packName, string $packPassword, Race $race): Pack
     {
-        $otherRaceId = null;
+        $pack = Pack::where([
+            'round_id' => $round->id,
+            'name' => $packName,
+            'password' => $packPassword,
+        ])->first();
 
-        if (((int)$round->players_per_race !== 0)) {
+        if (!$pack) {
+            throw new GameException('Pack with specified name/password was not found.');
+        }
+
+        if ($pack->remainingSlots() <= 0) {
+            throw new GameException('Pack is already full.');
+        }
+
+        if (!$this->checkRaceLimitForPack($pack, $race)) {
+            throw new GameException('Selected race has already been chosen by the maximum number of players.');
+        }
+
+        if (!$round->mixed_alignment && ($pack->realm->alignment !== $race->alignment)) {
+            throw new GameException(sprintf(
+                'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
+                (($pack->realm->alignment === 'evil') ? 'an' : 'a'),
+                $pack->realm->alignment
+            ));
+        }
+
+        return $pack;
+    }
+
+    public function checkRaceLimitForPack(Pack $pack, Race $race): bool
+    {
+        $otherRaceId = null;
+        $playersPerRace = (int)$pack->round->players_per_race;
+        if ($pack->size >= $pack->round->pack_size) {
+            // Packs of maximum size must use unique races
+            $playersPerRace = 1;
+        }
+
+        if ($playersPerRace !== 0) {
             if ($race->name === 'Spirit') {
                 // Count Undead with Spirit
                 $otherRaceId = Race::where('name', 'Undead')->firstOrFail()->id;
@@ -72,12 +109,7 @@ class PackService
             }
         }
 
-        $pack = Pack::where([
-            'round_id' => $round->id,
-            'name' => $packName,
-            'password' => $packPassword,
-        ])->withCount([
-            'dominions',
+        $pack = Pack::where('id', $pack->id)->withCount([
             'dominions AS players_with_race' => static function (Builder $query) use ($race, $otherRaceId) {
                 $query->where('race_id', $race->id);
 
@@ -87,26 +119,28 @@ class PackService
             }
         ])->first();
 
-        if (!$pack) {
-            throw new GameException('Pack with specified name/password was not found.');
+        if (($playersPerRace !== 0) && ($pack->players_with_race >= $playersPerRace)) {
+            return false;
         }
 
-        if ($pack->dominions_count >= $pack->size) {
-            throw new GameException('Pack is already full.');
+        return true;
+    }
+
+    public function checkRaceLimitForRealm(Realm $realm, Race $race): bool
+    {
+        $packCount = $realm->packs()->count();
+        if ($packCount > 1) {
+            $playersWithRace = $realm->packs->sum(
+                function ($pack) use ($race) {
+                    return $pack->dominions->where('race_id', $race->id)->count();
+                }
+            );
+            if ($playersWithRace >= 3) {
+                // Packs in the same realm cannot restart for more than 3 of single race
+                return false;
+            }
         }
 
-        if (((int)$round->players_per_race !== 0) && ($pack->players_with_race >= $round->players_per_race)) {
-            throw new GameException('Selected race has already been chosen by the maximum amount of players.');
-        }
-
-        if (!$round->mixed_alignment && ($pack->realm->alignment !== $race->alignment)) {
-            throw new GameException(sprintf(
-                'Selected race has wrong alignment to the rest of pack. Pack requires %s %s aligned race.',
-                (($pack->realm->alignment === 'evil') ? 'an' : 'a'),
-                $pack->realm->alignment
-            ));
-        }
-
-        return $pack;
+        return true;
     }
 }

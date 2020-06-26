@@ -55,9 +55,9 @@ class InvadeActionService
     protected const OVERWHELMED_PERCENTAGE = 15.0;
 
     /**
-     * @var float Percentage of attacker prestige used to cap prestige gains
+     * @var float Used to cap prestige gain formula
      */
-    protected const PRESTIGE_CAP_PERCENTAGE = 15.0;
+    protected const PRESTIGE_CAP = 130;
 
     /**
      * @var int Bonus prestige when invading successfully
@@ -368,10 +368,10 @@ class InvadeActionService
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
-            $attackerPrestigeChange = (int)round(min(
+            $attackerPrestigeChange = min(
                 $target->prestige * (($range / 100) / 10), // Gained through invading
-                $dominion->prestige * (static::PRESTIGE_CAP_PERCENTAGE / 100) // But capped based on your current prestige
-            )) + static::PRESTIGE_CHANGE_ADD;
+                static::PRESTIGE_CAP // But capped at 130
+            ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
             // War Bonus
@@ -399,6 +399,7 @@ class InvadeActionService
             }
         }
 
+        $attackerPrestigeChange = (int)round($attackerPrestigeChange);
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
                 // Unsuccessful invasions (bounces) give negative prestige immediately
@@ -720,11 +721,18 @@ class InvadeActionService
             $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
             $landGained = ($landConquered + $landGenerated);
 
-            // Racial Spell: Erosion (Lizardfolk, Merfolk)
-            if ($this->spellCalculator->isSpellActive($dominion, 'erosion')) {
+            // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan, formerly Warsong)
+            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'warsong')) {
                 // todo: needs a more generic solution later
-                $landRezoneType = 'water';
-                $landRezonePercentage = 20;
+                if ($this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+                    $eventName = 'landVerdantBloom';
+                    $landRezoneType = 'forest';
+                    $landRezonePercentage = 35;
+                } else {
+                    $eventName = 'landErosion';
+                    $landRezoneType = 'water';
+                    $landRezonePercentage = 20;
+                }
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
                 $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
@@ -741,10 +749,10 @@ class InvadeActionService
                 }
                 $this->invasionResult['attacker']['landGenerated'][$landRezoneType] += $landRezonedGenerated;
 
-                if (!isset($this->invasionResult['attacker']['landErosion'])) {
-                    $this->invasionResult['attacker']['landErosion'] = 0;
+                if (!isset($this->invasionResult['attacker'][$eventName])) {
+                    $this->invasionResult['attacker'][$eventName] = 0;
                 }
-                $this->invasionResult['attacker']['landErosion'] += ($landRezonedConquered + $landRezonedGenerated);
+                $this->invasionResult['attacker'][$eventName] += ($landRezonedConquered + $landRezonedGenerated);
             }
 
             if (!isset($landGainedPerLandType["land_{$landType}"])) {

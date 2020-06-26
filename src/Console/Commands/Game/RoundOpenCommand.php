@@ -15,16 +15,16 @@ class RoundOpenCommand extends Command implements CommandInterface
     /** @var string The name and signature of the console command. */
     protected $signature = 'game:round:open
                              {--now : Start the round right now (dev & testing only)}
-                             {--open : Start the round in +3 days midnight, allowing for immediate registration}
-                             {--days= : Start the round in +DAYS days midnight, allowing for more fine-tuning}
+                             {--days= : Start the round in +DAYS days midnight}
+                             {--hours= : Adjust the start time by +/-HOURS, allowing for more fine-tuning}
                              {--league=standard : Round league to use}
-                             {--realm-size=10 : Maximum number of dominions in one realm}
-                             {--pack-size=4 : Maximum number of players in a pack}
+                             {--realm-size=12 : Maximum number of dominions in one realm}
+                             {--pack-size=5 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
                              {--mixedAlignment=true : Allows for mixed alignments}';
 
     /** @var string The console command description. */
-    protected $description = 'Creates a new round which starts in 5 days';
+    protected $description = 'Creates a new round which starts in 3 days';
 
     /** @var RealmFactory */
     protected $realmFactory;
@@ -54,8 +54,8 @@ class RoundOpenCommand extends Command implements CommandInterface
     public function handle(): void
     {
         $now = $this->option('now');
-        $open = $this->option('open');
         $days = $this->option('days');
+        $hours = $this->option('hours');
         $league = $this->option('league');
         $realmSize = $this->option('realm-size');
         $packSize = $this->option('pack-size');
@@ -64,10 +64,6 @@ class RoundOpenCommand extends Command implements CommandInterface
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');
-        }
-
-        if (($now && $open) || ($now && $days) || ($open && $days)) {
-            throw new RuntimeException('Options --now, --open and --days are mutually exclusive');
         }
 
         if ($realmSize <= 0) {
@@ -86,21 +82,31 @@ class RoundOpenCommand extends Command implements CommandInterface
             throw new RuntimeException('Option --playersPerRace must be greater than or equal to 0.');
         }
 
-        if ($now) {
-            $startDate = 'now';
+        // Default to +3 days midnight
+        $numDays = 3;
+        $numHours = 0;
 
-        } elseif ($open) {
-            $startDate = '+3 days midnight';
-
-        } elseif ($days !== null) {
+        if ($days !== null) {
             if (!ctype_digit($days)) {
                 throw new RuntimeException('Option --days=DAYS must be an integer');
             }
+            $numDays = $days;
+        }
+        if ($hours !== null) {
+            if (!is_numeric($hours)) {
+                throw new RuntimeException('Option --hours=HOURS must be an integer');
+            }
+            $numHours = (int) $hours;
+        }
 
-            $startDate = "+{$days} days midnight";
-
+        if ($now) {
+            $startDate = 'now';
         } else {
-            $startDate = '+5 days midnight';
+            if ($numHours < 0) {
+                $startDate = "{$numDays} days midnight {$numHours} hours";
+            } else {
+                $startDate = "{$numDays} days midnight +{$numHours} hours";
+            }
         }
 
         $startDate = new Carbon($startDate);
