@@ -92,30 +92,33 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::all();
             foreach ($round->realms as $realm) {
-                if ($realm->alignment != 'neutral') {
-                    $race = $races->where('alignment', $realm->alignment)->random();
-                } else {
-                    $race = $races->random();
-                }
-                $dominion = null;
-                $failCount = 0;
-                while ($dominion == null && $failCount < 3) {
-                    $rulerName = $names->random();
-                    $dominionName = $names->random();
-                    if (strlen($rulerName) > strlen($dominionName)) {
-                        $swap = $rulerName;
-                        $rulerName = $dominionName;
-                        $dominionName = $swap;
-                    }
-                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
-                    if ($dominion) {
-                        // Tick ahead a few times
-                        $this->precalculateTick($dominion);
-                        $this->performTick($round, $dominion);
-                        $this->performTick($round, $dominion);
-                        $this->performTick($round, $dominion);
+                // Number of NPDs per realm (count = 2)
+                for($cnt=0; $cnt<2; $cnt++) {
+                    if ($realm->alignment != 'neutral') {
+                        $race = $races->where('alignment', $realm->alignment)->random();
                     } else {
-                        $failCount++;
+                        $race = $races->random();
+                    }
+                    $dominion = null;
+                    $failCount = 0;
+                    while ($dominion == null && $failCount < 3) {
+                        $rulerName = $names->random();
+                        $dominionName = $names->random();
+                        if (strlen($rulerName) > strlen($dominionName)) {
+                            $swap = $rulerName;
+                            $rulerName = $dominionName;
+                            $dominionName = $swap;
+                        }
+                        $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                        if ($dominion) {
+                            // Tick ahead a few times
+                            $this->precalculateTick($dominion);
+                            $this->performTick($round, $dominion);
+                            $this->performTick($round, $dominion);
+                            $this->performTick($round, $dominion);
+                        } else {
+                            $failCount++;
+                        }
                     }
                 }
             }
