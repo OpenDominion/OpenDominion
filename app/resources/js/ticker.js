@@ -42,7 +42,6 @@ class Ticker {
 
         this.tickerServerElement.innerHTML = Ticker.hms(Ticker.utc(currentTime));
         if (this.tickerNextHourElement !== null) {
-
             const nextHour = new Date(currentTime.toString());
             nextHour.setUTCHours(currentTime.getUTCHours() + 1);
             nextHour.setMinutes(0);
@@ -51,12 +50,6 @@ class Ticker {
             const diffDate = (nextHour - currentTime);
             this.tickerNextHourElement.innerHTML = Ticker.hms(diffDate);
         } else if(this.tickerNextRoundElement !== null){
-            // const nextRoundIn = this.tickerNextRoundElement.innerHTML;
-            // const nextRoundTime = new Date('1970-01-01T' + nextRoundIn + 'Z');
-            // nextRoundTime.setUTCSeconds(nextRoundTime.getUTCSeconds() - 1);
-
-            // this.tickerNextRoundElement.innerHTML = Ticker.hms(Ticker.utc(nextRoundTime));
-
             const diffDate = (this.nextRoundStartDate - new Date());
 
             if(diffDate > 0) {

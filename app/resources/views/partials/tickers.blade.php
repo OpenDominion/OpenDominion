@@ -3,9 +3,11 @@
     use OpenDominion\Services\Dominion\SelectorService;
     $selectedDominion = app(SelectorService::class)->getUserSelectedDominion();
     $secondsUntilStart = 0;
-    if($selectedDominion) {
-        $round = $selectedDominion->round;
-        $secondsUntilStart = $round->start_date->diffInSeconds(Carbon::now());
+    if ($selectedDominion) {
+        $protectionEnd = $selectedDominion->round->start_date->addHours(72);
+        if ($protectionEnd > Carbon::now()) {
+            $secondsUntilStart = $protectionEnd->diffInSeconds(Carbon::now());
+        }
     }
 @endphp
 <div class="pull-right">
@@ -14,7 +16,7 @@
     </span>
     <span class="badge">
         @if($secondsUntilStart > 0)
-            Round: <span id="ticker-next-round" data-value="{{ $round->start_date }}">00:00:00</span>
+            Round: <span id="ticker-next-round" data-value="{{ $protectionEnd->format('Y-m-d H:i:s T') }}">00:00:00</span>
         @else
             Tick: <span id="ticker-next-tick">00:00:00</span>
         @endif
