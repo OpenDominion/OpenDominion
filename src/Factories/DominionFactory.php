@@ -60,7 +60,7 @@ class DominionFactory
             'peasants' => $startingAttributes['peasants'],
             'peasants_last_hour' => 0,
 
-            'draft_rate' => 10,
+            'draft_rate' => 35,
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
@@ -328,7 +328,7 @@ class DominionFactory
             'peasants' => 1300 + (100 * $days),
             'peasants_last_hour' => 0,
 
-            'draft_rate' => 10,
+            'draft_rate' => 35,
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
@@ -424,7 +424,7 @@ class DominionFactory
             'peasants' => 10 * $landSize,
             'peasants_last_hour' => 0,
 
-            'draft_rate' => 15,
+            'draft_rate' => 0,
             'morale' => 100,
             'spy_strength' => 100,
             'wizard_strength' => 100,
@@ -445,7 +445,7 @@ class DominionFactory
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
 
-            'military_draftees' => 0,
+            'military_draftees' => mt_rand(0, $landSize),
             'military_unit1' => 0,
             'military_unit2' => 0,
             'military_unit3' => 0,
