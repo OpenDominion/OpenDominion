@@ -32,6 +32,16 @@
                             @endif
                         </span>
                     </a>
+                    <a href="{{ route('dominion.bonuses') }}" style="padding-top: 0px;">
+                        <i class="fa fa-fw"></i>
+                        @php
+                            $hoursUntilRest = $selectedDominion->round->start_date->hour - now()->hour;
+                            if ($hoursUntilRest < 1) {
+                                $hoursUntilRest = 24 + $hoursUntilRest;
+                            }
+                        @endphp
+                        <span class="small">Resets in {{ $hoursUntilRest }} {{ str_plural('tick', $hoursUntilRest) }}</span>
+                    </a>
                 </li>
 
                 <li class="header">DOMINION</li>
