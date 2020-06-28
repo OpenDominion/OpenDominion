@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Added
 - Sidebar now shows tick count until daily bonuses reset
+- Dominions that remain inactive and under protection for three days will be moved to realm 0
 
 ### Changed
 - Default draft rate set to 35%

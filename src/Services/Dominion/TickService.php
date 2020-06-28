@@ -301,6 +301,7 @@ class TickService
                     continue;
                 }
 
+                // Reset Daily Bonuses
                 // toBase required to prevent ambiguous updated_at column in query
                 $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
                     'daily_platinum' => false,
@@ -308,6 +309,22 @@ class TickService
                 ], [
                     'event' => 'tick',
                 ]);
+
+                // Move Inactive Dominions
+                // toBase required to prevent ambiguous updated_at column in query
+                $graveyardRealm = $round->realms()->where('number', 0)->first();
+                if ($graveyardRealm !== null) {
+                    $inactiveDominions = $round->dominions()
+                        ->join('users', 'dominions.user_id', '=', 'users.id')
+                        ->where('dominions.protection_ticks_remaining', '>', 0)
+                        ->where('realms.number', '>', 0)
+                        ->where('dominions.created_at', '<', now()->subDays(3))
+                        ->where('users.last_online', '<', now()->subDays(3))
+                        ->toBase()->update([
+                            'realm_id' => $graveyardRealm->id,
+                            'monarchy_vote_for_dominion_id' => null
+                        ]);
+                }
             }
         });
     }

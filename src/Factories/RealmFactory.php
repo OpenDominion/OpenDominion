@@ -32,6 +32,13 @@ class RealmFactory
 
         if ($results === null) {
             $number = 1;
+            // Create special realm for inactives
+            Realm::create([
+                'round_id' => $round->id,
+                'alignment' => 'neutral',
+                'number' => 0,
+                'name' => 'The Graveyard'
+            ]);
         } else {
             $number = ((int)$results[0]->max_realm_number + 1);
         }

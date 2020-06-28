@@ -38,7 +38,8 @@ class RealmFinderService
         // Get a list of realms which are not full, disregarding pack status for now
         $realmQuery = Realm::query()
             ->with('packs.dominions')
-            ->where('round_id', $round->id);
+            ->where('round_id', $round->id)
+            ->where('number', '>', 0);
 
         if (!$round->mixed_alignment) {
             $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);
