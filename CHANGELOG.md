@@ -3,6 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Sidebar now shows tick count until daily bonuses reset
+
+### Changed
+- Default draft rate set to 35%
+- Round timer now counts down to OOP (start of day 4)
 
 ## [0.10.0] - 2020-06-25
 ### Added
