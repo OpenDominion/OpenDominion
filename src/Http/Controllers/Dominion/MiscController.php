@@ -2,9 +2,12 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
@@ -113,7 +116,6 @@ class MiscController extends AbstractDominionController
     public function getTickDominion(Request $request) {
         $dominion = $this->getSelectedDominion();
 
-        $protectionService = app(ProtectionService::class);
         $tickService = app(TickService::class);
 
         try {
@@ -127,8 +129,38 @@ class MiscController extends AbstractDominionController
 
             // Dominions still in protection or newly registered are forced
             // to wait for a short time following OOP to prevent abuse
-            if ($dominion->protection_ticks_remaining == 1 && !$protectionService->canLeaveProtection($dominion)) {
-                throw new GameException('You cannot leave protection during the fourth day of the round.');
+            if ($dominion->protection_ticks_remaining == 1) {
+                $landCalculator = app(LandCalculator::class);
+                $militaryCalculator = app(MilitaryCalculator::class);
+                $protectionService = app(ProtectionService::class);
+
+                if (!$protectionService->canLeaveProtection($dominion)) {
+                    throw new GameException('You cannot leave protection during the fourth day of the round.');
+                }
+
+                // Queues for next tick
+                $incomingQueue = DB::table('dominion_queue')
+                    ->where('dominion_id', $dominion->id)
+                    ->where('hours', '=', 1)
+                    ->get();
+
+                foreach ($incomingQueue as $row) {
+                    // Temporarily add next hour's resources for accurate calculations
+                    $dominion->{$row->resource} += $row->amount;
+                }
+
+                $totalLand = $landCalculator->getTotalLand($dominion);
+                $minimumDefense = $militaryCalculator->getMinimumDefense($dominion);
+                $defensivePower = $militaryCalculator->getDefensivePower($dominion);
+
+                foreach ($incomingQueue as $row) {
+                    // Reset current resources
+                    $dominion->{$row->resource} += $row->amount;
+                }
+
+                if ($totalLand > 600 && $defensivePower <= $minimumDefense) {
+                    throw new GameException('You cannot leave protection at this size with less than minimum defense. 5 * (Land - 150)');
+                }
             }
         } catch (GameException $e) {
             return redirect()->back()

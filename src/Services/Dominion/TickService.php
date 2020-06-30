@@ -316,8 +316,8 @@ class TickService
                 if ($graveyardRealm !== null) {
                     $inactiveDominions = $round->dominions()
                         ->join('users', 'dominions.user_id', '=', 'users.id')
-                        ->where('dominions.protection_ticks_remaining', '>', 0)
                         ->where('realms.number', '>', 0)
+                        ->where('dominions.protection_ticks_remaining', '>', 0)
                         ->where('dominions.created_at', '<', now()->subDays(3))
                         ->where('users.last_online', '<', now()->subDays(3))
                         ->toBase()->update([
