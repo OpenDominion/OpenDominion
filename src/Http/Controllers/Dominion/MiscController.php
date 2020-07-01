@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use DB;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -39,6 +40,34 @@ class MiscController extends AbstractDominionController
         $pack->closed_at = now();
         $pack->save();
 
+        return redirect()->back();
+    }
+
+    public function postReport(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        if ($dominion !== null) {
+            $sender = $dominion->name;
+        } else {
+            $sender = Auth::user()->display_name;
+        }
+
+        $type = $request->get('type');
+        $message = $request->get('description');
+
+        $webhook = env('DISCORD_REPORT_WEBHOOK');
+        if ($webhook) {
+            $client = new Client();
+            $response = $client->post($webhook, ['form_params' => [
+                'content' => "Report ({$type}) from {$sender}\n\n{$message}:"
+            ]]);
+        }
+        if (!$webhook || $response->getStatusCode() != 204) {
+            return redirect()->back()->withErrors(['There was an error submitting your report.']);
+        }
+
+        $request->session()->flash('alert-success', 'Your report was submitted successfully.');
         return redirect()->back();
     }
 
