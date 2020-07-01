@@ -20,6 +20,7 @@
 
     @if ($user->hasRole('Moderator'))
         <li class="header">Moderator</li>
+        <li class="{{ Route::is('staff.moderator.dominions.*') ? 'active' : null }}"><a href="{{ route('staff.moderator.dominions.index') }}">Dominions</a></li>
         {{--<li><a href="#">Flagged Posts</a></li>--}}
     @endif
 
