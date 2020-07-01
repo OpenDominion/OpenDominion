@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sidebar now shows tick count until daily bonuses reset
 - Dominions that remain inactive and under protection for three days will be moved to realm 0
 - Dominions over 600 acres may no longer leave protection with less than the minimum defense
+- Added footer link for reporting bugs/abuse
+- Additional tools to detect cheating
 
 ### Changed
 - Default draft rate set to 35%
