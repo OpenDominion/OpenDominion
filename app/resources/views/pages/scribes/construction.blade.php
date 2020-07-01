@@ -8,7 +8,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <p>Buildings are the backbone of your dominion and provide you with production and various bonuses.</p>
                     <p>They can only be constructed on acres of barren land.</p>
                     <em>
@@ -22,9 +22,9 @@
         <div class="box-header with-border">
             <h3 class="box-title">Buildings</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
                             <col>

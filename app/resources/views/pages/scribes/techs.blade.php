@@ -8,7 +8,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <p>The tech tree is a map of advancements that your dominion can obtain as you grow in size. You can obtain technical advancements by reaching appropriate levels of research points.</p>
                     <p>The costs of each advancement will scale with your land size, and has a minimum of 3780 points. Some advancements require others before you can select them. Please consult the tech tree below.</p>
                     <p>If you pick a tech that has the same, but higher, bonus as another tech, as several do, only the highest technology bonus counts. It overrides the lesser bonus (they do not stack).</p>
@@ -23,9 +23,9 @@
         <div class="box-header with-border">
             <h3 class="box-title">Technological Advances</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
                             <col width="200">

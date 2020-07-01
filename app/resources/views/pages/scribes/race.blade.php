@@ -6,7 +6,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">{{ $race->name }}</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <div class="row">
                 <div class="col-md-12 col-md-9">
                     {{-- Description --}}

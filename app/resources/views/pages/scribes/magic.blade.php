@@ -8,7 +8,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <p>Magic will let your wizards cast a variety of spells, giving temporary bonuses, information or damaging your enemies.</p>
                     <p>All spells cost mana, which is produced by towers. The cost of each spell is based on a multiplier of your land size.</p>
                     <em>
@@ -22,9 +22,9 @@
         <div class="box-header with-border">
             <h3 class="box-title">Spells</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Self</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Information gathering</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Black Ops</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 col-md-12">
+                <div class="col-md-12">
                     <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Racial</h4>
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
