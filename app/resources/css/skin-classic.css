@@ -540,3 +540,18 @@
 .skin-classic .slider-track .slider-selection {
     background: #006C81 !important;
 }
+.skin-classic .page-header,
+.skin-classic .modal-header,
+.skin-classic .modal-footer {
+    border-color: #ACB9BB !important;
+}
+.skin-classic .modal-header .close {
+    color: #ACB9BB;
+    opacity: 0.7;
+}
+.skin-classic .modal-header .close:hover {
+    opacity: 0.5;
+}
+.skin-classic .modal-content {
+    background-color: #333;
+}
