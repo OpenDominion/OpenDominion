@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.10.0-1] - 2020-07-04
 ### Added
 - Sidebar now shows tick count until daily bonuses reset
 - Dominions that remain inactive and under protection for three days will be moved to realm 0
