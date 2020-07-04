@@ -56,7 +56,7 @@ class MiscController extends AbstractDominionController
         $type = $request->get('type');
         $message = $request->get('description');
 
-        $webhook = env('DISCORD_REPORT_WEBHOOK');
+        $webhook = config('app.discord_report_webhook');
         if ($webhook) {
             $client = new Client();
             $response = $client->post($webhook, ['form_params' => [

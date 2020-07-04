@@ -8,12 +8,12 @@
         </div>
 
         <div class="col-xs-6 text-right">
-            @if (env('DISCORD_REPORT_WEBHOOK'))
+            @if (config('app.discord_report_webhook'))
                 <a href="#" data-toggle="modal" data-target="#reportModal">Report a Problem</a>
             @endif
 
             @if (isset($selectedDominion) && ($selectedDominion->round->isActive()))
-                @if (env('DISCORD_REPORT_WEBHOOK'))
+                @if (config('app.discord_report_webhook'))
                     &nbsp;|&nbsp;
                 @endif
                 @php
