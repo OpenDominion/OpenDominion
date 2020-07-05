@@ -35,12 +35,24 @@
                     <a href="{{ route('dominion.bonuses') }}" style="padding-top: 0px;">
                         <i class="fa fa-fw"></i>
                         @php
-                            $hoursUntilRest = $selectedDominion->round->start_date->hour - now()->hour;
-                            if ($hoursUntilRest < 1) {
-                                $hoursUntilRest = 24 + $hoursUntilRest;
+                            if ($selectedDominion->protection_ticks_remaining > 0) {
+                                $hoursUntilReset = $selectedDominion->protection_ticks_remaining % 24;
+                            } else {
+                                $hoursUntilReset = $selectedDominion->round->start_date->hour - now()->hour;
+                            }
+                            if ($hoursUntilReset < 1) {
+                                $hoursUntilReset = 24 + $hoursUntilReset;
                             }
                         @endphp
-                        <span class="small">Resets in {{ $hoursUntilRest }} {{ str_plural('tick', $hoursUntilRest) }}</span>
+                        <span class="small">
+                            Resets in
+                            @if ($hoursUntilReset < 4)
+                                <strong class="text-orange">{{ $hoursUntilReset }}</strong>
+                            @else
+                                {{ $hoursUntilReset }}
+                            @endif
+                            {{ str_plural('tick', $hoursUntilReset) }}
+                        </span>
                     </a>
                 </li>
 
