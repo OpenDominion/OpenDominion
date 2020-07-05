@@ -143,7 +143,7 @@ class Round extends AbstractModel
      */
     public function openForRegistration()
     {
-        return $this->start_date->subDays(3) <= today();
+        return $this->start_date->subDays(3) <= now();
     }
 
     /**
@@ -153,7 +153,7 @@ class Round extends AbstractModel
      */
     public function daysUntilRegistration()
     {
-        return $this->start_date->subDays(3)->diffInDays(today());
+        return $this->start_date->subDays(3)->diffInDays(now());
     }
 
     public function userAlreadyRegistered(User $user)
