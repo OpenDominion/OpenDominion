@@ -4,6 +4,15 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.10.0-2] - 2020-07-08
+### Changed
+- Magic snare damage reduced to 2.5% per op (from 3%)
+
+### Fixed
+- Round timer hours will display correctly when over 99 hours remaining
+- Dashboard will now correctly show days remaining for registration
+- Report a Problem window restyled in the classic dark skin
+
 ## [0.10.0-1] - 2020-07-04
 ### Added
 - Sidebar now shows tick count until daily bonuses reset
