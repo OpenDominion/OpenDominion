@@ -107,7 +107,12 @@ class Ticker {
      * @private
      */
     static pad(value) {
-        return ('00' + value).slice(-2);
+        if (window.document.documentMode) {
+            // Detect IE
+            return ('00' + value).slice(-2);
+        } else {
+            return value.padStart(2, '0');
+        }
     }
 
     /**
