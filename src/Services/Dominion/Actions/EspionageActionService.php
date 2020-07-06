@@ -809,14 +809,6 @@ class EspionageActionService
             foreach ($operationInfo['decreases'] as $attr) {
                 $damage = $target->{$attr} * $baseDamage;
 
-                // Flat damage for Magic Snare
-                if ($attr == 'wizard_strength') {
-                    $damage = 100 * $baseDamage;
-                    if ($damage > $target->wizard_strength) {
-                        $damage = (int)$target->wizard_strength;
-                    }
-                }
-
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
@@ -828,8 +820,20 @@ class EspionageActionService
                     $damage = 0;
                 }
 
+                if ($attr == 'wizard_strength') {
+                    // Flat damage for Magic Snare
+                    $damage = 100 * $baseDamage;
+                    if ($damage > $target->wizard_strength) {
+                        $damage = (int)$target->wizard_strength;
+                    }
+                    $target->{$attr} -= $damage;
+                    $damage = (floor($target->{$attr} + $damage) - floor($target->{$attr}));
+                } else {
+                    // Rounded for all other damage types
+                    $target->{$attr} -= round($damage);
+                }
+
                 $totalDamage += round($damage);
-                $target->{$attr} -= round($damage);
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
                 // Update statistics
