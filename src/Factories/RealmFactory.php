@@ -30,7 +30,7 @@ class RealmFactory
             ->limit(1)
             ->get();
 
-        if ($results === null) {
+        if ($results[0]->max_realm_number === null) {
             $number = 1;
             // Create special realm for inactives
             Realm::create([
