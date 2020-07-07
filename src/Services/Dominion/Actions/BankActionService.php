@@ -41,7 +41,7 @@ class BankActionService
     {
         $this->guardLockedDominion($dominion);
 
-        if($amount < 0) {
+        if ($amount < 0) {
             throw new LogicException('Amount less than 0.');
         }
 

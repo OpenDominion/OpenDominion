@@ -129,7 +129,7 @@
             function updateResources() {
                 var sourceOption = sourceElement.find(':selected'),
                     sourceResourceType = _.get(resources, sourceOption.val()),
-                    sourceAmount = Math.min(parseInt(amountElement.val()), _.get(sourceResourceType, 'max')),
+                    sourceAmount = Math.min(parseInt(amountElement.val() || 0), _.get(sourceResourceType, 'max')),
                     targetOption = targetElement.find(':selected'),
                     targetResourceType = _.get(resources, targetOption.val()),
                     targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy']) || 0);
