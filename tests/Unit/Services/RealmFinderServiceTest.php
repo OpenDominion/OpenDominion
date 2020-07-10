@@ -74,7 +74,8 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
             }
         }
 
-        $this->assertEquals(3, $this->round->realms()->count());
+        // +1 is added here for Graveyard realm
+        $this->assertEquals(4, $this->round->realms()->count());
 
         $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
     }

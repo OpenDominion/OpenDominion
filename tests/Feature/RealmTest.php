@@ -73,7 +73,8 @@ class RealmTest extends AbstractBrowserKitTestCase
             $lastRealmId = $dominion->realm->id;
         }
 
-        $this->assertEquals(2, $round->realms()->count());
+        // +1 is added here for Graveyard realm
+        $this->assertEquals(3, $round->realms()->count());
         $this->assertNotEquals($firstRealmId, $lastRealmId);
 
         $this
