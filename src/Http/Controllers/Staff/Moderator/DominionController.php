@@ -46,7 +46,8 @@ class DominionController extends AbstractController
 
         $gameEvents = $gameEventService->getGameEventsForDominion($dominion);
 
-        $userLogins = UserActivity::where('key', '!=', 'user.activate')
+        $userLogins = UserActivity::query()
+            ->where('key', '!=', 'user.activate')
             ->where('created_at', '>', $dominion->round->created_at)
             ->where('user_id', '=', $dominion->user_id)
             ->count();
@@ -55,18 +56,35 @@ class DominionController extends AbstractController
             ->where('key', '!=', 'user.activate')
             ->where('created_at', '>', $dominion->round->created_at)
             ->where('user_id', '=', $dominion->user_id)
+            ->whereNotIn('ip', ['', '127.0.0.1'])
             ->distinct('ip')
             ->pluck('ip');
 
-        $historyIps = $dominion->history()->groupBy('ip')->pluck('ip');
+        $historyIps = $dominion->history()
+            ->whereNotIn('ip', ['', '127.0.0.1'])
+            ->groupBy('ip')
+            ->pluck('ip');
 
         $ipsUsedCount = $userIps->merge($historyIps)->unique()->count();
 
-        $otherUserCount = UserActivity::query()
+        $otherUserLogins = UserActivity::query()
+            ->where('key', '!=', 'user.activate')
             ->where('created_at', '>', $dominion->round->created_at)
             ->whereIn('ip', $userIps->merge($historyIps)->unique())
             ->distinct('user_id')
-            ->count('user_id');
+            ->pluck('user_id');
+
+        $otherDominionsHistory = History::query()
+            ->where('created_at', '>', $dominion->round->created_at)
+            ->whereIn('ip', $userIps->merge($historyIps)->unique())
+            ->distinct('dominion_id')
+            ->pluck('dominion_id');
+
+        $otherUsersHistory = Dominion::query()
+            ->whereIn('id', $otherDominionsHistory)
+            ->pluck('user_id');
+
+        $otherUserCount = $otherUserLogins->merge($otherUsersHistory)->unique()->count();
 
         return view('pages.staff.moderator.dominions.show', [
             'dominion' => $dominion,

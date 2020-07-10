@@ -15,61 +15,65 @@
             </select>
         </div>
         <div class="box-body">
-            <table class="table table-hover" id="dominions-table">
-                <colgroup>
-                    <col width="50">
-                    <col>
-                    <col width="200">
-                    <col width="200">
-                    <col width="100">
-                    <col width="100">
-                    <col width="200">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th class="text-center">ID</th>
-                        <th>Name</th>
-                        <th class="text-center">Round</th>
-                        <th class="text-center">Bot</th>
-                        <th class="text-center">Land</th>
-                        <th class="text-center">Networth</th>
-                        <th class="text-center">Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($dominions as $dominion)
-                        @php
-                        $land = $landCalculator->getTotalLand($dominion);
-                        $networth = $networthCalculator->getDominionNetworth($dominion);
-                        @endphp
+            @if ($round->start_date->addHours(72) < now())
+                <table class="table table-hover" id="dominions-table">
+                    <colgroup>
+                        <col width="50">
+                        <col>
+                        <col width="200">
+                        <col width="200">
+                        <col width="100">
+                        <col width="100">
+                        <col width="200">
+                    </colgroup>
+                    <thead>
                         <tr>
-                            <td class="text-center" data-search="">{{ $dominion->id }}</td>
-                            <td>
-                                <a href="{{ route('staff.moderator.dominions.show', $dominion) }}">{{ $dominion->name }}</a>
-                            </td>
-                            <td class="text-center" data-search="round:{{ $dominion->round->number }}">
-                                <a href="#">{{ $dominion->round->name }} (#{{ $dominion->round->number }})</a>
-                            </td>
-                            <td class="text-center">
-                                @if ($dominion->user)
-                                    No
-                                @else
-                                    Yes
-                                @endif
-                            </td>
-                            <td class="text-center" data-order="{{ $land }}" data-search="">
-                                {{ number_format($land) }}
-                            </td>
-                            <td class="text-center" data-order="{{ $networth }}" data-search="">
-                                {{ number_format($networth) }}
-                            </td>
-                            <td class="text-center" data-order="{{ $dominion->created_at->getTimestamp() }}" data-search="">
-                                <span title="{{ $dominion->created_at }}">{{ $dominion->created_at->diffForHumans() }}</span>
-                            </td>
+                            <th class="text-center">ID</th>
+                            <th>Name</th>
+                            <th class="text-center">Round</th>
+                            <th class="text-center">Bot</th>
+                            <th class="text-center">Land</th>
+                            <th class="text-center">Networth</th>
+                            <th class="text-center">Created</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($dominions as $dominion)
+                            @php
+                                $land = $landCalculator->getTotalLand($dominion);
+                                $networth = $networthCalculator->getDominionNetworth($dominion);
+                            @endphp
+                            <tr>
+                                <td class="text-center" data-search="">{{ $dominion->id }}</td>
+                                <td>
+                                    <a href="{{ route('staff.moderator.dominions.show', $dominion) }}">{{ $dominion->name }}</a>
+                                </td>
+                                <td class="text-center" data-search="round:{{ $dominion->round->number }}">
+                                    <a href="#">{{ $dominion->round->name }} (#{{ $dominion->round->number }})</a>
+                                </td>
+                                <td class="text-center">
+                                    @if ($dominion->user)
+                                        No
+                                    @else
+                                        Yes
+                                    @endif
+                                </td>
+                                <td class="text-center" data-order="{{ $land }}" data-search="">
+                                    {{ number_format($land) }}
+                                </td>
+                                <td class="text-center" data-order="{{ $networth }}" data-search="">
+                                    {{ number_format($networth) }}
+                                </td>
+                                <td class="text-center" data-order="{{ $dominion->created_at->getTimestamp() }}" data-search="">
+                                    <span title="{{ $dominion->created_at }}">{{ $dominion->created_at->diffForHumans() }}</span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="text-center">This page is not visible prior to OOP</p>
+            @endif
         </div>
     </div>
 @endsection
