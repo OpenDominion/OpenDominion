@@ -9,6 +9,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Http\Controllers\AbstractController;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Dominion\History;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Round;
@@ -45,23 +46,32 @@ class DominionController extends AbstractController
 
         $gameEvents = $gameEventService->getGameEventsForDominion($dominion);
 
+        $userLogins = UserActivity::where('key', '!=', 'user.activate')
+            ->where('created_at', '>', $dominion->round->start_date)
+            ->where('user_id', '=', $dominion->user_id)
+            ->count();
+
         $userIps = UserActivity::select('ip')
+            ->where('key', '!=', 'user.activate')
             ->where('created_at', '>', $dominion->round->start_date)
             ->where('user_id', '=', $dominion->user_id)
             ->distinct('ip')
-            ->get();
+            ->pluck('ip');
+
+        $historyIps = $dominion->history()->groupBy('ip')->pluck('ip');
+
+        $ipsUsedCount = $userIps->intersect($historyIps)->count();
 
         $otherUserCount = UserActivity::query()
             ->where('created_at', '>', $dominion->round->start_date)
-            ->whereIn('ip', $userIps)
+            ->whereIn('ip', $userIps->merge($historyIps))
             ->distinct('user_id')
             ->count('user_id');
-
-        $ipsUsedCount = $userIps->count();
 
         return view('pages.staff.moderator.dominions.show', [
             'dominion' => $dominion,
             'gameEvents' => $gameEvents,
+            'userLogins' => $userLogins,
             'ipsUsedCount' => $ipsUsedCount,
             'otherUserCount' => $otherUserCount
         ]);
