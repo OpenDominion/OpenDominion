@@ -47,24 +47,24 @@ class DominionController extends AbstractController
         $gameEvents = $gameEventService->getGameEventsForDominion($dominion);
 
         $userLogins = UserActivity::where('key', '!=', 'user.activate')
-            ->where('created_at', '>', $dominion->round->start_date)
+            ->where('created_at', '>', $dominion->round->created_at)
             ->where('user_id', '=', $dominion->user_id)
             ->count();
 
         $userIps = UserActivity::select('ip')
             ->where('key', '!=', 'user.activate')
-            ->where('created_at', '>', $dominion->round->start_date)
+            ->where('created_at', '>', $dominion->round->created_at)
             ->where('user_id', '=', $dominion->user_id)
             ->distinct('ip')
             ->pluck('ip');
 
         $historyIps = $dominion->history()->groupBy('ip')->pluck('ip');
 
-        $ipsUsedCount = $userIps->intersect($historyIps)->count();
+        $ipsUsedCount = $userIps->merge($historyIps)->unique()->count();
 
         $otherUserCount = UserActivity::query()
-            ->where('created_at', '>', $dominion->round->start_date)
-            ->whereIn('ip', $userIps->merge($historyIps))
+            ->where('created_at', '>', $dominion->round->created_at)
+            ->whereIn('ip', $userIps->merge($historyIps)->unique())
             ->distinct('user_id')
             ->count('user_id');
 
