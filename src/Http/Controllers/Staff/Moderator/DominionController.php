@@ -47,20 +47,24 @@ class DominionController extends AbstractController
         $gameEvents = $gameEventService->getGameEventsForDominion($dominion);
 
         $userLogins = UserActivity::query()
-            ->where('key', '!=', 'user.activate')
-            ->where('created_at', '>', $dominion->round->created_at)
             ->where('user_id', '=', $dominion->user_id)
+            ->where('created_at', '>', $dominion->round->created_at)
+            ->where('created_at', '<', $dominion->round->end_date)
+            ->whereIn('key', ['user.login', 'user.logout'])
+            ->whereNotIn('ip', ['', '127.0.0.1'])
             ->count();
 
         $userIps = UserActivity::select('ip')
-            ->where('key', '!=', 'user.activate')
-            ->where('created_at', '>', $dominion->round->created_at)
             ->where('user_id', '=', $dominion->user_id)
+            ->where('created_at', '>', $dominion->round->created_at)
+            ->where('created_at', '<', $dominion->round->end_date)
+            ->whereIn('key', ['user.login', 'user.logout'])
             ->whereNotIn('ip', ['', '127.0.0.1'])
             ->distinct('ip')
             ->pluck('ip');
 
         $historyIps = $dominion->history()
+            ->where('event', '!=', 'tick')
             ->whereNotIn('ip', ['', '127.0.0.1'])
             ->groupBy('ip')
             ->pluck('ip');
@@ -68,14 +72,17 @@ class DominionController extends AbstractController
         $ipsUsedCount = $userIps->merge($historyIps)->unique()->count();
 
         $otherUserLogins = UserActivity::query()
-            ->where('key', '!=', 'user.activate')
             ->where('created_at', '>', $dominion->round->created_at)
+            ->where('created_at', '<', $dominion->round->end_date)
             ->whereIn('ip', $userIps->merge($historyIps)->unique())
+            ->whereIn('key', ['user.login', 'user.logout'])
             ->distinct('user_id')
             ->pluck('user_id');
 
         $otherDominionsHistory = History::query()
             ->where('created_at', '>', $dominion->round->created_at)
+            ->where('created_at', '<', $dominion->round->end_date)
+            ->where('event', '!=', 'tick')
             ->whereIn('ip', $userIps->merge($historyIps)->unique())
             ->distinct('dominion_id')
             ->pluck('dominion_id');
