@@ -65,6 +65,8 @@ class DominionController extends AbstractController
 
         $historyIps = $dominion->history()
             ->where('event', '!=', 'tick')
+            ->where('event', '!=', 'invade')
+            ->where('delta', 'NOT LIKE', '%source_dominion_id%')
             ->whereNotIn('ip', ['', '127.0.0.1'])
             ->groupBy('ip')
             ->pluck('ip');
@@ -83,6 +85,8 @@ class DominionController extends AbstractController
             ->where('created_at', '>', $dominion->round->created_at)
             ->where('created_at', '<', $dominion->round->end_date)
             ->where('event', '!=', 'tick')
+            ->where('event', '!=', 'invade')
+            ->where('delta', 'NOT LIKE', '%source_dominion_id%')
             ->whereIn('ip', $userIps->merge($historyIps)->unique())
             ->distinct('dominion_id')
             ->pluck('dominion_id');
