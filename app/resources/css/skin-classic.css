@@ -195,9 +195,14 @@
 .skin-classic .nav-stacked > li > a {
     color: #ACB9BB;
 }
-.skin-classic .nav-stacked > li > a:hover {
+.skin-classic .nav-stacked > li > a:hover,
+.skin-classic .nav-stacked > li > a:active {
     color: white;
     background-color: #1e2226;
+}
+.skin-classic .nav-stacked > li.active > a,
+.skin-classic .nav-stacked > li.active > a:hover {
+    border-left-color: #005566;
 }
 .skin-classic .content-wrapper,
 .skin-classic .right-side {
