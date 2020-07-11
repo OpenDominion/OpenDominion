@@ -40,7 +40,7 @@
                             } elseif ($selectedDominion->round->start_date->addHours(96) > now()) {
                                 $hoursUntilReset = $selectedDominion->round->start_date->addHours(96)->diffInHours(now()->startOfHour());
                             } else {
-                                $hoursUntilReset = ($selectedDominion->round->start_date - now())->hour;
+                                $hoursUntilReset = $selectedDominion->round->start_date->hour - now()->hour;
                             }
                             if ($hoursUntilReset < 1) {
                                 $hoursUntilReset = 24 + $hoursUntilReset;
