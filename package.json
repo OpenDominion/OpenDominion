@@ -16,7 +16,7 @@
     "cross-env": "^5.2.0",
     "font-awesome": "^4.7.0",
     "laravel-mix": "^2.1.11",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.19",
     "rpg-awesome": "^0.1.1",
     "select2": "^4.0.5"
   }
