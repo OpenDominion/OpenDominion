@@ -15,6 +15,9 @@ use OpenDominion\Models\TechPerkType;
 use OpenDominion\Models\Unit;
 use OpenDominion\Models\UnitPerk;
 use OpenDominion\Models\UnitPerkType;
+use OpenDominion\Models\Wonder;
+use OpenDominion\Models\WonderPerk;
+use OpenDominion\Models\WonderPerkType;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -49,6 +52,7 @@ class DataSyncCommand extends Command implements CommandInterface
         DB::transaction(function () {
             $this->syncRaces();
             $this->syncTechs();
+            $this->syncWonders();
         });
     }
 
@@ -238,6 +242,67 @@ class DataSyncCommand extends Command implements CommandInterface
             }
 
             $tech->perks()->sync($techPerksToSync);
+        }
+    }
+
+    /**
+     * Syncs wonder and perk data from .yml file to the database.
+     */
+    protected function syncWonders()
+    {
+        $fileContents = $this->filesystem->get(base_path('app/data/wonders.yml'));
+
+        $data = Yaml::parse($fileContents, Yaml::PARSE_OBJECT_FOR_MAP);
+
+        foreach ($data as $wonderKey => $wonderData) {
+            // Wonder
+            $wonder = Wonder::firstOrNew(['key' => $wonderKey])
+                ->fill([
+                    'name' => $wonderData->name,
+                    'power' => object_get($wonderData, 'power', 250000),
+                    'active' => object_get($wonderData, 'active', true),
+                ]);
+
+            if (!$wonder->exists) {
+                $this->info("Adding wonder {$wonderData->name}");
+            } else {
+                $this->info("Processing wonder {$wonderData->name}");
+
+                $newValues = $wonder->getDirty();
+
+                foreach ($newValues as $key => $newValue) {
+                    $originalValue = $wonder->getOriginal($key);
+
+                    $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                }
+            }
+
+            $wonder->save();
+            $wonder->refresh();
+
+            // Wonder Perks
+            $wonderPerksToSync = [];
+
+            foreach (object_get($wonderData, 'perks', []) as $perk => $value) {
+                $value = (float)$value;
+
+                $wonderPerkType = WonderPerkType::firstOrCreate(['key' => $perk]);
+
+                $wonderPerksToSync[$wonderPerkType->id] = ['value' => $value];
+
+                $wonderPerk = WonderPerk::query()
+                    ->where('wonder_id', $wonder->id)
+                    ->where('wonder_perk_type_id', $wonderPerkType->id)
+                    ->first();
+
+                if ($wonderPerk === null) {
+                    $this->info("[Add Wonder Perk] {$perk}: {$value}");
+                } elseif ($wonderPerk->value != $value) {
+                    $this->info("[Change Wonder Perk] {$perk}: {$wonderPerk->value} -> {$value}");
+                }
+            }
+
+            $wonder->perks()->sync($wonderPerksToSync);
         }
     }
 }
