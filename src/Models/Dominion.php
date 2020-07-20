@@ -431,4 +431,38 @@ class Dominion extends AbstractModel
     {
         return ($this->getTechPerkValue($key) / 100);
     }
+
+    protected function getWonderPerks() {
+        return $this->realm->wonders->flatMap(
+            function ($wonder) {
+                return $wonder->perks;
+            }
+        );
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getWonderPerkValue(string $key): float
+    {
+        $perks = $this->getWonderPerks()->groupBy('key');
+        if (isset($perks[$key])) {
+            $max = (float)$perks[$key]->max('pivot.value');
+            if ($max < 0) {
+                return (float)$perks[$key]->min('pivot.value');
+            }
+            return $max;
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $key
+     * @return float
+     */
+    public function getWonderPerkMultiplier(string $key): float
+    {
+        return ($this->getWonderPerkValue($key) / 100);
+    }
 }
