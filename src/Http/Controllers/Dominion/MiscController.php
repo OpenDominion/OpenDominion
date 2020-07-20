@@ -60,7 +60,7 @@ class MiscController extends AbstractDominionController
         if ($webhook) {
             $client = new Client();
             $response = $client->post($webhook, ['form_params' => [
-                'content' => "Report ({$type}) from {$sender}\n\n{$message}:"
+                'content' => "Report ({$type}) from {$sender}:\n\n{$message}"
             ]]);
         }
         if (!$webhook || $response->getStatusCode() != 204) {
