@@ -255,7 +255,7 @@ class Dominion extends AbstractModel
 
     // Eloquent Query Scopes
 
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->whereHas('round', function (Builder $query) {
             $query->where('start_date', '<=', now())

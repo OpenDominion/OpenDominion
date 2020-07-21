@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * OpenDominion\Models\Wonder
  *
@@ -13,6 +15,7 @@ namespace OpenDominion\Models;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\WonderPerkType[] $perks
+ * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Wonder active()
  */
 class Wonder extends AbstractModel
 {
@@ -22,6 +25,11 @@ class Wonder extends AbstractModel
         'power' => 'integer',
         'active' => 'boolean',
     ];
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
+    }
 
     public function perks()
     {
