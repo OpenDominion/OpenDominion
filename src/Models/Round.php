@@ -78,14 +78,7 @@ class Round extends AbstractModel
 
     public function wonders()
     {
-        return $this->belongsToMany(
-            Wonder::class,
-            'realm_wonders',
-            'round_id',
-            'wonder_id'
-        )
-            ->withTimestamps()
-            ->withPivot('realm_id', 'power');
+        return $this->hasMany(RoundWonder::class);
     }
 
     public function forumAnnouncements()

@@ -3,7 +3,7 @@
 namespace OpenDominion\Models;
 
 /**
- * OpenDominion\Models\RealmWonder
+ * OpenDominion\Models\RoundWonder
  *
  * @property int $round_id
  * @property int $realm_id
@@ -15,9 +15,9 @@ namespace OpenDominion\Models;
  * @property-read \OpenDominion\Models\Realm $realm
  * @property-read \OpenDominion\Models\Wonder $wonder
  */
-class RealmWonder extends AbstractModel
+class RoundWonder extends AbstractModel
 {
-    protected $table = 'realm_wonders';
+    protected $table = 'round_wonders';
 
     public function round()
     {

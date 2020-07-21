@@ -26,7 +26,7 @@ great_wall:
 portals_of_transportation:
   name: Portals of Transportation
   perks:
-    military_return_time: -3
+    invasion_return_time: -3
   power: 250000
 great_market:
   name: Great Market
@@ -84,7 +84,7 @@ high_clerics_tower:
 ivory_tower:
   name: Ivory Tower
   perks:
-    spell_chance_defense: -50
+    enemy_spell_chance: -50
   power: 250000
 underground_society:
   name: Underground Society
@@ -107,12 +107,12 @@ lair_of_the_dragon:
 imperial_armada:
   name: Imperial Armada
   perks:
-    espionage_immunity: sabotage_boats
+    enemy_sabotage_boats_damage: 0
   power: 250000
 spire_of_illusion:
   name: Spire of Illusion
   perks:
-    info_op_accuracy: clear_sight,85
+    clear_sight_accuracy: 85
   power: 250000
 tomb_of_kings:
   name: Tomb of Kings
@@ -123,7 +123,7 @@ tomb_of_kings:
 onyx_mausoleum:
   name: Onyx Mausoleum
   perks:
-    enemy_casualties: 25
+    enemy_casualties_defense: 25
   power: 250000
 monument_of_protection:
   name: Monument of Protection

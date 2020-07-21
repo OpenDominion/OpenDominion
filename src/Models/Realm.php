@@ -102,7 +102,7 @@ class Realm extends AbstractModel
     {
         return $this->belongsToMany(
             Wonder::class,
-            'realm_wonders',
+            'round_wonders',
             'realm_id',
             'wonder_id'
         )
