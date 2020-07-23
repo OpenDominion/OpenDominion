@@ -140,7 +140,7 @@
                         <label for="realm-select">Show Town Crier for:</label>
                         <select id="realm-select" class="form-control">
                             <option value="">All Realms</option>
-                            @for ($i=1; $i<=$realmCount; $i++)
+                            @for ($i=0; $i<$realmCount; $i++)
                                 <option value="{{ $i }}" {{ $realm && $realm->number == $i ? 'selected' : null }}>
                                     #{{ $i }} {{ $selectedDominion->realm->number == $i ? '(My Realm)' : null }}
                                 </option>
