@@ -194,14 +194,17 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
                     <div class="pull-right">
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
@@ -300,14 +303,17 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
                     <div class="pull-right">
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
@@ -376,14 +382,17 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
                     <div class="pull-right">
                         <form action="{{ route('dominion.espionage') }}" method="post" role="form">
@@ -492,16 +501,19 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
-                    <div class="clearfix pull-right">
+                    <div class="pull-right">
                         <form action="{{ route('dominion.espionage') }}" method="post" role="form">
                             @csrf
                             <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
@@ -638,14 +650,17 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
                     <div class="pull-right">
                         <form action="{{ route('dominion.espionage') }}" method="post" role="form">
@@ -779,14 +794,17 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
                     <div class="pull-right">
                         <form action="{{ route('dominion.espionage') }}" method="post" role="form">
@@ -919,14 +937,17 @@
                 @endif
 
                 @slot('boxFooter')
-                    @if ($infoOp !== null)
-                        <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
-                        @if ($infoOp->isInvalid())
-                            <span class="label label-danger">Invalid</span>
-                        @elseif ($infoOp->isStale())
-                            <span class="label label-warning">Stale</span>
+                    <div class="pull-left">
+                        @if ($infoOp !== null)
+                            <em>Revealed {{ $infoOp->created_at }} by {{ $infoOp->sourceDominion->name }}</em>
+                            @if ($infoOp->isInvalid())
+                                <span class="label label-danger">Invalid</span>
+                            @elseif ($infoOp->isStale())
+                                <span class="label label-warning">Stale</span>
+                            @endif
+                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
                         @endif
-                    @endif
+                    </div>
 
                     <div class="pull-right">
                         <form action="{{ route('dominion.magic') }}" method="post" role="form">
