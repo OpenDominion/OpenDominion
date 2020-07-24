@@ -4,7 +4,7 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
-## [0.10.0-3] - 2018-07-24
+## [0.10.0-4] - 2018-07-24
 ### Added
 - New Castle Advisor shows improvements and techs (visible to packmates)
 - Info Ops will now display the day of the round that they were taken
@@ -13,6 +13,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Realm counts corrected in Town Crier dropdown and Realm select input box
 - Server time ticker will no longer appear behind other elements on mobile
 - Any link to a packmate's ops center will redirect to their advisors page
+
+## [0.10.0-3] - 2018-07-10
+### Fixed
+- Several adjustments to moderator tools
+- National bank will no longer throw javascript errors
 
 ## [0.10.0-2] - 2020-07-08
 ### Changed
