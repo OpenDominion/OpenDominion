@@ -435,6 +435,9 @@
 .skin-classic .btn-default:hover {
     background-color: #003344 !important;
 }
+.skin-classic .label-default {
+    background-color: #666;
+}
 .skin-classic .bg-red,
 .skin-classic .alert-danger,
 .skin-classic .btn-danger,
