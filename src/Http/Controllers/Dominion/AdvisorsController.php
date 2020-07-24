@@ -34,7 +34,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -51,7 +50,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -68,7 +66,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -86,7 +83,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -105,7 +101,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -122,7 +117,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -140,7 +134,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
@@ -157,7 +150,6 @@ class AdvisorsController extends AbstractDominionController
             $this->guardPackRealm($target);
         } catch (GameException $e) {
             return redirect()->back()
-                ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
