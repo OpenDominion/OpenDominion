@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
@@ -10,9 +11,11 @@ use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
+use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
@@ -74,6 +77,17 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.magic', [
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
+            'targetDominion' => $target
+        ]);
+    }
+
+    public function getAdvisorsCastle(Dominion $target = null)
+    {
+        $this->guardPackRealm($target);
+        return view('pages.dominion.advisors.castle', [
+            'improvementCalculator' => app(ImprovementCalculator::class),
+            'improvementHelper' => app(ImprovementHelper::class),
+            'techHelper' => app(TechHelper::class),
             'targetDominion' => $target
         ]);
     }
