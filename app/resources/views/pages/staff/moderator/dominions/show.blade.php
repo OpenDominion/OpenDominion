@@ -79,5 +79,25 @@
                 </tbody>
             </table>
         </div>
+        <div class="box-footer">
+            @if ($dominion->locked_at !== null)
+                <div class="pull-left">
+                    Locked at {{ $dominion->locked_at }}
+                </div>
+                <div class="pull-right">
+                    <form action="{{ route('staff.moderator.dominion.unlock', [$dominion]) }}" method="post">
+                        @csrf
+                        <button class="btn btn-primary">Unlock Dominion</a>
+                    </form>
+                </div>
+            @else
+                <div class="pull-right">
+                    <form action="{{ route('staff.moderator.dominion.lock', [$dominion]) }}" method="post">
+                        @csrf
+                        <button class="btn btn-danger">Lock Dominion</a>
+                    </form>
+                </div>
+            @endif
+        </div>
     </div>
 @endsection

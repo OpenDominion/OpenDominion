@@ -187,4 +187,34 @@ class DominionController extends AbstractController
             'sharedUserActivity' => $sharedUserActivity,
         ]);
     }
+
+    public function lockDominion(Dominion $dominion, Request $request)
+    {
+        $dominion->locked_at = now();
+        $dominion->save();
+
+        // Save to Audit Log
+        $activityService = app(ActivityService::class);
+        $user = Auth::user();
+        $event = new ActivityEvent('staff.audit.lock', ActivityEvent::STATUS_INFO, ['dominion' => $dominion->id]);
+        $activityService->recordActivity($user, $event);
+
+        $request->session()->flash('alert-success', 'This dominion has been locked.');
+        return redirect()->back();
+    }
+
+    public function unlockDominion(Dominion $dominion, Request $request)
+    {
+        $dominion->locked_at = null;
+        $dominion->save();
+
+        // Save to Audit Log
+        $activityService = app(ActivityService::class);
+        $user = Auth::user();
+        $event = new ActivityEvent('staff.audit.unlock', ActivityEvent::STATUS_INFO, ['dominion' => $dominion->id]);
+        $activityService->recordActivity($user, $event);
+
+        $request->session()->flash('alert-success', 'This dominion has been unlocked.');
+        return redirect()->back();
+    }
 }

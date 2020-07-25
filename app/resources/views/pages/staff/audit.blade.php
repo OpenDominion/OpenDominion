@@ -38,7 +38,7 @@
                                         {{ $gameEvent->source->name }} invaded {{ $gameEvent->target->name }} at {{ $gameEvent->created_at }}
                                     @endif
                                 </td>
-                            @elseif ($activity->key == 'staff.audit.activity')
+                            @else
                                 @php
                                     $dominionId = isset($activity->context['dominion']) ? $activity->context['dominion'] : null;
                                     $dominion = \OpenDominion\Models\Dominion::find($dominionId);
@@ -48,8 +48,6 @@
                                         {{ $dominion->name }}
                                     @endif
                                 </td>
-                            @else
-                                <td>{{ print_r($activity->context) }}</td>
                             @endif
                             <td>{{ $activity->created_at }}</td>
                         </tr>
