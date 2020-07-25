@@ -160,11 +160,10 @@ class DominionController extends AbstractController
             ->where('created_at', '>', $dominion->round->created_at)
             ->where('created_at', '<', $dominion->round->end_date)
             ->whereIn('key', ['user.login', 'user.logout'])
-            //->whereNotIn('ip', ['', '127.0.0.1'])
+            ->whereNotIn('ip', ['', '127.0.0.1'])
             ->distinct('ip')
             ->pluck('ip');
 
-        //->whereIn('ip', $userIps->merge($historyIps)->unique())
         $sharedUserActivity = UserActivity::query()
             ->where('created_at', '>', $dominion->round->created_at)
             ->where('created_at', '<', $dominion->round->end_date)
