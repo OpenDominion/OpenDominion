@@ -14,6 +14,7 @@
                         <th># Logins</th>
                         <th># IPs Used</th>
                         <th># Users with shared IPs</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -21,6 +22,7 @@
                         <td>{{ $userLogins }}</td>
                         <td>{{ $ipsUsedCount }}</td>
                         <td>{{ $otherUserCount }}</td>
+                        <td><a href="{{ route('staff.moderator.dominion.activity', [$dominion->id]) }}">Investigate</a></td>
                     </tr>
                 </tbody>
             </table>
