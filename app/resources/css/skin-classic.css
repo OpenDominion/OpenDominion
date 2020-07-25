@@ -195,8 +195,9 @@
 .skin-classic .nav-stacked > li > a {
     color: #ACB9BB;
 }
+.skin-classic .nav-stacked > li > a:active,
 .skin-classic .nav-stacked > li > a:hover,
-.skin-classic .nav-stacked > li > a:active {
+.skin-classic .nav-stacked > li > a:focus {
     color: white;
     background-color: #1e2226;
 }
