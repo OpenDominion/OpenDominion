@@ -1,6 +1,6 @@
 @extends ('layouts.master')
 
-@section('page-header', 'Calculator')
+@section('page-header', 'Calculators')
 
 @section('content')
     <div class="row">
@@ -17,7 +17,7 @@
                             <select name="race" id="race_dp" class="form-control" style="width: 100%;">
                                 <option>Select a race</option>
                                 @foreach ($races as $race)
-                                    <option value="{{ $race->id }}">
+                                    <option value="{{ $race->id }}" {{ ($targetDominion !== null && $targetDominion->race_id == $race->id) ? 'selected' : null }}>
                                         {{ $race->name }}
                                     </option>
                                 @endforeach
@@ -33,7 +33,8 @@
                                         name="calc[land]"
                                         class="form-control text-center"
                                         placeholder="250"
-                                        min="0" />
+                                        min="0"
+                                        value="{{ $targetDominion !== null ? $landCalculator->getTotalLand($targetDominion) : null }}" />
                             </div>
                             <div class="col-xs-3 text-right">
                                 Morale
@@ -44,7 +45,8 @@
                                         class="form-control text-center"
                                         placeholder="100"
                                         min="0"
-                                        max="100" />
+                                        max="100"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "morale") : null }}" />
                             </div>
                         </div>
 
@@ -97,14 +99,16 @@
                                                         name="calc[draftees]"
                                                         class="form-control text-center"
                                                         placeholder="0"
-                                                        min="0" />
+                                                        min="0"
+                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "military_draftees") : null }}" />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
                                                         name="calc[draftees_home]"
                                                         class="form-control text-center"
                                                         placeholder="--"
-                                                        min="0" />
+                                                        min="0"
+                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_get($targetInfoOps['barracks_spy']->data, "units.home.draftees") : null }}" />
                                             </td>
                                             <td>
                                                 <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
@@ -146,7 +150,8 @@
                                                             class="form-control text-center"
                                                             placeholder="0"
                                                             min="0"
-                                                            disabled />
+                                                            disabled
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") : null }}" />
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number"
@@ -154,7 +159,8 @@
                                                             class="form-control text-center"
                                                             placeholder="--"
                                                             min="0"
-                                                            disabled />
+                                                            disabled
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_get($targetInfoOps['barracks_spy']->data, "units.home.unit{$unit->slot}") : null }}" />
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($unit->power_offense > 0)
@@ -163,7 +169,8 @@
                                                                 class="form-control text-center"
                                                                 placeholder="--"
                                                                 min="0"
-                                                                disabled />
+                                                                disabled
+                                                                value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_sum(array_get($targetInfoOps['barracks_spy']->data, "units.returning.unit{$unit->slot}", [])) : null }}" />
                                                     @else
                                                         <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
                                                     @endif
@@ -203,7 +210,8 @@
                                                     placeholder="0"
                                                     min="0"
                                                     value="50"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -217,8 +225,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    value="60"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 2) : 60 }}" />
                                         </div>
                                     @endforeach
                                     @if ($prestigeRequired)
@@ -231,7 +239,8 @@
                                                     class="form-control text-center"
                                                     placeholder="250"
                                                     min="0"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "prestige") : null }}" />
                                         </div>
                                     @endif
                                 </div>
@@ -257,7 +266,8 @@
                                         name="calc[walls_percent]"
                                         class="form-control text-center"
                                         placeholder="0"
-                                        min="0" />
+                                        min="0"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('castle_spy')) ? array_get($targetInfoOps['castle_spy']->data, "walls.rating") * 100 : null }}" />
                             </div>
                         </div>
 
@@ -284,7 +294,8 @@
                                         class="form-control text-center"
                                         placeholder="0"
                                         min="0"
-                                        max="20" />
+                                        max="20"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.guard_tower") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
                             </div>
                         </div>
 
@@ -309,6 +320,11 @@
                 <div class="box-body table-responsive">
                     <table class="table">
                         <tbody>
+                            @if ($targetDominion !== null)
+                                <tr style="font-weight: bold;">
+                                    <td colspan="2">{{ $targetDominion->name }}</td>
+                                </tr>
+                            @endif
                             <tr style="font-weight: bold;">
                                 <td>Total Defense:</td>
                                 <td id="dp">--</td>
@@ -342,7 +358,7 @@
                             <select name="race" id="race_op" class="form-control" style="width: 100%;">
                                 <option>Select a race</option>
                                 @foreach ($races as $race)
-                                    <option value="{{ $race->id }}">
+                                    <option value="{{ $race->id }}" {{ ($targetDominion !== null && $targetDominion->race_id == $race->id) ? 'selected' : null }}>
                                         {{ $race->name }}
                                     </option>
                                 @endforeach
@@ -358,7 +374,8 @@
                                         name="calc[land]"
                                         class="form-control text-center"
                                         placeholder="250"
-                                        min="0" />
+                                        min="0"
+                                        value="{{ $targetDominion !== null ? $landCalculator->getTotalLand($targetDominion) : null }}" />
                             </div>
                             <div class="col-xs-3 text-right">
                                 Morale
@@ -369,7 +386,8 @@
                                         class="form-control text-center"
                                         placeholder="100"
                                         min="0"
-                                        max="100" />
+                                        max="100"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "morale") : null }}" />
                             </div>
                         </div>
 
@@ -382,7 +400,8 @@
                                         name="calc[prestige]"
                                         class="form-control text-center"
                                         placeholder="250"
-                                        min="0" />
+                                        min="0"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "prestige") : null }}" />
                             </div>
                         </div>
 
@@ -470,7 +489,8 @@
                                                             placeholder="0"
                                                             min="0"
                                                             disabled
-                                                            {{ $unit->power_offense == 0 ? 'readonly' : null }} />
+                                                            {{ $unit->power_offense == 0 ? 'readonly' : null }}
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") : null }}" />
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number"
@@ -479,7 +499,8 @@
                                                             placeholder="--"
                                                             min="0"
                                                             disabled
-                                                            {{ $unit->power_offense == 0 ? 'readonly' : null }} />
+                                                            {{ $unit->power_offense == 0 ? 'readonly' : null }}
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('barracks_spy')) ? array_sum(array_get($targetInfoOps['barracks_spy']->data, "units.training.unit{$unit->slot}", [])) : null }}" />
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -529,7 +550,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('land_spy')) ? round(array_get($targetInfoOps['land_spy']->data, "explored.{$land}.percentage"), 2) : null }}" />
                                         </div>
                                     @endforeach
                                     @if ($wizardRatioRequired)
@@ -556,7 +578,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
                                         </div>
                                     @endforeach
                                     @if ($targetLandRequired)
@@ -580,7 +603,9 @@
                                             <select name="calc[target_race]" class="form-control" disabled>
                                                 <option></option>
                                                 @foreach ($races as $targetRace)
-                                                    <option value="{{ $targetRace->id }}">{{ $targetRace->name }}</option>
+                                                    <option value="{{ $targetRace->id }}">
+                                                        {{ $targetRace->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -596,8 +621,8 @@
                             <div class="col-xs-3 text-left">
                                 <select name="calc[tech_offense]" class="form-control">
                                     <option value="0"></option>
-                                    <option value="5">Military Genius +5%</option>
-                                    <option value="10">Magical Weaponry +10%</option>
+                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.military_genius")) ? 'selected' : null }}>Military Genius +5%</option>
+                                    <option value="10" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.magical_weaponry")) ? 'selected' : null }}>Magical Weaponry +10%</option>
                                 </select>
                             </div>
                             <div class="col-xs-3 text-right">
@@ -609,7 +634,8 @@
                                         name="calc[forges_percent]"
                                         class="form-control text-center"
                                         placeholder="0"
-                                        min="0" />
+                                        min="0"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('castle_spy')) ? array_get($targetInfoOps['castle_spy']->data, "forges.rating") * 100 : null }}" />
                             </div>
                         </div>
 
@@ -634,7 +660,8 @@
                                         class="form-control text-center"
                                         placeholder="0"
                                         min="0"
-                                        max="20" />
+                                        max="20"
+                                        value="{{ ($targetDominion !== null && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.gryphon_nest") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
                             </div>
                         </div>
 
@@ -659,6 +686,11 @@
                 <div class="box-body table-responsive">
                     <table class="table">
                         <tbody>
+                            @if ($targetDominion !== null)
+                                <tr style="font-weight: bold;">
+                                    <td colspan="2">{{ $targetDominion->name }}</td>
+                                </tr>
+                            @endif
                             <tr style="font-weight: bold;">
                                 <td>Total Offense:</td>
                                 <td id="op">--</td>
@@ -793,6 +825,13 @@
                     }
                 );
             }
+
+            @if ($targetDominion !== null)
+                $('#race_dp').trigger('change');
+                //$('#calculate-defense-button').trigger('click');
+                $('#race_op').trigger('change');
+                //$('#calculate-offense-button').trigger('click');
+            @endif
         })(jQuery);
     </script>
 @endpush

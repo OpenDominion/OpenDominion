@@ -233,15 +233,13 @@
 
                     <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old. Recast your info ops before performing any offensive operations during this hour.</p>
 
-                    {{--<p>Estimated stats:</p>
-                    <p>
-                        OP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
-                        DP: ??? <abbr title="Not yet implemented" class="label label-danger">NYI</abbr><br>
-                        Land: {{ $infoOpService->getLandString($latestInfoOps) }}<br>
-                        Networth: {{ $infoOpService->getNetworthString($latestInfoOps) }}<br>
-                    </p>--}}
+                    <p>You can automatically load the most recent ops into the calculator.</p>
 
-                    {{-- todo: invade button --}}
+                    <p>
+                        <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
+                            <i class="fa fa-calculator"></i> Calculations
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
