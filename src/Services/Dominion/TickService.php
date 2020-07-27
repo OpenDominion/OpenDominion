@@ -562,8 +562,6 @@ class TickService
 
     public function updateDailyRankings(): void
     {
-        Log::debug('Daily rankings started');
-
         // Update rankings
         $activeRounds = Round::activeRankings()->get();
 
@@ -572,6 +570,8 @@ class TickService
             if ($round->start_date->hour != now()->hour) {
                 continue;
             }
+
+            Log::debug('Daily rankings started');
 
             $activeDominions = $round->dominions()->with([
                 'race',
@@ -647,8 +647,8 @@ class TickService
                 ['dominion_id', 'key'],
                 ['rank', 'previous_rank'],
             );
-        }
 
-        Log::debug('Daily rankings finished');
+            Log::debug('Daily rankings finished');
+        }
     }
 }

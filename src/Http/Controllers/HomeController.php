@@ -31,19 +31,19 @@ class HomeController extends AbstractController
 
         $rankingsRound = $currentRound;
 
-        $previousRoundNumber = $currentRound->number - 1;
+        if ($currentRound !== null) {
+            $previousRoundNumber = $currentRound->number - 1;
 
-        if(!$currentRound->hasStarted() && $previousRoundNumber > 0)
-        {
-            $rankingsRound = Round::query()
-            ->where('number', $previousRoundNumber)
-            ->orderBy('created_at', 'desc')
-            ->first();
+            if (!$currentRound->hasStarted() && $previousRoundNumber > 0) {
+                $rankingsRound = Round::query()
+                ->where('number', $previousRoundNumber)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            }
         }
 
         $currentRankings = null;
-        if($rankingsRound !== null)
-        {
+        if ($rankingsRound !== null) {
             $currentRankings = DB::table('daily_rankings')
                 ->where('round_id', $rankingsRound->id)
                 ->where('key', 'largest-dominions')
