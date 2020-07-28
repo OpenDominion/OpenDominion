@@ -321,8 +321,8 @@
                     <table class="table">
                         <tbody>
                             @if ($targetDominion !== null)
-                                <tr style="font-weight: bold;">
-                                    <td colspan="2">{{ $targetDominion->name }}</td>
+                                <tr class="target-dominion-dp">
+                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
                                 </tr>
                             @endif
                             <tr style="font-weight: bold;">
@@ -687,8 +687,8 @@
                     <table class="table">
                         <tbody>
                             @if ($targetDominion !== null)
-                                <tr style="font-weight: bold;">
-                                    <td colspan="2">{{ $targetDominion->name }}</td>
+                                <tr class="target-dominion-op">
+                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
                                 </tr>
                             @endif
                             <tr style="font-weight: bold;">
@@ -829,8 +829,14 @@
             @if ($targetDominion !== null)
                 $('#race_dp').trigger('change');
                 //$('#calculate-defense-button').trigger('click');
+                $('#race_dp').select2().change(function (e) {
+                    $('.target-dominion-dp').hide();
+                });
                 $('#race_op').trigger('change');
                 //$('#calculate-offense-button').trigger('click');
+                $('#race_op').select2().change(function (e) {
+                    $('.target-dominion-op').hide();
+                });
             @endif
         })(jQuery);
     </script>

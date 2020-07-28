@@ -231,13 +231,15 @@
                 <div class="box-body">
                     <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
 
-                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old. Recast your info ops before performing any offensive operations during this hour.</p>
+                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
+
+                    <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
 
                     <p>You can automatically load the most recent ops into the calculator.</p>
 
                     <p>
                         <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
-                            <i class="fa fa-calculator"></i> Calculations
+                            <i class="fa fa-calculator"></i> Calculate
                         </a>
                     </p>
                 </div>

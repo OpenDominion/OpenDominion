@@ -4,6 +4,10 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.10.0-5] - 2018-07-28
+### Added
+- Added button to load op center data into Calculators
+
 ## [0.10.0-4] - 2018-07-24
 ### Added
 - New Castle Advisor shows improvements and techs (visible to packmates)
