@@ -209,9 +209,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    value="50"
                                                     disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -536,7 +535,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -578,8 +578,7 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
+                                                    disabled />
                                         </div>
                                     @endforeach
                                     @if ($targetLandRequired)
