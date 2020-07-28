@@ -258,6 +258,7 @@ $router->group(['prefix' => 'valhalla', 'as' => 'valhalla.'], static function (R
 $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator'], 'prefix' => 'staff', 'as' => 'staff.'], static function (Router $router) {
 
     $router->get('/')->uses('Staff\StaffController@getIndex')->name('index');
+    $router->get('/audit')->uses('Staff\StaffController@getAudit')->name('audit');
 
     // Administrator
 
@@ -289,6 +290,9 @@ $router->group(['middleware' => ['auth', 'role:Developer|Administrator|Moderator
     $router->group(['middleware' => 'role:Administrator|Moderator', 'prefix' => 'moderator', 'as' => 'moderator.'], static function (Router $router) {
 
         $router->get('dominions/{dominion}/event/{gameEvent}', 'Staff\Moderator\DominionController@showGameEvent')->name('dominion.event');
+        $router->get('dominions/{dominion}/activity', 'Staff\Moderator\DominionController@showUserActivity')->name('dominion.activity');
+        $router->post('dominions/{dominion}/lock', 'Staff\Moderator\DominionController@lockDominion')->name('dominion.lock');
+        $router->post('dominions/{dominion}/unlock', 'Staff\Moderator\DominionController@unlockDominion')->name('dominion.unlock');
         $router->resource('dominions', 'Staff\Moderator\DominionController');
     });
 

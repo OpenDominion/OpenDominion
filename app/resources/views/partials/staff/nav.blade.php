@@ -4,6 +4,7 @@
 
     <li class="header">Staff</li>
     <li class="{{ Route::is('staff.index') ? 'active' : null }}"><a href="{{ route('staff.index') }}">Dashboard</a></li>
+    <li class="{{ Route::is('staff.audit') ? 'active' : null }}"><a href="{{ route('staff.audit') }}">Audit Log</a></li>
 
     @if ($user->hasRole('Administrator'))
         <li class="header">Administrator</li>

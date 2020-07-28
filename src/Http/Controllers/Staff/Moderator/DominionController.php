@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Staff\Moderator;
 
+use Auth;
 use Carbon\Carbon;
 use DateInterval;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\UserActivity;
 use OpenDominion\Services\GameEventService;
+use OpenDominion\Services\Activity\ActivityEvent;
+use OpenDominion\Services\Activity\ActivityService;
 
 class DominionController extends AbstractController
 {
@@ -108,6 +111,12 @@ class DominionController extends AbstractController
 
     public function showGameEvent(Dominion $dominion, GameEvent $gameEvent, Request $request)
     {
+        // Save to Audit Log
+        $activityService = app(ActivityService::class);
+        $user = Auth::user();
+        $event = new ActivityEvent('staff.audit.invasion', ActivityEvent::STATUS_INFO, ['gameEvent' => $gameEvent->id]);
+        $activityService->recordActivity($user, $event);
+
         $timeOfEvent = Carbon::parse($gameEvent->created_at);
         $infoOps = InfoOp::where('target_dominion_id', '=', $gameEvent->target_id)
             ->where('created_at', '<', $timeOfEvent)
@@ -132,5 +141,80 @@ class DominionController extends AbstractController
             'infoOps' => $infoOps,
             'lastDay' => $lastDay
         ]);
+    }
+
+    public function showUserActivity(Dominion $dominion, Request $request)
+    {
+        $selectedDominionId = $request->input('dominion') ?? -1;
+
+        if ($selectedDominionId == -1) {
+            // Save to Audit Log
+            $activityService = app(ActivityService::class);
+            $user = Auth::user();
+            $event = new ActivityEvent('staff.audit.activity', ActivityEvent::STATUS_INFO, ['dominion' => $dominion->id]);
+            $activityService->recordActivity($user, $event);
+        }
+
+        $userIps = UserActivity::select('ip')
+            ->where('user_id', '=', $dominion->user_id)
+            ->where('created_at', '>', $dominion->round->created_at)
+            ->where('created_at', '<', $dominion->round->end_date)
+            ->whereIn('key', ['user.login', 'user.logout'])
+            ->whereNotIn('ip', ['', '127.0.0.1'])
+            ->distinct('ip')
+            ->pluck('ip');
+
+        $sharedUserActivity = UserActivity::query()
+            ->where('created_at', '>', $dominion->round->created_at)
+            ->where('created_at', '<', $dominion->round->end_date)
+            ->whereIn('ip', $userIps)
+            ->whereIn('key', ['user.login', 'user.logout'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $sharedDominions = Dominion::query()
+            ->where('round_id', $dominion->round_id)
+            ->whereIn('user_id', $sharedUserActivity->pluck('user_id'))
+            ->get()
+            ->keyBy('user_id');
+
+        // TODO: dominion_history ips
+
+        return view('pages.staff.moderator.dominions.showUserActivity', [
+            'selectedDominionId' => $selectedDominionId,
+            'dominion' => $dominion,
+            'sharedDominions' => $sharedDominions,
+            'sharedUserActivity' => $sharedUserActivity,
+        ]);
+    }
+
+    public function lockDominion(Dominion $dominion, Request $request)
+    {
+        $dominion->locked_at = now();
+        $dominion->save();
+
+        // Save to Audit Log
+        $activityService = app(ActivityService::class);
+        $user = Auth::user();
+        $event = new ActivityEvent('staff.audit.lock', ActivityEvent::STATUS_INFO, ['dominion' => $dominion->id]);
+        $activityService->recordActivity($user, $event);
+
+        $request->session()->flash('alert-success', 'This dominion has been locked.');
+        return redirect()->back();
+    }
+
+    public function unlockDominion(Dominion $dominion, Request $request)
+    {
+        $dominion->locked_at = null;
+        $dominion->save();
+
+        // Save to Audit Log
+        $activityService = app(ActivityService::class);
+        $user = Auth::user();
+        $event = new ActivityEvent('staff.audit.unlock', ActivityEvent::STATUS_INFO, ['dominion' => $dominion->id]);
+        $activityService->recordActivity($user, $event);
+
+        $request->session()->flash('alert-success', 'This dominion has been unlocked.');
+        return redirect()->back();
     }
 }
