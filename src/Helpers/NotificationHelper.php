@@ -5,6 +5,7 @@ namespace OpenDominion\Helpers;
 use LogicException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Wonder;
 
 class NotificationHelper
 {
@@ -192,15 +193,17 @@ class NotificationHelper
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-crossed-axes text-red',
             ],
-            /*
             'wonder_attacked' => [
                 'label' => 'A wonder our realm controls was attacked',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-sword text-red',
             ],
             'wonder_destroyed' => [
                 'label' => 'A wonder our realm controls was destroyed',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-sword text-red',
             ],
+            /*
             'realmie_death' => [
                 'label' => 'A realmie has died',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -610,6 +613,28 @@ class NotificationHelper
                     'Our realm declared war upon %s (#%s)!',
                     $targetRealm->name,
                     $targetRealm->number
+                );
+
+            case 'irregular_dominion.wonder_attacked':
+                $attackerDominion = Dominion::with('realm')->findOrFail($data['attackerDominionId']);
+                $wonder = Wonder::findOrFail($data['wonderId']);
+
+                return sprintf(
+                    '%s (#%s) has attacked the %s!',
+                    $attackerDominion->name,
+                    $attackerDominion->realm->number,
+                    $wonder->name
+                );
+
+            case 'irregular_dominion.wonder_destroyed':
+                $attackerRealm = Realm::findOrFail($data['attackerRealmId']);
+                $wonder = Wonder::findOrFail($data['wonderId']);
+
+                return sprintf(
+                    'The %s has been destroyed and rebuilt by %s (#%s)!',
+                    $wonder->name,
+                    $attackerRealm->name,
+                    $attackerRealm->number
                 );
 
             // todo: other irregular etc
