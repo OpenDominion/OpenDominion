@@ -44,7 +44,12 @@
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="improve[{{ $improvementType }}]" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <div class="input-group">
+                                                <input type="number" name="improve[{{ $improvementType }}]" data-type="{{ $improvementType }}" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary improve-max" data-type="{{ $improvementType }}" type="button">Max</button>
+                                                </span>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -54,10 +59,10 @@
                     <div class="box-footer">
                         <div class="pull-right">
                             <select name="resource" class="form-control">
-                                <option value="platinum" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
-                                <option value="lumber" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
-                                <option value="ore" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
-                                <option value="gems" {{ $selectedResource  === 'gems' ? 'selected' : ''}}>Gems</option>
+                                <option value="platinum" data-amount="{{ $selectedDominion->resource_platinum }}" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
+                                <option value="lumber" data-amount="{{ $selectedDominion->resource_lumber }}" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
+                                <option value="ore" data-amount="{{ $selectedDominion->resource_ore }}" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
+                                <option value="gems" data-amount="{{ $selectedDominion->resource_gems }}" {{ $selectedResource  === 'gems' ? 'selected' : ''}}>Gems</option>
                             </select>
                         </div>
 
@@ -89,3 +94,18 @@
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('.improve-max').click(function(e) {
+                var selectedOption = $('select[name=resource] option:selected'),
+                    selectedResource = selectedOption.val(),
+                    maxAmount = selectedOption.data('amount'),
+                    improvementType = $(this).data('type');
+
+                $('input[name=improve\\['+improvementType+'\\]]').val(maxAmount);
+            });
+        })(jQuery);
+    </script>
+@endpush

@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 
 ## [0.10.0-6] - 2018-07-30
+### Added
+- Improvements fields can now be pre-populated with max resources
+
 ### Fixed
 - National bank input will no longer prepopulate with 0
 - National bank success message now shows the types/amounts exchanged
