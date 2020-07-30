@@ -167,18 +167,28 @@ class AdvisorsController extends AbstractDominionController
             return;
         }
 
+        $dominion = $this->getSelectedDominion();
+
+        if ($dominion->locked_at !== null) {
+            throw new GameException('Locked dominions are not allowed to look at realm advisors.');
+        }
+
+        if($dominion->realm_id !== $target->realm_id)
+        {
+            throw new GameException('You are only allowed to look at dominions in your realm.');
+        }
+
         if ($target->user->getSetting('packadvisors') === false) {
             throw new GameException('This user has opted not to share their advisors.');
         }
 
-        $dominion = $this->getSelectedDominion();
+        if($target->getSetting("packadvisors_$dominion->id") === true)
+        {
+            return;
+        }
 
         if ($dominion->pack_id == null || $dominion->pack_id !== $target->pack_id) {
             throw new GameException('You are only allowed to look at dominions in your pack.');
-        }
-
-        if ($dominion->locked_at !== null) {
-            throw new GameException('Locked dominions are not allowed to look at realm advisors.');
         }
     }
 }
