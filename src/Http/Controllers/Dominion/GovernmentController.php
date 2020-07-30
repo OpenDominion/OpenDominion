@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -200,7 +201,7 @@ class GovernmentController extends AbstractDominionController
         return redirect()->route('dominion.government');
     }
 
-    public function postAdvisors(GovernmentActionRequest $request)
+    public function postAdvisors(Request $request)
     {
         $newValues = $request->input('realmadvisors');
         $selectedDominion = $this->getSelectedDominion();

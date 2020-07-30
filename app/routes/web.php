@@ -113,6 +113,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Improvements
             $router->get('improvements')->uses('Dominion\ImprovementController@getImprovements')->name('improvements');
             $router->post('improvements')->uses('Dominion\ImprovementController@postImprovements');
+            $router->post('improvements')->uses('Dominion\ImprovementController@postPreferredResource');
 
             // National Bank
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
