@@ -191,6 +191,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
             $router->post('government/war/declare')->uses('Dominion\GovernmentController@postDeclareWar')->name('government.war.declare');
             $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
+            $router->post('government/advisors')->uses('Dominion\GovernmentController@postAdvisors')->name('government.advisors');
+
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');

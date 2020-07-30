@@ -199,4 +199,31 @@ class GovernmentController extends AbstractDominionController
         $request->session()->flash('alert-success', 'Your realm is no longer at war.');
         return redirect()->route('dominion.government');
     }
+
+    public function postAdvisors(GovernmentActionRequest $request)
+    {
+        $newValues = $request->input('realmadvisors');
+        $selectedDominion = $this->getSelectedDominion();
+        $settings = ($selectedDominion->settings ?? []);
+        $settings['realmAdvisors'] = [];
+
+        if($newValues)
+        {
+            foreach ($selectedDominion->realm->dominions as $dominion)
+            {
+                if(!in_array($dominion->id, $newValues))
+                {
+
+                    continue;
+                }
+
+                $settings['realmAdvisors'][$dominion->id] = true;
+            }
+        }
+
+        $selectedDominion->settings = $settings;
+        $selectedDominion->save();
+        $request->session()->flash('alert-success', 'Your advisors have been updated.');
+        return redirect()->route('dominion.government');
+    }
 }

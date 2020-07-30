@@ -74,26 +74,50 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <table class="table table-condensed">
-                                        <tr><th>Dominion</th><th>Voted for</th></tr>
-                                        @foreach ($dominions as $dominion)
-                                            <tr>
-                                                <td>
-                                                    @if ($dominion->isMonarch())
-                                                        <span class="text-red">{{ $dominion->name }}</span>
+                            </form>
+                            <form action="{{ route('dominion.government.advisors') }}" method="post" role="form">
+                                @csrf
+                                <div class="col-sm-8 col-lg-10">
+                                    <div class="form-group">
+                                        <table class="table table-condensed">
+                                            <tr><th>Dominion</th><th>Voted for</th><th>Advisor</th></tr>
+                                            @php
+                                                $realmAdvisors = $selectedDominion->getSetting("realmAdvisors");
+                                            @endphp
+                                            @foreach ($dominions as $dominion)
+                                                <tr>
+                                                    <td>
+                                                        @if ($dominion->isMonarch())
+                                                            <span class="text-red">{{ $dominion->name }}</span>
+                                                        @else
+                                                            {{ $dominion->name }}
+                                                        @endif
+                                                    </td>
+                                                    @if ($dominion->monarchVote)
+                                                        <td>{{ $dominion->monarchVote->name }}</td>
                                                     @else
-                                                        {{ $dominion->name }}
+                                                        <td>N/A</td>
                                                     @endif
-                                                </td>
-                                                @if ($dominion->monarchVote)
-                                                    <td>{{ $dominion->monarchVote->name }}</td>
-                                                @else
-                                                    <td>N/A</td>
-                                                @endif
-                                            </tr>
-                                        @endforeach
-                                    </table>
+                                                    <td>
+                                                        @if($dominion->id !== $selectedDominion->id)
+                                                            @if($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
+                                                                <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
+                                                            @else
+                                                                <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
+                                                            @endif
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            Save
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

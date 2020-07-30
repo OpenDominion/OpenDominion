@@ -182,7 +182,9 @@ class AdvisorsController extends AbstractDominionController
             throw new GameException('This user has opted not to share their advisors.');
         }
 
-        if($target->getSetting("packadvisors_$dominion->id") === true)
+        $realmAdvisors = $target->getSetting("realmAdvisors");
+
+        if($realmAdvisors && $realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
         {
             return;
         }
