@@ -184,7 +184,7 @@ class AdvisorsController extends AbstractDominionController
 
         $realmAdvisors = $target->getSetting("realmAdvisors");
 
-        if($realmAdvisors && $realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
+        if($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
         {
             return;
         }

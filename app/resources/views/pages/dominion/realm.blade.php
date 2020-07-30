@@ -73,8 +73,8 @@
                                                 @if ($isOwnRealm)
                                                     @php
                                                         $realmAdvisors = $dominion->getSetting("realmAdvisors");
-                                                        $hasPackAdvisorEnabled = ($dominion->user !== null) ? $dominion->user->getSetting('packadvisors') !== false : false;
-                                                        $isRealmAdvisorForDominion = ($realmAdvisors && $realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === true);
+                                                        $hasPackAdvisorEnabled = ($dominion->user !== null) ? ($dominion->user->getSetting('packadvisors')) !== false : false;
+                                                        $isRealmAdvisorForDominion = ($realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === true);
                                                         $isPackAdvisorForDominion = ($dominion->pack !== null && $selectedDominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id)
                                                     @endphp
                                                     @if ($hasPackAdvisorEnabled && ($isRealmAdvisorForDominion || $isPackAdvisorForDominion))
