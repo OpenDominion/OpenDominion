@@ -71,7 +71,13 @@
                                                 <b>{{ $dominion->name }}</b> (you)
                                             @else
                                                 @if ($isOwnRealm)
-                                                    @if (($dominion->pack !== null && $selectedDominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id) && ($dominion->user->getSetting('packadvisors') !== false))
+                                                    @php
+                                                        $realmAdvisors = $dominion->getSetting("realmAdvisors");
+                                                        $hasPackAdvisorEnabled = $dominion->user->getSetting('packadvisors') !== false;
+                                                        $isRealmAdvisorForDominion = ($realmAdvisors && $realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === true);
+                                                        $isPackAdvisorForDominion = ($dominion->pack !== null && $selectedDominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id)
+                                                    @endphp
+                                                    @if ($hasPackAdvisorEnabled && ($isRealmAdvisorForDominion || $isPackAdvisorForDominion))
                                                         <a href="{{ route('dominion.realm.advisors.production', $dominion) }}">{{ $dominion->name }}</a>
                                                     @else
                                                         {{ $dominion->name }}
