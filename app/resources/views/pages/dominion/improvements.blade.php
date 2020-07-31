@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -89,6 +88,42 @@
                         <p>Masonries are increasing your castle improvements by {{ number_format(($improvementCalculator->getImprovementMultiplier($selectedDominion) - 1) * 100, 2) }}%</p>
                     @endif
                 </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Settings</h3>
+                </div>
+                <form action="{{ route('dominion.improvements.resource') }}" method="post" role="form">
+                    @csrf
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table">
+                            <colgroup>
+                                <col width="50%">
+                                <col width="50%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">Preferred resource:</td>
+                                    <td class="text-center">
+                                        <select name="preferredresource" class="form-control">
+                                            <option value="platinum" {{ $preferredResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
+                                            <option value="lumber" {{ $preferredResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
+                                            <option value="ore" {{ $preferredResource  === 'ore' ? 'selected' : ''}}>Ore</option>
+                                            <option value="gems" {{ $preferredResource  === 'gems' ? 'selected' : ''}}>Gems</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit"
+                                class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 

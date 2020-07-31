@@ -163,6 +163,7 @@ class HistoryService
                 'last_tick_at',
                 'locked_at',
                 'monarchy_vote_for_dominion_id',
+                'settings'
             ])->keys()->toArray();
     }
 }

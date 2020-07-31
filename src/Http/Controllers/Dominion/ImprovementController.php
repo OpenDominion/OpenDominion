@@ -15,10 +15,19 @@ class ImprovementController extends AbstractDominionController
 {
     public function getImprovements(Request $request)
     {
+        $dominion = $this->getSelectedDominion();
+
+        $preferredResource = $dominion->getSetting('preferredInvestmentResource');
+        if(!$preferredResource)
+        {
+            $preferredResource = 'gems';
+        }
+
         return view('pages.dominion.improvements', [
             'improvementCalculator' => app(ImprovementCalculator::class),
             'improvementHelper' => app(ImprovementHelper::class),
-            'selectedResource' => $request->query('resource', 'gems'),
+            'selectedResource' => $request->query('resource', $preferredResource),
+            'preferredResource' => $preferredResource,
         ]);
     }
 
@@ -53,5 +62,21 @@ class ImprovementController extends AbstractDominionController
         return redirect()->route('dominion.improvements', [
             'resource' => $request->get('resource'),
         ]);
+    }
+
+    public function postPreferredResource(Request $request)
+    {
+        $newResource = $request->get('preferredresource');
+        $selectedDominion = $this->getSelectedDominion();
+        $settings = ($selectedDominion->settings ?? []);
+
+        if (array_get($settings, 'preferredInvestmentResource') != $newResource) {
+            $settings['preferredInvestmentResource'] = $newResource;
+            $selectedDominion->settings = $settings;
+            $selectedDominion->save();
+        }
+
+        $request->session()->flash('alert-success', 'Your preferred resource has been changed.');
+        return redirect()->route('dominion.improvements');
     }
 }
