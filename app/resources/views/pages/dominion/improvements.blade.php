@@ -95,7 +95,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Settings</h3>
                 </div>
-                <form action="{{ route('dominion.improvements') }}" method="post" role="form">
+                <form action="{{ route('dominion.improvements.resource') }}" method="post" role="form">
                     @csrf
                     <div class="box-body table-responsive no-padding">
                         <table class="table">

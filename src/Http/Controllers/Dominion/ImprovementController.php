@@ -69,10 +69,13 @@ class ImprovementController extends AbstractDominionController
         $newResource = $request->get('preferredresource');
         $selectedDominion = $this->getSelectedDominion();
         $settings = ($selectedDominion->settings ?? []);
-        $settings['preferredInvestmentResource'] = $newResource;
 
-        $selectedDominion->settings = $settings;
-        $selectedDominion->save();
+        if (array_get($settings, 'preferredInvestmentResource') != $newResource) {
+            $settings['preferredInvestmentResource'] = $newResource;
+            $selectedDominion->settings = $settings;
+            $selectedDominion->save();
+        }
+
         $request->session()->flash('alert-success', 'Your preferred resource has been changed.');
         return redirect()->route('dominion.improvements');
     }
