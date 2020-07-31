@@ -4,6 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [0.10.0-7] - 2018-07-31
+### Added
+- Advisors can now be shared with realmies outside of your pack from the government page.
+- You can now set a 'preferred resource' as the default for investment
+
 ## [0.10.0-6] - 2018-07-30
 ### Added
 - Improvements fields can now be pre-populated with max resources
