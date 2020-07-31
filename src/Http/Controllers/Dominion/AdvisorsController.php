@@ -178,19 +178,23 @@ class AdvisorsController extends AbstractDominionController
             throw new GameException('You are only allowed to look at dominions in your realm.');
         }
 
-        if ($target->user->getSetting('packadvisors') === false) {
-            throw new GameException('This user has opted not to share their advisors.');
-        }
+        $realmAdvisors = $target->getSetting("realmadvisors");
 
-        $realmAdvisors = $target->getSetting("realmAdvisors");
-
-        if($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
-        {
+        // Realm Advisor is explicitly enabled
+        if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true) {
             return;
         }
 
-        if ($dominion->pack_id == null || $dominion->pack_id !== $target->pack_id) {
-            throw new GameException('You are only allowed to look at dominions in your pack.');
+        // Realm Advisor is explicity disabled
+        if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === false) {
+            throw new GameException('This user has opted not to share their advisors.');
         }
+
+        // Pack Advisor is enabled
+        if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($dominion->pack_id != null && $dominion->pack_id == $target->pack_id)) {
+            return;
+        }
+
+        throw new GameException('This user has opted not to share their advisors.');
     }
 }

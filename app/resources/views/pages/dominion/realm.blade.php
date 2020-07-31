@@ -72,12 +72,13 @@
                                             @else
                                                 @if ($isOwnRealm)
                                                     @php
-                                                        $realmAdvisors = $dominion->getSetting("realmAdvisors");
+                                                        $realmAdvisors = $dominion->getSetting("realmadvisors");
+                                                        $hasRealmAdvisorEnabled = ($realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === true);
+                                                        $hasRealmAdvisorDisabled = ($realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === false);
                                                         $hasPackAdvisorEnabled = ($dominion->user !== null) ? ($dominion->user->getSetting('packadvisors')) !== false : false;
-                                                        $isRealmAdvisorForDominion = ($realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === true);
-                                                        $isPackAdvisorForDominion = ($dominion->pack !== null && $selectedDominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id)
+                                                        $sharesPackWithDominion = ($dominion->pack !== null) && ($dominion->pack_id === $selectedDominion->pack_id);
                                                     @endphp
-                                                    @if ($hasPackAdvisorEnabled && ($isRealmAdvisorForDominion || $isPackAdvisorForDominion))
+                                                    @if ($hasRealmAdvisorEnabled || (!$hasRealmAdvisorDisabled && $hasPackAdvisorEnabled && $sharesPackWithDominion))
                                                         <a href="{{ route('dominion.realm.advisors.production', $dominion) }}">{{ $dominion->name }}</a>
                                                     @else
                                                         {{ $dominion->name }}
@@ -88,7 +89,7 @@
                                             @endif
 
                                             @if ($isOwnRealm)
-                                                @if ($dominion->user)
+                                                @if ($dominion->user !== null)
                                                     @if ($dominion->round->isActive() && $dominion->user->isOnline())
                                                         <span class="label label-success">Online</span>
                                                     @endif
