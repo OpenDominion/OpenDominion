@@ -10,7 +10,7 @@
 
 /* TEAM */
     Project Lead:   InternetFett
-    Contact:        internetfett [at] gmail [dot] net
+    Contact:        internetfett [at] gmail [dot] com
 
     Developer:      Slz
 
