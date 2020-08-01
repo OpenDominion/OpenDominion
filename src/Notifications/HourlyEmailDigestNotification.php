@@ -55,7 +55,7 @@ class HourlyEmailDigestNotification extends Notification implements ShouldQueue
     public function toMail(Dominion $dominion): MailMessage
     {
         $mailMessage = (new MailMessage)
-            ->replyTo('email@wavehack.net', 'WaveHack')
+            ->replyTo('internetfett@gmail.com', 'InternetFett')
             ->subject($this->getSubject())
             ->greeting('Hourly Report for ' . $this->now->format('D, M j, Y H:00'))
             ->line('Hello ' . $dominion->user->display_name . '!')

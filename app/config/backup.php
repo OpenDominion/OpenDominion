@@ -112,7 +112,7 @@ return [
         'notifiable' => \Spatie\Backup\Notifications\Notifiable::class,
 
         'mail' => [
-            'to' => 'email@wavehack.net',
+            'to' => 'internetfett@gmail.com',
         ],
 
         'slack' => [

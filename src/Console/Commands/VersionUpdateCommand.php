@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VersionUpdateCommand extends Command implements CommandInterface
 {
-    protected const REPO_URL = 'https://github.com/WaveHack/OpenDominion';
+    protected const REPO_URL = 'https://github.com/OpenDominion/OpenDominion';
 
     /** @var string The name and signature of the console command */
     protected $signature = 'version:update';

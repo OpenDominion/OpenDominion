@@ -72,15 +72,15 @@ Feel free to register and play around! On the website homepage are links to help
 
 At time of creating this contributing document, quite some key information was still missing about the game. Notably how invasions worked, amongst other miscellaneous things. Nowadays most information has been recovered bit by bit, and reconstructed into either working features implemented in OpenDominion, or issues on the issue tracker.
 
-There's still a few open issues which require investigation or are up for discussion. If possible, browse through the [issue tracker](https://github.com/WaveHack/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["discussion"](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A"discussion") and feel free to reply with your thoughts. Or hop onto the Discord and communicate with us there.
+There's still a few open issues which require investigation or are up for discussion. If possible, browse through the [issue tracker](https://github.com/OpenDominion/OpenDominion/issues), look for issues with the label ["help wanted"](https://github.com/OpenDominion/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["discussion"](https://github.com/OpenDominion/OpenDominion/issues?q=is%3Aissue+is%3Aopen+label%3A"discussion") and feel free to reply with your thoughts. Or hop onto the Discord and communicate with us there.
 
-Not every issue that we require help with is related to coding, like [design](https://github.com/WaveHack/OpenDominion/issues/63), and some legal stuff ([terms and conditions](https://github.com/WaveHack/OpenDominion/issues/38) and [privacy policy](https://github.com/WaveHack/OpenDominion/issues/37)).
+Not every issue that we require help with is related to coding, like [design](https://github.com/OpenDominion/OpenDominion/issues/63), and some legal stuff ([terms and conditions](https://github.com/OpenDominion/OpenDominion/issues/38) and [privacy policy](https://github.com/OpenDominion/OpenDominion/issues/37)).
 
-Additionally, if want to bring up a topic that you think should get looked into that's not on the issue list, don't hesitate to poke us on Discord or [create a new issue](https://github.com/WaveHack/OpenDominion/issues/new) on the issue tracker.
+Additionally, if want to bring up a topic that you think should get looked into that's not on the issue list, don't hesitate to poke us on Discord or [create a new issue](https://github.com/OpenDominion/OpenDominion/issues/new) on the issue tracker.
 
 ### Report bugs
 
-You can report bugs to the [issue tracker](https://github.com/WaveHack/OpenDominion/issues) or on Discord in the #bug-reports channel. Since you're reading this on GitHub (probably), it's preferred to raise an issue on the tracker instead, as the Discord bug report channel is used primarily by players and most don't have a GitHub account.
+You can report bugs to the [issue tracker](https://github.com/OpenDominion/OpenDominion/issues) or on Discord in the #bug-reports channel. Since you're reading this on GitHub (probably), it's preferred to raise an issue on the tracker instead, as the Discord bug report channel is used primarily by players and most don't have a GitHub account.
 
 Please search the issue tracker first if the particular bug already has an open issue. If it does, add your message to the existing issue instead of opening a new issue.
 
@@ -96,7 +96,7 @@ Once you're satisfied with your modifications, raise a pull request and we will 
 
 Most of the stuff that needs coding is domain logic, meaning you have to know the ins and outs of the game (except if you're someone who played Dominion in the past). If the project seems interesting to you and you want to help with the project, play the game and join us on Discord. If you want to learn, we (both devs and players) will gladly help you out to get accustomed to things and explain how Dominion worked.
 
-There's also some non-domain coding issues open from time to time. We'll try to label these as "[good first issue](https://github.com/WaveHack/OpenDominion/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22)". This mostly consists of refactoring and UI stuff, however. If you need more info or something, feel free to request more information on the issue. Or as always, poke us on Discord.
+There's also some non-domain coding issues open from time to time. We'll try to label these as "[good first issue](https://github.com/OpenDominion/OpenDominion/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22)". This mostly consists of refactoring and UI stuff, however. If you need more info or something, feel free to request more information on the issue. Or as always, poke us on Discord.
 
 ## Local development
  
@@ -124,7 +124,7 @@ Notes:
 Clone the repository:
 
 ```bash
-$ git clone https://github.com/WaveHack/OpenDominion
+$ git clone https://github.com/OpenDominion/OpenDominion
 $ cd OpenDominion
 $ git submodule update --init
 ```
@@ -286,10 +286,10 @@ You can activate newly created users by either:
 
 ### Style guide and standards
 
-PHP code should be in PSR2-style with a few additional rules. See [.styleci.yml](https://github.com/WaveHack/OpenDominion/blob/master/.styleci.yml) for the defined [preset](https://styleci.readme.io/docs/presets#section-psr2) and [additional rules](https://styleci.readme.io/docs/fixers).
+PHP code should be in PSR2-style with a few additional rules. See [.styleci.yml](https://github.com/OpenDominion/OpenDominion/blob/master/.styleci.yml) for the defined [preset](https://styleci.readme.io/docs/presets#section-psr2) and [additional rules](https://styleci.readme.io/docs/fixers).
 
 Please add relevant unit tests or feature tests if possible.
 
 ## Resources
 
-You can find resources that we use to help us develop OpenDominion in the [resources branch](https://github.com/WaveHack/OpenDominion/tree/resources). See its readme for more info.
+You can find resources that we use to help us develop OpenDominion in the [resources branch](https://github.com/OpenDominion/OpenDominion/tree/resources). See its readme for more info.

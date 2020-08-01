@@ -8,9 +8,9 @@ The OpenDominion project uses a governance model commonly described as Benevolen
 
 * User: Anyone who plays OpenDominion.
 * Veteran: Anyone who plays plays OpenDominion and has also played Dominion in the past.
-* Contributor: Anyone who committed code to the project. They can be found on the [contributors](https://github.com/WaveHack/OpenDominion/graphs/contributors) page.
+* Contributor: Anyone who committed code to the project. They can be found on the [contributors](https://github.com/OpenDominion/OpenDominion/graphs/contributors) page.
 * Collaborator: Anyone who committed code to the project multiple times and have shown significant interest in helping the project move forward.
-* BDFL: A single individual who makes decisions when consensus cannot be reached. OpenDominion's current BDFL is [@WaveHack](https://github.com/WaveHack).
+* BDFL: A single individual who makes decisions when consensus cannot be reached. OpenDominion's current BDFL is [@internetfett](https://github.com/internetfett).
 
 ## Decision making process
 
