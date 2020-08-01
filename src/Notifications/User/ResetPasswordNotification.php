@@ -45,7 +45,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public function toMail(User $user): MailMessage
     {
         return (new MailMessage)
-            ->replyTo('email@wavehack.net', 'WaveHack')
+            ->replyTo('internetfett@gmail.com', 'InternetFett')
             ->subject('OpenDominion Password Reset')
             ->greeting('OpenDominion Password Reset')
             ->line('Hello ' . $user->display_name . '!')

@@ -30,7 +30,7 @@ class ApiController extends Controller
             ],
             'links' => [
                 'beta' => 'https://beta.opendominion.net',
-                'github' => 'https://github.com/WaveHack/OpenDominion',
+                'github' => 'https://github.com/OpenDominion/OpenDominion',
             ],
         ];
     }
