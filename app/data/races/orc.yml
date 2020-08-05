@@ -3,6 +3,10 @@ alignment: evil
 description: >-
   <p>War to an Orc is considered a basic necessity, like food or shelter. Orcs live for the fight and the only thing they respect is violence. Despite the unending carnage that underpins Orc existence, they are quite capable of thriving as long as they have a common foe, but will quickly turn on each other during prolonged periods of peace.</p>
   <p>Orcs advance in their society only by killing, and killing a lot. They will often claim skulls as trophies from their victims, and the Orcs with the rarest trophies are revered. These gruesome trophies are also crucial in the vile necromantic rituals performed by Orc voodoo magi, which grant their savage warriors the cumulative strength of their fallen enemies.</p>
+attacker_difficulty: 2
+explorer_difficulty: 0
+converter_difficulty: 0
+overall_difficulty: 3
 home_land_type: forest
 perks:
   food_consumption: 20

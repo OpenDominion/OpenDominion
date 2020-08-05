@@ -3,6 +3,10 @@ alignment: evil
 description: >-
   <p>The Lizardfolk race took everyone by surprise when they slithered out of the oceans in great numbers less than a century ago, attacking and pillaging coastal settlements before gradually pushing further inland. Their origins are pure speculation, ranging from Human scientific experimentation to Merfolk slave liberation.</p>
   <p>With chameleonic warriors that melt into the shadows and blend in perfectly with their environments, by the time you realise the Lizardfolk are coming... it's already too late.</p>
+attacker_difficulty: 2
+explorer_difficulty: 3
+converter_difficulty: 3
+overall_difficulty: 1
 home_land_type: water
 perks:
   max_population: 5

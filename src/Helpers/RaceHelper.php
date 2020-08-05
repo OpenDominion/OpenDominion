@@ -249,4 +249,32 @@ class RaceHelper
 
         return $result;
     }
+
+    public function getOverallDifficultyHtml(int $difficulty): string
+    {
+        switch($difficulty) {
+            case 0:
+                return '';
+            case 1:
+                return '<span class="label label-success">Beginner Friendly</span>';
+            case 2:
+                return '';
+            case 3:
+                return '<span class="label label-danger">Expert</span>';
+        }
+    }
+
+    public function getDifficultyString(int $difficulty): string
+    {
+        switch($difficulty) {
+            case 0:
+                return 'Not recommended';
+            case 1:
+                return 'Beginner';
+            case 2:
+                return 'Intermediate';
+            case 3:
+                return 'Advanced';
+        }
+    }
 }
