@@ -3,6 +3,10 @@ alignment: good
 description: >-
   <p>Tethered to the realm of the living by unknown forces, Spirits are the melancholic souls of the dead that cannot move on. They wander the lands, drawn towards life, turning thriving communities into ghost towns as people flee in terror. The living usually give them a wide berth, scared off by centuries of ghost stories.</p>
   <p>The worst of these stories revolve around Spirits snatching the very souls from the living in a jealous rage, trapping them in limbo forever.</p>
+attacker_difficulty: 1
+explorer_difficulty: 2
+converter_difficulty: 3
+overall_difficulty: 1
 home_land_type: swamp
 perks:
   max_population: 12.5
