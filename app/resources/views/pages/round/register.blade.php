@@ -44,49 +44,49 @@
                                     @if($i % 2 == 0)
                                         <div class="row">
                                     @endif
-                                        <div class="col-md-6">
+                                            <div class="col-md-6">
 
-                                            <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
-                                                        <p>
-                                                            <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
-                                                            <strong>{{ $race->name }}</strong>
-                                                        </p>
+                                                <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
+                                                            <h4>
+                                                                <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
+                                                                <strong>{{ $race->name }}</strong>
+                                                            </h4>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-4">
-                                                        <p>
-                                                            Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
-                                                        </p>
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4">
-                                                        <p>
-                                                            Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}
-                                                        </p>
+                                                    <div class="row">
+                                                        <div class="col-lg-5 text-left">
+                                                            <ul>
+                                                                @foreach ($race->perks as $perk)
+                                                                    <li>{!! $raceHelper->getPerkDescriptionHtml($perk) !!}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            {!! $race->description !!}
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4">
-                                                        <p>
-                                                            Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-5 text-left">
-                                                        <ul>
-                                                            @foreach ($race->perks as $perk)
-                                                                <li>{!! $raceHelper->getPerkDescriptionHtml($perk) !!}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-lg-7">
-                                                        {!! $race->description !!}
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
+                                                </label>
+                                            </div>
                                     @if($i % 2)
                                         </div>
                                     @endif
@@ -97,25 +97,23 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="text-center">
-                                    <div class="text-center">
-                                        <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Evil Aligned Races</h4>
-                                    </div>
+                                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Evil Aligned Races</h4>
                                 </div>
                                 @php($i = 0)
                                 @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; }) as $race)
                                     @if($i % 2 == 0)
                                         <div class="row">
-                                            @endif
+                                    @endif
                                             <div class="col-md-6">
 
                                                 <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
-                                                            <p>
+                                                            <h4>
                                                                 <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
                                                                 <strong>{{ $race->name }}</strong>
-                                                            </p>
+                                                            </h4>
                                                         </div>
                                                     </div>
                                                     <div class="row">
