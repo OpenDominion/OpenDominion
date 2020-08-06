@@ -133,8 +133,10 @@ class EspionageActionService
             throw new GameException('You cannot perform espionage operations on targets which are under protection');
         }
 
+        $isHostileOperation = $this->espionageHelper->isHostileOperation($operationKey);
+        $hasBeenInvadedRecently = in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12));
 
-        if (!$this->rangeCalculator->isInRange($dominion, $target) && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
+        if (!$this->rangeCalculator->isInRange($dominion, $target) && !($hasBeenInvadedRecently && $isHostileOperation)) {
             throw new GameException('You cannot perform espionage operations on targets outside of your range');
         }
 
@@ -145,7 +147,7 @@ class EspionageActionService
             if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
                 throw new GameException('You cannot perform resource theft on targets smaller than yourself');
             }
-        } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
+        } elseif ($isHostileOperation) {
             if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot perform black ops for the first seven days of the round');
             }
