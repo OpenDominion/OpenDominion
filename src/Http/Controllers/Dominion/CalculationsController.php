@@ -28,6 +28,15 @@ class CalculationsController extends AbstractDominionController
                     ->where('source_realm_id', $dominion->realm->id)
                     ->where('latest', true)
                     ->get()
+                    ->filter(function($infoOp) {
+                        if ($infoOp->type == 'barracks_spy') {
+                            $hourTaken = $infoOp->created_at->startOfHour();
+                            if ($hourTaken->diffInHours(now()) > 11) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    })
                     ->keyBy('type');
             }
         }

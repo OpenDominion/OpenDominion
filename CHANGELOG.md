@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - The Town Crier is no longer be limited to 7 days
+- Calculate from Op Center will no longer include outdated barracks spies
 
 ## [0.10.0-7] - 2018-07-31
 ### Added

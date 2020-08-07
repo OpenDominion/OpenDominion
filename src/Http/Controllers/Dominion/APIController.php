@@ -50,7 +50,7 @@ class APIController extends AbstractDominionController
                 if (isset($calc["unit{$slot}_away"])) {
                     $unitsAway = (int) ($calc["unit{$slot}_away"] * 0.85);
                     $units[$slot] = max($units[$slot] - $unitsAway, 0);
-                    if (isset($calc["unit{$slot}_home"])) {
+                    if (isset($calc["unit{$slot}_home"]) && $unitsAway > 0) {
                         $unitsHome = (int) ($calc["unit{$slot}_home"] / 0.85);
                         if ($unitsHome < $units[$slot]) {
                             $units[$slot] = $unitsHome;
