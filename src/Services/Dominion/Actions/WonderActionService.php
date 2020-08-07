@@ -10,7 +10,9 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
+use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\WonderService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -18,11 +20,22 @@ class WonderActionService
 {
     use DominionGuardsTrait;
 
+    /**
+     * @var float Base percentage of offensive casualties
+     */
+    protected const CASUALTIES_BASE_PERCENTAGE = 5;
+
+    /** @var InvasionService */
+    protected $invasionService;
+
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
     /** @var ProtectionService */
     protected $protectionService;
+
+    /** @var QueueService */
+    protected $queueService;
 
     /** @var WonderService */
     protected $wonderService;
@@ -30,17 +43,23 @@ class WonderActionService
     /**
      * WonderActionService constructor.
      *
+     * @param InvasionService $invasionService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
+     * @param QueueService $queueService
      * @param WonderService $wonderService
      */
     public function __construct(
+        InvasionService $invasionService,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService,
+        QueueService $queueService,
         WonderService $wonderService
     ) {
+        $this->invasionService = $invasionService;
         $this->militaryCalculator = $militaryCalculator;
         $this->protectionService = $protectionService;
+        $this->queueService = $queueService;
         $this->wonderService = $wonderService;
     }
 
@@ -59,18 +78,47 @@ class WonderActionService
 
         DB::transaction(function () use ($dominion, $wonder, $units) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {
-                throw new GameException('Invasions have been disabled for the remainder of the round.');
+                throw new GameException('Attacks have been disabled for the remainder of the round.');
             }
 
             if ($this->protectionService->isUnderProtection($dominion)) {
-                throw new GameException('You cannot invade while under protection');
+                throw new GameException('You cannot attack while under protection');
             }
 
             if ($dominion->round->id !== $wonder->round->id) {
-                throw new GameException('Nice try, but you cannot invade cross-round');
+                throw new GameException('Nice try, but you cannot attack cross-round');
             }
 
             // TODO: Check that wonder is neutral or in war-realm
+
+            // Sanitize input
+            $units = array_map('intval', array_filter($units));
+
+            if (!$this->invasionService->hasAnyOP($dominion, $units)) {
+                throw new GameException('You need to send at least some units');
+            }
+
+            if (!$this->invasionService->allUnitsHaveOP($dominion, $units)) {
+                throw new GameException('You cannot send units that have no OP');
+            }
+
+            if (!$this->invasionService->hasEnoughUnitsAtHome($dominion, $units)) {
+                throw new GameException('You don\'t have enough units at home to send this many units');
+            }
+
+            if (!$this->invasionService->hasEnoughBoats($dominion, $units)) {
+                throw new GameException('You do not have enough boats to send this many units');
+            }
+
+            if (!$this->invasionService->hasEnoughMorale($dominion)) {
+                throw new GameException('You do not have enough morale to attack a wonder');
+            }
+
+            foreach($units as $amount) {
+                if($amount < 0) {
+                    throw new GameException('Attack was canceled due to bad input.');
+                }
+            }
 
             // TODO: Deal Damage
             $damageDealt = round($this->militaryCalculator->getOffensivePower($dominion, null, null, $units));
@@ -93,10 +141,10 @@ class WonderActionService
             }
 
             // TODO: Increment stats
-            // TODO: handleBoats
-            // TODO: handleOffensiveCasualties
-            // TODO: handleReturningUnits
-            // TODO: handleMoraleChanges
+            $dominion->morale -= 5;
+            $this->handleBoats($dominion, $units);
+            $survivingUnits = $this->handleCasualties($dominion, $units);
+            $this->handleReturningUnits($dominion, $survivingUnits);
 
             $dominion->save(); // TODO: event => historyservice
             $wonder->save(); // TODO: event => historyservice
@@ -115,6 +163,125 @@ class WonderActionService
             'redirect' => route('dominion.wonders')
             //'redirect' => route('dominion.event', [])
         ];
+    }
+
+    /**
+     * Handles the returning boats.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     */
+    protected function handleBoats(Dominion $dominion, array $units): void
+    {
+        $unitsThatNeedsBoatsByReturnHours = [];
+        // Calculate boats sent and attacker sinking perk
+        foreach ($dominion->race->units as $unit) {
+            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
+                continue;
+            }
+
+            if ($unit->need_boat) {
+                $hours = $this->invasionService->getUnitReturnHoursForSlot($dominion, $unit->slot);
+
+                if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {
+                    $unitsThatNeedsBoatsByReturnHours[$hours] = 0;
+                }
+
+                $unitsThatNeedsBoatsByReturnHours[$hours] += (int)$units[$unit->slot];
+            }
+        }
+
+        // Queue returning boats
+        foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
+            $boatsByReturnHourGroup = (int)floor($amountUnits / $dominion->race->getBoatCapacity());
+
+            $dominion->resource_boats -= $boatsByReturnHourGroup;
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                ['resource_boats' => $boatsByReturnHourGroup],
+                $hours
+            );
+        }
+    }
+
+    /**
+     * Handles offensive casualties for the attacking dominion.
+     *
+     * Offensive casualties are 5% of the units sent.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     * @return array All the units that survived and will return home
+     */
+    protected function handleCasualties(Dominion $dominion, Dominion $target, array $units): array
+    {
+        $offensiveCasualtiesPercentage = (static::CASUALTIES_BASE_PERCENTAGE / 100);
+
+        $offensiveUnitsLost = [];
+
+        foreach ($units as $slot => $amount) {
+            $unitsToKill = (int)ceil($amount * $offensiveCasualtiesPercentage);
+            $offensiveUnitsLost[$slot] = $unitsToKill;
+
+            $fixedCasualtiesPerk = $dominion->race->getUnitPerkValueForUnitSlot($slot, 'fixed_casualties');
+            if ($fixedCasualtiesPerk) {
+                $fixedCasualtiesRatio = $fixedCasualtiesPerk / 100;
+                $unitsActuallyKilled = (int)ceil($amount * $fixedCasualtiesRatio);
+                $offensiveUnitsLost[$slot] = $unitsActuallyKilled;
+            }
+        }
+
+        foreach ($offensiveUnitsLost as $slot => &$amount) {
+            if ($amount > 0) {
+                // Actually kill the units. RIP in peace, glorious warriors ;_;7
+                $dominion->{"military_unit{$slot}"} -= $amount;
+                //$this->invasionResult['attacker']['unitsLost'][$slot] = $amount;
+            }
+        }
+        unset($amount); // Unset var by reference from foreach loop above to prevent unintended side-effects
+
+        $survivingUnits = $units;
+
+        foreach ($units as $slot => $amount) {
+            if (isset($offensiveUnitsLost[$slot])) {
+                $survivingUnits[$slot] -= $offensiveUnitsLost[$slot];
+            }
+        }
+
+        return $survivingUnits;
+    }
+
+    /**
+     * Handles the surviving units returning home.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     */
+    protected function handleReturningUnits(Dominion $dominion, array $units): void
+    {
+        for ($i = 1; $i <= 4; $i++) {
+            $unitKey = "military_unit{$i}";
+            $returningAmount = 0;
+
+            if (array_key_exists($i, $units)) {
+                $returningAmount += $units[$i];
+                $dominion->$unitKey -= $units[$i];
+            }
+
+            if ($returningAmount === 0) {
+                continue;
+            }
+
+            $this->queueService->queueResources(
+                'invasion',
+                $dominion,
+                [$unitKey => $returningAmount],
+                $this->invasionService->getUnitReturnHoursForSlot($dominion, $i)
+            );
+        }
     }
 
     /**

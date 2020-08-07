@@ -15,6 +15,7 @@ use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
@@ -45,11 +46,6 @@ class InvadeActionService
     protected const CASUALTIES_OFFENSIVE_BASE_PERCENTAGE = 8.5;
 
     /**
-     * @var int The minimum morale required to initiate an invasion
-     */
-    protected const MIN_MORALE = 70;
-
-    /**
      * @var float Failing an invasion by this percentage (or more) results in 'being overwhelmed'
      */
     protected const OVERWHELMED_PERCENTAGE = 15.0;
@@ -77,6 +73,9 @@ class InvadeActionService
 
     /** @var GovernmentService */
     protected $governmentService;
+
+    /** @var InvasionService */
+    protected $invasionService;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -130,6 +129,7 @@ class InvadeActionService
      * @param BuildingCalculator $buildingCalculator
      * @param CasualtiesCalculator $casualtiesCalculator
      * @param GovernmentService $governmentService
+     * @param InvasionService $invasionService
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
@@ -142,6 +142,7 @@ class InvadeActionService
         BuildingCalculator $buildingCalculator,
         CasualtiesCalculator $casualtiesCalculator,
         GovernmentService $governmentService,
+        InvasionService $invasionService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
@@ -153,6 +154,7 @@ class InvadeActionService
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->governmentService = $governmentService;
+        $this->invasionService = $invasionService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
@@ -205,23 +207,23 @@ class InvadeActionService
             $units = array_map('intval', array_filter($units));
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-            if (!$this->hasAnyOP($dominion, $units)) {
+            if (!$this->invasionService->hasAnyOP($dominion, $units)) {
                 throw new GameException('You need to send at least some units');
             }
 
-            if (!$this->allUnitsHaveOP($dominion, $units)) {
+            if (!$this->invasionService->allUnitsHaveOP($dominion, $units)) {
                 throw new GameException('You cannot send units that have no OP');
             }
 
-            if (!$this->hasEnoughUnitsAtHome($dominion, $units)) {
+            if (!$this->invasionService->hasEnoughUnitsAtHome($dominion, $units)) {
                 throw new GameException('You don\'t have enough units at home to send this many units');
             }
 
-            if (!$this->hasEnoughBoats($dominion, $units)) {
+            if (!$this->invasionService->hasEnoughBoats($dominion, $units)) {
                 throw new GameException('You do not have enough boats to send this many units');
             }
 
-            if ($dominion->morale < static::MIN_MORALE) {
+            if (!$this->invasionService->hasEnoughMorale($dominion)) {
                 throw new GameException('You do not have enough morale to invade others');
             }
 
@@ -407,7 +409,7 @@ class InvadeActionService
 
             } else {
                 // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
-                $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
 
                 $this->queueService->queueResources(
                     'invasion',
@@ -459,7 +461,7 @@ class InvadeActionService
             $OPNeededToBreakTarget = ($targetDP + 1);
             $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
 
-            $totalUnitsLeftToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
+            $totalUnitsLeftToKill = (int)ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
 
             foreach ($units as $slot => $amount) {
                 $slotTotalAmountPercentage = ($amount / $totalUnitsSent);
@@ -934,7 +936,7 @@ class InvadeActionService
             $landGenerated = array_sum($this->invasionResult['attacker']['landGenerated']);
 
             $researchPointsGained = ($landConquered + $landGenerated) * $researchPointsPerAcre;
-            $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
 
             // Racial Bonus
             $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
@@ -1039,13 +1041,13 @@ class InvadeActionService
                 'invasion',
                 $dominion,
                 [$unitKey => $returningAmount],
-                $this->getUnitReturnHoursForSlot($dominion, $i)
+                $this->invasionService->getUnitReturnHoursForSlot($dominion, $i)
             );
         }
     }
 
     /**
-     * Handles the surviving units returning home.
+     * Handles the returning boats.
      *
      * @param Dominion $dominion
      * @param Dominion $target
@@ -1069,7 +1071,7 @@ class InvadeActionService
             }
 
             if ($unit->need_boat) {
-                $hours = $this->getUnitReturnHoursForSlot($dominion, $unit->slot);
+                $hours = $this->invasionService->getUnitReturnHoursForSlot($dominion, $unit->slot);
 
                 if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {
                     $unitsThatNeedsBoatsByReturnHours[$hours] = 0;
@@ -1172,86 +1174,6 @@ class InvadeActionService
     }
 
     /**
-     * Check if dominion is sending out at least *some* OP.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function hasAnyOP(Dominion $dominion, array $units): bool
-    {
-        return ($this->militaryCalculator->getOffensivePower($dominion, null, null, $units) !== 0.0);
-    }
-
-    /**
-     * Check if all units being sent have positive OP.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function allUnitsHaveOP(Dominion $dominion, array $units): bool
-    {
-        foreach ($dominion->race->units as $unit) {
-            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
-                continue;
-            }
-
-            if ($unit->power_offense === 0.0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if dominion has enough units at home to send out.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function hasEnoughUnitsAtHome(Dominion $dominion, array $units): bool
-    {
-        foreach ($dominion->race->units as $unit) {
-            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
-                continue;
-            }
-
-            if ($units[$unit->slot] > $dominion->{'military_unit' . $unit->slot}) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if dominion has enough boats to send units out.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function hasEnoughBoats(Dominion $dominion, array $units): bool
-    {
-        $unitsThatNeedBoats = 0;
-
-        foreach ($dominion->race->units as $unit) {
-            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
-                continue;
-            }
-
-            if ($unit->need_boat) {
-                $unitsThatNeedBoats += (int)$units[$unit->slot];
-            }
-        }
-
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity()));
-    }
-
-    /**
      * Check if an invasion passes the 33%-rule.
      *
      * @param Dominion $dominion
@@ -1304,64 +1226,6 @@ class InvadeActionService
         $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
 
         return ($attackingForceOP <= $attackingForceMaxOP);
-    }
-
-    /**
-     * Returns the amount of hours a military unit (with a specific slot) takes
-     * to return home after battle.
-     *
-     * @param Dominion $dominion
-     * @param int $slot
-     * @return int
-     */
-    protected function getUnitReturnHoursForSlot(Dominion $dominion, int $slot): int
-    {
-        $hours = 12;
-
-        /** @var Unit $unit */
-        $unit = $dominion->race->units->filter(function ($unit) use ($slot) {
-            return ($unit->slot === $slot);
-        })->first();
-
-        if ($unit->getPerkValue('faster_return') !== 0) {
-            $hours -= (int)$unit->getPerkValue('faster_return');
-        }
-
-        return $hours;
-    }
-
-    /**
-     * Gets the amount of hours for the slowest unit from an array of units
-     * takes to return home.
-     *
-     * Primarily used to bring prestige home earlier if you send only 9hr
-     * attackers. (Land always takes 12 hrs)
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return int
-     */
-    protected function getSlowestUnitReturnHours(Dominion $dominion, array $units): int
-    {
-        $hours = 0;
-
-        foreach ($units as $slot => $amount) {
-            if ($amount === 0) {
-                continue;
-            }
-
-            $hoursForUnit = $this->getUnitReturnHoursForSlot($dominion, $slot);
-
-            if ($hoursForUnit > $hours) {
-                $hours = $hoursForUnit;
-            }
-        }
-
-        if ($hours == 0) {
-            $hours = 12;
-        }
-
-        return $hours;
     }
 
     protected function getDefensivePowerWithTemples(Dominion $dominion, Dominion $target): float
