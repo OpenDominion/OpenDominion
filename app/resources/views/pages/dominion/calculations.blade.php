@@ -209,9 +209,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    value="50"
                                                     disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -321,8 +320,8 @@
                     <table class="table">
                         <tbody>
                             @if ($targetDominion !== null)
-                                <tr style="font-weight: bold;">
-                                    <td colspan="2">{{ $targetDominion->name }}</td>
+                                <tr class="target-dominion-dp">
+                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
                                 </tr>
                             @endif
                             <tr style="font-weight: bold;">
@@ -536,7 +535,8 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
                                         </div>
                                     @endforeach
                                     @foreach ($landFieldsRequired as $land)
@@ -578,8 +578,7 @@
                                                     class="form-control text-center"
                                                     placeholder="0"
                                                     min="0"
-                                                    disabled
-                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "constructed.{$building}") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : null }}" />
+                                                    disabled />
                                         </div>
                                     @endforeach
                                     @if ($targetLandRequired)
@@ -687,8 +686,8 @@
                     <table class="table">
                         <tbody>
                             @if ($targetDominion !== null)
-                                <tr style="font-weight: bold;">
-                                    <td colspan="2">{{ $targetDominion->name }}</td>
+                                <tr class="target-dominion-op">
+                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
                                 </tr>
                             @endif
                             <tr style="font-weight: bold;">
@@ -829,8 +828,14 @@
             @if ($targetDominion !== null)
                 $('#race_dp').trigger('change');
                 //$('#calculate-defense-button').trigger('click');
+                $('#race_dp').select2().change(function (e) {
+                    $('.target-dominion-dp').hide();
+                });
                 $('#race_op').trigger('change');
                 //$('#calculate-offense-button').trigger('click');
+                $('#race_op').select2().change(function (e) {
+                    $('.target-dominion-op').hide();
+                });
             @endif
         })(jQuery);
     </script>

@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="row">
-
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -44,7 +43,12 @@
                                         </td>
                                         <td class="text-center">{{ number_format($selectedDominion->{'improvement_' . $improvementType}) }}</td>
                                         <td class="text-center">
-                                            <input type="number" name="improve[{{ $improvementType }}]" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            <div class="input-group">
+                                                <input type="number" name="improve[{{ $improvementType }}]" data-type="{{ $improvementType }}" class="form-control text-center" placeholder="0" min="0" value="{{ old('improve.' . $improvementType) }}" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary improve-max" data-type="{{ $improvementType }}" type="button">Max</button>
+                                                </span>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -54,10 +58,10 @@
                     <div class="box-footer">
                         <div class="pull-right">
                             <select name="resource" class="form-control">
-                                <option value="platinum" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
-                                <option value="lumber" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
-                                <option value="ore" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
-                                <option value="gems" {{ $selectedResource  === 'gems' ? 'selected' : ''}}>Gems</option>
+                                <option value="platinum" data-amount="{{ $selectedDominion->resource_platinum }}" {{ $selectedResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
+                                <option value="lumber" data-amount="{{ $selectedDominion->resource_lumber }}" {{ $selectedResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
+                                <option value="ore" data-amount="{{ $selectedDominion->resource_ore }}" {{ $selectedResource  === 'ore' ? 'selected' : ''}}>Ore</option>
+                                <option value="gems" data-amount="{{ $selectedDominion->resource_gems }}" {{ $selectedResource  === 'gems' ? 'selected' : ''}}>Gems</option>
                             </select>
                         </div>
 
@@ -86,6 +90,57 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-12 col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Settings</h3>
+                </div>
+                <form action="{{ route('dominion.improvements.resource') }}" method="post" role="form">
+                    @csrf
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table">
+                            <colgroup>
+                                <col width="50%">
+                                <col width="50%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">Preferred resource:</td>
+                                    <td class="text-center">
+                                        <select name="preferredresource" class="form-control">
+                                            <option value="platinum" {{ $preferredResource === 'platinum' ? 'selected' : ''}}>Platinum</option>
+                                            <option value="lumber" {{ $preferredResource  === 'lumber' ? 'selected' : ''}}>Lumber</option>
+                                            <option value="ore" {{ $preferredResource  === 'ore' ? 'selected' : ''}}>Ore</option>
+                                            <option value="gems" {{ $preferredResource  === 'gems' ? 'selected' : ''}}>Gems</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit"
+                                class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
     </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('.improve-max').click(function(e) {
+                var selectedOption = $('select[name=resource] option:selected'),
+                    selectedResource = selectedOption.val(),
+                    maxAmount = selectedOption.data('amount'),
+                    improvementType = $(this).data('type');
+
+                $('input[name=improve\\['+improvementType+'\\]]').val(maxAmount);
+            });
+        })(jQuery);
+    </script>
+@endpush

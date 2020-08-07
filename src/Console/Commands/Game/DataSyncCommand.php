@@ -71,6 +71,10 @@ class DataSyncCommand extends Command implements CommandInterface
                 ->fill([
                     'alignment' => object_get($data, 'alignment'),
                     'description' => object_get($data, 'description'),
+                    'attacker_difficulty' => object_get($data, 'attacker_difficulty', 0),
+                    'explorer_difficulty' => object_get($data, 'explorer_difficulty', 0),
+                    'converter_difficulty' => object_get($data, 'converter_difficulty', 0),
+                    'overall_difficulty' => object_get($data, 'overall_difficulty', 0),
                     'home_land_type' => object_get($data, 'home_land_type'),
                     'playable' => object_get($data, 'playable', true),
                 ]);

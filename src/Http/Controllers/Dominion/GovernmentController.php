@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -197,6 +198,29 @@ class GovernmentController extends AbstractDominionController
         }
 
         $request->session()->flash('alert-success', 'Your realm is no longer at war.');
+        return redirect()->route('dominion.government');
+    }
+
+    public function postAdvisors(Request $request)
+    {
+        $newValues = $request->input('realmadvisors');
+        $selectedDominion = $this->getSelectedDominion();
+        $settings = ($selectedDominion->settings ?? []);
+        $settings['realmadvisors'] = [];
+
+        if ($newValues) {
+            foreach ($selectedDominion->realm->dominions as $dominion) {
+                if (!in_array($dominion->id, $newValues)) {
+                    $settings['realmadvisors'][$dominion->id] = false;
+                } else {
+                    $settings['realmadvisors'][$dominion->id] = true;
+                }
+            }
+        }
+
+        $selectedDominion->settings = $settings;
+        $selectedDominion->save();
+        $request->session()->flash('alert-success', 'Your advisors have been updated.');
         return redirect()->route('dominion.government');
     }
 }

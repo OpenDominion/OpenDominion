@@ -72,7 +72,13 @@ class BankActionService
         $dominion->save(['event' => HistoryService::EVENT_ACTION_BANK]);
 
         return [
-            'message' => 'Your resources have been exchanged.',
+            'message' => sprintf(
+                'You have exchanged %s %s for %s %s.',
+                $amount,
+                dominion_attr_display($source, $amount),
+                $targetAmount,
+                dominion_attr_display($target, $targetAmount)
+            )
         ];
     }
 }

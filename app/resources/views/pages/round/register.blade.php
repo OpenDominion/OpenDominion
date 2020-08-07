@@ -35,71 +35,124 @@
                     <label for="race" class="col-sm-3 control-label">Race</label>
                     <div class="col-sm-9">
                         <div class="row">
-
                             <div class="col-xs-12">
                                 <div class="text-center">
-                                    <strong>Good Aligned Races</strong>
+                                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Good Aligned Races</h4>
                                 </div>
-                                <div class="row">
-                                    @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; }) as $race)
-                                        <div class="col-xs-12">
-                                            <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
-                                                <div class="row text-left">
-                                                    <div class="col-lg-2">
-                                                        <p>
-                                                            <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
-                                                            <strong>{{ $race->name }}</strong>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-lg-4">
-                                                        <p>
-                                                            @foreach ($race->perks as $perk)
-                                                                {!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br>
-                                                            @endforeach
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        {!! $race->description !!}
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
+                                @php($i = 0)
+                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'good'; }) as $race)
+                                    @if($i % 2 == 0)
+                                        <div class="row">
+                                    @endif
+                                            <div class="col-md-6">
 
+                                                <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
+                                                            <h4>
+                                                                <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
+                                                                <strong>{{ $race->name }}</strong>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-5 text-left">
+                                                            <ul>
+                                                                @foreach ($race->perks as $perk)
+                                                                    <li>{!! $raceHelper->getPerkDescriptionHtml($perk) !!}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            {!! $race->description !!}
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                    @if($i % 2)
+                                        </div>
+                                    @endif
+                                    @php($i++)
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-xs-12">
                                 <div class="text-center">
-                                    <strong>Evil Aligned Races</strong>
+                                    <h4 style="border-bottom: 1px solid #f4f4f4; margin-top: 0; padding: 10px 0">Evil Aligned Races</h4>
                                 </div>
-                                <div class="row">
-                                    @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; }) as $race)
-                                        <div class="col-xs-12">
-                                            <label class="btn btn-block" style="border: 1px solid #d2d6de; margin-top: 10px; white-space: normal;">
-                                                <div class="row text-left">
-                                                    <div class="col-lg-2">
-                                                        <p>
-                                                            <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
-                                                            <strong>{{ $race->name }}</strong>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-lg-4">
-                                                        <p>
-                                                            @foreach ($race->perks as $perk)
-                                                                {!! $raceHelper->getPerkDescriptionHtml($perk) !!}<br>
-                                                            @endforeach
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        {!! $race->description !!}
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
+                                @php($i = 0)
+                                @foreach ($races->filter(function ($race) { return $race->playable && $race->alignment === 'evil'; }) as $race)
+                                    @if($i % 2 == 0)
+                                        <div class="row">
+                                    @endif
+                                            <div class="col-md-6">
 
+                                                <label class="btn btn-block" style="border: 1px solid #d2d6de; margin: 5px 0px; white-space: normal;">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            {!! $raceHelper->getOverallDifficultyHtml($race->overall_difficulty) !!}
+                                                            <h4>
+                                                                <input type="radio" name="race" value="{{ $race->id }}" autocomplete="off" {{ (old('race') == $race->id) ? 'checked' : null }} required>
+                                                                <strong>{{ $race->name }}</strong>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Attacker: {!! $raceHelper->getDifficultyString($race->attacker_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Explorer: {!! $raceHelper->getDifficultyString($race->explorer_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p>
+                                                                Converter: {!! $raceHelper->getDifficultyString($race->converter_difficulty) !!}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-5 text-left">
+                                                            <ul>
+                                                                @foreach ($race->perks as $perk)
+                                                                    <li>{!! $raceHelper->getPerkDescriptionHtml($perk) !!}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            {!! $race->description !!}
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            @if($i % 2)
+                                        </div>
+                                    @endif
+                                    @php($i++)
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

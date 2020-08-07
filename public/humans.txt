@@ -1,7 +1,7 @@
 /* PROJECT */
     Name:           OpenDominion
     URL:            https://opendominion.net
-    Repository:     https://github.com/WaveHack/OpenDominion
+    Repository:     https://github.com/OpenDominion/OpenDominion
     Created:        2013-02-04
     Languages:      PHP, MySQL, JavaScript, HTML, CSS
     Components:     Laravel, AdminLTE, jQuery
@@ -9,11 +9,8 @@
     Editors:        PhpStorm, VS Code
 
 /* TEAM */
-    Project Lead:   WaveHack
-    Contact:        email [at] wavehack [dot] net
-    Twitter:        @WaveHack
-    Discord:        Sharqy#1337
-    Location:       The Netherlands
+    Project Lead:   InternetFett
+    Contact:        internetfett [at] gmail [dot] com
 
     Developer:      Slz
 

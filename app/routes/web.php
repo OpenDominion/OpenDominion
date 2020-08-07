@@ -113,6 +113,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             // Improvements
             $router->get('improvements')->uses('Dominion\ImprovementController@getImprovements')->name('improvements');
             $router->post('improvements')->uses('Dominion\ImprovementController@postImprovements');
+            $router->post('improvements/resource')->uses('Dominion\ImprovementController@postPreferredResource')->name('improvements.resource');
 
             // National Bank
             $router->get('bank')->uses('Dominion\BankController@getBank')->name('bank');
@@ -195,6 +196,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/elite-guard/leave')->uses('Dominion\GovernmentController@postLeaveEliteGuard')->name('government.elite-guard.leave');
             $router->post('government/war/declare')->uses('Dominion\GovernmentController@postDeclareWar')->name('government.war.declare');
             $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
+            $router->post('government/advisors')->uses('Dominion\GovernmentController@postAdvisors')->name('government.advisors');
+
 
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');

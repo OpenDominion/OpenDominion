@@ -133,6 +133,9 @@
                     targetOption = targetElement.find(':selected'),
                     targetResourceType = _.get(resources, targetOption.val()),
                     targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy']) || 0);
+                if (sourceAmount == 0) {
+                    sourceAmount = '';
+                }
 
                 // Change labels
                 amountLabelElement.text(sourceOption.text());
@@ -163,8 +166,6 @@
             }).on('change', function (slideEvent) {
                 amountElement.val(slideEvent.value.newValue).change();
             });
-
-            updateResources();
         })(jQuery);
     </script>
 @endpush

@@ -4,7 +4,7 @@
         <div class="col-xs-6">
             <span class="hidden-xs">Version: </span>{!! $version !!}
             &nbsp;|&nbsp;
-            <span class="hidden-xs hidden-sm hidden-md"><i class="fa fa-github"></i> View this project on </span><a href="https://github.com/WaveHack/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>
+            <span class="hidden-xs hidden-sm hidden-md"><i class="fa fa-github"></i> View this project on </span><a href="https://github.com/OpenDominion/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>
         </div>
 
         <div class="col-xs-6 text-right">

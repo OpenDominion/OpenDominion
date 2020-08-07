@@ -74,9 +74,16 @@
                                         </div>
                                     </div>
                                 </div>
+                            </form>
+                            <form action="{{ route('dominion.government.advisors') }}" method="post" role="form">
+                                @csrf
                                 <div class="form-group">
                                     <table class="table table-condensed">
-                                        <tr><th>Dominion</th><th>Voted for</th></tr>
+                                        <tr><th>Dominion</th><th>Voted for</th><th>Advisors</th></tr>
+                                        @php
+                                            $realmAdvisors = $selectedDominion->getSetting("realmadvisors");
+                                            $packAdvisors = $selectedDominion->user->getSetting("packadvisors");
+                                        @endphp
                                         @foreach ($dominions as $dominion)
                                             <tr>
                                                 <td>
@@ -91,9 +98,31 @@
                                                 @else
                                                     <td>N/A</td>
                                                 @endif
+                                                <td>
+                                                    @if ($dominion->id !== $selectedDominion->id)
+                                                        @if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
+                                                        @elseif ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === false)
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
+                                                        @elseif ($packAdvisors !== false && $selectedDominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id)
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
+                                                        @else
+                                                            <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}">
+                                                        @endif
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-offset-6 col-xs-6 col-sm-offset-8 col-sm-4 col-lg-offset-10 col-lg-2">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary btn-block" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>

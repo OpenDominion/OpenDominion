@@ -85,6 +85,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $pack_id
+ * @property array|null $settings
  * @property int|null $monarch_dominion_id
  * @property int $calculated_networth
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
@@ -172,6 +173,7 @@ class Dominion extends AbstractModel
         'last_tick_at' => 'datetime',
         'locked_at' => 'datetime',
         'protection_ticks_remaining' => 'integer',
+        'settings' => 'array',
     ];
 
     protected $dispatchesEvents = [
@@ -464,5 +466,14 @@ class Dominion extends AbstractModel
     public function getWonderPerkMultiplier(string $key): float
     {
         return ($this->getWonderPerkValue($key) / 100);
+    }
+
+    public function getSetting(string $key)
+    {
+        if (!array_has($this->settings, $key)) {
+            return null;
+        }
+
+        return array_get($this->settings, $key);
     }
 }

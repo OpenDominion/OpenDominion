@@ -3,6 +3,28 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Difficulty ratings added to race selection
+
+### Changed
+- The Town Crier is no longer be limited to 7 days
+
+## [0.10.0-7] - 2018-07-31
+### Added
+- Advisors can now be shared with realmies outside of your pack from the government page
+- You can now set a 'preferred resource' as the default for investment
+
+## [0.10.0-6] - 2018-07-30
+### Added
+- Improvements fields can now be pre-populated with max resources
+
+### Fixed
+- National bank input will no longer prepopulate with 0
+- National bank success message now shows the types/amounts exchanged
+
+## [0.10.0-5] - 2018-07-28
+### Added
+- Added button to load op center data into Calculators
 
 ## [0.10.0-4] - 2018-07-24
 ### Added
