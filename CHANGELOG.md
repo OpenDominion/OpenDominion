@@ -3,10 +3,15 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Difficulty ratings added to race selection
+
+### Changed
+- The Town Crier is no longer be limited to 7 days
 
 ## [0.10.0-7] - 2018-07-31
 ### Added
-- Advisors can now be shared with realmies outside of your pack from the government page.
+- Advisors can now be shared with realmies outside of your pack from the government page
 - You can now set a 'preferred resource' as the default for investment
 
 ## [0.10.0-6] - 2018-07-30

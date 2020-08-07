@@ -45,7 +45,7 @@ class GameEventService
             ->with(['source', 'target'])
             ->where('round_id', $realm->round->id)
             ->where('created_at', '<', $createdBefore)
-            ->where('created_at', '>', now()->subDays(7))
+            //->where('created_at', '>', now()->subDays(7))
             ->where(function (Builder $query) use ($realm, $dominionIds) {
                 $query
                     ->orWhere(function (Builder $query) use ($dominionIds) {
@@ -84,7 +84,7 @@ class GameEventService
             ->with(['source', 'target'])
             ->where('round_id', $dominion->round_id)
             ->where('created_at', '<', $createdBefore)
-            ->where('created_at', '>', now()->subDays(7))
+            //->where('created_at', '>', now()->subDays(7))
             ->orderBy('created_at', 'desc')
             ->paginate(100);
 
