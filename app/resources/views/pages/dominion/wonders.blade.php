@@ -35,7 +35,7 @@
                                         @if ($wonder->realm)
                                             #{{ $wonder->realm->number }}
                                         @else
-                                            N/A
+                                            --
                                         @endif
                                     </td>
                                     <td>
@@ -224,8 +224,8 @@
                 </div>
                 <div class="box-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
-                    <p>All wonders will begin each round in realm 0, with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
-                    <p>Each dominion in a realm destroying a wonder that is not in realm 0 receives 100 prestige.</p>
+                    <p>All wonders will spawn with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
+                    <p>Each dominion that participates in destroying a wonder that is controlled by another realm is awarded prestige.</p>
                 </div>
             </div>
         </div>

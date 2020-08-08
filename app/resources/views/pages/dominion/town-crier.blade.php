@@ -41,7 +41,8 @@
                                                     @if (in_array($gameEvent->source_id, $dominionIds, true))
                                                         @if ($gameEvent->data['result']['success'])
                                                             Victorious on the battlefield,
-                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green">{{ $gameEvent->source->name }}</span></a> <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green">{{ $gameEvent->source->name }}</span></a>
+                                                            <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                             conquered
                                                             <span class="text-green text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                             land from
@@ -49,7 +50,8 @@
                                                             <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
                                                         @else
                                                             Sadly, the forces of
-                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green">{{ $gameEvent->source->name }}</span></a> <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green">{{ $gameEvent->source->name }}</span></a>
+                                                            <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                             were beaten back by
                                                             <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}</span></a>
                                                             <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>.
@@ -59,13 +61,15 @@
                                                             <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-red">{{ $gameEvent->source->name }}</span></a>
                                                             <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                             invaded fellow dominion
-                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}<span></a> <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
+                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}<span></a>
+                                                            <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                                                             and captured
                                                             <span class="text-red text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                             land.
                                                         @else
                                                             Fellow dominion
-                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}</span></a> <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
+                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}</span></a>
+                                                            <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                                                             fended off an attack from
                                                             <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-red">{{ $gameEvent->source->name }}</span></a>
                                                             <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
@@ -75,12 +79,14 @@
                                                             <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
                                                             <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                             invaded
-                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}<span></a> <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
+                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}<span></a>
+                                                            <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                                                             and captured
                                                             <span class="text-orange text-bold">{{ number_format(array_sum($gameEvent->data['attacker']['landConquered'])) }}</span>
                                                             land.
                                                         @else
-                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}</span></a> <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
+                                                            <a href="{{ route('dominion.op-center.show', [$gameEvent->target->id]) }}"><span class="text-light-blue">{{ $gameEvent->target->name }}</span></a>
+                                                            <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
                                                             fended off an attack from
                                                             <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
                                                             <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>.
@@ -88,13 +94,38 @@
                                                     @endif
                                                 @endif
                                             @elseif ($gameEvent->type === 'war_declared')
-                                                <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a> has declared <span class="text-red text-bold">WAR</span> on <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
+                                                has declared <span class="text-red text-bold">WAR</span> on
+                                                <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
                                             @elseif ($gameEvent->type === 'war_canceled')
-                                                <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a> has <span class="text-green text-bold">CANCELED</span> war against <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
+                                                has <span class="text-green text-bold">CANCELED</span> war against
+                                                <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
                                             @elseif ($gameEvent->type == 'wonder_spawned')
                                                 The <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a> has appeared!
+                                            @elseif ($gameEvent->type == 'wonder_attacked')
+                                                @if (in_array($gameEvent->source_id, $dominionIds, true))
+                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green">{{ $gameEvent->source->name }}</span></a>
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                @else
+                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                @endif
+                                                has attacked
+                                                @if (array_get($gameEvent->data, 'neutral', true))
+                                                    a wonder!
+                                                @else
+                                                    the <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->target->wonder->name }}</span></a>
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>!
+                                                @endif
                                             @elseif ($gameEvent->type == 'wonder_destroyed')
-                                                The <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->target->name }}</span></a> has been destroyed and rebuilt by <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>.
+                                                The <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->wonder->name }}</span></a>
+                                                @if ($gameEvent->target !== null)
+                                                    has been destroyed and rebuilt by
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                @else
+                                                    has been destroyed!
+                                                @endif
                                             @endif
                                         </td>
                                         <td class="text-center">

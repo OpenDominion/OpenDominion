@@ -201,6 +201,32 @@
                     </div>
                 </div>
             </div>
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><i class="ra ra-pyramids ra-lg"></i> Wonders</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Current Power</th>
+                                    <th>Description</th>
+                                </tr>
+                                @foreach ($realm->wonders as $wonder)
+                                    <tr>
+                                        <td>{{ $wonder->name }}</a></td>
+                                        <td>{{ number_format($wonder->pivot->power) }}</td>
+                                        <td>{{ $wonderHelper->getWonderDescription($wonder) }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-sm-12 col-md-3">

@@ -7,6 +7,8 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\GameEvent;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -89,6 +91,7 @@ class WonderActionService
                 throw new GameException('Nice try, but you cannot attack cross-round');
             }
 
+            $isNeutral = ($wonder->realm_id == null);
             // TODO: Check that wonder is neutral or in war-realm
 
             // Sanitize input
@@ -120,31 +123,52 @@ class WonderActionService
                 }
             }
 
-            // TODO: Deal Damage
             $damageDealt = round($this->militaryCalculator->getOffensivePower($dominion, null, null, $units));
             $wonder->power -= $damageDealt;
-            if ($wonder->power <= 0) {
-                // TODO: Log damage
-                if ($dominion->realm->wonder == null) {
-                    // TODO: Determine who rebuilds the wonder
-                    $wonder->realm_id = $dominion->realm_id;
-                    $wonder->power = $wonder->wonder->power;
-                    // TODO: GameEvent
-                    // TODO: Queue notifications
-                } else {
-                    // Rebuild as neutral
-                    $wonder->realm_id = null;
-                    $wonder->power = $wonder->wonder->power;
-                    // TODO: GameEvent
-                    // TODO: Queue notifications
-                }
-            }
+            // TODO: Log damage
 
-            // TODO: Increment stats
-            $dominion->morale -= 5;
             $this->handleBoats($dominion, $units);
             $survivingUnits = $this->handleCasualties($dominion, $units);
             $this->handleReturningUnits($dominion, $survivingUnits);
+            $dominion->morale -= 5;
+
+            // TODO: Increment stats
+
+            GameEvent::create([
+                'round_id' => $dominion->round->id,
+                'source_type' => Dominion::class,
+                'source_id' => $dominion->id,
+                'target_type' => RoundWonder::class,
+                'target_id' => $wonder->id,
+                'type' => 'wonder_attacked',
+                'data' => ['damage' => $damageDealt, 'neutral' => $isNeutral]
+            ]);
+
+            // TODO: Queue notifications
+
+            if ($wonder->power <= 0) {
+                if ($dominion->realm->wonders->isEmpty()) {
+                    // TODO: Determine who rebuilds the wonder
+                    $realm_id = $dominion->realm_id;
+                } else {
+                    // Rebuild as neutral
+                    $realm_id = null;
+                }
+                $wonder->realm_id = $realm_id;
+                $wonder->power = $wonder->wonder->power;
+
+                GameEvent::create([
+                    'round_id' => $dominion->round->id,
+                    'source_type' => RoundWonder::class,
+                    'source_id' => $wonder->id,
+                    'target_type' => Realm::class,
+                    'target_id' => $wonder->realm_id,
+                    'type' => 'wonder_destroyed',
+                    'data' => ['power' => $wonder->power, 'neutral' => $isNeutral]
+                ]);
+
+                // TODO: Queue notifications
+            }
 
             $dominion->save(); // TODO: event => historyservice
             $wonder->save(); // TODO: event => historyservice
@@ -216,7 +240,7 @@ class WonderActionService
      * @param array $units
      * @return array All the units that survived and will return home
      */
-    protected function handleCasualties(Dominion $dominion, Dominion $target, array $units): array
+    protected function handleCasualties(Dominion $dominion, array $units): array
     {
         $offensiveCasualtiesPercentage = (static::CASUALTIES_BASE_PERCENTAGE / 100);
 
