@@ -196,13 +196,18 @@ class NotificationHelper
             'wonder_attacked' => [
                 'label' => 'A wonder our realm controls was attacked',
                 'defaults' => ['email' => false, 'ingame' => true],
-                'iconClass' => 'ra ra-sword text-red',
+                'iconClass' => 'ra ra-sword text-orange',
             ],
             'wonder_destroyed' => [
                 'label' => 'A wonder our realm controls was destroyed',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-sword text-red',
             ],
+            'wonder_rebuilt' => [
+                'label' => 'Our realm has rebuilt a wonder',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-sword text-green',
+            ]
             /*
             'realmie_death' => [
                 'label' => 'A realmie has died',
@@ -615,7 +620,7 @@ class NotificationHelper
                     $targetRealm->number
                 );
 
-            case 'irregular_dominion.wonder_attacked':
+            case 'irregular_realm.wonder_attacked':
                 $attackerDominion = Dominion::with('realm')->findOrFail($data['attackerDominionId']);
                 $wonder = Wonder::findOrFail($data['wonderId']);
 
@@ -626,15 +631,23 @@ class NotificationHelper
                     $wonder->name
                 );
 
-            case 'irregular_dominion.wonder_destroyed':
+            case 'irregular_realm.wonder_destroyed':
                 $attackerRealm = Realm::findOrFail($data['attackerRealmId']);
                 $wonder = Wonder::findOrFail($data['wonderId']);
 
                 return sprintf(
-                    'The %s has been destroyed and rebuilt by %s (#%s)!',
+                    'The %s has been destroyed by %s (#%s)!',
                     $wonder->name,
                     $attackerRealm->name,
                     $attackerRealm->number
+                );
+
+            case 'irregular_realm.wonder_rebuilt':
+                $wonder = Wonder::findOrFail($data['wonderId']);
+
+                return sprintf(
+                    'Our realm has rebuilt the %s!',
+                    $wonder->name
                 );
 
             // todo: other irregular etc
