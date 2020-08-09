@@ -63,7 +63,7 @@ class WonderController extends AbstractDominionController
             $request->get('action')
         ));
 
-        $request->session()->flash('alert-success', $result['message']);
-        return redirect()->route('dominion.wonders');
+        $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
+        return redirect()->to($result['redirect'] ?? route('dominion.wonders'));
     }
 }

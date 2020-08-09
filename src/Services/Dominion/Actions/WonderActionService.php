@@ -48,12 +48,16 @@ class WonderActionService
 
     /** @var array Attack result array. todo: Should probably be refactored later to its own class */
     protected $attackResult = [
-        'damage' => [],
         'attacker' => [
             'unitsLost' => [],
+            'unitsSent' => [],
         ],
-        'currentRealmId' => null,
-        'victorRealmId' => null,
+        'wonder' => [
+            'currentRealmId' => null,
+            'neutral' => null,
+            'power' => null,
+            'victorRealmId' => null,
+        ],
     ];
 
     // todo: refactor
@@ -112,9 +116,8 @@ class WonderActionService
             }
 
             $currentRealm = $wonder->realm;
-            $this->attackResult['currentRealmId'] = $wonder->realm_id;
-            $this->attackResult['victorRealmId'] = null;
-            $isNeutral = ($wonder->realm_id == null);
+            $this->attackResult['wonder']['currentRealmId'] = $wonder->realm_id;
+            $this->attackResult['wonder']['neutral'] = ($wonder->realm_id == null);
             // TODO: Check that wonder is neutral or in war-realm
 
             // Sanitize input
@@ -150,33 +153,39 @@ class WonderActionService
             $wonder->power -= $damageDealt;
             // TODO: Log damage
 
+            $this->attackResult['attacker']['op'] = $damageDealt;
+            $this->attackResult['wonder']['power'] = $wonder->power;
+
             $this->handleBoats($dominion, $units);
             $survivingUnits = $this->handleCasualties($dominion, $units);
             $this->handleReturningUnits($dominion, $survivingUnits);
-            $dominion->morale -= 5;
 
+            $this->attackResult['attacker']['unitsSent'] = $units;
+
+            $dominion->morale -= 5;
             // TODO: Increment stats
 
-            GameEvent::create([
+            $this->attackEvent = GameEvent::create([
                 'round_id' => $dominion->round->id,
                 'source_type' => Dominion::class,
                 'source_id' => $dominion->id,
                 'target_type' => RoundWonder::class,
                 'target_id' => $wonder->id,
                 'type' => 'wonder_attacked',
-                'data' => ['damage' => $damageDealt, 'neutral' => $isNeutral]
+                'data' => $this->attackResult
             ]);
 
             if ($wonder->power <= 0) {
                 if ($dominion->realm->wonders->isEmpty()) {
                     // TODO: Determine who rebuilds the wonder
                     $victorRealm = $dominion->realm;
-                    $this->attackResult['victorRealmId'] = $dominion->realm_id;
                 }
 
                 // TODO: Calculate new power
                 $wonder->realm_id = $victorRealm->id;
                 $wonder->power = $wonder->wonder->power;
+                $this->attackResult['wonder']['power'] = $wonder->power;
+                $this->attackResult['wonder']['victorRealmId'] = $victorRealm->id;
 
                 GameEvent::create([
                     'round_id' => $dominion->round->id,
@@ -185,7 +194,7 @@ class WonderActionService
                     'target_type' => Realm::class,
                     'target_id' => $wonder->realm_id,
                     'type' => 'wonder_destroyed',
-                    'data' => ['power' => $wonder->power, 'neutral' => $isNeutral]
+                    'data' => $this->attackResult['wonder']
                 ]);
 
                 if ($victorRealm !== null) {
@@ -217,6 +226,7 @@ class WonderActionService
                 foreach ($currentRealm->dominions as $hostileDominion) {
                     $this->notificationService
                         ->queueNotification('wonder_attacked', [
+                            '_routeParams' => [(string)$this->attackEvent->id],
                             'attackerDominionId' => $dominion->id,
                             'wonderId' => $wonder->wonder->id
                         ])
@@ -229,15 +239,14 @@ class WonderActionService
         });
 
         $message = sprintf(
-            'You have attacked %s.',
+            'Your army has attacked the %s!', // todo: and it was destroyed!
             $wonder->wonder->name
         );
 
         return [
             'message' => $message,
             'alert-type' => 'success',
-            'redirect' => route('dominion.wonders')
-            //'redirect' => route('dominion.event', [])
+            'redirect' => route('dominion.event', [$this->attackEvent->id])
         ];
     }
 
@@ -314,7 +323,8 @@ class WonderActionService
             if ($amount > 0) {
                 // Actually kill the units. RIP in peace, glorious warriors ;_;7
                 $dominion->{"military_unit{$slot}"} -= $amount;
-                //$this->invasionResult['attacker']['unitsLost'][$slot] = $amount;
+
+                $this->attackResult['attacker']['unitsLost'][$slot] = $amount;
             }
         }
         unset($amount); // Unset var by reference from foreach loop above to prevent unintended side-effects

@@ -204,7 +204,7 @@
 
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-pyramids ra-lg"></i> Wonders</h3>
+                    <h3 class="box-title"><i class="ra ra-pyramids ra-lg"></i> Wonder</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">

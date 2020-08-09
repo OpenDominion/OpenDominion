@@ -106,6 +106,7 @@ class InvadeActionService
         'result' => [],
         'attacker' => [
             'unitsLost' => [],
+            'unitsSent' => [],
         ],
         'defender' => [
             'unitsLost' => [],
