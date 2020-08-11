@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\QueueService;
 
 class InvasionService
 {
@@ -15,15 +16,21 @@ class InvasionService
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
+    /** @var QueueService */
+    protected $queueService;
+
     /**
      * InvasionService constructor.
      *
      * @param MilitaryCalculator $militaryCalculator
+     * @param QueueService $queueService
      */
     public function __construct(
-        MilitaryCalculator $militaryCalculator
+        MilitaryCalculator $militaryCalculator,
+        QueueService $queueService
     ) {
         $this->militaryCalculator = $militaryCalculator;
+        $this->queueService = $queueService;
     }
 
     /**
@@ -113,6 +120,62 @@ class InvasionService
     public function hasEnoughMorale(Dominion $dominion): bool
     {
        return ($dominion->morale >= static::MIN_MORALE);
+    }
+
+    /**
+     * Check if an invasion passes the 33%-rule.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @return bool
+     */
+    public function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
+    {
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
+        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
+        if ($attackingForceDP == 0) {
+            return true;
+        }
+        $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
+
+        $unitsReturning = [];
+        for ($slot = 1; $slot <= 4; $slot++) {
+            $unitsReturning[$slot] = $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}");
+        }
+
+        $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, 0, true);
+
+        $totalDP = $currentHomeForcesDP + $returningForcesDP;
+
+        $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
+
+        return ($newHomeForcesDP >= $totalDP * (1/3));
+    }
+
+    /**
+     * Check if an invasion passes the 5:4-rule.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param array $units
+     * @return bool
+     */
+    public function passes54RatioRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
+    {
+        $unitsHome = [
+            0 => $dominion->military_draftees,
+            1 => $dominion->military_unit1 - (isset($units[1]) ? $units[1] : 0),
+            2 => $dominion->military_unit2 - (isset($units[2]) ? $units[2] : 0),
+            3 => $dominion->military_unit3 - (isset($units[3]) ? $units[3] : 0),
+            4 => $dominion->military_unit4 - (isset($units[4]) ? $units[4] : 0)
+        ];
+        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
+        $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
+
+        $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
+
+        return ($attackingForceOP <= $attackingForceMaxOP);
     }
 
     /**
