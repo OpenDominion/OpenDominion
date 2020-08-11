@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('dominion.wonders') }}" method="post" role="form">
+            <form action="{{ route('dominion.wonders') }}" method="post" role="form" id="attack_form">
                 @csrf
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -114,9 +114,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $offenseVsBuildingTypes = [];
-                                @endphp
                                 @foreach (range(1, 4) as $unitSlot)
                                     @php
                                         $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitSlot) {
@@ -135,12 +132,6 @@
                                         $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
                                             return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
                                         })->count() > 0;
-                                        if ($hasDynamicOffensivePower) {
-                                            $offenseVsBuildingPerk = $unit->getPerkValue('offense_vs_building');
-                                            if ($offenseVsBuildingPerk) {
-                                                $offenseVsBuildingTypes[] = explode(',', $offenseVsBuildingPerk)[0];
-                                            }
-                                        }
                                         $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
                                             return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
                                         })->count() > 0;
@@ -181,39 +172,119 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                @foreach ($offenseVsBuildingTypes as $buildingType)
-                                    <tr>
-                                        <td colspan="3" class="text-right">
-                                            <b>Enter target {{ ucwords(str_replace('_', ' ', $buildingType)) }} percentage:</b>
-                                        </td>
-                                        <td>
-                                            <input type="number"
-                                                    step="any"
-                                                    name="calc[target_{{ $buildingType }}_percent]"
-                                                    class="form-control text-center"
-                                                    min="0"
-                                                    max="100"
-                                                    placeholder="0"
-                                                    {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                        </td>
-                                        <td>&nbsp;</td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
-                        <button type="submit"
-                                name="action"
-                                value="attack"
-                                id="attack-button"
-                                class="btn btn-danger"
-                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                            <i class="ra ra-crossed-swords"></i>
-                            Attack
-                        </button>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+
+                        <div class="box box-danger">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
+                            </div>
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table">
+                                    <colgroup>
+                                        <col width="50%">
+                                        <col width="50%">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td>OP:</td>
+                                            <td>
+                                                <strong id="invasion-force-op" data-amount="0">0</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>DP:</td>
+                                            <td id="invasion-force-dp" data-amount="0">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Boats:</td>
+                                            <td>
+                                                <span id="invasion-force-boats" data-amount="0">0</span>
+                                                /
+                                                {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Max OP:
+                                                <i class="fa fa-question-circle"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
+                                            </td>
+                                            <td id="invasion-force-max-op" data-amount="0">0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit"
+                                        name="action"
+                                        value="attack"
+                                        id="attack-button"
+                                        class="btn btn-danger"
+                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
+                                    <i class="ra ra-sword"></i>
+                                    Attack
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
+                            </div>
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table">
+                                    <colgroup>
+                                        <col width="50%">
+                                        <col width="50%">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td>OP:</td>
+                                            <td id="home-forces-op" data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}" data-amount="0">
+                                                {{ number_format($militaryCalculator->getOffensivePower($selectedDominion), 2) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>DP:</td>
+                                            <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}" data-amount="0">
+                                                {{ number_format($militaryCalculator->getDefensivePower($selectedDominion), 2) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Boats:</td>
+                                            <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}" data-amount="0">
+                                                {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Min DP:
+                                                <i class="fa fa-question-circle"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="You must leave at least 33% of your total DP at home. (33% rule)"></i>
+                                            </td>
+                                            <td id="home-forces-min-dp" data-amount="0">0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+
             </form>
         </div>
 
@@ -244,10 +315,148 @@
 @push('inline-scripts')
     <script type="text/javascript">
         (function ($) {
+            // Prevent accidental submit
+            $(document).on("keydown", "form", function(event) { 
+                return event.key != "Enter";
+            });
+
+            var invasionForceOPElement = $('#invasion-force-op');
+            var invasionForceDPElement = $('#invasion-force-dp');
+            var invasionForceBoatsElement = $('#invasion-force-boats');
+            var invasionForceMaxOPElement = $('#invasion-force-max-op');
+            var homeForcesOPElement = $('#home-forces-op');
+            var homeForcesDPElement = $('#home-forces-dp');
+            var homeForcesBoatsElement = $('#home-forces-boats');
+            var homeForcesMinDPElement = $('#home-forces-min-dp');
+
+            var invadeButtonElement = $('#attack-button');
+            var allUnitInputs = $('input[name^=\'unit\']');
+
             $('#target_wonder').select2({
                 templateResult: select2Template,
                 templateSelection: select2Template,
             });
+
+            // TODO: if (!$protectionService->isUnderProtection($selectedDominion))
+                updateUnitStats();
+            // endif
+
+            $('#target_wonder').change(function (e) {
+                updateUnitStats();
+            });
+
+            $('input[name^=\'calc\']').change(function (e) {
+                updateUnitStats();
+            });
+
+            $('input[name^=\'unit\']').change(function (e) {
+                updateUnitStats();
+            });
+
+            function updateUnitStats() {
+                // Update unit stats
+                $.get(
+                    "{{ route('api.dominion.invasion') }}?" + $('#attack_form').serialize(), {},
+                    function(response) {
+                        if(response.result == 'success') {
+                            $.each(response.units, function(slot, stats) {
+                                // Update unit stats data attributes
+                                $('#unit\\['+slot+'\\]').data('dp', stats.dp);
+                                $('#unit\\['+slot+'\\]').data('op', stats.op);
+                                // Update unit stats display
+                                $('#unit'+slot+'_dp').text(stats.dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                                $('#unit'+slot+'_op').text(stats.op.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            });
+                            // Update OP / DP data attributes
+                            invasionForceOPElement.data('amount', response.away_offense);
+                            invasionForceDPElement.data('amount', response.away_defense);
+                            invasionForceBoatsElement.data('amount', response.boats_needed);
+                            invasionForceMaxOPElement.data('amount', response.max_op);
+                            homeForcesOPElement.data('amount', response.home_offense);
+                            homeForcesDPElement.data('amount', response.home_defense);
+                            homeForcesBoatsElement.data('amount', response.boats_remaining);
+                            homeForcesMinDPElement.data('amount', response.min_dp);
+                            // Update OP / DP display
+                            invasionForceOPElement.text(response.away_offense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            invasionForceDPElement.text(response.away_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            invasionForceBoatsElement.text(response.boats_needed.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            invasionForceMaxOPElement.text(response.max_op.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesOPElement.text(response.home_offense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesDPElement.text(response.home_defense.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesBoatsElement.text(response.boats_remaining.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            homeForcesMinDPElement.text(response.min_dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                            calculate();
+                        }
+                    }
+                );
+            }
+
+            function calculate() {
+                // Calculate subtotals for each unit
+                allUnitInputs.each(function () {
+                    var unitOP = parseFloat($(this).data('op'));
+                    var unitDP = parseFloat($(this).data('dp'));
+                    var amountToSend = parseInt($(this).val() || 0);
+                    var totalUnitOP = amountToSend * unitOP;
+                    var totalUnitDP = amountToSend * unitDP;
+                    var unitSlot = parseInt($(this).data('slot'));
+                    var unitStatsElement = $('#unit' + unitSlot + '_stats');
+                    unitStatsElement.find('.op').text(totalUnitOP.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                    unitStatsElement.find('.dp').text(totalUnitDP.toLocaleString(undefined, {maximumFractionDigits: 2}));
+                });
+
+                // Check if we have enough of these bad bois
+                /*                __--___
+                                 >_'--'__'
+                                _________!__________
+                               /   /   /   /   /   /
+                              /   /   /   /   /   /
+                             |   |   |   |   |   |
+                        __^  |   |   |   |   |   |
+                      _/@  \  \   \   \   \   \   \
+                     S__   |   \   \   \   \   \   \         __
+                    (   |  |    \___\___\___\___\___\       /  \
+                        |   \             |                |  |\|
+                        \    \____________!________________/  /
+                         \ _______OOOOOOOOOOOOOOOOOOO________/
+                          \________\\\\\\\\\\\\\\\\\\_______/
+                %%%^^^^^%%%%%^^^^!!^%%^^^^%%%%%!!!!^^^^^^!%^^^%%%%!!^^
+                ^^!!!!%%%%^^^^!!^^%%%%%^^!!!^^%%%%%!!!%%%%^^^!!^^%%%!!
+
+                Shamelessly stolen from http://www.asciiworld.com/-Boats-.html */
+
+                var hasEnoughBoats = parseInt(invasionForceBoatsElement.data('amount')) <= {{ floor($selectedDominion->resource_boats) }};
+                if (!hasEnoughBoats) {
+                    invasionForceBoatsElement.addClass('text-danger');
+                    homeForcesBoatsElement.addClass('text-danger');
+                } else {
+                    invasionForceBoatsElement.removeClass('text-danger');
+                    homeForcesBoatsElement.removeClass('text-danger');
+                }
+
+                // Check 33% rule
+                var minDefenseRule = parseFloat(homeForcesDPElement.data('amount')) < parseFloat(homeForcesMinDPElement.data('amount'));
+                if (minDefenseRule) {
+                    homeForcesDPElement.addClass('text-danger');
+                } else {
+                    homeForcesDPElement.removeClass('text-danger');
+                }
+
+                // Check 5:4 rule
+                var maxOffenseRule = parseFloat(invasionForceOPElement.data('amount')) > parseFloat(invasionForceMaxOPElement.data('amount'));
+                if (maxOffenseRule) {
+                    invasionForceOPElement.addClass('text-danger');
+                } else {
+                    invasionForceOPElement.removeClass('text-danger');
+                }
+
+                // Check if invade button should be disabled
+                if (!hasEnoughBoats || maxOffenseRule || {{ $selectedDominion->round->hasOffensiveActionsDisabled() ? 1 : 0 }}) {
+                    invadeButtonElement.attr('disabled', 'disabled');
+                } else {
+                    invadeButtonElement.removeAttr('disabled');
+                }
+            }
         })(jQuery);
 
         function select2Template(state) {
