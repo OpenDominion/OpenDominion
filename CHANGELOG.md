@@ -3,11 +3,14 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [0.10.0-8] - 2018-08-11
 ### Added
 - Difficulty ratings added to race selection
 
 ### Changed
 - The Town Crier is no longer be limited to 7 days
+- Calculate from Op Center will no longer include outdated barracks spies
 
 ## [0.10.0-7] - 2018-07-31
 ### Added
