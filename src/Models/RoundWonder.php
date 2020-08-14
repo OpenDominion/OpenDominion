@@ -21,16 +21,21 @@ class RoundWonder extends AbstractModel
 
     public function round()
     {
-        return $this->belongsTo(Round::class, 'round_id');
+        return $this->belongsTo(Round::class);
     }
 
     public function realm()
     {
-        return $this->belongsTo(Realm::class, 'realm_id');
+        return $this->belongsTo(Realm::class);
     }
 
     public function wonder()
     {
-        return $this->belongsTo(Wonder::class, 'wonder_id');
+        return $this->belongsTo(Wonder::class);
+    }
+
+    public function damage()
+    {
+        return $this->hasMany(RoundWonderDamage::class);
     }
 }

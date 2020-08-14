@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\WonderActionRequest;
@@ -12,6 +13,7 @@ use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\WonderActionService;
+use OpenDominion\Services\Dominion\GovernmentService;
 
 class WonderController extends AbstractDominionController
 {
@@ -20,10 +22,12 @@ class WonderController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
 
         return view('pages.dominion.wonders', [
+            'governmentService' => app(GovernmentService::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'unitHelper' => app(UnitHelper::class),
-            'wonders' => $dominion->round->wonders()->with(['realm', 'wonder'])->get(),
+            'wonderCalculator' => app(WonderCalculator::class),
             'wonderHelper' => app(WonderHelper::class),
+            'wonders' => $dominion->round->wonders()->with(['realm', 'wonder', 'damage'])->get(),
         ]);
     }
 

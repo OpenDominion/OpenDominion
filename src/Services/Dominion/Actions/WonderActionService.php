@@ -5,17 +5,19 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use LogicException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
+use OpenDominion\Models\RoundWonderDamage;
 use OpenDominion\Models\Wonder;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
-use OpenDominion\Services\Dominion\WonderService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
@@ -27,6 +29,9 @@ class WonderActionService
      * @var float Base percentage of offensive casualties
      */
     protected const CASUALTIES_BASE_PERCENTAGE = 5;
+
+    /** @var GovernmentService */
+    protected $governmentService;
 
     /** @var InvasionService */
     protected $invasionService;
@@ -43,8 +48,8 @@ class WonderActionService
     /** @var QueueService */
     protected $queueService;
 
-    /** @var WonderService */
-    protected $wonderService;
+    /** @var WonderCalculator */
+    protected $wonderCalculator;
 
     /** @var array Attack result array. todo: Should probably be refactored later to its own class */
     protected $attackResult = [
@@ -54,6 +59,8 @@ class WonderActionService
         ],
         'wonder' => [
             'currentRealmId' => null,
+            'destroyedByRealmId' => null,
+            'destroyed' => false,
             'neutral' => null,
             'power' => null,
             'victorRealmId' => null,
@@ -67,26 +74,29 @@ class WonderActionService
     /**
      * WonderActionService constructor.
      *
+     * @param GovernmentService $governmentService
      * @param InvasionService $invasionService
      * @param MilitaryCalculator $militaryCalculator
      * @param ProtectionService $protectionService
      * @param QueueService $queueService
-     * @param WonderService $wonderService
+     * @param WonderCalculator $wonderCalculator
      */
     public function __construct(
+        GovernmentService $governmentService,
         InvasionService $invasionService,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
         ProtectionService $protectionService,
         QueueService $queueService,
-        WonderService $wonderService
+        WonderCalculator $wonderCalculator
     ) {
+        $this->governmentService = $governmentService;
         $this->invasionService = $invasionService;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
         $this->protectionService = $protectionService;
         $this->queueService = $queueService;
-        $this->wonderService = $wonderService;
+        $this->wonderCalculator = $wonderCalculator;
     }
 
     /**
@@ -115,10 +125,13 @@ class WonderActionService
                 throw new GameException('Nice try, but you cannot attack cross-round');
             }
 
+            if ($wonder->realm !== null && !$this->governmentService->isAtWarWithRealm($dominion->realm, $wonder->realm)) {
+                throw new GameException('You cannot attack wonders controlled by another realm until war is active');
+            }
+
             $currentRealm = $wonder->realm;
             $this->attackResult['wonder']['currentRealmId'] = $wonder->realm_id;
             $this->attackResult['wonder']['neutral'] = ($wonder->realm_id == null);
-            // TODO: Check that wonder is neutral or in war-realm
 
             // Sanitize input
             $units = array_map('intval', array_filter($units));
@@ -143,11 +156,11 @@ class WonderActionService
                 throw new GameException('You do not have enough morale to attack a wonder');
             }
 
-            if (!$this->invasionService->passes33PercentRule($dominion, $target, $units)) {
+            if (!$this->invasionService->passes33PercentRule($dominion, null, $units)) {
                 throw new GameException('You need to leave more DP units at home (33% rule)');
             }
 
-            if (!$this->invasionService->passes54RatioRule($dominion, $target, $landRatio, $units)) {
+            if (!$this->invasionService->passes54RatioRule($dominion, null, null, $units)) {
                 throw new GameException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
@@ -158,11 +171,15 @@ class WonderActionService
             }
 
             $damageDealt = round($this->militaryCalculator->getOffensivePower($dominion, null, null, $units));
-            $wonder->power -= $damageDealt;
-            // TODO: Log damage
+            $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
+            $wonder->damage()->create([
+                'realm_id' => $dominion->realm_id,
+                'dominion_id' => $dominion->id,
+                'damage' => $damageDealt
+            ]);
 
             $this->attackResult['attacker']['op'] = $damageDealt;
-            $this->attackResult['wonder']['power'] = $wonder->power;
+            $this->attackResult['wonder']['power'] = $wonderPower;
 
             $this->handleBoats($dominion, $units);
             $survivingUnits = $this->handleCasualties($dominion, $units);
@@ -183,17 +200,50 @@ class WonderActionService
                 'data' => $this->attackResult
             ]);
 
-            if ($wonder->power <= 0) {
-                if ($dominion->realm->wonders->isEmpty()) {
-                    // TODO: Determine who rebuilds the wonder
-                    $victorRealm = $dominion->realm;
+            if ($currentRealm !== null) {
+                // Queue hostile notifications
+                foreach ($currentRealm->dominions as $hostileDominion) {
+                    $this->notificationService
+                        ->queueNotification('wonder_attacked', [
+                            '_routeParams' => [(string)$this->attackEvent->id],
+                            'attackerDominionId' => $dominion->id,
+                            'wonderId' => $wonder->wonder->id
+                        ])
+                        ->sendNotifications($hostileDominion, 'irregular_realm');;
+                }
+            }
+
+            if ($wonderPower == 0) {
+                $detroyedByRealm = $dominion->realm;
+                $this->attackResult['wonder']['destroyedByRealmId'] = $dominion->realm->id;
+                $this->attackResult['wonder']['destroyed'] = true;
+
+                if ($wonder->realm !== null) {
+                    foreach ($dominion->realm->dominions as $friendlyDominion) {
+                        $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
+                        if ($friendlyDominion->id == $dominion->id) {
+                            $dominion->prestige += $prestigeGain;
+                        } else {
+                            $friendlyDominion->prestige += $prestigeGain;
+                            $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
+                        }
+                    }
                 }
 
-                // TODO: Calculate new power
-                $wonder->realm_id = $victorRealm->id;
-                $wonder->power = $wonder->wonder->power;
+                if ($dominion->realm->wonders->isEmpty()) {
+                    $victorRealm = $dominion->realm;
+                    $wonder->realm_id = $victorRealm->id;
+                    $wonder->power = $this->wonderCalculator->getSpawnPower($wonder, $detroyedByRealm);
+                } else {
+                    $victorRealm = null;
+                    $wonder->realm_id = null;
+                    $wonder->power = $this->wonderCalculator->getSpawnPower($wonder);
+                }
+
+                $wonder->damage()->delete();
+
                 $this->attackResult['wonder']['power'] = $wonder->power;
-                $this->attackResult['wonder']['victorRealmId'] = $victorRealm->id;
+                $this->attackResult['wonder']['victorRealmId'] = $wonder->realm_id;
 
                 GameEvent::create([
                     'round_id' => $dominion->round->id,
@@ -229,27 +279,21 @@ class WonderActionService
                 }
             }
 
-            if ($currentRealm !== null) {
-                // Queue hostile notifications
-                foreach ($currentRealm->dominions as $hostileDominion) {
-                    $this->notificationService
-                        ->queueNotification('wonder_attacked', [
-                            '_routeParams' => [(string)$this->attackEvent->id],
-                            'attackerDominionId' => $dominion->id,
-                            'wonderId' => $wonder->wonder->id
-                        ])
-                        ->sendNotifications($hostileDominion, 'irregular_realm');;
-                }
-            }
-
-            $dominion->save(); // TODO: event => historyservice
-            $wonder->save(); // TODO: event => historyservice
+            $dominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_ATTACKED]);
+            $wonder->save();
         });
 
-        $message = sprintf(
-            'Your army has attacked the %s!', // todo: and it was destroyed!
-            $wonder->wonder->name
-        );
+        if ($this->attackResult['wonder']['destroyed']) {
+            $message = sprintf(
+                'Your army has attacked the %s, destroying it!',
+                $wonder->wonder->name
+            );
+        } else {
+            $message = sprintf(
+                'Your army has attacked the %s!',
+                $wonder->wonder->name
+            );
+        }
 
         return [
             'message' => $message,

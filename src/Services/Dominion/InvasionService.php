@@ -21,16 +21,11 @@ class InvasionService
 
     /**
      * InvasionService constructor.
-     *
-     * @param MilitaryCalculator $militaryCalculator
-     * @param QueueService $queueService
      */
-    public function __construct(
-        MilitaryCalculator $militaryCalculator,
-        QueueService $queueService
-    ) {
-        $this->militaryCalculator = $militaryCalculator;
-        $this->queueService = $queueService;
+    public function __construct()
+    {
+        $this->militaryCalculator = app(MilitaryCalculator::class);
+        $this->queueService = app(QueueService::class);
     }
 
     /**
@@ -130,7 +125,7 @@ class InvasionService
      * @param array $units
      * @return bool
      */
-    public function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
+    public function passes33PercentRule(Dominion $dominion, ?Dominion $target, array $units): bool
     {
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
         $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
@@ -161,7 +156,7 @@ class InvasionService
      * @param array $units
      * @return bool
      */
-    public function passes54RatioRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
+    public function passes54RatioRule(Dominion $dominion, ?Dominion $target, ?float $landRatio, array $units): bool
     {
         $unitsHome = [
             0 => $dominion->military_draftees,

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -23,6 +24,7 @@ class RealmController extends AbstractDominionController
         $landCalculator = app(LandCalculator::class);
         $networthCalculator = app(NetworthCalculator::class);
         $protectionService = app(ProtectionService::class);
+        $wonderCalculator = app(WonderCalculator::class);
         $wonderHelper = app(WonderHelper::class);
 
         $dominion = $this->getSelectedDominion();
@@ -102,6 +104,7 @@ class RealmController extends AbstractDominionController
             'landCalculator',
             'networthCalculator',
             'protectionService',
+            'wonderCalculator',
             'wonderHelper',
             'realm',
             'round',

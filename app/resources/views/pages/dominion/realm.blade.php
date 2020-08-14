@@ -215,11 +215,11 @@
                                     <th>Current Power</th>
                                     <th>Description</th>
                                 </tr>
-                                @foreach ($realm->wonders as $wonder)
+                                @foreach ($realm->roundWonders as $wonder)
                                     <tr>
-                                        <td>{{ $wonder->name }}</a></td>
-                                        <td>{{ number_format($wonder->pivot->power) }}</td>
-                                        <td>{{ $wonderHelper->getWonderDescription($wonder) }}</td>
+                                        <td>{{ $wonder->wonder->name }}</a></td>
+                                        <td>{{ number_format($wonderCalculator->getCurrentPower($wonder)) }}</td>
+                                        <td>{{ $wonderHelper->getWonderDescription($wonder->wonder) }}</td>
                                     </tr>
                                 @endforeach
                             </table>

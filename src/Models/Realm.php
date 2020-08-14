@@ -98,6 +98,11 @@ class Realm extends AbstractModel
         return $this->hasMany(self::class, 'war_realm_id');
     }
 
+    public function roundWonders()
+    {
+        return $this->hasMany(RoundWonder::class);
+    }
+
     public function wonders()
     {
         return $this->belongsToMany(

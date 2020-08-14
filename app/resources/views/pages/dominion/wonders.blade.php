@@ -39,7 +39,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{ number_format($wonder->power) }}
+                                        @if ($wonder->realm)
+                                            {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
+                                        @else
+                                            {{ number_format($wonder->power) }}
+                                        @endif
                                     </td>
                                     <td>
                                         {{ $wonderHelper->getWonderDescription($wonder->wonder) }}
@@ -63,7 +67,7 @@
                             <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                 <option></option>
                                 @foreach ($wonders as $wonder)
-                                    @if ($wonder->realm == null || $selectedDominion->realm->war_realm_id == $wonder->realm->id || $selectedDominion->realm_id == $wonder->realm->war_realm_id)
+                                    @if ($wonder->realm == null || $governmentService->isAtWarWithRealm($selectedDominion->realm, $wonder->realm))
                                         <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
                                             {{ $wonder->wonder->name }}
                                             @if ($wonder->realm !== null)
