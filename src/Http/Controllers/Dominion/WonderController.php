@@ -14,6 +14,7 @@ use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\WonderActionService;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\ProtectionService;
 
 class WonderController extends AbstractDominionController
 {
@@ -24,6 +25,7 @@ class WonderController extends AbstractDominionController
         return view('pages.dominion.wonders', [
             'governmentService' => app(GovernmentService::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
+            'protectionService' => app(ProtectionService::class),
             'unitHelper' => app(UnitHelper::class),
             'wonderCalculator' => app(WonderCalculator::class),
             'wonderHelper' => app(WonderHelper::class),
@@ -68,6 +70,8 @@ class WonderController extends AbstractDominionController
         ));
 
         $request->session()->flash(('alert-' . ($result['alert-type'] ?? 'success')), $result['message']);
-        return redirect()->to($result['redirect'] ?? route('dominion.wonders'));
+        return redirect()
+            ->to($result['redirect'] ?? route('dominion.wonders'))
+            ->with('target_wonder', $request->get('target_wonder'));
     }
 }

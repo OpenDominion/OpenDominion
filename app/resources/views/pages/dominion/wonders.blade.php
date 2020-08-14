@@ -55,241 +55,258 @@
                 </div>
             </div>
 
-            <form action="{{ route('dominion.wonders') }}" method="post" role="form" id="attack_form">
-                @csrf
+            @if ($protectionService->isUnderProtection($selectedDominion))
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
+                        <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
                     <div class="box-body">
-                        <div class="form-group">
-                            <label for="target_wonder">Select a target</label>
-                            <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                <option></option>
-                                @foreach ($wonders as $wonder)
-                                    @if ($wonder->realm == null || $governmentService->isAtWarWithRealm($selectedDominion->realm, $wonder->realm))
-                                        <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
-                                            {{ $wonder->wonder->name }}
-                                            @if ($wonder->realm !== null)
-                                                (#{{ $wonder->realm->number }})
-                                            @endif
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="pull-right">
-                            <button type="submit"
-                                    name="action"
-                                    value="spell"
-                                    class="btn btn-primary"
-                                    {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                                <i class="ra ra-lightning-storm"></i>
-                                Lightning Bolt
-                            </button>
-                            <div class="small text-center">
-                                Mana cost: 2,839
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
+                        You are currently under protection for
+                        @if ($protectionService->getUnderProtectionHoursLeft($selectedDominion))
+                            <b>{{ number_format($protectionService->getUnderProtectionHoursLeft($selectedDominion), 2) }}</b> more hours
+                        @else
+                            <b>{{ $selectedDominion->protection_ticks_remaining }}</b> ticks
+                        @endif
+                        and may not attack wonders during that time.
                     </div>
                 </div>
-
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-users"></i> Units to send</h3>
-                    </div>
-                    <div class="box-body table-responsive no-padding">
-                        <table class="table">
-                            <colgroup>
-                                <col>
-                                <col width="100">
-                                <col width="100">
-                                <col width="100">
-                                <col width="150">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Unit</th>
-                                    <th class="text-center">OP / DP</th>
-                                    <th class="text-center">Available</th>
-                                    <th class="text-center">Send</th>
-                                    <th class="text-center">Total OP / DP</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (range(1, 4) as $unitSlot)
-                                    @php
-                                        $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitSlot) {
-                                            return ($unit->slot === $unitSlot);
-                                        })->first();
-                                    @endphp
-
-                                    @if ($unit->power_offense == 0)
-                                        @continue
-                                    @endif
-
-                                    @php
-                                        $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
-                                        $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
-
-                                        $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
-                                            return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
-                                        })->count() > 0;
-                                        $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
-                                            return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
-                                        })->count() > 0;
-                                    @endphp
-
-                                    <tr>
-                                        <td>
-                                            {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}", $selectedDominion->race) !!}
-                                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
-                                                {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span id="unit{{ $unitSlot }}_op">{{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}</span>{{ $hasDynamicOffensivePower ? '*' : null }}
-                                            /
-                                            <span id="unit{{ $unitSlot }}_dp" class="text-muted">{{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}</span><span class="text-muted">{{ $hasDynamicDefensivePower ? '*' : null }}</span>
-                                        </td>
-                                        <td class="text-center">
-                                            {{ number_format($selectedDominion->{"military_unit{$unitSlot}"}) }}
-                                        </td>
-                                        <td class="text-center">
-                                            <input type="number"
-                                                    name="unit[{{ $unitSlot }}]"
-                                                    id="unit[{{ $unitSlot }}]"
-                                                    class="form-control text-center"
-                                                    placeholder="0"
-                                                    min="0"
-                                                    max="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
-                                                    data-slot="{{ $unitSlot }}"
-                                                    data-amount="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
-                                                    data-op="{{ $unit->power_offense }}"
-                                                    data-dp="{{ $unit->power_defense }}"
-                                                    data-need-boat="{{ (int)$unit->need_boat }}"
-                                                    {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                        </td>
-                                        <td class="text-center" id="unit{{ $unitSlot }}_stats">
-                                            <span class="op">0</span> / <span class="dp text-muted">0</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12 col-md-6">
-
-                        <div class="box box-danger">
-                            <div class="box-header with-border">
-                                <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
+            @else
+                <form action="{{ route('dominion.wonders') }}" method="post" role="form" id="attack_form">
+                    @csrf
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="target_wonder">Select a target</label>
+                                <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                    <option></option>
+                                    @foreach ($wonders as $wonder)
+                                        @if ($wonder->realm == null || $governmentService->isAtWarWithRealm($selectedDominion->realm, $wonder->realm))
+                                            <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
+                                                {{ $wonder->wonder->name }}
+                                                @if ($wonder->realm !== null)
+                                                    (#{{ $wonder->realm->number }})
+                                                @endif
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table">
-                                    <colgroup>
-                                        <col width="50%">
-                                        <col width="50%">
-                                    </colgroup>
-                                    <tbody>
-                                        <tr>
-                                            <td>OP:</td>
-                                            <td>
-                                                <strong id="invasion-force-op" data-amount="0">0</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DP:</td>
-                                            <td id="invasion-force-dp" data-amount="0">0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Boats:</td>
-                                            <td>
-                                                <span id="invasion-force-boats" data-amount="0">0</span>
-                                                /
-                                                {{ number_format(floor($selectedDominion->resource_boats)) }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Max OP:
-                                                <i class="fa fa-question-circle"
-                                                    data-toggle="tooltip"
-                                                    data-placement="top"
-                                                    title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
-                                            </td>
-                                            <td id="invasion-force-max-op" data-amount="0">0</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="box-footer">
+                            <div class="pull-right">
                                 <button type="submit"
                                         name="action"
-                                        value="attack"
-                                        id="attack-button"
-                                        class="btn btn-danger"
+                                        value="spell"
+                                        class="btn btn-primary"
                                         {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                                    <i class="ra ra-sword"></i>
-                                    Attack
+                                    <i class="ra ra-lightning-storm"></i>
+                                    Lightning Bolt
                                 </button>
+                                <div class="small text-center">
+                                    Mana cost: 2,839
+                                </div>
                             </div>
+                            <div class="clearfix"></div>
                         </div>
-
                     </div>
-                    <div class="col-sm-12 col-md-6">
 
-                        <div class="box">
-                            <div class="box-header with-border">
-                                <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
-                            </div>
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table">
-                                    <colgroup>
-                                        <col width="50%">
-                                        <col width="50%">
-                                    </colgroup>
-                                    <tbody>
-                                        <tr>
-                                            <td>OP:</td>
-                                            <td id="home-forces-op" data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}" data-amount="0">
-                                                {{ number_format($militaryCalculator->getOffensivePower($selectedDominion), 2) }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DP:</td>
-                                            <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}" data-amount="0">
-                                                {{ number_format($militaryCalculator->getDefensivePower($selectedDominion), 2) }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Boats:</td>
-                                            <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}" data-amount="0">
-                                                {{ number_format(floor($selectedDominion->resource_boats)) }}
-                                            </td>
-                                        </tr>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-users"></i> Units to send</h3>
+                        </div>
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table">
+                                <colgroup>
+                                    <col>
+                                    <col width="100">
+                                    <col width="100">
+                                    <col width="100">
+                                    <col width="150">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Unit</th>
+                                        <th class="text-center">OP / DP</th>
+                                        <th class="text-center">Available</th>
+                                        <th class="text-center">Send</th>
+                                        <th class="text-center">Total OP / DP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (range(1, 4) as $unitSlot)
+                                        @php
+                                            $unit = $selectedDominion->race->units->filter(function ($unit) use ($unitSlot) {
+                                                return ($unit->slot === $unitSlot);
+                                            })->first();
+                                        @endphp
+
+                                        @if ($unit->power_offense == 0)
+                                            @continue
+                                        @endif
+
+                                        @php
+                                            $offensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'offense');
+                                            $defensivePower = $militaryCalculator->getUnitPowerWithPerks($selectedDominion, null, null, $unit, 'defense');
+
+                                            $hasDynamicOffensivePower = $unit->perks->filter(static function ($perk) {
+                                                return starts_with($perk->key, ['offense_from_', 'offense_staggered_', 'offense_vs_']);
+                                            })->count() > 0;
+                                            $hasDynamicDefensivePower = $unit->perks->filter(static function ($perk) {
+                                                return starts_with($perk->key, ['defense_from_', 'defense_staggered_', 'defense_vs_']);
+                                            })->count() > 0;
+                                        @endphp
+
                                         <tr>
                                             <td>
-                                                Min DP:
-                                                <i class="fa fa-question-circle"
-                                                    data-toggle="tooltip"
-                                                    data-placement="top"
-                                                    title="You must leave at least 33% of your total DP at home. (33% rule)"></i>
+                                                {!! $unitHelper->getUnitTypeIconHtml("unit{$unitSlot}", $selectedDominion->race) !!}
+                                                <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString("unit{$unitSlot}", $selectedDominion->race) }}">
+                                                    {{ $unitHelper->getUnitName("unit{$unitSlot}", $selectedDominion->race) }}
+                                                </span>
                                             </td>
-                                            <td id="home-forces-min-dp" data-amount="0">0</td>
+                                            <td class="text-center">
+                                                <span id="unit{{ $unitSlot }}_op">{{ (strpos($offensivePower, '.') !== false) ? number_format($offensivePower, 1) : number_format($offensivePower) }}</span>{{ $hasDynamicOffensivePower ? '*' : null }}
+                                                /
+                                                <span id="unit{{ $unitSlot }}_dp" class="text-muted">{{ (strpos($defensivePower, '.') !== false) ? number_format($defensivePower, 1) : number_format($defensivePower) }}</span><span class="text-muted">{{ $hasDynamicDefensivePower ? '*' : null }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ number_format($selectedDominion->{"military_unit{$unitSlot}"}) }}
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="number"
+                                                        name="unit[{{ $unitSlot }}]"
+                                                        id="unit[{{ $unitSlot }}]"
+                                                        class="form-control text-center"
+                                                        placeholder="0"
+                                                        min="0"
+                                                        max="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
+                                                        data-slot="{{ $unitSlot }}"
+                                                        data-amount="{{ $selectedDominion->{"military_unit{$unitSlot}"} }}"
+                                                        data-op="{{ $unit->power_offense }}"
+                                                        data-dp="{{ $unit->power_defense }}"
+                                                        data-need-boat="{{ (int)$unit->need_boat }}"
+                                                        {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                            </td>
+                                            <td class="text-center" id="unit{{ $unitSlot }}_stats">
+                                                <span class="op">0</span> / <span class="dp text-muted">0</span>
+                                            </td>
                                         </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-
                     </div>
-                </div>
 
-            </form>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><i class="ra ra-sword"></i> Invasion force</h3>
+                                </div>
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table">
+                                        <colgroup>
+                                            <col width="50%">
+                                            <col width="50%">
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <td>OP:</td>
+                                                <td>
+                                                    <strong id="invasion-force-op" data-amount="0">0</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>DP:</td>
+                                                <td id="invasion-force-dp" data-amount="0">0</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Boats:</td>
+                                                <td>
+                                                    <span id="invasion-force-boats" data-amount="0">0</span>
+                                                    /
+                                                    {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Max OP:
+                                                    <i class="fa fa-question-circle"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        title="You may send out a maximum of 125% of your new home DP in OP. (5:4 rule)"></i>
+                                                </td>
+                                                <td id="invasion-force-max-op" data-amount="0">0</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer">
+                                    <button type="submit"
+                                            name="action"
+                                            value="attack"
+                                            id="attack-button"
+                                            class="btn btn-danger"
+                                            {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
+                                        <i class="ra ra-sword"></i>
+                                        Attack
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+
+                            <div class="box">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><i class="fa fa-home"></i> New home forces</h3>
+                                </div>
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table">
+                                        <colgroup>
+                                            <col width="50%">
+                                            <col width="50%">
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <td>OP:</td>
+                                                <td id="home-forces-op" data-original="{{ $militaryCalculator->getOffensivePower($selectedDominion) }}" data-amount="0">
+                                                    {{ number_format($militaryCalculator->getOffensivePower($selectedDominion), 2) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>DP:</td>
+                                                <td id="home-forces-dp" data-original="{{ $militaryCalculator->getDefensivePower($selectedDominion) }}" data-amount="0">
+                                                    {{ number_format($militaryCalculator->getDefensivePower($selectedDominion), 2) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Boats:</td>
+                                                <td id="home-forces-boats" data-original="{{ floor($selectedDominion->resource_boats) }}" data-amount="0">
+                                                    {{ number_format(floor($selectedDominion->resource_boats)) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Min DP:
+                                                    <i class="fa fa-question-circle"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        title="You must leave at least 33% of your total DP at home. (33% rule)"></i>
+                                                </td>
+                                                <td id="home-forces-min-dp" data-amount="0">0</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
+            @endif
         </div>
 
         <div class="col-sm-12 col-md-3">
@@ -301,6 +318,7 @@
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
                     <p>All wonders will spawn with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
                     <p>Each dominion that participates in destroying a wonder that is controlled by another realm is awarded prestige.</p>
+                    <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
             </div>
         </div>
@@ -341,9 +359,9 @@
                 templateSelection: select2Template,
             });
 
-            // TODO: if (!$protectionService->isUnderProtection($selectedDominion))
+            @if (!$protectionService->isUnderProtection($selectedDominion))
                 updateUnitStats();
-            // endif
+            @endif
 
             $('#target_wonder').change(function (e) {
                 updateUnitStats();
@@ -356,6 +374,10 @@
             $('input[name^=\'unit\']').change(function (e) {
                 updateUnitStats();
             });
+
+            @if (session('target_wonder'))
+                $('#target_wonder').val('{{ session('target_wonder') }}').trigger('change.select2').trigger('change');
+            @endif
 
             function updateUnitStats() {
                 // Update unit stats

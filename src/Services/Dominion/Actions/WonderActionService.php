@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use LogicException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -48,6 +49,9 @@ class WonderActionService
     /** @var QueueService */
     protected $queueService;
 
+    /** @var SpellCalculator */
+    protected $spellCalculator;
+
     /** @var WonderCalculator */
     protected $wonderCalculator;
 
@@ -77,8 +81,10 @@ class WonderActionService
      * @param GovernmentService $governmentService
      * @param InvasionService $invasionService
      * @param MilitaryCalculator $militaryCalculator
+     * @param NotificationService $notificationService
      * @param ProtectionService $protectionService
      * @param QueueService $queueService
+     * @param SpellCalculator $spellCalculator
      * @param WonderCalculator $wonderCalculator
      */
     public function __construct(
@@ -88,6 +94,7 @@ class WonderActionService
         NotificationService $notificationService,
         ProtectionService $protectionService,
         QueueService $queueService,
+        SpellCalculator $spellCalculator,
         WonderCalculator $wonderCalculator
     ) {
         $this->governmentService = $governmentService;
@@ -96,7 +103,100 @@ class WonderActionService
         $this->notificationService = $notificationService;
         $this->protectionService = $protectionService;
         $this->queueService = $queueService;
+        $this->spellCalculator = $spellCalculator;
         $this->wonderCalculator = $wonderCalculator;
+    }
+
+    /**
+     * Casts a spell at target $wonder from $dominion.
+     *
+     * @param Dominion $dominion
+     * @param RoundWonder $wonder
+     * @return array
+     * @throws LogicException
+     * @throws GameException
+     */
+    public function spell(Dominion $dominion, RoundWonder $wonder): array
+    {
+        $this->guardLockedDominion($dominion);
+
+        DB::transaction(function () use ($dominion, $wonder) {
+            if ($dominion->wizard_strength < 30) {
+                throw new GameException("Your wizards to not have enough strength to cast Lightning Storm");
+            }
+    
+            $manaCost = $this->spellCalculator->getManaCost($dominion, 'lightning_bolt');
+    
+            if ($dominion->resource_mana < $manaCost) {
+                throw new GameException("You do not have enough mana to cast Lightning Storm.");
+            }
+    
+            if ($this->protectionService->isUnderProtection($dominion)) {
+                throw new GameException('You cannot cast offensive spells while under protection');
+            }
+    
+            if ($dominion->round->hasOffensiveActionsDisabled()) {
+                throw new GameException('Black ops have been disabled for the remainder of the round');
+            }
+
+            if ($dominion->round->id !== $wonder->round->id) {
+                throw new GameException('Nice try, but you cannot cast spells cross-round');
+            }
+
+            if ($wonder->realm !== null && !$this->governmentService->isAtWarWithRealm($dominion->realm, $wonder->realm)) {
+                throw new GameException('War must be active to cast spells at this wonder');
+            }
+
+            $currentRealm = $wonder->realm;
+            $this->attackResult['wonder']['currentRealmId'] = $wonder->realm_id;
+            $this->attackResult['wonder']['neutral'] = ($wonder->realm_id == null);
+
+            // TODO: Calculate damage formula
+            $damageDealt = $manaCost;
+            $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
+            $wonder->damage()->create([
+                'realm_id' => $dominion->realm_id,
+                'dominion_id' => $dominion->id,
+                'damage' => $damageDealt
+            ]);
+
+            $this->attackResult['attacker']['damage'] = $damageDealt;
+            $this->attackResult['wonder']['power'] = $wonderPower;
+
+            $dominion->resource_mana -= $manaCost;
+            $dominion->wizard_strength -= min($dominion->wizard_strength, 5);
+            // TODO: Increment stats
+
+            if ($wonderPower == 0) {
+                $this->handleWonderDestroyed($wonder, $dominion, $currentRealm);
+            }
+
+            // TODO: Add target wonder id?
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                'action' => 'lightning_storm'
+            ]);
+            $wonder->save();
+        });
+
+        if ($this->attackResult['wonder']['destroyed']) {
+            $message = sprintf(
+                'A storm of lighting rages above the %s dealing %s damage, and destroying it!',
+                $wonder->wonder->name,
+                $this->attackResult['attacker']['damage']
+            );
+        } else {
+            $message = sprintf(
+                'A storm of lighting rages above the %s dealing %s damage!',
+                $wonder->wonder->name,
+                $this->attackResult['attacker']['damage']
+            );
+        }
+
+        return [
+            'message' => $message,
+            'alert-type' => 'success'
+        ];
     }
 
     /**
@@ -114,7 +214,7 @@ class WonderActionService
 
         DB::transaction(function () use ($dominion, $wonder, $units) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {
-                throw new GameException('Attacks have been disabled for the remainder of the round.');
+                throw new GameException('Attacks have been disabled for the remainder of the round');
             }
 
             if ($this->protectionService->isUnderProtection($dominion)) {
@@ -126,7 +226,7 @@ class WonderActionService
             }
 
             if ($wonder->realm !== null && !$this->governmentService->isAtWarWithRealm($dominion->realm, $wonder->realm)) {
-                throw new GameException('You cannot attack wonders controlled by another realm until war is active');
+                throw new GameException('War must be active to attack this wonder');
             }
 
             $currentRealm = $wonder->realm;
@@ -166,7 +266,7 @@ class WonderActionService
 
             foreach($units as $amount) {
                 if($amount < 0) {
-                    throw new GameException('Attack was canceled due to bad input.');
+                    throw new GameException('Attack was canceled due to bad input');
                 }
             }
 
@@ -214,83 +314,24 @@ class WonderActionService
             }
 
             if ($wonderPower == 0) {
-                $detroyedByRealm = $dominion->realm;
-                $this->attackResult['wonder']['destroyedByRealmId'] = $dominion->realm->id;
-                $this->attackResult['wonder']['destroyed'] = true;
-
-                if ($wonder->realm !== null) {
-                    foreach ($dominion->realm->dominions as $friendlyDominion) {
-                        $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
-                        if ($friendlyDominion->id == $dominion->id) {
-                            $dominion->prestige += $prestigeGain;
-                        } else {
-                            $friendlyDominion->prestige += $prestigeGain;
-                            $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
-                        }
-                    }
-                }
-
-                if ($dominion->realm->wonders->isEmpty()) {
-                    $victorRealm = $dominion->realm;
-                    $wonder->realm_id = $victorRealm->id;
-                    $wonder->power = $this->wonderCalculator->getSpawnPower($wonder, $detroyedByRealm);
-                } else {
-                    $victorRealm = null;
-                    $wonder->realm_id = null;
-                    $wonder->power = $this->wonderCalculator->getSpawnPower($wonder);
-                }
-
-                $wonder->damage()->delete();
-
-                $this->attackResult['wonder']['power'] = $wonder->power;
-                $this->attackResult['wonder']['victorRealmId'] = $wonder->realm_id;
-
-                GameEvent::create([
-                    'round_id' => $dominion->round->id,
-                    'source_type' => RoundWonder::class,
-                    'source_id' => $wonder->id,
-                    'target_type' => Realm::class,
-                    'target_id' => $wonder->realm_id,
-                    'type' => 'wonder_destroyed',
-                    'data' => $this->attackResult['wonder']
-                ]);
-
-                if ($victorRealm !== null) {
-                    // Queue friendly notifications
-                    foreach ($victorRealm->dominions as $friendlyDominion) {
-                        $this->notificationService
-                            ->queueNotification('wonder_rebuilt', [
-                                'wonderId' => $wonder->wonder->id
-                            ])
-                            ->sendNotifications($friendlyDominion, 'irregular_realm');;
-                    }
-                }
-
-                if ($currentRealm !== null) {
-                    // Queue hostile notifications
-                    foreach ($currentRealm->dominions as $hostileDominion) {
-                        $this->notificationService
-                            ->queueNotification('wonder_destroyed', [
-                                'attackerRealmId' => $dominion->realm->id,
-                                'wonderId' => $wonder->wonder->id
-                            ])
-                            ->sendNotifications($hostileDominion, 'irregular_realm');;
-                    }
-                }
+                $this->handleWonderDestroyed($wonder, $dominion, $currentRealm);
             }
 
+            // TODO: Add target wonder id?
             $dominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_ATTACKED]);
             $wonder->save();
         });
 
         if ($this->attackResult['wonder']['destroyed']) {
             $message = sprintf(
-                'Your army has attacked the %s, destroying it!',
+                'Your army has attacked the %s dealing %s damage, destroying it!',
+                $this->attackResult['attacker']['op'],
                 $wonder->wonder->name
             );
         } else {
             $message = sprintf(
-                'Your army has attacked the %s!',
+                'Your army has attacked the %s dealing %s damage!',
+                $this->attackResult['attacker']['op'],
                 $wonder->wonder->name
             );
         }
@@ -300,6 +341,80 @@ class WonderActionService
             'alert-type' => 'success',
             'redirect' => route('dominion.event', [$this->attackEvent->id])
         ];
+    }
+
+    /**
+     * Handles the destruction of a wonder.
+     *
+     * @param RoundWonder $wonder
+     * @param Dominion $dominion
+     * @param Realm $currentRealm
+     */
+    protected function handleWonderDestroyed(RoundWonder $wonder, Dominion $dominion, ?Realm $currentRealm): void
+    {
+        $detroyedByRealm = $dominion->realm;
+        $this->attackResult['wonder']['destroyedByRealmId'] = $dominion->realm->id;
+        $this->attackResult['wonder']['destroyed'] = true;
+
+        if ($wonder->realm !== null) {
+            foreach ($dominion->realm->dominions as $friendlyDominion) {
+                $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
+                if ($friendlyDominion->id == $dominion->id) {
+                    $dominion->prestige += $prestigeGain;
+                } else {
+                    $friendlyDominion->prestige += $prestigeGain;
+                    $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
+                }
+            }
+        }
+
+        if ($dominion->realm->wonders->isEmpty()) {
+            $victorRealm = $dominion->realm;
+            $wonder->realm_id = $victorRealm->id;
+            $wonder->power = $this->wonderCalculator->getSpawnPower($wonder, $detroyedByRealm);
+        } else {
+            $victorRealm = null;
+            $wonder->realm_id = null;
+            $wonder->power = $this->wonderCalculator->getSpawnPower($wonder);
+        }
+
+        $wonder->damage()->delete();
+
+        $this->attackResult['wonder']['power'] = $wonder->power;
+        $this->attackResult['wonder']['victorRealmId'] = $wonder->realm_id;
+
+        GameEvent::create([
+            'round_id' => $dominion->round->id,
+            'source_type' => RoundWonder::class,
+            'source_id' => $wonder->id,
+            'target_type' => Realm::class,
+            'target_id' => $wonder->realm_id,
+            'type' => 'wonder_destroyed',
+            'data' => $this->attackResult['wonder']
+        ]);
+
+        if ($victorRealm !== null) {
+            // Queue friendly notifications
+            foreach ($victorRealm->dominions as $friendlyDominion) {
+                $this->notificationService
+                    ->queueNotification('wonder_rebuilt', [
+                        'wonderId' => $wonder->wonder->id
+                    ])
+                    ->sendNotifications($friendlyDominion, 'irregular_realm');;
+            }
+        }
+
+        if ($currentRealm !== null) {
+            // Queue hostile notifications
+            foreach ($currentRealm->dominions as $hostileDominion) {
+                $this->notificationService
+                    ->queueNotification('wonder_destroyed', [
+                        'attackerRealmId' => $dominion->realm->id,
+                        'wonderId' => $wonder->wonder->id
+                    ])
+                    ->sendNotifications($hostileDominion, 'irregular_realm');;
+            }
+        }
     }
 
     /**
@@ -420,26 +535,5 @@ class WonderActionService
                 $this->invasionService->getUnitReturnHoursForSlot($dominion, $i)
             );
         }
-    }
-
-    /**
-     * Casts a spell at target $wonder from $dominion.
-     *
-     * @param Dominion $dominion
-     * @param RoundWonder $wonder
-     * @return array
-     * @throws LogicException
-     * @throws GameException
-     */
-    public function spell(Dominion $dominion, RoundWonder $wonder): array
-    {
-        $this->guardLockedDominion($dominion);
-
-        return [
-            'message' => sprintf(
-                'You have cast a spell at %s.',
-                $wonder->wonder->name
-            )
-        ];
     }
 }

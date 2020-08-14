@@ -181,7 +181,7 @@ class InvadeActionService
 
         DB::transaction(function () use ($dominion, $target, $units) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {
-                throw new GameException('Invasions have been disabled for the remainder of the round.');
+                throw new GameException('Invasions have been disabled for the remainder of the round');
             }
 
             if ($this->protectionService->isUnderProtection($dominion)) {
@@ -238,7 +238,7 @@ class InvadeActionService
 
             foreach($units as $amount) {
                 if($amount < 0) {
-                    throw new GameException('Invasion was canceled due to bad input.');
+                    throw new GameException('Invasion was canceled due to bad input');
                 }
             }
 

@@ -426,7 +426,7 @@ class SpellActionService
     protected function castHostileSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
         if ($dominion->round->hasOffensiveActionsDisabled()) {
-            throw new GameException('Black ops have been disabled for the remainder of the round.');
+            throw new GameException('Black ops have been disabled for the remainder of the round');
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
