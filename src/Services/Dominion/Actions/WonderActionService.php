@@ -371,11 +371,11 @@ class WonderActionService
         if ($dominion->realm->wonders->isEmpty()) {
             $victorRealm = $dominion->realm;
             $wonder->realm_id = $victorRealm->id;
-            $wonder->power = $this->wonderCalculator->getSpawnPower($wonder, $detroyedByRealm);
+            $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         } else {
             $victorRealm = null;
             $wonder->realm_id = null;
-            $wonder->power = $this->wonderCalculator->getSpawnPower($wonder);
+            $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         }
 
         $wonder->damage()->delete();

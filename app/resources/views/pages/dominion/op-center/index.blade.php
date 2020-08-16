@@ -15,10 +15,6 @@
                         <colgroup>
                             <col>
                             <col width="100">
-                            {{--
-                            <col width="100">
-                            <col width="100">
-                            --}}
                             <col width="100">
                             <col width="100">
                             <col>
@@ -28,10 +24,6 @@
                             <tr>
                                 <th>Dominion</th>
                                 <th class="text-center">Race</th>
-                                {{--
-                                <th class="text-center">OP</th>
-                                <th class="text-center">DP</th>
-                                --}}
                                 <th class="text-center">Land</th>
                                 <th class="text-center">Networth</th>
                                 <th class="text-center">Last Op</th>
@@ -53,14 +45,6 @@
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->targetDominion->race->name }}">
                                         {{ $lastInfoOp->targetDominion->race->name }}
                                     </td>
-                                    {{--
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getOffensivePower($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getOffensivePowerString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
-                                    </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getDefensivePower($selectedDominion->realm, $lastInfoOp->targetDominion) }}">
-                                        {{ $infoOpService->getDefensivePowerString($selectedDominion->realm, $lastInfoOp->targetDominion) }}
-                                    </td>
-                                    --}}
                                     <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($targetDominionOps) }}">
                                         {{ $infoOpService->getLandString($targetDominionOps) }}
                                         <br>

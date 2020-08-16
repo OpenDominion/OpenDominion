@@ -247,7 +247,7 @@ class Round extends AbstractModel
      */
     public function daysInRound()
     {
-        return $this->start_date->diffInDays(now());
+        return $this->start_date->subDays(1)->diffInDays(now());
     }
 
     /**

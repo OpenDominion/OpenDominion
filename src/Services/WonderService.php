@@ -3,7 +3,6 @@
 namespace OpenDominion\Services;
 
 use Carbon\Carbon;
-use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
@@ -13,14 +12,6 @@ use OpenDominion\Models\Wonder;
 class WonderService
 {
     public const MAX_WONDERS = 10;
-
-    /**
-     * WonderService constructor.
-     */
-    public function __construct()
-    {
-        $this->wonderCalculator = app(WonderCalculator::class);
-    }
 
     /**
      * Gets a collection of wonders that are available to spawn.
@@ -50,7 +41,6 @@ class WonderService
 
         if (!$availableWonders->isEmpty()) {
             $wonder = $availableWonders->random();
-            $this->wonderCalculator->getSpawnPower($wonder);
 
             $roundWonder = RoundWonder::create([
                 'round_id' => $round->id,

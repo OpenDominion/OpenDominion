@@ -18,7 +18,7 @@
                 @endif
                 @php
                     $diff = $selectedDominion->round->start_date->subDays(1)->diff(now());
-                    $roundDay = $selectedDominion->round->start_date->subDays(1)->diffInDays(now());
+                    $roundDay = $selectedDominion->round->daysInRound();
                     $roundDurationInDays = $selectedDominion->round->durationInDays();
                     $currentHour = ($diff->h + 1);
                 @endphp

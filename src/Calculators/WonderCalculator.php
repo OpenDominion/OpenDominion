@@ -34,21 +34,23 @@ class WonderCalculator
     protected const MIN_SPAWN_POWER = 150000;
 
     /**
-     * Returns the wonder's starting power.
+     * Returns the wonder's power when being rebuilt.
      *
      * @param RoundWonder $wonder
      * @param Realm $realm
      * @return float
      */
-    public function getSpawnPower(RoundWonder $wonder, ?Realm $realm): float
+    public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
-        if ($realm !== null) {
+        $day = $wonder->round->daysInRound() - 1;
+        if ($wonder->realm !== null) {
+            $maxPower = min(42500 * $day, 2 * $wonder->power);
             $damageContribution = $this->getDamageDealtByRealm($wonder, $realm) / $wonder->power;
-            $multiplier = ($wonder->round->daysInRound() / 5) * $damageContribution;
+            $newPower = floor($maxPower * $damageContribution);
         } else {
-            $multiplier = ($wonder->round->daysInRound() / 10);
+            $newPower = 25000 * $day;
         }
-        return min(static::MIN_SPAWN_POWER, $wonder->wonder->power * $multiplier);
+        return max(static::MIN_SPAWN_POWER, $newPower);
     }
 
     /**
