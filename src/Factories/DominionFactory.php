@@ -438,8 +438,8 @@ class DominionFactory
             'resource_tech' => (2000 * $days),
             'resource_boats' => (20 * $days),
 
-            'military_draftees' => 100 + (30 * $days),
-            'military_unit2' => 150 + (30 * $days),
+            'military_draftees' => (30 * $days),
+            'military_unit2' => (30 * $days),
             'military_unit3' => 0,
         ];
     }
