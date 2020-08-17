@@ -44,7 +44,12 @@ class DominionFactory
             $startingBuildings
         );
 
-        $startingAttributes = $this->getStartingAttributes($realm->round);
+        $startingAttributes = $this->getStartingAttributes();
+
+        $additionalAttributes = $this->getLateStartAttributes($realm->round);
+        foreach ($additionalAttributes as $attribute => $value) {
+            $startingAttributes[$attribute] += $value;
+        }
 
         return Dominion::create([
             'user_id' => $user->id,
@@ -169,7 +174,7 @@ class DominionFactory
         }
 
         // Reset other starting attributes
-        $startingAttributes = $this->getStartingAttributes($dominion->round);
+        $startingAttributes = $this->getStartingAttributes();
         foreach ($startingAttributes as $attribute => $value) {
             $dominion->{$attribute} = $value;
         }
@@ -183,7 +188,7 @@ class DominionFactory
         }
 
         // Quick Start
-        if ($start_option !== null) {
+        if ($start_option !== null && $start_option !== 'sim') {
             $quickStartJson = $this->getQuickStartData($start_option);
             if ($customize === true) {
                 $quickStartData = $quickStartJson[0];
@@ -218,6 +223,12 @@ class DominionFactory
                     }
                 }
             }
+        }
+
+        // Additional late start resources
+        $additionalAttributes = $this->getLateStartAttributes($dominion->round);
+        foreach ($additionalAttributes as $attribute => $value) {
+            $dominion->{$attribute} += $value;
         }
 
         $dominion->race_id = $race->id;
@@ -348,27 +359,15 @@ class DominionFactory
     }
 
     /**
-     * Get amount of total starting non-land, non-building attributes,
-     * factoring in additional resources due to late start.
+     * Get amount of total starting non-land, non-building attributes.
      *
-     * @param Round $round
      * @return array
      */
-    protected function getStartingAttributes(Round $round): array
+    protected function getStartingAttributes(): array
     {
-        $days = 0;
-        if ($round->hasStarted()) {
-            $daysLate = now()->diffInDays($round->start_date);
-            if ($daysLate >= 5) {
-                // Additional resources are not added until the fifth day of the round
-                $days = $daysLate;
-            }
-        }
-
-        // Based on additional starting resource formula in Blackreign's Sim
-        $startingAttributes = [
+        return [
             'prestige' => 250,
-            'peasants' => 1300 + (100 * $days),
+            'peasants' => 1300,
             'peasants_last_hour' => 0,
 
             'draft_rate' => 35,
@@ -378,11 +377,11 @@ class DominionFactory
             'daily_platinum' => 0,
             'daily_land' => 0,
 
-            'resource_platinum' => 100000 + (5000 * $days),
-            'resource_food' => 15000 + (1500 * $days),
-            'resource_lumber' => 15000 + (2500 * $days),
-            'resource_ore' => 0 + (2500 * $days),
-            'resource_mana' => 0 + (1000 * $days),
+            'resource_platinum' => 100000,
+            'resource_food' => 15000,
+            'resource_lumber' => 15000,
+            'resource_ore' => 0,
+            'resource_mana' => 0,
             'resource_gems' => 10000,
             'resource_tech' => 0,
             'resource_boats' => 0,
@@ -394,9 +393,9 @@ class DominionFactory
             'improvement_walls' => 0,
             'improvement_harbor' => 0,
 
-            'military_draftees' => 100 + (30 * $days),
+            'military_draftees' => 100,
             'military_unit1' => 0,
-            'military_unit2' => 150 + (30 * $days),
+            'military_unit2' => 150,
             'military_unit3' => 0,
             'military_unit4' => 0,
             'military_spies' => 25,
@@ -409,8 +408,40 @@ class DominionFactory
             'elite_guard_active_at' => null,
             'protection_ticks_remaining' => 72,
         ];
+    }
 
-        return $startingAttributes;
+    /**
+     * Get additional resources awarded due to late start.
+     *
+     * @param Round $round
+     * @return array
+     */
+    protected function getLateStartAttributes(Round $round): array
+    {
+        $days = 0;
+        if ($round->hasStarted()) {
+            $daysLate = now()->diffInDays($round->start_date);
+            if ($daysLate >= 5) {
+                // Additional resources are not added until the fifth day of the round
+                $days = $daysLate;
+            }
+        }
+
+        return [
+            'peasants' => (100 * $days),
+            'resource_platinum' => (5000 * $days),
+            'resource_food' => (1500 * $days),
+            'resource_lumber' => (2500 * $days),
+            'resource_ore' => (2500 * $days),
+            'resource_mana' => (1000 * $days),
+            'resource_gems' => (2000 * $days),
+            'resource_tech' => (2000 * $days),
+            'resource_boats' => (20 * $days),
+
+            'military_draftees' => 100 + (30 * $days),
+            'military_unit2' => 150 + (30 * $days),
+            'military_unit3' => 0,
+        ];
     }
 
     /**
@@ -439,7 +470,7 @@ class DominionFactory
             $startingBuildings
         );
 
-        $startingAttributes = $this->getStartingAttributes($realm->round);
+        $startingAttributes = $this->getStartingAttributes();
 
         // Generate random starting build
         $landSize = (int) random_distribution(500, 100);

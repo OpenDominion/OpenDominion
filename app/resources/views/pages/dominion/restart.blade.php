@@ -36,7 +36,7 @@
                                     <div class="radio race_option" data-race="{{ $quickstart['race'] }}" style="display: none;">
                                         <label>
                                             <input type="radio" name="start_option" value="{{ $quickstart['filename'] }}" />
-                                            Quick Start - {{ ucwords($quickstart['type']) }}
+                                            Quick Start - {{ ucwords($quickstart['type']) }} ({{ $quickstart['size']}} acres)
                                         </label>
                                     </div>
                                 @endforeach
@@ -46,7 +46,7 @@
                                     <label>
                                         <input type="checkbox" name="customize" disabled />
                                         I want to train my own military<br/>
-                                        <span class="small">(Start on hour 61 and click through the final 12 hours)</span>
+                                        <span class="small">(Start on hour 61 and click through the final 12 ticks)</span>
                                     </label>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                 </div>
                 <div class="box-body">
                     <p>You can restart your dominion at any time while still under protection.</p>
-                    <p>Standard Simulation requires clicking through the first 72 hours.</p>
+                    <p>Standard Simulation requires clicking through the first 72 ticks.</p>
                 </div>
             </div>
         </div>
