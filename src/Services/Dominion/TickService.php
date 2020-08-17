@@ -88,7 +88,8 @@ class TickService
 
         foreach ($rounds as $round) {
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
-            $names_json = json_decode(file_get_contents(base_path('app/data/dominion_names.json')));
+            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+            $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')));
             $names = collect($names_json->dominion_names);
             $races = Race::all();
             foreach ($round->realms as $realm) {

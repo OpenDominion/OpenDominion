@@ -129,9 +129,11 @@ class DominionFactory
      * @param  Race $race
      * @param string $name
      * @param string $ruler_name
+     * @param string $start_option
+     * @param bool $customize
      * @throws GameException
      */
-    public function restart(Dominion $dominion, Race $race, ?string $name, ?string $ruler_name): void
+    public function restart(Dominion $dominion, Race $race, ?string $name, ?string $ruler_name, ?string $start_option, ?bool $customize): void
     {
         // Reset Queues
         DB::table('dominion_queue')
@@ -180,6 +182,44 @@ class DominionFactory
             }
         }
 
+        // Quick Start
+        if ($start_option !== null) {
+            $quickStartJson = $this->getQuickStartData($start_option);
+            if ($customize === true) {
+                $quickStartData = $quickStartJson[0];
+            } else {
+                $quickStartData = $quickStartJson[1];
+            }
+
+            // Set attributes
+            foreach ($quickStartData->attributes as $attr => $value) {
+                $dominion->{$attr} = $value;
+            }
+
+            // Cast spells
+            foreach ($quickStartData->spells as $spellKey) {
+                DB::table('active_spells')
+                    ->insert([
+                        'dominion_id' => $dominion->id,
+                        'spell' => $spellKey,
+                        'duration' => 12,
+                        'cast_by_dominion_id' => $dominion->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            // Queue incoming resources
+            $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
+            foreach ($quickStartData->queues as $source => $hourlyQueues) {
+                foreach ($hourlyQueues as $index => $queuedItems) {
+                    foreach ($queuedItems as $queuedItem) {
+                        $queueService->queueResources($source, $dominion, [$queuedItem->resource => $queuedItem->amount], $index + 1);
+                    }
+                }
+            }
+        }
+
         $dominion->race_id = $race->id;
         if ($name !== null) {
             $dominion->name = $name;
@@ -187,15 +227,18 @@ class DominionFactory
         if ($ruler_name !== null) {
             $dominion->ruler_name = $ruler_name;
         }
+
         $dominion->created_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART
         ]);
 
         // Reset Queues - duplicate to prevent race condition
+        /*
         DB::table('dominion_queue')
             ->where('dominion_id', $dominion->id)
             ->delete();
+        */
     }
 
     /**
@@ -655,5 +698,41 @@ class DominionFactory
         $startingLand["land_{$race->home_land_type}"] += $startingBuildings['building_home'];
 
         return $startingLand;
+    }
+
+    /**
+     * Get the quick start options for all races.
+     * 
+     * @return array
+     */
+    public function getQuickStartOptions(): array
+    {
+        $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+        $files = $filesystem->files(base_path('app/data/quickstarts'));
+
+        return collect($files)->map(function($file) {
+            $filename = $file->getFilename();
+            $parts = explode('_', str_replace(".json", "", $filename));
+
+            return [
+                'filename' => $filename,
+                'race' => $parts[0],
+                'type' => $parts[1],
+                'size' => $parts[2]
+            ];
+        })->all();
+    }
+
+    /**
+     * Return the quick start data from a filen.
+     * 
+     * @param string $filename
+     * @return array
+     */
+    public function getQuickStartData(string $filename): array
+    {
+        $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+        $json = json_decode($filesystem->get(base_path('app/data/quickstarts/'.$filename)));
+        return $json;
     }
 }

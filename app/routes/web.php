@@ -209,7 +209,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
             $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report');
-            $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion')->name('misc.restart');
+            $router->get('misc/restart')->uses('Dominion\MiscController@getRestartDominion')->name('misc.restart');
+            $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion');
             $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
 
             // Debug
