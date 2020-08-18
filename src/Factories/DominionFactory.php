@@ -215,6 +215,7 @@ class DominionFactory
             }
 
             // Queue incoming resources
+            $dominion->load('queues');
             $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
             foreach ($quickStartData->queues as $source => $hourlyQueues) {
                 foreach ($hourlyQueues as $index => $queuedItems) {
