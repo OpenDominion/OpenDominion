@@ -95,17 +95,25 @@
                                 </select>
                             </div>
                             <div class="pull-right">
-                                <button type="submit"
-                                        name="action"
-                                        value="spell"
-                                        class="btn btn-primary"
-                                        {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                                    <i class="ra ra-lightning-storm"></i>
-                                    Lightning Bolt
-                                </button>
-                                <div class="small text-center">
-                                    Mana cost: 2,839
-                                </div>
+                                @foreach ($spellHelper->getWonderSpells() as $spell)
+                                    <div class="text-center">
+                                        <button type="submit"
+                                                name="action"
+                                                value="{{ $spell['key'] }}"
+                                                class="btn btn-primary"
+                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
+                                            <i class="{{ $spell['icon_class'] }}"></i>
+                                            {{ $spell['name'] }}
+                                        </button>
+                                        <div class="small text-center">
+                                            @if ($spellCalculator->canCast($selectedDominion, $spell['key']))
+                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                            @else
+                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                             <div class="clearfix"></div>
                         </div>

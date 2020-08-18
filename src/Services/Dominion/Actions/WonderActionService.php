@@ -116,7 +116,7 @@ class WonderActionService
      * @throws LogicException
      * @throws GameException
      */
-    public function spell(Dominion $dominion, RoundWonder $wonder): array
+    public function castCyclone(Dominion $dominion, RoundWonder $wonder): array
     {
         $this->guardLockedDominion($dominion);
 
@@ -125,7 +125,7 @@ class WonderActionService
                 throw new GameException("Your wizards to not have enough strength to cast Lightning Storm");
             }
     
-            $manaCost = $this->spellCalculator->getManaCost($dominion, 'lightning_bolt');
+            $manaCost = $this->spellCalculator->getManaCost($dominion, 'cyclone');
     
             if ($dominion->resource_mana < $manaCost) {
                 throw new GameException("You do not have enough mana to cast Lightning Storm.");
@@ -165,7 +165,7 @@ class WonderActionService
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= min($dominion->wizard_strength, 5);
-            // TODO: Increment stats
+            $dominion->stat_cyclone_damage += $damageDealt;
 
             if ($wonderPower == 0) {
                 $this->handleWonderDestroyed($wonder, $dominion, $currentRealm);
@@ -174,20 +174,20 @@ class WonderActionService
             // TODO: Add target wonder id?
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => 'lightning_storm'
+                'action' => 'cyclone'
             ]);
             $wonder->save();
         });
 
         if ($this->attackResult['wonder']['destroyed']) {
             $message = sprintf(
-                'A storm of lighting rages above the %s dealing %s damage, and destroying it!',
+                'A twisting torrent of wind ravages the %s dealing %s damage, and destroying it!',
                 $wonder->wonder->name,
                 $this->attackResult['attacker']['damage']
             );
         } else {
             $message = sprintf(
-                'A storm of lighting rages above the %s dealing %s damage!',
+                'A twisting torrent of wind ravages the %s dealing %s damage!',
                 $wonder->wonder->name,
                 $this->attackResult['attacker']['damage']
             );
@@ -288,7 +288,7 @@ class WonderActionService
             $this->attackResult['attacker']['unitsSent'] = $units;
 
             $dominion->morale -= 5;
-            // TODO: Increment stats
+            $dominion->stat_wonder_damage += $damageDealt;
 
             $this->attackEvent = GameEvent::create([
                 'round_id' => $dominion->round->id,
@@ -352,9 +352,11 @@ class WonderActionService
      */
     protected function handleWonderDestroyed(RoundWonder $wonder, Dominion $dominion, ?Realm $currentRealm): void
     {
-        $detroyedByRealm = $dominion->realm;
         $this->attackResult['wonder']['destroyedByRealmId'] = $dominion->realm->id;
         $this->attackResult['wonder']['destroyed'] = true;
+
+        $detroyedByRealm = $dominion->realm;
+        $dominion->stat_wonders_destroyed += 1;
 
         if ($wonder->realm !== null) {
             foreach ($dominion->realm->dominions as $friendlyDominion) {

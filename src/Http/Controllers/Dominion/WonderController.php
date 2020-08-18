@@ -4,7 +4,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\WonderActionRequest;
@@ -26,6 +28,8 @@ class WonderController extends AbstractDominionController
             'governmentService' => app(GovernmentService::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'protectionService' => app(ProtectionService::class),
+            'spellCalculator' => app(SpellCalculator::class),
+            'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'wonderCalculator' => app(WonderCalculator::class),
             'wonderHelper' => app(WonderHelper::class),
@@ -49,8 +53,8 @@ class WonderController extends AbstractDominionController
                     $request->get('unit')
                 );
             }
-            if ($action == 'spell') {
-                $result = $wonderActionService->spell(
+            if ($action == 'cyclone') {
+                $result = $wonderActionService->castCyclone(
                     $dominion,
                     $roundWonder
                 );
