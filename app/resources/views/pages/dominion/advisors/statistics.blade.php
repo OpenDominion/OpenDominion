@@ -419,6 +419,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>Cyclone Damage:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_cyclone_damage) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Earthquake Hours:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_earthquake_hours) }}</strong>
@@ -633,6 +639,42 @@
                                                 <td>Explored:</td>
                                                 <td>
                                                     <strong>{{ number_format($target->stat_total_land_explored) }}</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">Wonders</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <table class="table">
+                                        <colgroup>
+                                            <col width="50%">
+                                            <col width="50%">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Wonder damage:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_wonder_damage) }}</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Wonders destroyed:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_wonders_destroyed) }}</strong>
                                                 </td>
                                             </tr>
                                         </tbody>
