@@ -155,14 +155,14 @@
                         "resource": "military_unit2",
                         "amount": 170
                     }
-        ],
+                ],
                 [],
                 [
                     {
                         "resource": "military_unit2",
                         "amount": 175
                     }
-        ],
+                ],
                 [],
                 [],
                 [],
@@ -174,7 +174,7 @@
                         "resource": "military_unit4",
                         "amount": 300
                     }
-        ],
+                ],
                 []
             ]
         }
