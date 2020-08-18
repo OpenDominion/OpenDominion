@@ -74,14 +74,6 @@ class RankingsHelper
                 'title_icon' => 'ra-bolt-shield',
             ],
             [
-                'name' => 'Most Invaded Dominions',
-                'key' => 'defending-failure',
-                'stat' => 'stat_defending_failure',
-                'stat_label' => 'Defending Failures',
-                'title' => 'the Defeated',
-                'title_icon' => 'ra-player-shot',
-            ],
-            [
                 'name' => 'Most Successful Spies',
                 'key' => 'espionage-success',
                 'stat' => 'stat_espionage_success',
