@@ -299,6 +299,9 @@ class SpellActionService
         if ($targetWpa !== 0.0) {
             $successRate = $this->opsHelper->infoOperationSuccessChance($selfWpa, $targetWpa);
 
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
+
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
@@ -454,6 +457,9 @@ class SpellActionService
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
             $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, $targetWpa);
+
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
             if (!random_chance($successRate)) {
                 $wizardsKilledBasePercentage = 1;
@@ -622,6 +628,9 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
+
+            // Wonders
+            $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {

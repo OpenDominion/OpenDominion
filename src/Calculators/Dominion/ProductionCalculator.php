@@ -126,6 +126,9 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('platinum_production');
 
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('platinum_production');
+
         // Spell: Midas Touch
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'midas_touch', $spellMidasTouch);
 
@@ -209,6 +212,9 @@ class ProductionCalculator
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('food_production');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('food_production');
 
         // Spell: Gaia's Blessing or Gaia's Watch
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
@@ -347,6 +353,9 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('lumber_production');
 
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('lumber_production');
+
         // Spell: Gaia's Blessing
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'gaias_blessing', $spellGaiasBlessing);
 
@@ -440,6 +449,9 @@ class ProductionCalculator
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('mana_production');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('mana_production');
 
         // Improvement: Towers
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
@@ -545,6 +557,9 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('ore_production');
 
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('ore_production');
+
         // Spell: Miner's Sight or Mining Strength
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
             'miners_sight' => $spellMinersSight,
@@ -617,6 +632,9 @@ class ProductionCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('gem_production');
 
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('gem_production');
+
         // Spell: Earthquake
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
 
@@ -678,6 +696,9 @@ class ProductionCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('tech_production');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
 
         return $multiplier;
     }

@@ -367,6 +367,7 @@ class InvadeActionService
 
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
+        $multiplier = 1;
 
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
@@ -379,10 +380,15 @@ class InvadeActionService
 
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
-                $attackerPrestigeChange *= 1.2;
+                $multiplier += 0.20;
             } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
-                $attackerPrestigeChange *= 1.15;
+                $multiplier += 0.15;
             }
+
+            // Wonders (does not stack with war bonus)
+            $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+
+            $attackerPrestigeChange *= $multiplier;
         }
 
         // Reduce attacker prestige gain if the target was hit recently
@@ -941,6 +947,9 @@ class InvadeActionService
 
             // Racial Bonus
             $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+
+            // Wonders
+            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
 
             $this->queueService->queueResources(
                 'invasion',

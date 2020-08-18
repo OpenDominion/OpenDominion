@@ -28,6 +28,7 @@ portals_of_transportation:
   perks:
     invasion_return_time: -3
   power: 250000
+  active: false
 great_market:
   name: Great Market
   perks:
@@ -53,6 +54,11 @@ ancient_library:
   name: Ancient Library
   perks:
     invest_bonus: 20
+  power: 250000
+halls_of_knowledge:
+  name: Halls of Knowledge
+  perks:
+    tech_production: 20
   power: 250000
 great_oracle:
   name: Great Oracle
@@ -84,12 +90,12 @@ high_clerics_tower:
 ivory_tower:
   name: Ivory Tower
   perks:
-    enemy_spell_chance: -50
+    enemy_spell_chance: 50
   power: 250000
 underground_society:
   name: Underground Society
   perks:
-    espionage_chance_defense: -50
+    enemy_espionage_chance: 50
   power: 250000
 factory_of_legends:
   name: Factory of Legends
@@ -107,7 +113,7 @@ lair_of_the_dragon:
 imperial_armada:
   name: Imperial Armada
   perks:
-    enemy_sabotage_boats_damage: 0
+    enemy_sabotage_boats_damage: -100
   power: 250000
 spire_of_illusion:
   name: Spire of Illusion

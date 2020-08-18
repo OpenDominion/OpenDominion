@@ -77,6 +77,9 @@ class ConstructionCalculator
         // Techs
         $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_cost'));
 
+        // Wonders
+        $multiplier *= (1 + $dominion->getWonderPerkMultiplier('construction_cost'));
+
         return $multiplier;
     }
 

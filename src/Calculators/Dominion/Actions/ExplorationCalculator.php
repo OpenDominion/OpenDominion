@@ -52,6 +52,9 @@ class ExplorationCalculator
         // Techs
         $multiplier = (1 + $dominion->getTechPerkMultiplier('explore_platinum_cost'));
 
+        // Wonders
+        $multiplier *= (1 + $dominion->getWonderPerkMultiplier('explore_platinum_cost'));
+
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {
             $multiplier += 0.25;
