@@ -967,7 +967,7 @@ class MilitaryCalculator
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subHours($hours))
+            ->where('created_at', '>=', now()->subHours($hours)->startOfHour())
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
@@ -999,7 +999,7 @@ class MilitaryCalculator
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subHours($hours))
+            ->where('created_at', '>=', now()->subHours($hours)->startOfHour())
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
