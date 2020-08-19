@@ -843,9 +843,19 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // todo: Spy Master / Dark Artistry tech
+        // Forest Havens
+        $spyStrengthPerForestHaven = 0.1;
+        $spyStrengthPerForestHavenMax = 2;
 
-        return (float)$regen;
+        $regen += min(
+            ($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerForestHaven),
+            $spyStrengthPerForestHavenMax
+        );
+
+        // Techs
+        $regen += $dominion->getTechPerkValue('spy_strength_recovery');
+
+        return $regen;
     }
 
     /**
@@ -926,12 +936,25 @@ class MilitaryCalculator
      */
     public function getWizardStrengthRegen(Dominion $dominion): float
     {
-        $regen = 5;
+        $regen = 4;
 
-        // todo: Master of Magi / Dark Artistry tech
-        // todo: check if this needs to be a float
+        // Wizard Guilds
+        $wizardStrengthPerWizardGuild = 0.1;
+        $wizardStrengthPerWizardGuildMax = 2;
 
-        return (float)$regen;
+        $regen += min(
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild),
+            $wizardStrengthPerWizardGuildMax
+        );
+
+        // Techs
+        $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
+
+        if ($dominion->wizard_strength < 25) {
+            $regen += 1;
+        }
+
+        return $regen;
     }
 
     /**

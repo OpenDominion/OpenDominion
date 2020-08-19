@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Log;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -31,6 +32,9 @@ class TickService
 
     /** @var LandCalculator */
     protected $landCalculator;
+
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
 
     /** @var NetworthCalculator */
     protected $networthCalculator;
@@ -58,6 +62,7 @@ class TickService
         $this->now = now();
         $this->casualtiesCalculator = app(CasualtiesCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
+        $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
         $this->populationCalculator = app(PopulationCalculator::class);
@@ -416,6 +421,7 @@ class TickService
         }
 
         /* These calculators need to ignore queued resources for the following tick */
+        $this->militaryCalculator->setForTick(true);
         $this->networthCalculator->setForTick(true);
         $this->populationCalculator->setForTick(true);
         $this->queueService->setForTick(true);
@@ -502,41 +508,15 @@ class TickService
             $tick->morale = min(3, 100 - $dominion->morale);
         }
 
-        // Spy Strength - todo: move to military calculator
+        // Spy Strength
         if ($dominion->spy_strength < 100) {
-            $spyStrengthAdded = 4;
-
-            $spyStrengthPerForestHaven = 0.1;
-            $spyStrengthPerForestHavenMax = 2;
-
-            $spyStrengthAdded += min(
-                (($dominion->building_forest_haven / $totalLand) * (100 * $spyStrengthPerForestHaven)),
-                $spyStrengthPerForestHavenMax
-            );
-
-            $spyStrengthAdded += $dominion->getTechPerkValue('spy_strength_recovery');
-
+            $spyStrengthAdded = $this->militaryCalculator->getSpyStrengthRegen($dominion);
             $tick->spy_strength = min($spyStrengthAdded, 100 - $dominion->spy_strength);
         }
 
-        // Wizard Strength - todo: move to military calculator
+        // Wizard Strength
         if ($dominion->wizard_strength < 100) {
-            $wizardStrengthAdded = 4;
-
-            $wizardStrengthPerWizardGuild = 0.1;
-            $wizardStrengthPerWizardGuildMax = 2;
-
-            $wizardStrengthAdded += min(
-                (($dominion->building_wizard_guild / $totalLand) * (100 * $wizardStrengthPerWizardGuild)),
-                $wizardStrengthPerWizardGuildMax
-            );
-
-            $wizardStrengthAdded += $dominion->getTechPerkValue('wizard_strength_recovery');
-
-            if ($dominion->wizard_strength < 25) {
-                $wizardStrengthAdded += 1;
-            }
-
+            $wizardStrengthAdded = $this->militaryCalculator->getWizardStrengthRegen($dominion);
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
         }
 
@@ -555,6 +535,7 @@ class TickService
 
         $tick->save();
 
+        $this->militaryCalculator->setForTick(false);
         $this->networthCalculator->setForTick(false);
         $this->populationCalculator->setForTick(false);
         $this->queueService->setForTick(false);
