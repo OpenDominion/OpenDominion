@@ -1,17 +1,17 @@
 [
     {
         "attributes": {
-            "peasants": 10242,
+            "peasants": 10190,
             "draft_rate": 60,
-            "resource_platinum": 679486,
-            "resource_food": 59265,
-            "resource_lumber": 28369,
+            "resource_platinum": 702135,
+            "resource_food": 58065,
+            "resource_lumber": 29203,
             "resource_mana": 8528,
             "resource_ore": 61200,
             "resource_gems": 0,
             "resource_tech": 384,
             "resource_boats": 14,
-            "military_draftees": 2070,
+            "military_draftees": 2122,
             "military_unit1": 0,
             "military_unit2": 0,
             "military_unit3": 0,
@@ -44,7 +44,7 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 20,
-            "stat_total_platinum_production": 1045561,
+            "stat_total_platinum_production": 1060526,
             "stat_total_food_production": 156928,
             "stat_total_lumber_production": 60000,
             "stat_total_mana_production": 21875,
@@ -64,21 +64,21 @@
     },
     {
         "attributes": {
-            "peasants": 9080,
+            "peasants": 9032,
             "draft_rate": 60,
-            "resource_platinum": 37569,
-            "resource_food": 59110,
-            "resource_lumber": 36506,
+            "resource_platinum": 37105,
+            "resource_food": 58045,
+            "resource_lumber": 37247,
             "resource_mana": 7420,
-            "resource_ore": 7000,
+            "resource_ore": 4140,
             "resource_gems": 0,
             "resource_tech": 384,
             "resource_boats": 26,
-            "military_draftees": 482,
+            "military_draftees": 540,
             "military_unit1": 0,
-            "military_unit2": 1420,
+            "military_unit2": 1375,
             "military_unit3": 0,
-            "military_unit4": 550,
+            "military_unit4": 590,
             "military_spies": 25,
             "military_wizards": 25,
             "land_plain": 340,
@@ -107,7 +107,7 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 20,
-            "stat_total_platinum_production": 1507644,
+            "stat_total_platinum_production": 1520776,
             "stat_total_food_production": 200961.5,
             "stat_total_lumber_production": 72000,
             "stat_total_mana_production": 29375,
@@ -169,10 +169,9 @@
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 125
+                        "amount": 120
                     }
                 ],
-                [],
                 [],
                 [],
                 [
@@ -180,7 +179,8 @@
                         "resource": "military_unit4",
                         "amount": 200
                     }
-                ]
+                ],
+                []
             ]
         }
     }

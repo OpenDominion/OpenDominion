@@ -1,32 +1,32 @@
 [
     {
         "attributes": {
-            "peasants": 8564,
+            "peasants": 8494,
             "draft_rate": 60,
-            "resource_platinum": 645232,
-            "resource_food": 80254,
-            "resource_lumber": 37533,
-            "resource_mana": 8546,
+            "resource_platinum": 667248,
+            "resource_food": 78715,
+            "resource_lumber": 38263,
+            "resource_mana": 8537,
             "resource_ore": 44400,
             "resource_gems": 0,
             "resource_tech": 384,
             "resource_boats": 14,
-            "military_draftees": 1687,
+            "military_draftees": 1757,
             "military_unit1": 0,
             "military_unit2": 0,
             "military_unit3": 0,
             "military_unit4": 0,
             "military_spies": 25,
             "military_wizards": 25,
-            "land_plain": 356,
+            "land_plain": 358,
             "land_mountain": 20,
             "land_swamp": 55,
             "land_cavern": 0,
-            "land_forest": 94,
+            "land_forest": 92,
             "land_hill": 55,
             "land_water": 20,
-            "building_home": 74,
-            "building_alchemy": 218,
+            "building_home": 70,
+            "building_alchemy": 220,
             "building_farm": 30,
             "building_smithy": 108,
             "building_masonry": 0,
@@ -44,9 +44,9 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 20,
-            "stat_total_platinum_production": 1024993,
+            "stat_total_platinum_production": 1039683,
             "stat_total_food_production": 172620,
-            "stat_total_lumber_production": 55900,
+            "stat_total_lumber_production": 55972,
             "stat_total_mana_production": 21875,
             "stat_total_ore_production": 44400,
             "stat_total_gem_production": 0,
@@ -64,32 +64,32 @@
     },
     {
         "attributes": {
-            "peasants": 7646,
+            "peasants": 7557,
             "draft_rate": 60,
-            "resource_platinum": 313352,
-            "resource_food": 81427,
-            "resource_lumber": 46901,
-            "resource_mana": 10433,
-            "resource_ore": 29550,
+            "resource_platinum": 70589,
+            "resource_food": 80144,
+            "resource_lumber": 47549,
+            "resource_mana": 10426,
+            "resource_ore": 12900,
             "resource_gems": 0,
             "resource_tech": 384,
             "resource_boats": 26,
-            "military_draftees": 724,
+            "military_draftees": 79,
             "military_unit1": 0,
-            "military_unit2": 1023,
-            "military_unit3": 270,
-            "military_unit4": 650,
+            "military_unit2": 1060,
+            "military_unit3": 240,
+            "military_unit4": 710,
             "military_spies": 25,
             "military_wizards": 25,
-            "land_plain": 356,
+            "land_plain": 358,
             "land_mountain": 20,
             "land_swamp": 55,
             "land_cavern": 0,
-            "land_forest": 94,
+            "land_forest": 92,
             "land_hill": 55,
             "land_water": 20,
-            "building_home": 74,
-            "building_alchemy": 218,
+            "building_home": 72,
+            "building_alchemy": 220,
             "building_farm": 30,
             "building_smithy": 108,
             "building_masonry": 0,
@@ -107,9 +107,9 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 20,
-            "stat_total_platinum_production": 1445369,
+            "stat_total_platinum_production": 1457936,
             "stat_total_food_production": 214563.25,
-            "stat_total_lumber_production": 65268,
+            "stat_total_lumber_production": 65258,
             "stat_total_mana_production": 29375,
             "stat_total_ore_production": 58800,
             "stat_total_gem_production": 0,
@@ -153,14 +153,14 @@
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 167
+                        "amount": 165
                     }
                 ],
                 [],
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 163
+                        "amount": 161
                     }
                 ],
                 [],
@@ -170,14 +170,14 @@
                 [
                     {
                         "resource": "military_unit4",
-                        "amount": 160
+                        "amount": 155
                     }
                 ],
                 [],
                 [
                     {
                         "resource": "military_unit4",
-                        "amount": 157
+                        "amount": 155
                     }
                 ],
                 []

@@ -74,11 +74,11 @@
             "resource_gems": 0,
             "resource_tech": 384,
             "resource_boats": 26,
-            "military_draftees": 95,
+            "military_draftees": 115,
             "military_unit1": 0,
-            "military_unit2": 1102,
-            "military_unit3": 250,
-            "military_unit4": 700,
+            "military_unit2": 1072,
+            "military_unit3": 200,
+            "military_unit4": 780,
             "military_spies": 25,
             "military_wizards": 25,
             "land_plain": 358,
@@ -177,7 +177,7 @@
                 [
                     {
                         "resource": "military_unit3",
-                        "amount": 150
+                        "amount": 130
                     }
                 ],
                 []

@@ -161,7 +161,7 @@
             "stat_total_land_explored": 400,
             "protection_ticks_remaining": 0
         },
-        "spells": ["ares_call", "midas_touch"],
+        "spells": ["blizzard", "midas_touch"],
         "queues": {
             "construction": [
                 [],

@@ -3,7 +3,7 @@
         "attributes": {
             "peasants": 8981,
             "draft_rate": 60,
-            "resource_platinum": 714894,
+            "resource_platinum": 739723,
             "resource_food": 57083,
             "resource_lumber": 28329,
             "resource_mana": 8537,
@@ -44,7 +44,7 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 0,
-            "stat_total_platinum_production": 1093525,
+            "stat_total_platinum_production": 1110778,
             "stat_total_food_production": 135792,
             "stat_total_lumber_production": 46884,
             "stat_total_mana_production": 21875,
@@ -66,7 +66,7 @@
         "attributes": {
             "peasants": 7990,
             "draft_rate": 60,
-            "resource_platinum": 42972,
+            "resource_platinum": 37069,
             "resource_food": 57018,
             "resource_lumber": 36472,
             "resource_mana": 10426,
@@ -78,7 +78,7 @@
             "military_unit1": 0,
             "military_unit2": 1112,
             "military_unit3": 320,
-            "military_unit4": 620,
+            "military_unit4": 650,
             "military_spies": 25,
             "military_wizards": 25,
             "land_plain": 398,
@@ -107,7 +107,7 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 0,
-            "stat_total_platinum_production": 1549075,
+            "stat_total_platinum_production": 1563996,
             "stat_total_food_production": 170232,
             "stat_total_lumber_production": 55027,
             "stat_total_mana_production": 29375,
@@ -153,14 +153,14 @@
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 174
+                        "amount": 180
                     }
                 ],
                 [],
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 171
+                        "amount": 180
                     }
                 ],
                 [],
@@ -170,7 +170,7 @@
                 [
                     {
                         "resource": "military_unit4",
-                        "amount": 160
+                        "amount": 165
                     }
                 ],
                 [],
