@@ -198,6 +198,9 @@ class WonderActionService
             $dominion->wizard_strength -= min($dominion->wizard_strength, 5);
 
             $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, static::WONDER_WPA);
+            if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_chance')) {
+                $successRate *= (1 - $wonder->wonder->perks->groupBy('key')['enemy_spell_chance']->first()->pivot->value / 100);
+            }
 
             if (!random_chance($successRate)) {
                 $dominion->stat_spell_failure += 1;
@@ -251,6 +254,9 @@ class WonderActionService
 
                 $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
                 $damageDealt = round($spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion));
+                if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_damage')) {
+                    $damageDealt *= (1 + $wonder->wonder->perks->groupBy('key')['enemy_spell_damage']->first()->pivot->value / 100);
+                }
                 $dominion->stat_cyclone_damage += $damageDealt;
 
                 $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
