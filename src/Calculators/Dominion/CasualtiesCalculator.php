@@ -69,7 +69,8 @@ class CasualtiesCalculator
                 // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
                 // invasion targets
 
-                $multiplier = 0;
+                // Wonders
+                $multiplier = $dominion->getWonderPerkValue('kills_immortal');
             }
 
             if ($multiplier == 0) {
@@ -132,7 +133,9 @@ class CasualtiesCalculator
             // Techs
             $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_offense');
 
-            // todo: Wonders
+            // Wonders
+            $nonUnitBonusMultiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_offense');
+            $nonUnitBonusMultiplier += $attacker->getWonderPerkMultiplier('enemy_casualties_offense');
 
             // Cap at -80% (additive) and apply to multiplier
             $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
@@ -205,17 +208,16 @@ class CasualtiesCalculator
                 // additional race-based checks in here for any new units. So always assume we're running SPUD at the
                 // moment
 
+                // Wonders
+                $multiplier = $attacker->getWonderPerkValue('kills_immortal');
+
                 $attackerHasCrusadeActive = ($this->spellCalculator->isSpellActive($attacker, 'crusade'));
-
-                // Note: This doesn't do a race check on $attacker, since I don't think that's needed atm; only HuNo can
-                // cast Crusade anyway. If we we add more races with Crusade or Crusade-like spells later, it should
-                // go here
-
-                // We're only immortal if they're not Deus-Vult'ing into our unholy lands :^)
-                if (!$attackerHasCrusadeActive) {
-                    $multiplier = 0;
+                if ($attackerHasCrusadeActive) {
+                    $multiplier = 1;
                 }
+            }
 
+            if ($multiplier == 0) {
                 // Unit Perk: Kills Immortal
                 $unitsSentPerSlot = [];
                 $unitsSentKISlot = null;
@@ -263,9 +265,11 @@ class CasualtiesCalculator
             // Techs
             $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_defense');
 
-            // todo: Wonders
+            // Wonders
+            $nonUnitBonusMultiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_defense');
+            $nonUnitBonusMultiplier += $attacker->getWonderPerkMultiplier('enemy_casualties_defense');
 
-            // Cap at -80% and apply to multiplier (additive)
+            // Cap at -80% (additive) and apply to multiplier
             $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
 
             // Unit bonuses (multiplicative with non-unit bonuses)

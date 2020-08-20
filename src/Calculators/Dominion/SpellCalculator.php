@@ -47,7 +47,12 @@ class SpellCalculator
         // Cost reduction from wizard guilds (3x ratio, max 30%)
         $wizardGuildRatio = ($dominion->building_wizard_guild / $totalLand);
         $spellCostMultiplier = (1 - clamp(3 * $wizardGuildRatio, 0, 0.3));
-        $spellCostMultiplier += $dominion->getTechPerkMultiplier('spell_cost');
+
+        // Techs
+        $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('spell_cost'));
+
+        // Wonders
+        $spellCostMultiplier *= (1 + $dominion->getWonderPerkMultiplier('spell_cost'));
 
         return round($spellInfo['mana_cost'] * $totalLand * $spellCostMultiplier);
     }

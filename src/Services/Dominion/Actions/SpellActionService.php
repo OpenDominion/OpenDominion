@@ -299,6 +299,9 @@ class SpellActionService
         if ($targetWpa !== 0.0) {
             $successRate = $this->opsHelper->infoOperationSuccessChance($selfWpa, $targetWpa);
 
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
+
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
@@ -329,8 +332,41 @@ class SpellActionService
 
         switch ($spellKey) {
             case 'clear_sight':
-                $infoOp->data = [
+                $military_draftees = $target->military_draftees;
+                $military_unit1 = $this->militaryCalculator->getTotalUnitsForSlot($target, 1);
+                $military_unit2 = $this->militaryCalculator->getTotalUnitsForSlot($target, 2);
+                $military_unit3 = $this->militaryCalculator->getTotalUnitsForSlot($target, 3);
+                $military_unit4 = $this->militaryCalculator->getTotalUnitsForSlot($target, 4);
 
+                // Wonders
+                // - Spire of Illusion: Clear Sights are 85% accurate
+                $militaryAccuracy = $target->getWonderPerkMultiplier('clear_sight_accuracy');
+                if ($militaryAccuracy) {
+                    $military_draftees = random_int(
+                        round($military_draftees * $militaryAccuracy),
+                        round($military_draftees / $militaryAccuracy)
+                    );
+                    $military_unit1 = random_int(
+                        round($military_unit1 * $militaryAccuracy),
+                        round($military_unit1 / $militaryAccuracy)
+                    );
+                    $military_unit2 = random_int(
+                        round($military_unit2 * $militaryAccuracy),
+                        round($military_unit2 / $militaryAccuracy)
+                    );
+                    $military_unit3 = random_int(
+                        round($military_unit3 * $militaryAccuracy),
+                        round($military_unit3 / $militaryAccuracy)
+                    );
+                    $military_unit4 = random_int(
+                        round($military_unit4 * $militaryAccuracy),
+                        round($military_unit4 / $militaryAccuracy)
+                    );
+                } else {
+                    $militaryAccuracy = 1;
+                }
+
+                $infoOp->data = [
                     'ruler_name' => $target->ruler_name,
                     'race_id' => $target->race->id,
                     'land' => $this->landCalculator->getTotalLand($target),
@@ -352,15 +388,16 @@ class SpellActionService
                         ),
 
                     'morale' => $target->morale,
-                    'military_draftees' => $target->military_draftees,
-                    'military_unit1' => $this->militaryCalculator->getTotalUnitsForSlot($target, 1),
-                    'military_unit2' => $this->militaryCalculator->getTotalUnitsForSlot($target, 2),
-                    'military_unit3' => $this->militaryCalculator->getTotalUnitsForSlot($target, 3),
-                    'military_unit4' => $this->militaryCalculator->getTotalUnitsForSlot($target, 4),
+                    'military_draftees' => $military_draftees,
+                    'military_unit1' => $military_unit1,
+                    'military_unit2' => $military_unit2,
+                    'military_unit3' => $military_unit3,
+                    'military_unit4' => $military_unit4,
 
+                    'clear_sight_accuracy' => $militaryAccuracy,
                     'recently_invaded_count' => $this->militaryCalculator->getRecentlyInvadedCount($target),
-
                 ];
+
                 break;
 
             case 'vision':
@@ -426,7 +463,7 @@ class SpellActionService
     protected function castHostileSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
         if ($dominion->round->hasOffensiveActionsDisabled()) {
-            throw new GameException('Black ops have been disabled for the remainder of the round.');
+            throw new GameException('Black ops have been disabled for the remainder of the round');
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
@@ -445,7 +482,7 @@ class SpellActionService
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
-        // You need at least some positive WPA to cast info ops
+        // You need at least some positive WPA to cast black ops
         if ($selfWpa === 0.0) {
             // Don't reduce mana by throwing an exception here
             throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
@@ -454,6 +491,9 @@ class SpellActionService
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
             $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, $targetWpa);
+
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
             if (!random_chance($successRate)) {
                 $wizardsKilledBasePercentage = 1;
@@ -622,6 +662,9 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
+
+            // Wonders
+            $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {

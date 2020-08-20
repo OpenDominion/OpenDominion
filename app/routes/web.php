@@ -123,6 +123,10 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('techs')->uses('Dominion\TechController@getTechs')->name('techs');
             $router->post('techs')->uses('Dominion\TechController@postTechs');
 
+            // Wonders
+            $router->get('wonders')->uses('Dominion\WonderController@getWonders')->name('wonders');
+            $router->post('wonders')->uses('Dominion\WonderController@postWonders');
+
             // Military
             $router->get('military')->uses('Dominion\MilitaryController@getMilitary')->name('military');
             $router->post('military/change-draft-rate')->uses('Dominion\MilitaryController@postChangeDraftRate')->name('military.change-draft-rate');
@@ -232,6 +236,7 @@ $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Rou
     $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');
     $router->get('magic')->uses('ScribesController@getMagic')->name('magic');
     $router->get('tech')->uses('ScribesController@getTechs')->name('techs');
+    $router->get('wonders')->uses('ScribesController@getWonders')->name('wonders');
     $router->get('{race}')->uses('ScribesController@getRace')->name('race');
 });
 

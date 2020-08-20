@@ -277,7 +277,8 @@ class SpellHelper
     {
         return $this->getInfoOpSpells()
             ->merge($this->getBlackOpSpells())
-            ->merge($this->getWarSpells());
+            ->merge($this->getWarSpells())
+            ->merge($this->getWonderSpells());
     }
 
     public function getInfoOpSpells(): Collection
@@ -388,6 +389,20 @@ class SpellHelper
                     'improvement_walls',
                 ],
                 'percentage' => 0.40,
+            ],
+        ]);
+    }
+
+    public function getWonderSpells(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Cyclone',
+                'description' => 'Deals damage to a wonder',
+                'key' => 'cyclone',
+                'mana_cost' => 3.5,
+                'icon_class' => 'ra ra-fluffy-swirl',
+                'damage_multiplier' => 5,
             ],
         ]);
     }

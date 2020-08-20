@@ -183,6 +183,10 @@ class MilitaryCalculator
             $multiplier += $dominion->getTechPerkMultiplier('offense');
         }
 
+        // Wonders
+        // TODO: add to calc if this is implemented
+        $multiplier += $dominion->getWonderPerkMultiplier('offense');
+
         // Improvement: Forges
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['forges_percent'])) {
@@ -392,7 +396,12 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('defense');
 
         // Techs
+        // TODO: add to calc if this is implemented
         $multiplier += $dominion->getTechPerkMultiplier('defense');
+
+        // Wonders
+        // TODO: add to calc if this is implemented
+        $multiplier += $dominion->getWonderPerkMultiplier('defense');
 
         // Improvement: Walls
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -818,8 +827,8 @@ class MilitaryCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
 
-        // Wonder: Great Oracle (+30%)
-        // todo
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
 
         return $multiplier;
     }
@@ -834,9 +843,19 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // todo: Spy Master / Dark Artistry tech
+        // Forest Havens
+        $spyStrengthPerForestHaven = 0.1;
+        $spyStrengthPerForestHavenMax = 2;
 
-        return (float)$regen;
+        $regen += min(
+            ($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerForestHaven),
+            $spyStrengthPerForestHavenMax
+        );
+
+        // Techs
+        $regen += $dominion->getTechPerkValue('spy_strength_recovery');
+
+        return $regen;
     }
 
     /**
@@ -897,11 +916,14 @@ class MilitaryCalculator
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
 
-        // Improvement: Towers
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
-
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('wizard_strength');
+
+        // Improvement: Towers
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
 
         return $multiplier;
     }
@@ -914,12 +936,25 @@ class MilitaryCalculator
      */
     public function getWizardStrengthRegen(Dominion $dominion): float
     {
-        $regen = 5;
+        $regen = 4;
 
-        // todo: Master of Magi / Dark Artistry tech
-        // todo: check if this needs to be a float
+        // Wizard Guilds
+        $wizardStrengthPerWizardGuild = 0.1;
+        $wizardStrengthPerWizardGuildMax = 2;
 
-        return (float)$regen;
+        $regen += min(
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild),
+            $wizardStrengthPerWizardGuildMax
+        );
+
+        // Techs
+        $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
+
+        if ($dominion->wizard_strength < 25) {
+            $regen += 1;
+        }
+
+        return $regen;
     }
 
     /**

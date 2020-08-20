@@ -31,15 +31,14 @@
                             <col width="200">
                             <col>
                             <col width="200">
-                            <col>
                         </colgroup>
                         <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Requires</th>
-                                </tr>
-                            </thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Requires</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             @php $techs = $techHelper->getTechs(); @endphp
                             @foreach($techs as $tech)

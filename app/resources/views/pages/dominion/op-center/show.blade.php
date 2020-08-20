@@ -176,6 +176,12 @@
                         </div>
                     </div>
 
+                    @if (isset($infoOp->data['clear_sight_accuracy']) && $infoOp->data['clear_sight_accuracy'] != 1)
+                        <p class="text-center text-danger" style="margin-bottom: 0.5em;">
+                            Military information is only {{ $infoOp->data['clear_sight_accuracy'] * 100 }}% accurate due to magical interference.
+                        </p>
+                    @endif
+
                     @php
                         $recentlyInvadedCount = (isset($infoOp->data['recently_invaded_count']) ? (int)$infoOp->data['recently_invaded_count'] : 0);
                     @endphp

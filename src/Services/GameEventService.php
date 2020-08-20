@@ -66,6 +66,7 @@ class GameEventService
                     });
             })
             ->orderBy('created_at', 'desc')
+            ->orderBy('type', 'desc')
             ->paginate(100);
 
         return [
@@ -86,6 +87,7 @@ class GameEventService
             ->where('created_at', '<', $createdBefore)
             //->where('created_at', '>', now()->subDays(7))
             ->orderBy('created_at', 'desc')
+            ->orderBy('type', 'desc')
             ->paginate(100);
 
         return [

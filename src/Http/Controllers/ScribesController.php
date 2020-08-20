@@ -9,6 +9,7 @@ use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Models\Race;
 
 class ScribesController extends AbstractController
@@ -80,6 +81,13 @@ class ScribesController extends AbstractController
     {
         return view('pages.scribes.techs', [
             'techHelper' => app(TechHelper::class)
+        ]);
+    }
+
+    public function getWonders()
+    {
+        return view('pages.scribes.wonders', [
+            'wonderHelper' => app(WonderHelper::class)
         ]);
     }
 }
