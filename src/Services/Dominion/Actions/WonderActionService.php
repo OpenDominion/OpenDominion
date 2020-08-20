@@ -4,10 +4,13 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\OpsHelper;
+use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
@@ -31,17 +34,33 @@ class WonderActionService
      */
     protected const CASUALTIES_BASE_PERCENTAGE = 5;
 
+    /**
+     * @var float Base percentage for wizards killed from spell failure
+     */
+    protected const CYCLONE_WIZARD_LOSSES_PERCENTAGE = 0.25;
+
+    /**
+     * @var float Wonder defensive WPA when calculating success rates
+     */
+    protected const WONDER_WPA = 0.25;
+
     /** @var GovernmentService */
     protected $governmentService;
 
     /** @var InvasionService */
     protected $invasionService;
 
+    /** @var LandCalculator */
+    protected $landCalculator;
+
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
     /** @var NotificationService */
     protected $notificationService;
+
+    /** @var OpsHelper */
+    protected $opsHelper;
 
     /** @var ProtectionService */
     protected $protectionService;
@@ -51,6 +70,9 @@ class WonderActionService
 
     /** @var SpellCalculator */
     protected $spellCalculator;
+
+    /** @var SpellHelper */
+    protected $spellHelper;
 
     /** @var WonderCalculator */
     protected $wonderCalculator;
@@ -80,30 +102,39 @@ class WonderActionService
      *
      * @param GovernmentService $governmentService
      * @param InvasionService $invasionService
+     * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
+     * @param OpsHelper $opsHelper
      * @param ProtectionService $protectionService
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
+     * @param SpellHelper $spellHelper
      * @param WonderCalculator $wonderCalculator
      */
     public function __construct(
         GovernmentService $governmentService,
         InvasionService $invasionService,
+        LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
+        OpsHelper $opsHelper,
         ProtectionService $protectionService,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
+        SpellHelper $spellHelper,
         WonderCalculator $wonderCalculator
     ) {
         $this->governmentService = $governmentService;
         $this->invasionService = $invasionService;
+        $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
+        $this->opsHelper = $opsHelper;
         $this->protectionService = $protectionService;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
+        $this->spellHelper = $spellHelper;
         $this->wonderCalculator = $wonderCalculator;
     }
 
@@ -120,11 +151,14 @@ class WonderActionService
     {
         $this->guardLockedDominion($dominion);
 
-        DB::transaction(function () use ($dominion, $wonder) {
+        $result = null;
+
+        DB::transaction(function () use ($dominion, $wonder, &$result) {
             if ($dominion->wizard_strength < 30) {
                 throw new GameException("Your wizards to not have enough strength to cast Lightning Storm");
             }
     
+            $spellInfo = $this->spellHelper->getSpellInfo('cyclone', $dominion->race);
             $manaCost = $this->spellCalculator->getManaCost($dominion, 'cyclone');
     
             if ($dominion->resource_mana < $manaCost) {
@@ -151,24 +185,107 @@ class WonderActionService
             $this->attackResult['wonder']['currentRealmId'] = $wonder->realm_id;
             $this->attackResult['wonder']['neutral'] = ($wonder->realm_id == null);
 
-            // TODO: Calculate damage formula
-            $damageDealt = $manaCost;
-            $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
-            $wonder->damage()->create([
-                'realm_id' => $dominion->realm_id,
-                'dominion_id' => $dominion->id,
-                'damage' => $damageDealt
-            ]);
+            // TODO: Refactor all spy/wizard losses
+            $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
 
-            $this->attackResult['attacker']['damage'] = $damageDealt;
-            $this->attackResult['wonder']['power'] = $wonderPower;
+            // You need at least some positive WPA to cast black ops
+            if ($selfWpa === 0.0) {
+                // Don't reduce mana by throwing an exception here
+                throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
+            }
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= min($dominion->wizard_strength, 5);
-            $dominion->stat_cyclone_damage += $damageDealt;
 
-            if ($wonderPower == 0) {
-                $this->handleWonderDestroyed($wonder, $dominion, $currentRealm);
+            $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, static::WONDER_WPA);
+
+            if (!random_chance($successRate)) {
+                $dominion->stat_spell_failure += 1;
+
+                $wizardsKilledPercentage = static::CYCLONE_WIZARD_LOSSES_PERCENTAGE / 100;
+
+                $unitsKilled = [];
+                $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
+
+                // Check for immortal wizards
+                if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
+                    $wizardsKilled = 0;
+                }
+
+                if ($wizardsKilled > 0) {
+                    $unitsKilled['wizards'] = $wizardsKilled;
+                    $dominion->military_wizards -= $wizardsKilled;
+                }
+
+                foreach ($dominion->race->units as $unit) {
+                    if ($unit->getPerkValue('counts_as_wizard_offense')) {
+                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * $wizardsKilledPercentage;
+                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                        if ($unitKilled > 0) {
+                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                        }
+                    }
+                }
+
+                $unitsKilledStringParts = [];
+                foreach ($unitsKilled as $name => $amount) {
+                    $amountLabel = number_format($amount);
+                    $unitLabel = str_plural(str_singular($name), $amount);
+                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+                }
+                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
+                if ($unitsKilledString) {
+                    $message = "The wonder has repelled our {$spellInfo['name']} attempt and managed to kill $unitsKilledString.";
+                } else {
+                    $message = "The wonder has repelled our {$spellInfo['name']} attempt.";
+                }
+
+                $result = [
+                    'message' => $message,
+                    'alert-type' => 'warning'
+                ];
+            } else {
+                $dominion->stat_spell_success += 1;
+
+                $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
+                $damageDealt = round($spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion));
+                $dominion->stat_cyclone_damage += $damageDealt;
+
+                $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
+                $wonder->damage()->create([
+                    'realm_id' => $dominion->realm_id,
+                    'dominion_id' => $dominion->id,
+                    'damage' => $damageDealt
+                ]);
+
+                $this->attackResult['attacker']['damage'] = $damageDealt;
+                $this->attackResult['wonder']['power'] = $wonderPower;
+
+                if ($wonderPower == 0) {
+                    $this->handleWonderDestroyed($wonder, $dominion, $currentRealm);
+                }
+
+                if ($this->attackResult['wonder']['destroyed']) {
+                    $result = [
+                        'message' => sprintf(
+                            'A twisting torrent of wind ravages the %s dealing %s damage, and destroying it!',
+                            $wonder->wonder->name,
+                            $this->attackResult['attacker']['damage']
+                        ),
+                        'alert-type' => 'success'
+                    ];
+                } else {
+                    $result = [
+                        'message' => sprintf(
+                            'A twisting torrent of wind ravages the %s dealing %s damage!',
+                            $wonder->wonder->name,
+                            $this->attackResult['attacker']['damage']
+                        ),
+                        'alert-type' => 'success'
+                    ];
+                }
             }
 
             // TODO: Add target wonder id?
@@ -179,24 +296,7 @@ class WonderActionService
             $wonder->save();
         });
 
-        if ($this->attackResult['wonder']['destroyed']) {
-            $message = sprintf(
-                'A twisting torrent of wind ravages the %s dealing %s damage, and destroying it!',
-                $wonder->wonder->name,
-                $this->attackResult['attacker']['damage']
-            );
-        } else {
-            $message = sprintf(
-                'A twisting torrent of wind ravages the %s dealing %s damage!',
-                $wonder->wonder->name,
-                $this->attackResult['attacker']['damage']
-            );
-        }
-
-        return [
-            'message' => $message,
-            'alert-type' => 'success'
-        ];
+        return $result;
     }
 
     /**

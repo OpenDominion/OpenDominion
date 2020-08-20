@@ -482,7 +482,7 @@ class SpellActionService
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
-        // You need at least some positive WPA to cast info ops
+        // You need at least some positive WPA to cast black ops
         if ($selfWpa === 0.0) {
             // Don't reduce mana by throwing an exception here
             throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
