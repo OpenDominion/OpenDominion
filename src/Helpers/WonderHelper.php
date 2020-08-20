@@ -42,7 +42,7 @@ class WonderHelper
             'rezone_cost' => '%s%% rezoning platinum cost',
 
             // Spy related
-            'espionage_chance_defense' => '%s%% chance of causing hostile spy operations to fail',
+            'enemy_espionage_chance' => '%s%% chance of causing hostile spy operations to fail',
             'enemy_sabotage_boats_damage' => 'Boats cannot be sabotaged',
             'spy_cost' => '%s%% cost of spies',
             'spy_losses' => '%s%% spy losses on failed operations',
@@ -65,6 +65,7 @@ class WonderHelper
             'mana_production' => '%s%% mana production',
             'ore_production' => '%s%% ore production',
             'platinum_production' => '%s%% platinum production',
+            'tech_production' => '%s%% research point production',
         ];
 
         $perkStrings = [];
