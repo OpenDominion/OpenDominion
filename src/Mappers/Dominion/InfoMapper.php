@@ -107,13 +107,9 @@ class InfoMapper
         return $dominion->techs->pluck('name', 'key')->all();
     }
 
-    public function mapBarracks(Dominion $dominion, bool $isOp = true): array
+    public function mapMilitaryTraining(Dominion $dominion, bool $isOp = true): array
     {
         $accuracyMultiplier = 1;
-
-        if($isOp) {
-            $accuracyMultiplier = 0.85;
-        }
 
         $data = [
             'units' => [
@@ -122,6 +118,14 @@ class InfoMapper
                 'training' => [],
             ],
         ];
+
+        if($isOp) {
+            $accuracyMultiplier = 0.85;
+        } else {
+            array_set($data, 'units.home.spies', $dominion->military_spies);
+            array_set($data, 'units.home.wizards', $dominion->military_wizards);
+            array_set($data, 'units.home.archmages', $dominion->military_archmages);
+        }
 
         array_set($data, 'units.home.draftees', random_int(
             round($dominion->military_draftees * $accuracyMultiplier),

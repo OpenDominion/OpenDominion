@@ -17,6 +17,7 @@ use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\RankingsService;
@@ -56,6 +57,7 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.military', [
             'queueService' => app(QueueService::class),
             'unitHelper' => app(UnitHelper::class),
+            'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);
     }
@@ -72,6 +74,7 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.land', [
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
+            'unitHelper' => app(UnitHelper::class),
             'queueService' => app(QueueService::class),
             'targetDominion' => $target
         ]);

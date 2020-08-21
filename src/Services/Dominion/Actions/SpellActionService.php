@@ -339,7 +339,7 @@ class SpellActionService
 
             case 'vision':
                 $infoOp->data = [
-                    'techs' => $target->techs->pluck('name', 'key')->all(),
+                    'techs' => $this->infoMapper->mapTechs($target),
                     'heroes' => []
                 ];
                 break;
