@@ -17,7 +17,7 @@
                 </tr>
                 <tr>
                     <td>Race:</td>
-                    <td>{{ $data['race']->name }}</td>
+                    <td>{{ $race->name }}</td>
                 </tr>
                 <tr>
                     <td>Land:</td>
@@ -166,7 +166,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $dominion->race, true) }}">
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString('draftees', $race, true) }}">
                             Draftees:
                         </span>
                     </td>
@@ -174,23 +174,23 @@
                 </tr>
                 @foreach ($unitHelper->getUnitTypes() as $unitType)
                     @php
-                        $unit = $data['race']->units->filter(function ($unit) use ($unitType) {
+                        $unit = $race->units->filter(function ($unit) use ($unitType) {
                             return ($unit->slot == (int)str_replace('unit', '', $unitType));
                         })->first();
                     @endphp
                     <tr>
                         <td>
-                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $dominion->race, true) }}">
-                                {{ $unitHelper->getUnitName($unitType, $dominion->race) }}:
+                            <span data-toggle="tooltip" data-placement="top" title="{{ $unitHelper->getUnitHelpString($unitType, $race, true) }}">
+                                {{ $unitHelper->getUnitName($unitType, $race) }}:
                             </span>
                         </td>
-                        @if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4']))
+                        @if ($data['military_'.$unitType] !== null)
                             <td>
-                                {{ number_format($data["military_unit$unit->slot"]) }}
+                                {{ number_format($data['military_'.$unitType]) }}
                             </td>
                         @else
                             <td>
-                                {{ $data[$unitType] }}
+                                ???
                             </td>
                         @endif
                     </tr>

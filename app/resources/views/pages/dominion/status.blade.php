@@ -5,14 +5,13 @@
 @section('content')
     <div class="row">
 
-        <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }}</h3>
-                </div>
-                <div class="box-body no-padding">
-                    @include('partials.dominion.status', ['title' => 'Information Station'])
-                </div>
+    <div class="col-sm-12 col-md-9">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }}</h3>
+            </div>
+            <div class="box-body no-padding">
+                @include('partials.dominion.status', ['data' => $infoMapper->mapStatus($selectedDominion), 'race' => $selectedDominion->race, ])
             </div>
         </div>
     </div>
