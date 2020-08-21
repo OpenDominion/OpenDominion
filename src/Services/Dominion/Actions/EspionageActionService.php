@@ -281,6 +281,7 @@ class EspionageActionService
                 }
 
                 $target->stat_spies_executed += array_sum($unitsKilled);
+                $dominion->stat_spies_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -538,6 +539,7 @@ class EspionageActionService
                 }
 
                 $target->stat_spies_executed += array_sum($unitsKilled);
+                $dominion->stat_spies_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -779,6 +781,7 @@ class EspionageActionService
                 }
 
                 $target->stat_spies_executed += array_sum($unitsKilled);
+                $dominion->stat_spies_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {

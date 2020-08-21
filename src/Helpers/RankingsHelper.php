@@ -36,7 +36,7 @@ class RankingsHelper
             [
                 'name' => 'Most Land Conquered',
                 'key' => 'total-land-conquered',
-                'stat' => 'stat_total_land_conquered',
+                'stat' => 'land_conquered',
                 'stat_label' => 'Land Conquered',
                 'title' => 'the Savage',
                 'title_icon' => 'ra-battered-axe',
@@ -44,7 +44,7 @@ class RankingsHelper
             [
                 'name' => 'Most Land Explored',
                 'key' => 'total-land-explored',
-                'stat' => 'stat_total_land_explored',
+                'stat' => 'land_explored',
                 'stat_label' => 'Land Explored',
                 'title' => 'the Adventurous',
                 'title_icon' => 'ra-fedora',
@@ -80,14 +80,6 @@ class RankingsHelper
                 'stat_label' => 'Wonders Destroyed',
                 'title' => 'the Opportunist',
                 'title_icon' => 'ra-raven',
-            ],
-            [
-                'name' => 'Most Fortified Dominions',
-                'key' => 'defending-success',
-                'stat' => 'stat_defending_success',
-                'stat_label' => 'Defending Successes',
-                'title' => 'the Indomitable',
-                'title_icon' => 'ra-bolt-shield',
             ],
             [
                 'name' => 'Most Successful Spies',

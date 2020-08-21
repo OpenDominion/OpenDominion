@@ -218,6 +218,12 @@
                                             <strong>{{ number_format($target->stat_spies_executed) }}</strong>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Spies Lost:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_spies_lost) }}</strong>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -383,6 +389,12 @@
                                         <td>Wizards Executed:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_wizards_executed) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wizards Lost:</td>
+                                        <td>
+                                            <strong>{{ number_format($target->stat_wizards_lost) }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -639,6 +651,12 @@
                                                 <td>Explored:</td>
                                                 <td>
                                                     <strong>{{ number_format($target->stat_total_land_explored) }}</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lost:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->stat_total_land_lost) }}</strong>
                                                 </td>
                                             </tr>
                                         </tbody>

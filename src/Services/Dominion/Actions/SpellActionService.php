@@ -535,6 +535,7 @@ class SpellActionService
                 }
 
                 $target->stat_wizards_executed += array_sum($unitsKilled);
+                $dominion->stat_wizards_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {

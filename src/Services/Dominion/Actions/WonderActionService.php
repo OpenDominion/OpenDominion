@@ -231,6 +231,8 @@ class WonderActionService
                     }
                 }
 
+                $dominion->stat_wizards_lost += array_sum($unitsKilled);
+
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
                     $amountLabel = number_format($amount);
