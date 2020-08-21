@@ -184,7 +184,7 @@
                                 {{ $unitHelper->getUnitName($unitType, $race) }}:
                             </span>
                         </td>
-                        @if ($data['military_'.$unitType] !== null)
+                        @if (array_key_exists('military_'.$unitType, $data) && $data['military_'.$unitType] !== null)
                             <td>
                                 {{ number_format($data['military_'.$unitType]) }}
                             </td>
