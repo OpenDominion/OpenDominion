@@ -27,9 +27,6 @@ class InfoMapper
     /** @var QueueService */
     protected $queueService;
 
-    /** @var RangeCalculator */
-    protected $rangeCalculator;
-
     public function __construct()
     {
         $this->landCalculator = app(LandCalculator::class);
@@ -37,7 +34,6 @@ class InfoMapper
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->queueService = app(QueueService::class);
-        $this->rangeCalculator = app(RangeCalculator::class);
     }
 
     public function mapStatus(Dominion $target, Dominion $selectedDominion = null): array
@@ -73,17 +69,9 @@ class InfoMapper
             'military_spies' => null,
             'military_wizards' => null,
             'military_archmages' => null,
-
-            'recently_invaded_count' => null,
-            'range' => null,
-            'range_class' => null
         ];
 
-        if($isOp) {
-            $data['recently_invaded_count'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
-            $data['range'] = $this->rangeCalculator->getDominionRange($selectedDominion, $target);
-            $data['range_class'] = $this->rangeCalculator->getDominionRangeSpanClass($selectedDominion, $target);
-        } else {
+        if(!$isOp) {
             $data['military_spies'] = $target->military_spies;
             $data['military_wizards'] = $target->military_wizards;
             $data['military_archmages'] = $target->military_archmages;

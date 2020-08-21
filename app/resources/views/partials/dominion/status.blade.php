@@ -23,7 +23,7 @@
                     <td>Land:</td>
                     <td>
                         {{ number_format($data['land']) }}
-                        @if($data['range'])
+                        @if(array_key_exists('range', $data) && array_key_exists('range_class', $data))
                             <span class="{{ $data['range_class'] }}">
                                 ({{ $data['range'] }}%)
                             </span>
