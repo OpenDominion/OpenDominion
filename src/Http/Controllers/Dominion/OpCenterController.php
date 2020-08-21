@@ -133,6 +133,7 @@ class OpCenterController extends AbstractDominionController
             'spellHelper' => app(SpellHelper::class),
             'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
+            'miscHelper' => app(MiscHelper::class),
             'dominion' => $dominion,
             'infoOpArchive' => $infoOpArchive
         ]);

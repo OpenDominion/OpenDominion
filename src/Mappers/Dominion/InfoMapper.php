@@ -36,9 +36,8 @@ class InfoMapper
         $this->queueService = app(QueueService::class);
     }
 
-    public function mapStatus(Dominion $target, Dominion $selectedDominion = null): array
+    public function mapStatus(Dominion $target, bool $isOp = true): array
     {
-        $isOp = $selectedDominion !== null;
         $data = [
             'ruler_name' => $target->ruler_name,
             'race_id' => $target->race->id,
@@ -69,12 +68,16 @@ class InfoMapper
             'military_spies' => null,
             'military_wizards' => null,
             'military_archmages' => null,
+
+            'recently_invaded_count' => null,
         ];
 
         if(!$isOp) {
             $data['military_spies'] = $target->military_spies;
             $data['military_wizards'] = $target->military_wizards;
             $data['military_archmages'] = $target->military_archmages;
+        } else {
+            $data['recently_invaded_count'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
         }
 
         return $data;
