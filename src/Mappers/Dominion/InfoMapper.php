@@ -107,7 +107,7 @@ class InfoMapper
         return $dominion->techs->pluck('name', 'key')->all();
     }
 
-    public function mapMilitaryTraining(Dominion $dominion, bool $isOp = true): array
+    public function mapMilitary(Dominion $dominion, bool $isOp = true): array
     {
         $accuracyMultiplier = 1;
 
