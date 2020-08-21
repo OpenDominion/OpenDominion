@@ -22,10 +22,8 @@
 
                     @php
                         $statusOpData = $infoOp->data;
-                        if(!array_key_exists('range', $statusOpData)) {
-                            $statusOpData['range'] = $rangeCalculator->getDominionRange($selectedDominion, $dominion);
-                            $statusOpData['range_class'] = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion);
-                        }
+                        $statusOpData['range'] = $rangeCalculator->getDominionRange($selectedDominion, $dominion);
+                        $statusOpData['range_class'] = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion);
                     @endphp
 
                     @include('partials.dominion.status', ['data' => $statusOpData, 'race' => $dominion->race])
