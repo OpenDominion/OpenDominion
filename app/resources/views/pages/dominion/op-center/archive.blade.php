@@ -213,67 +213,7 @@
 
                                 @slot('noPadding', true)
 
-                                <table class="table">
-                                    <colgroup>
-                                        <col>
-                                        @for ($i = 1; $i <= 12; $i++)
-                                            <col width="20">
-                                        @endfor
-                                        <col width="100">
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th>Unit</th>
-                                            @for ($i = 1; $i <= 12; $i++)
-                                                <th class="text-center">{{ $i }}</th>
-                                            @endfor
-                                            <th class="text-center">Home (Training)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Draftees</td>
-                                            <td colspan="12">&nbsp;</td>
-                                            <td class="text-center">
-                                                {{ number_format(array_get($infoOp->data, 'units.home.draftees', 0)) }}
-                                            </td>
-                                        </tr>
-                                        @foreach ($unitHelper->getUnitTypes() as $unitType)
-                                            <tr>
-                                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
-                                                @for ($i = 1; $i <= 12; $i++)
-                                                    @php
-                                                        $amount = array_get($infoOp->data, "units.training.{$unitType}.{$i}", 0);
-                                                    @endphp
-                                                    <td class="text-center">
-                                                        @if ($amount === 0)
-                                                            -
-                                                        @else
-                                                            {{ number_format($amount) }}
-                                                        @endif
-                                                    </td>
-                                                @endfor
-                                                <td class="text-center">
-                                                    @php
-                                                        $unitsAtHome = (int)array_get($infoOp->data, "units.home.{$unitType}");
-                                                    @endphp
-
-                                                    @if (in_array($unitType, ['spies', 'wizards', 'archmages']))
-                                                        ???
-                                                    @elseif ($unitsAtHome !== 0)
-                                                        ~{{ number_format($unitsAtHome) }}
-                                                    @else
-                                                        0
-                                                    @endif
-
-                                                    @if ($amountTraining = array_get($infoOp->data, "units.training.{$unitType}"))
-                                                        ({{ number_format(array_sum($amountTraining)) }})
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.dominion.military-training-table', ['data' => $infoOp->data, 'isOp' => true, 'race' => $dominion->race ])
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
@@ -296,53 +236,7 @@
 
                                 @slot('noPadding', true)
 
-                                <table class="table">
-                                    <colgroup>
-                                        <col>
-                                        @for ($i = 1; $i <= 12; $i++)
-                                            <col width="20">
-                                        @endfor
-                                        <col width="100">
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th>Unit</th>
-                                            @for ($i = 1; $i <= 12; $i++)
-                                                <th class="text-center">{{ $i }}</th>
-                                            @endfor
-                                            <th class="text-center">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (range(1, 4) as $slot)
-                                            @php
-                                                $unitType = ('unit' . $slot);
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $unitHelper->getUnitName($unitType, $dominion->race) }}</td>
-                                                @for ($i = 1; $i <= 12; $i++)
-                                                    @php
-                                                        $amount = array_get($infoOp->data, "units.returning.{$unitType}.{$i}", 0);
-                                                    @endphp
-                                                    <td class="text-center">
-                                                        @if ($amount === 0)
-                                                            -
-                                                        @else
-                                                            {{ number_format($amount) }}
-                                                        @endif
-                                                    </td>
-                                                @endfor
-                                                <td class="text-center">
-                                                    @if ($amountTraining = array_get($infoOp->data, "units.returning.{$unitType}"))
-                                                        ~{{ number_format(array_sum($amountTraining)) }}
-                                                    @else
-                                                        0
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.dominion.military-returning-table', ['data' => $infoOp->data, 'isOp' => true, 'race' => $dominion->race ])
                             @endcomponent
                         </div>
                     </div>
