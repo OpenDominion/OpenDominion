@@ -8,6 +8,7 @@
         $pageHeader .= ' for '.$target->name;
     }
     $improvementsData = $infoMapper->mapImprovements($target);
+    $techsData = $infoMapper->mapTechs($target);
 @endphp
 
 @section('page-header', $pageHeader)
@@ -44,29 +45,7 @@
                     <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <colgroup>
-                            <col width="200">
-                            <col>
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php($unlockedTechs = $target->techs->pluck('key')->all())
-                            @foreach ($techHelper->getTechs() as $tech)
-                                @if(in_array($tech->key, $unlockedTechs))
-                                    <tr>
-                                        <td>{{ $tech['name'] }}</td>
-                                        <td>{{ $techHelper->getTechDescription($tech) }}</td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                    @include('partials.dominion.info.techs-table', ['data' => $techsData])
                 </div>
             </div>
         </div>
