@@ -239,5 +239,7 @@ class InfoMapper
                 (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
             );
         });
+
+        return $data;
     }
 }
