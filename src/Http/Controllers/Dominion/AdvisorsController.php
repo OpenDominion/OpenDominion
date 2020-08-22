@@ -14,6 +14,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\RankingsHelper;
+use OpenDominion\Helpers\ResourceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -41,6 +42,8 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.production', [
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
+            'infoMapper' => app(InfoMapper::class),
+            'resourceHelper' => app(ResourceHelper::class),
             'targetDominion' => $target
         ]);
     }
