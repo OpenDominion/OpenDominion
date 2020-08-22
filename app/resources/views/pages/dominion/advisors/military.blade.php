@@ -23,7 +23,7 @@
                     <h3 class="box-title"><i class="ra ra-sword"></i> Units in training and home</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    @include('partials.dominion.info.military-training-table', ['data' => $data, 'isOp' => false, 'race' => $selectedDominion->race ])
+                    @include('partials.dominion.info.military-training-table', ['data' => $data, 'isOp' => false, 'race' => $target->race ])
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                     <h3 class="box-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    @include('partials.dominion.info.military-returning-table', ['data' => $data, 'isOp' => false, 'race' => $selectedDominion->race ])
+                    @include('partials.dominion.info.military-returning-table', ['data' => $data, 'isOp' => false, 'race' => $target->race ])
                 </div>
             </div>
         </div>
