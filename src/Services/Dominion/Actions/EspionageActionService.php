@@ -17,6 +17,7 @@ use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\OpsHelper;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\GovernmentService;
@@ -44,6 +45,9 @@ class EspionageActionService
 
     /** @var ImprovementHelper */
     protected $improvementHelper;
+
+    /** @var InfoMapper */
+    protected $infoMapper;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -85,6 +89,7 @@ class EspionageActionService
         $this->governmentService = app(GovernmentService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
+        $this->infoMapper = app(InfoMapper::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
@@ -319,128 +324,19 @@ class EspionageActionService
 
         switch ($operationKey) {
             case 'barracks_spy':
-                $data = [
-                    'units' => [
-                        'home' => [],
-                        'returning' => [],
-                        'training' => [],
-                    ],
-                ];
-
-                // Units at home (85% accurate)
-                array_set($data, 'units.home.draftees', random_int(
-                    round($target->military_draftees * 0.85),
-                    round($target->military_draftees / 0.85)
-                ));
-
-                foreach (range(1, 4) as $slot) {
-                    $amountAtHome = $target->{'military_unit' . $slot};
-
-                    if ($amountAtHome !== 0) {
-                        $amountAtHome = random_int(
-                            round($amountAtHome * 0.85),
-                            round($amountAtHome / 0.85)
-                        );
-                    }
-
-                    array_set($data, "units.home.unit{$slot}", $amountAtHome);
-                }
-
-                // Units returning (85% accurate)
-                $this->queueService->getInvasionQueue($target)->each(static function ($row) use (&$data) {
-                    if (!starts_with($row->resource, 'military_')) {
-                        return; // continue
-                    }
-
-                    $unitType = str_replace('military_', '', $row->resource);
-
-                    $amount = random_int(
-                        round($row->amount * 0.85),
-                        round($row->amount / 0.85)
-                    );
-
-                    array_set($data, "units.returning.{$unitType}.{$row->hours}", $amount);
-                });
-
-                // Units in training (100% accurate)
-                $this->queueService->getTrainingQueue($target)->each(static function ($row) use (&$data) {
-                    $unitType = str_replace('military_', '', $row->resource);
-
-                    array_set($data, "units.training.{$unitType}.{$row->hours}", $row->amount);
-                });
-
-                $infoOp->data = $data;
+                $infoOp->data = $this->infoMapper->mapMilitary($target);
                 break;
 
             case 'castle_spy':
-                $data = [];
-
-                foreach ($this->improvementHelper->getImprovementTypes() as $type) {
-                    array_set($data, "{$type}.points", $target->{'improvement_' . $type});
-                    array_set($data, "{$type}.rating",
-                        $this->improvementCalculator->getImprovementMultiplierBonus($target, $type));
-                }
-
-                $infoOp->data = $data;
+                $infoOp->data = $this->infoMapper->mapImprovements($target);
                 break;
 
             case 'survey_dominion':
-                $data = [];
-
-                foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
-                    array_set($data, "constructed.{$buildingType}", $target->{'building_' . $buildingType});
-                }
-
-                $this->queueService->getConstructionQueue($target)->each(static function ($row) use (&$data) {
-                    $buildingType = str_replace('building_', '', $row->resource);
-
-                    array_set($data, "constructing.{$buildingType}.{$row->hours}", $row->amount);
-                });
-
-                array_set($data, 'barren_land', $this->landCalculator->getTotalBarrenLand($target));
-                array_set($data, 'total_land', $this->landCalculator->getTotalLand($target));
-
-                $infoOp->data = $data;
+                $infoOp->data = $this->infoMapper->mapBuildings($target);
                 break;
 
             case 'land_spy':
-                $data = [];
-
-                foreach ($this->landHelper->getLandTypes() as $landType) {
-                    $amount = $target->{'land_' . $landType};
-
-                    array_set($data, "explored.{$landType}.amount", $amount);
-                    array_set($data, "explored.{$landType}.percentage",
-                        (($amount / $this->landCalculator->getTotalLand($target)) * 100));
-                    array_set($data, "explored.{$landType}.barren",
-                        $this->landCalculator->getTotalBarrenLandByLandType($target, $landType));
-                }
-
-                $this->queueService->getExplorationQueue($target)->each(static function ($row) use (&$data) {
-                    $landType = str_replace('land_', '', $row->resource);
-
-                    array_set(
-                        $data,
-                        "incoming.{$landType}.{$row->hours}",
-                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
-                    );
-                });
-
-                $this->queueService->getInvasionQueue($target)->each(static function ($row) use (&$data) {
-                    if (!starts_with($row->resource, 'land_')) {
-                        return; // continue
-                    }
-
-                    $landType = str_replace('land_', '', $row->resource);
-
-                    array_set(
-                        $data,
-                        "incoming.{$landType}.{$row->hours}",
-                        (array_get($data, "incoming.{$landType}.{$row->hours}", 0) + $row->amount)
-                    );
-                });
-
-                $infoOp->data = $data;
+                $infoOp->data = $this->infoMapper->mapLand($target);
                 break;
 
             default:

@@ -256,36 +256,7 @@
                                     <span class="pull-right">Barren Land: {{ number_format(array_get($infoOp->data, 'barren_land')) }}</span>
                                 @endslot
 
-                                <table class="table">
-                                    <colgroup>
-                                        <col>
-                                        <col width="100">
-                                        <col width="100">
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th>Building Type</th>
-                                            <th class="text-center">Number</th>
-                                            <th class="text-center">% of land</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
-                                            @php
-                                                $amount = array_get($infoOp->data, "constructed.{$buildingType}");
-                                            @endphp
-                                            <tr>
-                                                <td>
-                                                    {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                                    {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
-                                                    <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}"></i>
-                                                </td>
-                                                <td class="text-center">{{ number_format($amount) }}</td>
-                                                <td class="text-center">{{ number_format((($amount / array_get($infoOp->data, "total_land", $landCalculator->getTotalLand($dominion))) * 100), 2) }}%</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.dominion.construction-constructed-table', ['data' => $infoOp->data])
 
                                 @slot('boxFooter')
                                     @if ($infoOp !== null)
@@ -308,50 +279,7 @@
 
                                 @slot('noPadding', true)
 
-                                <table class="table">
-                                    <colgroup>
-                                        <col>
-                                        @for ($i = 1; $i <= 12; $i++)
-                                            <col width="20">
-                                        @endfor
-                                        <col width="100">
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th>Land Type</th>
-                                            @for ($i = 1; $i <= 12; $i++)
-                                                <th class="text-center">{{ $i }}</th>
-                                            @endfor
-                                            <th class="text-center">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($buildingHelper->getBuildingTypes() as $buildingType)
-                                            <tr>
-                                                <td>{{ ucwords(str_replace('_', ' ', $buildingType)) }}</td>
-                                                @for ($i = 1; $i <= 12; $i++)
-                                                    @php
-                                                        $amount = array_get($infoOp->data, "constructing.{$buildingType}.{$i}", 0);
-                                                    @endphp
-                                                    <td class="text-center">
-                                                        @if ($amount === 0)
-                                                            -
-                                                        @else
-                                                            {{ number_format($amount) }}
-                                                        @endif
-                                                    </td>
-                                                @endfor
-                                                <td class="text-center">
-                                                    @if ($amountConstructing = array_get($infoOp->data, "constructing.{$buildingType}"))
-                                                        {{ number_format(array_sum($amountConstructing)) }}
-                                                    @else
-                                                        0
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.dominion.construction-constructing-table', ['data' => $infoOp->data])
                             @endcomponent
                         </div>
                     </div>
