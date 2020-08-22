@@ -26,7 +26,7 @@
                         $statusOpData['range_class'] = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion);
                     @endphp
 
-                    @include('partials.dominion.status', ['data' => $statusOpData, 'race' => $dominion->race])
+                    @include('partials.dominion.info.status', ['data' => $statusOpData, 'race' => $dominion->race])
 
                     @php
                         $recentlyInvadedCount = (isset($infoOp->data['recently_invaded_count']) ? (int)$infoOp->data['recently_invaded_count'] : 0);
@@ -199,7 +199,7 @@
                 @else
                     @slot('noPadding', true)
 
-                    @include('partials.dominion.improvements-table', ['data' => $infoOp->data])
+                    @include('partials.dominion.info.improvements-table', ['data' => $infoOp->data])
                 @endif
 
                 @slot('boxFooter')
@@ -250,7 +250,7 @@
                 @else
                     @slot('noPadding', true)
 
-                    @include('partials.dominion.military-training-table', ['data' => $infoOp->data, 'isOp' => true, 'race' => $dominion->race ])
+                    @include('partials.dominion.info.military-training-table', ['data' => $infoOp->data, 'isOp' => true, 'race' => $dominion->race ])
                 @endif
 
                 @slot('boxFooter')
@@ -297,7 +297,7 @@
                 @else
                     @slot('noPadding', true)
 
-                    @include('partials.dominion.military-returning-table', ['data' => $infoOp->data, 'isOp' => true, 'race' => $dominion->race ])
+                    @include('partials.dominion.info.military-returning-table', ['data' => $infoOp->data, 'isOp' => true, 'race' => $dominion->race ])
                 @endif
             @endcomponent
         </div>
@@ -323,7 +323,7 @@
                         <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong></span>
                     @endslot
 
-                    @include('partials.dominion.construction-constructed-table', ['data' => $infoOp->data])
+                    @include('partials.dominion.info.construction-constructed-table', ['data' => $infoOp->data])
                 @endif
 
                 @slot('boxFooter')
@@ -371,7 +371,7 @@
                 @else
                     @slot('noPadding', true)
 
-                    @include('partials.dominion.construction-constructing-table', ['data' => $infoOp->data])
+                    @include('partials.dominion.info.construction-constructing-table', ['data' => $infoOp->data])
                 @endif
             @endcomponent
         </div>
@@ -394,7 +394,7 @@
                 @else
                     @slot('noPadding', true)
 
-                    @include('partials.dominion.land-table', ['data' => $infoOp->data, 'race' => $dominion->race])
+                    @include('partials.dominion.info.land-table', ['data' => $infoOp->data, 'race' => $dominion->race])
                 @endif
 
                 @slot('boxFooter')
@@ -442,7 +442,7 @@
                 @else
                     @slot('noPadding', true)
 
-                    @include('partials.dominion.land-incoming-table', ['data' => $infoOp->data, 'race' => $dominion->race])
+                    @include('partials.dominion.info.land-incoming-table', ['data' => $infoOp->data, 'race' => $dominion->race])
                 @endif
             @endcomponent
         </div>

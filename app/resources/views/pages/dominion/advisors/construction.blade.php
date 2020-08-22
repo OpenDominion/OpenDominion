@@ -24,7 +24,7 @@
                     <span class="pull-right">Barren Land: <strong>{{ number_format($landCalculator->getTotalBarrenLand($target)) }}</strong></span>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    @include('partials.dominion.construction-constructed-table', ['data' => $data])
+                    @include('partials.dominion.info.construction-constructed-table', ['data' => $data])
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
                     <h3 class="box-title"><i class="fa fa-clock-o"></i> Incoming building breakdown</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    @include('partials.dominion.construction-constructing-table', ['data' => $data])
+                    @include('partials.dominion.info.construction-constructing-table', ['data' => $data])
                 </div>
             </div>
         </div>

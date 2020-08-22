@@ -22,7 +22,7 @@
                     <h3 class="box-title"><i class="fa fa-arrow-up"></i> Improvements</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    @include('partials.dominion.improvements-table', ['data' => $improvementsData])
+                    @include('partials.dominion.info.improvements-table', ['data' => $improvementsData])
                 </div>
             </div>
         </div>
