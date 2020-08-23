@@ -545,6 +545,13 @@ class SpellActionService
                 }
                 $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
+                // Prestige Loss
+                if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
+                    if ($dominion->prestige > 0 {
+                        $dominion->prestige -= 1;
+                    }
+                }
+
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
                     ->queueNotification('repelled_hostile_spell', [
@@ -743,10 +750,16 @@ class SpellActionService
 
             // Prestige Gains
             $prestigeGainString = '';
-            if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) && $totalDamage > 0) {
-                $dominion->prestige += 2;
-                $dominion->stat_wizard_prestige += 2;
-                $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
+            if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected) {
+                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id && $totalDamage > 0) {
+                    $dominion->prestige += 2;
+                    $dominion->stat_wizard_prestige += 2;
+                    $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
+                } elseif (random_chance(0.25)) {
+                    $dominion->prestige += 1;
+                    $dominion->stat_wizard_prestige += 1;
+                    $prestigeGainString = 'You were awarded 1 prestige due to war.';
+                }
             }
 
             // Surreal Perception

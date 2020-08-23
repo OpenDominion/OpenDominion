@@ -237,7 +237,7 @@ class InvadeActionService
             }
 
             foreach($units as $amount) {
-                if($amount < 0) {
+                if ($amount < 0) {
                     throw new GameException('Invasion was canceled due to bad input');
                 }
             }
@@ -248,6 +248,7 @@ class InvadeActionService
 
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
+            $this->invasionResult['attacker']['repeatInvasion'] = $this->militaryCalculator->getRecentlyInvadedCount($target, 8, $dominion) > 1;
             $this->invasionResult['defender']['recentlyInvadedCount'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
@@ -392,8 +393,13 @@ class InvadeActionService
             $attackerPrestigeChange *= $multiplier;
         }
 
+        // Repeat Invasions award no prestige
+        if ($this->invasionResult['attacker']['repeatInvasion']) {
+            $attackerPrestigeChange = 0;
+        }
+
         // Reduce attacker prestige gain if the target was hit recently
-        if($attackerPrestigeChange > 0) {
+        if ($attackerPrestigeChange > 0) {
             $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
             if ($recentlyInvadedCount === 1) {
@@ -729,6 +735,11 @@ class InvadeActionService
 
             $landConquered = (int)round($landLost);
             $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
+
+            // Repeat Invasions generate no land
+            if ($this->invasionResult['attacker']['repeatInvasion']) {
+                $landGenerated = 0;
+            }
             $landGained = ($landConquered + $landGenerated);
 
             // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan, formerly Warsong)
@@ -924,19 +935,20 @@ class InvadeActionService
      * Handles research point generation for attacker.
      *
      * Original formula:
-     * (Conquered acres) * max([(Days into the round)/3], 10)
-     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 16.6667 on day 50
-     * - This number is increased by 50% in the Base Ruleset.
-     *
-     * Removing days into round portion of the formula in favor of a static coefficient.
-     * For base ruleset, the range for the coefficent was 15-25. We are using 20 instead.
+     * (Conquered acres) * max([(Days into the round)/2], 15)
+     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 25 on day 50
      *
      * @param Dominion $dominion
      * @param array $units
      */
     protected function handleResearchPoints(Dominion $dominion, array $units): void
     {
-        $researchPointsPerAcre = 17;
+        // Repeat Invasions award no research points
+        if ($this->invasionResult['attacker']['repeatInvasion']) {
+            return;
+        }
+
+        $researchPointsPerAcre = max(15, $dominion->round->daysInRound() / 2);
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {

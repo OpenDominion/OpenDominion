@@ -322,9 +322,13 @@ class ProductionCalculator
 
         // Values
         $lumberPerLumberyard = 50;
+        $lumberPerForestHaven = 20;
 
         // Building: Lumberyard
         $lumber += ($dominion->building_lumberyard * $lumberPerLumberyard);
+
+        // Building: Forest Haven
+        $lumber += ($dominion->building_forest_haven * $lumberPerForestHaven);
 
         return $lumber;
     }

@@ -622,7 +622,7 @@ class WonderActionService
             $slowestTroopsReturnHours
         );
 
-        $this->invasionResult['attacker']['researchPoints'] = $researchPointsGained;
+        $this->attackResult['attacker']['researchPoints'] = $researchPointsGained;
     }
 
     /**

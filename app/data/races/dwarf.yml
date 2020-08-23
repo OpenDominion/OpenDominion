@@ -11,7 +11,7 @@ perks:
   max_population: 7.5
   extra_barren_max_population: 5
   ore_production: 10
-  invest_bonus_ore: 10
+  invest_bonus_ore: 15
 units:
   - name: Soldier
     cost:
@@ -23,7 +23,7 @@ units:
   - name: Miner
     cost:
       platinum: 350
-      ore: 25
+      ore: 20
     power:
       offense: 0
       defense: 3

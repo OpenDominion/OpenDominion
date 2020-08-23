@@ -903,15 +903,17 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $wizardGuildBonus = 2;
-        $wizardGuildBonusMax = 20;
+        if ($dominion->race->name !== 'Dark Elf') {
+            // Values (percentages)
+            $wizardGuildBonus = 2;
+            $wizardGuildBonusMax = 20;
 
-        // Wizard Guilds
-        $multiplier += min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
-            ($wizardGuildBonusMax / 100)
-        );
+            // Wizard Guilds
+            $multiplier += min(
+                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
+                ($wizardGuildBonusMax / 100)
+            );
+        }
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
@@ -966,9 +968,11 @@ class MilitaryCalculator
     public function getBoatsProtected(Dominion $dominion): float
     {
         // Docks
-        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock;
+        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock * min(2.5, 0.1 * $dominion->round->daysInRound());
+
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2);
+
         return $boatsProtected;
     }
 
@@ -996,9 +1000,10 @@ class MilitaryCalculator
      *
      * @param Dominion $dominion
      * @param int $hours
+     * @param Dominion $attacker
      * @return int
      */
-    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24): int
+    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, ?Dominion $attacker): int
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
@@ -1017,6 +1022,12 @@ class MilitaryCalculator
         $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
             return !$event->data['result']['overwhelmed'];
         });
+
+        if ($attacker !== null) {
+            return $invasionEvents->filter(function (GameEvent $event) {
+                return $event->source_id == $attacker->id && $event->data['result']['success'];
+            });
+        }
 
         return $invasionEvents->count();
     }

@@ -11,7 +11,7 @@ class InvasionService
     /**
      * @var int The minimum morale required to initiate an invasion
      */
-    protected const MIN_MORALE = 70;
+    protected const MIN_MORALE = 80;
 
     /** @var MilitaryCalculator */
     protected $militaryCalculator;

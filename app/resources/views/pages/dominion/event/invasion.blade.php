@@ -23,7 +23,7 @@
                         {{ $event->target->name }} (#{{ $event->target->realm->number }})
                     </h3>
                 </div>
-                <div class="box-bod no-padding">
+                <div class="box-body no-padding">
                     <div class="row">
 
                         <div class="col-xs-12 col-sm-4">
@@ -190,6 +190,16 @@
                                         Because you were severely outmatched, you inflicted no casualties.
                                     @else
                                         Because {{ $event->source->name }} (# {{ $event->source->realm->number }}) was severely outmatched, they inflicted no casualties.
+                                    @endif
+                                </p>
+                            @endif
+
+                            @if (isset($event->data['attacker']['repeatInvasion']))
+                                <p class="text-center text-red">
+                                    @if ($event->source->id === $selectedDominion->id)
+                                        Due to repeated invasions, you did not gain prestige, research points, or discovered land.
+                                    @else
+                                        Due to repeated invasions, {{ $event->source->name }} (# {{ $event->source->realm->number }}) did not gain prestige, research points, or discovered land.
                                     @endif
                                 </p>
                             @endif
