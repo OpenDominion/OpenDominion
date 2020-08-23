@@ -547,7 +547,7 @@ class SpellActionService
 
                 // Prestige Loss
                 if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
-                    if ($dominion->prestige > 0 {
+                    if ($dominion->prestige > 0) {
                         $dominion->prestige -= 1;
                     }
                 }
