@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Calculators;
 
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
@@ -32,6 +33,14 @@ class WonderCalculator
      * @var float Minimum power after a wonder is rebuilt
      */
     protected const MIN_SPAWN_POWER = 150000;
+
+    /**
+     * @var float Constraints for RP gain formula
+     */
+    protected const TECH_MAX_REWARD = 4000;
+    protected const TECH_MIN_OFFNESE = 6000;
+    protected const TECH_OPTIMAL_SIZE = 590;
+    protected const TECH_SCALE_FACTOR = 1000;
 
     /**
      * Returns the wonder's power when being rebuilt.
@@ -125,5 +134,29 @@ class WonderCalculator
             min($damageContribution, static::PRESTIGE_CONTRIBUTION_MAX) *
             (static::PRESTIGE_CONTRIBUTION_MULTIPLIER / static::PRESTIGE_CONTRIBUTION_MAX)
         );
+    }
+
+    /**
+    * Calculates research point gain for a dominion
+    *
+    * @param Dominion $dominion
+    * @param float $offense
+    * @param float $defense
+    * @return float
+    */
+    public function getTechGainForDominion(Dominion $dominion, float $offense, float $defense): float
+    {
+        if ($offense < static::TECH_MIN_OFFNESE) {
+            return 0;
+        }
+
+        $landCalculator = app(LandCalculator::class);
+
+        $constant = static::TECH_MAX_REWARD * (static::TECH_SCALE_FACTOR ** 2);
+        $damageModifier = $offense / $defense;
+        $landModifier = abs($landCalculator->getTotalLand($dominion) - static::TECH_OPTIMAL_SIZE);
+        $techGain = $constant * $damageModifier / (($landModifier + static::TECH_SCALE_FACTOR) ** 2);
+
+        return $techGain;
     }
 }

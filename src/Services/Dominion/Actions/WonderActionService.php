@@ -18,6 +18,7 @@ use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\RoundWonderDamage;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\GovernmentService;
+use OpenDominion\Services\Dominion\GuardMembershipService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
@@ -46,6 +47,9 @@ class WonderActionService
 
     /** @var GovernmentService */
     protected $governmentService;
+
+    /** @var GuardMembershipService */
+    protected $guardMembershipService;
 
     /** @var InvasionService */
     protected $invasionService;
@@ -101,6 +105,7 @@ class WonderActionService
      * WonderActionService constructor.
      *
      * @param GovernmentService $governmentService
+     * @param GuardMembershipService $guardMembershipService
      * @param InvasionService $invasionService
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
@@ -114,6 +119,7 @@ class WonderActionService
      */
     public function __construct(
         GovernmentService $governmentService,
+        GuardMembershipService $guardMembershipService,
         InvasionService $invasionService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
@@ -126,6 +132,7 @@ class WonderActionService
         WonderCalculator $wonderCalculator
     ) {
         $this->governmentService = $governmentService;
+        $this->guardMembershipService = $guardMembershipService;
         $this->invasionService = $invasionService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
@@ -181,6 +188,10 @@ class WonderActionService
                 throw new GameException('War must be active to cast spells at this wonder');
             }
 
+            if ($this->guardMembershipService->isGuardMember($dominion)) {
+                throw new GameException('You must leave the Royal Guard to cast spells at this wonder');
+            }
+
             $currentRealm = $wonder->realm;
             $this->attackResult['wonder']['currentRealmId'] = $wonder->realm_id;
             $this->attackResult['wonder']['neutral'] = ($wonder->realm_id == null);
@@ -193,6 +204,8 @@ class WonderActionService
                 // Don't reduce mana by throwing an exception here
                 throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
             }
+
+            $this->checkGuardApplications($dominion);
 
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= min($dominion->wizard_strength, 5);
@@ -337,6 +350,10 @@ class WonderActionService
                 throw new GameException('War must be active to attack this wonder');
             }
 
+            if ($this->guardMembershipService->isGuardMember($dominion)) {
+                throw new GameException('You must leave the Royal Guard to attack this wonder');
+            }
+
             $currentRealm = $wonder->realm;
             $this->attackResult['wonder']['currentRealmId'] = $wonder->realm_id;
             $this->attackResult['wonder']['neutral'] = ($wonder->realm_id == null);
@@ -378,6 +395,8 @@ class WonderActionService
                 }
             }
 
+            $this->checkGuardApplications($dominion);
+
             $damageDealt = round($this->militaryCalculator->getOffensivePower($dominion, null, null, $units));
             $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
             $wonder->damage()->create([
@@ -390,6 +409,7 @@ class WonderActionService
             $this->attackResult['wonder']['power'] = $wonderPower;
 
             $this->handleBoats($dominion, $units);
+            $this->handleResearchPoints($dominion, $units);
             $survivingUnits = $this->handleCasualties($dominion, $units);
             $this->handleReturningUnits($dominion, $survivingUnits);
 
@@ -528,6 +548,18 @@ class WonderActionService
     }
 
     /**
+     * Resets guard application status of $dominion.
+     *
+     * @param Dominion $dominion
+     */
+    public function checkGuardApplications(Dominion $dominion): void
+    {
+        if ($this->guardMembershipService->isRoyalGuardApplicant($dominion)) {
+            $this->guardMembershipService->joinRoyalGuard($dominion);
+        }
+    }
+
+    /**
      * Handles the returning boats.
      *
      * @param Dominion $dominion
@@ -567,6 +599,30 @@ class WonderActionService
                 $hours
             );
         }
+    }
+
+    /**
+     * Handles research point generation for attacker.
+     *
+     * @param Dominion $dominion
+     * @param array $units
+     */
+    protected function handleResearchPoints(Dominion $dominion, array $units): void
+    {
+        $offenseSent = $this->militaryCalculator->getOffensivePower($dominion, null, null, $units);
+        $defenseHome = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
+
+        $researchPointsGained = $this->WonderCalculator->getTechGainForDominion($dominion, $offenseSent, $defenseHome);
+        $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
+
+        $this->queueService->queueResources(
+            'invasion',
+            $dominion,
+            ['resource_tech' => $researchPointsGained],
+            $slowestTroopsReturnHours
+        );
+
+        $this->invasionResult['attacker']['researchPoints'] = $researchPointsGained;
     }
 
     /**

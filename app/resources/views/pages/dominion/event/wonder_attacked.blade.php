@@ -14,7 +14,7 @@
                         {{ $event->target->wonder->name }}
                     </h3>
                 </div>
-                <div class="box-bod no-padding">
+                <div class="box-body no-padding">
                     <div class="row">
 
                         <div class="col-xs-12 col-sm-6">
@@ -81,6 +81,19 @@
                             </table>
                         </div>
 
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {{-- Only show research point gains if we are the attacker --}}
+                            @if ($event->source->id === $selectedDominion->id)
+                                @if (isset($event->data['attacker']['researchPoints']))
+                                    <p class="text-center text-green">
+                                        You gain <b>{{ number_format($event->data['attacker']['researchPoints']) }}</b> research points.
+                                    </p>
+                                @endif
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
