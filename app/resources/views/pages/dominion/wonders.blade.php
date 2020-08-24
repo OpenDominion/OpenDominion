@@ -42,7 +42,7 @@
                                         @if ($wonder->realm)
                                             {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
                                         @else
-                                            {{ number_format($wonder->power) }}
+                                            {{ number_format($wonder->power) }}*
                                         @endif
                                     </td>
                                     <td>

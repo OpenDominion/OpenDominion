@@ -194,7 +194,7 @@
                                 </p>
                             @endif
 
-                            @if (isset($event->data['attacker']['repeatInvasion']))
+                            @if (isset($event->data['attacker']['repeatInvasion']) && $event->data['attacker']['repeatInvasion'])
                                 <p class="text-center text-red">
                                     @if ($event->source->id === $selectedDominion->id)
                                         Due to repeated invasions, you did not gain prestige, research points, or discovered land.

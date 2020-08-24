@@ -1003,7 +1003,7 @@ class MilitaryCalculator
      * @param Dominion $attacker
      * @return int
      */
-    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, ?Dominion $attacker): int
+    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, Dominion $attacker = null): int
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()

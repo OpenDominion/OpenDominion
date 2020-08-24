@@ -272,7 +272,7 @@ class InvadeActionService
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landConquered']);
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landGenerated']);
                 $dominion->stat_attacking_success += 1;
-                $target->total_land_lost += (int)array_sum($this->invasionResult['attacker']['landConquered']);
+                $target->stat_total_land_lost += (int)array_sum($this->invasionResult['attacker']['landConquered']);
                 $target->stat_defending_failure += 1;
             } else {
                 $target->stat_defending_success += 1;
@@ -987,31 +987,35 @@ class InvadeActionService
         // todo: just hobgoblin plunder atm, need a refactor later to take into
         //       account more post-combat unit-perk-related stuff
 
-        $isInvasionSuccessful = $this->invasionResult['result']['success'];
-
-        if (!$isInvasionSuccessful) {
+        if (!$this->invasionResult['result']['success']) {
             return; // nothing to plunder on unsuccessful invasions
         }
 
-        $attackingForceOP = $this->invasionResult['attacker']['op'];
-        $targetDP = $this->invasionResult['defender']['dp'];
+        $unitsSentPerSlot = [];
+        $unitsSentPlunderSlot = null;
 
-        // todo: refactor this hardcoded hacky mess
-        // Check if we sent hobbos out
-        if (($dominion->race->name === 'Goblin') && isset($units[3]) && ($units[3] > 0)) {
-            $hobbos = $units[3];
-            $totalUnitsSent = array_sum($units);
+        // todo: inefficient to do run this code per slot. needs refactoring
+        foreach ($dominion->race->units as $unit) {
+            $slot = $unit->slot;
 
-            $hobbosPercentage = $hobbos / $totalUnitsSent;
+            if (!isset($units[$slot])) {
+                continue;
+            }
+            $unitsSentPerSlot[$slot] = $units[$slot];
 
-            $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
-            $OPNeededToBreakTarget = ($targetDP + 1);
-            $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
+            if ($unit->getPerkValue('plunders_resources_on_attack') !== 0) {
+                $unitsSentPlunderSlot = $slot;
+            }
+        }
 
-            $hobbosToPlunderWith = (int)ceil($unitsNeededToBreakTarget * $hobbosPercentage);
+        // We have a unit with plunder!
+        if ($unitsSentPlunderSlot !== null) {
+            $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
-            $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
-            $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
+            $totalUnitsSent = array_sum($unitsSentPerSlot);
+            $hobbosToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
+            $plunderPlatinum = min($hobbosToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
+            $plunderGems = min($hobbosToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
 
             $target->resource_platinum -= $plunderPlatinum;
             $target->resource_gems -= $plunderGems;
