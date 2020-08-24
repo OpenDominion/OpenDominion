@@ -155,6 +155,7 @@ class MilitaryCalculator
         $spellHowling = 10;
         $spellKillingRage = 10;
         $spellNightfall = 5;
+        $spellWarsong = 10;
 
         // Gryphon Nests
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -217,6 +218,10 @@ class MilitaryCalculator
             if (isset($dominion->calc['nightfall'])) {
                 $multiplier += ($spellNightfall / 100);
             }
+
+            if (isset($dominion->calc['warsong'])) {
+                $multiplier += ($spellWarsong / 100);
+            }
         } else {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
                 'bloodrage' => $spellBloodrage,
@@ -224,6 +229,7 @@ class MilitaryCalculator
                 'howling' => $spellHowling,
                 'killing_rage' => $spellKillingRage,
                 'nightfall' => $spellNightfall,
+                'warsong' => $spellWarsong,
             ]);
         }
 

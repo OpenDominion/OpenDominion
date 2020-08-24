@@ -588,7 +588,7 @@ class NotificationHelper
 
                 return sprintf(
                     'Our wizards have repelled a %s spell attempt by %s (#%s)%s',
-                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $this->spellHelper->getSpellInfo($data['spellKey'])['name'],
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $lastPart
@@ -599,7 +599,7 @@ class NotificationHelper
 
                 return sprintf(
                     'The energy mirror protecting our dominion has reflected a %s spell back at the caster.',
-                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $this->spellHelper->getSpellInfo($data['spellKey'])['name'],
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':

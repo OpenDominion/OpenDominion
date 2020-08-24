@@ -165,7 +165,7 @@ class WonderActionService
                 throw new GameException("Your wizards to not have enough strength to cast Lightning Storm");
             }
     
-            $spellInfo = $this->spellHelper->getSpellInfo('cyclone', $dominion->race);
+            $spellInfo = $this->spellHelper->getSpellInfo('cyclone');
             $manaCost = $this->spellCalculator->getManaCost($dominion, 'cyclone');
     
             if ($dominion->resource_mana < $manaCost) {

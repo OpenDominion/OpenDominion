@@ -742,10 +742,10 @@ class InvadeActionService
             }
             $landGained = ($landConquered + $landGenerated);
 
-            // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan, formerly Warsong)
-            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+            // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan)
+            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'verdant_bloom')) {
                 // todo: needs a more generic solution later
-                if ($this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+                if ($this->spellCalculator->isSpellActive($dominion, 'verdant_bloom')) {
                     $eventName = 'landVerdantBloom';
                     $landRezoneType = 'forest';
                     $landRezonePercentage = 35;

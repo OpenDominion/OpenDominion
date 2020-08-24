@@ -101,7 +101,7 @@ class SpellActionService
             $this->guardLockedDominion($target);
         }
 
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if (!$spellInfo) {
             throw new LogicException("Cannot cast unknown spell '{$spellKey}'");
@@ -230,7 +230,7 @@ class SpellActionService
      */
     protected function castSelfSpell(Dominion $dominion, string $spellKey): array
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         $where = [
             'dominion_id' => $dominion->id,
@@ -284,7 +284,7 @@ class SpellActionService
      */
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
@@ -470,7 +470,7 @@ class SpellActionService
             throw new GameException('You cannot perform black ops for the first seven days of the round');
         }
 
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if ($this->spellHelper->isWarSpell($spellKey)) {
             $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);

@@ -41,7 +41,7 @@ class SpellCalculator
      */
     public function getManaCost(Dominion $dominion, string $spell): int
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spell);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
         // Cost reduction from wizard guilds (3x ratio, max 30%)
@@ -98,7 +98,7 @@ class SpellCalculator
      */
     public function getSpellCooldown(Dominion $dominion, string $spell): int
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spell, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spell);
 
         if (isset($spellInfo['cooldown'])) {
             $spellLastCast = DB::table('dominion_history')

@@ -7,9 +7,9 @@ use OpenDominion\Models\Race;
 
 class SpellHelper
 {
-    public function getSpellInfo(string $spellKey, Race $race): array
+    public function getSpellInfo(string $spellKey): array
     {
-        return $this->getSpells($race)->filter(function ($spell) use ($spellKey) {
+        return $this->getSpells()->filter(function ($spell) use ($spellKey) {
             return ($spell['key'] === $spellKey);
         })->first();
     }
@@ -56,9 +56,10 @@ class SpellHelper
         })->isNotEmpty();
     }
 
-    public function getSpells(Race $race): Collection
+    public function getSpells(Race $race = null): Collection
     {
         return $this->getSelfSpells($race)
+            ->merge($this->getRacialSelfSpells())
             ->merge($this->getOffensiveSpells());
     }
 
@@ -233,10 +234,18 @@ class SpellHelper
             [
                 'name' => 'Verdant Bloom',
                 'description' => '35% of captured land re-zoned into forest',
-                'key' => 'warsong',
+                'key' => 'verdant_bloom',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Sylvan']),
+            ],
+            [
+                'name' => 'Warsong',
+                'description' => '+10% offensive power',
+                'key' => 'warsong',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect([]),
             ],
             [
                 'name' => 'Regeneration',
