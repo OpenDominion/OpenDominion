@@ -486,9 +486,11 @@ class SpellActionService
                 $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
                 // Prestige Loss
+                $prestigeLossString = '';
                 if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
                     if ($dominion->prestige > 0) {
                         $dominion->prestige -= 1;
+                        $prestigeLossString = 'You lost 1 prestige due to mutual war.';
                     }
                 }
 
@@ -502,9 +504,18 @@ class SpellActionService
                     ->sendNotifications($target, 'irregular_dominion');
 
                 if ($unitsKilledString) {
-                    $message = "The enemy wizards have repelled our {$spellInfo['name']} attempt and managed to kill $unitsKilledString.";
+                    $message = sprintf(
+                        'The enemy wizards have repelled our %s attempt and managed to kill %s. %s',
+                        $spellInfo['name'],
+                        $unitsKilledString,
+                        $prestigeLossString
+                    );
                 } else {
-                    $message = "The enemy wizards have repelled our {$spellInfo['name']} attempt.";
+                    $message = sprintf(
+                        'The enemy wizards have repelled our %s attempt. %s',
+                        $spellInfo['name'],
+                        $prestigeLossString
+                    );
                 }
 
                 // Return here, thus completing the spell cast and reducing the caster's mana
@@ -690,8 +701,8 @@ class SpellActionService
 
             // Prestige Gains
             $prestigeGainString = '';
-            if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected) {
-                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id && $totalDamage > 0) {
+            if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected && $totalDamage > 0) {
+                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
                     $dominion->prestige += 2;
                     $dominion->stat_wizard_prestige += 2;
                     $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
