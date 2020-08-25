@@ -5,28 +5,10 @@ obelisk_of_power:
     offense: 5
   power: 250000
   active: false
-temple_of_the_damned:
-  name: Temple of the Damned
-  perks:
-    offense_evil: 10
-  power: 250000
-  active: false
-temple_of_the_blessed:
-  name: Temple of the Blessed
-  perks:
-    offense_good: 10
-  power: 250000
-  active: false
 great_wall:
   name: Great Wall
   perks:
     defense: 10
-  power: 250000
-  active: false
-portals_of_transportation:
-  name: Portals of Transportation
-  perks:
-    invasion_return_time: -3
   power: 250000
   active: false
 great_market:
@@ -120,12 +102,6 @@ spire_of_illusion:
   perks:
     clear_sight_accuracy: 85
   power: 250000
-tomb_of_kings:
-  name: Tomb of Kings
-  perks:
-    platinum_production: 5
-    prestige_vs_monarchs: 100
-  power: 250000
 onyx_mausoleum:
   name: Onyx Mausoleum
   perks:
@@ -147,12 +123,6 @@ golden_throne:
   perks:
     prestige_gains: 50
   power: 250000
-temple_of_equality:
-  name: Temple of Equality
-  perks:
-    temple_percentage: 3
-  power: 250000
-  active: false
 school_of_war:
   name: School of War
   perks:
