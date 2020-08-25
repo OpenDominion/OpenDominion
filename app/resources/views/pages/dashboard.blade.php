@@ -35,9 +35,9 @@
                         <table class="table">
                             <colgroup>
                                 <col>
-                                <col width="200">
-                                <col width="80">
-                                <col width="80">
+                                <col width="25%">
+                                <col width="10%">
+                                <col width="10%">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -114,10 +114,10 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
-                                <col width="40">
+                                <col width="5%">
                                 <col>
-                                <col width="160">
-                                <col width="80">
+                                <col width="20%">
+                                <col width="15%">
                             </colgroup>
                             <thead>
                                 <tr>

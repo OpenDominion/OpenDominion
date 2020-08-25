@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Recently invaded is now calculated using ticks instead of hours
 
+### Fixed
+- Improvement success message now properly displays the contribution to your castle
+- Updated table column widths on a number of pages
+- Most Land Conquered and Explored rankings are now reduced by land lost
+- Rankings will now update each dominion's realm name
+
 ## [0.10.0-8] - 2018-08-11
 ### Added
 - Difficulty ratings added to race selection

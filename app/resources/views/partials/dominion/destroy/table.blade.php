@@ -1,8 +1,8 @@
 <table class="table">
     <colgroup>
         <col>
-        <col width="100">
-        <col width="100">
+        <col width="10%">
+        <col width="10%">
     </colgroup>
 
     @foreach ($landTypesBuildingTypes as $landType => $buildingTypes)

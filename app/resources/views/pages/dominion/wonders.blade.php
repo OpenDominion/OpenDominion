@@ -13,8 +13,8 @@
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
                             <col>
-                            <col width="100">
-                            <col width="100">
+                            <col width="10%">
+                            <col width="10%">
                             <col>
                         </colgroup>
                         <thead>
@@ -127,10 +127,10 @@
                             <table class="table">
                                 <colgroup>
                                     <col>
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="150">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="15%">
                                 </colgroup>
                                 <thead>
                                     <tr>
