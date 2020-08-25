@@ -7,8 +7,6 @@
         $target = $targetDominion;
         $pageHeader .= ' for '.$target->name;
     }
-
-    $resourceData = $infoMapper->mapResources($target);
 @endphp
 
 @section('page-header', $pageHeader)
@@ -296,18 +294,6 @@
             </div>
         </div>
 
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-md-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
-                </div>
-                <div class="box-body table-responsive no-padding">
-                    @include('partials.dominion.info.resources-incoming-table', ['data' => $resourceData])
-                </div>
-            </div>
-        </div>
     </div>
 
 @endsection

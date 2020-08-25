@@ -43,7 +43,6 @@ class AdvisorsController extends AbstractDominionController
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
             'infoMapper' => app(InfoMapper::class),
-            'resourceHelper' => app(ResourceHelper::class),
             'targetDominion' => $target
         ]);
     }
@@ -61,6 +60,7 @@ class AdvisorsController extends AbstractDominionController
             'queueService' => app(QueueService::class),
             'unitHelper' => app(UnitHelper::class),
             'infoMapper' => app(InfoMapper::class),
+            'resourceHelper' => app(ResourceHelper::class),
             'targetDominion' => $target
         ]);
     }

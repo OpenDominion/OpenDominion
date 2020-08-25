@@ -22,7 +22,7 @@
 
                     @php
                         $statusOpData = $infoOp->data;
-                        $statusOpData['range'] = $rangeCalculator->getDominionRange($selectedDominion, $dominion);
+                        $statusOpData['range'] = round($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2);
                         $statusOpData['range_class'] = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion);
                     @endphp
 
