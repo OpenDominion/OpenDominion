@@ -7,6 +7,8 @@
         $target = $targetDominion;
         $pageHeader .= ' for '.$target->name;
     }
+
+    $data = $infoMapper->mapLand($target);
 @endphp
 
 @section('page-header', $pageHeader)
@@ -21,37 +23,7 @@
                     <h3 class="box-title"><i class="ra ra-honeycomb"></i> {{ $pageHeader }}</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    <table class="table">
-                        <colgroup>
-                            <col>
-                            <col width="100">
-                            <col width="100">
-                            <col width="100">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Land Type</th>
-                                <th class="text-center">Number</th>
-                                <th class="text-center">% of total</th>
-                                <th class="text-center">Barren</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($landHelper->getLandTypes() as $landType)
-                                <tr>
-                                    <td>
-                                        {{ ucfirst($landType) }}
-                                        @if ($landType === $target->race->home_land_type)
-                                            <small class="text-muted"><i>(home)</i></small>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">{{ number_format($target->{'land_' . $landType}) }}</td>
-                                    <td class="text-center">{{ number_format((($target->{'land_' . $landType} / $landCalculator->getTotalLand($target)) * 100), 2) }}%</td>
-                                    <td class="text-center">{{ number_format($landCalculator->getTotalBarrenLandByLandType($target, $landType)) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    @include('partials.dominion.info.land-table', ['data' => $data, 'race' => $target->race])
                 </div>
             </div>
         </div>
@@ -62,52 +34,8 @@
                     <h3 class="box-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    <table class="table">
-                        <colgroup>
-                            <col>
-                            @for ($i = 1; $i <= 12; $i++)
-                                <col width="20">
-                            @endfor
-                            <col width="100">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Land Type</th>
-                                @for ($i = 1; $i <= 12; $i++)
-                                    <th class="text-center">{{ $i }}</th>
-                                @endfor
-                                <th class="text-center">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($landHelper->getLandTypes() as $landType)
-                                <tr>
-                                    <td>
-                                        {{ ucfirst($landType) }}
-                                        @if ($landType === $target->race->home_land_type)
-                                            <small class="text-muted"><i>(home)</i></small>
-                                        @endif
-                                    </td>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        @php
-                                            $land = (
-                                                $queueService->getExplorationQueueAmount($target, "land_{$landType}", $i) +
-                                                $queueService->getInvasionQueueAmount($target, "land_{$landType}", $i)
-                                            );
-                                        @endphp
-                                        <td class="text-center">
-                                            @if ($land === 0)
-                                                -
-                                            @else
-                                                {{ number_format($land) }}
-                                            @endif
-                                        </td>
-                                    @endfor
-                                    <td class="text-center">{{ number_format($queueService->getExplorationQueueTotalByResource($target, "land_{$landType}") + $queueService->getInvasionQueueTotalByResource($target, "land_{$landType}")) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    @include('partials.dominion.info.land-incoming-table', ['data' => $data, 'race' => $target->race])
+
                 </div>
             </div>
         </div>

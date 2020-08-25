@@ -17,6 +17,7 @@ use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\RankingsService;
@@ -56,6 +57,7 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.military', [
             'queueService' => app(QueueService::class),
             'unitHelper' => app(UnitHelper::class),
+            'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);
     }
@@ -72,7 +74,10 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.land', [
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
+            'unitHelper' => app(UnitHelper::class),
             'queueService' => app(QueueService::class),
+            'infoMapper' => app(InfoMapper::class),
+
             'targetDominion' => $target
         ]);
     }
@@ -91,6 +96,7 @@ class AdvisorsController extends AbstractDominionController
             'buildingHelper' => app(BuildingHelper::class),
             'landCalculator' => app(LandCalculator::class),
             'queueService' => app(QueueService::class),
+            'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);
     }
@@ -107,6 +113,7 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.magic', [
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
+            'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);
     }
@@ -124,6 +131,7 @@ class AdvisorsController extends AbstractDominionController
             'improvementCalculator' => app(ImprovementCalculator::class),
             'improvementHelper' => app(ImprovementHelper::class),
             'techHelper' => app(TechHelper::class),
+            'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);
     }

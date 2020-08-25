@@ -15,6 +15,7 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -29,6 +30,9 @@ class SpellActionService
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
+
+    /** @var InfoMapper */
+    protected $infoMapper;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -69,6 +73,7 @@ class SpellActionService
     public function __construct()
     {
         $this->improvementCalculator = app(ImprovementCalculator::class);
+        $this->infoMapper = app(InfoMapper::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
@@ -332,77 +337,12 @@ class SpellActionService
 
         switch ($spellKey) {
             case 'clear_sight':
-                $military_draftees = $target->military_draftees;
-                $military_unit1 = $this->militaryCalculator->getTotalUnitsForSlot($target, 1);
-                $military_unit2 = $this->militaryCalculator->getTotalUnitsForSlot($target, 2);
-                $military_unit3 = $this->militaryCalculator->getTotalUnitsForSlot($target, 3);
-                $military_unit4 = $this->militaryCalculator->getTotalUnitsForSlot($target, 4);
-
-                // Wonders
-                // - Spire of Illusion: Clear Sights are 85% accurate
-                $militaryAccuracy = $target->getWonderPerkMultiplier('clear_sight_accuracy');
-                if ($militaryAccuracy) {
-                    $military_draftees = random_int(
-                        round($military_draftees * $militaryAccuracy),
-                        round($military_draftees / $militaryAccuracy)
-                    );
-                    $military_unit1 = random_int(
-                        round($military_unit1 * $militaryAccuracy),
-                        round($military_unit1 / $militaryAccuracy)
-                    );
-                    $military_unit2 = random_int(
-                        round($military_unit2 * $militaryAccuracy),
-                        round($military_unit2 / $militaryAccuracy)
-                    );
-                    $military_unit3 = random_int(
-                        round($military_unit3 * $militaryAccuracy),
-                        round($military_unit3 / $militaryAccuracy)
-                    );
-                    $military_unit4 = random_int(
-                        round($military_unit4 * $militaryAccuracy),
-                        round($military_unit4 / $militaryAccuracy)
-                    );
-                } else {
-                    $militaryAccuracy = 1;
-                }
-
-                $infoOp->data = [
-                    'ruler_name' => $target->ruler_name,
-                    'race_id' => $target->race->id,
-                    'land' => $this->landCalculator->getTotalLand($target),
-                    'peasants' => $target->peasants,
-                    'employment' => $this->populationCalculator->getEmploymentPercentage($target),
-                    'networth' => $this->networthCalculator->getDominionNetworth($target),
-                    'prestige' => $target->prestige,
-
-                    'resource_platinum' => $target->resource_platinum,
-                    'resource_food' => $target->resource_food,
-                    'resource_lumber' => $target->resource_lumber,
-                    'resource_mana' => $target->resource_mana,
-                    'resource_ore' => $target->resource_ore,
-                    'resource_gems' => $target->resource_gems,
-                    'resource_tech' => $target->resource_tech,
-                    'resource_boats' => $target->resource_boats + $this->queueService->getInvasionQueueTotalByResource(
-                            $target,
-                            'resource_boats'
-                        ),
-
-                    'morale' => $target->morale,
-                    'military_draftees' => $military_draftees,
-                    'military_unit1' => $military_unit1,
-                    'military_unit2' => $military_unit2,
-                    'military_unit3' => $military_unit3,
-                    'military_unit4' => $military_unit4,
-
-                    'clear_sight_accuracy' => $militaryAccuracy,
-                    'recently_invaded_count' => $this->militaryCalculator->getRecentlyInvadedCount($target),
-                ];
-
+                $infoOp->data = $this->infoMapper->mapStatus($target);
                 break;
 
             case 'vision':
                 $infoOp->data = [
-                    'techs' => $target->techs->pluck('name', 'key')->all(),
+                    'techs' => $this->infoMapper->mapTechs($target),
                     'heroes' => []
                 ];
                 break;
