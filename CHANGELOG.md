@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Quick Start: Create your dominion from a template. You can customize the final 12 ticks of protection or skip it entirely
 - Non-Player Dominions: Two additional bots will be added to each realm (for a total of 4)
+- War Bonus status is now displayed on the government and realm pages
 
 ### Changed
 - Recently invaded is now calculated using ticks instead of hours

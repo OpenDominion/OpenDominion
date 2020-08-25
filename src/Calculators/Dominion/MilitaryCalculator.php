@@ -1095,18 +1095,19 @@ class MilitaryCalculator
      * Gets minimum DP for a Dominion based on land size.
      *
      * @param Dominion $dominion
+     * @param int $landSize
      * @return float
      */
-    public function getMinimumDefense(?Dominion $dominion): float
+    public function getMinimumDefense(?Dominion $dominion, int $landSize = 0): float
     {
-        if ($dominion === null) {
-            return 0;
+        if ($dominion !== null) {
+            $landSize = $this->landCalculator->getTotalLand($dominion);
         }
 
         // Values
         $minDefenseMultiplier = 5;
         $minDefenseConstant = -150;
 
-        return $minDefenseMultiplier * ($this->landCalculator->getTotalLand($dominion) + $minDefenseConstant);
+        return max(0, $minDefenseMultiplier * ($landSize + $minDefenseConstant));
     }
 }
