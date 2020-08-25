@@ -98,8 +98,8 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::all();
             foreach ($round->realms as $realm) {
-                // Number of NPDs per realm (count = 2)
-                for($cnt=0; $cnt<2; $cnt++) {
+                // Number of NPDs per realm (count = 4)
+                for($cnt=0; $cnt<4; $cnt++) {
                     if ($realm->alignment != 'neutral') {
                         $race = $races->where('alignment', $realm->alignment)->random();
                     } else {
@@ -128,6 +128,9 @@ class TickService
                     }
                 }
             }
+            // Update realm size for NPDs (count = 4)
+            $round->realm_size += 4;
+            $round->save();
         }
 
         Log::debug('Hourly tick finished');
