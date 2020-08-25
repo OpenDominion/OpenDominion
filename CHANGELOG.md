@@ -17,7 +17,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Recently invaded is now calculated using ticks instead of hours
+- Generated land, prestige, and research points will no longer be awarded after the 2nd hit by your dominion on the same target within 8 hours
+- Attacks required a minimum of 80% morale (from 70%)
+- Research Points gained on attack down to 15 OR daysInRound/2, whichever is HIGHER (from 17)
+- Tech cost will now increase if 35% of your total conquered acres is greater than highest land achieved
+- Snare damage reduced to 2% (from 2.5%)
 - The damage of war spells and operations will slowly decrease after 60 hours of war (to a minimum of 65% damage after 96 hours)
+- One-way War: war operations now have a 25% chance to gain 1 prestige
+- Mutual War: war operations yield +2 prestige for success, -1 for failure (from +2 only)
+- Docks: boat protection is now daysInRound*0.1, min 2.5 (from 2.5)
+- Forest Havens: now produce 20 lumber per hour
+- Wizard Guilds: wizard power bonus no longer affects Dark Elves
+- Dark Elf: +10% wizard power
+- Dwarf: Ore investment bonus increased to +15% (from +10%)
+- Dwarf Miner: -5r
+- Gnome: Racial spell changed back to Miner's Sight (from Mechanical Genius)
+- Gnome Juggernaut: Offense reduced to 6, +0.5 vs 75%, +1 vs 85% (from 7)
+- Goblin Hobgoblin: Plunder now steals an hour of platinum/gem production of the target, max 20p/5g per surviving unit (from 2% of stockpiled resources, max 50p/20g)
+- Human Cavalry: -25p
+- Human Knight: +25p
+- Kobold Grunt: +10p, +5r
+- Lizardfolk Chameleon: -25p
+- Lizardfolk Lizardman: +100p
+- Lycanthrope: maximum population reduced to +5% (from +10%)
+- Lycanthrope Werewolf: Offense reduced to 3 (from 4)
+- Nomad Valkyrie: -25p
+- Nomad Blademaster: +25p
+- Orc Bone Breaker: Offense decreased by 1 for every 10% guard tower of the target, max -1 (from max -2), +25p
 
 ### Fixed
 - Improvement success message now properly displays the contribution to your castle
