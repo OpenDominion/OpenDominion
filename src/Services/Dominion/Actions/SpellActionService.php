@@ -338,41 +338,6 @@ class SpellActionService
         switch ($spellKey) {
             case 'clear_sight':
                 $infoOp->data = $this->infoMapper->mapStatus($target);
-                $military_unit1 = $this->militaryCalculator->getTotalUnitsForSlot($target, 1);
-                $military_unit2 = $this->militaryCalculator->getTotalUnitsForSlot($target, 2);
-                $military_unit3 = $this->militaryCalculator->getTotalUnitsForSlot($target, 3);
-                $military_unit4 = $this->militaryCalculator->getTotalUnitsForSlot($target, 4);
-
-                // Wonders
-                // - Spire of Illusion: Clear Sights are 85% accurate
-                $militaryAccuracy = $target->getWonderPerkMultiplier('clear_sight_accuracy');
-                if ($militaryAccuracy) {
-                    $military_draftees = random_int(
-                        round($military_draftees * $militaryAccuracy),
-                        round($military_draftees / $militaryAccuracy)
-                    );
-                    $military_unit1 = random_int(
-                        round($military_unit1 * $militaryAccuracy),
-                        round($military_unit1 / $militaryAccuracy)
-                    );
-                    $military_unit2 = random_int(
-                        round($military_unit2 * $militaryAccuracy),
-                        round($military_unit2 / $militaryAccuracy)
-                    );
-                    $military_unit3 = random_int(
-                        round($military_unit3 * $militaryAccuracy),
-                        round($military_unit3 / $militaryAccuracy)
-                    );
-                    $military_unit4 = random_int(
-                        round($military_unit4 * $militaryAccuracy),
-                        round($military_unit4 / $militaryAccuracy)
-                    );
-                } else {
-                    $militaryAccuracy = 1;
-                }
-                $infoOp->data = [
-                    'clear_sight_accuracy' => $militaryAccuracy,
-
                 break;
 
             case 'vision':

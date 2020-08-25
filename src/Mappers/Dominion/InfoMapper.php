@@ -79,25 +79,63 @@ class InfoMapper
                 ),
 
             'morale' => $dominion->morale,
-            'military_draftees' => $dominion->military_draftees,
-            'military_unit1' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1),
-            'military_unit2' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2),
-            'military_unit3' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3),
-            'military_unit4' => $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4),
+            'military_draftees' => null,
+            'military_unit1' => null,
+            'military_unit2' => null,
+            'military_unit3' => null,
+            'military_unit4' => null,
             'military_spies' => null,
             'military_wizards' => null,
             'military_archmages' => null,
 
             'recently_invaded_count' => null,
+            'clear_sight_accuracy' => null,
         ];
+
+        $militaryAccuracy = 1;
 
         if(!$isOp) {
             $data['military_spies'] = $dominion->military_spies;
             $data['military_wizards'] = $dominion->military_wizards;
             $data['military_archmages'] = $dominion->military_archmages;
         } else {
+            // Wonders
+            // - Spire of Illusion: Clear Sights are 85% accurate
+            $militaryAccuracy = $dominion->getWonderPerkMultiplier('clear_sight_accuracy');
+
             $data['recently_invaded_count'] = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
         }
+
+        $military_draftees = $dominion->military_draftees;
+        $military_unit1 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 1);
+        $military_unit2 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 2);
+        $military_unit3 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 3);
+        $military_unit4 = $this->militaryCalculator->getTotalUnitsForSlot($dominion, 4);
+
+        $data['military_draftees'] = random_int(
+            round($military_draftees * $militaryAccuracy),
+            round($military_draftees / $militaryAccuracy)
+        );
+
+        $data['military_unit1'] = random_int(
+            round($military_unit1 * $militaryAccuracy),
+            round($military_unit1 / $militaryAccuracy)
+        );
+
+        $data['military_unit2'] = random_int(
+            round($military_unit2 * $militaryAccuracy),
+            round($military_unit2 / $militaryAccuracy)
+        );
+
+        $data['military_unit3'] = random_int(
+            round($military_unit3 * $militaryAccuracy),
+            round($military_unit3 / $militaryAccuracy)
+        );
+
+        $data['military_unit4'] = random_int(
+            round($military_unit4 * $militaryAccuracy),
+            round($military_unit4 / $militaryAccuracy)
+        );
 
         return $data;
     }
