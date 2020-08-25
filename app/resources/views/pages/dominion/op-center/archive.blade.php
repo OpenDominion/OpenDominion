@@ -199,7 +199,7 @@
 
                         @if (isset($infoOp->data['clear_sight_accuracy']) && $infoOp->data['clear_sight_accuracy'] != 1)
                             <p class="text-center text-danger" style="margin-bottom: 0.5em;">
-                                Military information is only {{ $infoOp->data['clear_sight_accuracy'] * 100 }}% accurate due to magical interference.
+                                Illusory magic deceives your wizards! Military information is only {{ $infoOp->data['clear_sight_accuracy'] * 100 }}% accurate.
                             </p>
                         @endif
 
