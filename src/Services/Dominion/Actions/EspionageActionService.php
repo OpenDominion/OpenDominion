@@ -731,6 +731,13 @@ class EspionageActionService
         $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
 
+        // War Duration
+        if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
+            $warHours = $this->governmentService->getWarDurationHours($dominion->realm, $target->realm);
+            $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
+            $baseDamage *= (1 - $warReduction);
+        }
+
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
                 $damage = $target->{$attr} * $baseDamage;

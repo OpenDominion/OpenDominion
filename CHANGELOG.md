@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Recently invaded is now calculated using ticks instead of hours
+- The damage of war spells and operations will slowly decrease after 60 hours of war (to a minimum of 65% damage after 96 hours)
 
 ### Fixed
 - Improvement success message now properly displays the contribution to your castle

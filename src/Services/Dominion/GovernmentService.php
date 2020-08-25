@@ -201,4 +201,32 @@ class GovernmentService
 
         return false;
     }
+
+    /**
+     * Returns the number of hours since war was declared
+     *
+     * @param Realm $realm
+     */
+    public function getWarDurationHours(Realm $realm, Realm $target)
+    {
+        $hoursSince = 0;
+
+        if ($realm->war_realm_id == $target->id) {
+            $realmDeclaredAt = Carbon::parse($realm->war_active_at);
+            $realmHoursSince = now()->diffInHours($realmDeclaredAt->subHours(24));
+            $hoursSince = $realmHoursSince;
+        }
+
+        if ($target->war_realm_id == $realm->id) {
+            $targetDeclaredAt = Carbon::parse($target->war_active_at);
+            $targetHoursSince = now()->diffInHours($targetDeclaredAt->subHours(24));
+            $hoursSince = $targetHoursSince;
+        }
+
+        if ($realm->war_realm_id == $target->id && $target->war_realm_id == $realm->id) {
+            $hoursSince = min($realmHoursSince, $targetHoursSince);
+        }
+
+        return $hoursSince;
+    }
 }
