@@ -18,6 +18,7 @@ use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
@@ -27,6 +28,9 @@ use OpenDominion\Traits\DominionGuardsTrait;
 class SpellActionService
 {
     use DominionGuardsTrait;
+
+    /** @var GovernmentService */
+    protected $governmentService;
 
     /** @var ImprovementCalculator */
     protected $improvementCalculator;
@@ -72,6 +76,7 @@ class SpellActionService
      */
     public function __construct()
     {
+        $this->governmentService = app(GovernmentService::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->infoMapper = app(InfoMapper::class);
         $this->landCalculator = app(LandCalculator::class);
@@ -486,9 +491,11 @@ class SpellActionService
                 $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
                 // Prestige Loss
+                $prestigeLossString = '';
                 if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
                     if ($dominion->prestige > 0) {
                         $dominion->prestige -= 1;
+                        $prestigeLossString = 'You lost 1 prestige due to mutual war.';
                     }
                 }
 
@@ -502,9 +509,18 @@ class SpellActionService
                     ->sendNotifications($target, 'irregular_dominion');
 
                 if ($unitsKilledString) {
-                    $message = "The enemy wizards have repelled our {$spellInfo['name']} attempt and managed to kill $unitsKilledString.";
+                    $message = sprintf(
+                        'The enemy wizards have repelled our %s attempt and managed to kill %s. %s',
+                        $spellInfo['name'],
+                        $unitsKilledString,
+                        $prestigeLossString
+                    );
                 } else {
-                    $message = "The enemy wizards have repelled our {$spellInfo['name']} attempt.";
+                    $message = sprintf(
+                        'The enemy wizards have repelled our %s attempt. %s',
+                        $spellInfo['name'],
+                        $prestigeLossString
+                    );
                 }
 
                 // Return here, thus completing the spell cast and reducing the caster's mana
@@ -611,6 +627,13 @@ class SpellActionService
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
 
+            // War Duration
+            if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
+                $warHours = $this->governmentService->getWarDurationHours($dominion->realm, $target->realm);
+                $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
+                $baseDamage *= (1 - $warReduction);
+            }
+
             // Wonders
             $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 
@@ -690,8 +713,8 @@ class SpellActionService
 
             // Prestige Gains
             $prestigeGainString = '';
-            if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected) {
-                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id && $totalDamage > 0) {
+            if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected && $totalDamage > 0) {
+                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
                     $dominion->prestige += 2;
                     $dominion->stat_wizard_prestige += 2;
                     $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';

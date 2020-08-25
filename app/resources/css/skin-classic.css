@@ -564,3 +564,6 @@
 .skin-classic .modal-content {
     background-color: #333;
 }
+.skin-classic blockquote {
+    border-color: #1c191d !important;
+}

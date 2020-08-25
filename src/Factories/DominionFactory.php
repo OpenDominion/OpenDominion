@@ -468,16 +468,16 @@ class DominionFactory
         $startingAttributes = $this->getStartingAttributes();
 
         // Generate random starting build
-        $landSize = (int) random_distribution(500, 100);
-        if ($landSize < 325 || $landSize > 600) {
-            // Clamp land size, those out of range converted to 270 acres
-            $landSize = 270;
-            $startingLand["land_{$race->home_land_type}"] += 20;
+        if (random_chance(2/3)) {
+            $landSize = mt_rand(400, 500);
+            $defense = 0.0036 * ($landSize ** 2.152);
+        } else {
+            $landSize = mt_rand(525, 600);
+            $defense = $landSize * (0.0105 * ($landSize - 0.3));
         }
-        if ($landSize > 270) {
-            $startingBuildings = $this->getNonPlayerBuildings($race, $landSize);
-            $startingLand = $this->getNonPlayerLand($race, $startingBuildings);
-        }
+
+        $startingBuildings = $this->getNonPlayerBuildings($race, $landSize);
+        $startingLand = $this->getNonPlayerLand($race, $startingBuildings);
 
         $dominion = new Dominion([
             'user_id' => null,
@@ -554,26 +554,22 @@ class DominionFactory
             'protection_ticks_remaining' => 0,
         ]);
 
-        if ($landSize > 270) {
-            // Calculate Defense
-            $accuracy = 1 - (mt_rand(0, 15) / 100);
-            $defense = $landSize * ((0.008 * $landSize) + 0.9);
-            $defense *= $accuracy;
-            $specRatio = 1;
-            if (random_chance(0.85)) {
-                $specRatio = mt_rand(50, 75) / 100;
-            }
-
-            $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
-            $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
-            $specPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[1], 'defense');
-            $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
-
-            $dominion->military_unit2 = (int) $defense / $defenseMod / $specPower * $specRatio;
-            $dominion->military_unit3 = (int) $defense / $defenseMod / $elitePower * (1 - $specRatio);
-        } else {
-            $dominion->military_unit2 = 150;
+        // Calculate Defense
+        $accuracy = 1 - (mt_rand(0, 15) / 100);
+        $defense = $landSize * ((0.008 * $landSize) + 0.9);
+        $defense *= $accuracy;
+        $specRatio = 1;
+        if (random_chance(0.85)) {
+            $specRatio = mt_rand(50, 75) / 100;
         }
+
+        $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
+        $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $specPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[1], 'defense');
+        $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
+
+        $dominion->military_unit2 = (int) $defense / $defenseMod / $specPower * $specRatio;
+        $dominion->military_unit3 = (int) $defense / $defenseMod / $elitePower * (1 - $specRatio);
 
         try {
             $dominion->save();

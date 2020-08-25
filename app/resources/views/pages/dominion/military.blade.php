@@ -16,12 +16,12 @@
                         <table class="table">
                             <colgroup>
                                 <col>
-                                <col width="100">
-                                <col width="100">
-                                <col width="100">
-                                <col width="150">
-                                <col width="150">
-                                <col width="100">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="20%">
+                                <col width="15%">
+                                <col width="10%">
                             </colgroup>
                             <thead>
                                 <tr>

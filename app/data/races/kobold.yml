@@ -19,8 +19,8 @@ perks:
 units:
   - name: Grunt
     cost:
-      platinum: 235
-      ore: 15
+      platinum: 245
+      ore: 20
     power:
       offense: 2
       defense: 0

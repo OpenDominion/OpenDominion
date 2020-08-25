@@ -13,8 +13,8 @@
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
                             <col>
-                            <col width="100">
-                            <col width="100">
+                            <col width="10%">
+                            <col width="10%">
                             <col>
                         </colgroup>
                         <thead>
@@ -127,10 +127,10 @@
                             <table class="table">
                                 <colgroup>
                                     <col>
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="150">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="15%">
                                 </colgroup>
                                 <thead>
                                     <tr>
@@ -324,7 +324,7 @@
                 </div>
                 <div class="box-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
-                    <p>All wonders will spawn with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
+                    <p>The first wave of wonders will appear on Day 6 with a starting power of 150,000. An additional wonder will appear every 48 hours with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
                     <p>Each dominion that participates in destroying a wonder that is controlled by another realm is awarded prestige.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>

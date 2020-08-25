@@ -178,22 +178,43 @@
                                     <th>Realm</th>
                                     <th>Declared By</th>
                                     <th>Declared at</th>
-                                    <th>Bonus active at</th>
+                                    <th>Active at</th>
+                                    <th>War Bonus</th>
                                 </tr>
                                 @if ($governmentService->hasDeclaredWar($realm))
+                                    @php
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($realm);
+                                    @endphp
                                     <tr>
                                         <td><a href="{{ route('dominion.realm', [$realm->warRealm->number]) }}">{{ $realm->warRealm->name }} (#{{ $realm->warRealm->number }})</a></td>
                                         <td>#{{ $realm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
                                         <td>{{ $realm->war_active_at }}</td>
+                                        <td>
+                                            @if ($activeHours == 0)
+                                                <span class="label label-success">Active</span>
+                                            @else
+                                                <span class="label label-warning">Pending</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endif
                                 @foreach ($realm->warRealms as $warRealm)
+                                    @php
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($warRealm);
+                                    @endphp
                                     <tr>
                                         <td><a href="{{ route('dominion.realm', [$warRealm->number]) }}">{{ $warRealm->name }} (#{{ $warRealm->number }})</a></td>
                                         <td>#{{ $warRealm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($warRealm) }}</td>
                                         <td>{{ $warRealm->war_active_at }}</td>
+                                        <td>
+                                            @if ($activeHours == 0)
+                                                <span class="label label-success">Active</span>
+                                            @else
+                                                <span class="label label-warning">Pending</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </table>

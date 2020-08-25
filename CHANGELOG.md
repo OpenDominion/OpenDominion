@@ -4,10 +4,52 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Added
+- Wonders of the World: Capture wonders to gain bonuses for your realm
+  - The first wave of wonders will spawn on Day 6
+  - An additional wonder will spawn every 48 hours after the first wave
+  - Deal damage using your military or wizards
+  - After a wonder is rebuilt by a realm, its current power is visible to all players; otherwise you will only see the damage your realm has dealt
 - Quick Start: Create your dominion from a template. You can customize the final 12 ticks of protection or skip it entirely
+- Non-Player Dominions: Two additional bots will be added to each realm (for a total of 4)
+- New Spell: Cyclone - deals damage to wonders
+- New Rankings/Titles: The Demolisher (wonder attack damage), The Aeromancer (wonder spell damage), The Opportunist (wonders destroyed)
+- War Bonus status is now displayed on the government and realm pages
 
 ### Changed
 - Recently invaded is now calculated using ticks instead of hours
+- Generated land, prestige, and research points will no longer be awarded after the 2nd hit by your dominion on the same target within 8 hours
+- Attacks required a minimum of 80% morale (from 70%)
+- Research Points gained on attack down to 15 OR daysInRound/2, whichever is HIGHER (from 17)
+- Tech cost will now increase if 35% of your total conquered acres is greater than highest land achieved
+- Snare damage reduced to 2% (from 2.5%)
+- The damage of war spells and operations will slowly decrease after 60 hours of war (to a minimum of 65% damage after 96 hours)
+- One-way War: war operations now have a 25% chance to gain 1 prestige
+- Mutual War: war operations yield +2 prestige for success, -1 for failure (from +2 only)
+- Docks: boat protection is now daysInRound*0.1, min 2.5 (from 2.5)
+- Forest Havens: now produce 20 lumber per hour
+- Wizard Guilds: wizard power bonus no longer affects Dark Elves
+- Dark Elf: +10% wizard power
+- Dwarf: Ore investment bonus increased to +15% (from +10%)
+- Dwarf Miner: -5r
+- Gnome: Racial spell changed back to Miner's Sight (from Mechanical Genius)
+- Gnome Juggernaut: Offense reduced to 6, +0.5 vs 75%, +1 vs 85% (from 7)
+- Goblin Hobgoblin: Plunder now steals an hour of platinum/gem production of the target, max 20p/5g per surviving unit (from 2% of stockpiled resources, max 50p/20g)
+- Human Cavalry: -25p
+- Human Knight: +25p
+- Kobold Grunt: +10p, +5r
+- Lizardfolk Chameleon: -25p
+- Lizardfolk Lizardman: +100p
+- Lycanthrope: maximum population reduced to +5% (from +10%)
+- Lycanthrope Werewolf: Offense reduced to 3 (from 4)
+- Nomad Valkyrie: -25p
+- Nomad Blademaster: +25p
+- Orc Bone Breaker: Offense decreased by 1 for every 10% guard tower of the target, max -1 (from max -2), +25p
+
+### Fixed
+- Improvement success message now properly displays the contribution to your castle
+- Updated table column widths on a number of pages
+- Most Land Conquered and Explored rankings are now reduced by land lost
+- Rankings will now update each dominion's realm name
 
 ## [0.10.0-8] - 2018-08-11
 ### Added
