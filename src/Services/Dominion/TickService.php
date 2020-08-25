@@ -20,6 +20,7 @@ use OpenDominion\Models\Dominion\Tick;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\NotificationService;
+use OpenDominion\Services\WonderService;
 use Throwable;
 
 class TickService
@@ -51,8 +52,14 @@ class TickService
     /** @var QueueService */
     protected $queueService;
 
+    /** @var RankingsHelper */
+    protected $rankingsHelper;
+
     /** @var SpellCalculator */
     protected $spellCalculator;
+
+    /** @var WonderService */
+    protected $wonderService;
 
     /**
      * TickService constructor.
@@ -70,6 +77,7 @@ class TickService
         $this->queueService = app(QueueService::class);
         $this->rankingsHelper = app(RankingsHelper::class);
         $this->spellCalculator = app(SpellCalculator::class);
+        $this->wonderService = app(WonderService::class);
     }
 
     /**
@@ -303,39 +311,48 @@ class TickService
      */
     public function tickDaily()
     {
-        DB::transaction(function () {
-            foreach (Round::with('dominions')->active()->get() as $round) {
-                // Only runs once daily
-                if ($round->start_date->hour != now()->hour) {
-                    continue;
-                }
-
-                // Reset Daily Bonuses
-                // toBase required to prevent ambiguous updated_at column in query
-                $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
-                    'daily_platinum' => false,
-                    'daily_land' => false,
-                ], [
-                    'event' => 'tick',
-                ]);
-
-                // Move Inactive Dominions
-                // toBase required to prevent ambiguous updated_at column in query
-                $graveyardRealm = $round->realms()->where('number', 0)->first();
-                if ($graveyardRealm !== null) {
-                    $inactiveDominions = $round->dominions()
-                        ->join('users', 'dominions.user_id', '=', 'users.id')
-                        ->where('realms.number', '>', 0)
-                        ->where('dominions.protection_ticks_remaining', '>', 0)
-                        ->where('dominions.created_at', '<', now()->subDays(3))
-                        ->where('users.last_online', '<', now()->subDays(3))
-                        ->toBase()->update([
-                            'realm_id' => $graveyardRealm->id,
-                            'monarchy_vote_for_dominion_id' => null
-                        ]);
-                }
+        foreach (Round::with('dominions')->active()->get() as $round) {
+            // Only runs once daily
+            if ($round->start_date->hour != now()->hour) {
+                continue;
             }
-        });
+
+            // Reset Daily Bonuses
+            // toBase required to prevent ambiguous updated_at column in query
+            $round->activeDominions()->where('protection_ticks_remaining', 0)->toBase()->update([
+                'daily_platinum' => false,
+                'daily_land' => false,
+            ], [
+                'event' => 'tick',
+            ]);
+
+            // Move Inactive Dominions
+            // toBase required to prevent ambiguous updated_at column in query
+            $graveyardRealm = $round->realms()->where('number', 0)->first();
+            if ($graveyardRealm !== null) {
+                $inactiveDominions = $round->dominions()
+                    ->join('users', 'dominions.user_id', '=', 'users.id')
+                    ->where('realms.number', '>', 0)
+                    ->where('dominions.protection_ticks_remaining', '>', 0)
+                    ->where('dominions.created_at', '<', now()->subDays(3))
+                    ->where('users.last_online', '<', now()->subDays(3))
+                    ->toBase()->update([
+                        'realm_id' => $graveyardRealm->id,
+                        'monarchy_vote_for_dominion_id' => null
+                    ]);
+            }
+
+            // Spawn Wonders
+            $day = $round->daysInRound();
+            if ($day == 6) {
+                $startingWonders = $this->wonderService->getStartingWonders();
+                foreach ($startingWonders as $wonder) {
+                    $this->wonderService->createWonder($round, $wonder);
+                }
+            } else if ($day > 6 && $day % 2 == 0) {
+                $this->wonderService->createWonder($round, $wonder);
+            }
+        }
     }
 
     protected function cleanupActiveSpells(Dominion $dominion)

@@ -4,8 +4,15 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Added
+- Wonders of the World: Capture wonders to gain bonuses for your realm
+  - The first wave of wonders will spawn on Day 6
+  - An additional wonder will spawn every 48 hours after the first wave
+  - Deal damage using your military or wizards
+  - After a wonder is rebuilt by a realm, its current power is visible to all players; otherwise you will only see the damage your realm has dealt
 - Quick Start: Create your dominion from a template. You can customize the final 12 ticks of protection or skip it entirely
 - Non-Player Dominions: Two additional bots will be added to each realm (for a total of 4)
+- New Spell: Cyclone - deals damage to wonders
+- New Rankings/Titles: The Demolisher (wonder attack damage), The Aeromancer (wonder spell damage), The Opportunist (wonders destroyed)
 - War Bonus status is now displayed on the government and realm pages
 
 ### Changed

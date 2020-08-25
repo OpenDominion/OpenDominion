@@ -41,7 +41,7 @@ halls_of_knowledge:
   name: Halls of Knowledge
   perks:
     tech_production: 20
-  power: 250000
+  power: 150000
 great_oracle:
   name: Great Oracle
   perks:
@@ -68,7 +68,7 @@ high_clerics_tower:
   name: High Cleric's Tower
   perks:
     kills_immortal: 1
-  power: 250000
+  power: 150000
 ivory_tower:
   name: Ivory Tower
   perks:
