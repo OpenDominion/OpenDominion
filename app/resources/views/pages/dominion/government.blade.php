@@ -158,22 +158,64 @@
                                     <th>Realm</th>
                                     <th>Declared By</th>
                                     <th>Declared at</th>
-                                    <th>Bonus active at</th>
+                                    <th>Active at</th>
+                                    <th>War Bonus</th>
+                                    <th>&nbsp;</th>
                                 </tr>
                                 @if ($governmentService->hasDeclaredWar($selectedDominion->realm))
+                                    @php
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($selectedDominion->realm);
+                                        $cancelHours = $governmentService->getHoursBeforeCancelWar($selectedDominion->realm);
+                                    @endphp
                                     <tr>
                                         <td>{{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})</td>
                                         <td>#{{ $selectedDominion->realm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($selectedDominion->realm) }}</td>
                                         <td>{{ $selectedDominion->realm->war_active_at }}</td>
+                                        <td>
+                                            @if ($activeHours == 0)
+                                                <span class="label label-success">Active</span>
+                                            @else
+                                                <span class="label label-warning">Pending</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($activeHours == 0)
+                                                @if ($cancelHours !== 0)
+                                                    <span class="small text-muted">Cancel in {{ $cancelHours }} ticks</span>
+                                                @endif
+                                            @else
+                                                <span class="small text-muted">Active in {{ $activeHours }} ticks</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endif
                                 @foreach ($selectedDominion->realm->warRealms as $realm)
+                                    @php
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($realm);
+                                        $cancelHours = $governmentService->getHoursBeforeCancelWar($realm);
+                                    @endphp
                                     <tr>
                                         <td>{{ $realm->name }} (#{{ $realm->number }})</td>
                                         <td>#{{ $realm->number }}</td>
                                         <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
                                         <td>{{ $realm->war_active_at }}</td>
+                                        <td>
+                                            @if ($activeHours == 0)
+                                                <span class="label label-success">Active</span>
+                                            @else
+                                                <span class="label label-warning">Pending</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($activeHours == 0)
+                                                @if ($cancelHours !== 0)
+                                                    <span class="small text-muted">Cancel in {{ $cancelHours }} ticks</span>
+                                                @endif
+                                            @else
+                                                <span class="small text-muted">Active in {{ $activeHours }} ticks</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </table>
@@ -268,12 +310,12 @@
                                 <i class="ra ra-heavy-shield" title="Royal Guard"></i>
                                 The Emperor's Royal Guard
                             </h4>
-                            <ul class="text-left" style="padding: 0 50px;">
-                                <li>Cannot interact with Dominions less than 60% or greater than 166% of your land size.</li>
+                            <ul class="text-left" style="padding: 0 30px;">
+                                <li>Cannot interact with Wonders or Dominions less than 60% or greater than 166% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2%.</li>
                             </ul>
                             @if ($isRoyalGuardApplicant || $isGuardMember)
-                                <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px;">
+                                <form action="{{ route('dominion.government.royal-guard.leave') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-danger btn-sm-lg" {{ $selectedDominion->isLocked() || $isEliteGuardApplicant || $isEliteGuardMember || $hoursBeforeLeaveRoyalGuard ? 'disabled' : null }}>
                                         @if ($isGuardMember)
@@ -284,7 +326,7 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('dominion.government.royal-guard.join') }}" method="post" role="form" style="padding-bottom: 10px;">
+                                <form action="{{ route('dominion.government.royal-guard.join') }}" method="post" role="form" style="padding-bottom: 10px; margin-top: 20px;">
                                     @csrf
                                     <button type="submit" name="land" class="btn btn-primary btn-sm-lg" {{ $selectedDominion->isLocked() || !$canJoinGuards ? 'disabled' : null }}>
                                         Request to Join Royal Guard
@@ -297,8 +339,8 @@
                                 <i class="ra ra-heavy-shield" title="Elite Guard"></i>
                                 The Emperor's Elite Guard
                             </h4>
-                            <ul class="text-left" style="padding: 0 50px;">
-                                <li>Cannot interact with Dominions less than 75% or greater than 133% of your land size.</li>
+                            <ul class="text-left" style="padding: 0 30px;">
+                                <li>Cannot interact with Wonders or Dominions less than 75% or greater than 133% of your land size.</li>
                                 <li>Hourly platinum production reduced by 2% (from Royal Guard).</li>
                                 <li>Exploration platinum cost increased by 25%.</li>
                             </ul>
