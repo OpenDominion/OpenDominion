@@ -35,8 +35,8 @@
 
 // Allow inline select elements.
 .form-control.form-inline {
-  width:auto;
-  display:inline-block;
+  width: auto;
+  display: inline-block;
 }
 
 .form-control {
@@ -66,4 +66,11 @@
 
 .navbar-nav > .notifications-menu > .dropdown-menu {
   width: 350px;
+}
+
+// Markdown
+blockquote {
+  font-size: 12px;
+  margin: 0 0 15px;
+  padding: 5px 20px;
 }
