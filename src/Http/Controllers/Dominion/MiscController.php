@@ -71,6 +71,35 @@ class MiscController extends AbstractDominionController
         return redirect()->back();
     }
 
+    public function getRestartDominion(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        $dominionFactory = app(DominionFactory::class);
+        $protectionService = app(ProtectionService::class);
+
+        try {
+            if (!$protectionService->isUnderProtection($dominion)) {
+                throw new GameException('You can only restart your dominion during protection.');
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        if ($dominion->realm->alignment == 'neutral') {
+            $races = Race::all()->sortBy('name');
+        } else {
+            $races = Race::where('alignment', $dominion->realm->alignment)->get()->sortBy('name');
+        }
+
+        return view('pages.dominion.restart', [
+            'races' => $races,
+            'quickstarts' => $dominionFactory->getQuickStartOptions()
+        ]);
+    }
+
     public function postRestartDominion(RestartActionRequest $request)
     {
         $dominion = $this->getSelectedDominion();
@@ -103,9 +132,16 @@ class MiscController extends AbstractDominionController
 
         // Additional Race validation
         $race = Race::findOrFail($request->get('race'));
+        $start_option = $request->get('start_option');
+        $customize = $request->get('customize') == 'on';
+
         try {
             if (!$race->playable) {
                 throw new GameException('Invalid race selection');
+            }
+
+            if ($start_option !== 'sim' && stripos($start_option, str_replace(' ', '', $race->name)) === false) {
+                throw new GameException('Invalid start option');
             }
 
             if (!$protectionService->isUnderProtection($dominion)) {
@@ -134,12 +170,12 @@ class MiscController extends AbstractDominionController
         }
 
         try {
-            $dominionFactory->restart($dominion, $race, $request->get('dominion_name'), $request->get('ruler_name'));
+            $dominionFactory->restart($dominion, $race, $request->get('dominion_name'), $request->get('ruler_name'), $start_option, $customize);
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->withErrors(['There was a problem restarting your account.']);
         }
 
-        return redirect()->back();
+        return redirect()->route('dominion.status');
     }
 
     public function getTickDominion(Request $request) {

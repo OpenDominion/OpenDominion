@@ -8,6 +8,7 @@ explorer_difficulty: 1
 converter_difficulty: 3
 home_land_type: cavern
 perks:
+  wizard_strength: 10
   mana_production: 5
   gem_production: 5
 units:

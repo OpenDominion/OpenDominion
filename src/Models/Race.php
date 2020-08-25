@@ -9,6 +9,7 @@ namespace OpenDominion\Models;
  * @property string $name
  * @property string $alignment
  * @property string $home_land_type
+ * @property bool $playable
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions

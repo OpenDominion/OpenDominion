@@ -76,6 +76,11 @@ class Round extends AbstractModel
         return $this->hasMany(Realm::class);
     }
 
+    public function wonders()
+    {
+        return $this->hasMany(RoundWonder::class);
+    }
+
     public function forumAnnouncements()
     {
         return $this->hasMany(Forum\Announcement::class);
@@ -222,7 +227,7 @@ class Round extends AbstractModel
      */
     public function daysUntilStart()
     {
-        return $this->start_date->diffInDays(today());
+        return $this->start_date->diffInDays(now());
     }
 
     /**
@@ -232,7 +237,17 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return $this->end_date->diffInDays(today());
+        return $this->end_date->diffInDays(now());
+    }
+
+    /**
+     * Returns the amount in days since the round started.
+     *
+     * @return int
+     */
+    public function daysInRound()
+    {
+        return $this->start_date->subDays(1)->diffInDays(now());
     }
 
     /**

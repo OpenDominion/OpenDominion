@@ -11,7 +11,7 @@ class InvadeActionRequest extends AbstractDominionRequest
      */
     public function rules()
     {
-        $rules = ['target_dominion' => 'required|integer'];
+        $rules = ['target_dominion' => 'required|integer|exists:dominions,id'];
 
         for ($i = 1; $i <= 4; $i++) {
             $rules['unit.' . $i] = 'integer|nullable|min:0';

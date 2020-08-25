@@ -89,6 +89,9 @@ class RezoningCalculator
         // Techs
         $multiplier *= (1 + $dominion->getTechPerkMultiplier('rezone_cost'));
 
+        // Wonders
+        $multiplier *= (1 + $dominion->getWonderPerkMultiplier('rezone_cost'));
+
         // Racial Spell
         $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
             $dominion,

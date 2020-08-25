@@ -106,7 +106,7 @@ class SpellActionService
             $this->guardLockedDominion($target);
         }
 
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if (!$spellInfo) {
             throw new LogicException("Cannot cast unknown spell '{$spellKey}'");
@@ -235,7 +235,7 @@ class SpellActionService
      */
     protected function castSelfSpell(Dominion $dominion, string $spellKey): array
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         $where = [
             'dominion_id' => $dominion->id,
@@ -289,7 +289,7 @@ class SpellActionService
      */
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
@@ -303,6 +303,9 @@ class SpellActionService
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
             $successRate = $this->opsHelper->infoOperationSuccessChance($selfWpa, $targetWpa);
+
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
             if (!random_chance($successRate)) {
                 // Inform target that they repelled a hostile spell
@@ -400,14 +403,14 @@ class SpellActionService
     protected function castHostileSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
         if ($dominion->round->hasOffensiveActionsDisabled()) {
-            throw new GameException('Black ops have been disabled for the remainder of the round.');
+            throw new GameException('Black ops have been disabled for the remainder of the round');
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
             throw new GameException('You cannot perform black ops for the first seven days of the round');
         }
 
-        $spellInfo = $this->spellHelper->getSpellInfo($spellKey, $dominion->race);
+        $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if ($this->spellHelper->isWarSpell($spellKey)) {
             $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);
@@ -419,7 +422,7 @@ class SpellActionService
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
-        // You need at least some positive WPA to cast info ops
+        // You need at least some positive WPA to cast black ops
         if ($selfWpa === 0.0) {
             // Don't reduce mana by throwing an exception here
             throw new GameException("Your wizard force is too weak to cast {$spellInfo['name']}. Please train more wizards.");
@@ -428,6 +431,9 @@ class SpellActionService
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
             $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, $targetWpa);
+
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
             if (!random_chance($successRate)) {
                 $wizardsKilledBasePercentage = 1;
@@ -469,6 +475,7 @@ class SpellActionService
                 }
 
                 $target->stat_wizards_executed += array_sum($unitsKilled);
+                $dominion->stat_wizards_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -477,6 +484,13 @@ class SpellActionService
                     $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
                 }
                 $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
+                // Prestige Loss
+                if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
+                    if ($dominion->prestige > 0) {
+                        $dominion->prestige -= 1;
+                    }
+                }
 
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
@@ -597,6 +611,9 @@ class SpellActionService
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
 
+            // Wonders
+            $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
+
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
                     $damage = $target->{$attr} * $baseDamage;
@@ -673,10 +690,16 @@ class SpellActionService
 
             // Prestige Gains
             $prestigeGainString = '';
-            if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) && $totalDamage > 0) {
-                $dominion->prestige += 2;
-                $dominion->stat_wizard_prestige += 2;
-                $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
+            if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected) {
+                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id && $totalDamage > 0) {
+                    $dominion->prestige += 2;
+                    $dominion->stat_wizard_prestige += 2;
+                    $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
+                } elseif (random_chance(0.25)) {
+                    $dominion->prestige += 1;
+                    $dominion->stat_wizard_prestige += 1;
+                    $prestigeGainString = 'You were awarded 1 prestige due to war.';
+                }
             }
 
             // Surreal Perception

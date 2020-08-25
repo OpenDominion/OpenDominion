@@ -46,20 +46,24 @@ class ImproveActionService
             // Racial bonus multiplier
             $multiplier = (1 + $dominion->race->getPerkMultiplier('invest_bonus'));
 
+            // Wonder
+            $multiplier += $dominion->getWonderPerkMultiplier('invest_bonus');
+
             // Racial bonus ore multiplier
             if ($resource == 'ore') {
                 $multiplier += $dominion->race->getPerkMultiplier('invest_bonus_ore');
             }
 
-            $points = (($amount * $worth[$resource]) * $multiplier);
+            $points = floor($amount * $worth[$resource] * $multiplier);
             $dominion->{"improvement_{$improvementType}"} += $points;
+            $result[$improvementType] = $points;
         }
 
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
 
         return [
-            'message' => $this->getReturnMessageString($resource, $data, $totalResourcesToInvest),
+            'message' => $this->getReturnMessageString($resource, $result, $totalResourcesToInvest),
             'data' => [
                 'totalResourcesInvested' => $totalResourcesToInvest,
                 'resourceInvested' => $resource,
@@ -77,17 +81,14 @@ class ImproveActionService
      */
     protected function getReturnMessageString(string $resource, array $data, int $totalResourcesToInvest): string
     {
-        $worth = $this->getImprovementWorth();
-
         $investmentStringParts = [];
 
-        foreach ($data as $improvementType => $amount) {
-            if ($amount === 0) {
+        foreach ($data as $improvementType => $worth) {
+            if ($worth === 0) {
                 continue;
             }
 
-            $points = ($amount * $worth[$resource]);
-            $investmentStringParts[] = (number_format($points) . ' ' . $improvementType);
+            $investmentStringParts[] = (number_format($worth) . ' ' . $improvementType);
         }
 
         $investmentString = generate_sentence_from_array($investmentStringParts);

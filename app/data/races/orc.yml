@@ -44,4 +44,4 @@ units:
       offense: 7
       defense: 2
     perks:
-      offense_vs_building: guard_tower,10,-2 # building type, ratio%, max
+      offense_vs_building: guard_tower,10,-1 # building type, ratio%, max

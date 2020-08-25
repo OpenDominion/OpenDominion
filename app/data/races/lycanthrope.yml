@@ -9,7 +9,7 @@ converter_difficulty: 3
 overall_difficulty: 3
 home_land_type: forest
 perks:
-  max_population: 10
+  max_population: 5
   defense: 5
 units:
   - name: Scavenger
@@ -32,7 +32,7 @@ units:
       platinum: 850
       ore: 55
     power:
-      offense: 4
+      offense: 3
       defense: 4
     perks:
       fewer_casualties_offense: 25

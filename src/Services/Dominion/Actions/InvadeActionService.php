@@ -15,6 +15,7 @@ use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Unit;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\InvasionService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
@@ -45,11 +46,6 @@ class InvadeActionService
     protected const CASUALTIES_OFFENSIVE_BASE_PERCENTAGE = 8.5;
 
     /**
-     * @var int The minimum morale required to initiate an invasion
-     */
-    protected const MIN_MORALE = 70;
-
-    /**
      * @var float Failing an invasion by this percentage (or more) results in 'being overwhelmed'
      */
     protected const OVERWHELMED_PERCENTAGE = 15.0;
@@ -77,6 +73,9 @@ class InvadeActionService
 
     /** @var GovernmentService */
     protected $governmentService;
+
+    /** @var InvasionService */
+    protected $invasionService;
 
     /** @var LandCalculator */
     protected $landCalculator;
@@ -107,6 +106,7 @@ class InvadeActionService
         'result' => [],
         'attacker' => [
             'unitsLost' => [],
+            'unitsSent' => [],
         ],
         'defender' => [
             'unitsLost' => [],
@@ -130,6 +130,7 @@ class InvadeActionService
      * @param BuildingCalculator $buildingCalculator
      * @param CasualtiesCalculator $casualtiesCalculator
      * @param GovernmentService $governmentService
+     * @param InvasionService $invasionService
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
@@ -142,6 +143,7 @@ class InvadeActionService
         BuildingCalculator $buildingCalculator,
         CasualtiesCalculator $casualtiesCalculator,
         GovernmentService $governmentService,
+        InvasionService $invasionService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
@@ -153,6 +155,7 @@ class InvadeActionService
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->governmentService = $governmentService;
+        $this->invasionService = $invasionService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
@@ -178,7 +181,7 @@ class InvadeActionService
 
         DB::transaction(function () use ($dominion, $target, $units) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {
-                throw new GameException('Invasions have been disabled for the remainder of the round.');
+                throw new GameException('Invasions have been disabled for the remainder of the round');
             }
 
             if ($this->protectionService->isUnderProtection($dominion)) {
@@ -205,37 +208,37 @@ class InvadeActionService
             $units = array_map('intval', array_filter($units));
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
 
-            if (!$this->hasAnyOP($dominion, $units)) {
+            if (!$this->invasionService->hasAnyOP($dominion, $units)) {
                 throw new GameException('You need to send at least some units');
             }
 
-            if (!$this->allUnitsHaveOP($dominion, $units)) {
+            if (!$this->invasionService->allUnitsHaveOP($dominion, $units)) {
                 throw new GameException('You cannot send units that have no OP');
             }
 
-            if (!$this->hasEnoughUnitsAtHome($dominion, $units)) {
+            if (!$this->invasionService->hasEnoughUnitsAtHome($dominion, $units)) {
                 throw new GameException('You don\'t have enough units at home to send this many units');
             }
 
-            if (!$this->hasEnoughBoats($dominion, $units)) {
+            if (!$this->invasionService->hasEnoughBoats($dominion, $units)) {
                 throw new GameException('You do not have enough boats to send this many units');
             }
 
-            if ($dominion->morale < static::MIN_MORALE) {
+            if (!$this->invasionService->hasEnoughMorale($dominion)) {
                 throw new GameException('You do not have enough morale to invade others');
             }
 
-            if (!$this->passes33PercentRule($dominion, $target, $units)) {
+            if (!$this->invasionService->passes33PercentRule($dominion, $target, $units)) {
                 throw new GameException('You need to leave more DP units at home (33% rule)');
             }
 
-            if (!$this->passes54RatioRule($dominion, $target, $landRatio, $units)) {
+            if (!$this->invasionService->passes54RatioRule($dominion, $target, $landRatio, $units)) {
                 throw new GameException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 
             foreach($units as $amount) {
-                if($amount < 0) {
-                    throw new GameException('Invasion was canceled due to bad input.');
+                if ($amount < 0) {
+                    throw new GameException('Invasion was canceled due to bad input');
                 }
             }
 
@@ -245,6 +248,7 @@ class InvadeActionService
 
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
+            $this->invasionResult['attacker']['repeatInvasion'] = $this->militaryCalculator->getRecentlyInvadedCount($target, 8, $dominion) > 1;
             $this->invasionResult['defender']['recentlyInvadedCount'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
@@ -268,6 +272,7 @@ class InvadeActionService
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landConquered']);
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landGenerated']);
                 $dominion->stat_attacking_success += 1;
+                $target->stat_total_land_lost += (int)array_sum($this->invasionResult['attacker']['landConquered']);
                 $target->stat_defending_failure += 1;
             } else {
                 $target->stat_defending_success += 1;
@@ -364,6 +369,7 @@ class InvadeActionService
 
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
+        $multiplier = 1;
 
         if ($isOverwhelmed || ($range < 60)) {
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
@@ -376,14 +382,24 @@ class InvadeActionService
 
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
-                $attackerPrestigeChange *= 1.2;
+                $multiplier += 0.20;
             } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
-                $attackerPrestigeChange *= 1.15;
+                $multiplier += 0.15;
             }
+
+            // Wonders (does not stack with war bonus)
+            $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+
+            $attackerPrestigeChange *= $multiplier;
+        }
+
+        // Repeat Invasions award no prestige
+        if ($this->invasionResult['attacker']['repeatInvasion']) {
+            $attackerPrestigeChange = 0;
         }
 
         // Reduce attacker prestige gain if the target was hit recently
-        if($attackerPrestigeChange > 0) {
+        if ($attackerPrestigeChange > 0) {
             $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
             if ($recentlyInvadedCount === 1) {
@@ -407,7 +423,7 @@ class InvadeActionService
 
             } else {
                 // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
-                $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
 
                 $this->queueService->queueResources(
                     'invasion',
@@ -459,7 +475,7 @@ class InvadeActionService
             $OPNeededToBreakTarget = ($targetDP + 1);
             $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
 
-            $totalUnitsLeftToKill = ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
+            $totalUnitsLeftToKill = (int)ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
 
             foreach ($units as $slot => $amount) {
                 $slotTotalAmountPercentage = ($amount / $totalUnitsSent);
@@ -719,12 +735,17 @@ class InvadeActionService
 
             $landConquered = (int)round($landLost);
             $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
+
+            // Repeat Invasions generate no land
+            if ($this->invasionResult['attacker']['repeatInvasion']) {
+                $landGenerated = 0;
+            }
             $landGained = ($landConquered + $landGenerated);
 
-            // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan, formerly Warsong)
-            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+            // Racial Spell: Erosion (Lizardfolk, Merfolk), Verdant Bloom (Sylvan)
+            if ($this->spellCalculator->isSpellActive($dominion, 'erosion') || $this->spellCalculator->isSpellActive($dominion, 'verdant_bloom')) {
                 // todo: needs a more generic solution later
-                if ($this->spellCalculator->isSpellActive($dominion, 'warsong')) {
+                if ($this->spellCalculator->isSpellActive($dominion, 'verdant_bloom')) {
                     $eventName = 'landVerdantBloom';
                     $landRezoneType = 'forest';
                     $landRezonePercentage = 35;
@@ -914,19 +935,20 @@ class InvadeActionService
      * Handles research point generation for attacker.
      *
      * Original formula:
-     * (Conquered acres) * max([(Days into the round)/3], 10)
-     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 16.6667 on day 50
-     * - This number is increased by 50% in the Base Ruleset.
-     *
-     * Removing days into round portion of the formula in favor of a static coefficient.
-     * For base ruleset, the range for the coefficent was 15-25. We are using 20 instead.
+     * (Conquered acres) * max([(Days into the round)/2], 15)
+     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 25 on day 50
      *
      * @param Dominion $dominion
      * @param array $units
      */
     protected function handleResearchPoints(Dominion $dominion, array $units): void
     {
-        $researchPointsPerAcre = 17;
+        // Repeat Invasions award no research points
+        if ($this->invasionResult['attacker']['repeatInvasion']) {
+            return;
+        }
+
+        $researchPointsPerAcre = max(15, $dominion->round->daysInRound() / 2);
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
@@ -934,10 +956,13 @@ class InvadeActionService
             $landGenerated = array_sum($this->invasionResult['attacker']['landGenerated']);
 
             $researchPointsGained = ($landConquered + $landGenerated) * $researchPointsPerAcre;
-            $slowestTroopsReturnHours = $this->getSlowestUnitReturnHours($dominion, $units);
+            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
 
             // Racial Bonus
             $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+
+            // Wonders
+            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
 
             $this->queueService->queueResources(
                 'invasion',
@@ -962,31 +987,35 @@ class InvadeActionService
         // todo: just hobgoblin plunder atm, need a refactor later to take into
         //       account more post-combat unit-perk-related stuff
 
-        $isInvasionSuccessful = $this->invasionResult['result']['success'];
-
-        if (!$isInvasionSuccessful) {
+        if (!$this->invasionResult['result']['success']) {
             return; // nothing to plunder on unsuccessful invasions
         }
 
-        $attackingForceOP = $this->invasionResult['attacker']['op'];
-        $targetDP = $this->invasionResult['defender']['dp'];
+        $unitsSentPerSlot = [];
+        $unitsSentPlunderSlot = null;
 
-        // todo: refactor this hardcoded hacky mess
-        // Check if we sent hobbos out
-        if (($dominion->race->name === 'Goblin') && isset($units[3]) && ($units[3] > 0)) {
-            $hobbos = $units[3];
-            $totalUnitsSent = array_sum($units);
+        // todo: inefficient to do run this code per slot. needs refactoring
+        foreach ($dominion->race->units as $unit) {
+            $slot = $unit->slot;
 
-            $hobbosPercentage = $hobbos / $totalUnitsSent;
+            if (!isset($units[$slot])) {
+                continue;
+            }
+            $unitsSentPerSlot[$slot] = $units[$slot];
 
-            $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
-            $OPNeededToBreakTarget = ($targetDP + 1);
-            $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
+            if ($unit->getPerkValue('plunders_resources_on_attack') !== 0) {
+                $unitsSentPlunderSlot = $slot;
+            }
+        }
 
-            $hobbosToPlunderWith = (int)ceil($unitsNeededToBreakTarget * $hobbosPercentage);
+        // We have a unit with plunder!
+        if ($unitsSentPlunderSlot !== null) {
+            $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
-            $plunderPlatinum = min($hobbosToPlunderWith * 50, (int)floor($target->resource_platinum * 0.2));
-            $plunderGems = min($hobbosToPlunderWith * 20, (int)floor($target->resource_gems * 0.2));
+            $totalUnitsSent = array_sum($unitsSentPerSlot);
+            $hobbosToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
+            $plunderPlatinum = min($hobbosToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
+            $plunderGems = min($hobbosToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
 
             $target->resource_platinum -= $plunderPlatinum;
             $target->resource_gems -= $plunderGems;
@@ -1039,13 +1068,13 @@ class InvadeActionService
                 'invasion',
                 $dominion,
                 [$unitKey => $returningAmount],
-                $this->getUnitReturnHoursForSlot($dominion, $i)
+                $this->invasionService->getUnitReturnHoursForSlot($dominion, $i)
             );
         }
     }
 
     /**
-     * Handles the surviving units returning home.
+     * Handles the returning boats.
      *
      * @param Dominion $dominion
      * @param Dominion $target
@@ -1069,7 +1098,7 @@ class InvadeActionService
             }
 
             if ($unit->need_boat) {
-                $hours = $this->getUnitReturnHoursForSlot($dominion, $unit->slot);
+                $hours = $this->invasionService->getUnitReturnHoursForSlot($dominion, $unit->slot);
 
                 if (!isset($unitsThatNeedsBoatsByReturnHours[$hours])) {
                     $unitsThatNeedsBoatsByReturnHours[$hours] = 0;
@@ -1169,199 +1198,6 @@ class InvadeActionService
         $targetDP = $this->invasionResult['defender']['dp'];
 
         $this->invasionResult['result']['overwhelmed'] = ((1 - $attackingForceOP / $targetDP) >= (static::OVERWHELMED_PERCENTAGE / 100));
-    }
-
-    /**
-     * Check if dominion is sending out at least *some* OP.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function hasAnyOP(Dominion $dominion, array $units): bool
-    {
-        return ($this->militaryCalculator->getOffensivePower($dominion, null, null, $units) !== 0.0);
-    }
-
-    /**
-     * Check if all units being sent have positive OP.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function allUnitsHaveOP(Dominion $dominion, array $units): bool
-    {
-        foreach ($dominion->race->units as $unit) {
-            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
-                continue;
-            }
-
-            if ($unit->power_offense === 0.0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if dominion has enough units at home to send out.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function hasEnoughUnitsAtHome(Dominion $dominion, array $units): bool
-    {
-        foreach ($dominion->race->units as $unit) {
-            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
-                continue;
-            }
-
-            if ($units[$unit->slot] > $dominion->{'military_unit' . $unit->slot}) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if dominion has enough boats to send units out.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function hasEnoughBoats(Dominion $dominion, array $units): bool
-    {
-        $unitsThatNeedBoats = 0;
-
-        foreach ($dominion->race->units as $unit) {
-            if (!isset($units[$unit->slot]) || ((int)$units[$unit->slot] === 0)) {
-                continue;
-            }
-
-            if ($unit->need_boat) {
-                $unitsThatNeedBoats += (int)$units[$unit->slot];
-            }
-        }
-
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity()));
-    }
-
-    /**
-     * Check if an invasion passes the 33%-rule.
-     *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param array $units
-     * @return bool
-     */
-    protected function passes33PercentRule(Dominion $dominion, Dominion $target, array $units): bool
-    {
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, null, $units);
-        $attackingForceDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units, 0, true);
-        if ($attackingForceDP == 0) {
-            return true;
-        }
-        $currentHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion);
-
-        $unitsReturning = [];
-        for ($slot = 1; $slot <= 4; $slot++) {
-            $unitsReturning[$slot] = $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}");
-        }
-
-        $returningForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsReturning, 0, true);
-
-        $totalDP = $currentHomeForcesDP + $returningForcesDP;
-
-        $newHomeForcesDP = ($currentHomeForcesDP - $attackingForceDP);
-
-        return ($newHomeForcesDP >= $totalDP * (1/3));
-    }
-
-    /**
-     * Check if an invasion passes the 5:4-rule.
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return bool
-     */
-    protected function passes54RatioRule(Dominion $dominion, Dominion $target, float $landRatio, array $units): bool
-    {
-        $unitsHome = [
-            0 => $dominion->military_draftees,
-            1 => $dominion->military_unit1 - (isset($units[1]) ? $units[1] : 0),
-            2 => $dominion->military_unit2 - (isset($units[2]) ? $units[2] : 0),
-            3 => $dominion->military_unit3 - (isset($units[3]) ? $units[3] : 0),
-            4 => $dominion->military_unit4 - (isset($units[4]) ? $units[4] : 0)
-        ];
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
-        $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
-
-        $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);
-
-        return ($attackingForceOP <= $attackingForceMaxOP);
-    }
-
-    /**
-     * Returns the amount of hours a military unit (with a specific slot) takes
-     * to return home after battle.
-     *
-     * @param Dominion $dominion
-     * @param int $slot
-     * @return int
-     */
-    protected function getUnitReturnHoursForSlot(Dominion $dominion, int $slot): int
-    {
-        $hours = 12;
-
-        /** @var Unit $unit */
-        $unit = $dominion->race->units->filter(function ($unit) use ($slot) {
-            return ($unit->slot === $slot);
-        })->first();
-
-        if ($unit->getPerkValue('faster_return') !== 0) {
-            $hours -= (int)$unit->getPerkValue('faster_return');
-        }
-
-        return $hours;
-    }
-
-    /**
-     * Gets the amount of hours for the slowest unit from an array of units
-     * takes to return home.
-     *
-     * Primarily used to bring prestige home earlier if you send only 9hr
-     * attackers. (Land always takes 12 hrs)
-     *
-     * @param Dominion $dominion
-     * @param array $units
-     * @return int
-     */
-    protected function getSlowestUnitReturnHours(Dominion $dominion, array $units): int
-    {
-        $hours = 0;
-
-        foreach ($units as $slot => $amount) {
-            if ($amount === 0) {
-                continue;
-            }
-
-            $hoursForUnit = $this->getUnitReturnHoursForSlot($dominion, $slot);
-
-            if ($hoursForUnit > $hours) {
-                $hours = $hoursForUnit;
-            }
-        }
-
-        if ($hours == 0) {
-            $hours = 12;
-        }
-
-        return $hours;
     }
 
     protected function getDefensivePowerWithTemples(Dominion $dominion, Dominion $target): float

@@ -245,6 +245,9 @@ class EspionageActionService
         if ($targetSpa !== 0.0) {
             $successRate = $this->opsHelper->infoOperationSuccessChance($selfSpa, $targetSpa);
 
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+
             if (!random_chance($successRate)) {
                 // Values (percentage)
                 $spiesKilledBasePercentage = 0.25;
@@ -283,6 +286,7 @@ class EspionageActionService
                 }
 
                 $target->stat_spies_executed += array_sum($unitsKilled);
+                $dominion->stat_spies_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -390,6 +394,9 @@ class EspionageActionService
         if ($targetSpa !== 0.0) {
             $successRate = $this->opsHelper->theftOperationSuccessChance($selfSpa, $targetSpa);
 
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+
             if (!random_chance($successRate)) {
                 // Values (percentage)
                 $spiesKilledBasePercentage = 1;
@@ -428,6 +435,7 @@ class EspionageActionService
                 }
 
                 $target->stat_spies_executed += array_sum($unitsKilled);
+                $dominion->stat_spies_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -628,6 +636,9 @@ class EspionageActionService
         if ($targetSpa !== 0.0) {
             $successRate = $this->opsHelper->blackOperationSuccessChance($selfSpa, $targetSpa);
 
+            // Wonders
+            $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
+
             if (!random_chance($successRate)) {
                 // Values (percentage)
                 $spiesKilledBasePercentage = 1;
@@ -666,6 +677,7 @@ class EspionageActionService
                 }
 
                 $target->stat_spies_executed += array_sum($unitsKilled);
+                $dominion->stat_spies_lost += array_sum($unitsKilled);
 
                 $unitsKilledStringParts = [];
                 foreach ($unitsKilled as $name => $amount) {
@@ -710,6 +722,9 @@ class EspionageActionService
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
                     $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage;
                 }
+
+                // Wonders
+                $damage *= (1 + $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage"));
 
                 // Check for immortal wizards
                 if ($target->race->getPerkValue('immortal_wizards') != 0 && $attr == 'military_wizards') {

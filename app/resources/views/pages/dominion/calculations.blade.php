@@ -100,7 +100,7 @@
                                                         class="form-control text-center"
                                                         placeholder="0"
                                                         min="0"
-                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "military_draftees") : null }}" />
+                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_draftees") / (array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy"))) : null }}" />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
@@ -151,7 +151,7 @@
                                                             placeholder="0"
                                                             min="0"
                                                             disabled
-                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") : null }}" />
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") / (array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy"))) : null }}" />
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number"

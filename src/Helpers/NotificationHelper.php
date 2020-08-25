@@ -5,6 +5,7 @@ namespace OpenDominion\Helpers;
 use LogicException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\Wonder;
 
 class NotificationHelper
 {
@@ -192,15 +193,22 @@ class NotificationHelper
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-crossed-axes text-red',
             ],
-            /*
             'wonder_attacked' => [
                 'label' => 'A wonder our realm controls was attacked',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-sword text-orange',
             ],
             'wonder_destroyed' => [
                 'label' => 'A wonder our realm controls was destroyed',
                 'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-sword text-red',
             ],
+            'wonder_rebuilt' => [
+                'label' => 'Our realm has rebuilt a wonder',
+                'defaults' => ['email' => false, 'ingame' => true],
+                'iconClass' => 'ra ra-sword text-green',
+            ]
+            /*
             'realmie_death' => [
                 'label' => 'A realmie has died',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -580,7 +588,7 @@ class NotificationHelper
 
                 return sprintf(
                     'Our wizards have repelled a %s spell attempt by %s (#%s)%s',
-                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $this->spellHelper->getSpellInfo($data['spellKey'])['name'],
                     $sourceDominion->name,
                     $sourceDominion->realm->number,
                     $lastPart
@@ -591,7 +599,7 @@ class NotificationHelper
 
                 return sprintf(
                     'The energy mirror protecting our dominion has reflected a %s spell back at the caster.',
-                    $this->spellHelper->getSpellInfo($data['spellKey'], $sourceDominion->race)['name'],
+                    $this->spellHelper->getSpellInfo($data['spellKey'])['name'],
                 );
 
             case 'irregular_realm.enemy_realm_declared_war':
@@ -610,6 +618,36 @@ class NotificationHelper
                     'Our realm declared war upon %s (#%s)!',
                     $targetRealm->name,
                     $targetRealm->number
+                );
+
+            case 'irregular_realm.wonder_attacked':
+                $attackerDominion = Dominion::with('realm')->findOrFail($data['attackerDominionId']);
+                $wonder = Wonder::findOrFail($data['wonderId']);
+
+                return sprintf(
+                    '%s (#%s) has attacked the %s!',
+                    $attackerDominion->name,
+                    $attackerDominion->realm->number,
+                    $wonder->name
+                );
+
+            case 'irregular_realm.wonder_destroyed':
+                $attackerRealm = Realm::findOrFail($data['attackerRealmId']);
+                $wonder = Wonder::findOrFail($data['wonderId']);
+
+                return sprintf(
+                    'The %s has been destroyed by %s (#%s)!',
+                    $wonder->name,
+                    $attackerRealm->name,
+                    $attackerRealm->number
+                );
+
+            case 'irregular_realm.wonder_rebuilt':
+                $wonder = Wonder::findOrFail($data['wonderId']);
+
+                return sprintf(
+                    'Our realm has rebuilt the %s!',
+                    $wonder->name
                 );
 
             // todo: other irregular etc

@@ -7,9 +7,9 @@ use OpenDominion\Models\Race;
 
 class SpellHelper
 {
-    public function getSpellInfo(string $spellKey, Race $race): array
+    public function getSpellInfo(string $spellKey): array
     {
-        return $this->getSpells($race)->filter(function ($spell) use ($spellKey) {
+        return $this->getSpells()->filter(function ($spell) use ($spellKey) {
             return ($spell['key'] === $spellKey);
         })->first();
     }
@@ -56,9 +56,10 @@ class SpellHelper
         })->isNotEmpty();
     }
 
-    public function getSpells(Race $race): Collection
+    public function getSpells(Race $race = null): Collection
     {
         return $this->getSelfSpells($race)
+            ->merge($this->getRacialSelfSpells())
             ->merge($this->getOffensiveSpells());
     }
 
@@ -156,7 +157,7 @@ class SpellHelper
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Dwarf']),
+                'races' => collect(['Dwarf', 'Gnome']),
             ],
             [
                 'name' => 'Killing Rage',
@@ -196,7 +197,7 @@ class SpellHelper
                 'key' => 'mechanical_genius',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Gnome']),
+                'races' => collect([]),
             ],
             [
                 'name' => 'Bloodrage',
@@ -233,10 +234,18 @@ class SpellHelper
             [
                 'name' => 'Verdant Bloom',
                 'description' => '35% of captured land re-zoned into forest',
-                'key' => 'warsong',
+                'key' => 'verdant_bloom',
                 'mana_cost' => 5,
                 'duration' => 12,
                 'races' => collect(['Sylvan']),
+            ],
+            [
+                'name' => 'Warsong',
+                'description' => '+10% offensive power',
+                'key' => 'warsong',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect([]),
             ],
             [
                 'name' => 'Regeneration',
@@ -277,7 +286,8 @@ class SpellHelper
     {
         return $this->getInfoOpSpells()
             ->merge($this->getBlackOpSpells())
-            ->merge($this->getWarSpells());
+            ->merge($this->getWarSpells())
+            ->merge($this->getWonderSpells());
     }
 
     public function getInfoOpSpells(): Collection
@@ -388,6 +398,20 @@ class SpellHelper
                     'improvement_walls',
                 ],
                 'percentage' => 0.40,
+            ],
+        ]);
+    }
+
+    public function getWonderSpells(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Cyclone',
+                'description' => 'Deals damage to a wonder',
+                'key' => 'cyclone',
+                'mana_cost' => 3.5,
+                'icon_class' => 'ra ra-fluffy-swirl',
+                'damage_multiplier' => 5,
             ],
         ]);
     }

@@ -18,15 +18,7 @@ class EventController extends AbstractDominionController
         $query = GameEvent::query()
             ->with([
                 'source',
-                'source.race',
-                'source.race.units',
-                'source.race.units.perks',
-                'source.realm',
                 'target',
-                'target.race',
-                'target.race.units',
-                'target.race.units.perks',
-                'target.realm',
             ])
             ->where('id', $eventUuid);
 

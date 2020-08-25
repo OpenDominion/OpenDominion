@@ -60,8 +60,8 @@ trait CreatesData
             'round_league_id' => 1,
             'number' => 1,
             'name' => 'Testing Round',
-            'start_date' => new Carbon($startDate . ' midnight'),
-            'end_date' => new Carbon($endDate . ' midnight'),
+            'start_date' => new Carbon($startDate),
+            'end_date' => new Carbon($endDate),
             'realm_size' => 12,
             'pack_size' => 6
         ]);
