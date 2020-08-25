@@ -14,10 +14,10 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
-                                <col width="150">
+                                <col width="15%">
                                 <col>
-                                <col width="100">
-                                <col width="100">
+                                <col width="10%">
+                                <col width="15%">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -139,6 +139,7 @@
                     maxAmount = selectedOption.data('amount'),
                     improvementType = $(this).data('type');
 
+                $('input[name^=improve]').val('');
                 $('input[name=improve\\['+improvementType+'\\]]').val(maxAmount);
             });
         })(jQuery);

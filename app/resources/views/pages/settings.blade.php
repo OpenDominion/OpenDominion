@@ -110,8 +110,8 @@
                                 <table class="table table-striped table-hover">
                                     <colgroup>
                                         <col>
-                                        <col width="100">
-                                        <col width="100">
+                                        <col width="15%">
+                                        <col width="15%">
                                     </colgroup>
                                     <thead>
                                         <tr>

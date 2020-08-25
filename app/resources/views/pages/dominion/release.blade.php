@@ -16,8 +16,8 @@
                         <table class="table">
                             <colgroup>
                                 <col>
-                                <col width="100">
-                                <col width="100">
+                                <col width="10%">
+                                <col width="10%">
                             </colgroup>
                             <thead>
                                 <tr>

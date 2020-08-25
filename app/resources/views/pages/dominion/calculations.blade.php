@@ -60,10 +60,10 @@
                                 <table class="table table-condensed">
                                     <colgroup>
                                         <col>
-                                        <col width="100">
-                                        <col width="150">
-                                        <col width="150">
-                                        <col width="150">
+                                        <col width="10%">
+                                        <col width="15%">
+                                        <col width="15%">
+                                        <col width="15%">
                                     </colgroup>
                                     <thead>
                                         <tr>
@@ -417,9 +417,9 @@
                                 <table class="table table-condensed">
                                     <colgroup>
                                         <col>
-                                        <col width="100">
-                                        <col width="225">
-                                        <col width="225">
+                                        <col width="10%">
+                                        <col width="20%">
+                                        <col width="20%">
                                     </colgroup>
                                     <thead>
                                         <tr>

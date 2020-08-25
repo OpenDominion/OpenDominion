@@ -64,10 +64,10 @@
                             <table class="table">
                                 <colgroup>
                                     <col>
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="100">
-                                    <col width="150">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="15%">
                                 </colgroup>
                                 <thead>
                                     <tr>
