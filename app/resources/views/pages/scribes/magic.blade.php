@@ -123,6 +123,15 @@
                                     <td>{{ $operation['description'] }}</td>
                                 </tr>
                             @endforeach
+                            @foreach($spellHelper->getWonderSpells(null)->sortBy('name') as $operation)
+                                <tr>
+                                    <td>{{ $operation['name'] }}</td>
+                                    <td></td>
+                                    <td>{{ $operation['mana_cost'] }}x</td>
+                                    <td>{{ isset($operation['duration']) ? $operation['duration'] : '--' }}</td>
+                                    <td>{{ $operation['description'] }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <p>&nbsp;</p>

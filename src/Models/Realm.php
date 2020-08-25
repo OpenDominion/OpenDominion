@@ -98,6 +98,23 @@ class Realm extends AbstractModel
         return $this->hasMany(self::class, 'war_realm_id');
     }
 
+    public function roundWonders()
+    {
+        return $this->hasMany(RoundWonder::class);
+    }
+
+    public function wonders()
+    {
+        return $this->belongsToMany(
+            Wonder::class,
+            'round_wonders',
+            'realm_id',
+            'wonder_id'
+        )
+            ->withTimestamps()
+            ->withPivot('realm_id', 'power');
+    }
+
     public function totalPackSize(): int
     {
         return $this->packs->sum(function ($pack) {

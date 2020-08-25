@@ -1,0 +1,187 @@
+[
+    {
+        "attributes": {
+            "peasants": 8494,
+            "draft_rate": 60,
+            "resource_platinum": 667248,
+            "resource_food": 78715,
+            "resource_lumber": 38263,
+            "resource_mana": 8537,
+            "resource_ore": 44400,
+            "resource_gems": 0,
+            "resource_tech": 384,
+            "resource_boats": 14,
+            "military_draftees": 1757,
+            "military_unit1": 0,
+            "military_unit2": 0,
+            "military_unit3": 0,
+            "military_unit4": 0,
+            "military_spies": 25,
+            "military_wizards": 25,
+            "land_plain": 358,
+            "land_mountain": 20,
+            "land_swamp": 55,
+            "land_cavern": 0,
+            "land_forest": 92,
+            "land_hill": 55,
+            "land_water": 20,
+            "building_home": 70,
+            "building_alchemy": 220,
+            "building_farm": 30,
+            "building_smithy": 108,
+            "building_masonry": 0,
+            "building_ore_mine": 20,
+            "building_gryphon_nest": 0,
+            "building_tower": 25,
+            "building_wizard_guild": 0,
+            "building_temple": 30,
+            "building_diamond_mine": 0,
+            "building_school": 0,
+            "building_lumberyard": 20,
+            "building_forest_haven": 0,
+            "building_factory": 55,
+            "building_guard_tower": 0,
+            "building_shrine": 0,
+            "building_barracks": 0,
+            "building_dock": 20,
+            "stat_total_platinum_production": 1039683,
+            "stat_total_food_production": 172620,
+            "stat_total_lumber_production": 55972,
+            "stat_total_mana_production": 21875,
+            "stat_total_ore_production": 44400,
+            "stat_total_gem_production": 0,
+            "stat_total_tech_production": 0,
+            "stat_total_boat_production": 14,
+            "stat_total_land_explored": 350,
+            "protection_ticks_remaining": 12
+        },
+        "spells": ["ares_call", "midas_touch"],
+        "queues": {
+            "construction": [],
+            "exploration": [],
+            "training": []
+        }
+    },
+    {
+        "attributes": {
+            "peasants": 7557,
+            "draft_rate": 60,
+            "resource_platinum": 70589,
+            "resource_food": 80144,
+            "resource_lumber": 47549,
+            "resource_mana": 10426,
+            "resource_ore": 12900,
+            "resource_gems": 0,
+            "resource_tech": 384,
+            "resource_boats": 26,
+            "military_draftees": 79,
+            "military_unit1": 0,
+            "military_unit2": 1060,
+            "military_unit3": 240,
+            "military_unit4": 710,
+            "military_spies": 25,
+            "military_wizards": 25,
+            "land_plain": 358,
+            "land_mountain": 20,
+            "land_swamp": 55,
+            "land_cavern": 0,
+            "land_forest": 92,
+            "land_hill": 55,
+            "land_water": 20,
+            "building_home": 72,
+            "building_alchemy": 220,
+            "building_farm": 30,
+            "building_smithy": 108,
+            "building_masonry": 0,
+            "building_ore_mine": 20,
+            "building_gryphon_nest": 0,
+            "building_tower": 25,
+            "building_wizard_guild": 0,
+            "building_temple": 30,
+            "building_diamond_mine": 0,
+            "building_school": 0,
+            "building_lumberyard": 20,
+            "building_forest_haven": 0,
+            "building_factory": 55,
+            "building_guard_tower": 0,
+            "building_shrine": 0,
+            "building_barracks": 0,
+            "building_dock": 20,
+            "stat_total_platinum_production": 1457936,
+            "stat_total_food_production": 214563.25,
+            "stat_total_lumber_production": 65258,
+            "stat_total_mana_production": 29375,
+            "stat_total_ore_production": 58800,
+            "stat_total_gem_production": 0,
+            "stat_total_tech_production": 0,
+            "stat_total_boat_production": 26,
+            "stat_total_land_explored": 350,
+            "protection_ticks_remaining": 0
+        },
+        "spells": ["ares_call", "midas_touch"],
+        "queues": {
+            "construction": [
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                []
+            ],
+            "exploration": [
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
+                []
+            ],
+            "training": [
+                [],
+                [
+                    {
+                        "resource": "military_unit2",
+                        "amount": 165
+                    }
+                ],
+                [],
+                [
+                    {
+                        "resource": "military_unit2",
+                        "amount": 161
+                    }
+                ],
+                [],
+                [],
+                [],
+                [],
+                [
+                    {
+                        "resource": "military_unit4",
+                        "amount": 155
+                    }
+                ],
+                [],
+                [
+                    {
+                        "resource": "military_unit4",
+                        "amount": 155
+                    }
+                ],
+                []
+            ]
+        }
+    }
+]

@@ -3,6 +3,11 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Quick Start: Create your dominion from a template. You can customize the final 12 ticks of protection or skip it entirely
+
+### Changed
+- Recently invaded is now calculated using ticks instead of hours
 
 ## [0.10.0-8] - 2018-08-11
 ### Added

@@ -155,6 +155,7 @@ class MilitaryCalculator
         $spellHowling = 10;
         $spellKillingRage = 10;
         $spellNightfall = 5;
+        $spellWarsong = 10;
 
         // Gryphon Nests
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -182,6 +183,10 @@ class MilitaryCalculator
         } else {
             $multiplier += $dominion->getTechPerkMultiplier('offense');
         }
+
+        // Wonders
+        // TODO: add to calc if this is implemented
+        $multiplier += $dominion->getWonderPerkMultiplier('offense');
 
         // Improvement: Forges
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -213,6 +218,10 @@ class MilitaryCalculator
             if (isset($dominion->calc['nightfall'])) {
                 $multiplier += ($spellNightfall / 100);
             }
+
+            if (isset($dominion->calc['warsong'])) {
+                $multiplier += ($spellWarsong / 100);
+            }
         } else {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
                 'bloodrage' => $spellBloodrage,
@@ -220,6 +229,7 @@ class MilitaryCalculator
                 'howling' => $spellHowling,
                 'killing_rage' => $spellKillingRage,
                 'nightfall' => $spellNightfall,
+                'warsong' => $spellWarsong,
             ]);
         }
 
@@ -392,7 +402,12 @@ class MilitaryCalculator
         $multiplier += $dominion->race->getPerkMultiplier('defense');
 
         // Techs
+        // TODO: add to calc if this is implemented
         $multiplier += $dominion->getTechPerkMultiplier('defense');
+
+        // Wonders
+        // TODO: add to calc if this is implemented
+        $multiplier += $dominion->getWonderPerkMultiplier('defense');
 
         // Improvement: Walls
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -818,8 +833,8 @@ class MilitaryCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('spy_strength');
 
-        // Wonder: Great Oracle (+30%)
-        // todo
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('spy_strength');
 
         return $multiplier;
     }
@@ -834,9 +849,19 @@ class MilitaryCalculator
     {
         $regen = 4;
 
-        // todo: Spy Master / Dark Artistry tech
+        // Forest Havens
+        $spyStrengthPerForestHaven = 0.1;
+        $spyStrengthPerForestHavenMax = 2;
 
-        return (float)$regen;
+        $regen += min(
+            ($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * (100 * $spyStrengthPerForestHaven),
+            $spyStrengthPerForestHavenMax
+        );
+
+        // Techs
+        $regen += $dominion->getTechPerkValue('spy_strength_recovery');
+
+        return $regen;
     }
 
     /**
@@ -884,24 +909,29 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $wizardGuildBonus = 2;
-        $wizardGuildBonusMax = 20;
+        if ($dominion->race->name !== 'Dark Elf') {
+            // Values (percentages)
+            $wizardGuildBonus = 2;
+            $wizardGuildBonusMax = 20;
 
-        // Wizard Guilds
-        $multiplier += min(
-            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
-            ($wizardGuildBonusMax / 100)
-        );
+            // Wizard Guilds
+            $multiplier += min(
+                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
+                ($wizardGuildBonusMax / 100)
+            );
+        }
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');
 
-        // Improvement: Towers
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
-
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('wizard_strength');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('wizard_strength');
+
+        // Improvement: Towers
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'towers');
 
         return $multiplier;
     }
@@ -914,12 +944,25 @@ class MilitaryCalculator
      */
     public function getWizardStrengthRegen(Dominion $dominion): float
     {
-        $regen = 5;
+        $regen = 4;
 
-        // todo: Master of Magi / Dark Artistry tech
-        // todo: check if this needs to be a float
+        // Wizard Guilds
+        $wizardStrengthPerWizardGuild = 0.1;
+        $wizardStrengthPerWizardGuildMax = 2;
 
-        return (float)$regen;
+        $regen += min(
+            ($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * (100 * $wizardStrengthPerWizardGuild),
+            $wizardStrengthPerWizardGuildMax
+        );
+
+        // Techs
+        $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
+
+        if ($dominion->wizard_strength < 25) {
+            $regen += 1;
+        }
+
+        return $regen;
     }
 
     /**
@@ -931,9 +974,11 @@ class MilitaryCalculator
     public function getBoatsProtected(Dominion $dominion): float
     {
         // Docks
-        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock;
+        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock * min(2.5, 0.1 * $dominion->round->daysInRound());
+
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2);
+
         return $boatsProtected;
     }
 
@@ -961,13 +1006,14 @@ class MilitaryCalculator
      *
      * @param Dominion $dominion
      * @param int $hours
+     * @param Dominion $attacker
      * @return int
      */
-    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24): int
+    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, Dominion $attacker = null): int
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subHours($hours))
+            ->where('created_at', '>=', now()->subHours($hours)->startOfHour())
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
@@ -982,6 +1028,12 @@ class MilitaryCalculator
         $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
             return !$event->data['result']['overwhelmed'];
         });
+
+        if ($attacker !== null) {
+            return $invasionEvents->filter(function (GameEvent $event) {
+                return $event->source_id == $attacker->id && $event->data['result']['success'];
+            });
+        }
 
         return $invasionEvents->count();
     }
@@ -999,7 +1051,7 @@ class MilitaryCalculator
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subHours($hours))
+            ->where('created_at', '>=', now()->subHours($hours)->startOfHour())
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,

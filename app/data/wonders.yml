@@ -1,0 +1,160 @@
+obelisk_of_power:
+  name: Obelisk of Power
+  perks:
+    defense: 5
+    offense: 5
+  power: 250000
+  active: false
+temple_of_the_damned:
+  name: Temple of the Damned
+  perks:
+    offense_evil: 10
+  power: 250000
+  active: false
+temple_of_the_blessed:
+  name: Temple of the Blessed
+  perks:
+    offense_good: 10
+  power: 250000
+  active: false
+great_wall:
+  name: Great Wall
+  perks:
+    defense: 10
+  power: 250000
+  active: false
+portals_of_transportation:
+  name: Portals of Transportation
+  perks:
+    invasion_return_time: -3
+  power: 250000
+  active: false
+great_market:
+  name: Great Market
+  perks:
+    employment: 10
+    platinum_production: 5
+  power: 250000
+gnomish_mining_machine:
+  name: Gnomish Mining Machine
+  perks:
+    ore_production: 30
+  power: 250000
+guild_of_shadows:
+  name: Guild of Shadows
+  perks:
+    spy_strength: 50
+  power: 250000
+hanging_gardens:
+  name: Hanging Gardens
+  perks:
+    food_production: 50
+  power: 250000
+ancient_library:
+  name: Ancient Library
+  perks:
+    invest_bonus: 20
+  power: 250000
+halls_of_knowledge:
+  name: Halls of Knowledge
+  perks:
+    tech_production: 20
+  power: 250000
+great_oracle:
+  name: Great Oracle
+  perks:
+    spell_cost: -15
+    wizard_strength: 30
+  power: 250000
+fountain_of_youth:
+  name: Fountain of Youth
+  perks:
+    max_population: 5
+  power: 250000
+city_of_gold:
+  name: City of Gold
+  perks:
+    platinum_production: 10
+  power: 250000
+ruby_monolith:
+  name: Ruby Monolith
+  perks:
+    fewer_casualties_offense: 20
+    fewer_casualties_defense: 20
+  power: 250000
+high_clerics_tower:
+  name: High Cleric's Tower
+  perks:
+    kills_immortal: 1
+  power: 250000
+ivory_tower:
+  name: Ivory Tower
+  perks:
+    enemy_spell_chance: 50
+  power: 250000
+underground_society:
+  name: Underground Society
+  perks:
+    enemy_espionage_chance: 50
+  power: 250000
+factory_of_legends:
+  name: Factory of Legends
+  perks:
+    construction_cost: -25
+  power: 250000
+lair_of_the_dragon:
+  name: Lair of the Dragon
+  perks:
+    defense: 5
+    offense: 10
+    food_production: -20
+  power: 250000
+  active: false
+imperial_armada:
+  name: Imperial Armada
+  perks:
+    enemy_sabotage_boats_damage: -100
+  power: 250000
+spire_of_illusion:
+  name: Spire of Illusion
+  perks:
+    clear_sight_accuracy: 85
+  power: 250000
+tomb_of_kings:
+  name: Tomb of Kings
+  perks:
+    platinum_production: 5
+    prestige_vs_monarchs: 100
+  power: 250000
+onyx_mausoleum:
+  name: Onyx Mausoleum
+  perks:
+    enemy_casualties_defense: 25
+  power: 250000
+monument_of_protection:
+  name: Monument of Protection
+  perks:
+    defense: 5
+  power: 250000
+  active: false
+wizard_academy:
+  name: Wizard Academy
+  perks:
+    enemy_spell_damage: -50
+  power: 250000
+golden_throne:
+  name: Golden Throne
+  perks:
+    prestige_gains: 50
+  power: 250000
+temple_of_equality:
+  name: Temple of Equality
+  perks:
+    temple_percentage: 3
+  power: 250000
+  active: false
+school_of_war:
+  name: School of War
+  perks:
+    barracks_housing: 5
+  power: 250000

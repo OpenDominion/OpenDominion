@@ -41,7 +41,7 @@
                         <tbody>
                             @foreach ($spellCalculator->getActiveSpells($target) as $spell)
                                 @php
-                                    $spellInfo = $spellHelper->getSpellInfo($spell->spell, $target->race);
+                                    $spellInfo = $spellHelper->getSpellInfo($spell->spell);
                                 @endphp
                                 <tr>
                                     <td>{{ $spellInfo['name'] }}</td>

@@ -196,6 +196,9 @@ class PopulationCalculator
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('max_population');
 
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('max_population');
+
         // Improvement: Keep
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
 
@@ -215,6 +218,9 @@ class PopulationCalculator
     {
         // Values
         $troopsPerBarracks = 36;
+
+        // Wonders
+        $troopsPerBarracks += $dominion->getWonderPerkValue('barracks_housing');
 
         return min(
             ($this->getPopulationMilitary($dominion) - $dominion->military_draftees),
@@ -380,7 +386,7 @@ class PopulationCalculator
     public function getEmploymentJobs(Dominion $dominion): int
     {
         // todo: get these from buildinghelper and unset barracks/etc
-        return (20 * (
+        $totalJobs = (20 * (
                 $dominion->building_alchemy
                 + $dominion->building_farm
                 + $dominion->building_smithy
@@ -399,6 +405,11 @@ class PopulationCalculator
                 + $dominion->building_shrine
                 + $dominion->building_dock
             ));
+
+        // Wonders
+        $totalJobs *= (1 + $dominion->getWonderPerkMultiplier('employment'));
+
+        return $totalJobs;
     }
 
     /**

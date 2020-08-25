@@ -45,23 +45,23 @@ Status bars displayed here show the current state of a system or page. Pretty mu
 | Population     | ![Progress](https://progress-bar.dev/100/) |
 | Races & Units  | ![Progress](https://progress-bar.dev/100/) |
 | Resources      | ![Progress](https://progress-bar.dev/100/) |
-| Wonders        | ![Progress](https://progress-bar.dev/0/)   | Everything
+| Wonders        | ![Progress](https://progress-bar.dev/100/) |
 | Tech           | ![Progress](https://progress-bar.dev/100/) |
 
 ### Pages
 
-This indicates which pages are functional. Some pages will be restyled or revisited upon building different functionality later. 
+This indicates which pages are functional. Some pages will be restyled or revisited upon building different functionality later.
 
 | Page                | Status                                    | To do
 | ------------------- | ----------------------------------------- | -----
 | Status              | ![Progress](https://progress-bar.dev/100/) |
-| Advisors            | ![Progress](https://progress-bar.dev/90/)  | Rankings advisor
+| Advisors            | ![Progress](https://progress-bar.dev/100/) |
 | Daily Bonuses       | ![Progress](https://progress-bar.dev/100/) |
 | Exploration         | ![Progress](https://progress-bar.dev/100/) |
 | Construction        | ![Progress](https://progress-bar.dev/100/) |
 | Destroy Buildings   | ![Progress](https://progress-bar.dev/100/) |
 | Land Rezoning       | ![Progress](https://progress-bar.dev/100/) |
-| Castle Improvements | ![Progress](https://progress-bar.dev/100/) | 
+| Castle Improvements | ![Progress](https://progress-bar.dev/100/) |
 | National Bank       | ![Progress](https://progress-bar.dev/100/) |
 | Military Training   | ![Progress](https://progress-bar.dev/100/) |
 | Release Troops      | ![Progress](https://progress-bar.dev/100/) |
@@ -70,7 +70,7 @@ This indicates which pages are functional. Some pages will be restyled or revisi
 | Espionage           | ![Progress](https://progress-bar.dev/100/) |
 | Messages            | ![Progress](https://progress-bar.dev/0/)   | Everything
 | Realm Council       | ![Progress](https://progress-bar.dev/50/)  | Needs refactoring, editing posts, and moderation
-| Op Center           | ![Progress](https://progress-bar.dev/95/)  | Calculations for (estimate) DP
+| Op Center           | ![Progress](https://progress-bar.dev/100/) |
 | Government          | ![Progress](https://progress-bar.dev/100/) |
 | Diplomacy           | ![Progress](https://progress-bar.dev/100/) |
 | Realm Page          | ![Progress](https://progress-bar.dev/100/) |

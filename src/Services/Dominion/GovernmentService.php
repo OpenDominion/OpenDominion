@@ -5,7 +5,6 @@ namespace OpenDominion\Services\Dominion;
 use Carbon\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
-use OpenDominion\Services\Dominion\HistoryService;
 
 class GovernmentService
 {

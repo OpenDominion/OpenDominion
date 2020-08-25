@@ -44,5 +44,7 @@ units:
       platinum: 775
       ore: 550
     power:
-      offense: 7
+      offense: 6
       defense: 3
+    perks:
+      offense_staggered_land_range: 75;0.5,85;1

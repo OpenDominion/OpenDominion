@@ -31,7 +31,7 @@ units:
   - name: Chameleon
     type: hybrid_elite
     cost:
-      platinum: 900
+      platinum: 875
       ore: 0
     power:
       offense: 4
@@ -42,7 +42,7 @@ units:
     need_boat: false
   - name: Lizardman
     cost:
-      platinum: 1050
+      platinum: 1150
       ore: 0
     power:
       offense: 6
