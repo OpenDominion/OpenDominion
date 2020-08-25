@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion\Actions;
 use DB;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Models\Dominion;
@@ -26,6 +27,9 @@ class ExploreActionService
     /** @var LandHelper */
     protected $landHelper;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
     /** @var ProtectionService */
     protected $protectionService;
 
@@ -40,6 +44,7 @@ class ExploreActionService
         $this->explorationCalculator = app(ExplorationCalculator::class);
         $this->landCalculator = app(LandCalculator::class);
         $this->landHelper = app(LandHelper::class);
+        $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
     }
@@ -90,7 +95,22 @@ class ExploreActionService
             if ($totalLandToExplore + $incomingLand > $this->landCalculator->getTotalLand($dominion) / 2) {
                 throw new GameException('You cannot explore for more than 50% of your current land total.');
             }
+
+            $incomingLand += $this->queueService->getInvasionQueue($dominion)->filter(function($queue) {
+                if (substr($queue->resource, 0, 4) == 'land') {
+                    return true;
+                }
+            })->pluck('amount')->sum();
+
+            $newLandTotal = $totalLandToExplore + $incomingLand + $this->landCalculator->getTotalLand($dominion);
+            $minimumDefense = $this->militaryCalculator->getMinimumDefense(null, $newLandTotal);
+            $defensivePower = $this->militaryCalculator->getDefensivePower($dominion);
+
+            if ($defensivePower <= $minimumDefense) {
+                throw new GameException('Your military cannot defend any new land at this time.');
+            }
         }
+
 
         // todo: refactor. see training action service. same with other action services
         $moraleDrop = min($dominion->morale, $this->explorationCalculator->getMoraleDrop($totalLandToExplore));
