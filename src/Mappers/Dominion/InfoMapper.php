@@ -280,4 +280,25 @@ class InfoMapper
 
         return $data;
     }
+
+    public function mapResources(Dominion $dominion): array
+    {
+        $data = ['incoming' => []];
+
+        $this->queueService->getInvasionQueue($dominion)->each(static function ($row) use (&$data) {
+            if (!starts_with($row->resource, 'resource_') && $row->resource !== 'prestige') {
+                return; // continue
+            }
+
+            $resourceType = str_replace('resource_', '', $row->resource);
+
+            array_set(
+                $data,
+                "incoming.{$resourceType}.{$row->hours}",
+                (array_get($data, "incoming.{$resourceType}.{$row->hours}", 0) + $row->amount)
+            );
+        });
+
+        return $data;
+    }
 }

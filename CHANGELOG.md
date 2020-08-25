@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - New Spell: Cyclone - deals damage to wonders
 - New Rankings/Titles: The Demolisher (wonder attack damage), The Aeromancer (wonder spell damage), The Opportunist (wonders destroyed)
 - War Bonus status is now displayed on the government and realm pages
+- New table under Production Advisor for incoming resources (prestige, RP, plat, gems and boats)
 
 ### Changed
 - Recently invaded is now calculated using ticks instead of hours
