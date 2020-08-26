@@ -63,7 +63,6 @@
                                         <input type="number"
                                                id="amountSlider"
                                                class="form-control slider"
-                                               {{--value="0"--}}
                                                data-slider-value="0"
                                                data-slider-min="0"
                                                data-slider-max="{{ reset($resources)['max'] }}"
@@ -71,7 +70,7 @@
                                                data-slider-tooltip="show"
                                                data-slider-handle="triangle"
                                                data-slider-id="yellow"
-                                                {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                               {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                     </div>
                                     <div class="form-group col-sm-3">
                                         <label id="resultLabel">{{ reset($resources)['label'] }}</label>
@@ -132,7 +131,7 @@
                     sourceAmount = Math.min(parseInt(amountElement.val() || 0), _.get(sourceResourceType, 'max')),
                     targetOption = targetElement.find(':selected'),
                     targetResourceType = _.get(resources, targetOption.val()),
-                    targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy']) || 0);
+                    targetAmount = (Math.floor(sourceAmount * sourceResourceType['sell'] * targetResourceType['buy']) * {{ 1 + $selectedDominion->getWonderPerkMultiplier('exchange_bonus') }} || 0);
                 if (sourceAmount == 0) {
                     sourceAmount = '';
                 }
