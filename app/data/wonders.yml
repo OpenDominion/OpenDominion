@@ -15,32 +15,35 @@ great_market:
   name: Great Market
   perks:
     employment: 10
-    platinum_production: 5
+    exchange_bonus: 20
   power: 250000
 gnomish_mining_machine:
   name: Gnomish Mining Machine
   perks:
     ore_production: 30
   power: 250000
+  active: false
 guild_of_shadows:
   name: Guild of Shadows
   perks:
-    spy_strength: 50
+    spy_strength: 25
+    spy_losses: -15
   power: 250000
 hanging_gardens:
   name: Hanging Gardens
   perks:
     food_production: 50
   power: 250000
+  active: false
 ancient_library:
   name: Ancient Library
   perks:
-    invest_bonus: 20
+    invest_bonus: 10
   power: 250000
 halls_of_knowledge:
   name: Halls of Knowledge
   perks:
-    tech_production: 20
+    tech_production: 15
   power: 150000
 great_oracle:
   name: Great Oracle
@@ -53,17 +56,20 @@ fountain_of_youth:
   perks:
     max_population: 5
   power: 250000
+  active: false
 city_of_gold:
   name: City of Gold
   perks:
     platinum_production: 10
   power: 250000
+  active: false
 ruby_monolith:
   name: Ruby Monolith
   perks:
     fewer_casualties_offense: 20
     fewer_casualties_defense: 20
   power: 250000
+  active: false
 high_clerics_tower:
   name: High Cleric's Tower
   perks:
@@ -106,7 +112,7 @@ onyx_mausoleum:
   name: Onyx Mausoleum
   perks:
     enemy_casualties_defense: 25
-  power: 250000
+  power: 150000
 monument_of_protection:
   name: Monument of Protection
   perks:
@@ -123,6 +129,7 @@ golden_throne:
   perks:
     prestige_gains: 50
   power: 250000
+  active: false
 school_of_war:
   name: School of War
   perks:

@@ -26,7 +26,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($wonders as $wonder)
+                            @foreach ($wonders->sortBy('wonder.name') as $wonder)
                                 <tr>
                                     <td>
                                         {{ $wonder->wonder->name }}
@@ -79,44 +79,45 @@
                             <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
                         </div>
                         <div class="box-body">
-                            <div class="form-group">
-                                <label for="target_wonder">Select a target</label>
-                                <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
-                                    <option></option>
-                                    @foreach ($wonders as $wonder)
-                                        @if ($wonder->realm == null || $governmentService->isAtWarWithRealm($selectedDominion->realm, $wonder->realm))
-                                            <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
-                                                {{ $wonder->wonder->name }}
-                                                @if ($wonder->realm !== null)
-                                                    (#{{ $wonder->realm->number }})
-                                                @endif
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="pull-right">
-                                @foreach ($spellHelper->getWonderSpells() as $spell)
-                                    <div class="text-center">
-                                        <button type="submit"
-                                                name="action"
-                                                value="{{ $spell['key'] }}"
-                                                class="btn btn-primary"
-                                                {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
-                                            <i class="{{ $spell['icon_class'] }}"></i>
-                                            {{ $spell['name'] }}
-                                        </button>
-                                        <div class="small text-center">
-                                            @if ($spellCalculator->canCast($selectedDominion, $spell['key']))
-                                                Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
-                                            @else
-                                                Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                            <div class="row">
+                                <div class="col-xs-9 col-lg-10">
+                                    <label for="target_wonder">Select a target</label>
+                                    <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                        <option></option>
+                                        @foreach ($wonders as $wonder)
+                                            @if ($wonder->realm == null || $governmentService->isAtWarWithRealm($selectedDominion->realm, $wonder->realm))
+                                                <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
+                                                    {{ $wonder->wonder->name }}
+                                                    @if ($wonder->realm !== null)
+                                                        (#{{ $wonder->realm->number }})
+                                                    @endif
+                                                </option>
                                             @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-xs-3 col-lg-2">
+                                    @foreach ($spellHelper->getWonderSpells() as $spell)
+                                        <div class="text-center" style="margin-top: 25px;">
+                                            <button type="submit"
+                                                    name="action"
+                                                    value="{{ $spell['key'] }}"
+                                                    class="btn btn-primary"
+                                                    {{ $selectedDominion->isLocked() || $selectedDominion->round->hasOffensiveActionsDisabled() ? 'disabled' : null }}>
+                                                <i class="{{ $spell['icon_class'] }}"></i>
+                                                {{ $spell['name'] }}
+                                            </button>
+                                            <div class="small text-center">
+                                                @if ($spellCalculator->canCast($selectedDominion, $spell['key']))
+                                                    Mana cost: <span class="text-success">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                @else
+                                                    Mana cost: <span class="text-danger">{{ number_format($spellCalculator->getManaCost($selectedDominion, $spell['key'])) }}</span>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
-                            <div class="clearfix"></div>
                         </div>
                     </div>
 

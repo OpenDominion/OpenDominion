@@ -64,7 +64,12 @@ class BankActionService
             ));
         }
 
-        $targetAmount = floor($amount * $sourceResource['sell'] * $targetResource['buy']);
+        $multiplier = 1;
+
+        // Wonder
+        $multiplier += $dominion->getWonderPerkMultiplier('exchange_bonus');
+
+        $targetAmount = floor($amount * $sourceResource['sell'] * $targetResource['buy'] * $multiplier);
 
         $dominion->{$source} -= $amount;
         $dominion->{$target} += $targetAmount;
