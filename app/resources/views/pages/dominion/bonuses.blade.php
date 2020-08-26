@@ -47,8 +47,8 @@
                                         <img src="{{ asset('assets/app/images/join-the-discord.png') }}" alt="Join the Discord" class="img-responsive" style="max-width: 200px; margin: 0 auto;">
                                     </a>
                                 </p>
-                                <p>Discord is a chat program that I use for OpenDominion's game announcements, its development, and generic banter with other players and people interested in the project.</p>
-                                <p>Feel free to join us and chat along!</p>
+                                <p>Discord is a real-time communications platform and the best place to follow OpenDominion's announcements, development, gameplay discussions, and generic banter with other players.</p>
+                                <p>Feel free to join us!</p>
                             </div>
                         @endif
 
@@ -58,17 +58,18 @@
                             <p>Consider <a href="https://pbbg.com/games/opendominion" target="_blank">rating the project on PBBG.com</a> and share your experience with it, so other people (including potentially new players) know what to expect!</p>
                         </div>
 
-                        @if ($patreonPledgeLink = config('app.patreon_pledge_link'))
-                            <div class="col-md-4 text-center">
-                                <h4>Become a Patron</h4>
-                                <p>
-                                    <a href="{{ $patreonPledgeLink }}" data-patreon-widget-type="become-patron-button">Become a Patron!</a>
-                                </p>
-                                <p>OpenDominion is (and always will be) fully free to play, with no advertisements, micro-transactions, lootboxes, premium currencies, or paid DLCs.</p>
-                                <p>I've put in a lot of effort into OpenDominion over the past six years, and I've been paying everything I needed to help me build and run OD out of my own pocket. Financial support through Patreon (even a single dollar) is therefore most welcome!</p>
-                                <p>(Because of my strict 'no-P2W'-policy, no in-game benefits will be given to donators over regular players. You will get a spiffy color in the Discord, though!)</p>
-                            </div>
-                        @endif
+                        <div class="col-md-4 text-center">
+                            <h4>Become a Patron</h4>
+                            @if ($patreonPledgeLink = config('app.patreon_pledge_link'))
+                                <p><a href="{{ $patreonPledgeLink }}" data-patreon-widget-type="become-patron-button">Become a Patron!</a></p>
+                            @elseif ($kofiSupportID = config('app.kofi_support_id'))
+                                <p><script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support OpenDominion', '#005566', '{{ $kofiSupportID }}');kofiwidget2.draw();</script></p>
+                            @endif
+                            <p>
+                                OpenDominion is (and always will be) fully free to play; with no advertisements, micro-transactions, lootboxes, premium currencies, or paid DLCs.
+                                Financial support is therefore most welcome! (No in-game benefits will be given to donors over regular players. You will get a spiffy color in the Discord, though!)
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div class="box-footer">

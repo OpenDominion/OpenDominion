@@ -228,6 +228,7 @@ return [
 
     'discord_invite_link' => env('DISCORD_INVITE_LINK'),
     'patreon_pledge_link' => env('PATREON_PLEDGE_LINK'),
+    'kofi_support_id' => env('KOFI_SUPPORT_ID'),
     'discord_report_webhook' => env('DISCORD_REPORT_WEBHOOK'),
 
 ];
