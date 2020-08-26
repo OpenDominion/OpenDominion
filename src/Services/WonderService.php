@@ -13,7 +13,7 @@ class WonderService
 {
     public const MAX_WONDERS_PER_REALM = 0.5;
 
-    public const STARTING_WONDERS = ['halls_of_knowledge', 'high_clerics_tower'];
+    public const STARTING_WONDERS = ['halls_of_knowledge', 'high_clerics_tower', 'onyx_mausoleum'];
 
     /**
      * Get the starting wonders to spawn in the first wave.
