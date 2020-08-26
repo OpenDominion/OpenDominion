@@ -612,7 +612,7 @@ class WonderActionService
     {
         $mindSwellActive = $sc->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
         if ($mindSwellActive !== null) {
-            $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units);
+            $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
             $researchPointsGained = $this->WonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
 
             if ($researchPointsGained > 0) {

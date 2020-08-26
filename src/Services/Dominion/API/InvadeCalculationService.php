@@ -127,10 +127,18 @@ class InvadeCalculationService
 
         // Calculate total offense and defense
         $this->calculationResult['dp_multiplier'] = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
-        $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
+        if (!isset($calc['wonder'])) {
+            $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
+        } else {
+            $this->calculationResult['op_multiplier'] = 0;
+        }
 
         $this->calculationResult['away_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
-        $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
+        if (!isset($calc['wonder'])) {
+            $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
+        } else {
+            $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
+        }
 
         $unitsHome = [
             0 => $dominion->military_draftees,
@@ -141,7 +149,11 @@ class InvadeCalculationService
         ];
 
         $this->calculationResult['home_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
-        $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $unitsHome);
+        if (!isset($calc['wonder'])) {
+            $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $unitsHome);
+        } else {
+            $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $unitsHome) * $this->militaryCalculator->getMoraleMultiplier($dominion);
+        }
         $this->calculationResult['home_dpa'] = $this->calculationResult['home_defense'] / $this->landCalculator->getTotalLand($dominion);
 
         // Calculate returning defense

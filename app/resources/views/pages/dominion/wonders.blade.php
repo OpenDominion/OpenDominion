@@ -74,6 +74,7 @@
             @else
                 <form action="{{ route('dominion.wonders') }}" method="post" role="form" id="attack_form">
                     @csrf
+                    <input type="hidden" name="calc[wonder]" value="1" />
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Attack</h3>
