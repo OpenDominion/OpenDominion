@@ -350,7 +350,7 @@ class TickService
                     $this->wonderService->createWonder($round, $wonder);
                 }
             } else if ($day > 6 && $day % 2 == 0) {
-                $this->wonderService->createWonder($round, $wonder);
+                $this->wonderService->createWonder($round);
             }
         }
     }
