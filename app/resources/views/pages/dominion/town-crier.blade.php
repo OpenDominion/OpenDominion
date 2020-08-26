@@ -169,7 +169,7 @@
                     @else
                         <p>All the news for your realm can be seen here.</p>
                     @endif
-                    <p>You will see only military operations{{-- as well as death messages and important messages regarding Wonders of the World--}}. Magical and Spy attacks are not known to the Town Crier. You will have to inquire in the council as to those types of attacks.</p>
+                    <p>You will see only military operations and important messages regarding Wonders of the World. Magical and Spy operations are not known to the Town Crier.</p>
                     @if ($selectedDominion->round->start_date <= now())
                     <p>
                         <label for="realm-select">Show Town Crier for:</label>

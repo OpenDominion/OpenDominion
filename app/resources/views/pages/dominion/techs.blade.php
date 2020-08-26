@@ -75,10 +75,11 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The costs of each advancement will scale with your land size, and has a minimum of 3780 points. Some advancements require others before you can select them. Please consult the tech tree below.</p>
+                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement scales according to your highest land size or 35% of your total land conqured (whichever is higher) with a minimum of 3780 points. Some advancements require others before you can select them. Please consult the tech tree below.</p>
                     <p>If you pick a tech that has the same bonus as another tech, only the highest technology bonus counts (they do not stack). For example, Military Genius adds +5% offense and Magical Weaponry provides +10% offense. If you obtain both, only the 10% bonus would apply.</p>
-                    <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b>.</p>
-                    <p>You currently need {{ number_format($techCalculator->getTechCost($selectedDominion)) }} research points to unlock a new tech.</p>
+                    <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> and currently need {{ number_format($techCalculator->getTechCost($selectedDominion)) }} to unlock a new tech.</p>
+                    <p>Your highest land achieved is <b>{{ number_format($selectedDominion->highest_land_achieved) }}</b> acres.</p>
+                    <p>Your total conquered land total is <b>{{ number_format($selectedDominion->stat_total_land_conquered) }}</b> acres.</p>
                 </div>
             </div>
         </div>

@@ -304,7 +304,7 @@
                     <p>Here you can invade other players to try to capture some of their land and to gain prestige. Invasions are successful if you send more OP than they have DP.</p>
                     <p>Find targets using <a href="{{ route('dominion.magic') }}">magic</a>,  <a href="{{ route('dominion.espionage') }}">espionage</a> and the <a href="{{ route('dominion.op-center') }}">Op Center</a>. Communicate with your realmies using the <a href="{{ route('dominion.council') }}">council</a> to coordinate attacks.</p>
                     <p>Be sure to calculate your OP vs your target's DP to avoid blindly sending your units to their doom.</p>
-                    <p>You can only invade dominions that are within your range, and you will only gain prestige on targets 75% or greater relative to your own land size.</p>
+                    <p>You can only invade dominions that are within your range, and you will only gain prestige and discounted construction on targets 75% or greater relative to your own land size.</p>
                 </div>
             </div>
         </div>

@@ -92,7 +92,7 @@
                     <p>This page shows you the rankings of all dominions in this round and is updated every 24 hours starting on the 5th day of the round.</p>
                     @if (!empty($daily_rankings) && $selectedDominion->round->start_date <= now()->subDays(4))
                         @php
-                            $rankingsUpdatedHoursAgo = (now()->hour % 24);
+                            $rankingsUpdatedHoursAgo = now()->diffInHours($selectedDominion->round->start_date) % 24;
                         @endphp
                         @if ($rankingsUpdatedHoursAgo === 0)
                             <p>Current displayed rankings were updated this hour.</p>
