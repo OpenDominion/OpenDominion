@@ -267,7 +267,7 @@ class WonderActionService
             } else {
                 $dominion->stat_spell_success += 1;
 
-                $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
+                $wizardRatio = min(1, $this->militaryCalculator->getWizardRatio($dominion));
                 $damageDealt = round($spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion));
                 if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_damage')) {
                     $damageDealt *= (1 + $wonder->wonder->perks->groupBy('key')['enemy_spell_damage']->first()->pivot->value / 100);
@@ -604,25 +604,38 @@ class WonderActionService
     /**
      * Handles research point generation for attacker.
      *
+     * @param RoundWonder $wonder
      * @param Dominion $dominion
      * @param array $units
      */
-    protected function handleResearchPoints(Dominion $dominion, array $units): void
+    protected function handleResearchPoints(RoundWonder $wonder, Dominion $dominion, array $units): void
     {
-        $offenseSent = $this->militaryCalculator->getOffensivePower($dominion, null, null, $units);
-        $defenseHome = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
+        $mindSwellActive = $sc->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
+        if ($mindSwellActive !== null) {
+            $offenseSent = $this->militaryCalculator->getOffensivePower($dominion, null, null, $units);
+            $researchPointsGained = $this->WonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
 
-        $researchPointsGained = $this->WonderCalculator->getTechGainForDominion($dominion, $offenseSent, $defenseHome);
-        $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
+            if ($researchPointsGained > 0) {
+                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
 
-        $this->queueService->queueResources(
-            'invasion',
-            $dominion,
-            ['resource_tech' => $researchPointsGained],
-            $slowestTroopsReturnHours
-        );
+                $this->queueService->queueResources(
+                    'invasion',
+                    $dominion,
+                    ['resource_tech' => $researchPointsGained],
+                    $slowestTroopsReturnHours
+                );
 
-        $this->attackResult['attacker']['researchPoints'] = $researchPointsGained;
+                $this->attackResult['attacker']['researchPoints'] = $researchPointsGained;
+
+                // Remove spell after use
+                DB::table('active_spells')
+                    ->where([
+                        'dominion_id' => $dominion->id,
+                        'spell' => $spellKey,
+                    ])
+                    ->delete();
+            }
+        }
     }
 
     /**

@@ -14,7 +14,7 @@
                     <table class="table">
                             <col>
                             <col width="10%">
-                            <col width="10%">
+                            <col width="20%">
                             <col>
                         </colgroup>
                         <thead>
@@ -42,8 +42,9 @@
                                         @if ($wonder->realm)
                                             {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
                                         @else
-                                            {{ number_format($wonder->power) }}*
+                                            ???
                                         @endif
+                                        / {{ number_format($wonder->power) }}
                                     </td>
                                     <td>
                                         {{ $wonderHelper->getWonderDescription($wonder->wonder) }}

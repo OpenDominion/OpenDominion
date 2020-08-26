@@ -122,6 +122,14 @@ class SpellHelper
                 'key' => 'energy_mirror',
                 'mana_cost' => 4,
                 'duration' => 12,
+            ],
+            [
+                'name' => 'Mindswell',
+                'description' => 'The next significant attack against a wonder generates resarch points',
+                'key' => 'mindswell',
+                'mana_cost' => 1,
+                'duration' => 12,
+                'cooldown' => 12,
             ]
         ]));
 

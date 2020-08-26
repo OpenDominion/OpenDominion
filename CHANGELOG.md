@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - After a wonder is rebuilt by a realm, its current power is visible to all players; otherwise you will only see the damage your realm has dealt
 - Quick Start: Create your dominion from a template. You can customize the final 12 ticks of protection or skip it entirely
 - Non-Player Dominions: Two additional bots will be added to each realm (for a total of 4)
+- New Spell: Mindswell - generates research points when attacking a wonder
 - New Spell: Cyclone - deals damage to wonders
 - New Rankings/Titles: The Demolisher (wonder attack damage), The Aeromancer (wonder spell damage), The Opportunist (wonders destroyed)
 - War Bonus status is now displayed on the government and realm pages

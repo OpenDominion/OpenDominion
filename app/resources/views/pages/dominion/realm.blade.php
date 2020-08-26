@@ -233,13 +233,13 @@
                             <table class="table table-condensed">
                                 <tr>
                                     <th>Name</th>
-                                    <th>Current Power</th>
+                                    <th>Power</th>
                                     <th>Description</th>
                                 </tr>
                                 @foreach ($realm->roundWonders as $wonder)
                                     <tr>
                                         <td>{{ $wonder->wonder->name }}</a></td>
-                                        <td>{{ number_format($wonderCalculator->getCurrentPower($wonder)) }}</td>
+                                        <td>{{ number_format($wonderCalculator->getCurrentPower($wonder)) }} / {{ number_format($wonder->power) }}</td>
                                         <td>{{ $wonderHelper->getWonderDescription($wonder->wonder) }}</td>
                                     </tr>
                                 @endforeach
