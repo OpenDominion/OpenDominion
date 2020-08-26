@@ -467,15 +467,17 @@ class DominionFactory
 
         $startingAttributes = $this->getStartingAttributes();
 
-        // Generate random starting build
+        // Calculate size/defense
+        $accuracy = 1 + (mt_rand(-10, 10) / 100);
         if (random_chance(2/3)) {
             $landSize = mt_rand(400, 500);
-            $defense = 0.0036 * ($landSize ** 2.152);
+            $defense = 0.0036 * ($landSize ** 2.152) * $accuracy;
         } else {
             $landSize = mt_rand(525, 600);
-            $defense = $landSize * (0.0105 * ($landSize - 0.3));
+            $defense = $landSize * (0.0105 * ($landSize - 0.3)) * $accuracy;
         }
 
+        // Generate random starting build
         $startingBuildings = $this->getNonPlayerBuildings($race, $landSize);
         $startingLand = $this->getNonPlayerLand($race, $startingBuildings);
 
@@ -554,10 +556,7 @@ class DominionFactory
             'protection_ticks_remaining' => 0,
         ]);
 
-        // Calculate Defense
-        $accuracy = 1 - (mt_rand(0, 15) / 100);
-        $defense = $landSize * ((0.008 * $landSize) + 0.9);
-        $defense *= $accuracy;
+        // Generate Military
         $specRatio = 1;
         if (random_chance(0.85)) {
             $specRatio = mt_rand(50, 75) / 100;
