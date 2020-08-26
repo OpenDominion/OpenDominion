@@ -267,7 +267,7 @@ class WonderActionService
             } else {
                 $dominion->stat_spell_success += 1;
 
-                $wizardRatio = min(1, $this->militaryCalculator->getWizardRatio($dominion));
+                $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
                 $damageDealt = round($spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion));
                 if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_damage')) {
                     $damageDealt *= (1 + $wonder->wonder->perks->groupBy('key')['enemy_spell_damage']->first()->pivot->value / 100);
@@ -397,7 +397,7 @@ class WonderActionService
 
             $this->checkGuardApplications($dominion);
 
-            $damageDealt = round($this->militaryCalculator->getOffensivePower($dominion, null, null, $units));
+            $damageDealt = round($this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units));
             $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
             $wonder->damage()->create([
                 'realm_id' => $dominion->realm_id,
@@ -612,7 +612,7 @@ class WonderActionService
     {
         $mindSwellActive = $sc->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
         if ($mindSwellActive !== null) {
-            $offenseSent = $this->militaryCalculator->getOffensivePower($dominion, null, null, $units);
+            $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units);
             $researchPointsGained = $this->WonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
 
             if ($researchPointsGained > 0) {
