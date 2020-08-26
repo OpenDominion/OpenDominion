@@ -125,7 +125,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Mindswell',
-                'description' => 'The next significant attack against a wonder generates resarch points',
+                'description' => 'Your next significant attack against a wonder generates resarch points, 12 hour recharge',
                 'key' => 'mindswell',
                 'mana_cost' => 1,
                 'duration' => 12,
