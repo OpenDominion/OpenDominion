@@ -124,26 +124,32 @@
             </div>
             <div class="row form-group">
                 <div class="col-sm-6 text-center">
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-conquered']) }}">Largest Attacking Dominions<br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-conquered']) }}">Largest Attacking Realms<br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-conquered']) }}">Largest Attacking Dominions</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-conquered']) }}">Largest Attacking Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-attacking-success']) }}">Most Victorious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-attacking-success']) }}">Most Victorious Realms</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-success']) }}">Most Fortified Dominions</a><br>
                 </div>
                 <div class="col-sm-6 text-center">
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-explored']) }}">Largest Exploring Dominions<br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-explored']) }}">Largest Exploring Realms<br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-total-land-explored']) }}">Largest Exploring Dominions</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-total-land-explored']) }}">Largest Exploring Realms</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-prestige']) }}">Most Prestigious Dominions</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-prestige']) }}">Most Prestigious Realms</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-defending-failure']) }}">Most Invaded Dominions</a><br>
                 </div>
             </div>
 
-            {{--<div class="row">
+            <div class="row">
                 <div class="col-md-12 text-center">
-                    <a href="#">Wonders of the World</a>
+                    <b>Wonders of the World</b>
                 </div>
-            </div>--}}
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6 text-center">
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wonder-damage']) }}">Most Wonder Damage</a><br>
+                </div>
+                <div class="col-sm-6 text-center">
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wonders-destroyed']) }}">Most Wonders Destroyed</a><br>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-12 text-center">
@@ -176,6 +182,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-fire']) }}">Masters of Fire</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-plague']) }}">Masters of Plague</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-swarm']) }}">Masters of Swarm</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-air']) }}">Masters of Air</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-lightning']) }}">Masters of Lightning</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-water']) }}">Masters of Water</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-earth']) }}">Masters of Earth</a><br>

@@ -110,14 +110,15 @@ class ValhallaController extends AbstractController
             case 'stat-masters-of-fire': $data = $this->getDominionsByStatistic($round, 'stat_fireball_damage'); break;
             case 'stat-masters-of-plague': $data = $this->getDominionsByStatistic($round, 'stat_plague_hours'); break;
             case 'stat-masters-of-swarm': $data = $this->getDominionsByStatistic($round, 'stat_insect_swarm_hours'); break;
+            case 'stat-masters-of-air': $data = $this->getDominionsByStatistic($round, 'stat_cyclone_damage'); break;
             case 'stat-masters-of-lightning': $data = $this->getDominionsByStatistic($round, 'stat_lightning_bolt_damage'); break;
             case 'stat-masters-of-water': $data = $this->getDominionsByStatistic($round, 'stat_great_flood_hours'); break;
             case 'stat-masters-of-earth': $data = $this->getDominionsByStatistic($round, 'stat_earthquake_hours'); break;
             case 'stat-top-spy-disbanders': $data = $this->getDominionsByStatistic($round, 'stat_disband_spies_damage'); break;
             case 'realm-stat-prestige': $data = $this->getRealmsByStatistic($round, 'prestige'); break;
             case 'realm-stat-attacking-success': $data = $this->getRealmsByStatistic($round, 'stat_attacking_success'); break;
-            case 'stat-defending-success': $data = $this->getRealmsByStatistic($round, 'stat_defending_success'); break;
-            case 'stat-defending-failure': $data = $this->getRealmsByStatistic($round, 'stat_defending_failure'); break;
+            case 'stat-wonder-damage': $data = $this->getRealmsByStatistic($round, 'stat_wonder_damage'); break;
+            case 'stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'stat_wonders_destroyed'); break;
             case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'stat_total_land_explored'); break;
             case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'stat_total_land_conquered'); break;
 
