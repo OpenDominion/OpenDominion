@@ -409,7 +409,7 @@ class WonderActionService
             $this->attackResult['wonder']['power'] = $wonderPower;
 
             $this->handleBoats($dominion, $units);
-            $this->handleResearchPoints($dominion, $units);
+            $this->handleResearchPoints($wonder, $dominion, $units);
             $survivingUnits = $this->handleCasualties($dominion, $units);
             $this->handleReturningUnits($dominion, $survivingUnits);
 
@@ -453,14 +453,14 @@ class WonderActionService
         if ($this->attackResult['wonder']['destroyed']) {
             $message = sprintf(
                 'Your army has attacked the %s dealing %s damage, destroying it!',
-                $this->attackResult['attacker']['op'],
-                $wonder->wonder->name
+                $wonder->wonder->name,
+                $this->attackResult['attacker']['op']
             );
         } else {
             $message = sprintf(
                 'Your army has attacked the %s dealing %s damage!',
-                $this->attackResult['attacker']['op'],
-                $wonder->wonder->name
+                $wonder->wonder->name,
+                $this->attackResult['attacker']['op']
             );
         }
 
@@ -610,10 +610,10 @@ class WonderActionService
      */
     protected function handleResearchPoints(RoundWonder $wonder, Dominion $dominion, array $units): void
     {
-        $mindSwellActive = $sc->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
+        $mindSwellActive = $this->spellCalculator->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
         if ($mindSwellActive !== null) {
             $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
-            $researchPointsGained = $this->WonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
+            $researchPointsGained = $this->wonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
 
             if ($researchPointsGained > 0) {
                 $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
@@ -631,7 +631,7 @@ class WonderActionService
                 DB::table('active_spells')
                     ->where([
                         'dominion_id' => $dominion->id,
-                        'spell' => $spellKey,
+                        'spell' => 'mindswell',
                     ])
                     ->delete();
             }

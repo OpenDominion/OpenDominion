@@ -27,7 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - The damage of war spells and operations will slowly decrease after 60 hours of war (to a minimum of 65% damage after 96 hours)
 - One-way War: war operations now have a 25% chance to gain 1 prestige
 - Mutual War: war operations yield +2 prestige for success, -1 for failure (from +2 only)
-- Docks: boat protection is now daysInRound*0.1, min 2.5 (from 2.5)
+- Docks: boat protection is increased by 0.1 each day after Day 25 (from 2.5)
 - Forest Havens: now produce 20 lumber per hour
 - Wizard Guilds: wizard power bonus no longer affects Dark Elves
 - Dark Elf: +10% wizard power

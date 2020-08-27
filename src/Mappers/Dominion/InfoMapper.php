@@ -101,7 +101,10 @@ class InfoMapper
         } else {
             // Wonders
             // - Spire of Illusion: Clear Sights are 85% accurate
-            $militaryAccuracy = $dominion->getWonderPerkMultiplier('clear_sight_accuracy');
+            if ($dominion->getWonderPerkMultiplier('clear_sight_accuracy') != 0) {
+                $militaryAccuracy = $dominion->getWonderPerkMultiplier('clear_sight_accuracy');
+                $data['clear_sight_accuracy'] = $militaryAccuracy;
+            }
 
             $data['recently_invaded_count'] = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
         }
