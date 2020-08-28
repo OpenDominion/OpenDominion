@@ -37,8 +37,8 @@
                                 @foreach ($gameEvents as $gameEvent)
                                     @if($previousDate != $gameEvent->created_at->startOfDay())
                                         <tr>
-                                            <td colspan="3" class="text-center border-left">
-                                                {{ $gameEvent->created_at->toDateString() }}
+                                            <td colspan="3" class="text-center border-left text-bold">
+                                                News from {{ $gameEvent->created_at->toDateString() }}
                                             </td>
                                         </tr>
                                         @php
