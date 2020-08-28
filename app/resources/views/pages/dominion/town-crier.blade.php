@@ -30,7 +30,22 @@
                                 <col width="50">
                             </colgroup>
                             <tbody>
+                                @php
+                                    $previousDate = null;
+                                    $firstLoop = true;
+                                @endphp
                                 @foreach ($gameEvents as $gameEvent)
+                                    @if($previousDate != $gameEvent->created_at->startOfDay())
+                                        <tr>
+                                            <td colspan="3" class="text-center border-left">
+                                                {{ $gameEvent->created_at->toDateString() }}
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $previousDate = $gameEvent->created_at->startOfDay();
+                                            $firstLoop = false;
+                                        @endphp
+                                    @endif
                                     <tr>
                                         <td>
                                             <span>{{ $gameEvent->created_at }}</span>
