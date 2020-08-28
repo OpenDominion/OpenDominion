@@ -53,11 +53,56 @@
             "stat_total_tech_production": 0,
             "stat_total_boat_production": 0,
             "stat_total_land_explored": 400,
+            "daily_land": true,
+            "daily_platnium": true,
             "protection_ticks_remaining": 12
         },
         "spells": ["ares_call", "midas_touch"],
         "queues": {
-            "construction": [],
+            "construction": [
+                [
+                    {
+                        "resource": "building_farm",
+                        "amount": 8
+                    }
+                ],
+                [
+                    {
+                        "resource": "building_home",
+                        "amount": 8
+                    }
+                ],
+                [
+                    {
+                        "resource": "building_home",
+                        "amount": 9
+                    }
+                ],
+                [
+                    {
+                        "resource": "building_home",
+                        "amount": 9
+                    }
+                ],
+                [
+                    {
+                        "resource": "building_home",
+                        "amount": 9
+                    }
+                ],
+                [
+                    {
+                        "resource": "building_home",
+                        "amount": 11
+                    }
+                ],
+                [],
+                [],
+                [],
+                [],
+                [],
+                []
+            ],
             "exploration": [],
             "training": []
         }
@@ -121,42 +166,12 @@
         "spells": ["ares_call", "midas_touch"],
         "queues": {
             "construction": [
-                [
-                    {
-                        "resource": "building_farm",
-                        "amount": 8
-                    }
-                ],
-                [
-                    {
-                        "resource": "building_home",
-                        "amount": 8
-                    }
-                ],
-                [
-                    {
-                        "resource": "building_home",
-                        "amount": 9
-                    }
-                ],
-                [
-                    {
-                        "resource": "building_home",
-                        "amount": 9
-                    }
-                ],
-                [
-                    {
-                        "resource": "building_home",
-                        "amount": 9
-                    }
-                ],
-                [
-                    {
-                        "resource": "building_home",
-                        "amount": 11
-                    }
-                ],
+                [],
+                [],
+                [],
+                [],
+                [],
+                [],
                 [],
                 [],
                 [],

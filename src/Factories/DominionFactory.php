@@ -576,48 +576,47 @@ class DominionFactory
             return null;
         }
 
-        if ($landSize > 270) {
-            // Add incoming units
-            $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
-            $incSpecs = (int) $dominion->military_unit2 * (mt_rand(25, 50) / 100);
-            $incElites = (int) $dominion->military_unit3 * (mt_rand(25, 50) / 100);
-            $hours = array_rand(range(4, 12), mt_rand(2, 5));
-            foreach ($hours as $key => $hour) {
-                if ($key === array_key_last($hours)) {
-                    $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
-                } else {
-                    if ($incElites > 0 && random_chance(0.5)) {
-                        $amount = mt_rand($incElites / 4, $incElites / 2);
-                        $incElites -= min($amount, $incElites);
-                        $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour);
-                    } elseif ($incSpecs > 0) {
-                        $amount = mt_rand($incSpecs / 4, $incSpecs / 2);
-                        $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour);
-                        $incSpecs -= min($amount, $incSpecs);
-                    }
+        // Add incoming units
+        $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
+        $incSpecs = (int) $dominion->military_unit2 * (mt_rand(25, 50) / 100);
+        $incElites = (int) $dominion->military_unit3 * (mt_rand(25, 50) / 100);
+        $hours = array_rand(range(4, 12), mt_rand(2, 5));
+        foreach ($hours as $key => $hour) {
+            if ($key === array_key_last($hours)) {
+                $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
+            } else {
+                if ($incElites > 0 && random_chance(0.5)) {
+                    $amount = mt_rand($incElites / 4, $incElites / 2);
+                    $incElites -= min($amount, $incElites);
+                    $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour);
+                } elseif ($incSpecs > 0) {
+                    $amount = mt_rand($incSpecs / 4, $incSpecs / 2);
+                    $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour);
+                    $incSpecs -= min($amount, $incSpecs);
                 }
             }
-
-            // Cast spells
-            DB::table('active_spells')
-                ->insert([
-                    'dominion_id' => $dominion->id,
-                    'spell' => 'ares_call',
-                    'duration' => 12,
-                    'cast_by_dominion_id' => $dominion->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            DB::table('active_spells')
-                ->insert([
-                    'dominion_id' => $dominion->id,
-                    'spell' => 'midas_touch',
-                    'duration' => 12,
-                    'cast_by_dominion_id' => $dominion->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
         }
+
+        // Cast spells
+        DB::table('active_spells')
+            ->insert([
+                'dominion_id' => $dominion->id,
+                'spell' => 'ares_call',
+                'duration' => 12,
+                'cast_by_dominion_id' => $dominion->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+        DB::table('active_spells')
+            ->insert([
+                'dominion_id' => $dominion->id,
+                'spell' => 'midas_touch',
+                'duration' => 12,
+                'cast_by_dominion_id' => $dominion->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
         return $dominion;
     }

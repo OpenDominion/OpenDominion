@@ -25,7 +25,7 @@
             "land_forest": 92,
             "land_hill": 55,
             "land_water": 20,
-            "building_home": 70,
+            "building_home": 72,
             "building_alchemy": 220,
             "building_farm": 30,
             "building_smithy": 108,
@@ -53,6 +53,8 @@
             "stat_total_tech_production": 0,
             "stat_total_boat_production": 14,
             "stat_total_land_explored": 350,
+            "daily_land": true,
+            "daily_platnium": true,
             "protection_ticks_remaining": 12
         },
         "spells": ["ares_call", "midas_touch"],
