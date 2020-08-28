@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.0.0] - 2018-09-27
 ### Added
 - Wonders of the World: Capture wonders to gain bonuses for your realm
   - The first wave of wonders will spawn on Day 6
