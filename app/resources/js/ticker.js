@@ -78,18 +78,13 @@ class Ticker {
         } else if (typeof value === 'number') {
             value /= 1000;
 
-            if(value < 3600) {
-                seconds = value % 60;
-                minutes = (value - seconds) / 60;
-                hours = (value - (minutes * 60) - seconds) / 60;
-            } else {
-                let tempValue = value;
-                hours = Math.floor(tempValue / 3600);
-                tempValue -= hours * 3600;
-                minutes = Math.floor(tempValue / 60);
-                tempValue -= minutes * 60;
-                seconds = Math.floor(tempValue);
-            }
+
+            let tempValue = value;
+            hours = Math.floor(tempValue / 3600);
+            tempValue -= hours * 3600;
+            minutes = Math.floor(tempValue / 60);
+            tempValue -= minutes * 60;
+            seconds = Math.floor(tempValue);
         }
 
         return (
