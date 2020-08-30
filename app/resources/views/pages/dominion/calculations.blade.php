@@ -56,6 +56,13 @@
                                     $buildingFieldsRequired = [];
                                     $landFieldsRequired = [];
                                     $prestigeRequired = false;
+                                    $clearSightAccuracy = 1;
+                                    if ($targetInfoOps->has('clear_sight')) {
+                                        $clearSightAccuracy = array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy");
+                                        if ($clearSightAccuracy == null || $clearSightAccuracy == 0) {
+                                            $clearSightAccuracy = 1;
+                                        }
+                                    }
                                 @endphp
                                 <table class="table table-condensed">
                                     <colgroup>
@@ -100,7 +107,7 @@
                                                         class="form-control text-center"
                                                         placeholder="0"
                                                         min="0"
-                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_draftees") / (array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy"))) : null }}" />
+                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_draftees") / $clearSightAccuracy) : null }}" />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
@@ -151,7 +158,7 @@
                                                             placeholder="0"
                                                             min="0"
                                                             disabled
-                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") / (array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy"))) : null }}" />
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") / $clearSightAccuracy) : null }}" />
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number"
