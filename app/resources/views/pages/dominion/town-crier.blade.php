@@ -37,7 +37,7 @@
                                 @foreach ($gameEvents as $gameEvent)
                                     @if($previousDate != $gameEvent->created_at->startOfDay())
                                         <tr>
-                                            <td colspan="3" class="text-center border-left text-bold">
+                                            <td colspan="3" class="text-center text-bold border-left border-right">
                                                 News from {{ $gameEvent->created_at->toDateString() }}
                                             </td>
                                         </tr>
@@ -128,11 +128,16 @@
                                             @elseif ($gameEvent->type == 'wonder_spawned')
                                                 The <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a> has appeared!
                                             @elseif ($gameEvent->type == 'wonder_attacked')
+                                                @php
+                                                    $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->source), 2);
+                                                    $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->source);
+                                                    $sourceToolTipHtml = "<span class=\"$sourceRangeClass\">$sourceRange%</span>";
+                                                @endphp
                                                 @if (in_array($gameEvent->source_id, $dominionIds, true))
-                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green">{{ $gameEvent->source->name }}</span></a>
+                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                                                     <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                 @else
-                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
+                                                    <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
                                                     <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                 @endif
                                                 has attacked

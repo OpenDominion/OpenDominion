@@ -167,6 +167,10 @@
 .skin-classic .box.box-danger {
     border-top-width: 2px;
 }
+.skin-classic .box .border-left,
+.skin-classic .box .border-right {
+    border-color: #666 !important;
+}
 .skin-classic .main-header .navbar {
     background-color: #005566;
 }
