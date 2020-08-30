@@ -457,16 +457,6 @@ class DominionFactory
     ): ?Dominion {
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
-        $startingBuildings = $this->getStartingBuildings();
-
-        $startingLand = $this->getStartingLand(
-            $race,
-            $this->getStartingBarrenLand(),
-            $startingBuildings
-        );
-
-        $startingAttributes = $this->getStartingAttributes();
-
         // Calculate size/defense
         $accuracy = 1 + (mt_rand(-10, 10) / 100);
         if (random_chance(2/3)) {
@@ -478,6 +468,7 @@ class DominionFactory
         }
 
         // Generate random starting build
+        $startingAttributes = $this->getStartingAttributes();
         $startingBuildings = $this->getNonPlayerBuildings($race, $landSize);
         $startingLand = $this->getNonPlayerLand($race, $startingBuildings);
 
@@ -563,10 +554,11 @@ class DominionFactory
         }
 
         $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
-        $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion) + 0.1;
         $specPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[1], 'defense');
         $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
 
+        $defense -= ($dominion->military_draftees * $defenseMod);
         $dominion->military_unit2 = (int) $defense / $defenseMod / $specPower * $specRatio;
         $dominion->military_unit3 = (int) $defense / $defenseMod / $elitePower * (1 - $specRatio);
 
@@ -657,34 +649,34 @@ class DominionFactory
         // Ore Mines
         $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Spirit', 'Sylvan', 'Undead'];
         if (!in_array($race->name, $racesWithoutOre)) {
-            $startingBuildings['building_ore_mine'] = 20;
+            $startingBuildings['building_ore_mine'] += 20;
             $landAvailable -= $startingBuildings['building_ore_mine'];
         }
 
         // Temples for larger doms
         if ($landAvailable > 100) {
-            $startingBuildings['building_temple'] = min(mt_rand(15, max(30, 0.05 * $landSize)), $landAvailable);
+            $startingBuildings['building_temple'] += min(mt_rand(15, max(30, 0.05 * $landSize)), $landAvailable);
             $landAvailable -= $startingBuildings['building_temple'];
         }
 
         // Alchemies
-        $startingBuildings['building_alchemy'] = min(mt_rand(0.33 * $landSize, 280), $landAvailable);
-        $landAvailable -= $startingBuildings['building_alchemy'];
+        $startingBuildings['building_alchemy'] += min(mt_rand(0.33 * $landSize, 220), $landAvailable);
+        $landAvailable -= ($startingBuildings['building_alchemy'] - 30);
 
         // Up to max Smithies
         if ($landAvailable > 50) {
             $maxSmithies = (int) round(0.18 * $landSize);
             if ($maxSmithies < $landAvailable) {
-                $startingBuildings['building_smithy'] = $maxSmithies;
+                $startingBuildings['building_smithy'] += $maxSmithies;
             } else {
-                $startingBuildings['building_smithy'] = mt_rand(50, $landAvailable);
+                $startingBuildings['building_smithy'] += mt_rand(50, $landAvailable);
             }
             $landAvailable -= $startingBuildings['building_smithy'];
         }
 
         // Guard Towers
         if ($landAvailable > 50) {
-            $startingBuildings['building_guard_tower'] = min(mt_rand(25, 0.20 * $landSize), $landAvailable);
+            $startingBuildings['building_guard_tower'] += min(mt_rand(25, 0.20 * $landSize), $landAvailable);
             $landAvailable -= $startingBuildings['building_guard_tower'];
         }
 
