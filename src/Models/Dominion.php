@@ -435,11 +435,15 @@ class Dominion extends AbstractModel
     }
 
     protected function getWonderPerks() {
-        return $this->realm->wonders->flatMap(
-            function ($wonder) {
-                return $wonder->perks;
-            }
-        );
+        if ($this->realm !== null) {
+            return $this->realm->wonders->flatMap(
+                function ($wonder) {
+                    return $wonder->perks;
+                }
+            );
+        } else {
+            return collect([]);
+        }
     }
 
     /**
