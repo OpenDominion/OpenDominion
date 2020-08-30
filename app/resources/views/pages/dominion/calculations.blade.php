@@ -15,7 +15,7 @@
                         <div class="form-group">
                             <label for="race">Race</label>
                             <select name="race" id="race_dp" class="form-control" style="width: 100%;">
-                                <option>Select a race</option>
+                                <option value="0">Select a race</option>
                                 @foreach ($races as $race)
                                     <option value="{{ $race->id }}" {{ ($targetDominion !== null && $targetDominion->race_id == $race->id) ? 'selected' : null }}>
                                         {{ $race->name }}
@@ -355,7 +355,7 @@
                         <div class="form-group">
                             <label for="race">Race</label>
                             <select name="race" id="race_op" class="form-control" style="width: 100%;">
-                                <option>Select a race</option>
+                                <option value="0">Select a race</option>
                                 @foreach ($races as $race)
                                     <option value="{{ $race->id }}" {{ ($targetDominion !== null && $targetDominion->race_id == $race->id) ? 'selected' : null }}>
                                         {{ $race->name }}
@@ -762,6 +762,8 @@
             });
 
             function updateUnitDefenseStats() {
+                if ($('#race_dp').val() == 0) return;
+
                 // Update unit stats
                 $.get(
                     "{{ route('api.calculator.defense') }}?" + $('#calculate-defense-form').serialize(), {},
@@ -807,6 +809,8 @@
             });
 
             function updateUnitOffenseStats() {
+                if ($('#race_op').val() == 0) return;
+
                 // Update unit stats
                 $.get(
                     "{{ route('api.calculator.offense') }}?" + $('#calculate-offense-form').serialize(), {},
