@@ -79,7 +79,7 @@
                     <p>If you pick a tech that has the same bonus as another tech, only the highest technology bonus counts (they do not stack). For example, Military Genius adds +5% offense and Magical Weaponry provides +10% offense. If you obtain both, only the 10% bonus would apply.</p>
                     <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> and currently need {{ number_format($techCalculator->getTechCost($selectedDominion)) }} to unlock a new tech.</p>
                     <p>Your highest land achieved is <b>{{ number_format($selectedDominion->highest_land_achieved) }}</b> acres.</p>
-                    <p>Your total conquered land total is <b>{{ number_format($selectedDominion->stat_total_land_conquered) }}</b> acres.</p>
+                    <p>Your conquered land total is <b>{{ number_format($selectedDominion->stat_total_land_conquered) }}</b> acres.</p>
                 </div>
             </div>
         </div>

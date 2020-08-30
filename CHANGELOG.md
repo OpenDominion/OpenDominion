@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.0.1] - 2018-09-30
+### Fixed
+- Errors in recently invaded calculation
+- Errors on Calculators page
+- A problem where NPDs were spawning in realm 0
+- Problems with several quickstart files
+
 ## [1.0.0] - 2018-09-27
 ### Added
 - Wonders of the World: Capture wonders to gain bonuses for your realm

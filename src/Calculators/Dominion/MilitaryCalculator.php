@@ -1030,9 +1030,9 @@ class MilitaryCalculator
         });
 
         if ($attacker !== null) {
-            return $invasionEvents->filter(function (GameEvent $event) {
+            return $invasionEvents->filter(function (GameEvent $event) use ($attacker) {
                 return $event->source_id == $attacker->id && $event->data['result']['success'];
-            });
+            })->count();
         }
 
         return $invasionEvents->count();
