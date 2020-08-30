@@ -57,7 +57,7 @@
                                     $landFieldsRequired = [];
                                     $prestigeRequired = false;
                                     $clearSightAccuracy = 1;
-                                    if ($targetInfoOps->has('clear_sight')) {
+                                    if ($targetDominion !== null && $targetInfoOps->has('clear_sight')) {
                                         $clearSightAccuracy = array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy");
                                         if ($clearSightAccuracy == null || $clearSightAccuracy == 0) {
                                             $clearSightAccuracy = 1;
