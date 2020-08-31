@@ -593,9 +593,9 @@ class TickService
                     } elseif ($ranking['stat'] == 'networth') {
                         $value = $this->networthCalculator->getDominionNetworth($dominion);
                     } elseif ($ranking['stat'] == 'land_explored') {
-                        $value = min(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
+                        $value = max(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
                     } elseif ($ranking['stat'] == 'land_conquered') {
-                        $value = min(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
+                        $value = max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
                     } else {
                         $value = $dominion->{$ranking['stat']};
                     }
