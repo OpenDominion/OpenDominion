@@ -305,7 +305,11 @@
                     <p>Find targets using <a href="{{ route('dominion.magic') }}">magic</a>,  <a href="{{ route('dominion.espionage') }}">espionage</a> and the <a href="{{ route('dominion.op-center') }}">Op Center</a>. Communicate with your realmies using the <a href="{{ route('dominion.council') }}">council</a> to coordinate attacks.</p>
                     <p>Be sure to calculate your OP vs your target's DP to avoid blindly sending your units to their doom.</p>
                     <p>You can only invade dominions that are within your range, and you will only gain prestige and discounted construction on targets <b>75% or greater</b> relative to your own land size.</p>
-                    <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
+                    @if ($selectedDominion->morale < 100)
+                        <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
+                    @else
+                        <p>You have {{ $selectedDominion->morale }}% morale.</p>
+                    @endif
                 </div>
             </div>
         </div>

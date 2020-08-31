@@ -329,7 +329,11 @@
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
                     <p>The first wave of wonders will appear on the 6th day of the round with a starting power of 150,000. An additional wonder will appear every 48 hours with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
                     <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>5% casualties</b> (including immortal units). Each dominion that participates in destroying a wonder that is controlled by another realm is awarded prestige.</p>
-                    <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
+                    @if ($selectedDominion->morale < 100)
+                        <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
+                    @else
+                        <p>You have {{ $selectedDominion->morale }}% morale.</p>
+                    @endif
                     <p>The <a href="{{ route('dominion.magic') }}">Mindswell</a> spell can be used to imbue your troops with heightened awareness, uncovering the wonder's secrets upon invasion.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
