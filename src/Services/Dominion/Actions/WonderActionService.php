@@ -385,7 +385,7 @@ class WonderActionService
                 throw new GameException('You need to leave more DP units at home (33% rule)');
             }
 
-            if (!$this->invasionService->passes54RatioRule($dominion, null, null, $units)) {
+            if (!$this->invasionService->passes54RatioRule($dominion, null, null, $units, true)) {
                 throw new GameException('You are sending out too much OP, based on your new home DP (5:4 rule)');
             }
 

@@ -15,7 +15,7 @@
                         <div class="form-group">
                             <label for="race">Race</label>
                             <select name="race" id="race_dp" class="form-control" style="width: 100%;">
-                                <option>Select a race</option>
+                                <option value="0">Select a race</option>
                                 @foreach ($races as $race)
                                     <option value="{{ $race->id }}" {{ ($targetDominion !== null && $targetDominion->race_id == $race->id) ? 'selected' : null }}>
                                         {{ $race->name }}
@@ -56,6 +56,13 @@
                                     $buildingFieldsRequired = [];
                                     $landFieldsRequired = [];
                                     $prestigeRequired = false;
+                                    $clearSightAccuracy = 1;
+                                    if ($targetDominion !== null && $targetInfoOps->has('clear_sight')) {
+                                        $clearSightAccuracy = array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy");
+                                        if ($clearSightAccuracy == null || $clearSightAccuracy == 0) {
+                                            $clearSightAccuracy = 1;
+                                        }
+                                    }
                                 @endphp
                                 <table class="table table-condensed">
                                     <colgroup>
@@ -100,7 +107,7 @@
                                                         class="form-control text-center"
                                                         placeholder="0"
                                                         min="0"
-                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_draftees") / (array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy"))) : null }}" />
+                                                        value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_draftees") / $clearSightAccuracy) : null }}" />
                                             </td>
                                             <td class="text-center">
                                                 <input type="number"
@@ -151,7 +158,7 @@
                                                             placeholder="0"
                                                             min="0"
                                                             disabled
-                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") / (array_get($targetInfoOps['clear_sight']->data, "clear_sight_accuracy"))) : null }}" />
+                                                            value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? ceil(array_get($targetInfoOps['clear_sight']->data, "military_unit{$unit->slot}") / $clearSightAccuracy) : null }}" />
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number"
@@ -355,7 +362,7 @@
                         <div class="form-group">
                             <label for="race">Race</label>
                             <select name="race" id="race_op" class="form-control" style="width: 100%;">
-                                <option>Select a race</option>
+                                <option value="0">Select a race</option>
                                 @foreach ($races as $race)
                                     <option value="{{ $race->id }}" {{ ($targetDominion !== null && $targetDominion->race_id == $race->id) ? 'selected' : null }}>
                                         {{ $race->name }}
@@ -762,6 +769,8 @@
             });
 
             function updateUnitDefenseStats() {
+                if ($('#race_dp').val() == 0) return;
+
                 // Update unit stats
                 $.get(
                     "{{ route('api.calculator.defense') }}?" + $('#calculate-defense-form').serialize(), {},
@@ -807,6 +816,8 @@
             });
 
             function updateUnitOffenseStats() {
+                if ($('#race_op').val() == 0) return;
+
                 // Update unit stats
                 $.get(
                     "{{ route('api.calculator.offense') }}?" + $('#calculate-offense-form').serialize(), {},

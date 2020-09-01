@@ -106,6 +106,7 @@ class TickService
             $names = collect($names_json->dominion_names);
             $races = Race::all();
             foreach ($round->realms as $realm) {
+                if ($realm->number == '0') continue;
                 // Number of NPDs per realm (count = 4)
                 for($cnt=0; $cnt<4; $cnt++) {
                     if ($realm->alignment != 'neutral') {
@@ -592,9 +593,9 @@ class TickService
                     } elseif ($ranking['stat'] == 'networth') {
                         $value = $this->networthCalculator->getDominionNetworth($dominion);
                     } elseif ($ranking['stat'] == 'land_explored') {
-                        $value = min(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
+                        $value = max(0, $dominion->stat_total_land_explored - $dominion->stat_total_land_lost);
                     } elseif ($ranking['stat'] == 'land_conquered') {
-                        $value = min(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
+                        $value = max(0, $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost);
                     } else {
                         $value = $dominion->{$ranking['stat']};
                     }

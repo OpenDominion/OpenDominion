@@ -153,10 +153,12 @@ class InvasionService
      *
      * @param Dominion $dominion
      * @param Dominion $target
+     * @param float $landRatio
      * @param array $units
+     * @param bool $rawOffense
      * @return bool
      */
-    public function passes54RatioRule(Dominion $dominion, ?Dominion $target, ?float $landRatio, array $units): bool
+    public function passes54RatioRule(Dominion $dominion, ?Dominion $target, ?float $landRatio, array $units, bool $rawOffense = false): bool
     {
         $unitsHome = [
             0 => $dominion->military_draftees,
@@ -165,7 +167,11 @@ class InvasionService
             3 => $dominion->military_unit3 - (isset($units[3]) ? $units[3] : 0),
             4 => $dominion->military_unit4 - (isset($units[4]) ? $units[4] : 0)
         ];
-        $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
+        if ($rawOffense) {
+            $attackingForceOP = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $units);
+        } else {
+            $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
+        }
         $newHomeForcesDP = $this->militaryCalculator->getDefensivePower($dominion, null, null, $unitsHome, 0, false, true);
 
         $attackingForceMaxOP = (int)ceil($newHomeForcesDP * 1.25);

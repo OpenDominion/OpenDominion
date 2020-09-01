@@ -1017,9 +1017,6 @@ class InvadeActionService
             $plunderPlatinum = min($hobbosToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
             $plunderGems = min($hobbosToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
 
-            $target->resource_platinum -= $plunderPlatinum;
-            $target->resource_gems -= $plunderGems;
-
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
                     'platinum' => $plunderPlatinum,
