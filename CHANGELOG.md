@@ -3,6 +3,13 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Show effect of morale on invasion page
+
+### Fixed
+- 5:4 calculation for wonders no longer uses OP mods
+- Plunder will no longer remove the target's resources
+- Adjusted wording in town crier/incoming resources
 
 ## [1.0.1] - 2018-09-30
 ### Added
@@ -915,74 +922,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/0.8.1...HEAD
-[0.8.1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-7...0.8.1
-[0.8.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-6...0.8.0-7
-[0.8.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-5...0.8.0-6
-[0.8.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-4...0.8.0-5
-[0.8.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-3...0.8.0-4
-[0.8.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-2...0.8.0-3
-[0.8.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.8.0-1...0.8.0-2
-[0.8.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.8.0...0.8.0-1
-[0.8.0]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-19...0.8.0
-[0.7.1-19]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-18...0.7.1-19
-[0.7.1-18]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-17...0.7.1-18
-[0.7.1-17]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-16...0.7.1-17
-[0.7.1-16]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-15...0.7.1-16
-[0.7.1-15]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-14...0.7.1-15
-[0.7.1-14]: https://github.com/WaveHack/OpenDominion/compare/0.7.1-13...0.7.1-14
-[0.7.1-13]: https://github.com/WaveHack/OpenDominion/compare/0.7.1...0.7.1-13
-[0.7.1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-10...0.7.1
-[0.7.0-10]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-9...0.7.0-10
-[0.7.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-8...0.7.0-9
-[0.7.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-7...0.7.0-8
-[0.7.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-6...0.7.0-7
-[0.7.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-5...0.7.0-6
-[0.7.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-4...0.7.0-5
-[0.7.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-3...0.7.0-4
-[0.7.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-2...0.7.0-3
-[0.7.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.7.0-1...0.7.0-2
-[0.7.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.7.0...0.7.0-1
-[0.7.0]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-9...0.7.0
-[0.6.2-9]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-8...0.6.2-9
-[0.6.2-8]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-7...0.6.2-8
-[0.6.2-7]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-6...0.6.2-7
-[0.6.2-6]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-5...0.6.2-6
-[0.6.2-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-4...0.6.2-5
-[0.6.2-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-3...0.6.2-4
-[0.6.2-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-2...0.6.2-3
-[0.6.2-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.2-1...0.6.2-2
-[0.6.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.2...0.6.2-1
-[0.6.2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-5...0.6.2
-[0.6.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-4...0.6.1-5
-[0.6.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-3...0.6.1-4
-[0.6.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-2...0.6.1-3
-[0.6.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.1-1...0.6.1-2
-[0.6.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.1...0.6.1-1
-[0.6.1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-2...0.6.1
-[0.6.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.6.0-1...0.6.0-2
-[0.6.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.6.0...0.6.0-1
-[0.6.0]: https://github.com/WaveHack/OpenDominion/compare/0.5.2-1...0.6.0
-[0.5.2-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.2...0.5.2-1
-[0.5.2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-8...0.5.2
-[0.5.1-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-7...0.5.1-8
-[0.5.1-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-6...0.5.1-7
-[0.5.1-6]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-5...0.5.1-6
-[0.5.1-5]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-4...0.5.1-5
-[0.5.1-4]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-3...0.5.1-4
-[0.5.1-3]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-2...0.5.1-3
-[0.5.1-2]: https://github.com/WaveHack/OpenDominion/compare/0.5.1-1...0.5.1-2
-[0.5.1-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.1...0.5.1-1
-[0.5.1]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-9...0.5.1
-[0.5.0-9]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-8...0.5.0-9
-[0.5.0-8]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-7...0.5.0-8
-[0.5.0-7]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-6...0.5.0-7
-[0.5.0-6]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-5...0.5.0-6
-[0.5.0-5]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-4...0.5.0-5
-[0.5.0-4]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-3...0.5.0-4
-[0.5.0-3]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-2...0.5.0-3
-[0.5.0-2]: https://github.com/WaveHack/OpenDominion/compare/0.5.0-1...0.5.0-2
-[0.5.0-1]: https://github.com/WaveHack/OpenDominion/compare/0.5.0...0.5.0-1
-[0.5.0]: https://github.com/WaveHack/OpenDominion/compare/0.4.2...0.5.0
-[0.4.2]: https://github.com/WaveHack/OpenDominion/compare/0.4.1...0.4.2
-[0.4.1]: https://github.com/WaveHack/OpenDominion/compare/0.4.0...0.4.1
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/OpenDominion/OpenDominion/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/OpenDominion/OpenDominion/compare/0.10.0-8...1.0.0
