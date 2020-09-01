@@ -50,11 +50,11 @@
 
                         @php
                             $statusOpData = $infoOp->data;
-                            $statusOpData['range'] = $rangeCalculator->getDominionRange($selectedDominion, $dominion);
-                            $statusOpData['range_class'] = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion);
+                            $range = $rangeCalculator->getDominionRange($selectedDominion, $dominion);
+                            $rangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $dominion);
                         @endphp
 
-                        @include('partials.dominion.info.status', ['data' => $statusOpData, 'race' => $dominion->race])
+                        @include('partials.dominion.info.status', ['data' => $statusOpData, 'race' => $dominion->race, 'range' => $range, 'rangeClass' => $rangeClass])
 
                         @if (isset($infoOp->data['clear_sight_accuracy']) && $infoOp->data['clear_sight_accuracy'] != 1)
                             <p class="text-center text-danger" style="margin-bottom: 0.5em;">
