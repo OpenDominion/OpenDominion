@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.0.2] - 2020-09-31
 ### Added
 - Show effect of morale on invasion page
 
@@ -11,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Plunder will no longer remove the target's resources
 - Adjusted wording in town crier/incoming resources
 
-## [1.0.1] - 2018-09-30
+## [1.0.1] - 2020-09-30
 ### Added
 - Range tooltips in town crier
 - Date dividers in town crier
@@ -22,7 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - A problem where NPDs were spawning in realm 0
 - Problems with several quickstart files
 
-## [1.0.0] - 2018-09-27
+## [1.0.0] - 2020-09-27
 ### Added
 - Wonders of the World: Capture wonders to gain bonuses for your realm
   - The first wave of wonders will spawn on Day 6
@@ -73,7 +75,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Most Land Conquered and Explored rankings are now reduced by land lost
 - Rankings will now update each dominion's realm name
 
-## [0.10.0-8] - 2018-08-11
+## [0.10.0-8] - 2020-08-11
 ### Added
 - Difficulty ratings added to race selection
 
@@ -81,12 +83,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - The Town Crier is no longer be limited to 7 days
 - Calculate from Op Center will no longer include outdated barracks spies
 
-## [0.10.0-7] - 2018-07-31
+## [0.10.0-7] - 2020-07-31
 ### Added
 - Advisors can now be shared with realmies outside of your pack from the government page
 - You can now set a 'preferred resource' as the default for investment
 
-## [0.10.0-6] - 2018-07-30
+## [0.10.0-6] - 2020-07-30
 ### Added
 - Improvements fields can now be pre-populated with max resources
 
@@ -94,11 +96,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - National bank input will no longer prepopulate with 0
 - National bank success message now shows the types/amounts exchanged
 
-## [0.10.0-5] - 2018-07-28
+## [0.10.0-5] - 2020-07-28
 ### Added
 - Added button to load op center data into Calculators
 
-## [0.10.0-4] - 2018-07-24
+## [0.10.0-4] - 2020-07-24
 ### Added
 - New Castle Advisor shows improvements and techs (visible to packmates)
 - Info Ops will now display the day of the round that they were taken
@@ -108,7 +110,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Server time ticker will no longer appear behind other elements on mobile
 - Any link to a packmate's ops center will redirect to their advisors page
 
-## [0.10.0-3] - 2018-07-10
+## [0.10.0-3] - 2020-07-10
 ### Fixed
 - Several adjustments to moderator tools
 - National bank will no longer throw javascript errors
@@ -922,6 +924,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.2...HEAD
+[1.0.2]: https://github.com/OpenDominion/OpenDominion/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/OpenDominion/OpenDominion/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/OpenDominion/OpenDominion/compare/0.10.0-8...1.0.0
