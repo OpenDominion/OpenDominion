@@ -126,7 +126,7 @@
                                                 has <span class="text-green text-bold">CANCELED</span> war against
                                                 <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
                                             @elseif ($gameEvent->type == 'wonder_spawned')
-                                                The <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a> has appeared!
+                                                A new Wonder of the World has been discovered, the <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>!
                                             @elseif ($gameEvent->type == 'wonder_attacked')
                                                 @php
                                                     $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->source), 2);
