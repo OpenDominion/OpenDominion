@@ -56,11 +56,13 @@
                                                     @php
                                                         $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->source), 2);
                                                         $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->source);
-                                                        $sourceToolTipHtml = "<span class=\"$sourceRangeClass\">$sourceRange%</span>";
+                                                        $sourceRaceName = $gameEvent->source->race->name;
+                                                        $sourceToolTipHtml = "$sourceRaceName (<span class=\"$sourceRangeClass\">$sourceRange%</span>)";
 
                                                         $targetRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->target), 2);
                                                         $targetRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->target);
-                                                        $targetToolTipHtml = "<span class=\"$targetRangeClass\">$targetRange%</span>";
+                                                        $targetRaceName = $gameEvent->target->race->name;
+                                                        $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
                                                     @endphp
                                                     @if (in_array($gameEvent->source_id, $dominionIds, true))
                                                         @if ($gameEvent->data['result']['success'])
@@ -131,7 +133,8 @@
                                                 @php
                                                     $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $gameEvent->source), 2);
                                                     $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $gameEvent->source);
-                                                    $sourceToolTipHtml = "<span class=\"$sourceRangeClass\">$sourceRange%</span>";
+                                                    $sourceRaceName = $gameEvent->source->race->name;
+                                                    $sourceToolTipHtml = "$sourceRaceName (<span class=\"$sourceRangeClass\">$sourceRange%</span>)";
                                                 @endphp
                                                 @if (in_array($gameEvent->source_id, $dominionIds, true))
                                                     <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-green" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $gameEvent->source->name }}</span></a>
