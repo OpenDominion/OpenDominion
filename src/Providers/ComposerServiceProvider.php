@@ -3,6 +3,7 @@
 namespace OpenDominion\Providers;
 
 use Cache;
+use DB;
 use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -76,6 +77,28 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 })
                 ->sum();
             $view->with('forumUnreadCount', $forumUnreadCount);
+
+
+            $activeSpells = DB::table('active_spells')
+                ->where('dominion_id', $dominion->id)
+                ->where('duration', '>', 0)
+                ->get([
+                    'cast_by_dominion_id'
+                ]);
+
+            $activeSelfSpells = 0;
+            $activeHostileSpells = 0;
+            foreach($activeSpells as $activeSpell) {
+                if($activeSpell->cast_by_dominion_id === $dominion->id) {
+                    $activeSelfSpells++;
+                }
+                else {
+                    $activeHostileSpells++;
+                }
+            }
+
+            $view->with('activeSelfSpells', $activeSelfSpells);
+            $view->with('activeHostileSpells', $activeHostileSpells);
 
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);
