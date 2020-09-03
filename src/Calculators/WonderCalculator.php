@@ -37,8 +37,8 @@ class WonderCalculator
     /**
      * @var float Constraints for RP gain formula
      */
-    protected const TECH_MAX_REWARD = 4000;
-    protected const TECH_MIN_SIZE = 500;
+    protected const TECH_MAX_REWARD = 2500;
+    protected const TECH_MIN_SIZE = 590;
 
     /**
      * Returns the wonder's power when being rebuilt.
@@ -152,8 +152,7 @@ class WonderCalculator
         $landCalculator = app(LandCalculator::class);
         $totalLand = $landCalculator->getTotalLand($dominion);
 
-        $scaleFactor = static::TECH_MIN_SIZE * 10;
-        $techGain = min(static::TECH_MAX_REWARD / (0.9 + ($totalLand / $scaleFactor)), static::TECH_MAX_REWARD);
+        $techGain = min(static::TECH_MAX_REWARD * static::TECH_MIN_SIZE / $totalLand, static::TECH_MAX_REWARD);
 
         return $techGain;
     }

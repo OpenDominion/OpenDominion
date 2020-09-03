@@ -409,7 +409,6 @@ class WonderActionService
             $this->attackResult['wonder']['power'] = $wonderPower;
 
             $this->handleBoats($dominion, $units);
-            $this->handleResearchPoints($wonder, $dominion, $units);
             $survivingUnits = $this->handleCasualties($dominion, $units);
             $this->handleReturningUnits($dominion, $survivingUnits);
 
@@ -598,43 +597,6 @@ class WonderActionService
                 ['resource_boats' => $boatsByReturnHourGroup],
                 $hours
             );
-        }
-    }
-
-    /**
-     * Handles research point generation for attacker.
-     *
-     * @param RoundWonder $wonder
-     * @param Dominion $dominion
-     * @param array $units
-     */
-    protected function handleResearchPoints(RoundWonder $wonder, Dominion $dominion, array $units): void
-    {
-        $mindSwellActive = $this->spellCalculator->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
-        if ($mindSwellActive !== null) {
-            $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
-            $researchPointsGained = $this->wonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);
-
-            if ($researchPointsGained > 0) {
-                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
-
-                $this->queueService->queueResources(
-                    'invasion',
-                    $dominion,
-                    ['resource_tech' => $researchPointsGained],
-                    $slowestTroopsReturnHours
-                );
-
-                $this->attackResult['attacker']['researchPoints'] = $researchPointsGained;
-
-                // Remove spell after use
-                DB::table('active_spells')
-                    ->where([
-                        'dominion_id' => $dominion->id,
-                        'spell' => 'mindswell',
-                    ])
-                    ->delete();
-            }
         }
     }
 
