@@ -162,14 +162,14 @@ class WonderActionService
 
         DB::transaction(function () use ($dominion, $wonder, &$result) {
             if ($dominion->wizard_strength < 30) {
-                throw new GameException("Your wizards to not have enough strength to cast Lightning Storm");
+                throw new GameException("Your wizards to not have enough strength to cast Cyclone");
             }
     
             $spellInfo = $this->spellHelper->getSpellInfo('cyclone');
             $manaCost = $this->spellCalculator->getManaCost($dominion, 'cyclone');
     
             if ($dominion->resource_mana < $manaCost) {
-                throw new GameException("You do not have enough mana to cast Lightning Storm.");
+                throw new GameException("You do not have enough mana to cast Cyclone");
             }
     
             if ($this->protectionService->isUnderProtection($dominion)) {
