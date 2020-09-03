@@ -69,7 +69,18 @@
                 <li class="header">OPERATIONS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
                 <li class="{{ Route::is('dominion.invade') ? 'active' : null }}"><a href="{{ route('dominion.invade') }}"><i class="ra ra-crossed-swords ra-fw"></i> <span>Invade</span></a></li>
-                <li class="{{ Route::is('dominion.magic') ? 'active' : null }}"><a href="{{ route('dominion.magic') }}"><i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span></a></li>
+                <li class="{{ Route::is('dominion.magic') ? 'active' : null }}">
+                    <a href="{{ route('dominion.magic') }}">
+                        <i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span>
+                        @if($activeSelfSpells > 0 || $activeHostileSpells > 0)
+                            <span class="pull-right-container">
+                                {!! $activeSelfSpells > 0 ? ('<small class="label pull-right bg-blue">' . $activeSelfSpells . '</small>') : null !!}
+                                {!! $activeHostileSpells > 0 ? ('<small class="label pull-right bg-red">' . $activeHostileSpells . '</small>') : null !!}
+                            </span>
+                        @endif
+
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.espionage') ? 'active' : null }}"><a href="{{ route('dominion.espionage') }}"><i class="fa fa-user-secret fa-fw"></i> <span>Espionage</span></a></li>
                 <li class="{{ Route::is('dominion.op-center*') ? 'active' : null }}"><a href="{{ route('dominion.op-center') }}"><i class="fa fa-globe fa-fw"></i> <span>Op Center</span></a></li>
                 <li class="{{ Route::is('dominion.calculations') ? 'active' : null }}"><a href="{{ route('dominion.calculations') }}"><i class="fa fa-calculator fa-fw"></i> <span>Calculators</span></a></li>
