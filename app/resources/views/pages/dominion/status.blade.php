@@ -12,9 +12,9 @@
             </div>
             <div class="box-body no-padding">
                 @include('partials.dominion.info.status', ['data' => $infoMapper->mapStatus($selectedDominion, false), 'race' => $selectedDominion->race, ])
-                </div>
             </div>
         </div>
+    </div>
 
     <div class="col-sm-12 col-md-3">
         @if ($protectionService->isUnderProtection($selectedDominion))
@@ -146,7 +146,7 @@
                             @endforeach
                         </ul>
                         <p>
-                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}.
+                            Slots used: {{ $selectedDominion->pack->dominions->count() }} / {{ $selectedDominion->pack->size }}
                             @if ($selectedDominion->pack->isFull())
                                 (full)
                             @elseif ($selectedDominion->pack->isClosed())
