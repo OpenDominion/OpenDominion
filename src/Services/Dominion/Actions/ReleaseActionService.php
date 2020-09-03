@@ -69,7 +69,7 @@ class ReleaseActionService
         if ($rawDpReleased > 0 && !$this->protectionService->isUnderProtection($dominion))
         {
             // Check for excessive release restriction
-            $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, null, false);
+            $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion);
             $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
             if ((($rawDpReleased + $defenseReducedRecently) / ($defenseBeforeRelease + $defenseReducedRecently)) > 0.15) {
                 throw new GameException('You cannot release more than 15% of your raw defense during a 24 hour period.');
