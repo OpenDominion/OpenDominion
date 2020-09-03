@@ -44,7 +44,7 @@ halls_of_knowledge:
   name: Halls of Knowledge
   perks:
     tech_production: 15
-  power: 150000
+  power: 250000
 great_oracle:
   name: Great Oracle
   perks:
