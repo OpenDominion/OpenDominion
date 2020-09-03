@@ -17,7 +17,7 @@ class WonderCalculator
     /**
      * @var float Maximum potential gain from scaling damage contribution
      */
-    protected const PRESTIGE_CONTRIBUTION_MULTIPLIER = 75;
+    protected const PRESTIGE_CONTRIBUTION_MULTIPLIER = 100;
 
     /**
      * @var float Minimum damage threshold for prestige gain
