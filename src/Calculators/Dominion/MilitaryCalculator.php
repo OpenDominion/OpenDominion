@@ -93,9 +93,11 @@ class MilitaryCalculator
         array $units = null
     ): float
     {
-        $op = ($this->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->getOffensivePowerMultiplier($dominion, $target));
+        $op = $this->getOffensivePowerRaw($dominion, $target, $landRatio, $units);
+        $op *= $this->getOffensivePowerMultiplier($dominion, $target);
+        $op *= $this->getMoraleMultiplier($dominion);
 
-        return ($op * $this->getMoraleMultiplier($dominion));
+        return $op;
     }
 
     /**
@@ -297,10 +299,16 @@ class MilitaryCalculator
         bool $ignoreMinDefense = false
     ): float
     {
-        $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees, $ignoreMinDefense);
+        $dp = $this->getDefensivePowerRaw($dominion, $target, $landRatio, $units, $ignoreDraftees);
         $dp *= $this->getDefensivePowerMultiplier($dominion, $multiplierReduction);
+        $dp *= $this->getMoraleMultiplier($dominion);
 
-        return ($dp * $this->getMoraleMultiplier($dominion));
+        // Attacking Forces skip land-based defenses
+        if ($units !== null || $ignoreMinDefense) {
+            return $dp;
+        }
+
+        return max($dp, $this->getMinimumDefense($dominion));
     }
 
     /**
@@ -318,8 +326,7 @@ class MilitaryCalculator
         Dominion $target = null,
         float $landRatio = null,
         array $units = null,
-        bool $ignoreDraftees = false,
-        bool $ignoreMinDefense = false
+        bool $ignoreDraftees = false
     ): float
     {
         $dp = 0;
@@ -356,12 +363,7 @@ class MilitaryCalculator
             }
         }
 
-        // Attacking Forces skip land-based defenses
-        if ($units !== null || $ignoreMinDefense) {
-            return $dp;
-        }
-
-        return max($dp, $this->getMinimumDefense($dominion));
+        return $dp;
     }
 
     /**
@@ -1105,9 +1107,8 @@ class MilitaryCalculator
         }
 
         // Values
-        $minDefenseMultiplier = 5;
-        $minDefenseConstant = -150;
+        $minDefenseMultiplier = 3;
 
-        return max(0, $minDefenseMultiplier * ($landSize + $minDefenseConstant));
+        return max(0, $minDefenseMultiplier * $landSize);
     }
 }
