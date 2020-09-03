@@ -111,7 +111,7 @@ spire_of_illusion:
 onyx_mausoleum:
   name: Onyx Mausoleum
   perks:
-    enemy_casualties_defense: 25
+    enemy_casualties_offense: 25
   power: 150000
 monument_of_protection:
   name: Monument of Protection
