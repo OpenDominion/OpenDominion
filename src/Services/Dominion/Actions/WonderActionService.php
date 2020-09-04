@@ -294,9 +294,10 @@ class WonderActionService
                 if ($this->attackResult['wonder']['destroyed']) {
                     $result = [
                         'message' => sprintf(
-                            'A twisting torrent of wind ravages the %s dealing %s damage, and destroying it!',
+                            'A twisting torrent of wind ravages the %s dealing %s damage and destroying it! You earned %s prestige.',
                             $wonder->wonder->name,
-                            $this->attackResult['attacker']['damage']
+                            $this->attackResult['attacker']['damage'],
+                            $this->attackResult['attacker']['prestige']
                         ),
                         'alert-type' => 'success'
                     ];
@@ -440,7 +441,7 @@ class WonderActionService
                             'attackerDominionId' => $dominion->id,
                             'wonderId' => $wonder->wonder->id
                         ])
-                        ->sendNotifications($hostileDominion, 'irregular_realm');;
+                        ->sendNotifications($hostileDominion, 'irregular_realm');
                 }
             }
 
@@ -455,9 +456,10 @@ class WonderActionService
 
         if ($this->attackResult['wonder']['destroyed']) {
             $message = sprintf(
-                'Your army has attacked the %s dealing %s damage, destroying it!',
+                'Your army has attacked the %s dealing %s damage and destroying it! You earned %s prestige.',
                 $wonder->wonder->name,
-                $this->attackResult['attacker']['op']
+                $this->attackResult['attacker']['op'],
+                $this->attackResult['attacker']['prestige']
             );
         } else {
             $message = sprintf(
@@ -486,27 +488,29 @@ class WonderActionService
         $this->attackResult['wonder']['destroyedByRealmId'] = $dominion->realm->id;
         $this->attackResult['wonder']['destroyed'] = true;
 
+        $friendlyDominions = $dominion->realm->dominions;
         $detroyedByRealm = $dominion->realm;
         $dominion->stat_wonders_destroyed += 1;
 
+        $prestigeRewards = [];
         if ($wonder->realm !== null) {
-            foreach ($dominion->realm->dominions as $friendlyDominion) {
+            foreach ($friendlyDominions as $friendlyDominion) {
                 $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
                 if ($friendlyDominion->id == $dominion->id) {
                     $dominion->prestige += $prestigeGain;
+                    $this->attackResult['attacker']['prestige'] = $prestigeGain;
                 } else {
                     $friendlyDominion->prestige += $prestigeGain;
                     $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
                 }
+                $prestigeRewards[$friendlyDominion->id] = $prestigeGain;
             }
         }
 
         if ($dominion->realm->wonders->isEmpty()) {
-            $victorRealm = $dominion->realm;
             $wonder->realm_id = $victorRealm->id;
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         } else {
-            $victorRealm = null;
             $wonder->realm_id = null;
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         }
@@ -526,15 +530,15 @@ class WonderActionService
             'data' => $this->attackResult['wonder']
         ]);
 
-        if ($victorRealm !== null) {
-            // Queue friendly notifications
-            foreach ($victorRealm->dominions as $friendlyDominion) {
-                $this->notificationService
-                    ->queueNotification('wonder_rebuilt', [
-                        'wonderId' => $wonder->wonder->id
-                    ])
-                    ->sendNotifications($friendlyDominion, 'irregular_realm');;
-            }
+        // Queue friendly notifications
+        foreach ($friendlyDominions as $friendlyDominion) {
+            $this->notificationService
+                ->queueNotification('wonder_rebuilt', [
+                    'prestige' => $prestigeRewards[$friendlyDominion->id],
+                    'wonderRealmId' => $wonder->realm_id,
+                    'wonderId' => $wonder->wonder->id
+                ])
+                ->sendNotifications($friendlyDominion, 'irregular_realm');
         }
 
         if ($currentRealm !== null) {
@@ -545,7 +549,7 @@ class WonderActionService
                         'attackerRealmId' => $dominion->realm->id,
                         'wonderId' => $wonder->wonder->id
                     ])
-                    ->sendNotifications($hostileDominion, 'irregular_realm');;
+                    ->sendNotifications($hostileDominion, 'irregular_realm');
             }
         }
     }
