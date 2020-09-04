@@ -3,6 +3,23 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Active spell counter in sidebar
+- Town crier tooltips now include the target's race
+
+### Changed
+- Mindswell removed
+- Maximum prestige gain from destroying wonders increased to 125 (from 100)
+- Minimum defense changed to 3x LAND unmodded (from 5x LAND-150 plus mods)
+- Defense required to OOP under 600 acres is now 3x LAND
+- Defense required to OOP at or above 600 acres is now 5x LAND (from 5x LAND-150 plus mods)
+- Halls of Knowledge will no longer be guaranteed to spawn on Day 6
+- Tech cost will now increase if 50% of your total conquered acres is greater than highest land achieved (from 35%)
+
+### Fixed
+- The Onyx Masoleum now has the correct perk
+- Cyclone error messages
+- The Graveyard can no longer have a monarch, participate in wars, or attack wonders
 
 ## [1.0.2] - 2020-09-31
 ### Added

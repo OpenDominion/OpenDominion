@@ -16,7 +16,7 @@ trait RealmGuardsTrait
     public function guardGraveyardRealm(Realm $realm): void
     {
         if ($realm->number == 0) {
-            throw new GameException("You cannot interact with {$realm->name}");
+            throw new GameException("{$realm->name} has no government, preventing this action");
         }
     }
 }
