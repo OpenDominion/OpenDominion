@@ -36,10 +36,9 @@ class RealmFinderService
     public function findRandomRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
         // Get a list of realms which are not full, disregarding pack status for now
-        $realmQuery = Realm::query()
+        $realmQuery = Realm::active()
             ->with('packs.dominions')
-            ->where('round_id', $round->id)
-            ->where('number', '>', 0);
+            ->where('round_id', $round->id);
 
         if (!$round->mixed_alignment) {
             $realmQuery = $realmQuery->where(['realms.alignment' => $race->alignment]);

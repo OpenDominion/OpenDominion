@@ -10,11 +10,13 @@ use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\Realm\HistoryService;
 use OpenDominion\Traits\DominionGuardsTrait;
+use OpenDominion\Traits\RealmGuardsTrait;
 use RuntimeException;
 
 class GovernmentActionService
 {
     use DominionGuardsTrait;
+    use RealmGuardsTrait;
 
     /** @var GovernmentService */
     protected $governmentService;
@@ -45,6 +47,7 @@ class GovernmentActionService
     public function voteForMonarch(Dominion $dominion, ?int $monarch_id)
     {
         $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
 
         $monarch = Dominion::find($monarch_id);
         if ($monarch == null) {
@@ -70,6 +73,7 @@ class GovernmentActionService
     public function updateRealm(Dominion $dominion, ?string $motd, ?string $name)
     {
         $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
 
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can make changes to their realm.');
@@ -104,11 +108,14 @@ class GovernmentActionService
     public function declareWar(Dominion $dominion, int $realm_number)
     {
         $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
 
         $target = Realm::where(['round_id'=>$dominion->round_id, 'number'=>$realm_number])->first();
         if ($target == null || $dominion->realm->round_id != $target->round_id) {
             throw new RuntimeException('Realm not found.');
         }
+
+        $this->guardGraveyardRealm($target);
 
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can declare war.');
@@ -180,6 +187,7 @@ class GovernmentActionService
     public function cancelWar(Dominion $dominion)
     {
         $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
 
         if (!$dominion->isMonarch()) {
             throw new GameException('Only the monarch can declare war.');

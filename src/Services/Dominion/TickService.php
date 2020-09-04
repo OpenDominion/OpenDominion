@@ -105,8 +105,7 @@ class TickService
             $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')));
             $names = collect($names_json->dominion_names);
             $races = Race::all();
-            foreach ($round->realms as $realm) {
-                if ($realm->number == '0') continue;
+            foreach ($round->realms()->active()->get() as $realm) {
                 // Number of NPDs per realm (count = 4)
                 for($cnt=0; $cnt<4; $cnt++) {
                     if ($realm->alignment != 'neutral') {
