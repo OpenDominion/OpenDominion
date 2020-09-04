@@ -204,7 +204,7 @@ class NotificationHelper
                 'iconClass' => 'ra ra-sword text-red',
             ],
             'wonder_rebuilt' => [
-                'label' => 'Our realm has rebuilt a wonder',
+                'label' => 'Our realm has destroyed a wonder',
                 'defaults' => ['email' => false, 'ingame' => true],
                 'iconClass' => 'ra ra-sword text-green',
             ]
@@ -645,9 +645,16 @@ class NotificationHelper
             case 'irregular_realm.wonder_rebuilt':
                 $wonder = Wonder::findOrFail($data['wonderId']);
 
+                $resultString = '';
+                if ($data['wonderRealmId'] !== null) {
+                    $resultString = ' and rebuilt';
+                }
+
                 return sprintf(
-                    'Our realm has rebuilt the %s!',
-                    $wonder->name
+                    'Our realm has destroyed%s the %s! You earned %s prestige.',
+                    $resultString,
+                    $wonder->name,
+                    $data['prestige']
                 );
 
             // todo: other irregular etc

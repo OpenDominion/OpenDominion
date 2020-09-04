@@ -20,7 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Halls of Knowledge will no longer be guaranteed to spawn on Day 6
 
 ### Fixed
-- The Onyx Masoleum now has the correct perk
+- The Onyx Mausoleum now has the correct perk
 - Cyclone error messages
 - The Graveyard can no longer have a monarch, participate in wars, or attack wonders
 
