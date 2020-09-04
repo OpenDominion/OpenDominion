@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', 'Invasion Result')
+@section('page-header', 'Attack Result')
 
 @section('content')
     <div class="row">

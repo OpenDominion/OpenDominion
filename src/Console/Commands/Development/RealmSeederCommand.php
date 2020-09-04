@@ -34,7 +34,7 @@ class RealmSeederCommand extends Command implements CommandInterface
 
         $round = Round::all()->last();
         if($round) {
-            $realms = Realm::where('round_id', '=', $round->id)->get();
+            $realms = Realm::active()->where('round_id', '=', $round->id)->get();
             foreach($realms as $realm) {
                 $races = Race::where('alignment', '=', $realm->alignment)->get(['id'])->toArray();
                 $dom_count = Dominion::where('realm_id', $realm->id)->count();

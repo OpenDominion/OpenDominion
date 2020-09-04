@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use OpenDominion\Services\Realm\HistoryService;
 
 /**
@@ -114,6 +115,15 @@ class Realm extends AbstractModel
             ->withTimestamps()
             ->withPivot('realm_id', 'power');
     }
+
+    // Eloquent Query Scopes
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('number', '!=', 0);
+    }
+
+    // Methods
 
     public function totalPackSize(): int
     {

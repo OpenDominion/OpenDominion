@@ -38,7 +38,7 @@ class GovernmentController extends AbstractDominionController
         // todo: move all guardMembershipService calls to template?
         return view('pages.dominion.government', [
             'dominions' => $dominions,
-            'realms' => $dominion->round->realms->sortBy('number'),
+            'realms' => $dominion->round->realms()->active()->get()->sortBy('number'),
             'monarch' => $dominion->realm->monarch,
             'canJoinGuards' => $guardMembershipService->canJoinGuards($dominion),
             'isRoyalGuardApplicant' => $guardMembershipService->isRoyalGuardApplicant($dominion),

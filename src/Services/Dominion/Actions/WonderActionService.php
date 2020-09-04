@@ -25,10 +25,12 @@ use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Traits\DominionGuardsTrait;
+use OpenDominion\Traits\RealmGuardsTrait;
 
 class WonderActionService
 {
     use DominionGuardsTrait;
+    use RealmGuardsTrait;
 
     /**
      * @var float Base percentage of offensive casualties
@@ -157,6 +159,7 @@ class WonderActionService
     public function castCyclone(Dominion $dominion, RoundWonder $wonder): array
     {
         $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
 
         $result = null;
 
@@ -332,6 +335,7 @@ class WonderActionService
     public function attack(Dominion $dominion, RoundWonder $wonder, array $units): array
     {
         $this->guardLockedDominion($dominion);
+        $this->guardGraveyardRealm($dominion->realm);
 
         DB::transaction(function () use ($dominion, $wonder, $units) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {
