@@ -1,7 +1,6 @@
 preset: psr2
 
 disabled:
-  - braces # keep newlines in closures
 
 enabled:
   - alpha_ordered_imports
