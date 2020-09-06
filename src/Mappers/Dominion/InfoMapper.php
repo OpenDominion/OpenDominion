@@ -74,9 +74,9 @@ class InfoMapper
             'resource_gems' => $dominion->resource_gems,
             'resource_tech' => $dominion->resource_tech,
             'resource_boats' => $dominion->resource_boats + $this->queueService->getInvasionQueueTotalByResource(
-                    $dominion,
-                    'resource_boats'
-                ),
+                $dominion,
+                'resource_boats'
+            ),
 
             'morale' => $dominion->morale,
             'military_draftees' => null,
@@ -216,8 +216,11 @@ class InfoMapper
 
         foreach ($this->improvementHelper->getImprovementTypes() as $type) {
             array_set($data, "{$type}.points", $dominion->{'improvement_' . $type});
-            array_set($data, "{$type}.rating",
-                $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type));
+            array_set(
+                $data,
+                "{$type}.rating",
+                $this->improvementCalculator->getImprovementMultiplierBonus($dominion, $type)
+            );
         }
 
         return $data;
@@ -251,10 +254,16 @@ class InfoMapper
             $amount = $dominion->{'land_' . $landType};
 
             array_set($data, "explored.{$landType}.amount", $amount);
-            array_set($data, "explored.{$landType}.percentage",
-                (($amount / $this->landCalculator->getTotalLand($dominion)) * 100));
-            array_set($data, "explored.{$landType}.barren",
-                $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType));
+            array_set(
+                $data,
+                "explored.{$landType}.percentage",
+                (($amount / $this->landCalculator->getTotalLand($dominion)) * 100)
+            );
+            array_set(
+                $data,
+                "explored.{$landType}.barren",
+                $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)
+            );
         }
 
         $this->queueService->getExplorationQueue($dominion)->each(static function ($row) use (&$data) {

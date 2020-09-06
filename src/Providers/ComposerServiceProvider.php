@@ -9,8 +9,8 @@ use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Council;
-use OpenDominion\Models\Forum;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Forum;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
@@ -39,7 +39,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $councilLastRead = $dominion->council_last_read;
             $councilUnreadCount = $dominion->realm
                 ->councilThreads()
-                ->with(['posts' => function($query) use ($councilLastRead) {
+                ->with(['posts' => function ($query) use ($councilLastRead) {
                     if ($councilLastRead !== null) {
                         $query->where('created_at', '>', $councilLastRead);
                     }
@@ -60,7 +60,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $forumLastRead = $dominion->forum_last_read;
             $forumUnreadCount = $dominion->round
                 ->forumThreads()
-                ->with(['posts' => function($query) use ($forumLastRead) {
+                ->with(['posts' => function ($query) use ($forumLastRead) {
                     if ($forumLastRead !== null) {
                         $query->where('created_at', '>', $forumLastRead);
                     }
@@ -77,7 +77,6 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 })
                 ->sum();
             $view->with('forumUnreadCount', $forumUnreadCount);
-
 
             $activeSpells = DB::table('active_spells')
                 ->where('dominion_id', $dominion->id)

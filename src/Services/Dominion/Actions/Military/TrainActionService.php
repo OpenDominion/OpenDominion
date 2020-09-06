@@ -109,7 +109,7 @@ class TrainActionService
         ];
         unset($data['military_unit1'], $data['military_unit2']);
 
-        DB::transaction(function() use ($dominion, $totalCosts, $data, $nineHourData) {
+        DB::transaction(function () use ($dominion, $totalCosts, $data, $nineHourData) {
             $this->queueService->queueResources('training', $dominion, $nineHourData, 9);
             $this->queueService->queueResources('training', $dominion, $data);
             $dominion->resource_platinum -= $totalCosts['platinum'];

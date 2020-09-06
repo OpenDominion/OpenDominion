@@ -4,9 +4,9 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\Dominion\Forum\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Forum\CreateThreadRequest;
-use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Forum;
 use OpenDominion\Models\Round;

@@ -96,7 +96,7 @@ class ExploreActionService
                 throw new GameException('You cannot explore for more than 50% of your current land total.');
             }
 
-            $incomingLand += $this->queueService->getInvasionQueue($dominion)->filter(function($queue) {
+            $incomingLand += $this->queueService->getInvasionQueue($dominion)->filter(function ($queue) {
                 if (substr($queue->resource, 0, 4) == 'land') {
                     return true;
                 }
@@ -110,7 +110,6 @@ class ExploreActionService
                 throw new GameException('Your military cannot defend any new land at this time.');
             }
         }
-
 
         // todo: refactor. see training action service. same with other action services
         $moraleDrop = min($dominion->morale, $this->explorationCalculator->getMoraleDrop($totalLandToExplore));

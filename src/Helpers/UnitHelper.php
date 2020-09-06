@@ -124,8 +124,8 @@ class UnitHelper
         ];
 
         $unitHelpString = $helpStrings[$unitType];
-        $unitPowerHelpString = "";
-        $unitPerkHelpString = "";
+        $unitPowerHelpString = '';
+        $unitPerkHelpString = '';
         // Get unit - same logic as military page
         if (in_array($unitType, ['unit1', 'unit2', 'unit3', 'unit4'])) {
             $unit = $race->units->filter(function ($unit) use ($unitType) {

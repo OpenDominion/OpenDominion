@@ -56,7 +56,10 @@ class BuildingCalculator
     }
 
     public function getBuildingTypesToDestroy(
-        Dominion $dominion, int $totalBuildingsToDestroy, string $landType): array
+        Dominion $dominion,
+        int $totalBuildingsToDestroy,
+        string $landType
+    ): array
     {
         if($totalBuildingsToDestroy <= 0) {
             return [];

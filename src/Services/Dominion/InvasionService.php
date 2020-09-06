@@ -110,7 +110,7 @@ class InvasionService
 
     /**
      * Check if dominion has enough morale to initiate an invasion.
-     * 
+     *
      */
     public function hasEnoughMorale(Dominion $dominion): bool
     {

@@ -870,7 +870,8 @@ class InvadeActionService
 
             $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
                 $unit->slot,
-                'staggered_conversion');
+                'staggered_conversion'
+            );
 
             if ($staggeredConversionPerk) {
                 foreach ($staggeredConversionPerk as $rangeConversionPerk) {

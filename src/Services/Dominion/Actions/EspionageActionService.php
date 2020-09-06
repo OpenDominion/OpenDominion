@@ -138,7 +138,6 @@ class EspionageActionService
             throw new GameException('You cannot perform espionage operations on targets which are under protection');
         }
 
-
         if (!$this->rangeCalculator->isInRange($dominion, $target) && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
             throw new GameException('You cannot perform espionage operations on targets outside of your range');
         }
@@ -198,7 +197,7 @@ class EspionageActionService
             ]);
 
             if ($dominion->fresh()->spy_strength < 25) {
-                throw new GameException("Your spies have run out of strength");
+                throw new GameException('Your spies have run out of strength');
             }
 
             $target->save([

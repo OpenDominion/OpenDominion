@@ -198,7 +198,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('government/war/cancel')->uses('Dominion\GovernmentController@postCancelWar')->name('government.war.cancel');
             $router->post('government/advisors')->uses('Dominion\GovernmentController@postAdvisors')->name('government.advisors');
 
-
             // Rankings
             $router->get('rankings/{type?}')->uses('Dominion\RankingsController@getRankings')->name('rankings');
 

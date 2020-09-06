@@ -714,7 +714,7 @@ class DominionFactory
 
     /**
      * Get the quick start options for all races.
-     * 
+     *
      * @return array
      */
     public function getQuickStartOptions(): array
@@ -722,9 +722,9 @@ class DominionFactory
         $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
         $files = $filesystem->files(base_path('app/data/quickstarts'));
 
-        return collect($files)->map(function($file) {
+        return collect($files)->map(function ($file) {
             $filename = $file->getFilename();
-            $parts = explode('_', str_replace(".json", "", $filename));
+            $parts = explode('_', str_replace('.json', '', $filename));
 
             return [
                 'filename' => $filename,
@@ -737,14 +737,14 @@ class DominionFactory
 
     /**
      * Return the quick start data from a filen.
-     * 
+     *
      * @param string $filename
      * @return array
      */
     public function getQuickStartData(string $filename): array
     {
         $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-        $json = json_decode($filesystem->get(base_path('app/data/quickstarts/'.$filename)));
+        $json = json_decode($filesystem->get(base_path('app/data/quickstarts/' . $filename)));
         return $json;
     }
 }

@@ -57,7 +57,8 @@ class MilitaryCalculator
         LandCalculator $landCalculator,
         PrestigeCalculator $prestigeCalculator,
         QueueService $queueService,
-        SpellCalculator $spellCalculator)
+        SpellCalculator $spellCalculator
+    )
     {
         $this->buildingCalculator = $buildingCalculator;
         $this->governmentService = $governmentService;
@@ -609,7 +610,8 @@ class MilitaryCalculator
     {
         $wizardRatioPerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
-            "{$powerType}_raw_wizard_ratio");
+            "{$powerType}_raw_wizard_ratio"
+        );
 
         if (!$wizardRatioPerk) {
             return 0;
@@ -621,8 +623,8 @@ class MilitaryCalculator
         $wizardRawRatio = $this->getWizardRatioRaw($dominion, 'offense');
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            if (isset($dominion->calc["wizard_ratio"])) {
-                $wizardRawRatio = (float) $dominion->calc["wizard_ratio"];
+            if (isset($dominion->calc['wizard_ratio'])) {
+                $wizardRawRatio = (float) $dominion->calc['wizard_ratio'];
             } else {
                 $wizardRawRatio = 3;
             }
@@ -638,7 +640,8 @@ class MilitaryCalculator
     {
         $prestigePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
-            "{$powerType}_from_prestige");
+            "{$powerType}_from_prestige"
+        );
 
         if (!$prestigePerk) {
             return 0;
@@ -656,7 +659,8 @@ class MilitaryCalculator
     {
         $staggeredLandRangePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
-            "{$powerType}_staggered_land_range");
+            "{$powerType}_staggered_land_range"
+        );
 
         if (!$staggeredLandRangePerk) {
             return 0;
@@ -693,7 +697,8 @@ class MilitaryCalculator
 
         $versusRacePerk = $dominion->race->getUnitPerkValueForUnitSlot(
             $unit->slot,
-            "{$powerType}_vs_{$raceNameFormatted}");
+            "{$powerType}_vs_{$raceNameFormatted}"
+        );
 
         return $versusRacePerk;
     }

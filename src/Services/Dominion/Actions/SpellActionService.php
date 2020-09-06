@@ -197,7 +197,7 @@ class SpellActionService
                 ]);
 
                 if ($dominion->fresh()->wizard_strength < 25) {
-                    throw new GameException("Your wizards have run out of strength");
+                    throw new GameException('Your wizards have run out of strength');
                 }
 
                 $target->save([

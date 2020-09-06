@@ -15,9 +15,9 @@ use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\InfoOp;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\UserActivity;
-use OpenDominion\Services\GameEventService;
 use OpenDominion\Services\Activity\ActivityEvent;
 use OpenDominion\Services\Activity\ActivityService;
+use OpenDominion\Services\GameEventService;
 
 class DominionController extends AbstractController
 {

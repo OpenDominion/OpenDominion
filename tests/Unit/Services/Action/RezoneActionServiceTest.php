@@ -97,7 +97,8 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals(20, $this->dominion->land_cavern);
         $this->assertEquals(20, $this->dominion->land_hill);
 
-        $this->rezoneActionService->rezone($this->dominion,
+        $this->rezoneActionService->rezone(
+            $this->dominion,
             ['cavern' => 10, 'hill' => 2],
             ['cavern' => 8, 'plain' => 4]
         );

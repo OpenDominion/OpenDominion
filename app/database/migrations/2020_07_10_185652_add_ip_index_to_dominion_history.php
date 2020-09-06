@@ -26,7 +26,7 @@ class AddIpIndexToDominionHistory extends Migration
     public function down()
     {
         Schema::table('dominion_history', function (Blueprint $table) {
-            $table->dropIndex('dominion_history_ip_index');	
+            $table->dropIndex('dominion_history_ip_index');
         });
     }
 }

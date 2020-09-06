@@ -165,20 +165,20 @@ class WonderActionService
 
         DB::transaction(function () use ($dominion, $wonder, &$result) {
             if ($dominion->wizard_strength < 30) {
-                throw new GameException("Your wizards to not have enough strength to cast Cyclone");
+                throw new GameException('Your wizards to not have enough strength to cast Cyclone');
             }
-    
+
             $spellInfo = $this->spellHelper->getSpellInfo('cyclone');
             $manaCost = $this->spellCalculator->getManaCost($dominion, 'cyclone');
-    
+
             if ($dominion->resource_mana < $manaCost) {
-                throw new GameException("You do not have enough mana to cast Cyclone");
+                throw new GameException('You do not have enough mana to cast Cyclone');
             }
-    
+
             if ($this->protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You cannot cast offensive spells while under protection');
             }
-    
+
             if ($dominion->round->hasOffensiveActionsDisabled()) {
                 throw new GameException('Black ops have been disabled for the remainder of the round');
             }

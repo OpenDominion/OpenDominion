@@ -276,7 +276,7 @@ class RankingsHelper
         ])->keyBy('key')->toArray();
     }
 
-    function getFirstRanking(array $keys): array
+    public function getFirstRanking(array $keys): array
     {
         foreach ($this->getRankings() as $ranking) {
             if (in_array($ranking['key'], $keys)) {

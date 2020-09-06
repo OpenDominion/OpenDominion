@@ -75,7 +75,8 @@ class RealmController extends AbstractDominionController
                 return $collection->sortByDesc(
                     static function (Dominion $dominion) use ($networthCalculator) {
                         return $networthCalculator->getDominionNetworth($dominion);
-                    });
+                    }
+                );
             })
             ->flatten();
 

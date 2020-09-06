@@ -22,7 +22,8 @@ class ExplorationCalculator
      */
     public function __construct(
         LandCalculator $landCalculator,
-        GuardMembershipService $guardMembershipService)
+        GuardMembershipService $guardMembershipService
+    )
     {
         $this->landCalculator = $landCalculator;
         $this->guardMembershipService = $guardMembershipService;

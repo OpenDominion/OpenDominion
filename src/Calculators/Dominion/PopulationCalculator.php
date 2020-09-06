@@ -387,7 +387,7 @@ class PopulationCalculator
     {
         // todo: get these from buildinghelper and unset barracks/etc
         $totalJobs = (20 * (
-                $dominion->building_alchemy
+            $dominion->building_alchemy
                 + $dominion->building_farm
                 + $dominion->building_smithy
                 + $dominion->building_masonry
@@ -404,7 +404,7 @@ class PopulationCalculator
                 + $dominion->building_guard_tower
                 + $dominion->building_shrine
                 + $dominion->building_dock
-            ));
+        ));
 
         // Wonders
         $totalJobs *= (1 + $dominion->getWonderPerkMultiplier('employment'));

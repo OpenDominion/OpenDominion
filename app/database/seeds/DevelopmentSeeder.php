@@ -40,7 +40,8 @@ class DevelopmentSeeder extends Seeder
             $this->createRound();
             $this->createRealmAndDominion($user);
 
-            $this->command->info(<<<INFO
+            $this->command->info(
+                <<<INFO
 Done seeding data.
 
 A test round, user and dominion have been created for your convenience.

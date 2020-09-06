@@ -203,10 +203,10 @@ class ConstructionCalculator
         }
 
         return $discountedBuildings + min(
-                floor($platinumToSpend / $platinumCost),
-                floor($lumberToSpend / $lumberCost),
-                ($barrenLand - $discountedBuildings)
-            );
+            floor($platinumToSpend / $platinumCost),
+            floor($lumberToSpend / $lumberCost),
+            ($barrenLand - $discountedBuildings)
+        );
     }
 
     /**

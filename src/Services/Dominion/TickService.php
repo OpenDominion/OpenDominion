@@ -349,7 +349,7 @@ class TickService
                 foreach ($startingWonders as $wonder) {
                     $this->wonderService->createWonder($round, $wonder);
                 }
-            } else if ($day > 6 && $day % 2 == 0) {
+            } elseif ($day > 6 && $day % 2 == 0) {
                 $this->wonderService->createWonder($round);
             }
         }

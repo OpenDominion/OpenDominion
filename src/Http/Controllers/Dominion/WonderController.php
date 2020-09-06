@@ -2,10 +2,10 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
-use OpenDominion\Exceptions\GameException;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Helpers\WonderHelper;

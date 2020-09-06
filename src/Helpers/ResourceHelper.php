@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Helpers;
 
-
 class ResourceHelper
 {
     public function getInvasionResourceTypes(): array

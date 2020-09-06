@@ -207,7 +207,9 @@ class QueueService
 
         if (!((array_get($methodParts, '0') === 'get') && (array_get($methodParts, '2') === 'Queue'))) {
             throw new BadMethodCallException(sprintf(
-                'Method %s->%s does not exist.', static::class, $name
+                'Method %s->%s does not exist.',
+                static::class,
+                $name
             ));
         }
 

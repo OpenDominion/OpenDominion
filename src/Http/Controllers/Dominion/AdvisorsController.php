@@ -189,7 +189,7 @@ class AdvisorsController extends AbstractDominionController
             throw new GameException('You are only allowed to look at dominions in your realm.');
         }
 
-        $realmAdvisors = $target->getSetting("realmadvisors");
+        $realmAdvisors = $target->getSetting('realmadvisors');
 
         // Realm Advisor is explicitly enabled
         if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true) {

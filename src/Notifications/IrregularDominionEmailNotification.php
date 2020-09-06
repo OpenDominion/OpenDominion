@@ -63,10 +63,10 @@ class IrregularDominionEmailNotification extends Notification implements ShouldQ
 
         foreach ($this->notifications as $notification) {
             $mailMessage = $mailMessage->line('- ' . $this->notificationHelper->getNotificationMessage(
-                    $notification['category'],
-                    $notification['type'],
-                    $notification['data']
-                ));
+                $notification['category'],
+                $notification['type'],
+                $notification['data']
+            ));
         }
 
         $mailMessage = $mailMessage->line('You are receiving this email because you have turned on email notifications for one or more of the above events.')
