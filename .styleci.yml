@@ -1,65 +1,29 @@
 preset: psr2
 
 disabled:
+  - psr2_braces # keep newlines in closures
 
 enabled:
   - alpha_ordered_imports
   - blank_line_after_opening_tag
-  - combine_consecutive_unsets
   - concat_with_spaces
   - linebreak_after_opening_tag
   - lowercase_cast
   - method_separation
   - no_blank_lines_after_phpdoc
-#  - no_blank_lines_after_return # return [\n\n\t -> [\n\t
   - no_blank_lines_after_throw
   - no_blank_lines_between_imports
   - no_blank_lines_between_traits
-#  - no_extra_block_blank_lines # [\n\n\t -> [\n\t
-#  - no_empty_comment
   - no_empty_phpdoc
   - no_empty_statement
   - no_extra_consecutive_blank_lines
-#  - no_leading_import_slash
   - no_leading_namespace_whitespace
-#  - no_multiline_whitespace_around_double_arrow
-#  - no_multiline_whitespace_before_semicolons
-  - no_php4_constructor
   - no_short_bool_cast
   - no_short_echo_tag
-#  - no_singleline_whitespace_before_semicolons
-#  - no_spaces_inside_offset
-#  - no_spaces_outside_offset
-#  - no_trailing_comma_in_singleline_array
-#  - no_unused_imports
-#  - no_useless_else
-#  - no_useless_return
-#  - no_whitespace_before_comma_in_array
   - no_whitespace_in_blank_line
-#  - normalize_index_brace
-##  - object_operator_without_whitespace
-#  - phpdoc_add_missing_param_annotation
-#  - phpdoc_align
-#  - phpdoc_annotation_without_dot
-#  - phpdoc_indent
-#  - phpdoc_inline_tag
-#  - phpdoc_no_empty_return
-#  - phpdoc_order
-#  - phpdoc_scalar
-#  - phpdoc_separation
-#  - phpdoc_single_line_var_spacing
-#  - phpdoc_summary
-##  - phpdoc_to_comment
-#  - phpdoc_trim
-#  - phpdoc_types
-#  - pre_increment
   - print_to_echo
   - self_accessor
-#  - semicolon_after_instruction
   - short_array_syntax
   - short_scalar_cast
   - single_blank_line_before_namespace
   - single_quote
-#  - ternary_operator_spaces
-#  - trailing_comma_in_multiline_array
-#  - trim_array_spaces
