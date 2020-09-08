@@ -59,7 +59,7 @@ class RoundFactory
         return Round::create([
             'round_league_id' => $league->id,
             'number' => $number,
-            'name' => "Beta Round {$number}", // todo
+            'name' => "Round {$number}",
             'start_date' => $startDate,
             'end_date' => $endDate,
             'offensive_actions_prohibited_at' => $offensiveActionsEndDate,
