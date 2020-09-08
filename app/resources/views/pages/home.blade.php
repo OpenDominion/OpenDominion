@@ -95,7 +95,9 @@
                     </div>
                 @endif
             </div>
-            <iframe src="https://discord.com/widget?id=325315157335212032&theme={{ Auth::user() && Auth::user()->skin == 'skin-classic' ? 'dark' : 'light' }}" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            <div class="text-center">
+                <iframe src="https://discord.com/widget?id=325315157335212032&theme={{ Auth::user() && Auth::user()->skin == 'skin-classic' ? 'dark' : 'light' }}" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            </div>
         </div>
         <div class="col-sm-6">
             <div class="box box-primary">
