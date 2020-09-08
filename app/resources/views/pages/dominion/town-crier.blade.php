@@ -144,7 +144,7 @@
                                                     <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
                                                 @endif
                                                 has attacked
-                                                @if (array_get($gameEvent->data, 'neutral', true))
+                                                @if (array_get($gameEvent->data, 'wonder.neutral', true))
                                                     a neutral wonder!
                                                 @else
                                                     the <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->target->wonder->name }}</span></a>
