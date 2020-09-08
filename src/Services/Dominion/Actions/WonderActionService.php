@@ -275,6 +275,8 @@ class WonderActionService
                 if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_damage')) {
                     $damageDealt *= (1 + $wonder->wonder->perks->groupBy('key')['enemy_spell_damage']->first()->pivot->value / 100);
                 }
+                // Cap at 2.5% of wonder max power
+                $damageDealt = min($damageDealt, $wonder->power * 0.025);
                 $dominion->stat_cyclone_damage += $damageDealt;
 
                 $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
