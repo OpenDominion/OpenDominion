@@ -6,10 +6,9 @@
   <a href="https://github.com/OpenDominion/OpenDominion/actions"><img src="https://github.com/OpenDominion/OpenDominion/workflows/Tests/badge.svg" alt="Tests Status"></a>
   <a href="https://styleci.io/repos/29497480"><img src="https://styleci.io/repos/29497480/shield?branch=develop&style=flat" alt="StyleCI"></a>
   <a href="https://coveralls.io/github/OpenDominion/OpenDominion?branch=develop"><img src="https://coveralls.io/repos/github/OpenDominion/OpenDominion/badge.svg?branch=develop" alt="Coverage Status"></a>
-  <a href="https://github.com/OpenDominion/OpenDominion/blob/develop/LICENSE"><img src="https://img.shields.io/github/license/opendominion/opendominion.svg?maxAge=2592000" alt="GNU AGPLv3 licensed"></a>
   <br>
-  <a href="https://saythanks.io/to/WaveHack"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="Say Thanks"></a>
-  <a href="https://www.patreon.com/OpenDominion"><img src="https://img.shields.io/badge/donate-patreon-ff69b4.svg" alt="Donate on Patreon"></a>
+  <a href="https://github.com/OpenDominion/OpenDominion/blob/develop/LICENSE"><img src="https://img.shields.io/github/license/opendominion/opendominion.svg?maxAge=2592000" alt="GNU AGPLv3 licensed"></a>
+  <a href="https://ko-fi.com/opendominion"><img src="https://img.shields.io/badge/donate-kofi-ff69b4.svg" alt="Support on Ko-Fi"></a>
   <a href="https://discord.gg/mFk2wZT"><img src="https://img.shields.io/discord/325315157335212032.svg?label=chat%20&#40;discord&#41;" alt="Chat on Discord"></a>
 </p>
 
