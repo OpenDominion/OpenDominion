@@ -8,6 +8,16 @@
                 <p>Go to your <a href="{{ route('dashboard') }}">dashboard</a> to check if new rounds are open to play.</p>
             @endif
         </div>
+    @elseif (now()->diffInHours($selectedDominion->round->end_date) <= 24)
+        <div class="alert alert-warning">
+            <p><i class="icon fa fa-warning"></i> The round will end in {{ now()->diffInHours($selectedDominion->round->end_date) }} hours.
+                @if($selectedDominion->round->offensiveActionsAreEnabledButCanBeDisabled())
+                    Offensive actions can be disabled at any time.
+                @elseif ($selectedDominion->round->hasOffensiveActionsDisabled())
+                    Offensive actions have been disabled.
+                @endif
+            </p>
+        </div>
     @endif
 
     @if (!$selectedDominion->round->hasStarted())

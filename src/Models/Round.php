@@ -210,6 +210,15 @@ class Round extends AbstractModel
         return ($this->offensive_actions_prohibited_at <= now());
     }
 
+    public function offensiveActionsAreEnabledButCanBeDisabled(): bool
+    {
+        if ($this->hasOffensiveActionsDisabled()) {
+            return false;
+        }
+
+        return now()->diffInHours($this->offensive_actions_prohibited_at) <= 18;
+    }
+
     /**
      * Returns whether a round is active.
      *
