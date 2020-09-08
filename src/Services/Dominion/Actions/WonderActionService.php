@@ -536,7 +536,7 @@ class WonderActionService
         foreach ($friendlyDominions as $friendlyDominion) {
             $this->notificationService
                 ->queueNotification('wonder_rebuilt', [
-                    'prestige' => $prestigeRewards[$friendlyDominion->id],
+                    'prestige' => isset($prestigeRewards[$friendlyDominion->id]) ? $prestigeRewards[$friendlyDominion->id] : 0,
                     'wonderRealmId' => $wonder->realm_id,
                     'wonderId' => $wonder->wonder->id
                 ])
