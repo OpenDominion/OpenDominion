@@ -3,11 +3,22 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.0.4] - 2020-09-07
 ### Changed
 - Mindswell removed
 - Tech cost will now increase if 50% of your total conquered acres is greater than highest land achieved (from 35%)
+- Increased maximum prestige gain from destroying wonders to 125 (from 100)
+- Halls of Knowledge will no longer spawn on Day 6
+- Reduced defense for NPDs under 500 acres
+- Cyclone damage capped at 2.5%
+- Updated README
 
-## [1.0.3] - 2020-10-03
+### Fixed
+- Nightly backups are now running correctly
+- Adjustments to StyleCI integration
+
+## [1.0.3] - 2020-09-03
 ### Added
 - Active spell counter in sidebar
 - Town crier tooltips now include the target's race
@@ -24,7 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cyclone error messages
 - The Graveyard can no longer have a monarch, participate in wars, or attack wonders
 
-## [1.0.2] - 2020-09-31
+## [1.0.2] - 2020-08-31
 ### Added
 - Show effect of morale on invasion page
 
@@ -33,7 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Plunder will no longer remove the target's resources
 - Adjusted wording in town crier/incoming resources
 
-## [1.0.1] - 2020-09-30
+## [1.0.1] - 2020-08-30
 ### Added
 - Range tooltips in town crier
 - Date dividers in town crier
@@ -44,7 +55,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - A problem where NPDs were spawning in realm 0
 - Problems with several quickstart files
 
-## [1.0.0] - 2020-09-27
+## [1.0.0] - 2020-08-27
 ### Added
 - Wonders of the World: Capture wonders to gain bonuses for your realm
   - The first wave of wonders will spawn on Day 6
