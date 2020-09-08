@@ -3,6 +3,13 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Remove 'beta' from new round names
+- The dashboard now shows dominion land/networth
+
+### Fixed
+- Several errors when attacking wonders
+- Onyx Mausoleum perk was negative
 
 ## [1.0.4] - 2020-09-07
 ### Changed
