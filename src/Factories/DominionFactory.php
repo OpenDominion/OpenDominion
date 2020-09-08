@@ -461,7 +461,7 @@ class DominionFactory
         $accuracy = 1 + (mt_rand(-10, 10) / 100);
         if (random_chance(2/3)) {
             $landSize = mt_rand(400, 500);
-            $defense = 0.0036 * ($landSize ** 2.152) * $accuracy;
+            $defense = 0.0033 * ($landSize ** 2.152) * $accuracy;
         } else {
             $landSize = mt_rand(525, 600);
             $defense = $landSize * (0.0105 * ($landSize - 0.3)) * $accuracy;
