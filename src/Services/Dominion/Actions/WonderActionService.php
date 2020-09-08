@@ -88,6 +88,9 @@ class WonderActionService
         'attacker' => [
             'unitsLost' => [],
             'unitsSent' => [],
+            'damage' => 0,
+            'op' => 0,
+            'prestige' => 0,
         ],
         'wonder' => [
             'currentRealmId' => null,
