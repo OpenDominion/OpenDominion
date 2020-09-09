@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ea46f331120184b0df6e4711ecd65dd",
+    "content-hash": "69de00b2ae89f574356f7549eca2b4f3",
     "packages": [
         {
             "name": "atrox/haikunator",
@@ -3599,20 +3599,20 @@
         },
         {
             "name": "spatie/db-dumper",
-            "version": "2.14.2",
+            "version": "2.14.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/db-dumper.git",
-                "reference": "093750d69c383fb14d9e7cd6caa052ea7b35e5b5"
+                "reference": "0ea605041373dce22cd0a387bca598050c7d033b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/093750d69c383fb14d9e7cd6caa052ea7b35e5b5",
-                "reference": "093750d69c383fb14d9e7cd6caa052ea7b35e5b5",
+                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/0ea605041373dce22cd0a387bca598050c7d033b",
+                "reference": "0ea605041373dce22cd0a387bca598050c7d033b",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.3",
+                "php": "^7.2",
                 "symfony/process": "^4.2"
             },
             "require-dev": {
@@ -3645,7 +3645,7 @@
                 "mysqldump",
                 "spatie"
             ],
-            "time": "2019-06-28T08:23:04+00:00"
+            "time": "2019-08-21T16:39:54+00:00"
         },
         {
             "name": "spatie/laravel-backup",

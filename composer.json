@@ -23,6 +23,7 @@
     "laravel/telescope": "^1.0",
     "laravel/tinker": "^1.0",
     "league/flysystem-aws-s3-v3": "~1.0",
+    "spatie/db-dumper": "~2.14.3",
     "spatie/laravel-backup": "^5.12.1",
     "spatie/laravel-honeypot": "^1.1",
     "spatie/laravel-permission": "~2.9",
