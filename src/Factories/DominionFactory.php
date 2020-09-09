@@ -461,15 +461,15 @@ class DominionFactory
         $accuracy = 1 + (mt_rand(-10, 10) / 100);
         if (random_chance(0.70)) {
             if (random_chance(0.70)) {
-                // 50% 451-500
+                // ~50% 451-500 acres
                 $landSize = mt_rand(451, 500);
             } else {
-                // 20% 400-450
+                // ~20% 400-450 acres
                 $landSize = mt_rand(400, 450);
             }
             $defense = 0.0033 * ($landSize ** 2.152) * $accuracy;
         } else {
-            // 30% 525-600
+            // 30% 525-600 acres
             $landSize = mt_rand(525, 600);
             $defense = $landSize * (0.0105 * ($landSize - 0.3)) * $accuracy;
         }
