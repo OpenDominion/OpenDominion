@@ -57,7 +57,7 @@
             "daily_platinum": true,
             "protection_ticks_remaining": 12
         },
-        "spells": ["ares_call", "midas_touch", "alchemist_flame"],
+        "spells": ["midas_touch", "alchemist_flame"],
         "queues": {
             "construction": [],
             "exploration": [],

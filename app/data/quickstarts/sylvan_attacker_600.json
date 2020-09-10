@@ -120,7 +120,7 @@
             "stat_total_land_explored": 350,
             "protection_ticks_remaining": 0
         },
-        "spells": ["ares_call", "midas_touch"],
+        "spells": ["midas_touch"],
         "queues": {
             "construction": [
                 [],
