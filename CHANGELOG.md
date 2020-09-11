@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Added more boats to quick starts, removed Ares from hour 61 versions
 
 ## [1.0.5] - 2020-09-08
 ### Added
