@@ -3,6 +3,7 @@
 namespace OpenDominion\Console\Commands;
 
 use Illuminate\Console\Command;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\User;
 use OpenDominion\Notifications\ManualEmailNotification;
 
