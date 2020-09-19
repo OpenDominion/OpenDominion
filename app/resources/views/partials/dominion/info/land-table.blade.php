@@ -14,7 +14,15 @@
         </tr>
     </thead>
     <tbody>
+        @php
+            $totalLand = 0;
+            $totalBarren = 0;
+        @endphp
         @foreach ($landHelper->getLandTypes() as $landType)
+            @php
+                $totalLand += array_get($data, "explored.{$landType}.amount");
+                $totalBarren += array_get($data, "explored.{$landType}.barren");
+            @endphp
             <tr>
                 <td>
                     {{ ucfirst($landType) }}
@@ -27,5 +35,13 @@
                 <td class="text-center">{{ number_format(array_get($data, "explored.{$landType}.barren")) }}</td>
             </tr>
         @endforeach
+        <tr>
+            <td>
+                Total
+            </td>
+            <td class="text-center">{{ number_format($totalLand) }}</td>
+            <td class="text-center">100.00%</td>
+            <td class="text-center">{{ number_format($totalBarren) }}</td>
+        </tr>
     </tbody>
 </table>
