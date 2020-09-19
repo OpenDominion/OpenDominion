@@ -35,20 +35,23 @@
                         <table class="table">
                             <colgroup>
                                 <col>
-                                <col width="25%">
+                                <col width="15%">
+                                <col width="10%">
                                 <col width="10%">
                                 <col width="10%">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th class="text-center">Realm</th>
                                     <th class="text-center">Race</th>
+                                    <th class="text-center">Land</th>
+                                    <th class="text-center">Networth</th>
                                     <th class="text-center">Round</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($dominions->all() as $dominion)
+                                    @php $ranks = $rankings->where('dominion_id', $dominion->id)->keyBy('key'); @endphp
                                     <tr>
                                         <td>
                                             @if ($dominion->isSelectedByAuthUser())
@@ -78,10 +81,13 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            #{{ $dominion->realm->number }}: {{ $dominion->realm->name }}
+                                            {{ $dominion->race->name }}
                                         </td>
                                         <td class="text-center">
-                                            {{ $dominion->race->name }}
+                                            {{ isset($ranks['largest-dominions']) ? number_format($ranks['largest-dominions']->value) : null }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ isset($ranks['strongest-dominions']) ? number_format($ranks['strongest-dominions']->value) : null }}
                                         </td>
                                         <td class="text-center">
                                             {{ $dominion->round->number }}

@@ -4,6 +4,21 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.0.5] - 2020-09-08
+### Added
+- Offensive actions warning on the last day of the round 
+- Show wonder in realm info box
+
+### Changed
+- Remove 'beta' from new round names
+- The dashboard now shows dominion land/networth
+
+### Fixed
+- Several errors when attacking wonders
+- Onyx Mausoleum perk was negative
+- Reduced db queries on calculators page
+- Adjusted Discord widget positioning
+
 ## [1.0.4] - 2020-09-07
 ### Changed
 - Mindswell removed
@@ -955,7 +970,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.3...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.4...HEAD
+[1.0.4]: https://github.com/OpenDominion/OpenDominion/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/OpenDominion/OpenDominion/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/OpenDominion/OpenDominion/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/OpenDominion/OpenDominion/compare/1.0.0...1.0.1

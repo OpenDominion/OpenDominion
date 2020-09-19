@@ -135,7 +135,7 @@ class CasualtiesCalculator
 
             // Wonders
             $nonUnitBonusMultiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_offense');
-            $nonUnitBonusMultiplier += $target->getWonderPerkMultiplier('enemy_casualties_offense');
+            $nonUnitBonusMultiplier -= $target->getWonderPerkMultiplier('enemy_casualties_offense');
 
             // Cap at -80% (additive) and apply to multiplier
             $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
@@ -267,7 +267,7 @@ class CasualtiesCalculator
 
             // Wonders
             $nonUnitBonusMultiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_defense');
-            $nonUnitBonusMultiplier += $attacker->getWonderPerkMultiplier('enemy_casualties_defense');
+            $nonUnitBonusMultiplier -= $attacker->getWonderPerkMultiplier('enemy_casualties_defense');
 
             // Cap at -80% (additive) and apply to multiplier
             $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));

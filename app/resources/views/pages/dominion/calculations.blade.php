@@ -121,7 +121,7 @@
                                                 <input type="number" class="form-control text-center" placeholder="--" readonly disabled />
                                             </td>
                                         </tr>
-                                        @foreach ($race->units()->orderBy('slot')->get() as $unit)
+                                        @foreach ($race->units->sortBy('slot') as $unit)
                                             @php
                                                 $buildingPerks = $unit->perks->where('key', 'defense_from_building');
                                                 foreach ($buildingPerks as $perk) {
@@ -445,7 +445,7 @@
                                         </tr>
                                     </thead>
                                     <thead>
-                                        @foreach ($race->units()->orderBy('slot')->get() as $unit)
+                                        @foreach ($race->units->sortBy('slot') as $unit)
                                             @php
                                                 $buildingPerks = $unit->perks->where('key', 'offense_from_building');
                                                 foreach ($buildingPerks as $perk) {

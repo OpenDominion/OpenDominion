@@ -53,6 +53,11 @@ return [
                 'NO_AUTO_CREATE_USER',
                 'NO_ENGINE_SUBSTITUTION',
             ],
+            'dump' => [
+                'use_single_transaction',
+                'timeout' => 60 * 5,
+                'add_extra_option' => '--quick',
+            ],
         ],
 
     ],

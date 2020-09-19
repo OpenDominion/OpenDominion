@@ -88,6 +88,9 @@ class WonderActionService
         'attacker' => [
             'unitsLost' => [],
             'unitsSent' => [],
+            'damage' => 0,
+            'op' => 0,
+            'prestige' => 0,
         ],
         'wonder' => [
             'currentRealmId' => null,
@@ -510,7 +513,7 @@ class WonderActionService
         }
 
         if ($dominion->realm->wonders->isEmpty()) {
-            $wonder->realm_id = $victorRealm->id;
+            $wonder->realm_id = $dominion->realm_id;
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         } else {
             $wonder->realm_id = null;
@@ -536,7 +539,7 @@ class WonderActionService
         foreach ($friendlyDominions as $friendlyDominion) {
             $this->notificationService
                 ->queueNotification('wonder_rebuilt', [
-                    'prestige' => $prestigeRewards[$friendlyDominion->id],
+                    'prestige' => isset($prestigeRewards[$friendlyDominion->id]) ? $prestigeRewards[$friendlyDominion->id] : 0,
                     'wonderRealmId' => $wonder->realm_id,
                     'wonderId' => $wonder->wonder->id
                 ])

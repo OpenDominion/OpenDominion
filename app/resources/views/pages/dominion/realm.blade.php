@@ -132,9 +132,13 @@
                 <div class="box-body">
                     <p>This is the realm <strong>{{ $realm->name }} (#{{ $realm->number }})</strong>.</p>
                     <p>Its alignment is <strong>{{ $realm->alignment }}</strong>, it contains <strong>{{ $dominions->count() }}</strong> {{ str_plural('dominion', $dominions->count()) }} and its networth is <strong>{{ number_format($networthCalculator->getRealmNetworth($realm)) }}</strong>.</p>
-                    {{-- todo: change this to a table? --}}
+                    @foreach ($realm->roundWonders as $wonder)
+                        <p>This realm controls the <span class="text-orange">{{ $wonder->wonder->name }}</span>.</p>
+                    @endforeach
                     <p><a href="{{ route('dominion.town-crier', [$realm->number]) }}">View Town Crier</a></p>
-                    <p><a href="{{ route('dominion.realm') }}">My Realm</a></p>
+                    @if ($realm->id !== $selectedDominion->realm_id)
+                        <p><a href="{{ route('dominion.realm') }}">My Realm</a></p>
+                    @endif
                 </div>
                 @if (($prevRealm !== null) || ($nextRealm !== null))
                     <div class="box-footer">
