@@ -82,24 +82,74 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Information</h3>
+                        </div>
+                        <div class="box-body">
+                            <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
+
+                            <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
+
+                            <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
+
+                            <p>You can automatically load the most recent ops into the calculator.</p>
+
+                            <p>
+                                <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
+                                    <i class="fa fa-calculator"></i> Calculate
+                                </a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="box-body">
-                    <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Invasions</h3>
+                        </div>
+                        <div class="box-body table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    @foreach($latestInvasionEvents as $invasionEvent)
+                                        @php
+                                            $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $invasionEvent->source), 2);
+                                            $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $invasionEvent->source);
+                                            $sourceRaceName = $invasionEvent->source->race->name;
+                                            $sourceToolTipHtml = "$sourceRaceName (<span class=\"$sourceRangeClass\">$sourceRange%</span>)";
 
-                    <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
+                                            $targetRange = round($rangeCalculator->getDominionRange($selectedDominion, $invasionEvent->target), 2);
+                                            $targetRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $invasionEvent->target);
+                                            $targetRaceName = $invasionEvent->target->race->name;
+                                            $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
 
-                    <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
+                                            $sourceTextColor = $invasionEvent->source->realm_id == $selectedDominion->realm_id ? 'text-green' : 'text-light-blue';
 
-                    <p>You can automatically load the most recent ops into the calculator.</p>
-
-                    <p>
-                        <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
-                            <i class="fa fa-calculator"></i> Calculate
-                        </a>
-                    </p>
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <span>{{ $invasionEvent->created_at }}</span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('dominion.op-center.show', [$invasionEvent->source->id]) }}"><span class="{{ $sourceTextColor }}" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $invasionEvent->source->name }}</span></a>
+                                                <a href="{{ route('dominion.realm', [$invasionEvent->source->realm->number]) }}">(#{{ $invasionEvent->source->realm->number }})</a>
+                                                invaded
+                                                <a href="{{ route('dominion.op-center.show', [$invasionEvent->target->id]) }}"><span class="text-light-blue" data-toggle="tooltip" data-placement="top" title="{{ $targetToolTipHtml }}">{{ $invasionEvent->target->name }}</span></a>
+                                                <a href="{{ route('dominion.realm', [$invasionEvent->target->realm->number]) }}">(#{{ $invasionEvent->target->realm->number }})</a>.
+                                            </td>
+                                            <td>
+                                                &nbsp;
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -20,13 +20,25 @@ class GameEventService
         return $this->getGameEventsForRealm($realm, now());
     }
 
-    public function getGameEventsForDominion(Dominion $dominion) : Collection
+    public function getGameEventsForDominion(Dominion $dominion): Collection
     {
         return GameEvent::query()
             ->with(['source', 'target'])
             ->where('source_id', $dominion->id)
             ->orWhere('target_id', $dominion->id)
             ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function getLatestInvasionEventsForDominion(Dominion $dominion, int $count): Collection
+    {
+        return GameEvent::query()
+            ->with(['source', 'target'])
+            ->where('type', 'invasion')
+            ->where('source_id', $dominion->id)
+            ->orWhere('target_id', $dominion->id)
+            ->orderBy('created_at', 'desc')
+            ->take($count)
             ->get();
     }
 

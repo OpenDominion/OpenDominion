@@ -19,6 +19,16 @@ use OpenDominion\Services\GameEventService;
 
 class OpCenterController extends AbstractDominionController
 {
+    /**
+     * @var GameEventService
+     */
+    private $gameEventService;
+
+    public function __construct(GameEventService $gameEventService)
+    {
+        $this->gameEventService = $gameEventService;
+    }
+
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
@@ -78,6 +88,8 @@ class OpCenterController extends AbstractDominionController
             ->where('latest', '=', true)
             ->get();
 
+        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 4);
+
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
             'improvementHelper' => app(ImprovementHelper::class),
@@ -91,7 +103,8 @@ class OpCenterController extends AbstractDominionController
             'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
-            'latestInfoOps' => $latestInfoOps
+            'latestInfoOps' => $latestInfoOps,
+            'latestInvasionEvents' => $latestInvasionEvents,
         ]);
     }
 
