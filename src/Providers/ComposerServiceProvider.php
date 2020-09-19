@@ -6,6 +6,7 @@ use Cache;
 use DB;
 use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
+use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Council;
@@ -33,11 +34,11 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 return;
             }
 
-            /** @var Dominion $dominion */
-            $dominion = $selectorService->getUserSelectedDominion();
+            /** @var Dominion $selectedDominion */
+            $selectedDominion = $selectorService->getUserSelectedDominion();
 
-            $councilLastRead = $dominion->council_last_read;
-            $councilUnreadCount = $dominion->realm
+            $councilLastRead = $selectedDominion->council_last_read;
+            $councilUnreadCount = $selectedDominion->realm
                 ->councilThreads()
                 ->with(['posts' => function ($query) use ($councilLastRead) {
                     if ($councilLastRead !== null) {
@@ -57,8 +58,8 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum();
             $view->with('councilUnreadCount', $councilUnreadCount);
 
-            $forumLastRead = $dominion->forum_last_read;
-            $forumUnreadCount = $dominion->round
+            $forumLastRead = $selectedDominion->forum_last_read;
+            $forumUnreadCount = $selectedDominion->round
                 ->forumThreads()
                 ->with(['posts' => function ($query) use ($forumLastRead) {
                     if ($forumLastRead !== null) {
@@ -79,7 +80,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $view->with('forumUnreadCount', $forumUnreadCount);
 
             $activeSpells = DB::table('active_spells')
-                ->where('dominion_id', $dominion->id)
+                ->where('dominion_id', $selectedDominion->id)
                 ->where('duration', '>', 0)
                 ->get([
                     'cast_by_dominion_id'
@@ -88,7 +89,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $activeSelfSpells = 0;
             $activeHostileSpells = 0;
             foreach($activeSpells as $activeSpell) {
-                if($activeSpell->cast_by_dominion_id === $dominion->id) {
+                if($activeSpell->cast_by_dominion_id === $selectedDominion->id) {
                     $activeSelfSpells++;
                 }
                 else {
@@ -101,9 +102,15 @@ class ComposerServiceProvider extends AbstractServiceProvider
 
             // Show icon for techs
             $techCalculator = app(TechCalculator::class);
-            $techCost = $techCalculator->getTechCost($dominion);
-            $unlockableTechCount = floor($dominion->resource_tech / $techCost);
+            $techCost = $techCalculator->getTechCost($selectedDominion);
+            $unlockableTechCount = floor($selectedDominion->resource_tech / $techCost);
             $view->with('unlockableTechCount', $unlockableTechCount);
+
+            $landCalculator = app(LandCalculator::class);
+
+            $barrenLand = $landCalculator->getTotalBarrenLand($selectedDominion);
+            $view->with('barrenLand', $barrenLand);
+
         });
 
         view()->composer('partials.main-footer', function (View $view) {
