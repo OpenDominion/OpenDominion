@@ -78,7 +78,7 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center');
         }
 
-        if ($dominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id) {
+        if ($dominion->realm_id == $selectedDominion->realm_id) {
             return redirect()->route('dominion.realm.advisors.production', $dominion);
         }
 
