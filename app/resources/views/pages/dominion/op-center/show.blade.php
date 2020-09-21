@@ -127,8 +127,12 @@
                                             $targetRaceName = $invasionEvent->target->race->name;
                                             $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
 
-                                            $sourceTextColor = $invasionEvent->source->realm_id == $selectedDominion->realm_id ? 'text-green' : 'text-light-blue';
-
+                                            $sourceTextColor = 'text-light-blue';
+                                            if($invasionEvent->source->realm_id == $selectedDominion->realm_id) {
+                                                $sourceTextColor = 'text-green';
+                                            } else if($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
+                                                $sourceTextColor = 'text-red';
+                                            }
                                         @endphp
                                         <tr>
                                             <td>
@@ -142,7 +146,9 @@
                                                 <a href="{{ route('dominion.realm', [$invasionEvent->target->realm->number]) }}">(#{{ $invasionEvent->target->realm->number }})</a>.
                                             </td>
                                             <td>
-                                                &nbsp;
+                                                @if ($invasionEvent->source->realm_id == $selectedDominion->realm->id || $invasionEvent->target->realm_id == $selectedDominion->realm->id)
+                                                    <a href="{{ route('dominion.event', [$invasionEvent->id]) }}"><i class="ra ra-crossed-swords ra-fw"></i></a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
