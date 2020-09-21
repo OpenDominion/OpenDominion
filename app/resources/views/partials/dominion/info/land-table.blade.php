@@ -1,20 +1,18 @@
 <table class="table">
     <colgroup>
         <col>
-        <col width="100">
-        <col width="100">
-        <col width="100">
-        <col width="100">
-        <col width="100">
+        <col width="50">
+        <col width="50">
+        <col width="50">
+        <col width="50">
+        <col width="50">
     </colgroup>
     <thead>
         <tr>
             <th>Land Type</th>
             <th class="text-center">Barren</th>
-            <th class="text-center">Constructed</th>
-            <th class="text-center">Constructed%</th>
-            <th class="text-center">Total</th>
-            <th class="text-center">Total%</th>
+            <th class="text-center" colspan="2">Constructed</th>
+            <th class="text-center" colspan="2">Total</th>
         </tr>
     </thead>
     <tbody>
@@ -50,9 +48,9 @@
                 </td>
                 <td class="text-center">{{ number_format(array_get($data, "explored.{$landType}.barren")) }}</td>
                 <td class="text-center">{{ number_format($constructedForLandType) }}</td>
-                <td class="text-center">{{ number_format($landTypeConstructedPercentageOfTotal, 2) }}%</td>
+                <td class="text-left"><small>({{ number_format($landTypeConstructedPercentageOfTotal, 2) }}%)</small></td>
                 <td class="text-center">{{ number_format(array_get($data, "explored.{$landType}.amount")) }}</td>
-                <td class="text-center">{{ number_format(array_get($data, "explored.{$landType}.percentage"), 2) }}%</td>
+                <td class="text-left"><small>({{ number_format(array_get($data, "explored.{$landType}.percentage"), 2) }}%)</small></td>
             </tr>
         @endforeach
         <tr>
@@ -61,9 +59,9 @@
             </td>
             <td class="text-center">{{ number_format($totalBarren) }}</td>
             <td class="text-center">{{ number_format($totalConstructed) }}</td>
-            <td class="text-center">100.00%</td>
+            <td class="text-center"></td>
             <td class="text-center">{{ number_format($totalLand) }}</td>
-            <td class="text-center">100.00%</td>
+            <td class="text-center"></td>
         </tr>
     </tbody>
 </table>
