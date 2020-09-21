@@ -18,7 +18,7 @@
                 </ol>
             </li>
             <li>If your account is suspended or banned, you are not permitted to open a new account or use another account.</li>
-            <li>If you have forgotten your password, use the password reset function. If you do not have access to your email account, contact an administrator on Discord or via internetfett@gmail.com.</li>
+            <li>If you have forgotten your password, use the password reset function. If you do not have access to your email account, contact an administrator on Discord or via info@opendominion.net.</li>
             <li>
                 Accounts must be kept secure.
                 <ol style="list-style: lower-roman;">
