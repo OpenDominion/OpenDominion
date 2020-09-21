@@ -17,26 +17,13 @@
     </thead>
     <tbody>
         @php
-            $totalLand = 0;
-            $totalBarren = 0;
-            $totalConstructed = 0;
-            foreach ($landHelper->getLandTypes() as $landType) {
-                $landTypeAmount = array_get($data, "explored.{$landType}.amount");
-                $landTypeBarren = array_get($data, "explored.{$landType}.barren");
-
-                $totalLand += $landTypeAmount;
-                $totalBarren += $landTypeBarren;
-                $totalConstructed += $landTypeAmount - $landTypeBarren;
-            }
+            $showTotalRow = array_key_exists('totalLand', $data);
         @endphp
-
         @foreach ($landHelper->getLandTypes() as $landType)
             @php
-                $constructedForLandType = array_get($data, "explored.{$landType}.amount") - array_get($data, "explored.{$landType}.barren");
-                $landTypeConstructedPercentageOfTotal = 0;
-
-                if($totalConstructed > 0) {
-                    $landTypeConstructedPercentageOfTotal = ($constructedForLandType / $totalConstructed) * 100;
+                if($showTotalRow) {
+                    $constructedForLandType = array_get($data, "explored.{$landType}.constructed");
+                    $landTypeConstructedPercentageOfTotal = array_get($data, "explored.{$landType}.constructedPercentage");
                 }
             @endphp
             <tr>
@@ -47,21 +34,33 @@
                     @endif
                 </td>
                 <td class="text-center">{{ number_format(array_get($data, "explored.{$landType}.barren")) }}</td>
-                <td class="text-center">{{ number_format($constructedForLandType) }}</td>
-                <td class="text-left"><small>({{ number_format($landTypeConstructedPercentageOfTotal, 2) }}%)</small></td>
+                <td class="text-center">
+                    @if($showTotalRow)
+                        {{ number_format($constructedForLandType) }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td class="text-left">
+                    @if($showTotalRow)
+                        <small>({{ number_format($landTypeConstructedPercentageOfTotal, 2) }}%)</small>
+                    @endif
+                </td>
                 <td class="text-center">{{ number_format(array_get($data, "explored.{$landType}.amount")) }}</td>
                 <td class="text-left"><small>({{ number_format(array_get($data, "explored.{$landType}.percentage"), 2) }}%)</small></td>
             </tr>
         @endforeach
-        <tr>
-            <td>
-                Total
-            </td>
-            <td class="text-center">{{ number_format($totalBarren) }}</td>
-            <td class="text-center">{{ number_format($totalConstructed) }}</td>
-            <td class="text-center"></td>
-            <td class="text-center">{{ number_format($totalLand) }}</td>
-            <td class="text-center"></td>
-        </tr>
+        @if($showTotalRow)
+            <tr>
+                <td>
+                    Total
+                </td>
+                <td class="text-center">{{ number_format(array_get($data, "totalBarrenLand")) }}</td>
+                <td class="text-center">{{ number_format(array_get($data, "totalConstructedLand")) }}</td>
+                <td class="text-center"></td>
+                <td class="text-center">{{ number_format(array_get($data, "totalLand")) }}</td>
+                <td class="text-center"></td>
+            </tr>
+        @endif
     </tbody>
 </table>

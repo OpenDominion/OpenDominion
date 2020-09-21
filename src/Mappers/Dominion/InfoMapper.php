@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Mappers\Dominion;
 
+use OpenDominion\Calculators\Dominion\BuildingCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -15,6 +16,9 @@ use OpenDominion\Services\Dominion\QueueService;
 
 class InfoMapper
 {
+    /* @var BuildingCalculator */
+    private $buildingCalculator;
+
     /** @var BuildingHelper */
     protected $buildingHelper;
 
@@ -42,8 +46,10 @@ class InfoMapper
     /** @var QueueService */
     protected $queueService;
 
+
     public function __construct()
     {
+        $this->buildingCalculator = app(BuildingCalculator::class);
         $this->buildingHelper = app(BuildingHelper::class);
         $this->improvementCalculator = app(ImprovementCalculator::class);
         $this->improvementHelper = app(ImprovementHelper::class);
@@ -248,7 +254,19 @@ class InfoMapper
 
     public function mapLand(Dominion $dominion): array
     {
-        $data = [];
+        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        $totalBarrenLand = $this->landCalculator->getTotalBarrenLand($dominion);
+        $totalConstructedLand = $this->buildingCalculator->getTotalBuildings($dominion);
+
+        $data = [
+            'totalLand' => $totalLand,
+            'totalBarrenLand' => $totalBarrenLand,
+            'totalConstructedLand' => $totalConstructedLand,
+            ];
+
+        if($totalConstructedLand === 0) {
+            $totalConstructedLand = 1;
+        }
 
         foreach ($this->landHelper->getLandTypes() as $landType) {
             $amount = $dominion->{'land_' . $landType};
@@ -257,12 +275,27 @@ class InfoMapper
             array_set(
                 $data,
                 "explored.{$landType}.percentage",
-                (($amount / $this->landCalculator->getTotalLand($dominion)) * 100)
+                (($amount / $totalLand) * 100)
             );
+
             array_set(
                 $data,
                 "explored.{$landType}.barren",
                 $this->landCalculator->getTotalBarrenLandByLandType($dominion, $landType)
+            );
+
+            $totalConstructedForLandType = $this->buildingCalculator->getTotalBuildingsForLandType($dominion, $landType);
+
+            array_set(
+                $data,
+                "explored.{$landType}.constructed",
+                $totalConstructedForLandType
+            );
+
+            array_set(
+                $data,
+                "explored.{$landType}.constructedPercentage",
+                (($totalConstructedForLandType / $totalConstructedLand) * 100)
             );
         }
 
