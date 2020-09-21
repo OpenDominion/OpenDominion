@@ -9,6 +9,8 @@
     }
 
     $data = $infoMapper->mapBuildings($target);
+    $totalBarrenLand = array_get($data, 'barren_land', 0);
+    $totalLand = array_get($data, 'total_land', 250);
 @endphp
 
 @section('page-header', $pageHeader)
@@ -21,7 +23,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-home"></i> {{ $pageHeader }}</h3>
-                    <span class="pull-right">Barren Land: <strong>{{ number_format($landCalculator->getTotalBarrenLand($target)) }}</strong></span>
+                    <span class="pull-right">Barren Land: <strong>{{ number_format($totalBarrenLand) }}</strong> <small>({{ number_format(($totalBarrenLand / $totalLand) * 100, 2) }}%)</small></span>
                 </div>
                 <div class="box-body table-responsive no-padding">
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $data])

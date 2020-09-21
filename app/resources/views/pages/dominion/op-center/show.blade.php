@@ -387,7 +387,7 @@
                 @else
                     @slot('noPadding', true)
                     @slot('titleExtra')
-                        <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong></span>
+                        <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong> <small>({{ number_format((array_get($infoOp->data, 'barren_land') / array_get($infoOp->data, 'total_land', 250)) * 100, 2) }}%)</small></span>
                     @endslot
 
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $infoOp->data])
