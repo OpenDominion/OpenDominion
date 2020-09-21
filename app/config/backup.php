@@ -112,7 +112,7 @@ return [
         'notifiable' => \Spatie\Backup\Notifications\Notifiable::class,
 
         'mail' => [
-            'to' => 'internetfett@gmail.com',
+            'to' => 'info@opendominion.net',
         ],
 
         'slack' => [

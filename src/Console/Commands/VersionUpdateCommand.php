@@ -30,7 +30,7 @@ class VersionUpdateCommand extends Command implements CommandInterface
         $versionHtml = null;
 
         if ($tag !== '') {
-            preg_match('/(\d+\.\d+\.\d+(?:-\d+)?)(?:-(\d+)(?:\-g([0-9a-f]{8})))?/', $tag, $matches);
+            preg_match('/(\d+\.\d+\.\d+)(?:-(\d+)(?:\-g([0-9a-f]*)))?/', $tag, $matches);
 
             $releaseVersion = $matches[1];
 

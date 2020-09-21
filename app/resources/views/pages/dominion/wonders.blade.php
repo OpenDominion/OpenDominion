@@ -334,7 +334,6 @@
                     @else
                         <p>You have {{ $selectedDominion->morale }}% morale.</p>
                     @endif
-                    <p>The <a href="{{ route('dominion.magic') }}">Mindswell</a> spell can be used to imbue your troops with heightened awareness, uncovering the wonder's secrets upon invasion.</p>
                     <p>You have {{ number_format($selectedDominion->resource_mana) }} mana and {{ floor($selectedDominion->wizard_strength) }}% wizard strength.</p>
                 </div>
             </div>

@@ -19,6 +19,16 @@ use OpenDominion\Services\GameEventService;
 
 class OpCenterController extends AbstractDominionController
 {
+    /**
+     * @var GameEventService
+     */
+    private $gameEventService;
+
+    public function __construct(GameEventService $gameEventService)
+    {
+        $this->gameEventService = $gameEventService;
+    }
+
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
@@ -68,7 +78,7 @@ class OpCenterController extends AbstractDominionController
             return redirect()->route('dominion.op-center');
         }
 
-        if ($dominion->pack_id !== null && $selectedDominion->pack_id == $dominion->pack_id) {
+        if ($dominion->realm_id == $selectedDominion->realm_id) {
             return redirect()->route('dominion.realm.advisors.production', $dominion);
         }
 
@@ -77,6 +87,8 @@ class OpCenterController extends AbstractDominionController
             ->where('target_dominion_id', '=', $dominion->id)
             ->where('latest', '=', true)
             ->get();
+
+        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 4);
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
@@ -91,7 +103,8 @@ class OpCenterController extends AbstractDominionController
             'techHelper' => app(TechHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'dominion' => $dominion,
-            'latestInfoOps' => $latestInfoOps
+            'latestInfoOps' => $latestInfoOps,
+            'latestInvasionEvents' => $latestInvasionEvents,
         ]);
     }
 

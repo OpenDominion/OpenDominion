@@ -18,13 +18,13 @@
             @endphp
             <tr>
                 <td>
-                                        <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
-                                            {{ ucwords(str_replace('_', ' ', $buildingType)) }}
-                                        </span>
+                    <span data-toggle="tooltip" data-placement="top" title="{{ $buildingHelper->getBuildingHelpString($buildingType) }}">
+                        {{ ucwords(str_replace('_', ' ', $buildingType)) }}
+                    </span>
                     {!! $buildingHelper->getBuildingImplementedString($buildingType) !!}
                 </td>
                 <td class="text-center">{{ number_format($amount) }}</td>
-                <td class="text-center">{{ number_format((($amount / array_get($data, "total_land", 0)) * 100), 2) }}%</td>
+                <td class="text-center">{{ number_format((($amount / array_get($data, "total_land", 250)) * 100), 2) }}%</td>
             </tr>
         @endforeach
     </tbody>

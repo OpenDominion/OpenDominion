@@ -88,7 +88,7 @@ class PackService
     {
         $otherRaceId = null;
         $playersPerRace = (int)$pack->round->players_per_race;
-        if ($pack->size >= $pack->round->pack_size) {
+        if ($pack->sizeAllocated() >= $pack->round->pack_size) {
             // Packs of maximum size must use unique races
             $playersPerRace = 1;
         }

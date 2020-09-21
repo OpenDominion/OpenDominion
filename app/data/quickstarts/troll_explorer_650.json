@@ -57,7 +57,7 @@
             "daily_platinum": true,
             "protection_ticks_remaining": 12
         },
-        "spells": ["ares_call", "midas_touch"],
+        "spells": ["midas_touch"],
         "queues": {
             "construction": [
                 [
