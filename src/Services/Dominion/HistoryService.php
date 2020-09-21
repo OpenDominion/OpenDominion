@@ -160,6 +160,8 @@ class HistoryService
                 'daily_land',
                 'council_last_read',
                 'forum_last_read',
+                'town_crier_last_seen',
+                'wonders_last_seen',
                 'royal_guard_active_at',
                 'elite_guard_active_at',
                 'last_tick_at',

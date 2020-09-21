@@ -60,11 +60,29 @@
 
                 <li class="header">DOMINION</li>
                 <li class="{{ Route::is('dominion.explore') ? 'active' : null }}"><a href="{{ route('dominion.explore') }}"><i class="ra ra-telescope ra-fw"></i> <span>Explore Land</span></a></li>
-                <li class="{{ Route::is('dominion.construct') ? 'active' : null }}"><a href="{{ route('dominion.construct') }}"><i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span></a></li>
+                <li class="{{ Route::is('dominion.construct') ? 'active' : null }}">
+                    <a href="{{ route('dominion.construct') }}">
+                        <i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span>
+                        @if($barrenLand > 0)
+                            <span class="pull-right-container">
+                                <span class="label label-primary pull-right">{{ $barrenLand }}</span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.rezone') ? 'active' : null }}"><a href="{{ route('dominion.rezone') }}"><i class="fa fa-refresh fa-fw"></i> <span>Re-zone Land</span></a></li>
                 <li class="{{ Route::is('dominion.improvements') ? 'active' : null }}"><a href="{{ route('dominion.improvements') }}"><i class="fa fa-arrow-up fa-fw"></i> <span>Improvements</span></a></li>
                 <li class="{{ Route::is('dominion.bank') ? 'active' : null }}"><a href="{{ route('dominion.bank') }}"><i class="fa fa-money fa-fw"></i> <span>National Bank</span></a></li>
-                <li class="{{ Route::is('dominion.techs') ? 'active' : null }}"><a href="{{ route('dominion.techs') }}"><i class="fa fa-flask fa-fw"></i> <span>Technology</span> {!! $unlockableTechCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $unlockableTechCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('dominion.techs') ? 'active' : null }}">
+                    <a href="{{ route('dominion.techs') }}">
+                        <i class="fa fa-flask fa-fw"></i> <span>Technology</span>
+                        @if($unlockableTechCount > 0)
+                            <span class="pull-right-container">
+                                <span class="label label-primary pull-right">{{ $unlockableTechCount }}</span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
 
                 <li class="header">OPERATIONS</li>
                 <li class="{{ Route::is('dominion.military') ? 'active' : null }}"><a href="{{ route('dominion.military') }}"><i class="ra ra-sword ra-fw"></i> <span>Military</span></a></li>
@@ -90,10 +108,28 @@
                 <li class="{{ Route::is('dominion.search') ? 'active' : null }}"><a href="{{ route('dominion.search') }}"><i class="fa fa-search fa-fw"></i> <span>Search</span></a></li>
                 <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group fa-fw"></i> <span>The Council</span> {!! $councilUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $councilUnreadCount . '</small></span>') : null !!}</a></li>
                 <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a></li>
-                <li class="{{ Route::is('dominion.wonders') ? 'active' : null }}"><a href="{{ route('dominion.wonders') }}"><i class="ra ra-pyramids ra-fw ra-lg"></i> <span>Wonders</span></a></li>
+                <li class="{{ Route::is('dominion.wonders') ? 'active' : null }}">
+                    <a href="{{ route('dominion.wonders') }}">
+                        <i class="ra ra-pyramids ra-fw ra-lg"></i> <span>Wonders</span>
+                        @if($unseenWonders > 0)
+                            <span class="pull-right-container">
+                                <span class="label pull-right bg-green">{{ $unseenWonders }}</span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
                 <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}"><a href="{{ route('dominion.forum') }}"><i class="fa fa-comments fa-fw"></i> <span>Global Forum</span> {!! $forumUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $forumUnreadCount . '</small></span>') : null !!}</a></li>
-                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}"><a href="{{ route('dominion.town-crier') }}"><i class="fa fa-newspaper-o fa-fw"></i> <span>Town Crier</span></a></li>
+                <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}">
+                    <a href="{{ route('dominion.town-crier') }}">
+                        <i class="fa fa-newspaper-o fa-fw"></i> <span>Town Crier</span>
+                        @if($unseenGameEvents > 0)
+                            <span class="pull-right-container">
+                                <span class="label pull-right bg-green">{{ $unseenGameEvents }}</span>
+                            </span>
+                        @endif
+                    </a>
+                </li>
 
                 @if (app()->environment() !== 'production')
                     <li class="header">SECRET</li>

@@ -80,6 +80,8 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_dock
  * @property \Illuminate\Support\Carbon|null $council_last_read
  * @property \Illuminate\Support\Carbon|null $forum_last_read
+ * @property \Illuminate\Support\Carbon|null $town_crier_last_seen
+ * @property \Illuminate\Support\Carbon|null $wonders_last_seen
  * @property \Illuminate\Support\Carbon|null $royal_guard
  * @property \Illuminate\Support\Carbon|null $elite_guard
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -168,6 +170,8 @@ class Dominion extends AbstractModel
         'daily_land' => 'boolean',
         'council_last_read' => 'datetime',
         'forum_last_read' => 'datetime',
+        'town_crier_last_seen' => 'datetime',
+        'wonders_last_seen' => 'datetime',
         'royal_guard_active_at' => 'datetime',
         'elite_guard_active_at' => 'datetime',
         'last_tick_at' => 'datetime',
