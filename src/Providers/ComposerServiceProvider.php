@@ -111,8 +111,19 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $barrenLand = $landCalculator->getTotalBarrenLand($selectedDominion);
             $view->with('barrenLand', $barrenLand);
 
-            $view->with('unseenWonders', 2);
-            $view->with('unseenGameEvents', 14);
+            $unseenWonders = DB::table('round_wonders')
+                ->where('round_id', $selectedDominion->round_id)
+                ->where('created_at', '>', $selectedDominion->wonders_last_seen ?? $selectedDominion->round->start_date)
+                ->count();
+
+            $view->with('unseenWonders', $unseenWonders);
+
+            $unseenGameEvents = DB::table('game_events')
+                ->where('round_id', $selectedDominion->round_id)
+                ->where('created_at', '>', $selectedDominion->town_crier_last_seen ?? $selectedDominion->round->start_date)
+                ->count();
+
+            $view->with('unseenGameEvents', $unseenGameEvents);
 
         });
 
