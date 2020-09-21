@@ -111,6 +111,9 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $barrenLand = $landCalculator->getTotalBarrenLand($selectedDominion);
             $view->with('barrenLand', $barrenLand);
 
+            $view->with('unseenWonders', 2);
+            $view->with('unseenGameEvents', 14);
+
         });
 
         view()->composer('partials.main-footer', function (View $view) {
