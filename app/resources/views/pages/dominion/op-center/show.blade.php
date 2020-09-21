@@ -40,7 +40,7 @@
 
                     @if ($recentlyInvadedCount > 0)
                         <p class="text-center" style="margin-bottom: 0.5em;">
-                            This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> times in the last 24 hours.
+                            This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> time(s) in the last 24 hours.
                         </p>
                     @endif
                 @endif
