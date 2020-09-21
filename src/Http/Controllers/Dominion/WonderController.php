@@ -10,6 +10,7 @@ use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\WonderActionRequest;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\RoundWonder;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
@@ -23,6 +24,7 @@ class WonderController extends AbstractDominionController
     public function getWonders()
     {
         $dominion = $this->getSelectedDominion();
+        $this->updateDominionWondersLastSeen($dominion);
 
         return view('pages.dominion.wonders', [
             'governmentService' => app(GovernmentService::class),
@@ -77,5 +79,11 @@ class WonderController extends AbstractDominionController
         return redirect()
             ->to($result['redirect'] ?? route('dominion.wonders'))
             ->with('target_wonder', $request->get('target_wonder'));
+    }
+
+    protected function updateDominionWondersLastSeen(Dominion $dominion): void
+    {
+        $dominion->wonders_last_seen = now();
+        $dominion->save();
     }
 }

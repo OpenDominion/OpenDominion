@@ -519,8 +519,8 @@ class DominionFactory
             'military_unit2' => 0,
             'military_unit3' => 0,
             'military_unit4' => 0,
-            'military_spies' => 20,
-            'military_wizards' => 20,
+            'military_spies' => 15,
+            'military_wizards' => 15,
             'military_archmages' => 0,
 
             'land_plain' => $startingLand['land_plain'],

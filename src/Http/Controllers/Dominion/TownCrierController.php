@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\RangeCalculator;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Services\GameEventService;
 
@@ -13,6 +14,8 @@ class TownCrierController extends AbstractDominionController
         $gameEventService = app(GameEventService::class);
 
         $dominion = $this->getSelectedDominion();
+
+        $this->updateDominionTownCrierLastSeen($dominion);
 
         if ($realmNumber !== null) {
             $realm = Realm::where([
@@ -39,5 +42,11 @@ class TownCrierController extends AbstractDominionController
             'realmCount',
             'rangeCalculator'
         ))->with('fromOpCenter', false);
+    }
+
+    protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
+    {
+        $dominion->town_crier_last_seen = now();
+        $dominion->save();
     }
 }
