@@ -46,7 +46,6 @@ class InfoMapper
     /** @var QueueService */
     protected $queueService;
 
-
     public function __construct()
     {
         $this->buildingCalculator = app(BuildingCalculator::class);
