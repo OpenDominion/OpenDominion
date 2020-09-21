@@ -82,6 +82,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
+            $router->get('realm/advisors/{target}/status')->uses('Dominion\AdvisorsController@getAdvisorsStatus')->name('realm.advisors.status');
             $router->get('realm/advisors/{target}/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('realm.advisors.production');
             $router->get('realm/advisors/{target}/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('realm.advisors.military');
             $router->get('realm/advisors/{target}/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('realm.advisors.land');
