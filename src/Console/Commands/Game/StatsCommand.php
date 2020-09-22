@@ -50,17 +50,17 @@ class StatsCommand extends Command implements CommandInterface
             $totalNonPlayerDominions = $dominions->where('user_id', '!=', null)->count();
             $raceSelection = $dominions->where('user_id', '!=', null)
                 ->groupBy('race.name')
-                ->map(function($item, $key) {
+                ->map(function ($item, $key) {
                     return $item->count();
                 })
                 ->sortKeys();
             $averageLandByRace = $dominions->where('user_id', '!=', null)
-                ->map(function($item, $key) {
+                ->map(function ($item, $key) {
                     $item['land'] = $item->land_plain + $item->land_hill + $item->land_cavern + $item->land_forest + $item->land_water + $item->land_swamp + $item->land_mountain;
                     return $item;
                 })
                 ->groupBy('race.name')
-                ->map(function($item, $key) {
+                ->map(function ($item, $key) {
                     return (int) round($item->avg('land'));
                 })
                 ->sortKeys();
@@ -75,7 +75,7 @@ class StatsCommand extends Command implements CommandInterface
                 ->where('created_at', '>', now()->subDays(1))
                 ->where('created_at', '<', now())
                 ->get()
-                ->map(function($item, $key) {
+                ->map(function ($item, $key) {
                     $item['landGain'] = 0;
                     $item['landRatio'] = 0;
                     if (isset($item->data['attacker']['landConquered'])) {
@@ -99,13 +99,13 @@ class StatsCommand extends Command implements CommandInterface
             $attackersPercent = round($totalDominions ? ($uniqueAttackers / $totalDominions * 100) : 0, 2);
             $uniqueDefenders = $events->unique('target.id')->count();
             $averageAttackCount = $events->groupBy('source.id')
-                ->map(function($item, $key) {
+                ->map(function ($item, $key) {
                     return $item->count();
                 })
                 ->avg();
             $averageAttackCount = round($averageAttackCount, 2);
             $maxAttackCount = $events->groupBy('source.id')
-                ->map(function($item, $key) {
+                ->map(function ($item, $key) {
                     return $item->count();
                 })
                 ->max();
@@ -116,7 +116,7 @@ class StatsCommand extends Command implements CommandInterface
                 $maxLandDefender = $events->where('landGain', $maxLandGain)->first()->target->name;
                 $largestHit = "{$maxLandAttacker} invaded {$maxLandDefender} for {$maxLandGain} acres";
             } else {
-                $largestHit = "";
+                $largestHit = '';
             }
 
             $output = "
