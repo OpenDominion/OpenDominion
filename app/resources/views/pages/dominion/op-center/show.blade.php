@@ -56,6 +56,8 @@
             @component('partials.dominion.op-center.box')
                 @slot('title', ('Status Screen (' . $dominion->name . ')'))
                 @slot('titleIconClass', 'fa fa-bar-chart')
+                @slot('opData', $infoOps['status'])
+                @slot('opKey', 'status')
 
                 @if ($latestClearSight === null)
                     <p>No recent data available.</p>
@@ -174,6 +176,8 @@
             @component('partials.dominion.op-center.box')
                 @slot('title', 'Active Spells')
                 @slot('titleIconClass', 'ra ra-fairy-wand')
+                @slot('opData', $infoOps['revelation'])
+                @slot('opKey', 'revelation')
 
                 @if ($latestRevelation === null)
                     <p>No recent data available.</p>
@@ -253,6 +257,8 @@
             @component('partials.dominion.op-center.box')
                 @slot('title', 'Improvements')
                 @slot('titleIconClass', 'fa fa-arrow-up')
+                @slot('opData', $infoOps['castle'])
+                @slot('opKey', 'castle')
 
                 @if ($latestCastle === null)
                     <p>No recent data available.</p>
@@ -300,6 +306,8 @@
             @component('partials.dominion.op-center.box')
                 @slot('title', 'Units in training and home')
                 @slot('titleIconClass', 'ra ra-sword')
+                @slot('opData', $infoOps['barracks'])
+                @slot('opKey', 'barracks')
 
                 @if ($latestBarracks === null)
                     <p>No recent data available.</p>
@@ -362,6 +370,8 @@
             @component('partials.dominion.op-center.box')
                 @slot('title', 'Constructed Buildings')
                 @slot('titleIconClass', 'fa fa-home')
+                @slot('opData', $infoOps['survey'])
+                @slot('opKey', 'survey')
 
                 @if ($latestSurvey === null)
                     <p>No recent data available.</p>
@@ -369,7 +379,7 @@
                 @else
                     @slot('noPadding', true)
                     @slot('titleExtra')
-                        <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($latestSurvey->data, 'barren_land')) }}</strong></span>
+                        <span class="pull-right margin-r-5">Barren Land: <strong>{{ number_format(array_get($latestSurvey->data, 'barren_land')) }}</strong></span>
                     @endslot
 
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $latestSurvey->data])
@@ -428,6 +438,8 @@
             @component('partials.dominion.op-center.box')
                 @slot('title', 'Explored Land')
                 @slot('titleIconClass', 'ra ra-honeycomb')
+                @slot('opData', $infoOps['land'])
+                @slot('opKey', 'land')
 
                 @if ($latestLand === null)
                     <p>No recent data available.</p>
@@ -492,6 +504,8 @@
 
                 @slot('title', 'Technological Advancements')
                 @slot('titleIconClass', 'fa fa-flask')
+                @slot('opData', $infoOps['vision'])
+                @slot('opKey', 'vision')
 
                 @if ($latestVision === null)
                     <p>No recent data available.</p>
