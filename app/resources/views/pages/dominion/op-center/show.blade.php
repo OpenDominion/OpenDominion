@@ -99,62 +99,22 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</h3>
-                </div>
-                <div class="box-body table-responsive">
-                    <table class="table">
-                        <tbody>
-                            @foreach($latestInvasionEvents as $invasionEvent)
-                                @php
-                                    $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $invasionEvent->source), 2);
-                                    $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $invasionEvent->source);
-                                    $sourceRaceName = $invasionEvent->source->race->name;
-                                    $sourceToolTipHtml = "$sourceRaceName (<span class=\"$sourceRangeClass\">$sourceRange%</span>)";
-
-                                    $targetRange = round($rangeCalculator->getDominionRange($selectedDominion, $invasionEvent->target), 2);
-                                    $targetRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $invasionEvent->target);
-                                    $targetRaceName = $invasionEvent->target->race->name;
-                                    $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
-
-                                    $sourceTextColor = 'text-light-blue';
-                                    if($invasionEvent->source->realm_id == $selectedDominion->realm_id) {
-                                        $sourceTextColor = 'text-green';
-                                    } else if($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
-                                        $sourceTextColor = 'text-red';
-                                    }
-                                @endphp
-                                <tr>
-                                    <td>
-                                        <span>{{ $invasionEvent->created_at }}</span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('dominion.op-center.show', [$invasionEvent->source->id]) }}"><span class="{{ $sourceTextColor }}" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $invasionEvent->source->name }}</span></a>
-                                        <a href="{{ route('dominion.realm', [$invasionEvent->source->realm->number]) }}">(#{{ $invasionEvent->source->realm->number }})</a>
-                                        invaded
-                                        <a href="{{ route('dominion.op-center.show', [$invasionEvent->target->id]) }}"><span class="text-light-blue" data-toggle="tooltip" data-placement="top" title="{{ $targetToolTipHtml }}">{{ $invasionEvent->target->name }}</span></a>
-                                        <a href="{{ route('dominion.realm', [$invasionEvent->target->realm->number]) }}">(#{{ $invasionEvent->target->realm->number }})</a>
-                                        @if ($invasionEvent->data['result']['success'])
-                                            and captured
-                                            <span class="text-orange text-bold">{{ number_format(array_sum($invasionEvent->data['attacker']['landConquered'])) }}</span> land.
-                                        @else
-                                            but failed to conquer any land.
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($invasionEvent->source->realm_id == $selectedDominion->realm->id || $invasionEvent->target->realm_id == $selectedDominion->realm->id)
-                                            <a href="{{ route('dominion.event', [$invasionEvent->id]) }}"><i class="ra ra-crossed-swords ra-fw"></i></a>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="col-sm-12 col-md-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Recent Invasions</h3>
+                        </div>
+                        <div class="box-body">
+                            @if ($latestInvasionEvents->count() > 0)
+                                <p>
+                                    Of the {{ $latestInvasionEvents->count() }} most recent invasions, {{ $latestInvasionEvents->where('source_id', $dominion->id)->count() }} were attacking and {{ $latestInvasionEvents->where('target_id', $dominion->id)->count() }} were defending.
+                                </p>
+                            @else
+                                <p>This dominion has not been involved in any recent invasions.</p>
+                            @endif
+                            <a href="#recent-invasions">View Details</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -566,5 +526,66 @@
                 <p>Not yet implemented.</p>
             @endcomponent
         </div>
+
+    </div>
+    <div class="row">
+
+        <div class="col-sm-12 col-md-12">
+            <div class="box box-primary">
+                <div class="box-header" id="recent-invasions">
+                    <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Recent Invasions</h3>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table">
+                        <tbody>
+                            @foreach($latestInvasionEvents as $invasionEvent)
+                                @php
+                                    $sourceRange = round($rangeCalculator->getDominionRange($selectedDominion, $invasionEvent->source), 2);
+                                    $sourceRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $invasionEvent->source);
+                                    $sourceRaceName = $invasionEvent->source->race->name;
+                                    $sourceToolTipHtml = "$sourceRaceName (<span class=\"$sourceRangeClass\">$sourceRange%</span>)";
+
+                                    $targetRange = round($rangeCalculator->getDominionRange($selectedDominion, $invasionEvent->target), 2);
+                                    $targetRangeClass = $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $invasionEvent->target);
+                                    $targetRaceName = $invasionEvent->target->race->name;
+                                    $targetToolTipHtml = "$targetRaceName (<span class=\"$targetRangeClass\">$targetRange%</span>)";
+
+                                    $sourceTextColor = 'text-light-blue';
+                                    if($invasionEvent->source->realm_id == $selectedDominion->realm_id) {
+                                        $sourceTextColor = 'text-green';
+                                    } else if($invasionEvent->target->realm_id == $selectedDominion->realm_id) {
+                                        $sourceTextColor = 'text-red';
+                                    }
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <span>{{ $invasionEvent->created_at }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('dominion.op-center.show', [$invasionEvent->source->id]) }}"><span class="{{ $sourceTextColor }}" data-toggle="tooltip" data-placement="top" title="{{ $sourceToolTipHtml }}">{{ $invasionEvent->source->name }}</span></a>
+                                        <a href="{{ route('dominion.realm', [$invasionEvent->source->realm->number]) }}">(#{{ $invasionEvent->source->realm->number }})</a>
+                                        invaded
+                                        <a href="{{ route('dominion.op-center.show', [$invasionEvent->target->id]) }}"><span class="text-light-blue" data-toggle="tooltip" data-placement="top" title="{{ $targetToolTipHtml }}">{{ $invasionEvent->target->name }}</span></a>
+                                        <a href="{{ route('dominion.realm', [$invasionEvent->target->realm->number]) }}">(#{{ $invasionEvent->target->realm->number }})</a>
+                                        @if ($invasionEvent->data['result']['success'])
+                                            and captured
+                                            <span class="text-orange text-bold">{{ number_format(array_sum($invasionEvent->data['attacker']['landConquered'])) }}</span> land.
+                                        @else
+                                            but failed to conquer any land.
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($invasionEvent->source->realm_id == $selectedDominion->realm->id || $invasionEvent->target->realm_id == $selectedDominion->realm->id)
+                                            <a href="{{ route('dominion.event', [$invasionEvent->id]) }}"><i class="ra ra-crossed-swords ra-fw"></i></a>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
     </div>
 @endsection
