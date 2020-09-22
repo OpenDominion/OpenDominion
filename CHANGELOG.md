@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Most recent invasions for a dominion are visible in the op center
 - Sidebar menu indicator for unbuilt land
 - Sidebar menu indicator for unseen town crier events
-- Sidebar menu indicator for unseen wonders 
+- Sidebar menu indicator for unseen wonders
+- Button to load your temples into defense calculator
 
 ### Changed
 - The recently invaded message in clear sights will now show the exact number of invasions

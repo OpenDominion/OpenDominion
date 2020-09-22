@@ -282,13 +282,18 @@
                                 Attacker's Temples %
                             </div>
                             <div class="col-xs-3 text-left">
-                                <input type="number"
-                                        step="any"
-                                        name="calc[temple_percent]"
-                                        class="form-control text-center"
-                                        placeholder="0"
-                                        min="0"
-                                        max="16.67" />
+                                <div class="input-group">
+                                    <input type="number"
+                                            step="any"
+                                            name="calc[temple_percent]"
+                                            class="form-control text-center"
+                                            placeholder="0"
+                                            min="0"
+                                            max="16.67" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-sm btn-primary load-temples" data-temples="{{ round($selectedDominion->building_temple / $landCalculator->getTotalLand($selectedDominion) * 100, 2) }}" type="button">Load</button>
+                                    </span>
+                                </div>
                             </div>
                             <div class="col-xs-3 text-right">
                                 Guard Tower %
@@ -848,6 +853,11 @@
                     $('.target-dominion-op').hide();
                 });
             @endif
+
+            $('.load-temples').click(function(e) {
+                var temples = $(this).data('temples');
+                $('input[name=calc\\[temple_percent\\]]').val(temples);
+            });
         })(jQuery);
     </script>
 @endpush
