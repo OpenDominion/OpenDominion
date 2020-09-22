@@ -616,6 +616,7 @@
     
     </div>
 @endsection
+
 @push('inline-scripts')
     <script type="text/javascript">
         function copyJson(elementId) {

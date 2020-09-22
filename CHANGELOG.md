@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - Status advisor for realmies
 - Most recent invasions for a dominion are visible in the op center
+- Copy op center data in JSON format
 - Sidebar menu indicator for unbuilt land
 - Sidebar menu indicator for unseen town crier events
 - Sidebar menu indicator for unseen wonders
