@@ -324,32 +324,51 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Results</h3>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Results</h3>
+                        </div>
+                        <div class="box-body table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    @if ($targetDominion !== null)
+                                        <tr class="target-dominion-dp">
+                                            <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
+                                        </tr>
+                                    @endif
+                                    <tr style="font-weight: bold;">
+                                        <td>Total Defense:</td>
+                                        <td id="dp">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defensive Multiplier:</td>
+                                        <td id="dp-multiplier">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Raw Defense:</td>
+                                        <td id="dp-raw">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="box-body table-responsive">
-                    <table class="table">
-                        <tbody>
-                            @if ($targetDominion !== null)
-                                <tr class="target-dominion-dp">
-                                    <td colspan="2"><b>{{ $targetDominion->name }}</b></td>
-                                </tr>
-                            @endif
-                            <tr style="font-weight: bold;">
-                                <td>Total Defense:</td>
-                                <td id="dp">--</td>
-                            </tr>
-                            <tr>
-                                <td>Defensive Multiplier:</b></td>
-                                <td id="dp-multiplier">--</td>
-                            </tr>
-                            <tr>
-                                <td>Raw Defense:</td>
-                                <td id="dp-raw">--</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Information</h3>
+                        </div>
+                        <div class="box-body">
+                            <p>The calculator can be pre-filled with data from the ops center.</p>
+                            <p>Values will be taken from their corresponding op. Land spy is needed to get a pre-filled land% for races with units that depend on it.</p>
+                            <p>Old ops (except for Barracks Spy) will be pre-filled.</p>
+                            <p>You are responsible for validating that the values are correct.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -707,7 +726,7 @@
                                 <td id="op">--</td>
                             </tr>
                             <tr>
-                                <td>Offensive Multiplier:</b></td>
+                                <td>Offensive Multiplier:</td>
                                 <td id="op-multiplier">--</td>
                             </tr>
                             <tr>
