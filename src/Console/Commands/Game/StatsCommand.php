@@ -109,7 +109,7 @@ class StatsCommand extends Command implements CommandInterface
                     return $item->count();
                 })
                 ->max();
-            $averageLandGain = $events->avg('landGain');
+            $averageLandGain = round($events->avg('landGain'), 2);
             $maxLandGain = $events->max('landGain');
             if ($maxLandGain) {
                 $maxLandAttacker = $events->where('landGain', $maxLandGain)->first()->source->name;
@@ -158,6 +158,7 @@ Largest hit: {$largestHit}
                 }
             } else {
                 $this->info($output);
+                $this->info($averageLandOutput);
             }
         }
     }
