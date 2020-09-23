@@ -23,30 +23,38 @@
 
     if($latestClearSight != null) {
         $infoOps['status'] = $latestClearSight->data;
+        $infoOps['status']['race_name'] = $dominion->race->name;
+        $infoOps['status']['created_at'] = $latestClearSight->created_at;
     }
 
     if($latestRevelation != null) {
         $infoOps['revelation'] = $latestRevelation->data;
+        $infoOps['revelation']['created_at'] = $latestRevelation->created_at;
     }
 
     if($latestCastle != null) {
         $infoOps['castle'] = $latestCastle->data;
+        $infoOps['castle']['created_at'] = $latestCastle->created_at;
     }
 
     if($latestBarracks != null) {
         $infoOps['barracks'] = $latestBarracks->data;
+        $infoOps['barracks']['created_at'] = $latestBarracks->created_at;
     }
 
     if($latestSurvey != null) {
         $infoOps['survey'] = $latestSurvey->data;
+        $infoOps['survey']['created_at'] = $latestSurvey->created_at;
     }
 
     if($latestLand != null) {
         $infoOps['land'] = $latestLand->data;
+        $infoOps['land']['created_at'] = $latestLand->created_at;
     }
 
     if($latestVision != null) {
         $infoOps['vision'] = $latestVision->data;
+        $infoOps['vision']['created_at'] = $latestVision->created_at;
     }
 @endphp
 
@@ -613,7 +621,7 @@
                 </div>
             </div>
         </div>
-    
+
     </div>
 @endsection
 
