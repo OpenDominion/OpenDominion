@@ -25,10 +25,20 @@
         $infoOps['status'] = $latestClearSight->data;
         $infoOps['status']['race_name'] = $dominion->race->name;
         $infoOps['status']['created_at'] = $latestClearSight->created_at;
+        unset($infoOps['status']['race_id']);
     }
 
     if($latestRevelation != null) {
-        $infoOps['revelation'] = $latestRevelation->data;
+
+        $infoOps['revelation'] = [];
+        $infoOps['revelation']['spells'] = [];
+
+        for ($i = 0; $i < count($latestRevelation->data); $i++) {
+            $spell = [];
+            $spell['spell'] = $latestRevelation->data[$i]['spell'];
+            $spell['duration'] = $latestRevelation->data[$i]['duration'];
+            $infoOps['revelation']['spells'][$i] = $spell;
+        }
         $infoOps['revelation']['created_at'] = $latestRevelation->created_at;
     }
 
