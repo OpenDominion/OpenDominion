@@ -19,10 +19,10 @@
         <div class="col-sm-12 col-md-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $selectedDominion->name }}</h3>
+                    <h3 class="box-title"><i class="fa fa-bar-chart"></i> The Dominion of {{ $target->name }}</h3>
                 </div>
                 <div class="box-body no-padding">
-                    @include('partials.dominion.info.status', ['data' => $infoMapper->mapStatus($selectedDominion, false), 'race' => $selectedDominion->race, ])
+                    @include('partials.dominion.info.status', ['data' => $infoMapper->mapStatus($target, false), 'race' => $target->race, ])
                 </div>
             </div>
         </div>
