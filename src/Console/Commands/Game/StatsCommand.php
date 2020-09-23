@@ -46,8 +46,8 @@ class StatsCommand extends Command implements CommandInterface
 
             // Get dominion data
             $totalDominions = $dominions->count();
-            $totalPlayerDominions = $dominions->where('user_id', null)->count();
-            $totalNonPlayerDominions = $dominions->where('user_id', '!=', null)->count();
+            $totalPlayerDominions = $dominions->where('user_id', '!=', null)->count();
+            $totalNonPlayerDominions = $dominions->where('user_id', null)->count();
             $raceSelection = $dominions->where('user_id', '!=', null)
                 ->groupBy('race.name')
                 ->map(function ($item, $key) {
