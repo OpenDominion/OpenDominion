@@ -89,6 +89,7 @@ class DominionController extends AbstractController
             ->where('created_at', '<', $dominion->round->end_date)
             ->where('event', '!=', 'tick')
             ->where('event', '!=', 'invade')
+            ->where('event', '!=', 'wonder destroyed')
             ->where('delta', 'NOT LIKE', '%source_dominion_id%')
             ->whereIn('ip', $userIps->merge($historyIps)->unique())
             ->distinct('dominion_id')
