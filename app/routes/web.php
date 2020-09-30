@@ -71,7 +71,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->get('message-board/post/{post}/flag')->uses('MessageBoardController@getFlagPost')->name('message-board.flag.post');
 
     $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], static function (Router $router) {
-        
+
         // Dominion Select
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
