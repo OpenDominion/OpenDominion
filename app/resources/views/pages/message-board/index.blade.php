@@ -92,6 +92,9 @@
                 </div>
                 <div class="box-footer">
                     <a href="{{ route('message-board.create') }}" class="btn btn-primary">New Thread</a>
+                    <div class="pull-right">
+                        {{ $threads->links() }}
+                    </div>
                 </div>
             </div>
         </div>

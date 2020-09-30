@@ -13,10 +13,12 @@ class MessageBoardService
     /**
      * Returns message board threads.
      *
-     * @return Collection|MessageBoard\Thread[]
+     * @return LengthAwarePaginator
      */
-    public function getThreads(): Collection
+    public function getThreads()
     {
+        $resultsPerPage = 15;
+
         return MessageBoard\Thread::query()
             ->select([
                 'message_board_threads.*',
@@ -26,13 +28,15 @@ class MessageBoardService
             ->leftJoin('message_board_posts', 'message_board_posts.message_board_thread_id', '=', 'message_board_threads.id')
             ->groupBy('message_board_threads.id')
             ->orderBy('last_activity', 'desc')
-            ->get(['message_board_threads.*'])
+            ->paginate($resultsPerPage);
+            /*
             ->filter(function ($thread) {
                 if ($thread->flagged_for_removal && $thread->unflaggedPosts->isEmpty()) {
                     return false;
                 }
                 return true;
             });
+            */
     }
 
     /**

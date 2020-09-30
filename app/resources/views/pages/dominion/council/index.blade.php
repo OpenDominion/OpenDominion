@@ -89,6 +89,9 @@
                     @else
                         <button class="btn btn-primary disabled">New Thread</button>
                     @endif
+                    <div class="pull-right">
+                        {{ $councilThreads->links() }}
+                    </div>
                 </div>
             </div>
         </div>
