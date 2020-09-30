@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-comments"></i> Forum: {{ $round->name }}</h3>
+                    <h3 class="box-title"><i class="fa fa-comments"></i> Round Forum: {{ $round->name }}</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
@@ -104,7 +104,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-footer {{--clearfix--}}">
+                <div class="box-footer">
                     @if (!$selectedDominion->isLocked())
                         <a href="{{ route('dominion.forum.create') }}" class="btn btn-primary">New Thread</a>
                     @else

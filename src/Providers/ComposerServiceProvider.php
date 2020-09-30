@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Providers;
 
+use Auth;
 use Cache;
 use DB;
 use Illuminate\Contracts\View\View;
@@ -12,6 +13,7 @@ use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Forum;
+use OpenDominion\Models\MessageBoard;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
@@ -78,6 +80,26 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 })
                 ->sum();
             $view->with('forumUnreadCount', $forumUnreadCount);
+
+            $messageBoardLastRead = Auth::getUser()->message_board_last_read;
+            $messageBoardUnreadCount = MessageBoard\Thread::query()
+                ->with(['posts' => function ($query) use ($messageBoardLastRead) {
+                    if ($messageBoardLastRead !== null) {
+                        $query->where('created_at', '>', $messageBoardLastRead);
+                    }
+                }])
+                ->get()
+                ->map(static function (MessageBoard\Thread $thread) use ($messageBoardLastRead) {
+                    $unreadCount = $thread->posts->count();
+
+                    if ($thread->created_at > $messageBoardLastRead) {
+                        $unreadCount++;
+                    }
+
+                    return $unreadCount;
+                })
+                ->sum();
+            $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
 
             $activeSpells = DB::table('active_spells')
                 ->where('dominion_id', $selectedDominion->id)

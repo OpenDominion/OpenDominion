@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-header', 'Forum')
+@section('page-header', 'Message Board')
 
 @section('content')
     <div class="row">
@@ -8,12 +8,12 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-comments"></i> Round Forum: Create Thread</h3>
+                    <h3 class="box-title"><i class="ra ra-wooden-sign"></i> Message Board: Create Thread</h3>
                     <div class="pull-right">
-                        <a href="{{ route('dominion.forum') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
+                        <a href="{{ route('message-board') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
-                <form action="{{ route('dominion.forum.create') }}" method="post" class="form-horizontal" role="form">
+                <form action="{{ route('message-board.create') }}" method="post" class="form-horizontal" role="form">
                     @csrf
                     <div class="box-body">
 
@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label for="title" class="col-sm-3 control-label">Title</label>
                             <div class="col-sm-9">
-                                <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                                <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus>
                             </div>
                         </div>
 
@@ -29,16 +29,18 @@
                         <div class="form-group">
                             <label for="body" class="col-sm-3 control-label">Body</label>
                             <div class="col-sm-9">
-                                <textarea name="body" id="body" cols="30" rows="10" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
-                                <p class="help-block">Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.</p>
+                                <textarea name="body" id="body" cols="30" rows="10" class="form-control" placeholder="Body" required>{{ old('body') }}</textarea>
+                                <p class="help-block">
+                                    Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.
+                                </p>
                             </div>
                         </div>
 
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Create Thread</button>
+                        <button type="submit" class="btn btn-primary">Create Thread</button>
                         <p class="help-block pull-right">
-                            You are posting as <b>{{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</b>.
+                            You are posting as <b>{{ $user->display_name }}</b>.
                         </p>
                     </div>
                 </form>
@@ -46,12 +48,12 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-        <div class="box">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>The forum is where you can communicate with the rest of the world. All dominions can view and post here.</p>
+                    <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>

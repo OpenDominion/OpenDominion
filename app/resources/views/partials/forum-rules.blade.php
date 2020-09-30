@@ -1,4 +1,4 @@
-<h4><b>Forum Rules</b></h4>
+<h4><b>Rules</b></h4>
 <ul>
     <li>Avoid excessive profanity and abusive behavior</li>
     <li>Do not post information about other dominions (zero tolerance)</li>
