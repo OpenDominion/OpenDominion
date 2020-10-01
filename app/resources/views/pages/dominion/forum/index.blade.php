@@ -19,35 +19,6 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th>Announcements</th>
-                                <th class="text-center">Replies</th>
-                                <th class="text-center">Posted At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (!$announcements->isEmpty())
-                                @foreach ($announcements as $announcement)
-                                    <tr>
-                                        <td>
-                                            <a href="{{ route('dominion.forum.announcement', $announcement) }}">
-                                                <b>{{ $announcement->title }}</b>
-                                            </a>
-                                        </td>
-                                        <td class="text-center align-middle">--</td>
-                                        <td class="text-center align-middle">
-                                            {{ $announcement->created_at }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td class="text-center" colspan="3">No announcements found</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                        <thead>
-                            <tr><td colspan="3"><!-- Separator --></td></tr>
-                            <tr>
                                 <th>Topics</th>
                                 <th class="text-center">Replies</th>
                                 <th class="text-center">Last Reply</th>
@@ -83,11 +54,11 @@
                                             </td>
                                             <td class="text-center align-middle">
                                                 @if (!$thread->posts->isEmpty())
-                                                    {{ $thread->posts->last()->created_at }}<br>
+                                                    {{ $thread->latestPost->created_at }}<br>
                                                     <small class="text-muted">
                                                         by
-                                                        <b>{{ $thread->posts->last()->dominion->name }}</b>
-                                                        (#{{ $thread->posts->last()->dominion->realm->number }})
+                                                        <b>{{ $thread->latestPost->dominion->name }}</b>
+                                                        (#{{ $thread->latestPost->dominion->realm->number }})
                                                     </small>
                                                 @else
                                                     None

@@ -140,7 +140,7 @@
             @else
 
                 <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select your Dominion</span></a></li>
-                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $forumUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $forumUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span></a></li>
 
             @endif
         </ul>

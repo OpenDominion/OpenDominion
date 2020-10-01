@@ -25,13 +25,7 @@ class ForumService
         $resultsPerPage = 15;
 
         return $round->forumThreads()
-            ->select([
-                'forum_threads.*',
-                DB::raw('IFNULL(MAX(forum_posts.created_at), forum_threads.created_at) as last_activity')
-            ])
-            ->with(['dominion.realm', 'posts.dominion.realm'])
-            ->leftJoin('forum_posts', 'forum_posts.forum_thread_id', '=', 'forum_threads.id')
-            ->groupBy('forum_threads.id')
+            ->with(['dominion.realm', 'latestPost.dominion.realm'])
             ->orderBy('last_activity', 'desc')
             ->paginate($resultsPerPage);
             /*
@@ -62,6 +56,7 @@ class ForumService
             'dominion_id' => $dominion->id,
             'title' => $title,
             'body' => $body,
+            'last_activity' => now(),
         ]);
     }
 

@@ -58,15 +58,15 @@
                                         </td>--}}
                                         <td class="text-center align-middle">
                                             @if (!$thread->posts->isEmpty())
-                                                {{ $thread->posts->last()->created_at }}<br>
+                                                {{ $thread->latestPost->created_at }}<br>
                                                 <small class="text-muted">
                                                     by
-                                                    @if ($thread->posts->last()->dominion->isMonarch())
+                                                    @if ($thread->latestPost->dominion->isMonarch())
                                                         <i class="ra ra-queen-crown text-red"></i>
                                                     @endif
-                                                    <b>{{ $thread->posts->last()->dominion->name }}</b>
-                                                    @if ($thread->posts->last()->dominion->name !== $thread->posts->last()->dominion->ruler_name)
-                                                        ({{ $thread->posts->last()->dominion->ruler_name }})
+                                                    <b>{{ $thread->latestPost->dominion->name }}</b>
+                                                    @if ($thread->latestPost->dominion->name !== $thread->latestPost->dominion->ruler_name)
+                                                        ({{ $thread->latestPost->dominion->ruler_name }})
                                                     @endif
                                                 </small>
                                             @else

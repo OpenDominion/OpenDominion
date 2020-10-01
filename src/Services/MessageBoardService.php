@@ -20,13 +20,7 @@ class MessageBoardService
         $resultsPerPage = 15;
 
         return MessageBoard\Thread::query()
-            ->select([
-                'message_board_threads.*',
-                DB::raw('IFNULL(MAX(message_board_posts.created_at), message_board_threads.created_at) as last_activity')
-            ])
             ->with(['user'])
-            ->leftJoin('message_board_posts', 'message_board_posts.message_board_thread_id', '=', 'message_board_threads.id')
-            ->groupBy('message_board_threads.id')
             ->orderBy('last_activity', 'desc')
             ->paginate($resultsPerPage);
             /*
@@ -54,6 +48,7 @@ class MessageBoardService
             'user_id' => $user->id,
             'title' => $title,
             'body' => $body,
+            'last_activity' => now(),
         ]);
     }
 

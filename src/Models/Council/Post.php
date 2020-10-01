@@ -37,4 +37,15 @@ class Post extends AbstractModel
     {
         return $this->belongsTo(Thread::class, 'council_thread_id');
     }
+
+    public function save(array $options = [])
+    {
+        $saved = parent::save($options);
+
+        if ($saved) {
+            $this->thread()->update(['last_activity' => now()]);
+        }
+
+        return $saved;
+    }
 }

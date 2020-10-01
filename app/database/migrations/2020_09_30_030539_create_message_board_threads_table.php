@@ -15,6 +15,7 @@ class CreateMessageBoardThreadsTable extends Migration
     {
         Schema::create('message_board_threads', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('message_board_category_id')->nullable();
             $table->unsignedInteger('user_id');
             $table->string('title');
             $table->text('body');
@@ -23,6 +24,7 @@ class CreateMessageBoardThreadsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('message_board_category_id')->references('id')->on('message_board_categories');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

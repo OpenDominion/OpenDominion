@@ -22,7 +22,6 @@ class MessageBoardController extends AbstractController
         $threads = $messageBoardService->getThreads();
 
         return view('pages.message-board.index', [
-            'announcements' => collect(),
             'threads' => $threads,
             'user' => $user,
         ]);

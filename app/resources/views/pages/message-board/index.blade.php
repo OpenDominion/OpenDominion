@@ -20,29 +20,29 @@
                         {{--
                         <thead>
                             <tr>
-                                <th>Announcements</th>
+                                <th>Category</th>
                                 <th class="text-center">Replies</th>
                                 <th class="text-center">Posted At</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (!$announcements->isEmpty())
-                                @foreach ($announcements as $announcement)
+                            @if (false)
+                                @foreach ($categories as $category)
                                     <tr>
                                         <td>
-                                            <a href="{{ route('dominion.forum.announcement', $announcement) }}">
-                                                <b>{{ $announcement->title }}</b>
+                                            <a href="{{ route('message-board.thread', $thread) }}">
+                                                <b>{{ $thread->title }}</b>
                                             </a>
                                         </td>
                                         <td class="text-center align-middle">--</td>
                                         <td class="text-center align-middle">
-                                            {{ $announcement->created_at }}
+                                            {{ $thread->created_at }}
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td class="text-center" colspan="3">No announcements found</td>
+                                    <td class="text-center" colspan="3">No threads found</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -71,10 +71,10 @@
                                         </td>
                                         <td class="text-center align-middle">
                                             @if (!$thread->posts->isEmpty())
-                                                {{ $thread->posts->last()->created_at }}<br>
+                                                {{ $thread->latestPost->created_at }}<br>
                                                 <small class="text-muted">
                                                     by
-                                                    <b>{{ $thread->posts->last()->user->display_name }}</b>
+                                                    <b>{{ $thread->latestPost->user->display_name }}</b>
                                                 </small>
                                             @else
                                                 None

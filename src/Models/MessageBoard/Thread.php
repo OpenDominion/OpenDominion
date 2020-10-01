@@ -44,8 +44,18 @@ class Thread extends AbstractModel
         return $this->hasMany(Post::class, 'message_board_thread_id');
     }
 
+    public function latestPost()
+    {
+        return $this->hasOne(Post::class, 'message_board_thread_id')->latest();
+    }
+
     public function unflaggedPosts()
     {
         return $this->posts()->where('flagged_for_removal', false);
+    }
+
+    public function getPostsCountAttribute($value)
+    {
+        return $value + 1;
     }
 }
