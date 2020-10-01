@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-wooden-sign"></i> Message Board Thread: {{ $thread->title }}</h3>
                     <div class="pull-right">
-                        <a href="{{ route('message-board') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
+                        <a href="{{ route('message-board.category', $thread->category->slug) }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
                 <div class="box-header with-border">
@@ -20,7 +20,7 @@
                         @endphp
                         <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                         <span class="username">
-                            {{ $thread->user->display_name }}
+                            {{ $thread->user->display_name }} {!! $thread->user->displayRoleHtml() !!}
                             @if ($ranking && $ranking['title'])
                                 <em data-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
                             @endif
@@ -54,7 +54,7 @@
                                 <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
-                                        {{ $post->user->display_name }}
+                                        {{ $post->user->display_name }} {!! $post->user->displayRoleHtml() !!}
                                         @if ($ranking && $ranking['title'])
                                             <em data-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
                                         @endif

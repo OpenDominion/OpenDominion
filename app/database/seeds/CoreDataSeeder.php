@@ -43,11 +43,13 @@ class CoreDataSeeder extends Seeder
 
         Category::create([
             'name' => 'Announcements',
+            'slug' => 'announcements',
             'role_required' => 'Moderator',
         ]);
 
         Category::create([
             'name' => 'General',
+            'slug' => 'general',
         ]);
     }
 }

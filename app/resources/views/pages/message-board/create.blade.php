@@ -19,6 +19,22 @@
 
                         {{-- Title --}}
                         <div class="form-group">
+                            <label for="category" class="col-sm-3 control-label">Category</label>
+                            <div class="col-sm-9">
+                                <select name="category" id="category" class="form-control">
+                                    @foreach ($categories as $category)
+                                        @if ($category->role_required == null || $user->hasRole($category->role_required))
+                                            <option value="{{ $category->id }}">
+                                                {{ $category->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Title --}}
+                        <div class="form-group">
                             <label for="title" class="col-sm-3 control-label">Title</label>
                             <div class="col-sm-9">
                                 <input type="text" name="title" id="title" class="form-control" placeholder="Title" value="{{ old('title') }}" required autofocus>

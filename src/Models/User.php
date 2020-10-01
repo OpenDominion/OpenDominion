@@ -169,4 +169,25 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     {
         return $this->hasRole('Moderator');
     }
+
+    /**
+     * Returns the highest priority staff role.
+     */
+    public function displayRoleHtml()
+    {
+        if ($this->isAdministrator())
+        {
+            return '<i>(Administrator)</i>';
+        }
+
+        if ($this->isDeveloper())
+        {
+            return '<i>(Developer)</i>';
+        }
+
+        if ($this->isModerator())
+        {
+            return '<i>(Moderator)</i>';
+        }
+    }
 }

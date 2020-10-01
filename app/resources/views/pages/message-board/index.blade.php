@@ -17,84 +17,55 @@
                             <col width="10%">
                             <col width="25%">
                         </colgroup>
-                        {{--
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th class="text-center">Replies</th>
-                                <th class="text-center">Posted At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (false)
-                                @foreach ($categories as $category)
-                                    <tr>
-                                        <td>
-                                            <a href="{{ route('message-board.thread', $thread) }}">
-                                                <b>{{ $thread->title }}</b>
-                                            </a>
-                                        </td>
-                                        <td class="text-center align-middle">--</td>
-                                        <td class="text-center align-middle">
-                                            {{ $thread->created_at }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
+                        @foreach ($categories as $category)
+                            <thead>
+                                @if (!$loop->first)
+                                    <tr><td colspan="3"><!-- Separator --></td></tr>
+                                @endif
                                 <tr>
-                                    <td class="text-center" colspan="3">No threads found</td>
+                                    <th>{{ $category->name }}<a href="{{ route('message-board.category', $category->slug) }}" class="small" style="margin-left: 10px">view all</a></th>
+                                    <th class="text-center">Replies</th>
+                                    <th class="text-center">Posted At</th>
                                 </tr>
-                            @endif
-                        </tbody>
-                        --}}
-                        <thead>
-                            <tr><td colspan="3"><!-- Separator --></td></tr>
-                            <tr>
-                                <th>Topics</th>
-                                <th class="text-center">Replies</th>
-                                <th class="text-center">Last Reply</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (!$threads->isEmpty())
-                                @foreach ($threads as $thread)
-                                    <tr>
-                                        <td class="align-middle">
-                                            <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
-                                            <small class="text-muted">
-                                                Created {{ $thread->created_at }} by
-                                                <b>{{ $thread->user->display_name }}</b>
-                                            </small>
-                                        </td>
-                                        <td class="text-center align-middle">
-                                            {{ number_format($thread->posts->count()) }}
-                                        </td>
-                                        <td class="text-center align-middle">
-                                            @if (!$thread->posts->isEmpty())
-                                                {{ $thread->latestPost->created_at }}<br>
+                            </thead>
+                            <tbody>
+                                @if (!$category->threads->isEmpty())
+                                    @foreach ($category->threads as $thread)
+                                        <tr>
+                                            <td class="align-middle">
+                                                <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                                 <small class="text-muted">
-                                                    by
-                                                    <b>{{ $thread->latestPost->user->display_name }}</b>
+                                                    Created {{ $thread->created_at }} by
+                                                    <b>{{ $thread->user->display_name }}</b> {!! $user->displayRoleHtml() !!}
                                                 </small>
-                                            @else
-                                                None
-                                            @endif
-                                        </td>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                {{ number_format($thread->posts->count()) }}
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                @if (!$thread->posts->isEmpty())
+                                                    {{ $thread->latestPost->created_at }}<br>
+                                                    <small class="text-muted">
+                                                        by
+                                                        <b>{{ $thread->latestPost->user->display_name }}</b> {!! $thread->latestPost->user->displayRoleHtml() !!}
+                                                    </small>
+                                                @else
+                                                    None
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td class="text-center" colspan="3">No threads found</td>
                                     </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td class="text-center" colspan="3">No threads found</td>
-                                </tr>
-                            @endif
-                        </tbody>
+                                @endif
+                            </tbody>
+                        @endforeach
                     </table>
                 </div>
                 <div class="box-footer">
                     <a href="{{ route('message-board.create') }}" class="btn btn-primary">New Thread</a>
-                    <div class="pull-right">
-                        {{ $threads->links() }}
-                    </div>
                 </div>
             </div>
         </div>
@@ -106,7 +77,9 @@
                 </div>
                 <div class="box-body">
                     <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
-                    <p>There {{ ($threads->count() === 1) ? 'is' : 'are' }} {{ number_format($threads->count()) }} {{ str_plural('thread', $threads->count()) }} in the message board.</p>
+                    @if (isset($categories->threads))
+                        <p>There {{ ($categories->threads->count() === 1) ? 'is' : 'are' }} {{ number_format($categories->threads->count()) }} {{ str_plural('thread', $categories->threads->count()) }} in the message board.</p>
+                    @endif
                     @include('partials.forum-rules')
                 </div>
             </div>

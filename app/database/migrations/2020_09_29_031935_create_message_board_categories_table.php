@@ -16,6 +16,7 @@ class CreateMessageBoardCategoriesTable extends Migration
         Schema::create('message_board_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('slug');
             $table->string('role_required')->nullable();
         });
     }

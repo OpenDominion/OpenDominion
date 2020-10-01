@@ -61,14 +61,15 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->get('message-board')->uses('MessageBoardController@getIndex')->name('message-board');
     $router->get('message-board/create')->uses('MessageBoardController@getCreate')->name('message-board.create');
     $router->post('message-board/create')->uses('MessageBoardController@postCreate');
-    $router->get('message-board/{thread}')->uses('MessageBoardController@getThread')->name('message-board.thread');
-    $router->post('message-board/{thread}/reply')->uses('MessageBoardController@postReply')->name('message-board.reply');
-    $router->get('message-board/{thread}/delete')->uses('MessageBoardController@getDeleteThread')->name('message-board.delete.thread');
-    $router->post('message-board/{thread}/delete')->uses('MessageBoardController@postDeleteThread');
-    $router->get('message-board/{thread}/flag')->uses('MessageBoardController@getFlagThread')->name('message-board.flag.thread');
+    $router->get('message-board/thread/{thread}')->uses('MessageBoardController@getThread')->name('message-board.thread');
+    $router->post('message-board/thread/{thread}/reply')->uses('MessageBoardController@postReply')->name('message-board.reply');
+    $router->get('message-board/thread/{thread}/delete')->uses('MessageBoardController@getDeleteThread')->name('message-board.delete.thread');
+    $router->post('message-board/thread/{thread}/delete')->uses('MessageBoardController@postDeleteThread');
+    $router->get('message-board/thread/{thread}/flag')->uses('MessageBoardController@getFlagThread')->name('message-board.flag.thread');
     $router->get('message-board/post/{post}/delete')->uses('MessageBoardController@getDeletePost')->name('message-board.delete.post');
     $router->post('message-board/post/{post}/delete')->uses('MessageBoardController@postDeletePost');
     $router->get('message-board/post/{post}/flag')->uses('MessageBoardController@getFlagPost')->name('message-board.flag.post');
+    $router->get('message-board/{category}')->uses('MessageBoardController@getCategory')->name('message-board.category');
 
     $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], static function (Router $router) {
 

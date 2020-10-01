@@ -19,9 +19,29 @@ class MessageBoardController extends AbstractController
         $this->updateMessageBoardLastRead($user);
 
         $messageBoardService = app(MessageBoardService::class);
-        $threads = $messageBoardService->getThreads();
+        $categories = $messageBoardService->getCategories();
 
         return view('pages.message-board.index', [
+            'categories' => $categories,
+            'user' => $user,
+        ]);
+    }
+
+    public function getCategory(string $categorySlug)
+    {
+        $category = MessageBoard\Category::where('slug', '=', $categorySlug)->first();
+        if ($category == null) {
+            return redirect()->route('message-board');
+        }
+
+        $user = Auth::getUser();
+        $this->updateMessageBoardLastRead($user);
+
+        $messageBoardService = app(MessageBoardService::class);
+        $threads = $messageBoardService->getThreads($category);
+
+        return view('pages.message-board.category', [
+            'category' => $category,
             'threads' => $threads,
             'user' => $user,
         ]);
@@ -30,8 +50,10 @@ class MessageBoardController extends AbstractController
     public function getCreate() // getCreateThread?
     {
         $user = Auth::getUser();
+        $categories = MessageBoard\Category::all();
 
         return view('pages.message-board.create', [
+            'categories' => $categories,
             'user' => $user,
         ]);
     }
@@ -43,8 +65,11 @@ class MessageBoardController extends AbstractController
 
         try {
             $this->guardAgainstRepeatOffenders($user);
+            $category = MessageBoard\Category::findOrFail($request->get('category'));
+            $this->guardForCategory($user, $category);
             $thread = $messageBoardService->createThread(
                 $user,
+                $category,
                 $request->get('title'),
                 $request->get('body')
             );
@@ -165,7 +190,7 @@ class MessageBoardController extends AbstractController
     {
         $user = Auth::getUser();
         $messageBoardService = app(MessageBoardService::class);
-        $messageBoardService->flagPost($dominion, $post);
+        $messageBoardService->flagPost($user, $post);
 
         $request->session()->flash('alert-success', 'Post successfully flagged for removal.');
         return redirect()->route('message-board.thread', $post->thread);
@@ -182,7 +207,20 @@ class MessageBoardController extends AbstractController
     }
 
     /**
-     * Throws exception if the selected dominion is not the thread's creator.
+     * Throws exception if the selected user is not the post's creator.
+     *
+     * @param Category $category
+     * @throws GameException
+     */
+    protected function guardForCategory(User $user, MessageBoard\Category $category): void
+    {
+        if ($category->role_required != null && !$user->hasRole($category->role_required)) {
+            throw new GameException('No permission to moderate category.');
+        }
+    }
+
+    /**
+     * Throws exception if the user is not the thread's creator.
      *
      * @param Thread $thread
      * @throws GameException
@@ -197,7 +235,7 @@ class MessageBoardController extends AbstractController
     }
 
     /**
-     * Throws exception if the selected dominion is not the post's creator.
+     * Throws exception if the user is not the post's creator.
      *
      * @param Post $post
      * @throws GameException
@@ -210,7 +248,7 @@ class MessageBoardController extends AbstractController
     }
 
     /**
-     * Throws exception if the selected dominion has abused posting privileges
+     * Throws exception if the user has abused posting privileges
      *
      * @throws GameException
      */

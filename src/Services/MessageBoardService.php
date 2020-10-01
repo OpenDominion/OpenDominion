@@ -15,11 +15,24 @@ class MessageBoardService
      *
      * @return LengthAwarePaginator
      */
-    public function getThreads()
+    public function getCategories()
+    {
+        return MessageBoard\Category::query()
+            ->with(['threads.latestPosts'])
+            ->get();
+    }
+
+    /**
+     * Returns message board threads.
+     *
+     * @param MessageBoard\Category $category
+     * @return LengthAwarePaginator
+     */
+    public function getThreads(MessageBoard\Category $category)
     {
         $resultsPerPage = 15;
 
-        return MessageBoard\Thread::query()
+        return $category->threads()
             ->with(['user'])
             ->orderBy('last_activity', 'desc')
             ->paginate($resultsPerPage);
@@ -37,12 +50,13 @@ class MessageBoardService
      * Creates a new message board thread.
      *
      * @param User $user
+     * @param MessageBoard\Category $category
      * @param string $title
      * @param string $body
      * @return MessageBoard\Thread
      * @throws RuntimeException
      */
-    public function createThread(User $user, string $title, string $body): MessageBoard\Thread
+    public function createThread(User $user, MessageBoard\Category $category, string $title, string $body): MessageBoard\Thread
     {
         return MessageBoard\Thread::create([
             'user_id' => $user->id,

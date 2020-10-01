@@ -39,6 +39,11 @@ class Thread extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'message_board_category_id');
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class, 'message_board_thread_id');
@@ -47,6 +52,11 @@ class Thread extends AbstractModel
     public function latestPost()
     {
         return $this->hasOne(Post::class, 'message_board_thread_id')->latest();
+    }
+
+    public function latestPosts()
+    {
+        return $this->hasMany(Post::class, 'message_board_thread_id')->orderByDesc('created_at')->take(5);
     }
 
     public function unflaggedPosts()
