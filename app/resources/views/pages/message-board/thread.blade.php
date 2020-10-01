@@ -18,7 +18,7 @@
                         @php
                             $ranking = [];
                         @endphp
-                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
+                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-player' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
                         <span class="username">
                             {{ $thread->user->display_name }} {!! $thread->user->displayRoleHtml() !!}
                             @if ($ranking && $ranking['title'])
@@ -51,7 +51,7 @@
                                 @php
                                     $ranking = [];
                                 @endphp
-                                <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
+                                <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-player' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
                                         {{ $post->user->display_name }} {!! $post->user->displayRoleHtml() !!}
@@ -106,7 +106,7 @@
                 </div>
                 <div class="box-body">
                     <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
-                    <p>There {{ ($thread->posts->count() === 1) ? 'is' : 'are' }} {{ number_format($thread->posts->count()) }} {{ str_plural('reply', $thread->posts->count()) }} in this thread.</p>
+                    <p>There {{ ($thread->posts->count() === 1) ? 'is' : 'are' }} {{ number_format($thread->posts->count()) }} {{ str_plural('reply', $thread->posts->count()) }} in this category.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>

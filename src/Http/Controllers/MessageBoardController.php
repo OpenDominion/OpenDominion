@@ -50,7 +50,7 @@ class MessageBoardController extends AbstractController
     public function getCreate() // getCreateThread?
     {
         $user = Auth::getUser();
-        $categories = MessageBoard\Category::all();
+        $categories = MessageBoard\Category::orderBy('role_required')->orderBy('id')->get();
 
         return view('pages.message-board.create', [
             'categories' => $categories,

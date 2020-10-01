@@ -77,9 +77,6 @@
                 </div>
                 <div class="box-body">
                     <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
-                    @if (isset($categories->threads))
-                        <p>There {{ ($categories->threads->count() === 1) ? 'is' : 'are' }} {{ number_format($categories->threads->count()) }} {{ str_plural('thread', $categories->threads->count()) }} in the message board.</p>
-                    @endif
                     @include('partials.forum-rules')
                 </div>
             </div>
