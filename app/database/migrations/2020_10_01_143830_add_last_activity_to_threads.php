@@ -28,7 +28,7 @@ class AddLastActivityToThreads extends Migration
 
         // Set last activity to latest post created date
         DB::table('council_threads')
-            ->joinSub($subquery, 'latest_posts', function($join) {
+            ->joinSub($subquery, 'latest_posts', function ($join) {
                 $join->on('council_threads.id', '=', 'latest_posts.council_thread_id');
             })->update([
                 'council_threads.last_activity' => DB::raw('CAST(latest_posts.post_created_at AS datetime)')
@@ -49,7 +49,7 @@ class AddLastActivityToThreads extends Migration
 
         // Set last activity to latest post created date
         DB::table('forum_threads')
-            ->joinSub($subquery, 'latest_posts', function($join) {
+            ->joinSub($subquery, 'latest_posts', function ($join) {
                 $join->on('forum_threads.id', '=', 'latest_posts.forum_thread_id');
             })->update([
                 'forum_threads.last_activity' => DB::raw('CAST(latest_posts.post_created_at AS datetime)')
@@ -70,7 +70,7 @@ class AddLastActivityToThreads extends Migration
 
         // Set last activity to latest post created date
         DB::table('message_board_threads')
-            ->joinSub($subquery, 'latest_posts', function($join) {
+            ->joinSub($subquery, 'latest_posts', function ($join) {
                 $join->on('message_board_threads.id', '=', 'latest_posts.message_board_thread_id');
             })->update([
                 'message_board_threads.last_activity' => DB::raw('CAST(latest_posts.post_created_at AS datetime)')

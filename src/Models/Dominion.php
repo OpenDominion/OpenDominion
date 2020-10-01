@@ -184,7 +184,7 @@ class Dominion extends AbstractModel
         'saved' => DominionSavedEvent::class,
     ];
 
-    //protected $with = ['race', 'realm']; 
+    //protected $with = ['race', 'realm'];
 
     // Transient properties
 
