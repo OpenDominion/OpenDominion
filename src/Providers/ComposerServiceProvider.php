@@ -36,10 +36,11 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 return;
             }
 
+            $user = Auth::getUser();
             /** @var Dominion $selectedDominion */
             $selectedDominion = $selectorService->getUserSelectedDominion();
 
-            $councilLastRead = $selectedDominion->council_last_read;
+            $councilLastRead = $selectedDominion->council_last_read ?? $selectedDominion->round->start_date;
             $councilUnreadCount = $selectedDominion->realm->councilThreads()
                 ->where('last_activity', '>', $councilLastRead)
                 ->withCount(['posts' => function ($query) use ($councilLastRead) {
@@ -49,7 +50,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum('posts_count');
             $view->with('councilUnreadCount', $councilUnreadCount);
 
-            $forumLastRead = $selectedDominion->forum_last_read;
+            $forumLastRead = $selectedDominion->forum_last_read ?? $selectedDominion->round->start_date;
             $forumUnreadCount = $selectedDominion->round->forumThreads()
                 ->where('last_activity', '>', $forumLastRead)
                 ->withCount(['posts' => function ($query) use ($forumLastRead) {
@@ -59,7 +60,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
 
-            $messageBoardLastRead = Auth::getUser()->message_board_last_read;
+            $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
             $messageBoardUnreadCount = MessageBoard\Thread::query()
                 ->where('last_activity', '>', $messageBoardLastRead)
                 ->withCount(['posts' => function ($query) use ($messageBoardLastRead) {
