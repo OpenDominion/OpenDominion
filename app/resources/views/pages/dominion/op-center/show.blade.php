@@ -156,13 +156,17 @@
                             <p>You can automatically load the most recent ops into the calculator.</p>
 
                             <p>
-                                <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
-                                    <i class="fa fa-calculator"></i> Calculate
-                                </a>
-                                <a class="btn btn-primary" onclick="copyJson('ops_json')">
-                                    <i class="fa fa-copy"></i> Copy ops
-                                </a>
-                                <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($infoOps, JSON_PRETTY_PRINT) }}</textarea>
+                                <div class="pull-left">
+                                    <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
+                                        <i class="fa fa-calculator"></i> Calculate
+                                    </a>
+                                </div>
+                                <div class="pull-right">
+                                    <a class="btn btn-primary" onclick="copyJson('ops_json')">
+                                        <i class="fa fa-copy"></i> Copy ops
+                                    </a>
+                                    <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($infoOps, JSON_PRETTY_PRINT) }}</textarea>
+                                </div>
                             </p>
                         </div>
                     </div>
