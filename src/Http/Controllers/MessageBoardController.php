@@ -64,7 +64,7 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
-        $defaultAvatars = collect(["ra-player", "ra-hand", "ra-beer", "ra-coffee-mug", "ra-knight-helmet", "ra-sword", "ra-shield", "ra-fairy-wand"]);
+        $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
         return view('pages.message-board.avatar', [
             'user' => $user,
@@ -88,7 +88,7 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
-        $defaultAvatars = collect(["ra-player", "ra-hand", "ra-beer", "ra-coffee-mug", "ra-knight-helmet", "ra-sword", "ra-shield", "ra-fairy-wand"]);
+        $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
         try {
             $avatar = $request->get('avatar');
