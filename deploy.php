@@ -83,7 +83,7 @@ task('deploy', [
     'artisan:optimize',
     'deploy:symlink',
     'php-fpm:reload', // custom made
-    'supervisorctl:restart', // custom made
+    //'supervisorctl:restart', // custom made
     'artisan:up', // custom inserted
     'deploy:unlock',
     'cleanup',
