@@ -77,6 +77,7 @@
                 </div>
                 <div class="box-body">
                     <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
+                    <p>You may also <a href="{{ route('message-board.avatar') }}">change your avatar</a>.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>

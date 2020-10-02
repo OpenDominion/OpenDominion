@@ -3,11 +3,14 @@
 namespace OpenDominion\Http\Controllers;
 
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\MessageBoard\CreatePostRequest;
 use OpenDominion\Http\Requests\MessageBoard\CreateThreadRequest;
 use OpenDominion\Models\MessageBoard;
+use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
 use OpenDominion\Services\MessageBoardService;
 
@@ -45,6 +48,66 @@ class MessageBoardController extends AbstractController
             'threads' => $threads,
             'user' => $user,
         ]);
+    }
+
+    public function getChangeAvatar()
+    {
+        $user = Auth::getUser();
+        $rankingsHelper = app(RankingsHelper::class);
+
+        $rankings = $rankingsHelper->getRankings();
+        $userDominionIds = $user->dominions()->pluck('id');
+        $previousRoundIds = Round::where('end_date', '<', now())->pluck('id');
+        $previousRankings = DB::table('daily_rankings')
+            ->where('rank', 1)
+            ->whereIn('round_id', $previousRoundIds)
+            ->whereIn('dominion_id', $userDominionIds)
+            ->pluck('key');
+
+        $defaultAvatars = collect(["ra-player", "ra-hand", "ra-beer", "ra-coffee-mug", "ra-knight-helmet", "ra-sword", "ra-shield", "ra-fairy-wand"]);
+
+        return view('pages.message-board.avatar', [
+            'user' => $user,
+            'rankings' => $rankings,
+            'previousRankings' => $previousRankings,
+            'defaultAvatars' => $defaultAvatars,
+        ]);
+    }
+
+    public function postChangeAvatar(Request $request)
+    {
+        $user = Auth::getUser();
+        $rankingsHelper = app(RankingsHelper::class);
+
+        $rankings = $rankingsHelper->getRankings();
+        $userDominionIds = $user->dominions()->pluck('id');
+        $previousRoundIds = Round::where('end_date', '<', now())->pluck('id');
+        $previousRankings = DB::table('daily_rankings')
+            ->where('rank', 1)
+            ->whereIn('round_id', $previousRoundIds)
+            ->whereIn('dominion_id', $userDominionIds)
+            ->pluck('key');
+
+        $defaultAvatars = collect(["ra-player", "ra-hand", "ra-beer", "ra-coffee-mug", "ra-knight-helmet", "ra-sword", "ra-shield", "ra-fairy-wand"]);
+
+        try {
+            $avatar = $request->get('avatar');
+            $matchingRanking = collect($rankingsHelper->getRankings())->where('title_icon', $avatar)->first();
+            if (!$defaultAvatars->contains($avatar) && ($matchingRanking == null || !$previousRankings->contains($matchingRanking['key']))) {
+                throw new GameException('Invalid selection');
+            }
+            $settings = ($user->settings ?? []);
+            $settings['boardavatar'] = $avatar;
+            $user->settings = $settings;
+            $user->save();
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $request->session()->flash('alert-success', 'Your avatar has been changed');
+        return redirect()->route('message-board.avatar');
     }
 
     public function getCreate() // getCreateThread?

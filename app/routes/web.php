@@ -59,6 +59,8 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
     // Message Board
     $router->get('message-board')->uses('MessageBoardController@getIndex')->name('message-board');
+    $router->get('message-board/avatar')->uses('MessageBoardController@getChangeAvatar')->name('message-board.avatar');
+    $router->post('message-board/avatar')->uses('MessageBoardController@postChangeAvatar');
     $router->get('message-board/create')->uses('MessageBoardController@getCreate')->name('message-board.create');
     $router->post('message-board/create')->uses('MessageBoardController@postCreate');
     $router->get('message-board/thread/{thread}')->uses('MessageBoardController@getThread')->name('message-board.thread');
