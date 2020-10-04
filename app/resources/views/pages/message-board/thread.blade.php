@@ -15,7 +15,7 @@
                 </div>
                 <div class="box-header with-border">
                     <div class="user-block pull-left">
-                        <i class="ra {{ isset($user->settings['boardavatar']) ? $user->settings['boardavatar'] : 'ra-player' }} text-muted pull-left" style="font-size: 36px;"></i>
+                        <i class="ra {{ isset($thread->user->settings['boardavatar']) ? $thread->user->settings['boardavatar'] : 'ra-player' }} text-muted pull-left" style="font-size: 36px;"></i>
                         <span class="username">
                             {{ $thread->user->display_name }} {!! $thread->user->displayRoleHtml() !!}
                         </span>
@@ -42,7 +42,7 @@
                     <div class="box-footer box-comments">
                         @foreach ($thread->posts as $post)
                             <div class="box-comment">
-                                <i class="ra {{ isset($user->settings['boardavatar']) ? $user->settings['boardavatar'] : 'ra-player' }} text-muted pull-left" style="font-size: 26px;"></i>
+                                <i class="ra {{ isset($post->user->settings['boardavatar']) ? $post->user->settings['boardavatar'] : 'ra-player' }} text-muted pull-left" style="font-size: 26px;"></i>
                                 <div class="comment-text">
                                     <span class="username">
                                         {{ $post->user->display_name }} {!! $post->user->displayRoleHtml() !!}

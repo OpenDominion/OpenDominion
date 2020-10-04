@@ -36,7 +36,7 @@
                                                 <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
                                                 <small class="text-muted">
                                                     Created {{ $thread->created_at }} by
-                                                    <b>{{ $thread->user->display_name }}</b> {!! $user->displayRoleHtml() !!}
+                                                    <b>{{ $thread->user->display_name }}</b> {!! $thread->user->displayRoleHtml() !!}
                                                 </small>
                                             </td>
                                             <td class="text-center align-middle">
