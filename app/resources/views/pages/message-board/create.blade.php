@@ -24,7 +24,7 @@
                                 <select name="category" id="category" class="form-control">
                                     @foreach ($categories as $category)
                                         @if ($category->role_required == null || $user->hasRole($category->role_required))
-                                            <option value="{{ $category->id }}">
+                                            <option value="{{ $category->id }}" {{ $category->id == $selectedCategory ? 'selected' : null }}>
                                                 {{ $category->name }}
                                             </option>
                                         @endif

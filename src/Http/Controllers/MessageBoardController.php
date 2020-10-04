@@ -110,13 +110,14 @@ class MessageBoardController extends AbstractController
         return redirect()->route('message-board.avatar');
     }
 
-    public function getCreate() // getCreateThread?
+    public function getCreate(Request $request) // getCreateThread?
     {
         $user = Auth::getUser();
         $categories = MessageBoard\Category::orderBy('role_required')->orderBy('id')->get();
 
         return view('pages.message-board.create', [
             'categories' => $categories,
+            'selectedCategory' => $request->get('category'),
             'user' => $user,
         ]);
     }
@@ -128,7 +129,10 @@ class MessageBoardController extends AbstractController
 
         try {
             $this->guardAgainstRepeatOffenders($user);
-            $category = MessageBoard\Category::findOrFail($request->get('category'));
+            $category = MessageBoard\Category::find($request->get('category'));
+            if ($category == null) {
+                throw new GameException('Category not found.');
+            }
             $this->guardForCategory($user, $category);
             $thread = $messageBoardService->createThread(
                 $user,
@@ -184,7 +188,7 @@ class MessageBoardController extends AbstractController
     public function getDeletePost(MessageBoard\Post $post)
     {
         try {
-            $this->guardForPost($user, $post);
+            $this->guardForPost($post);
         } catch (GameException $e) {
             return redirect()
                 ->route('message-board')
@@ -202,7 +206,7 @@ class MessageBoardController extends AbstractController
         $messageBoardService = app(MessageBoardService::class);
 
         try {
-            $this->guardForPost($user, $post);
+            $this->guardForPost($post);
             $messageBoardService->deletePost($user, $post);
         } catch (GameException $e) {
             return redirect()
@@ -303,8 +307,10 @@ class MessageBoardController extends AbstractController
      * @param Post $post
      * @throws GameException
      */
-    protected function guardForPost(User $user, MessageBoard\Post $post): void
+    protected function guardForPost(MessageBoard\Post $post): void
     {
+        $user = Auth::getUser();
+
         if ($user->id !== (int)$post->user_id) {
             throw new GameException('No permission to moderate post.');
         }

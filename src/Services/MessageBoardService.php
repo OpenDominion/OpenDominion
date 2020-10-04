@@ -60,6 +60,7 @@ class MessageBoardService
     {
         return MessageBoard\Thread::create([
             'user_id' => $user->id,
+            'message_board_category_id' => $category->id,
             'title' => $title,
             'body' => $body,
             'last_activity' => now(),
@@ -148,7 +149,7 @@ class MessageBoardService
         ];
 
         // Remove thread if it has been flagged by 5 different users
-        if (count($dominion_ids) >= 5) {
+        if (count($user_ids) >= 5) {
             $thread->flagged_for_removal = true;
         }
 
