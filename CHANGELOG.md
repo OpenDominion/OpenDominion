@@ -3,6 +3,19 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- New Message Boards tied to user accounts
+- Able to select an avatar based on previous rounds' rankings
+- Pagination added to council and forum index
+
+### Changed
+- Renamed Global Forum to Round Forum
+
+### Fixed
+- Recently invaded calculation required 25 hours to clear instead of 24
+- Attacking wonders under certain conditions no longer breaks the town crier
+- Wonders now appear in alphabetical order in the dropdown
+- Race name no longer interferes with search in dominion dropdowns
 
 ## [1.0.8] - 2020-09-24
 ### Added
