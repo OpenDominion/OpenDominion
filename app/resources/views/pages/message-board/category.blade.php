@@ -24,7 +24,7 @@
                             <tr>
                                 <th>Topics</a></th>
                                 <th class="text-center">Replies</th>
-                                <th class="text-center">Posted At</th>
+                                <th class="text-center">Last Reply</th>
                             </tr>
                         </thead>
                         <tbody>

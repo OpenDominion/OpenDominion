@@ -25,7 +25,7 @@
                                 <tr>
                                     <th>{{ $category->name }}<a href="{{ route('message-board.category', $category->slug) }}" class="small" style="margin-left: 10px">view all</a></th>
                                     <th class="text-center">Replies</th>
-                                    <th class="text-center">Posted At</th>
+                                    <th class="text-center">Last Reply</th>
                                 </tr>
                             </thead>
                             <tbody>
