@@ -50,9 +50,4 @@ class Thread extends AbstractModel
     {
         return $this->belongsTo(Realm::class);
     }
-
-    public function getPostsCountAttribute($value)
-    {
-        return $value + 1;
-    }
 }

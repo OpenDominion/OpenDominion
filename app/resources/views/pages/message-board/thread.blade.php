@@ -95,6 +95,7 @@
                 <div class="box-body">
                     <p>The message board is where you can communicate with other players. All registered users can view and post here.</p>
                     <p>There {{ ($thread->posts->count() === 1) ? 'is' : 'are' }} {{ number_format($thread->posts->count()) }} {{ str_plural('reply', $thread->posts->count()) }} in this category.</p>
+                    <p>You may also <a href="{{ route('message-board.avatar') }}">change your avatar</a>.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>

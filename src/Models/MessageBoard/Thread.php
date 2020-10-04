@@ -63,9 +63,4 @@ class Thread extends AbstractModel
     {
         return $this->posts()->where('flagged_for_removal', false);
     }
-
-    public function getPostsCountAttribute($value)
-    {
-        return $value + 1;
-    }
 }

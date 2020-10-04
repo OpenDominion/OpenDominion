@@ -47,6 +47,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                     $query->where('created_at', '>', $councilLastRead);
                 }])
                 ->get()
+                ->map(function ($thread) use ($councilLastRead) {
+                    if ($thread->created_at > $councilLastRead) {
+                        $thread['posts_count'] += 1;
+                    }
+                    return $thread;
+                })
                 ->sum('posts_count');
             $view->with('councilUnreadCount', $councilUnreadCount);
 
@@ -57,6 +63,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                     $query->where('created_at', '>', $forumLastRead);
                 }])
                 ->get()
+                ->map(function ($thread) use ($forumLastRead) {
+                    if ($thread->created_at > $forumLastRead) {
+                        $thread['posts_count'] += 1;
+                    }
+                    return $thread;
+                })
                 ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
 
@@ -67,6 +79,12 @@ class ComposerServiceProvider extends AbstractServiceProvider
                     $query->where('created_at', '>', $messageBoardLastRead);
                 }])
                 ->get()
+                ->map(function ($thread) use ($messageBoardLastRead) {
+                    if ($thread->created_at > $messageBoardLastRead) {
+                        $thread['posts_count'] += 1;
+                    }
+                    return $thread;
+                })
                 ->sum('posts_count');
             $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
 

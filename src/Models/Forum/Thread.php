@@ -61,9 +61,4 @@ class Thread extends AbstractModel
     {
         return $this->belongsTo(Round::class);
     }
-
-    public function getPostsCountAttribute($value)
-    {
-        return $value + 1;
-    }
 }

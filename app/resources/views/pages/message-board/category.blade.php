@@ -78,6 +78,7 @@
                     @if (!$category->threads->isEmpty())
                         <p>There {{ ($category->threads->count() === 1) ? 'is' : 'are' }} {{ number_format($category->threads->count()) }} {{ str_plural('thread', $category->threads->count()) }} in the message board.</p>
                     @endif
+                    <p>You may also <a href="{{ route('message-board.avatar') }}">change your avatar</a>.</p>
                     @include('partials.forum-rules')
                 </div>
             </div>
