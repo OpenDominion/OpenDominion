@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.0.9] - 2020-10-03
 ### Added
 - New Message Boards tied to user accounts
 - Able to select an avatar based on previous rounds' rankings
@@ -1011,7 +1013,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.4...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.9...HEAD
+[1.0.9]: https://github.com/OpenDominion/OpenDominion/compare/1.0.8...1.0.9
+[1.0.8]: https://github.com/OpenDominion/OpenDominion/compare/1.0.7...1.0.8
+[1.0.7]: https://github.com/OpenDominion/OpenDominion/compare/1.0.6...1.0.7
+[1.0.6]: https://github.com/OpenDominion/OpenDominion/compare/1.0.5...1.0.6
+[1.0.5]: https://github.com/OpenDominion/OpenDominion/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/OpenDominion/OpenDominion/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/OpenDominion/OpenDominion/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/OpenDominion/OpenDominion/compare/1.0.1...1.0.2
