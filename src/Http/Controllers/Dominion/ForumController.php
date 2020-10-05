@@ -96,11 +96,14 @@ class ForumController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $this->updateDominionForumLastRead($dominion);
 
-        $thread->load('dominion.realm', 'posts.dominion.realm');
+        $resultsPerPage = 25;
+        $posts = $thread->posts()->paginate($resultsPerPage);
+
         $rankingsHelper = app(RankingsHelper::class);
         $rankingsService = app(RankingsService::class);
 
         return view('pages.dominion.forum.thread', compact(
+            'posts',
             'thread',
             'rankingsHelper',
             'rankingsService'

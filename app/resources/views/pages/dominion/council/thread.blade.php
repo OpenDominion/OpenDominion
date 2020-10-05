@@ -13,35 +13,34 @@
                         <a href="{{ route('dominion.council') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
-                <div class="box-body">
-                    {!! Markdown::convertToHtml($thread->body) !!}
-                </div>
-                <div class="box-footer">
-                    <small>
-                        <i>
-                            Posted {{ $thread->created_at }} by
-                            @if ($thread->dominion->isMonarch())
-                                <i class="ra ra-queen-crown text-red"></i>
-                            @endif
-                            <b>{{ $thread->dominion->name }}</b>
-                            @if ($thread->dominion->name !== $thread->dominion->ruler_name)
-                                ({{ $thread->dominion->ruler_name }})
-                            @endif
-                        </i>
-                    </small>
-                    @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
-                        <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
-                    @endif
-                </div>
-            </div>
-
-            @if (!$thread->posts->isEmpty())
-                @foreach ($thread->posts as $post)
-                    <div class="box">
-                        <div class="box-body">
-                            {!! Markdown::convertToHtml($post->body) !!}
-                        </div>
+                @if ($posts->currentPage() == 1)
+                    <div class="box-body">
+                        {!! Markdown::convertToHtml($thread->body) !!}
+                        <small>
+                            <i>
+                                Posted {{ $thread->created_at }} by
+                                @if ($thread->dominion->isMonarch())
+                                    <i class="ra ra-queen-crown text-red"></i>
+                                @endif
+                                <b>{{ $thread->dominion->name }}</b>
+                                @if ($thread->dominion->name !== $thread->dominion->ruler_name)
+                                    ({{ $thread->dominion->ruler_name }})
+                                @endif
+                            </i>
+                        </small>
+                        @if ($selectedDominion->isMonarch() || ($thread->posts->isEmpty() && $selectedDominion->id == $thread->dominion->id))
+                            <a href="{{ route('dominion.council.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                        @endif
+                    </div>
+                @else
+                    <div class="box-body">
+                        <em>Initial post and {{ $posts->perPage() * ($posts->currentPage() - 1) }} replies not shown.</em>
+                    </div>
+                @endif
+                @if (!$posts->isEmpty())
+                    @foreach ($posts as $post)
                         <div class="box-footer">
+                            {!! Markdown::convertToHtml($post->body) !!}
                             <small>
                                 <i>
                                     Posted {{ $post->created_at }} by
@@ -58,9 +57,16 @@
                                 <a href="{{ route('dominion.council.delete.post', $post) }}"><i class="fa fa-trash text-red"></i></a>
                             @endif
                         </div>
-                    </div>
-                @endforeach
-            @endif
+                    @endforeach
+                    @if ($posts->lastPage() !== 1)
+                        <div class="box-footer" style="margin-bottom: -5px;">
+                            <div class="text-right">
+                                {{ $posts->links() }}
+                            </div>
+                        </div>
+                    @endif
+                @endif
+            </div>
 
             <div class="box">
                 <div class="box-header with-border">

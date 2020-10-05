@@ -155,11 +155,13 @@ class MessageBoardController extends AbstractController
         $user = Auth::getUser();
         $this->updateMessageBoardLastRead($user);
 
-        $thread->load('user');
+        $resultsPerPage = 25;
+        $posts = $thread->posts()->paginate($resultsPerPage);
 
         return view('pages.message-board.thread', [
-            'thread' => $thread,
             'user' => $user,
+            'thread' => $thread,
+            'posts' => $posts,
         ]);
     }
 

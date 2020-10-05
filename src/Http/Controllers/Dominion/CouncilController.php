@@ -89,9 +89,11 @@ class CouncilController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
         }
 
-        $thread->load('dominion.realm', 'posts.dominion.realm');
+        $resultsPerPage = 1;
+        $posts = $thread->posts()->paginate($resultsPerPage);
 
         return view('pages.dominion.council.thread', compact(
+            'posts',
             'thread'
         ));
     }
