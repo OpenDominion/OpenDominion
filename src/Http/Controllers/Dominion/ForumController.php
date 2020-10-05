@@ -16,6 +16,8 @@ use OpenDominion\Services\ForumService;
 
 class ForumController extends AbstractDominionController
 {
+    public const RESULTS_PER_PAGE = 50;
+
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
@@ -29,6 +31,7 @@ class ForumController extends AbstractDominionController
             'forumThreads' => $threads,
             'round' => $dominion->round,
             'protectionService' => $protectionService,
+            'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
     }
 
@@ -96,15 +99,14 @@ class ForumController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $this->updateDominionForumLastRead($dominion);
 
-        $resultsPerPage = 25;
-        $posts = $thread->posts()->paginate($resultsPerPage);
+        $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
         $rankingsHelper = app(RankingsHelper::class);
         $rankingsService = app(RankingsService::class);
 
         return view('pages.dominion.forum.thread', compact(
-            'posts',
             'thread',
+            'posts',
             'rankingsHelper',
             'rankingsService'
         ));

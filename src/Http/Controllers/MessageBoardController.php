@@ -16,6 +16,8 @@ use OpenDominion\Services\MessageBoardService;
 
 class MessageBoardController extends AbstractController
 {
+    public const RESULTS_PER_PAGE = 50;
+
     public function getIndex()
     {
         $user = Auth::getUser();
@@ -27,6 +29,7 @@ class MessageBoardController extends AbstractController
         return view('pages.message-board.index', [
             'categories' => $categories,
             'user' => $user,
+            'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
     }
 
@@ -47,6 +50,7 @@ class MessageBoardController extends AbstractController
             'category' => $category,
             'threads' => $threads,
             'user' => $user,
+            'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
     }
 
@@ -66,12 +70,12 @@ class MessageBoardController extends AbstractController
 
         $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
-        return view('pages.message-board.avatar', [
-            'user' => $user,
-            'rankings' => $rankings,
-            'previousRankings' => $previousRankings,
-            'defaultAvatars' => $defaultAvatars,
-        ]);
+        return view('pages.message-board.avatar', compact(
+            'user',
+            'rankings',
+            'previousRankings',
+            'defaultAvatars'
+        ));
     }
 
     public function postChangeAvatar(Request $request)
@@ -114,12 +118,13 @@ class MessageBoardController extends AbstractController
     {
         $user = Auth::getUser();
         $categories = MessageBoard\Category::orderBy('role_required')->orderBy('id')->get();
+        $selectedCategory = $request->get('category');
 
-        return view('pages.message-board.create', [
-            'categories' => $categories,
-            'selectedCategory' => $request->get('category'),
-            'user' => $user,
-        ]);
+        return view('pages.message-board.create', compact(
+            'categories',
+            'selectedCategory',
+            'user'
+        ));
     }
 
     public function postCreate(CreateThreadRequest $request) // postCreateThread
@@ -155,14 +160,13 @@ class MessageBoardController extends AbstractController
         $user = Auth::getUser();
         $this->updateMessageBoardLastRead($user);
 
-        $resultsPerPage = 25;
-        $posts = $thread->posts()->paginate($resultsPerPage);
+        $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
-        return view('pages.message-board.thread', [
-            'user' => $user,
-            'thread' => $thread,
-            'posts' => $posts,
-        ]);
+        return view('pages.message-board.thread', compact(
+            'user',
+            'thread',
+            'posts'
+        ));
     }
 
     public function postReply(CreatePostRequest $request, MessageBoard\Thread $thread)
@@ -197,9 +201,9 @@ class MessageBoardController extends AbstractController
                 ->withErrors([$e->getMessage()]);
         }
 
-        return view('pages.message-board.delete-post', [
-            'post' => $post,
-        ]);
+        return view('pages.message-board.delete-post', compact(
+            'post'
+        ));
     }
 
     public function postDeletePost(Request $request, MessageBoard\Post $post)
@@ -232,9 +236,9 @@ class MessageBoardController extends AbstractController
 
         $thread->load('user');
 
-        return view('pages.message-board.delete-thread', [
-            'thread' => $thread
-        ]);
+        return view('pages.message-board.delete-thread', compact(
+            'thread'
+        ));
     }
 
     public function postDeleteThread(Request $request, MessageBoard\Thread $thread)

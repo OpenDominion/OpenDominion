@@ -33,7 +33,18 @@
                                     @foreach ($category->threads as $thread)
                                         <tr>
                                             <td class="align-middle">
-                                                <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
+                                                <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a>
+                                                @php
+                                                    $pageCount = ceil($thread->posts->count() / $resultsPerPage);
+                                                @endphp
+                                                @if ($pageCount > 1)
+                                                    <span class="small" style="margin-left: 10px;">
+                                                        @foreach (range(1, $pageCount) as $page)
+                                                            <a href="{{ route('message-board.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
+                                                        @endforeach
+                                                    </span>
+                                                @endif
+                                                <br>
                                                 <small class="text-muted">
                                                     Created {{ $thread->created_at }} by
                                                     <b>{{ $thread->user->display_name }}</b> {!! $thread->user->displayRoleHtml() !!}

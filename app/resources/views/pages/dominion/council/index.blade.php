@@ -35,7 +35,18 @@
                                             <i class="fa fa-star"></i>
                                         </td>--}}
                                         <td class="align-middle">
-                                            <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
+                                            <a href="{{ route('dominion.council.thread', $thread) }}"><b>{{ $thread->title }}</b></a>
+                                            @php
+                                                $pageCount = ceil($thread->posts->count() / $resultsPerPage);
+                                            @endphp
+                                            @if ($pageCount > 1)
+                                                <span class="small" style="margin-left: 10px;">
+                                                    @foreach (range(1, $pageCount) as $page)
+                                                        <a href="{{ route('dominion.council.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
+                                                    @endforeach
+                                                </span>
+                                            @endif
+                                            <br>
                                             <small class="text-muted">
                                                 Created {{ $thread->created_at }} by 
                                                 @if ($thread->dominion->isMonarch())
