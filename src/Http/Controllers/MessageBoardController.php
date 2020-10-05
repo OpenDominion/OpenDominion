@@ -92,8 +92,8 @@ class MessageBoardController extends AbstractController
 
         try {
             $avatar = $request->get('avatar');
-            $matchingRanking = collect($rankingsHelper->getRankings())->where('title_icon', $avatar)->first();
-            if (!$defaultAvatars->contains($avatar) && ($matchingRanking == null || !$previousRankings->contains($matchingRanking['key']))) {
+            $matchingRankings = collect($rankingsHelper->getRankings())->where('title_icon', $avatar)->pluck('key');
+            if (!$defaultAvatars->contains($avatar) && ($matchingRankings->isEmpty() || $previousRankings->intersect($matchingRankings)->isEmpty())) {
                 throw new GameException('Invalid selection');
             }
             $settings = ($user->settings ?? []);
