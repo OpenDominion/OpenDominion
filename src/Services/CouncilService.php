@@ -25,7 +25,7 @@ class CouncilService
         $resultsPerPage = 15;
 
         return $realm->councilThreads()
-            ->with(['dominion.realm', 'latestPost.dominion.realm'])
+            ->with(['dominion', 'latestPost.dominion'])
             ->orderBy('last_activity', 'desc')
             ->paginate($resultsPerPage);
     }

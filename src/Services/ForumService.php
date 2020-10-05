@@ -25,7 +25,7 @@ class ForumService
         $resultsPerPage = 15;
 
         return $round->forumThreads()
-            ->with(['dominion.realm', 'latestPost.dominion.realm'])
+            ->with(['dominion.realm', 'posts', 'latestPost.dominion.realm'])
             ->orderBy('last_activity', 'desc')
             ->paginate($resultsPerPage);
             /*

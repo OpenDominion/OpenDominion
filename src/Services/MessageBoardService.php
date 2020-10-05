@@ -33,7 +33,7 @@ class MessageBoardService
         $resultsPerPage = 15;
 
         return $category->threads()
-            ->with(['user'])
+            ->with(['user', 'posts', 'latestPost.user'])
             ->orderBy('last_activity', 'desc')
             ->paginate($resultsPerPage);
             /*
