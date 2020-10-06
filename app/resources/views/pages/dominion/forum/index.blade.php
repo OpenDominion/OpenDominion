@@ -49,7 +49,7 @@
                                                 @if ($pageCount > 1)
                                                     <span class="small" style="margin-left: 10px;">
                                                         @foreach (range(1, $pageCount) as $page)
-                                                            <a href="{{ route('dominion.council.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
+                                                            <a href="{{ route('dominion.forum.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
                                                         @endforeach
                                                     </span>
                                                 @endif
