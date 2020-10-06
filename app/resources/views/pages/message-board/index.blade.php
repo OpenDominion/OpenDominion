@@ -29,8 +29,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (!$category->threads->isEmpty())
-                                    @foreach ($category->threads as $thread)
+                                @if (!$category->latestThreads->isEmpty())
+                                    @foreach ($category->latestThreads as $thread)
                                         <tr>
                                             <td class="align-middle">
                                                 <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a>

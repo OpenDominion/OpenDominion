@@ -13,13 +13,11 @@ class MessageBoardService
     /**
      * Returns message board threads.
      *
-     * @return LengthAwarePaginator
+     * @return Collection
      */
-    public function getCategories()
+    public function getCategories(): Collection
     {
-        return MessageBoard\Category::query()
-            ->with(['threads.latestPosts'])
-            ->get();
+        return MessageBoard\Category::all();
     }
 
     /**

@@ -27,4 +27,9 @@ class Category extends AbstractModel
     {
         return $this->hasMany(Thread::class, 'message_board_category_id');
     }
+
+    public function latestThreads()
+    {
+        return $this->hasMany(Thread::class, 'message_board_category_id')->orderBy('last_activity', 'desc')->take(5);
+    }
 }
