@@ -10,14 +10,14 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
-    "admin-lte": "^2.4.8",
+    "@opendominion/admin-lte": "^2.4.18",
+    "@opendominion/rpg-awesome": "0.0.4",
     "axios": "^0.18.0",
     "chart.js": "^2.7.2",
     "cross-env": "^5.2.0",
     "font-awesome": "^4.7.0",
     "laravel-mix": "^2.1.11",
     "lodash": "^4.17.19",
-    "rpg-awesome": "^0.1.1",
     "select2": "^4.0.5"
   }
 }
