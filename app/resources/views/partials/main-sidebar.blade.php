@@ -131,7 +131,7 @@
                     </a>
                 </li>
 
-                <li class="header">OTHER</li>
+                <li class="header">USER</li>
                 <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $messageBoardUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $messageBoardUnreadCount . '</small></span>') : null !!}</a></li>
                 @if (app()->environment() !== 'production')
                     <li class="{{ Request::is('dominion/debug') ? 'active' : null }}"><a href="{{ url('dominion/debug') }}"><i class="ra ra-dragon ra-fw"></i> <span>Debug Page</span></a></li>
@@ -139,7 +139,8 @@
 
             @else
 
-                <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select your Dominion</span></a></li>
+                <li class="header">USER</li>
+                <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select Dominion</span></a></li>
                 <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span></a></li>
 
             @endif

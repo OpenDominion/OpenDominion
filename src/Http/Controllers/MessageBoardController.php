@@ -68,7 +68,7 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
-        $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
+        $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
         return view('pages.message-board.avatar', compact(
             'user',
@@ -92,7 +92,7 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
-        $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
+            $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
         try {
             $avatar = $request->get('avatar');
