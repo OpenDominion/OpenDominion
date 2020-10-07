@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.0.10] - 2020-10-07
 ### Added
 - Additional messageboard and improved some rankings icons
 - Pagination added to council/forum/board threads
@@ -1016,7 +1018,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.9...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.10...HEAD
+[1.0.10]: https://github.com/OpenDominion/OpenDominion/compare/1.0.9...1.0.10
 [1.0.9]: https://github.com/OpenDominion/OpenDominion/compare/1.0.8...1.0.9
 [1.0.8]: https://github.com/OpenDominion/OpenDominion/compare/1.0.7...1.0.8
 [1.0.7]: https://github.com/OpenDominion/OpenDominion/compare/1.0.6...1.0.7
