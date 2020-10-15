@@ -35,6 +35,6 @@ class DiscordConnectController extends AbstractController
             $request->session()->flash('alert-error', 'Account could not be linked at this time. Please try again later.');
         }
 
-        return redirect()->to(route('settings') . '#discord');
+        return redirect()->to(route('settings'));
     }
 }

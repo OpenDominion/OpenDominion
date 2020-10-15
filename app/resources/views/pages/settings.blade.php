@@ -14,7 +14,6 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#account" data-toggle="tab">Account</a></li>
                 <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
-                <li><a href="#discord" data-toggle="tab">Discord</a></li>
                 {{--<li><a href="#security" data-toggle="tab">Security</a></li>--}}
             </ul>
             <div class="tab-content">
@@ -69,6 +68,20 @@
                                 </div>
                             </div>
 
+                            {{-- Discord --}}
+                            <div class="form-group">
+                                @if($discordUser = $user->discordUser()->first())
+                                    <label for="skin" class="col-sm-3 control-label">Linked Discord Account</label>
+                                    <div class="col-sm-9">
+                                        <p class="help-block">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
+                                    </div>
+                                @else
+                                    <label for="skin" class="col-sm-3 control-label">Discord</label>
+                                    <div class="col-sm-9">
+                                        <a href="{{ $discordHelper->getDiscordConnectUrl() }}" class="btn btn-primary"><i class="fa fa-link"></i> Link account</a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="col-md-6">
 
@@ -193,19 +206,6 @@
 
                         </div>--}}
 
-                    </div>
-                </div>
-
-                <div class="tab-pane" id="discord">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h2 class="page-header">Discord</h2>
-                            @if($discordUser = $user->discordUser()->first())
-                                {{ $discordUser->username }}#{{ $discordUser->discriminator }}
-                            @else
-                                <a href="{{ $discordHelper->getDiscordConnectUrl() }}" class="btn btn-primary"><i class="fa fa-link"></i> Link Discord account</a>
-                            @endif
-                        </div>
                     </div>
                 </div>
 
