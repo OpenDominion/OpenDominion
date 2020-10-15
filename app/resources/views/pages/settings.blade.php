@@ -71,7 +71,7 @@
                             {{-- Discord --}}
                             <div class="form-group">
                                 @if($discordUser = $user->discordUser()->first())
-                                    <label for="skin" class="col-sm-3 control-label">Linked Discord Account</label>
+                                    <label for="skin" class="col-sm-3 control-label">Discord Account</label>
                                     <div class="col-sm-9">
                                         <p class="help-block">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
                                     </div>

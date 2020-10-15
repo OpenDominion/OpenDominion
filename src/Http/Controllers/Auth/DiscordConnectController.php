@@ -32,7 +32,7 @@ class DiscordConnectController extends AbstractController
         if($result) {
             $request->session()->flash('alert-success', 'Discord account has been linked.');
         } else {
-            $request->session()->flash('alert-error', 'Account could not be linked at this time. Please try again later.');
+            $request->session()->flash('alert-warning', 'Account could not be linked at this time. Please try again later.');
         }
 
         return redirect()->to(route('settings'));
