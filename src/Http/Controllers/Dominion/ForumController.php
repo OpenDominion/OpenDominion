@@ -21,6 +21,7 @@ class ForumController extends AbstractDominionController
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
+        $lastRead = $dominion->forum_last_read;
         $this->updateDominionForumLastRead($dominion);
 
         $protectionService = app(ProtectionService::class);
@@ -29,6 +30,7 @@ class ForumController extends AbstractDominionController
 
         return view('pages.dominion.forum.index', [
             'forumThreads' => $threads,
+            'lastRead' => $lastRead,
             'round' => $dominion->round,
             'protectionService' => $protectionService,
             'resultsPerPage' => static::RESULTS_PER_PAGE,

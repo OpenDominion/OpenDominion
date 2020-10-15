@@ -33,7 +33,9 @@
                                     @foreach ($category->latestThreads as $thread)
                                         <tr>
                                             <td class="align-middle">
-                                                <a href="{{ route('message-board.thread', $thread) }}"><b>{{ $thread->title }}</b></a>
+                                                <a href="{{ route('message-board.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'text-bold' : null }}">
+                                                    {{ $thread->title }}
+                                                </a>
                                                 @php
                                                     $pageCount = ceil($thread->posts->count() / $resultsPerPage);
                                                 @endphp

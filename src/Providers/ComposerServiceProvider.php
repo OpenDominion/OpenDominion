@@ -32,11 +32,29 @@ class ComposerServiceProvider extends AbstractServiceProvider
         view()->composer('partials.main-sidebar', function (View $view) {
             $selectorService = app(SelectorService::class);
 
+            /** @var User $user */
+            $user = Auth::getUser();
+
+            $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
+            $messageBoardUnreadCount = MessageBoard\Thread::query()
+                ->where('last_activity', '>', $messageBoardLastRead)
+                ->withCount(['posts' => function ($query) use ($messageBoardLastRead) {
+                    $query->where('created_at', '>', $messageBoardLastRead);
+                }])
+                ->get()
+                ->map(function ($thread) use ($messageBoardLastRead) {
+                    if ($thread->created_at > $messageBoardLastRead) {
+                        $thread['posts_count'] += 1;
+                    }
+                    return $thread;
+                })
+                ->sum('posts_count');
+            $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
+
             if (!$selectorService->hasUserSelectedDominion()) {
                 return;
             }
 
-            $user = Auth::getUser();
             /** @var Dominion $selectedDominion */
             $selectedDominion = $selectorService->getUserSelectedDominion();
 
@@ -71,22 +89,6 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 })
                 ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
-
-            $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
-            $messageBoardUnreadCount = MessageBoard\Thread::query()
-                ->where('last_activity', '>', $messageBoardLastRead)
-                ->withCount(['posts' => function ($query) use ($messageBoardLastRead) {
-                    $query->where('created_at', '>', $messageBoardLastRead);
-                }])
-                ->get()
-                ->map(function ($thread) use ($messageBoardLastRead) {
-                    if ($thread->created_at > $messageBoardLastRead) {
-                        $thread['posts_count'] += 1;
-                    }
-                    return $thread;
-                })
-                ->sum('posts_count');
-            $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
 
             $activeSpells = DB::table('active_spells')
                 ->where('dominion_id', $selectedDominion->id)

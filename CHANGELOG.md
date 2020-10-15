@@ -3,6 +3,9 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Threads with new posts will be displayed in bold on the first page load
+
 ### Changed
 - Wonder power on respawn is now rounded to the nearest 10,000
 

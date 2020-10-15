@@ -42,7 +42,9 @@
                                     @foreach ($forumThreads as $thread)
                                         <tr>
                                             <td class="align-middle">
-                                                <a href="{{ route('dominion.forum.thread', $thread) }}"><b>{{ $thread->title }}</b></a>
+                                                <a href="{{ route('dominion.forum.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'text-bold' : null }}">
+                                                    {{ $thread->title }}
+                                                </a>
                                                 @php
                                                     $pageCount = ceil($thread->posts->count() / $resultsPerPage);
                                                 @endphp

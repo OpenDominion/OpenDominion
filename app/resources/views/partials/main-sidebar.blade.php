@@ -141,7 +141,7 @@
 
                 <li class="header">USER</li>
                 <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select Dominion</span></a></li>
-                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span></a></li>
+                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $messageBoardUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $messageBoardUnreadCount . '</small></span>') : null !!}</a></li>
 
             @endif
         </ul>

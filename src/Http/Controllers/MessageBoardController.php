@@ -21,6 +21,7 @@ class MessageBoardController extends AbstractController
     public function getIndex()
     {
         $user = Auth::getUser();
+        $lastRead = $user->message_board_last_read;
         $this->updateMessageBoardLastRead($user);
 
         $messageBoardService = app(MessageBoardService::class);
@@ -29,6 +30,7 @@ class MessageBoardController extends AbstractController
         return view('pages.message-board.index', [
             'categories' => $categories,
             'user' => $user,
+            'lastRead' => $lastRead,
             'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
     }
@@ -41,6 +43,7 @@ class MessageBoardController extends AbstractController
         }
 
         $user = Auth::getUser();
+        $lastRead = $user->message_board_last_read;
         $this->updateMessageBoardLastRead($user);
 
         $messageBoardService = app(MessageBoardService::class);
@@ -50,6 +53,7 @@ class MessageBoardController extends AbstractController
             'category' => $category,
             'threads' => $threads,
             'user' => $user,
+            'lastRead' => $lastRead,
             'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
     }
