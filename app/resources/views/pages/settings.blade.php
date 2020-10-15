@@ -14,6 +14,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#account" data-toggle="tab">Account</a></li>
                 <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
+                <li><a href="#discord" data-toggle="tab">Discord</a></li>
                 {{--<li><a href="#security" data-toggle="tab">Security</a></li>--}}
             </ul>
             <div class="tab-content">
@@ -195,6 +196,19 @@
                     </div>
                 </div>
 
+                <div class="tab-pane" id="discord">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2 class="page-header">Discord</h2>
+                            @if($discordUser = $user->discordUser()->first())
+                                {{ $discordUser->username }}#{{ $discordUser->discriminator }}
+                            @else
+                                <a href="{{ $discordHelper->getDiscordConnectUrl() }}" class="btn btn-primary"><i class="fa fa-link"></i> Link Discord account</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
                 {{--<div class="tab-pane" id="security">
                     security
                 </div>--}}
@@ -235,6 +249,18 @@
                 } else {
                     allCheckbox.prop('checked', (allCheckboxes.filter(':checked').length === allCheckboxes.length) ? 'checked' : '');
                 }
+            });
+
+            // Javascript to enable link to tab
+            var hash = document.location.hash;
+            var prefix = "tab_";
+            if (hash) {
+                $('.nav-tabs a[href="'+hash.replace(prefix,"")+'"]').tab('show');
+            }
+
+            // Change hash for page-reload
+            $('.nav-tabs a').on('shown', function (e) {
+                window.location.hash = e.target.hash.replace("#", "#" + prefix);
             });
 
         })(jQuery);

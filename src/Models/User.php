@@ -70,6 +70,11 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         return $this->hasMany(Dominion::class);
     }
 
+    public function discordUser()
+    {
+        return $this->hasOne(DiscordUser::class);
+    }
+
     /**
      * {@inheritdoc}
      */
