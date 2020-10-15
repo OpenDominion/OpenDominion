@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OpenDominion\Services;
-
 
 use GuzzleHttp\Client;
 use OpenDominion\Helpers\DiscordHelper;

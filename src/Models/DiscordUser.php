@@ -1,6 +1,5 @@
 <?php
 
-
 namespace OpenDominion\Models;
 
 /**

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace OpenDominion\Http\Controllers\Auth;
 
 use Auth;
