@@ -57,7 +57,7 @@ class WonderCalculator
         } else {
             $newPower = 25000 * $day;
         }
-        return max(static::MIN_SPAWN_POWER, $newPower);
+        return max(static::MIN_SPAWN_POWER, round($newPower, -4));
     }
 
     /**
@@ -128,10 +128,10 @@ class WonderCalculator
             return 0;
         }
 
-        return static::PRESTIGE_BASE_GAIN + (
+        return round(static::PRESTIGE_BASE_GAIN + (
             min($damageContribution, static::PRESTIGE_CONTRIBUTION_MAX) *
             (static::PRESTIGE_CONTRIBUTION_MULTIPLIER / static::PRESTIGE_CONTRIBUTION_MAX)
-        );
+        ));
     }
 
     /**

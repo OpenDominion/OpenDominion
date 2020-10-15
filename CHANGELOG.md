@@ -3,6 +3,11 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Wonder power on respawn is now rounded to the nearest 10,000
+
+### Fixed
+- Wonder prestige gains and damage are now rounded to the nearest integer
 
 ## [1.0.10] - 2020-10-07
 ### Added
