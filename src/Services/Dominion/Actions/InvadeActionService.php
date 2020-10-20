@@ -380,6 +380,9 @@ class InvadeActionService
             ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
+            // Techs
+            $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
+
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
                 $multiplier += 0.20;
@@ -387,8 +390,10 @@ class InvadeActionService
                 $multiplier += 0.15;
             }
 
-            // Wonders (does not stack with war bonus)
-            $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+            // Wonders - does not stack with other bonuses
+            if ($dominion->getWonderPerkValue('prestige_gains') !== 0) {
+                $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+            }
 
             $attackerPrestigeChange *= $multiplier;
         }

@@ -204,6 +204,7 @@ class DataSyncCommand extends Command implements CommandInterface
                 ->fill([
                     'name' => $techData->name,
                     'prerequisites' => object_get($techData, 'requires', []),
+                    'active' => object_get($techData, 'active', true),
                 ]);
 
             if (!$tech->exists) {

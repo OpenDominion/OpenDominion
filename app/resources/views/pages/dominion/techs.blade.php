@@ -31,22 +31,22 @@
                                 </tr>
                             </thead>
                             @foreach ($techs as $tech)
-                                <tr class="{{ in_array($tech->key, $unlockedTechs) ? 'text-green' : 'text-default' }}">
+                                <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }}{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }}">
                                     <td class="text-center">
                                         @if(in_array($tech->key, $unlockedTechs))
                                             <i class="fa fa-check"></i>
                                         @else
-                                            <input type="radio" name="key" id="tech_{{ $tech->key }}" value="{{ $tech->key }}" {{ count(array_diff($tech->prerequisites, $unlockedTechs)) != 0 ? 'disabled' : null }}>
+                                            <input type="radio" name="key" id="tech_{{ $tech->key }}" value="{{ $tech->key }}" {{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? null : 'disabled' }}>
                                         @endif
                                     </td>
-                                    <td class="{{ count(array_diff($tech->prerequisites, $unlockedTechs)) != 0 ? 'text-muted' : 'text-default' }}">
+                                    <td>
                                         <label for="tech_{{ $tech->key }}" style="font-weight: normal;">
                                             {{ $tech->name }}
                                         </label>
                                     </td>
                                     <td>
                                         <label for="tech_{{ $tech->key }}" style="font-weight: normal;">
-                                            {{ $techHelper->getTechDescription($tech) }}
+                                            {!! $techHelper->getTechDescription($tech, '<br/>') !!}
                                         </label>
                                     </td>
                                     <td>
@@ -75,11 +75,17 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement scales according to your highest land size or 50% of your total land conqured (whichever is higher) with a minimum of 3780 points. Some advancements require others before you can select them. Please consult the tech tree below.</p>
-                    <p>If you pick a tech that has the same bonus as another tech, only the highest technology bonus counts (they do not stack). For example, Military Genius adds +5% offense and Magical Weaponry provides +10% offense. If you obtain both, only the 10% bonus would apply.</p>
-                    <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> and currently need {{ number_format($techCalculator->getTechCost($selectedDominion)) }} to unlock a new tech.</p>
-                    <p>Your highest land achieved is <b>{{ number_format($selectedDominion->highest_land_achieved) }}</b> acres.</p>
-                    <p>Your conquered land total is <b>{{ number_format($selectedDominion->stat_total_land_conquered) }}</b> acres.</p>
+                    @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
+                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement is {{ number_format($techCalculator->getTechCost($selectedDominion)) }}. Most advancements require unlocking others before you can select them. Please consult the tech tree below.</p>
+                    <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
+                    <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> out of the {{ number_format($techCalculator->getTechCost($selectedDominion)) }} required to unlock a new tech.</p>
+                    <div class="progress" style="margin-bottom: 0px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ number_format($techProgress) }}%">
+                            @if ($techProgress > 5)
+                                {{ number_format($techProgress, 2) }}%
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

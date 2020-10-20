@@ -598,7 +598,10 @@ class EspionageActionService
             $maxCarried = $this->militaryCalculator->getSpyRatioRaw($dominion) * $this->landCalculator->getTotalLand($dominion) * $constraints['spy_carries'];
         }
 
-        return min($maxTarget, $maxDominion, $maxCarried);
+        // Techs
+        $multiplier = (1 + $dominion->getTechPerkMultiplier('theft_gains') + $target->getTechPerkMultiplier('theft_losses'));
+
+        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier);
     }
 
     /**
@@ -736,6 +739,9 @@ class EspionageActionService
             $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
             $baseDamage *= (1 - $warReduction);
         }
+
+        // Techs
+        $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {

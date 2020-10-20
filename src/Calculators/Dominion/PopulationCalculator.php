@@ -143,8 +143,14 @@ class PopulationCalculator
         $housingPerHome = 30;
         $housingPerNonHome = 15; // except barracks
         $housingPerBarracks = 0;
-        $housingPerBarrenLand = (5 + $dominion->race->getPerkValue('extra_barren_max_population'));
+        $housingPerBarrenLand = 5;
         $housingPerConstructingBuilding = 15; // todo: check how many constructing home/barracks houses
+
+        // Racial Bonus
+        $housingPerBarrenLand += $dominion->race->getPerkValue('extra_barren_max_population');
+
+        // Techs
+        $housingPerBarrenLand += $dominion->getTechPerkValue('extra_barren_max_population');
 
         // Constructed buildings
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
@@ -219,6 +225,9 @@ class PopulationCalculator
         // Values
         $troopsPerBarracks = 36;
 
+        // Techs
+        $troopsPerBarracks += $dominion->getTechPerkValue('barracks_housing');
+
         // Wonders
         $troopsPerBarracks += $dominion->getWonderPerkValue('barracks_housing');
 
@@ -280,6 +289,9 @@ class PopulationCalculator
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('population_growth');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('population_growth');
 
         // Spell: Harmony
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'harmony', $spellHarmony);

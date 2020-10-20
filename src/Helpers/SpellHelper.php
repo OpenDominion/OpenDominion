@@ -21,6 +21,13 @@ class SpellHelper
         })->isNotEmpty();
     }
 
+    public function isRacialSelfSpell(string $spellKey, Race $race): bool
+    {
+        return $this->getRacialSelfSpells($race)->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
     public function isOffensiveSpell(string $spellKey): bool
     {
         return $this->getOffensiveSpells()->filter(function ($spell) use ($spellKey) {

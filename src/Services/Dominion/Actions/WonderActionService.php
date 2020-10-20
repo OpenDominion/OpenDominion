@@ -275,9 +275,15 @@ class WonderActionService
 
                 $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
                 $damageDealt = round($spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion));
+
+                // Techs
+                $damageDealt *= (1 + $dominion->getTechPerkMultiplier('cyclone_damage'));
+
+                // Wonders
                 if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_damage')) {
                     $damageDealt *= (1 + $wonder->wonder->perks->groupBy('key')['enemy_spell_damage']->first()->pivot->value / 100);
                 }
+
                 // Cap at 2.5% of wonder max power
                 $damageDealt = min($damageDealt, round($wonder->power * 0.025));
                 $dominion->stat_cyclone_damage += $damageDealt;
@@ -662,6 +668,7 @@ class WonderActionService
     protected function handleCasualties(Dominion $dominion, array $units): array
     {
         $offensiveCasualtiesPercentage = (static::CASUALTIES_BASE_PERCENTAGE / 100);
+        $offensiveCasualtiesPercentage *= (1 - $dominion->getTechPerkMultiplier('fewer_casualties_wonders'));
 
         $offensiveUnitsLost = [];
 
