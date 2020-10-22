@@ -113,4 +113,13 @@ class TechHelper
         }
         return 0;
     }
+
+    public function getTechPerkJSON(Tech $tech): string
+    {
+        $techPerks = [];
+        foreach ($tech->perks as $perk) {
+            $techPerks[$perk->key] = $perk->pivot->value;
+        }
+        return htmlentities(json_encode($techPerks));
+    }
 }

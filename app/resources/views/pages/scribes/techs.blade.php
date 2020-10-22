@@ -36,14 +36,20 @@
                             @endforeach
                         @endforeach
                         @foreach ($techs as $tech)
-                            <circle r="5" cx="{{ $techHelper->getX($tech) }}" cy="{{ $techHelper->getY($tech) }}" class="vertex {{ empty($tech->prerequisites) ? 'active starting' : null }}" id="{{ $tech->key }}" title="<b>{{ $tech->name }}:</b><br/>{{ $techHelper->getTechDescription($tech, '<br/>') }}" />
+                            <circle r="5" cx="{{ $techHelper->getX($tech) }}" cy="{{ $techHelper->getY($tech) }}"
+                                id="{{ $tech->key }}"
+                                class="vertex {{ empty($tech->prerequisites) ? 'active starting' : null }}"
+                                title="<b>{{ $tech->name }}:</b><br/>{{ $techHelper->getTechDescription($tech, '<br/>') }}"
+                                data-perks="{!! $techHelper->getTechPerkJSON($tech) !!}" />
                         @endforeach
                     </svg>
                 </div>
                 <div class="col-md-6">
                     <h5>Techs Selected <span id="tech-total">0</span></h5>
                     <h5 style="margin-top: 20px;">Total Bonuses</h5>
-                    <p id="tech-bonuses"></p>
+                    <table class="table table-condensed">
+                        <tbody id="tech-bonuses"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -159,24 +165,28 @@
 
                 // Update total
                 $('#tech-total').html($('.vertex.selected').length);
+
                 // Update bonuses
                 var techBonuses = [];
                 $('.vertex.selected').each(function(idx, node) {
-                    var perks = $(node).data('original-title').split(',');
-                    perks.forEach(function(value, index, array) {
-                        var perkString = value.replace(/\s*\([^)]*\)\s*/g, "");
-                        var matches = perkString.match(/([\+\-\d\.]+)(.*)/);
-                        if (matches[2] in techBonuses) {
-                            techBonuses[matches[2]] += parseFloat(matches[1]);
+                    var perks = $(node).data('perks');
+                    Object.keys(perks).forEach(function(value, index, array) {
+                        if (value in techBonuses) {
+                            techBonuses[value] += parseFloat(perks[value]);
                         } else {
-                            techBonuses[matches[2]] = parseFloat(matches[1]);
+                            techBonuses[value] = parseFloat(perks[value]);
                         }
                     });
                 });
+                var techPerks = Object.keys(techBonuses).sort();
                 var techHtml = '';
-                for (let key in techBonuses) {
-                    if (techBonuses[key] > 0) techHtml += '+';
-                    techHtml += techBonuses[key]+key+"<br/>";
+                for (let key in techPerks) {
+                    techHtml += "<tr><td class='text-right'>";
+                    if (techBonuses[techPerks[key]] > 0) techHtml += '+';
+                    techHtml += techBonuses[techPerks[key]];
+                    techHtml += "</td><td>";
+                    techHtml += techPerks[key];
+                    techHtml += "</td></tr>";
                 }
                 $('#tech-bonuses').html(techHtml);
             });
