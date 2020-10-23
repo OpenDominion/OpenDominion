@@ -296,6 +296,12 @@ class SpellActionService
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
+        if ($dominion->pack !== null && $dominion->pack->size > 2) {
+            $wizardStrengthLost = 2;
+        } else {
+            $wizardStrengthLost = 1.5;
+        }
+
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
@@ -326,7 +332,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
-                    'wizardStrengthCost' => 2,
+                    'wizardStrengthCost' => $wizardStrengthLost,
                     'alert-type' => 'warning',
                 ];
             }
@@ -390,7 +396,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'wizardStrengthCost' => 2,
+            'wizardStrengthCost' => $wizardStrengthLost,
             'redirect' => $redirect,
         ];
     }
