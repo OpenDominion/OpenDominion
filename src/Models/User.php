@@ -29,6 +29,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $last_online
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Achievement[] $achievements
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\UserActivity[] $activities
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $dominions
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -55,12 +56,19 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     protected $with = ['roles'];
 
-//    public function dominion(Round $round)
-//    {
-//        return $this->dominions()->where('round_id', $round->id)->get();
-//    }
-
     // Relations
+
+    public function achievements()
+    {
+        return $this->hasManyThrough(
+            Achievement::class,
+            UserAchievement::class,
+            'user_id',
+            'id',
+            'id',
+            'achievement_id'
+        );
+    }
 
     public function activities()
     {
