@@ -57,6 +57,22 @@ class QueueService
     }
 
     /**
+     * Returns the queue of a specific type of prefixed resource of a dominion.
+     *
+     * @param string $source
+     * @param Dominion $dominion
+     * @param string $prefix
+     * @return int
+     */
+    public function getQueueByPrefix(string $source, Dominion $dominion, string $prefix): Collection
+    {
+        return $this->getQueue($source, $dominion)
+            ->filter(static function ($row) use ($prefix) {
+                return starts_with($row->resource, $prefix);
+            });
+    }
+
+    /**
      * Returns the amount of incoming resource for a specific type and hour of a dominion.
      *
      * @param string $source
@@ -77,8 +93,7 @@ class QueueService
     }
 
     /**
-     * Returns the sum of resources in a queue of a specific type of a
-     * dominion.
+     * Returns the sum of resources in a queue of a dominion.
      *
      * @param string $source
      * @param Dominion $dominion
@@ -91,8 +106,7 @@ class QueueService
     }
 
     /**
-     * Returns the sum of a specific resource in a queue of a specific type of
-     * a dominion.
+     * Returns the sum of a specific resource in a queue of a dominion.
      *
      * @param string $source
      * @param Dominion $dominion
@@ -105,6 +119,20 @@ class QueueService
             ->filter(static function ($row) use ($resource) {
                 return ($row->resource === $resource);
             })->sum('amount');
+    }
+
+    /**
+     * Returns the sum of a specific type of prefixed resource in a queue of a dominion.
+     *
+     * @param string $source
+     * @param Dominion $dominion
+     * @param string $prefix
+     * @return int
+     */
+    public function getQueueTotalByPrefix(string $source, Dominion $dominion, string $prefix): int
+    {
+        return $this->getQueueByPrefix($source, $dominion, $prefix)
+            ->sum('amount');
     }
 
     public function dequeueResource(string $source, Dominion $dominion, string $resource, int $amount): void

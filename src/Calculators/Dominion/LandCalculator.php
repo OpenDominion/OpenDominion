@@ -59,6 +59,27 @@ class LandCalculator
     }
 
     /**
+     * Returns the Dominion's total acres of land including incoming.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getTotalLandIncoming(Dominion $dominion): int
+    {
+        return(
+            $this->getTotalLand($dominion)
+            + $this->queueService->getExplorationQueueTotal($dominion)
+            + $this->queueService->getInvasionQueueTotalByPrefix($dominion, 'land_')
+        );
+
+        foreach ($this->landHelper->getLandTypes() as $landType) {
+            $totalLand += $dominion->{'land_' . $landType};
+        }
+
+        return $totalLand;
+    }
+
+    /**
      * Returns the Dominion's total acres of barren land.
      *
      * @param Dominion $dominion
