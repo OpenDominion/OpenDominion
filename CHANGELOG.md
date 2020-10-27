@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Maximum pack size changed to 4 (from 5)
 - Maximum packed players per realm changed to 6 (from 7)
+- Cooldown before redeclaring war on same realm increased to 48 hours (from 24)
+- Prestige gain is no longer reduced due to recent invasions
+- NPD defense above 525 acres reduced slightly
 - Wonder power on respawn is now rounded to the nearest 10,000
 - Rebuilding neutral wonders now provide 25 prestige for the entire realm
 - Destroying a wonder when you already have one only awards 25 prestige

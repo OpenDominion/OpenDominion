@@ -133,10 +133,10 @@ class GovernmentActionService
             'type' => 'war_canceled',
             'source_id' => $dominion->realm->id,
             'target_id' => $target->id,
-        ])->where('created_at', '>', now()->startOfHour()->subHours(23))->get();
+        ])->where('created_at', '>', now()->startOfHour()->subHours(47))->get();
 
         if (!$recentWars->isEmpty()) {
-            throw new GameException('You cannot redeclare war on the same realm within 24 hours of canceling.');
+            throw new GameException('You cannot redeclare war on the same realm within 48 hours of canceling.');
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {

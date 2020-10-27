@@ -398,23 +398,6 @@ class InvadeActionService
             $attackerPrestigeChange = 0;
         }
 
-        // Reduce attacker prestige gain if the target was hit recently
-        if ($attackerPrestigeChange > 0) {
-            $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
-
-            if ($recentlyInvadedCount === 1) {
-                $attackerPrestigeChange *= 0.8;
-            } elseif ($recentlyInvadedCount === 2) {
-                $attackerPrestigeChange *= 0.6;
-            } elseif ($recentlyInvadedCount === 3) {
-                $attackerPrestigeChange *= 0.4;
-            } elseif ($recentlyInvadedCount === 4) {
-                $attackerPrestigeChange *= 0.2;
-            } elseif ($recentlyInvadedCount >= 5) {
-                $attackerPrestigeChange = 0;
-            }
-        }
-
         $attackerPrestigeChange = (int)round($attackerPrestigeChange);
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
