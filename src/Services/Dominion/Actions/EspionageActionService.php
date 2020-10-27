@@ -563,10 +563,14 @@ class EspionageActionService
         string $resource,
         array $constraints
     ): int {
-        if (($resource === 'platinum') && $this->spellCalculator->isSpellActive($target, 'fools_gold')) {
-            return 0;
+        if ($this->spellCalculator->isSpellActive($target, 'fools_gold')) {
+            if ($resource === 'platinum') {
+                return 0;
+            }
+            if ($target->getTechPerkValue('improved_fools_gold') !== 0 && ($resource === 'ore' || $resource === 'lumber')) {
+                return 0;
+            }
         }
-
         // Limit to percentage of target's raw production
         $maxTarget = true;
         if ($constraints['target_amount'] > 0) {

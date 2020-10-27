@@ -54,6 +54,7 @@ class TechHelper
             'spy_strength_recovery' => '%s spy strength per hour',
             'theft_gains' => '%s%% resources gained from theft',
             'theft_losses' => '%s%% resources lost to theft',
+            'improved_fools_gold' => 'Fool\'s Gold protects ore/lumber',
 
             // Wizard related
             'cyclone_damage' => '%s%% cyclone damage',

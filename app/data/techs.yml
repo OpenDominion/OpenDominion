@@ -233,7 +233,7 @@ tech_4_7:
 tech_6_7:
   name: Siege Weaponry
   perks:
-    offense: 2.5
+    improved_fools_gold: 1
   requires:
     - tech_5_5
     - tech_4_7
@@ -241,15 +241,14 @@ tech_6_7:
 tech_8_7:
   name: Haggler's Savvy
   perks:
-    exchange_bonus: 10
+    gem_production: 2.5
+    ore_production: 7.5
   requires:
     - tech_6_7
     - tech_10_7
 tech_10_7:
   name: Fruits of Labor
   perks:
-    gem_production: 2.5
-    ore_production: 7.5
     platinum_production: 5
   requires:
     - tech_8_7
@@ -307,10 +306,10 @@ tech_9_9:
     - tech_7_9
     - tech_8_11
 tech_11_9:
-  name: Practical Weaponry
+  name: Magical Weaponry
   perks:
-    fewer_casualties: 5
     offense: 2.5
+    wizard_strength: 7.5
   requires:
     - tech_12_11
 tech_13_9:
@@ -331,7 +330,7 @@ tech_15_9:
 tech_17_9:
   name: Emperor's Regard
   perks:
-    guard_tax: -0.5
+    guard_tax: -1
   requires:
     - tech_18_7
     - tech_15_9
@@ -402,14 +401,13 @@ tech_11_13:
   name: Expert Harbormaster
   perks:
     boat_capacity: 5
-    food_production_docks: 5
+    fewer_casualties: 5
   requires:
     - tech_10_11
 tech_13_13:
-  name: Magical Weaponry
+  name: Practical Weaponry
   perks:
     offense: 2.5
-    wizard_strength: 5
   requires:
     - tech_12_11
     - tech_14_15
@@ -582,7 +580,7 @@ miners_refining:
 bankers_foresight:
   name: Banker's Foresight
   perks:
-    platinum_production: 5
+    exchange_bonus: 10
   requires:
     - farmers_growth
     - miners_refining
