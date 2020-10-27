@@ -20,9 +20,8 @@ great_market:
 gnomish_mining_machine:
   name: Gnomish Mining Machine
   perks:
-    ore_production: 30
+    ore_production: 10
   power: 250000
-  active: false
 guild_of_shadows:
   name: Guild of Shadows
   perks:
@@ -32,9 +31,8 @@ guild_of_shadows:
 hanging_gardens:
   name: Hanging Gardens
   perks:
-    food_production: 50
+    food_production: 20
   power: 250000
-  active: false
 ancient_library:
   name: Ancient Library
   perks:
@@ -135,3 +133,12 @@ school_of_war:
   perks:
     barracks_housing: 5
   power: 250000
+horn_of_plenty:
+  name: Horn of Plenty
+  perks:
+    platinum_production: 1
+    food_production: 1
+    gem_production: 1
+    lumber_production: 1
+    mana_production: 1
+    ore_production: 1
