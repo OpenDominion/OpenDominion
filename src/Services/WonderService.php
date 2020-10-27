@@ -11,7 +11,7 @@ use OpenDominion\Models\Wonder;
 
 class WonderService
 {
-    public const MAX_WONDERS_PER_REALM = 0.5;
+    public const MAX_WONDERS_PER_REALM = 0.4;
 
     public const STARTING_WONDERS = ['high_clerics_tower', 'onyx_mausoleum'];
 

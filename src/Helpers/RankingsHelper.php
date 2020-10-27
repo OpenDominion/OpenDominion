@@ -74,14 +74,6 @@ class RankingsHelper
                 'title_icon' => 'ra-demolish',
             ],
             [
-                'name' => 'Most Wonders Destroyed',
-                'key' => 'wonders-destroyed',
-                'stat' => 'stat_wonders_destroyed',
-                'stat_label' => 'Wonders Destroyed',
-                'title' => 'the Opportunist',
-                'title_icon' => 'ra-raven',
-            ],
-            [
                 'name' => 'Most Successful Spies',
                 'key' => 'espionage-success',
                 'stat' => 'stat_espionage_success',

@@ -35,12 +35,17 @@ class WonderActionService
     /**
      * @var float Base percentage of offensive casualties
      */
-    protected const CASUALTIES_BASE_PERCENTAGE = 5;
+    protected const CASUALTIES_BASE_PERCENTAGE = 3.5;
 
     /**
      * @var float Base percentage for wizards killed from spell failure
      */
     protected const CYCLONE_WIZARD_LOSSES_PERCENTAGE = 0.25;
+
+    /**
+     * @var float Base percentage for cyclone damage cap
+     */
+    protected const CYCLONE_DAMAGE_CAP_PERCENTAGE = 2;
 
     /**
      * @var float Wonder defensive WPA when calculating success rates
@@ -278,8 +283,9 @@ class WonderActionService
                 if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_damage')) {
                     $damageDealt *= (1 + $wonder->wonder->perks->groupBy('key')['enemy_spell_damage']->first()->pivot->value / 100);
                 }
-                // Cap at 2.5% of wonder max power
-                $damageDealt = min($damageDealt, round($wonder->power * 0.025));
+                // Cap at 2% of wonder max power
+                $damageCap = static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100;
+                $damageDealt = min($damageDealt, round($wonder->power * $damageCap));
                 $dominion->stat_cyclone_damage += $damageDealt;
 
                 $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
@@ -497,27 +503,25 @@ class WonderActionService
         $detroyedByRealm = $dominion->realm;
         $dominion->stat_wonders_destroyed += 1;
 
-        $prestigeRewards = [];
-        if ($wonder->realm !== null) {
-            foreach ($friendlyDominions as $friendlyDominion) {
-                $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
-                if ($friendlyDominion->id == $dominion->id) {
-                    $dominion->prestige += $prestigeGain;
-                    $this->attackResult['attacker']['prestige'] = $prestigeGain;
-                } else {
-                    $friendlyDominion->prestige += $prestigeGain;
-                    $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
-                }
-                $prestigeRewards[$friendlyDominion->id] = $prestigeGain;
-            }
-        }
-
         if ($dominion->realm->wonders->isEmpty()) {
             $wonder->realm_id = $dominion->realm_id;
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
         } else {
             $wonder->realm_id = null;
             $wonder->power = $this->wonderCalculator->getNewPower($wonder, $detroyedByRealm);
+        }
+
+        $prestigeRewards = [];
+        foreach ($friendlyDominions as $friendlyDominion) {
+            $prestigeGain = $this->wonderCalculator->getPrestigeGainForDominion($wonder, $friendlyDominion);
+            if ($friendlyDominion->id == $dominion->id) {
+                $dominion->prestige += $prestigeGain;
+                $this->attackResult['attacker']['prestige'] = $prestigeGain;
+            } else {
+                $friendlyDominion->prestige += $prestigeGain;
+                $friendlyDominion->save(['event' => HistoryService::EVENT_ACTION_WONDER_DESTROYED]);
+            }
+            $prestigeRewards[$friendlyDominion->id] = $prestigeGain;
         }
 
         $wonder->damage()->delete();
@@ -661,7 +665,7 @@ class WonderActionService
      */
     protected function handleCasualties(Dominion $dominion, array $units): array
     {
-        $offensiveCasualtiesPercentage = (static::CASUALTIES_BASE_PERCENTAGE / 100);
+        $offensiveCasualtiesPercentage = static::CASUALTIES_BASE_PERCENTAGE / 100;
 
         $offensiveUnitsLost = [];
 

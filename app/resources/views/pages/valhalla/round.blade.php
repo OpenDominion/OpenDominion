@@ -147,7 +147,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-wonder-damage']) }}">Most Wonder Damage</a><br>
                 </div>
                 <div class="col-sm-6 text-center">
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wonders-destroyed']) }}">Most Wonders Destroyed</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-wonders-destroyed']) }}">Most Wonders Destroyed</a><br>
                 </div>
             </div>
 

@@ -4,10 +4,24 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Added
+- Three new wonders:
+  - Hanging Gardens: +20% food production
+  - Gnomish Mining Machine: +10% ore production
+  - Horn of Plenty: +1% platinum/lumber/ore/food/mana/gem production
 - Threads with new posts will be displayed in bold on the first page load
 
 ### Changed
+- Maximum pack size changed to 4 (from 5)
+- Maximum packed players per realm changed to 6 (from 7)
 - Wonder power on respawn is now rounded to the nearest 10,000
+- Rebuilding neutral wonders now provide 25 prestige for the entire realm
+- Destroying a wonder when you already have one only awards 25 prestige
+- Neutral wonders will now have an HP cap of daysInRound*25000 (min 175k, max 500k)
+- Most Wonders Destroyed title removed
+- Max wonders available changed to: Realms * 0.4 (from 0.5)
+- Cyclone damage now capped at 2% of a wonders max HP (from 1.5%)
+- Base cyclone damage changed to 3.5x max(wizards,Acres) (from 5x)
+- Wonder invasion casualties reduced to to 3.5% casualties (from 5%)
 
 ### Fixed
 - Wonder prestige gains and damage are now rounded to the nearest integer
