@@ -98,7 +98,7 @@ class TechHelper
 
     public function getX(Tech $tech): int
     {
-        $parts = explode("_", $tech->key);
+        $parts = explode('_', $tech->key);
         if (isset($parts[1])) {
             return 10 * $parts[1];
         }
@@ -107,7 +107,7 @@ class TechHelper
 
     public function getY(Tech $tech): int
     {
-        $parts = explode("_", $tech->key);
+        $parts = explode('_', $tech->key);
         if (isset($parts[2])) {
             return 10 * $parts[2];
         }
