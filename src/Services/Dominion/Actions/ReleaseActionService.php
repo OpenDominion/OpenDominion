@@ -58,10 +58,10 @@ class ReleaseActionService
         }
 
         $units = [
-            1 => $data['unit1'],
-            2 => $data['unit2'],
-            3 => $data['unit3'],
-            4 => $data['unit4']
+            1 => array_get($data, 'unit1', 0),
+            2 => array_get($data, 'unit2', 0),
+            3 => array_get($data, 'unit3', 0),
+            4 => array_get($data, 'unit4', 0)
         ];
 
         $rawDpReleased = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);

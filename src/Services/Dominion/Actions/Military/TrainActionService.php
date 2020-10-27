@@ -104,8 +104,8 @@ class TrainActionService
 
         // Specialists train in 9 hours
         $nineHourData = [
-            'military_unit1' => $data['military_unit1'],
-            'military_unit2' => $data['military_unit2'],
+            'military_unit1' => array_get($data, 'military_unit1', 0),
+            'military_unit2' => array_get($data, 'military_unit2', 0),
         ];
         unset($data['military_unit1'], $data['military_unit2']);
 
