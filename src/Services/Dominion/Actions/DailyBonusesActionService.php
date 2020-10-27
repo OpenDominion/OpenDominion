@@ -28,14 +28,18 @@ class DailyBonusesActionService
         }
 
         $platinumGained = $dominion->peasants * 4;
+        $researchPointsGained = 750;
+
         $dominion->resource_platinum += $platinumGained;
+        $dominion->resource_tech += $researchPointsGained;
         $dominion->daily_platinum = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
         return [
             'message' => sprintf(
-                'You gain %s platinum.',
-                number_format($platinumGained)
+                'You gain %s platinum and %s research points.',
+                number_format($platinumGained),
+                $researchPointsGained
             ),
             'data' => [
                 'platinumGained' => $platinumGained,
@@ -59,7 +63,6 @@ class DailyBonusesActionService
         }
 
         $landGained = 20;
-        $researchPointsGained = 128;
 
         $landCalculator = app(LandCalculator::class);
         $landTotal = $landCalculator->getTotalLand($dominion);
@@ -69,16 +72,14 @@ class DailyBonusesActionService
         $dominion->{$attribute} += $landGained;
 
         $dominion->stat_total_land_explored += $landGained;
-        $dominion->resource_tech += $researchPointsGained;
         $dominion->daily_land = true;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DAILY_BONUS]);
 
         return [
             'message' => sprintf(
-                'You gain %d acres of %s and %s research points.',
+                'You gain %d acres of %s.',
                 $landGained,
-                str_plural($dominion->race->home_land_type),
-                $researchPointsGained
+                str_plural($dominion->race->home_land_type)
             ),
             'data' => [
                 'landGained' => $landGained,

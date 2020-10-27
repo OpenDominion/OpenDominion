@@ -119,14 +119,14 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellMidasTouch = 10;
-        $guardTax = -2;
+        $guardTax = 2;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('platinum_production');
-        $guardTax -= $dominion->getTechPerkValue('guard_tax');
+        $guardTax += $dominion->getTechPerkValue('guard_tax');
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('platinum_production');
@@ -139,7 +139,7 @@ class ProductionCalculator
 
         // Guard Tax
         if ($this->guardMembershipService->isGuardMember($dominion)) {
-            $multiplier += ($guardTax / 100);
+            $multiplier -= ($guardTax / 100);
         }
 
         return min(1.5, $multiplier);
@@ -716,13 +716,15 @@ class ProductionCalculator
         $tech = 0;
 
         // Values
-        $techPerSchool = 0.5;
+        $techPerSchoolPercentage = 26;
+        $schoolPercentageCap = 40;
 
         // Building: School
-        $tech += max(
-            $dominion->building_school * $techPerSchool,
-            $dominion->building_school * (1 - ($dominion->building_school / $this->landCalculator->getTotalLand($dominion)))
+        $schoolPercentage = min(
+            $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
+            $schoolPercentageCap / 100
         );
+        $tech += $techPerSchoolPercentage * $schoolPercentage;
 
         return $tech;
     }
