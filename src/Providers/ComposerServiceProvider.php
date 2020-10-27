@@ -151,5 +151,10 @@ class ComposerServiceProvider extends AbstractServiceProvider
         view()->composer('partials.resources-overview', function (View $view) {
             $view->with('networthCalculator', app(NetworthCalculator::class));
         });
+
+        view()->composer('partials.styles', function (View $view) {
+            $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
+            $view->with('version', $version);
+        });
     }
 }
