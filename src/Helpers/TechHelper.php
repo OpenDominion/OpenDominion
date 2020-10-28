@@ -11,9 +11,9 @@ class TechHelper
         return Tech::active()->get()->keyBy('key');
     }
 
-    public function getTechDescription(Tech $tech, string $separator = ', '): string
+    public function getTechPerkStrings()
     {
-        $perkTypeStrings = [
+        return [
             // Military related
             'defense' => '%s%% defensive power',
             'offense' => '%s%% offensive power',
@@ -81,6 +81,11 @@ class TechHelper
             'lumber_decay' => '%s%% lumber rot',
             'mana_decay' => '%s%% mana drain',
         ];
+    }
+
+    public function getTechDescription(Tech $tech, string $separator = ', '): string
+    {
+        $perkTypeStrings = $this->getTechPerkStrings();
 
         $perkStrings = [];
         foreach ($tech->perks as $perk) {

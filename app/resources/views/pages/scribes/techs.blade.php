@@ -133,6 +133,8 @@
 @push('inline-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+            var techPerkStrings = {!! json_encode($techHelper->getTechPerkStrings()) !!};
+
             function updateTree() {
                 //if (!$(this).hasClass('active')) return;
 
@@ -183,7 +185,7 @@
                     if (techBonuses[techPerks[key]] > 0) techHtml += '+';
                     techHtml += techBonuses[techPerks[key]];
                     techHtml += "</td><td>";
-                    techHtml += techPerks[key];
+                    techHtml += techPerkStrings[techPerks[key]].replace('%s ', '').replace('%s%', '');
                     techHtml += "</td></tr>";
                 }
                 $('#tech-bonuses').html(techHtml);
