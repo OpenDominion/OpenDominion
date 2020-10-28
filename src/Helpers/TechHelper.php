@@ -35,7 +35,7 @@ class TechHelper
             'construction_lumber_cost' => '%s%% construction lumber cost',
             'destruction_refund' => '%s%% refund when destroying buildings',
             'exchange_bonus' => '%s%% better exchange rates',
-            'explore_draftee_cost' => '%s draftee per acre explore cost (min 3)',
+            'explore_draftee_cost' => '%s draftee per acre explore cost (min 6)',
             'explore_morale_cost' => '%s%% exploring morale drop',
             'explore_platinum_cost' => '%s%% exploring platinum cost',
             'extra_barren_max_population' => '%s population from barren land',

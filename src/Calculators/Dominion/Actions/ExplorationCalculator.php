@@ -90,8 +90,8 @@ class ExplorationCalculator
         // Techs
         $draftees += $dominion->getTechPerkValue('explore_draftee_cost');
         # Minimum dratee cost is 3
-        if ($draftees < 3) {
-            $draftees = 3;
+        if ($draftees < 6) {
+            $draftees = 6;
         }
 
         return round($draftees);
