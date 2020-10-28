@@ -54,7 +54,7 @@ class GovernmentActionService
             throw new RuntimeException('Dominion not found.');
         }
         if ($dominion->realm_id != $monarch->realm_id) {
-            throw new RuntimeException('You cannot vote for a monarch outside of your realm.');
+            throw new GameException('You cannot vote for a monarch outside of your realm.');
         }
 
         $dominion->monarchy_vote_for_dominion_id = $monarch->id;
