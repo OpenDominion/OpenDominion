@@ -133,15 +133,13 @@
 @push('inline-scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('.vertex').click(function() {
+            function updateTree() {
                 //if (!$(this).hasClass('active')) return;
 
                 // Clear all edges
                 $('.edge').removeClass('active');
                 // Clear all vertices
                 $('.vertex').removeClass('active');
-                // Toggle vertex
-                $(this).toggleClass('selected');
 
                 // Highlight starting vertices
                 $('.vertex.starting').addClass('active');
@@ -189,6 +187,23 @@
                     techHtml += "</td></tr>";
                 }
                 $('#tech-bonuses').html(techHtml);
+            }
+
+            function loadQuerystring() {
+                location.search.match(/\d+_\d+/g).forEach(function(pos) {
+                    $('#tech_'+pos).addClass('selected');
+                });
+                updateTree();
+            }
+
+            $('.vertex').click(function() {
+                // Toggle vertex
+                $(this).toggleClass('selected');
+                updateTree();
+                var selectedNodes = $.map($('.vertex.selected'), function(node) {
+                    return node.id.replace('tech_', '');
+                });
+                history.pushState(null, null, '?'+selectedNodes.join('&'));
             });
 
             window.SVGElement = null;
@@ -197,6 +212,14 @@
                 'html': true,
                 'placement': 'bottom',
             });
+
+            $(window).on('popstate', function() {
+                $('.vertex').removeClass('selected');
+                loadQuerystring();
+            });
+
+            // Get querystring params on initial load
+            loadQuerystring();
         });
     </script>
 @endpush
