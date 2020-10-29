@@ -25,6 +25,8 @@
         $infoOps['status'] = $latestClearSight->data;
         $infoOps['status']['race_name'] = $dominion->race->name;
         $infoOps['status']['created_at'] = $latestClearSight->created_at;
+        $infoOps['status']['realm'] = $dominion->realm->number;
+        $infoOps['status']['name'] = $dominion->name;
         unset($infoOps['status']['race_id']);
     }
 
