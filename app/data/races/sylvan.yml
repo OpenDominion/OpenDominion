@@ -39,7 +39,7 @@ units:
   - name: Centaur
     cost:
       platinum: 900
-      ore: 70
+      ore: 35
     power:
       offense: 5.5
       defense: 2

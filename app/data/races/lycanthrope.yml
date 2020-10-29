@@ -9,7 +9,7 @@ converter_difficulty: 3
 overall_difficulty: 3
 home_land_type: forest
 perks:
-  max_population: 5
+  max_population: 7.5
   defense: 5
 units:
   - name: Scavenger

@@ -31,27 +31,18 @@ units:
   - name: Basher
     type: offensive_elite
     cost:
-      platinum: 1000
+      platinum: 1100
       ore: 100
     power:
-      offense: 5
+      offense: 6
       defense: 2
     perks:
       reduce_combat_losses: 1
-      defense_vs_goblin: 1
-      defense_vs_wood_elf: 1
-      defense_vs_kobold: 1
-      offense_vs_goblin: 1
-      offense_vs_wood_elf: 1
-      offense_vs_kobold: 1
   - name: Smasher
     type: hybrid_elite
     cost:
-      platinum: 1450
+      platinum: 1425
       ore: 150
     power:
       offense: 7
       defense: 7
-    perks:
-      offense_vs_goblin: 1
-      offense_vs_kobold: 1
