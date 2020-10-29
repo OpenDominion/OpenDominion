@@ -76,7 +76,7 @@
                 </div>
                 <div class="box-body">
                     @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
-                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement is {{ number_format($techCalculator->getTechCost($selectedDominion)) }}. Most advancements require unlocking others before you can select them. Please consult the tech tree below.</p>
+                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement is {{ number_format($techCalculator->getTechCost($selectedDominion)) }}. Most advancements require unlocking another before you can select them. Please consult the tech tree below.</p>
                     <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
                     <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> out of the {{ number_format($techCalculator->getTechCost($selectedDominion)) }} required to unlock a new tech.</p>
                     <div class="progress" style="margin-bottom: 0px;">

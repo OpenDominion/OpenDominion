@@ -10,8 +10,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <p>The tech tree is a map of advancements that your dominion obtain as you reach appropriate levels of research points.</p>
-                    <p>The cost of each advancement scales according to your highest land size or 35% of your total land conqured (whichever is higher) with a minimum of 3780 points. Some advancements require others before you can select them. Please consult the tech tree below.</p>
-                    <p>If you pick a tech that has the same, but higher, bonus as another tech, as several do, only the highest technology bonus counts. It overrides the lesser bonus (they do not stack).</p>
+                    <p>The cost of each advancement is 10,000. Most advancements require unlocking another before you can select them. Please consult the tech tree below.</p>
+                    <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
                     <em>
                         <p>More information can be found on the <a href="https://wiki.opendominion.net/wiki/Teching">wiki</a>.</p>
                     </em>
