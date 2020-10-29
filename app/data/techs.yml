@@ -18,7 +18,7 @@ tech_5_1:
     - tech_3_1
     - tech_7_1
 tech_7_1:
-  name: Underground Hydroponics
+  name: Aquaponics
   perks:
     food_production: 7.5
     enemy_fireball_damage: -10
@@ -231,7 +231,7 @@ tech_4_7:
     - tech_6_7
     - tech_5_9
 tech_6_7:
-  name: Goose Chase
+  name: Trick of the Light
   perks:
     improved_fools_gold: 1
   requires:
@@ -239,7 +239,7 @@ tech_6_7:
     - tech_4_7
     - tech_8_7
 tech_8_7:
-  name: Prospector's Determination
+  name: Opulence
   perks:
     gem_production: 2.5
     ore_production: 7.5
@@ -247,7 +247,7 @@ tech_8_7:
     - tech_6_7
     - tech_10_7
 tech_10_7:
-  name: Opulence
+  name: Midas's Fountain
   perks:
     platinum_production: 5
   requires:
