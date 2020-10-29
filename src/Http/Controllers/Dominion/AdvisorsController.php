@@ -217,9 +217,12 @@ class AdvisorsController extends AbstractDominionController
             throw new GameException('Locked dominions are not allowed to look at realm advisors.');
         }
 
-        if($dominion->realm_id !== $target->realm_id)
-        {
+        if ($dominion->realm_id !== $target->realm_id) {
             throw new GameException('You are only allowed to look at dominions in your realm.');
+        }
+
+        if ($dominion->id == $target->id) {
+            return;
         }
 
         $realmAdvisors = $target->getSetting('realmadvisors');
