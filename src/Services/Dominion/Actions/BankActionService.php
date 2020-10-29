@@ -66,6 +66,9 @@ class BankActionService
 
         $multiplier = 1;
 
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('exchange_bonus');
+
         // Wonder
         $multiplier += $dominion->getWonderPerkMultiplier('exchange_bonus');
 

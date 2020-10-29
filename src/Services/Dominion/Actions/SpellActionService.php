@@ -640,6 +640,9 @@ class SpellActionService
                 $baseDamage *= (1 - $warReduction);
             }
 
+            // Techs
+            $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
+
             // Wonders
             $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 

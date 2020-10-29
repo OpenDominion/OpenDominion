@@ -93,6 +93,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
             $router->get('advisors/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construct');
             $router->get('advisors/castle')->uses('Dominion\AdvisorsController@getAdvisorsCastle')->name('advisors.castle');
+            $router->get('advisors/techs')->uses('Dominion\AdvisorsController@getAdvisorsTechs')->name('advisors.techs');
             $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');

@@ -119,13 +119,14 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellMidasTouch = 10;
-        $guardTax = -2;
+        $guardTax = 2;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
 
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('platinum_production');
+        $guardTax += $dominion->getTechPerkValue('guard_tax');
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('platinum_production');
@@ -138,7 +139,7 @@ class ProductionCalculator
 
         // Guard Tax
         if ($this->guardMembershipService->isGuardMember($dominion)) {
-            $multiplier += ($guardTax / 100);
+            $multiplier -= ($guardTax / 100);
         }
 
         return min(1.5, $multiplier);
@@ -176,6 +177,9 @@ class ProductionCalculator
         // Values
         $foodPerFarm = 80;
         $foodPerDock = 35;
+
+        // Techs
+        $foodPerDock += $dominion->getTechPerkValue('food_production_docks');
 
         // Building: Farm
         $food += ($dominion->building_farm * $foodPerFarm);
@@ -238,14 +242,23 @@ class ProductionCalculator
     /**
      * Returns the Dominion's food consumption.
      *
-     * Each unit in a Dominion's population eats 0.25 food per hour.
-     *
-     * Food consumption is modified by Racial Bonus.
-     *
      * @param Dominion $dominion
      * @return float
      */
     public function getFoodConsumption(Dominion $dominion): float
+    {
+        return floor($this->getFoodConsumptionRaw($dominion) * $this->getFoodConsumptionMultiplier($dominion));
+    }
+
+    /**
+     * Returns the Dominion's raw food consumption.
+     *
+     * Each unit in a Dominion's population eats 0.25 food per hour.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getFoodConsumptionRaw(Dominion $dominion): float
     {
         $consumption = 0;
 
@@ -253,13 +266,32 @@ class ProductionCalculator
         $populationConsumption = 0.25;
 
         // Population Consumption
-        $consumption += ($this->populationCalculator->getPopulation($dominion) * $populationConsumption);
-
-        // Racial Bonus
-        // todo: getFoodConsumptionRaw & getFoodConsumptionMultiplier?
-        $consumption *= (1 + $dominion->race->getPerkMultiplier('food_consumption'));
+        $consumption = ($this->populationCalculator->getPopulation($dominion) * $populationConsumption);
 
         return $consumption;
+    }
+
+    /**
+     * Returns the Dominion's food consumption multiplier.
+     *
+     * Food consumption is modified by:
+     * - Racial Bonus
+     * - Techs
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getFoodConsumptionMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 1;
+
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('food_consumption');
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('food_consumption');
+
+        return $multiplier;
     }
 
     /**
@@ -276,6 +308,9 @@ class ProductionCalculator
 
         // Values (percentages)
         $foodDecay = 1;
+
+        // Techs
+        $foodDecay *= (1 + $dominion->getTechPerkMultiplier('food_decay'));
 
         $decay += ($dominion->resource_food * ($foodDecay / 100));
 
@@ -382,6 +417,9 @@ class ProductionCalculator
         // Values (percentages)
         $lumberDecay = 1;
 
+        // Techs
+        $lumberDecay *= (1 + $dominion->getTechPerkMultiplier('lumber_decay'));
+
         $decay += ($dominion->resource_lumber * ($lumberDecay / 100));
 
         return $decay;
@@ -478,6 +516,9 @@ class ProductionCalculator
 
         // Values (percentages)
         $manaDecay = 2;
+
+        // Techs
+        $manaDecay *= (1 + $dominion->getTechPerkMultiplier('mana_decay'));
 
         $decay += ($dominion->resource_mana * ($manaDecay / 100));
 
@@ -675,13 +716,15 @@ class ProductionCalculator
         $tech = 0;
 
         // Values
-        $techPerSchool = 0.5;
+        $techPerSchoolPercentage = 26;
+        $schoolPercentageCap = 40;
 
         // Building: School
-        $tech += max(
-            $dominion->building_school * $techPerSchool,
-            $dominion->building_school * (1 - ($dominion->building_school / $this->landCalculator->getTotalLand($dominion)))
+        $schoolPercentage = min(
+            $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
+            $schoolPercentageCap / 100
         );
+        $tech += $techPerSchoolPercentage * $schoolPercentage;
 
         return $tech;
     }
@@ -704,6 +747,11 @@ class ProductionCalculator
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
+
+        // Recently invaded penalty
+        $militaryCalculator = app(MilitaryCalculator::class);
+        $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($dominion);
+        $multiplier *= min(0.8, 0.1 * $recentlyInvadedCount);
 
         return $multiplier;
     }
@@ -759,6 +807,9 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellGreatFlood = 25;
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('boat_production');
 
         // Spell: Great Flood
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);

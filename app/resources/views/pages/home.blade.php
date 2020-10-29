@@ -83,9 +83,9 @@
                         </table>
                     </div>
                     <div class="box-footer text-center">
-                        @if ($currentRound->daysUntilEnd() < 7)
+                        @if ($currentRound->daysUntilEnd() < 700)
                             <p>
-                                <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }}.</em>
+                                <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }} and {{ $currentRound->hoursUntilReset() - 1 }} {{ str_plural('hour', $currentRound->hoursUntilReset() - 1) }}.</em>
                             </p>
                         @else
                             <p>

@@ -43,16 +43,17 @@ class ImproveActionService
                 throw new GameException('Investment aborted due to bad input.');
             }
 
+            $multiplier = 1;
+
             // Racial bonus multiplier
-            $multiplier = (1 + $dominion->race->getPerkMultiplier('invest_bonus'));
+            $multiplier += $dominion->race->getPerkMultiplier('invest_bonus');
+            $multiplier += $dominion->race->getPerkMultiplier("invest_bonus_{$resource}");
+
+            // Techs
+            $multiplier += $dominion->getTechPerkMultiplier("invest_bonus_{$improvementType}");
 
             // Wonder
             $multiplier += $dominion->getWonderPerkMultiplier('invest_bonus');
-
-            // Racial bonus ore multiplier
-            if ($resource == 'ore') {
-                $multiplier += $dominion->race->getPerkMultiplier('invest_bonus_ore');
-            }
 
             $points = floor($amount * $worth[$resource] * $multiplier);
             $dominion->{"improvement_{$improvementType}"} += $points;

@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -49,13 +50,25 @@ class DestroyActionService
             $dominion->{'building_' . $buildingType} -= $amount;
         }
 
+        $destructionRefundString = '';
+        if ($dominion->getTechPerkValue('destruction_refund') !== 0) {
+            $constructionCalculator = app(ConstructionCalculator::class);
+            $multiplier =  $totalBuildingsToDestroy * $dominion->getTechPerkMultiplier('destruction_refund');
+            $platinumRefund = round($constructionCalculator->getPlatinumCost($dominion) * $multiplier);
+            $lumberRefund = round($constructionCalculator->getLumberCost($dominion) * $multiplier);
+            $destructionRefundString = " You were refunded {$platinumRefund} platnium and {$lumberRefund} lumber.";
+            $dominion->resource_platinum += $platinumRefund;
+            $dominion->resource_lumber += $lumberRefund;
+        }
+
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DESTROY]);
 
         return [
             'message' => sprintf(
-                'Destruction of %s %s is complete.',
+                'Destruction of %s %s is complete.%s',
                 number_format($totalBuildingsToDestroy),
-                str_plural('building', $totalBuildingsToDestroy)
+                str_plural('building', $totalBuildingsToDestroy),
+                $destructionRefundString
             ),
             'data' => [
                 'totalBuildingsDestroyed' => $totalBuildingsToDestroy,
