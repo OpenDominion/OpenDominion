@@ -31,7 +31,7 @@
                                 </tr>
                             </thead>
                             @foreach ($techs as $tech)
-                                <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }}{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }}">
+                                <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }}{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }} {{ empty($tech->prerequisites) && !in_array($tech->key, $unlockedTechs) ? 'active' : null }}">
                                     <td class="text-center">
                                         @if(in_array($tech->key, $unlockedTechs))
                                             <i class="fa fa-check"></i>
@@ -76,11 +76,12 @@
                 </div>
                 <div class="box-body">
                     @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
-                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement is {{ number_format($techCalculator->getTechCost($selectedDominion)) }}. Most advancements require unlocking another before you can select them. Please consult the tech tree below.</p>
+                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement is {{ number_format($techCalculator->getTechCost($selectedDominion)) }}. Most advancements require unlocking another before you can select them.</p>
+                    <p><a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, $unlockedTechs)) }}">View as Interactive Tree</a> in the Scribes.</p>
                     <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
                     <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> out of the {{ number_format($techCalculator->getTechCost($selectedDominion)) }} required to unlock a new tech.</p>
                     <div class="progress" style="margin-bottom: 0px;">
-                        <div class="progress-bar" role="progressbar" style="width: {{ number_format($techProgress) }}%">
+                        <div class="progress-bar progress-bar-success" role="progressbar" style="width: {{ number_format($techProgress) }}%">
                             @if ($techProgress > 5)
                                 {{ number_format($techProgress, 2) }}%
                             @endif

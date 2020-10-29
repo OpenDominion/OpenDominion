@@ -25,7 +25,7 @@
             <tr>
                 <td colspan=2>
                     <a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, array_keys($data))) }}" target="_blank">
-                        View as Tree
+                        View as Interactive Tree
                     </a>
                 </td>
             </tr>

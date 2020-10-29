@@ -347,6 +347,11 @@
     color: #d5e3e6 !important;
 }
 
+.skin-classic .navbar-nav > li > a:hover {
+    background-color: #29252a !important;
+    color: #eee !important;
+}
+
 .skin-classic .navbar-nav > .user-menu > .dropdown-menu > .user-body a,
 .skin-classic .dropdown-menu,
 .skin-classic .dropdown-menu li {
@@ -518,6 +523,11 @@
 .skin-classic .btn-primary:hover {
     background: #003344 !important;
     color: #fff;
+}
+
+.skin-classic .table tr.active > td,
+.skin-classic .table tr.active > th  {
+    background-color: #4d4750 !important;
 }
 
 .skin-classic .table tr.danger > td,

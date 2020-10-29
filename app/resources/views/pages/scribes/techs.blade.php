@@ -45,7 +45,7 @@
                     </svg>
                 </div>
                 <div class="col-md-6">
-                    <h5>Techs Selected <span id="tech-total">0</span></h5>
+                    <h5>Techs Selected: <span id="tech-total">0</span></h5>
                     <h5 style="margin-top: 20px;">Total Bonuses</h5>
                     <table class="table table-condensed">
                         <tbody id="tech-bonuses"></tbody>
@@ -122,10 +122,36 @@
         }
         .vertex:hover {
             cursor: pointer;
+            fill: orangered;
         }
         .vertex.active:hover {
             fill: lightgreen;
             stroke: black;
+        }
+        .skin-classic .edge {
+            stroke: gray;
+        }
+        .skin-classic .edge.active {
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex {
+            fill: black;
+            stroke: gray;
+        }
+        .skin-classic .vertex.active {
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex.selected {
+            fill: #006C81;
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex:hover {
+            cursor: pointer;
+            fill: #dd4b39;
+        }
+        .skin-classic .vertex.active:hover {
+            fill: #007D1C;
+            stroke: #dddddd;
         }
     </style>
 @endpush
@@ -192,9 +218,12 @@
             }
 
             function loadQuerystring() {
-                location.search.match(/\d+_\d+/g).forEach(function(pos) {
-                    $('#tech_'+pos).addClass('selected');
-                });
+                var techArray = location.search.match(/\d+_\d+/g);
+                if (techArray) {
+                    techArray.forEach(function(pos) {
+                        $('#tech_'+pos).addClass('selected');
+                    });
+                }
                 updateTree();
             }
 
