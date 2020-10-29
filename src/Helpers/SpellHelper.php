@@ -125,9 +125,9 @@ class SpellHelper
             ],
             [
                 'name' => 'Energy Mirror',
-                'description' => '20% chance to reflect incoming offensive spells for 12 hours',
+                'description' => '30% chance to reflect incoming offensive spells for 12 hours',
                 'key' => 'energy_mirror',
-                'mana_cost' => 4,
+                'mana_cost' => 5,
                 'duration' => 12,
             ]
         ]));
@@ -310,7 +310,7 @@ class SpellHelper
                 'name' => 'Vision',
                 'description' => 'Reveal tech and heroes',
                 'key' => 'vision',
-                'mana_cost' => 1,
+                'mana_cost' => 0.5,
             ],
             [
                 'name' => 'Revelation',

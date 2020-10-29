@@ -540,7 +540,7 @@ class SpellActionService
         }
 
         $spellReflected = false;
-        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
+        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.3)) {
             $spellReflected = true;
             $reflectedBy = $target;
             $target = $dominion;
