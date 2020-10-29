@@ -4,6 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Added
+- Brand new Tech system!
+  - Number of techs increased from 27 to 66 (with smaller bonuses)
+  - Tech cost changed to a flat 10,000
+  - Platinum bonus now rewards 750 RPs
+  - Schools now generate 26 RP/hour per 1% owned (max 40%)
+  - RPs from invasion changed to MAX(1000, daysInRound/0.03), halved for hits under 75%, none for hits under 60%
 - Three new wonders:
   - Hanging Gardens: +20% food production
   - Gnomish Mining Machine: +10% ore production
@@ -25,6 +31,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Cyclone damage now capped at 2% of a wonders max HP (from 1.5%)
 - Base cyclone damage changed to 3.5x max(wizards,Acres) (from 5x)
 - Wonder invasion casualties reduced to to 3.5% casualties (from 5%)
+- Energy Mirror: mana cost increased to 4.5x (from 4x), reflection chance increased to 30% (from 20%)
+- Vision: mana cost decreased to 0.5x (from 1x)
+- Goblin: +5 population from barren acres removed, +10 gem production bonus removed, castle improvement bonus changed to +20% for gems only (from +10% for all)
+- Kobold: +5 pop on barren acres removed, population growth bonus reduced to +10% (from +20%)
+- Human Cavalry: +25p
+- Human Knight: +25p
+- Icekin: +5% platinum production, AM cost reduction reduced to -100p (from -175p)
+- Lizardfolk Chameleon: +25p
+- Lizardfolk Lizardman: -50p
+- Lycanthrope: maximum population increased to +7.5% (from +5%)
+- Nox Nightshade: -40r, +1 DP, DP increased by 1 per 12% swamp max +3 (from 1 per 10% max +4)
+- Sylvan Centaur: -35r
+- Troll Basher: +1 OP, +150p, loses race-targeting bonuses
+- Troll Smasher: -25p, loses race-targeting bonuses
+- Wood Elf Druid: +25p
+- Wood Elf Longbowman: +30p
 
 ### Fixed
 - Wonder prestige gains and damage are now rounded to the nearest integer
