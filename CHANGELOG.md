@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.1.0] - 2020-10-29
 ### Added
 - Brand new Tech system!
   - Number of techs increased from 27 to 66 (with smaller bonuses)
@@ -15,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
   - Gnomish Mining Machine: +10% ore production
   - Horn of Plenty: +1% platinum/lumber/ore/food/mana/gem production
 - Threads with new posts will be displayed in bold on the first page load
+- Added additional data to incoming land/building display in advisors/ops
 
 ### Changed
 - Maximum pack size changed to 4 (from 5)
