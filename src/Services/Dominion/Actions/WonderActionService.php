@@ -671,12 +671,8 @@ class WonderActionService
      */
     protected function handleCasualties(Dominion $dominion, array $units): array
     {
-<<<<<<< HEAD
         $offensiveCasualtiesPercentage = static::CASUALTIES_BASE_PERCENTAGE / 100;
-=======
-        $offensiveCasualtiesPercentage = (static::CASUALTIES_BASE_PERCENTAGE / 100);
         $offensiveCasualtiesPercentage *= (1 - $dominion->getTechPerkMultiplier('fewer_casualties_wonders'));
->>>>>>> feature/tech_rework
 
         $offensiveUnitsLost = [];
 
