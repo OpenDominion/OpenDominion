@@ -41,6 +41,11 @@ class Thread extends AbstractModel
         return $this->hasMany(Post::class, 'council_thread_id');
     }
 
+    public function latestPost()
+    {
+        return $this->hasOne(Post::class, 'council_thread_id')->latest();
+    }
+
     public function realm()
     {
         return $this->belongsTo(Realm::class);

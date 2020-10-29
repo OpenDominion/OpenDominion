@@ -13,9 +13,12 @@ use OpenDominion\Services\CouncilService;
 
 class CouncilController extends AbstractDominionController
 {
+    public const RESULTS_PER_PAGE = 50;
+
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
+        $lastRead = $dominion->council_last_read;
         $this->updateDominionCouncilLastRead($dominion);
 
         if ($dominion->locked_at !== null) {
@@ -27,7 +30,9 @@ class CouncilController extends AbstractDominionController
 
         return view('pages.dominion.council.index', [
             'councilThreads' => $threads,
+            'lastRead' => $lastRead,
             'realm' => $dominion->realm,
+            'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
     }
 
@@ -89,10 +94,11 @@ class CouncilController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
         }
 
-        $thread->load('dominion.realm', 'posts.dominion.realm');
+        $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
         return view('pages.dominion.council.thread', compact(
-            'thread'
+            'thread',
+            'posts'
         ));
     }
 

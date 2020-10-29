@@ -53,6 +53,8 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
 
     protected $hidden = ['password', 'remember_token', 'activation_code'];
 
+    protected $with = ['roles'];
+
 //    public function dominion(Round $round)
 //    {
 //        return $this->dominions()->where('round_id', $round->id)->get();
@@ -168,5 +170,26 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
     public function isModerator(): bool
     {
         return $this->hasRole('Moderator');
+    }
+
+    /**
+     * Returns the highest priority staff role.
+     */
+    public function displayRoleHtml()
+    {
+        if ($this->isAdministrator())
+        {
+            return '<i>(Administrator)</i>';
+        }
+
+        if ($this->isDeveloper())
+        {
+            return '<i>(Developer)</i>';
+        }
+
+        if ($this->isModerator())
+        {
+            return '<i>(Moderator)</i>';
+        }
     }
 }

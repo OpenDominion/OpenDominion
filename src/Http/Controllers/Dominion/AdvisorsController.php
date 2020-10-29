@@ -13,6 +13,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\ResourceHelper;
 use OpenDominion\Helpers\SpellHelper;
@@ -28,6 +29,23 @@ class AdvisorsController extends AbstractDominionController
     public function getAdvisors()
     {
         return redirect()->route('dominion.advisors.production');
+    }
+
+    public function getAdvisorsStatus(Dominion $target)
+    {
+        try {
+            $this->guardPackRealm($target);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return view('pages.dominion.advisors.status', [
+            'unitHelper' => app(UnitHelper::class),
+            'miscHelper' => app(MiscHelper::class),
+            'infoMapper' => app(InfoMapper::class),
+            'targetDominion' => $target
+        ]);
     }
 
     public function getAdvisorsProduction(Dominion $target = null)

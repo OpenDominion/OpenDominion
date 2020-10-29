@@ -18,20 +18,16 @@ class CouncilService
      * Returns the realm's
      *
      * @param Realm $realm
-     * @return Collection|Council\Thread[]
+     * @return LengthAwarePaginator
      */
-    public function getThreads(Realm $realm): Collection
+    public function getThreads(Realm $realm)
     {
+        $resultsPerPage = 15;
+
         return $realm->councilThreads()
-            ->select([
-                'council_threads.*',
-                DB::raw('IFNULL(MAX(council_posts.created_at), council_threads.created_at) as last_activity')
-            ])
-            ->with(['dominion.realm', 'posts.dominion.realm'])
-            ->leftJoin('council_posts', 'council_posts.council_thread_id', '=', 'council_threads.id')
-            ->groupBy('council_threads.id')
+            ->with(['dominion', 'latestPost.dominion'])
             ->orderBy('last_activity', 'desc')
-            ->get(['council_threads.*']);
+            ->paginate($resultsPerPage);
     }
 
     /**
@@ -52,6 +48,7 @@ class CouncilService
             'dominion_id' => $dominion->id,
             'title' => $title,
             'body' => $body,
+            'last_activity' => now(),
         ]);
     }
 

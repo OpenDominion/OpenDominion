@@ -23,7 +23,7 @@ class RankingsHelper
                 'stat' => 'land',
                 'stat_label' => 'Land',
                 'title' => 'the Powerful',
-                'title_icon' => 'ra-helmet',
+                'title_icon' => 'ra-brutal-helm',
             ],
             [
                 'name' => 'The Strongest Dominions',
@@ -31,7 +31,7 @@ class RankingsHelper
                 'stat' => 'networth',
                 'stat_label' => 'Networth',
                 'title' => 'the Destroyer',
-                'title_icon' => 'ra-helmet',
+                'title_icon' => 'ra-closed-barbute',
             ],
             [
                 'name' => 'Most Land Conquered',
@@ -95,7 +95,7 @@ class RankingsHelper
                 'stat' => 'stat_spy_prestige',
                 'stat_label' => 'Spy Prestige',
                 'title' => 'the Shadow',
-                'title_icon' => 'ra-hood',
+                'title_icon' => 'ra-daggers',
             ],
             [
                 'name' => 'Most Spies Executed',
@@ -111,7 +111,7 @@ class RankingsHelper
                 'stat' => 'stat_sabotage_boats_damage',
                 'stat_label' => 'Boats Sabotaged',
                 'title' => 'the Saboteur',
-                'title_icon' => 'ra-bomb-explosion',
+                'title_icon' => 'ra-sinking-ship',
             ],
             [
                 'name' => 'Top Magical Assassins',
@@ -127,7 +127,7 @@ class RankingsHelper
                 'stat' => 'stat_assassinate_draftees_damage',
                 'stat_label' => 'Draftees Assassinated',
                 'title' => 'the Assassin',
-                'title_icon' => 'ra-plain-dagger',
+                'title_icon' => 'ra-dripping-blade',
             ],
             [
                 'name' => 'Top Snare Setters',
@@ -151,7 +151,7 @@ class RankingsHelper
                 'stat' => 'stat_total_lumber_stolen',
                 'stat_label' => 'Lumber Stolen',
                 'title' => 'the Carpenter',
-                'title_icon' => 'ra-hand-saw',
+                'title_icon' => 'ra-wood-beam',
             ],
             [
                 'name' => 'Top Gem Thieves',
@@ -167,7 +167,7 @@ class RankingsHelper
                 'stat' => 'stat_total_ore_stolen',
                 'stat_label' => 'Ore Stolen',
                 'title' => 'the Muscular',
-                'title_icon' => 'ra-mine-wagon',
+                'title_icon' => 'ra-stone-pile',
             ],
             [
                 'name' => 'Top Food Thieves',
@@ -175,7 +175,7 @@ class RankingsHelper
                 'stat' => 'stat_total_food_stolen',
                 'stat_label' => 'Food Stolen',
                 'title' => 'the Hungry',
-                'title_icon' => 'ra-carrot',
+                'title_icon' => 'ra-ham-shank',
             ],
             [
                 'name' => 'Top Mana Thieves',
@@ -191,7 +191,7 @@ class RankingsHelper
                 'stat' => 'stat_spell_success',
                 'stat_label' => 'Successful Wizard Ops',
                 'title' => 'the Gifted',
-                'title_icon' => 'ra-crystal-wand',
+                'title_icon' => 'ra-pointy-hat',
             ],
             [
                 'name' => 'Most Prestigious Wizards',
@@ -231,7 +231,7 @@ class RankingsHelper
                 'stat' => 'stat_cyclone_damage',
                 'stat_label' => 'Cyclone Damage',
                 'title' => 'the Aeromancer',
-                'title_icon' => 'ra-fluffy-swirl',
+                'title_icon' => 'ra-tornado',
             ],
             [
                 'name' => 'Masters of Plague',
@@ -255,7 +255,7 @@ class RankingsHelper
                 'stat' => 'stat_great_flood_hours',
                 'stat_label' => 'Great Flood Hours',
                 'title' => 'the Hydromancer',
-                'title_icon' => 'ra-aquarius',
+                'title_icon' => 'ra-wave-crest',
             ],
             [
                 'name' => 'Masters of Earth',
@@ -263,7 +263,7 @@ class RankingsHelper
                 'stat' => 'stat_earthquake_hours',
                 'stat_label' => 'Earthquake Hours',
                 'title' => 'the Terramancer',
-                'title_icon' => 'ra-groundbreaker',
+                'title_icon' => 'ra-earth-crack',
             ],
             [
                 'name' => 'Top Spy Disbanders',
@@ -271,7 +271,7 @@ class RankingsHelper
                 'stat' => 'stat_disband_spies_damage',
                 'stat_label' => 'Spies Disbanded',
                 'title' => 'the Mentalist',
-                'title_icon' => 'ra-aware',
+                'title_icon' => 'ra-psychic-waves',
             ]
         ])->keyBy('key')->toArray();
     }

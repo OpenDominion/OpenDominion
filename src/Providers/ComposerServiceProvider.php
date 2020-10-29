@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Providers;
 
+use Auth;
 use Cache;
 use DB;
 use Illuminate\Contracts\View\View;
@@ -12,6 +13,7 @@ use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Forum;
+use OpenDominion\Models\MessageBoard;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
@@ -30,6 +32,25 @@ class ComposerServiceProvider extends AbstractServiceProvider
         view()->composer('partials.main-sidebar', function (View $view) {
             $selectorService = app(SelectorService::class);
 
+            /** @var User $user */
+            $user = Auth::getUser();
+
+            $messageBoardLastRead = $user->message_board_last_read ?? $user->created_at;
+            $messageBoardUnreadCount = MessageBoard\Thread::query()
+                ->where('last_activity', '>', $messageBoardLastRead)
+                ->withCount(['posts' => function ($query) use ($messageBoardLastRead) {
+                    $query->where('created_at', '>', $messageBoardLastRead);
+                }])
+                ->get()
+                ->map(function ($thread) use ($messageBoardLastRead) {
+                    if ($thread->created_at > $messageBoardLastRead) {
+                        $thread['posts_count'] += 1;
+                    }
+                    return $thread;
+                })
+                ->sum('posts_count');
+            $view->with('messageBoardUnreadCount', $messageBoardUnreadCount);
+
             if (!$selectorService->hasUserSelectedDominion()) {
                 return;
             }
@@ -37,46 +58,36 @@ class ComposerServiceProvider extends AbstractServiceProvider
             /** @var Dominion $selectedDominion */
             $selectedDominion = $selectorService->getUserSelectedDominion();
 
-            $councilLastRead = $selectedDominion->council_last_read;
-            $councilUnreadCount = $selectedDominion->realm
-                ->councilThreads()
-                ->with(['posts' => function ($query) use ($councilLastRead) {
-                    if ($councilLastRead !== null) {
-                        $query->where('created_at', '>', $councilLastRead);
-                    }
+            $councilLastRead = $selectedDominion->council_last_read ?? $selectedDominion->round->start_date;
+            $councilUnreadCount = $selectedDominion->realm->councilThreads()
+                ->where('last_activity', '>', $councilLastRead)
+                ->withCount(['posts' => function ($query) use ($councilLastRead) {
+                    $query->where('created_at', '>', $councilLastRead);
                 }])
                 ->get()
-                ->map(static function (Council\Thread $thread) use ($councilLastRead) {
-                    $unreadCount = $thread->posts->count();
-
+                ->map(function ($thread) use ($councilLastRead) {
                     if ($thread->created_at > $councilLastRead) {
-                        $unreadCount++;
+                        $thread['posts_count'] += 1;
                     }
-
-                    return $unreadCount;
+                    return $thread;
                 })
-                ->sum();
+                ->sum('posts_count');
             $view->with('councilUnreadCount', $councilUnreadCount);
 
-            $forumLastRead = $selectedDominion->forum_last_read;
-            $forumUnreadCount = $selectedDominion->round
-                ->forumThreads()
-                ->with(['posts' => function ($query) use ($forumLastRead) {
-                    if ($forumLastRead !== null) {
-                        $query->where('created_at', '>', $forumLastRead);
-                    }
+            $forumLastRead = $selectedDominion->forum_last_read ?? $selectedDominion->round->start_date;
+            $forumUnreadCount = $selectedDominion->round->forumThreads()
+                ->where('last_activity', '>', $forumLastRead)
+                ->withCount(['posts' => function ($query) use ($forumLastRead) {
+                    $query->where('created_at', '>', $forumLastRead);
                 }])
                 ->get()
-                ->map(static function (Forum\Thread $thread) use ($forumLastRead) {
-                    $unreadCount = $thread->posts->count();
-
+                ->map(function ($thread) use ($forumLastRead) {
                     if ($thread->created_at > $forumLastRead) {
-                        $unreadCount++;
+                        $thread['posts_count'] += 1;
                     }
-
-                    return $unreadCount;
+                    return $thread;
                 })
-                ->sum();
+                ->sum('posts_count');
             $view->with('forumUnreadCount', $forumUnreadCount);
 
             $activeSpells = DB::table('active_spells')
@@ -139,6 +150,11 @@ class ComposerServiceProvider extends AbstractServiceProvider
         // todo: do we need this here in this class?
         view()->composer('partials.resources-overview', function (View $view) {
             $view->with('networthCalculator', app(NetworthCalculator::class));
+        });
+
+        view()->composer('partials.styles', function (View $view) {
+            $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
+            $view->with('version', $version);
         });
     }
 }

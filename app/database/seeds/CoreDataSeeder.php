@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use OpenDominion\Models\MessageBoard\Category;
 use OpenDominion\Models\RoundLeague;
 
 class CoreDataSeeder extends Seeder
@@ -16,6 +17,7 @@ class CoreDataSeeder extends Seeder
     {
         DB::transaction(function () {
             $this->createRoundLeagues();
+            $this->createMessageBoard();
         });
     }
 
@@ -33,5 +35,21 @@ class CoreDataSeeder extends Seeder
 
             $this->roundLeagueIds[$roundLeague->key] = $roundLeague->id;
         }
+    }
+
+    protected function createMessageBoard(): void
+    {
+        $this->command->info('Creating message board categories');
+
+        Category::create([
+            'name' => 'Announcements',
+            'slug' => 'announcements',
+            'role_required' => 'Moderator',
+        ]);
+
+        Category::create([
+            'name' => 'General',
+            'slug' => 'general',
+        ]);
     }
 }

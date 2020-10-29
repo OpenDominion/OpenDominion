@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-comments"></i> Forum: {{ $round->name }}</h3>
+                    <h3 class="box-title"><i class="fa fa-comments"></i> Round Forum: {{ $round->name }}</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-hover">
@@ -18,35 +18,6 @@
                             <col width="25%">
                         </colgroup>
                         <thead>
-                            <tr>
-                                <th>Announcements</th>
-                                <th class="text-center">Replies</th>
-                                <th class="text-center">Posted At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (!$announcements->isEmpty())
-                                @foreach ($announcements as $announcement)
-                                    <tr>
-                                        <td>
-                                            <a href="{{ route('dominion.forum.announcement', $announcement) }}">
-                                                <b>{{ $announcement->title }}</b>
-                                            </a>
-                                        </td>
-                                        <td class="text-center align-middle">--</td>
-                                        <td class="text-center align-middle">
-                                            {{ $announcement->created_at }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td class="text-center" colspan="3">No announcements found</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                        <thead>
-                            <tr><td colspan="3"><!-- Separator --></td></tr>
                             <tr>
                                 <th>Topics</th>
                                 <th class="text-center">Replies</th>
@@ -71,7 +42,20 @@
                                     @foreach ($forumThreads as $thread)
                                         <tr>
                                             <td class="align-middle">
-                                                <a href="{{ route('dominion.forum.thread', $thread) }}"><b>{{ $thread->title }}</b></a><br>
+                                                <a href="{{ route('dominion.forum.thread', $thread) }}" class="{{ $thread->last_activity > $lastRead ? 'text-bold' : null }}">
+                                                    {{ $thread->title }}
+                                                </a>
+                                                @php
+                                                    $pageCount = ceil($thread->posts->count() / $resultsPerPage);
+                                                @endphp
+                                                @if ($pageCount > 1)
+                                                    <span class="small" style="margin-left: 10px;">
+                                                        @foreach (range(1, $pageCount) as $page)
+                                                            <a href="{{ route('dominion.forum.thread', $thread) }}?page={{ $page }}"><span class="label label-primary">{{ $page }}</span></a>
+                                                        @endforeach
+                                                    </span>
+                                                @endif
+                                                <br>
                                                 <small class="text-muted">
                                                     Created {{ $thread->created_at }} by
                                                     <b>{{ $thread->dominion->name }}</b>
@@ -83,11 +67,11 @@
                                             </td>
                                             <td class="text-center align-middle">
                                                 @if (!$thread->posts->isEmpty())
-                                                    {{ $thread->posts->last()->created_at }}<br>
+                                                    {{ $thread->latestPost->created_at }}<br>
                                                     <small class="text-muted">
                                                         by
-                                                        <b>{{ $thread->posts->last()->dominion->name }}</b>
-                                                        (#{{ $thread->posts->last()->dominion->realm->number }})
+                                                        <b>{{ $thread->latestPost->dominion->name }}</b>
+                                                        (#{{ $thread->latestPost->dominion->realm->number }})
                                                     </small>
                                                 @else
                                                     None
@@ -104,12 +88,15 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-footer {{--clearfix--}}">
+                <div class="box-footer">
                     @if (!$selectedDominion->isLocked())
                         <a href="{{ route('dominion.forum.create') }}" class="btn btn-primary">New Thread</a>
                     @else
                         <button class="btn btn-primary disabled">New Thread</button>
                     @endif
+                    <div class="pull-right">
+                        {{ $forumThreads->links() }}
+                    </div>
                 </div>
             </div>
         </div>

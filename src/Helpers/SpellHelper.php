@@ -410,7 +410,7 @@ class SpellHelper
                 'description' => 'Deals damage to a wonder',
                 'key' => 'cyclone',
                 'mana_cost' => 3.5,
-                'icon_class' => 'ra ra-fluffy-swirl',
+                'icon_class' => 'ra ra-tornado',
                 'damage_multiplier' => 5,
             ],
         ]);

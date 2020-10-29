@@ -26,7 +26,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($wonders->sortBy('wonder.name') as $wonder)
+                            @foreach ($wonders as $wonder)
                                 <tr>
                                     <td>
                                         {{ $wonder->wonder->name }}

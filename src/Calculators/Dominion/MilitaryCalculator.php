@@ -981,7 +981,7 @@ class MilitaryCalculator
     public function getBoatsProtected(Dominion $dominion): float
     {
         // Docks
-        $boatsProtected = static::BOATS_PROTECTED_PER_DOCK * $dominion->building_dock * min(2.5, 0.1 * $dominion->round->daysInRound());
+        $boatsProtected = $dominion->building_dock * max(static::BOATS_PROTECTED_PER_DOCK, 0.1 * $dominion->round->daysInRound());
 
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2);
@@ -1020,7 +1020,7 @@ class MilitaryCalculator
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subHours($hours)->startOfHour())
+            ->where('created_at', '>', now()->subHours($hours)->endOfHour())
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
@@ -1058,7 +1058,7 @@ class MilitaryCalculator
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
-            ->where('created_at', '>=', now()->subHours($hours)->startOfHour())
+            ->where('created_at', '>', now()->subHours($hours)->endOfHour())
             ->where([
                 'target_type' => Dominion::class,
                 'target_id' => $dominion->id,
@@ -1085,7 +1085,7 @@ class MilitaryCalculator
         $releaseEvents = DB::table('dominion_history')
             ->where('dominion_id', $dominion->id)
             ->where('event', 'release')
-            ->where('created_at', '>=', now()->subDay(1))
+            ->where('created_at', '>', now()->subDay(1))
             ->get();
 
         foreach ($releaseEvents as $release) {

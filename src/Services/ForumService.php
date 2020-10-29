@@ -18,26 +18,24 @@ class ForumService
      * Returns the round's forum threads.
      *
      * @param Round $round
-     * @return Collection|Forum\Thread[]
+     * @return LengthAwarePaginator
      */
-    public function getThreads(Round $round): Collection
+    public function getThreads(Round $round)
     {
+        $resultsPerPage = 15;
+
         return $round->forumThreads()
-            ->select([
-                'forum_threads.*',
-                DB::raw('IFNULL(MAX(forum_posts.created_at), forum_threads.created_at) as last_activity')
-            ])
-            ->with(['dominion.realm', 'posts.dominion.realm'])
-            ->leftJoin('forum_posts', 'forum_posts.forum_thread_id', '=', 'forum_threads.id')
-            ->groupBy('forum_threads.id')
+            ->with(['dominion.realm', 'posts', 'latestPost.dominion.realm'])
             ->orderBy('last_activity', 'desc')
-            ->get(['forum_threads.*'])
+            ->paginate($resultsPerPage);
+            /*
             ->filter(function ($thread) {
                 if ($thread->flagged_for_removal && $thread->unflaggedPosts->isEmpty()) {
                     return false;
                 }
                 return true;
             });
+            */
     }
 
     /**
@@ -58,6 +56,7 @@ class ForumService
             'dominion_id' => $dominion->id,
             'title' => $title,
             'body' => $body,
+            'last_activity' => now(),
         ]);
     }
 

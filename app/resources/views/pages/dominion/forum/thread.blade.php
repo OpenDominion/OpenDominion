@@ -8,47 +8,53 @@
         <div class="col-sm-12 col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-comments"></i> Forum Thread: {{ $thread->title }}</h3>
+                    <h3 class="box-title"><i class="fa fa-comments"></i> Round Forum Thread: {{ $thread->title }}</h3>
                     <div class="pull-right">
                         <a href="{{ route('dominion.forum') }}"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a>
                     </div>
                 </div>
-                <div class="box-header with-border">
-                    <div class="user-block pull-left">
-                        @php
-                            $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
-                            $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
-                            $ranking = $rankingsHelper->getFirstRanking($titles);
-                        @endphp
-                        <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
-                        <span class="username">
-                            {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
-                            @if ($ranking && $ranking['title'])
-                                <em data-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                @if ($posts->currentPage() == 1)
+                    <div class="box-header with-border">
+                        <div class="user-block pull-left">
+                            @php
+                                $rankings = $rankingsService->getTopRankedDominions($thread->dominion->round);
+                                $titles = isset($rankings[$thread->dominion->id]) ? $rankings[$thread->dominion->id] : [];
+                                $ranking = $rankingsHelper->getFirstRanking($titles);
+                            @endphp
+                            <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-knight-helmet' }} text-muted pull-left" title="{{ $ranking ? $ranking['name'] : null }}" style="font-size: 36px;"></i>
+                            <span class="username">
+                                {{ $thread->dominion->name }} (#{{ $thread->dominion->realm->number }})
+                                @if ($ranking && $ranking['title'])
+                                    <em data-toggle="tooltip" title="{{ $ranking['name'] }}">{{ $ranking['title'] }}</em>
+                                @endif
+                            </span>
+                            <span class="description">
+                                posted at {{ $thread->created_at }}
+                            </span>
+                        </div>
+                        <div class="box-tools">
+                            @if ($selectedDominion->id == $thread->dominion->id)
+                                <a href="{{ route('dominion.forum.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                            @else
+                                <a href="{{ route('dominion.forum.flag.thread', $thread) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
                             @endif
-                        </span>
-                        <span class="description">
-                            posted at {{ $thread->created_at }}
-                        </span>
+                        </div>
                     </div>
-                    <div class="box-tools">
-                        @if ($selectedDominion->id == $thread->dominion->id)
-                            <a href="{{ route('dominion.forum.delete.thread', $thread) }}"><i class="fa fa-trash text-red"></i></a>
+                    <div class="box-body">
+                        @if ($thread->flagged_for_removal)
+                            <p class="text-danger"><i>This post has been flagged for removal.</i></p>
                         @else
-                            <a href="{{ route('dominion.forum.flag.thread', $thread) }}" title="Report Abuse"><i class="fa fa-flag text-red"></i></a>
+                            {!! Markdown::convertToHtml($thread->body) !!}
                         @endif
                     </div>
-                </div>
-                <div class="box-body">
-                    @if ($thread->flagged_for_removal)
-                        <p class="text-danger"><i>This post has been flagged for removal.</i></p>
-                    @else
-                        {!! Markdown::convertToHtml($thread->body) !!}
-                    @endif
-                </div>
-                @if (!$thread->posts->isEmpty())
+                @else
+                    <div class="box-header with-border">
+                        <em>Initial post and {{ $posts->perPage() * ($posts->currentPage() - 1) }} replies not shown.</em>
+                    </div>
+                @endif
+                @if (!$posts->isEmpty())
                     <div class="box-footer box-comments">
-                        @foreach ($thread->posts as $post)
+                        @foreach ($posts as $post)
                             <div class="box-comment">
                                 @php
                                     $rankings = $rankingsService->getTopRankedDominions($post->dominion->round);
@@ -81,21 +87,32 @@
                             </div>
                         @endforeach
                     </div>
+                    @if ($posts->lastPage() !== 1)
+                        <div class="box-footer" style="margin-bottom: -5px;">
+                            <div class="text-right">
+                                {{ $posts->links() }}
+                            </div>
+                        </div>
+                    @endif
                 @endif
 
-                <div class="box-footer">
-                    <form action="{{ route('dominion.forum.reply', $thread) }}" method="post" class="form-horizontal" role="form">
-                        @csrf
+                <form action="{{ route('dominion.forum.reply', $thread) }}" method="post" class="form-horizontal" role="form">
+                    @csrf
+                    <div class="box-footer">
                         <label for="body" class="col-sm-2 control-label">Post Reply</label>
                         <div class="col-sm-10">
                             <textarea name="body" id="body" rows="3" class="form-control" placeholder="Body" required {{ $selectedDominion->isLocked() ? 'disabled' : null }}>{{ old('body') }}</textarea>
                             <p class="help-block">Markdown is supported with <a href="http://commonmark.org/help/" target="_blank">CommonMark syntax <i class="fa fa-external-link"></i></a>.</p>
-                            <div class="pull-right">
-                                <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Post Reply</button>
-                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Post Reply</button>
+                        <p class="help-block pull-right">
+                            You are posting as <b>{{ $selectedDominion->name }} (#{{ $selectedDominion->realm->number }})</b>.
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
 

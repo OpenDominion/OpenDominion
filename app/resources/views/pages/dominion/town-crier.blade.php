@@ -148,7 +148,10 @@
                                                     a neutral wonder!
                                                 @else
                                                     the <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->target->wonder->name }}</span></a>
-                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>!
+                                                    @if ($gameEvent->target->realm !== null)
+                                                        <a href="{{ route('dominion.realm', [$gameEvent->target->realm->number]) }}">(#{{ $gameEvent->target->realm->number }})</a>
+                                                    @endif
+                                                    !
                                                 @endif
                                             @elseif ($gameEvent->type == 'wonder_destroyed')
                                                 The <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->wonder->name }}</span></a>

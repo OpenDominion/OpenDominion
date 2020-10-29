@@ -39,10 +39,11 @@
                                             <option></option>
                                             @foreach ($rangeCalculator->getDominionsInRange($selectedDominion, true) as $dominion)
                                                 <option value="{{ $dominion->id }}"
+                                                        data-race="{{ $dominion->race->name }}"
                                                         data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                         data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}"
                                                         data-war="{{ ($selectedDominion->realm->war_realm_id == $dominion->realm->id || $dominion->realm->war_realm_id == $selectedDominion->realm->id || in_array($dominion->id, $recentlyInvadedByDominionIds)) ? 1 : 0 }}">
-                                                    {{ $dominion->name }} (#{{ $dominion->realm->number }}) - {{ $dominion->race->name }}
+                                                    {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                 </option>
                                             @endforeach
                                         </select>
@@ -203,6 +204,7 @@
                 return state.text;
             }
 
+            const race = state.element.dataset.race;
             const land = state.element.dataset.land;
             const percentage = state.element.dataset.percentage;
             const war = state.element.dataset.war;
@@ -224,7 +226,7 @@
             }
 
             return $(`
-                <div class="pull-left">${state.text}</div>
+                <div class="pull-left">${state.text} - ${race}</div>
                 ${warStatus}
                 <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>

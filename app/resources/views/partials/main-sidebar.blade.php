@@ -119,7 +119,7 @@
                     </a>
                 </li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
-                <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}"><a href="{{ route('dominion.forum') }}"><i class="fa fa-comments fa-fw"></i> <span>Global Forum</span> {!! $forumUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $forumUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}"><a href="{{ route('dominion.forum') }}"><i class="fa fa-comments fa-fw"></i> <span>Round Forum</span> {!! $forumUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $forumUnreadCount . '</small></span>') : null !!}</a></li>
                 <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}">
                     <a href="{{ route('dominion.town-crier') }}">
                         <i class="fa fa-newspaper-o fa-fw"></i> <span>Town Crier</span>
@@ -131,18 +131,19 @@
                     </a>
                 </li>
 
+                <li class="header">USER</li>
+                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $messageBoardUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $messageBoardUnreadCount . '</small></span>') : null !!}</a></li>
                 @if (app()->environment() !== 'production')
-                    <li class="header">SECRET</li>
                     <li class="{{ Request::is('dominion/debug') ? 'active' : null }}"><a href="{{ url('dominion/debug') }}"><i class="ra ra-dragon ra-fw"></i> <span>Debug Page</span></a></li>
                 @endif
 
             @else
 
-                <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select your Dominion</span></a></li>
+                <li class="header">USER</li>
+                <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select Dominion</span></a></li>
+                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $messageBoardUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $messageBoardUnreadCount . '</small></span>') : null !!}</a></li>
 
             @endif
-
-{{--            <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> <span>Dashboard</span></a></li>--}}
         </ul>
 
     </section>

@@ -16,29 +16,25 @@ use OpenDominion\Services\ForumService;
 
 class ForumController extends AbstractDominionController
 {
+    public const RESULTS_PER_PAGE = 50;
+
     public function getIndex()
     {
         $dominion = $this->getSelectedDominion();
+        $lastRead = $dominion->forum_last_read;
         $this->updateDominionForumLastRead($dominion);
-        $forumService = app(ForumService::class);
-        $protectionService = app(ProtectionService::class);
 
-        $announcements = $dominion->round->forumAnnouncements()->orderBy('created_at', 'desc')->get();
+        $protectionService = app(ProtectionService::class);
+        $forumService = app(ForumService::class);
         $threads = $forumService->getThreads($dominion->round);
 
         return view('pages.dominion.forum.index', [
-            'announcements' => $announcements,
             'forumThreads' => $threads,
+            'lastRead' => $lastRead,
             'round' => $dominion->round,
             'protectionService' => $protectionService,
+            'resultsPerPage' => static::RESULTS_PER_PAGE,
         ]);
-    }
-
-    public function getAnnouncement(Forum\Announcement $announcement)
-    {
-        return view('pages.dominion.forum.announcement', compact(
-            'announcement',
-        ));
     }
 
     public function getCreate() // getCreateThread?
@@ -105,12 +101,14 @@ class ForumController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $this->updateDominionForumLastRead($dominion);
 
-        $thread->load('dominion.realm', 'posts.dominion.realm');
+        $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
+
         $rankingsHelper = app(RankingsHelper::class);
         $rankingsService = app(RankingsService::class);
 
         return view('pages.dominion.forum.thread', compact(
             'thread',
+            'posts',
             'rankingsHelper',
             'rankingsService'
         ));

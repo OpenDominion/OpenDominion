@@ -57,6 +57,7 @@
                                                 <option></option>
                                                 @foreach ($dominions as $dominion)
                                                     <option value="{{ $dominion->id }}"
+                                                            data-race="{{ $dominion->race->name }}"
                                                             data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                             data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}"
                                                             data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
@@ -432,9 +433,10 @@
                 return state.text;
             }
 
+            const race = state.element.dataset.race;
             const land = state.element.dataset.land;
             const percentage = state.element.dataset.percentage;
-            const networth = state.element.dataset.networth;
+            const war = state.element.dataset.war;
             let difficultyClass;
 
             if (percentage >= 120) {
@@ -447,9 +449,15 @@
                 difficultyClass = 'text-gray';
             }
 
+            warStatus = '';
+            if (war == 1) {
+                warStatus = '<div class="pull-left">&nbsp;<span class="text-red">WAR</span></div>';
+            }
+
             return $(`
-                <div class="pull-left">${state.text}</div>
-                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span> - ${networth} networth</div>
+                <div class="pull-left">${state.text} - ${race}</div>
+                ${warStatus}
+                <div class="pull-right">${land} land <span class="${difficultyClass}">(${percentage}%)</span></div>
                 <div style="clear: both;"></div>
             `);
         }

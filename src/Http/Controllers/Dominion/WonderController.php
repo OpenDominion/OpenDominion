@@ -26,6 +26,11 @@ class WonderController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $this->updateDominionWondersLastSeen($dominion);
 
+        $wonders = $dominion->round->wonders()
+            ->with(['realm', 'wonder', 'damage'])
+            ->get()
+            ->sortBy('wonder.name');
+
         return view('pages.dominion.wonders', [
             'governmentService' => app(GovernmentService::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
@@ -35,7 +40,7 @@ class WonderController extends AbstractDominionController
             'unitHelper' => app(UnitHelper::class),
             'wonderCalculator' => app(WonderCalculator::class),
             'wonderHelper' => app(WonderHelper::class),
-            'wonders' => $dominion->round->wonders()->with(['realm', 'wonder', 'damage'])->get(),
+            'wonders' => $wonders,
         ]);
     }
 

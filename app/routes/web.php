@@ -57,10 +57,25 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
     $router->get('round/{round}/register')->uses('RoundController@getRegister')->name('round.register');
     $router->post('round/{round}/register')->uses('RoundController@postRegister');
 
+    // Message Board
+    $router->get('message-board')->uses('MessageBoardController@getIndex')->name('message-board');
+    $router->get('message-board/avatar')->uses('MessageBoardController@getChangeAvatar')->name('message-board.avatar');
+    $router->post('message-board/avatar')->uses('MessageBoardController@postChangeAvatar');
+    $router->get('message-board/create')->uses('MessageBoardController@getCreate')->name('message-board.create');
+    $router->post('message-board/create')->uses('MessageBoardController@postCreate');
+    $router->get('message-board/thread/{thread}')->uses('MessageBoardController@getThread')->name('message-board.thread');
+    $router->post('message-board/thread/{thread}/reply')->uses('MessageBoardController@postReply')->name('message-board.reply');
+    $router->get('message-board/thread/{thread}/delete')->uses('MessageBoardController@getDeleteThread')->name('message-board.delete.thread');
+    $router->post('message-board/thread/{thread}/delete')->uses('MessageBoardController@postDeleteThread');
+    $router->get('message-board/thread/{thread}/flag')->uses('MessageBoardController@getFlagThread')->name('message-board.flag.thread');
+    $router->get('message-board/post/{post}/delete')->uses('MessageBoardController@getDeletePost')->name('message-board.delete.post');
+    $router->post('message-board/post/{post}/delete')->uses('MessageBoardController@postDeletePost');
+    $router->get('message-board/post/{post}/flag')->uses('MessageBoardController@getFlagPost')->name('message-board.flag.post');
+    $router->get('message-board/{category}')->uses('MessageBoardController@getCategory')->name('message-board.category');
+
     $router->group(['prefix' => 'dominion', 'as' => 'dominion.'], static function (Router $router) {
 
         // Dominion Select
-        //$router->get('{dominion}/select')->uses(function () { return redirect()->route('dashboard'); });
         $router->post('{dominion}/select')->uses('Dominion\SelectController@postSelect')->name('select');
 
         // Dominion
@@ -82,6 +97,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
 
+            $router->get('realm/advisors/{target}/status')->uses('Dominion\AdvisorsController@getAdvisorsStatus')->name('realm.advisors.status');
             $router->get('realm/advisors/{target}/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('realm.advisors.production');
             $router->get('realm/advisors/{target}/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('realm.advisors.military');
             $router->get('realm/advisors/{target}/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('realm.advisors.land');
@@ -168,7 +184,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 
             // Forum
             $router->get('forum')->uses('Dominion\ForumController@getIndex')->name('forum');
-            $router->get('forum/announcement/{announcement}')->uses('Dominion\ForumController@getAnnouncement')->name('forum.announcement');
             $router->get('forum/create')->uses('Dominion\ForumController@getCreate')->name('forum.create');
             $router->post('forum/create')->uses('Dominion\ForumController@postCreate');
             $router->get('forum/{thread}')->uses('Dominion\ForumController@getThread')->name('forum.thread');

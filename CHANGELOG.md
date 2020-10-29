@@ -3,6 +3,60 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Threads with new posts will be displayed in bold on the first page load
+
+### Changed
+- Wonder power on respawn is now rounded to the nearest 10,000
+
+### Fixed
+- Wonder prestige gains and damage are now rounded to the nearest integer
+
+## [1.0.10] - 2020-10-07
+### Added
+- Additional messageboard and improved some rankings icons
+- Pagination added to council/forum/board threads
+
+## [1.0.9] - 2020-10-03
+### Added
+- New Message Boards tied to user accounts
+- Able to select an avatar based on previous rounds' rankings
+- Pagination added to council and forum index
+
+### Changed
+- Renamed Global Forum to Round Forum
+
+### Fixed
+- Recently invaded calculation required 25 hours to clear instead of 24
+- Attacking wonders under certain conditions no longer breaks the town crier
+- Wonders now appear in alphabetical order in the dropdown
+- Race name no longer interferes with search in dominion dropdowns
+
+## [1.0.8] - 2020-09-24
+### Added
+- Disclaimer on calculators page
+
+### Changed
+- Race name added to op center json data
+
+### Fixed
+- Boat protection from docks was being calculated incorrectly
+- Small tweaks to automated stat export and moderator tools
+
+## [1.0.7] - 2020-09-22
+### Added
+- Status advisor for realmies
+- Most recent invasions for a dominion are visible in the op center
+- Copy op center data in JSON format
+- Sidebar menu indicator for unbuilt land
+- Sidebar menu indicator for unseen town crier events
+- Sidebar menu indicator for unseen wonders
+- Button to load your temples into defense calculator
+
+### Changed
+- The recently invaded message in clear sights will now show the exact number of invasions
+
+## [1.0.6] - 2020-09-17
 ### Changed
 - Added more boats to quick starts, removed Ares from hour 61 versions
 
@@ -972,7 +1026,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.4...HEAD
+[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.10...HEAD
+[1.0.10]: https://github.com/OpenDominion/OpenDominion/compare/1.0.9...1.0.10
+[1.0.9]: https://github.com/OpenDominion/OpenDominion/compare/1.0.8...1.0.9
+[1.0.8]: https://github.com/OpenDominion/OpenDominion/compare/1.0.7...1.0.8
+[1.0.7]: https://github.com/OpenDominion/OpenDominion/compare/1.0.6...1.0.7
+[1.0.6]: https://github.com/OpenDominion/OpenDominion/compare/1.0.5...1.0.6
+[1.0.5]: https://github.com/OpenDominion/OpenDominion/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/OpenDominion/OpenDominion/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/OpenDominion/OpenDominion/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/OpenDominion/OpenDominion/compare/1.0.1...1.0.2
