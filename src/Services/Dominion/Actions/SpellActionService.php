@@ -296,6 +296,12 @@ class SpellActionService
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
+        if ($dominion->pack !== null && $dominion->pack->size > 2) {
+            $wizardStrengthLost = 2;
+        } else {
+            $wizardStrengthLost = 1.5;
+        }
+
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
@@ -326,7 +332,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
-                    'wizardStrengthCost' => 2,
+                    'wizardStrengthCost' => $wizardStrengthLost,
                     'alert-type' => 'warning',
                 ];
             }
@@ -390,7 +396,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'wizardStrengthCost' => 2,
+            'wizardStrengthCost' => $wizardStrengthLost,
             'redirect' => $redirect,
         ];
     }
@@ -534,7 +540,7 @@ class SpellActionService
         }
 
         $spellReflected = false;
-        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
+        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.3)) {
             $spellReflected = true;
             $reflectedBy = $target;
             $target = $dominion;
@@ -633,6 +639,9 @@ class SpellActionService
                 $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
                 $baseDamage *= (1 - $warReduction);
             }
+
+            // Techs
+            $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
 
             // Wonders
             $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));

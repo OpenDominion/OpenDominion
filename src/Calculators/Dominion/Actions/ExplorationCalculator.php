@@ -90,8 +90,8 @@ class ExplorationCalculator
         // Techs
         $draftees += $dominion->getTechPerkValue('explore_draftee_cost');
         # Minimum dratee cost is 3
-        if ($draftees < 3) {
-            $draftees = 3;
+        if ($draftees < 6) {
+            $draftees = 6;
         }
 
         return round($draftees);
@@ -115,12 +115,14 @@ class ExplorationCalculator
     /**
      * Returns the morale drop after exploring for $amount of acres of land.
      *
+     * @param Dominion $dominion
      * @param int $amount
      * @return int
-     * @todo Does this really belong here? Maybe it should go in a helper, since it isn't dependent on a Dominion instance
      */
-    public function getMoraleDrop($amount): int
+    public function getMoraleDrop(Dominion $dominion, $amount): int
     {
-        return floor(($amount + 2) / 3);
+        $multiplier = (1 - $dominion->getTechPerkValue('explore_morale_cost'));
+
+        return floor(($amount + 2) / 3 * $multiplier);
     }
 }

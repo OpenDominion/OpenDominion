@@ -245,6 +245,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Returns the number of hours until daily bonus/rankings.
+     *
+     * @return int
+     */
+    public function hoursUntilReset()
+    {
+        $hoursUntilReset = $this->end_date->hour - now()->hour;
+        if ($hoursUntilReset < 1) {
+            $hoursUntilReset = 24 + $hoursUntilReset;
+        }
+        return $hoursUntilReset;
+    }
+
+    /**
      * Returns the amount in days since the round started.
      *
      * @return int

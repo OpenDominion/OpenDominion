@@ -21,6 +21,13 @@ class SpellHelper
         })->isNotEmpty();
     }
 
+    public function isRacialSelfSpell(string $spellKey, Race $race): bool
+    {
+        return $this->getRacialSelfSpells($race)->filter(function ($spell) use ($spellKey) {
+            return ($spell['key'] === $spellKey);
+        })->isNotEmpty();
+    }
+
     public function isOffensiveSpell(string $spellKey): bool
     {
         return $this->getOffensiveSpells()->filter(function ($spell) use ($spellKey) {
@@ -118,9 +125,9 @@ class SpellHelper
             ],
             [
                 'name' => 'Energy Mirror',
-                'description' => '20% chance to reflect incoming offensive spells for 12 hours',
+                'description' => '30% chance to reflect incoming offensive spells for 12 hours',
                 'key' => 'energy_mirror',
-                'mana_cost' => 4,
+                'mana_cost' => 4.5,
                 'duration' => 12,
             ]
         ]));
@@ -303,7 +310,7 @@ class SpellHelper
                 'name' => 'Vision',
                 'description' => 'Reveal tech and heroes',
                 'key' => 'vision',
-                'mana_cost' => 1,
+                'mana_cost' => 0.5,
             ],
             [
                 'name' => 'Revelation',
@@ -411,7 +418,7 @@ class SpellHelper
                 'key' => 'cyclone',
                 'mana_cost' => 3.5,
                 'icon_class' => 'ra ra-tornado',
-                'damage_multiplier' => 5,
+                'damage_multiplier' => 3.5,
             ],
         ]);
     }

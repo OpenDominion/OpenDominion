@@ -396,9 +396,17 @@
 
                         <div class="col-sm-12 col-md-6">
                             @component('partials.dominion.op-center.box')
-                                @slot('title', 'Heroes')
-                                @slot('titleIconClass', 'ra ra-knight-helmet')
-                                <p>Not yet implemented.</p>
+                                @slot('title', 'Tech Bonuses')
+                                @slot('titleIconClass', 'ra ra-fizzing-flask')
+
+                                @if ($infoOp === null)
+                                    <p>No recent data available.</p>
+                                    <p>Cast magic spell 'Vision' to reveal information.</p>
+                                @else
+                                    @slot('noPadding', true)
+
+                                    @include('partials.dominion.info.techs-combined', ['data' => $infoOp->data['techs']])
+                                @endif
                             @endcomponent
                         </div>
                     </div>

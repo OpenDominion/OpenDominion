@@ -27,7 +27,7 @@ units:
       defense: 3
   - name: Blademaster
     cost:
-      platinum: 1025
+      platinum: 1050
       ore: 75
     power:
       offense: 2
@@ -36,7 +36,7 @@ units:
       fewer_casualties: 25
   - name: Valkyrie
     cost:
-      platinum: 1225
+      platinum: 1250
       ore: 100
     power:
       offense: 6

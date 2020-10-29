@@ -131,6 +131,7 @@ class CasualtiesCalculator
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
             // Techs
+            $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
             $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_offense');
 
             // Wonders
@@ -263,6 +264,7 @@ class CasualtiesCalculator
             $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
 
             // Techs
+            $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
             $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_defense');
 
             // Wonders

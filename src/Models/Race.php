@@ -124,10 +124,11 @@ class Race extends AbstractModel
     {
         $boatCapacity = static::UNITS_PER_BOAT;
 
-        $boatCapacityPerk = $this->getPerkValue('boat_capacity');
-        if ($boatCapacityPerk) {
-            $boatCapacity += $boatCapacityPerk;
-        }
+        // Racial Bonus
+        $boatCapacity += $this->getPerkValue('boat_capacity');
+
+        // Techs
+        $boatCapacity += $this->getTechPerkValue('boat_capacity');
 
         return $boatCapacity;
     }

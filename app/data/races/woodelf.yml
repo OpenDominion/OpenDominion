@@ -24,7 +24,7 @@ units:
       defense: 0
   - name: Longbowman
     cost:
-      platinum: 350
+      platinum: 380
       ore: 10
     power:
       offense: 0
@@ -40,7 +40,7 @@ units:
       defense_from_land: forest,20,5 # land type, ratio%, max
   - name: Druid
     cost:
-      platinum: 1050
+      platinum: 1075
       ore: 0
     power:
       offense: 3

@@ -259,10 +259,10 @@ class InvadeActionService
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
+            $this->handleResearchPoints($dominion, $survivingUnits);
 
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
-            $this->handleResearchPoints($dominion, $survivingUnits);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
@@ -380,6 +380,9 @@ class InvadeActionService
             ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
+            // Techs
+            $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
+
             // War Bonus
             if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
                 $multiplier += 0.20;
@@ -387,8 +390,10 @@ class InvadeActionService
                 $multiplier += 0.15;
             }
 
-            // Wonders (does not stack with war bonus)
-            $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+            // Wonders - does not stack with other bonuses
+            if ($dominion->getWonderPerkValue('prestige_gains') !== 0) {
+                $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+            }
 
             $attackerPrestigeChange *= $multiplier;
         }
@@ -396,23 +401,6 @@ class InvadeActionService
         // Repeat Invasions award no prestige
         if ($this->invasionResult['attacker']['repeatInvasion']) {
             $attackerPrestigeChange = 0;
-        }
-
-        // Reduce attacker prestige gain if the target was hit recently
-        if ($attackerPrestigeChange > 0) {
-            $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
-
-            if ($recentlyInvadedCount === 1) {
-                $attackerPrestigeChange *= 0.8;
-            } elseif ($recentlyInvadedCount === 2) {
-                $attackerPrestigeChange *= 0.6;
-            } elseif ($recentlyInvadedCount === 3) {
-                $attackerPrestigeChange *= 0.4;
-            } elseif ($recentlyInvadedCount === 4) {
-                $attackerPrestigeChange *= 0.2;
-            } elseif ($recentlyInvadedCount >= 5) {
-                $attackerPrestigeChange = 0;
-            }
         }
 
         $attackerPrestigeChange = (int)round($attackerPrestigeChange);
@@ -935,9 +923,7 @@ class InvadeActionService
     /**
      * Handles research point generation for attacker.
      *
-     * Original formula:
-     * (Conquered acres) * max([(Days into the round)/2], 15)
-     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 25 on day 50
+     * Past day 30 of the round, RP gains by attacking goes up from 1000 and peaks at 1667 on day 50
      *
      * @param Dominion $dominion
      * @param array $units
@@ -949,15 +935,16 @@ class InvadeActionService
             return;
         }
 
-        $researchPointsPerAcre = max(15, $dominion->round->daysInRound() / 2);
-
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $landConquered = array_sum($this->invasionResult['attacker']['landConquered']);
-            $landGenerated = array_sum($this->invasionResult['attacker']['landGenerated']);
+            $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
-            $researchPointsGained = ($landConquered + $landGenerated) * $researchPointsPerAcre;
-            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
+            $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+            if ($range < 75) {
+                $researchPointsGained *= 0.5;
+            } elseif ($range < 60) {
+                $researchPointsGained = 0;
+            }
 
             // Racial Bonus
             $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
@@ -965,14 +952,15 @@ class InvadeActionService
             // Wonders
             $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
 
+            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
-                ['resource_tech' => $researchPointsGained],
+                ['resource_tech' => round($researchPointsGained)],
                 $slowestTroopsReturnHours
             );
 
-            $this->invasionResult['attacker']['researchPoints'] = $researchPointsGained;
+            $this->invasionResult['attacker']['researchPoints'] = round($researchPointsGained);
         }
     }
 

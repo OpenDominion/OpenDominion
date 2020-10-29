@@ -151,6 +151,21 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.castle', [
             'improvementCalculator' => app(ImprovementCalculator::class),
             'improvementHelper' => app(ImprovementHelper::class),
+            'infoMapper' => app(InfoMapper::class),
+            'targetDominion' => $target
+        ]);
+    }
+
+    public function getAdvisorsTechs(Dominion $target = null)
+    {
+        try {
+            $this->guardPackRealm($target);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withErrors([$e->getMessage()]);
+        }
+
+        return view('pages.dominion.advisors.techs', [
             'techHelper' => app(TechHelper::class),
             'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
@@ -202,9 +217,12 @@ class AdvisorsController extends AbstractDominionController
             throw new GameException('Locked dominions are not allowed to look at realm advisors.');
         }
 
-        if($dominion->realm_id !== $target->realm_id)
-        {
+        if ($dominion->realm_id !== $target->realm_id) {
             throw new GameException('You are only allowed to look at dominions in your realm.');
+        }
+
+        if ($dominion->id == $target->id) {
+            return;
         }
 
         $realmAdvisors = $target->getSetting('realmadvisors');

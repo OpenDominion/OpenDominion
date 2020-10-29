@@ -74,12 +74,16 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
         }
 
+        if ($selectedDominion->id == $dominion->id) {
+            return redirect()->route('dominion.status');
+        }
+
         if ($selectedDominion->round_id != $dominion->round_id) {
             return redirect()->route('dominion.op-center');
         }
 
         if ($dominion->realm_id == $selectedDominion->realm_id) {
-            return redirect()->route('dominion.realm.advisors.production', $dominion);
+            return redirect()->route('dominion.realm.advisors.status', $dominion);
         }
 
         $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
@@ -114,6 +118,10 @@ class OpCenterController extends AbstractDominionController
 
         if ($selectedDominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($selectedDominion->id != $dominion->id) {
+            return redirect()->route('dominion.status');
         }
 
         if ($selectedDominion->round_id != $dominion->round_id) {

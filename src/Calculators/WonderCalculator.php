@@ -35,6 +35,11 @@ class WonderCalculator
     protected const MIN_SPAWN_POWER = 150000;
 
     /**
+     * @var float Maximum power after a neutral wonder is respawned
+     */
+    protected const MAX_SPAWN_POWER = 500000;
+
+    /**
      * @var float Constraints for RP gain formula
      */
     protected const TECH_MAX_REWARD = 2500;
@@ -50,14 +55,15 @@ class WonderCalculator
     public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
         $day = $wonder->round->daysInRound() - 1;
-        if ($wonder->realm !== null) {
+
+        if ($wonder->realm_id !== null) {
             $maxPower = min(42500 * $day, 2 * $wonder->power);
             $damageContribution = $this->getDamageDealtByRealm($wonder, $realm) / $wonder->power;
             $newPower = floor($maxPower * $damageContribution);
-        } else {
-            $newPower = 25000 * $day;
+            return max(static::MIN_SPAWN_POWER, round($newPower, -4));
         }
-        return max(static::MIN_SPAWN_POWER, round($newPower, -4));
+
+        return min(static::MAX_SPAWN_POWER, 25000 * $day);
     }
 
     /**
@@ -126,6 +132,10 @@ class WonderCalculator
 
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
+        }
+
+        if ($wonder->realm == null || $wonder->realm_id == null) {
+            return static::PRESTIGE_BASE_GAIN;
         }
 
         return round(static::PRESTIGE_BASE_GAIN + (

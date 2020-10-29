@@ -50,6 +50,12 @@ class SpellCalculator
 
         // Techs
         $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('spell_cost'));
+        if ($this->spellHelper->isSelfSpell($spell, $dominion->race)) {
+            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('self_spell_cost'));
+        }
+        if ($this->spellHelper->isRacialSelfSpell($spell, $dominion->race)) {
+            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('racial_spell_cost'));
+        }
 
         // Wonders
         $spellCostMultiplier *= (1 + $dominion->getWonderPerkMultiplier('spell_cost'));

@@ -9,6 +9,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Http\Requests\MessageBoard\CreatePostRequest;
 use OpenDominion\Http\Requests\MessageBoard\CreateThreadRequest;
+use OpenDominion\Models\Achievement;
 use OpenDominion\Models\MessageBoard;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\User;
@@ -72,12 +73,17 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
+        $achievements = Achievement::all();
+        $userAchievements = $user->achievements->pluck('id');
+
         $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
         return view('pages.message-board.avatar', compact(
             'user',
             'rankings',
             'previousRankings',
+            'achievements',
+            'userAchievements',
             'defaultAvatars'
         ));
     }
@@ -96,12 +102,16 @@ class MessageBoardController extends AbstractController
             ->whereIn('dominion_id', $userDominionIds)
             ->pluck('key');
 
-            $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
+        $defaultAvatars = collect(['ra-player', 'ra-hand', 'ra-beer', 'ra-coffee-mug', 'ra-pawn', 'ra-dice-six', 'ra-spades-card', 'ra-console-controller', 'ra-quill-ink', 'ra-basketball-ball', 'ra-football-ball', 'ra-soccer-ball', 'ra-knight-helmet', 'ra-sword', 'ra-shield', 'ra-fairy-wand']);
 
         try {
             $avatar = $request->get('avatar');
             $matchingRankings = collect($rankingsHelper->getRankings())->where('title_icon', $avatar)->pluck('key');
-            if (!$defaultAvatars->contains($avatar) && ($matchingRankings->isEmpty() || $previousRankings->intersect($matchingRankings)->isEmpty())) {
+            $matchingAchievements = Achievement::where('icon', $avatar)->pluck('id');
+            if (!$defaultAvatars->contains($avatar) &&
+                $previousRankings->intersect($matchingRankings)->isEmpty() &&
+                $user->achievements->pluck('id')->intersect($matchingAchievements)->isEmpty()
+            ) {
                 throw new GameException('Invalid selection');
             }
             $settings = ($user->settings ?? []);

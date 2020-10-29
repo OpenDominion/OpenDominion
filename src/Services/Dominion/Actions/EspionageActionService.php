@@ -167,7 +167,11 @@ class EspionageActionService
 
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                $spyStrengthLost = 2;
+                if ($dominion->pack !== null && $dominion->pack->size > 2) {
+                    $spyStrengthLost = 2;
+                } else {
+                    $spyStrengthLost = 1.5;
+                }
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
 
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
@@ -563,10 +567,14 @@ class EspionageActionService
         string $resource,
         array $constraints
     ): int {
-        if (($resource === 'platinum') && $this->spellCalculator->isSpellActive($target, 'fools_gold')) {
-            return 0;
+        if ($this->spellCalculator->isSpellActive($target, 'fools_gold')) {
+            if ($resource === 'platinum') {
+                return 0;
+            }
+            if ($target->getTechPerkValue('improved_fools_gold') !== 0 && ($resource === 'ore' || $resource === 'lumber')) {
+                return 0;
+            }
         }
-
         // Limit to percentage of target's raw production
         $maxTarget = true;
         if ($constraints['target_amount'] > 0) {
@@ -598,7 +606,10 @@ class EspionageActionService
             $maxCarried = $this->militaryCalculator->getSpyRatioRaw($dominion) * $this->landCalculator->getTotalLand($dominion) * $constraints['spy_carries'];
         }
 
-        return min($maxTarget, $maxDominion, $maxCarried);
+        // Techs
+        $multiplier = (1 + $dominion->getTechPerkMultiplier('theft_gains') + $target->getTechPerkMultiplier('theft_losses'));
+
+        return round(min($maxTarget, $maxDominion, $maxCarried) * $multiplier);
     }
 
     /**
@@ -736,6 +747,9 @@ class EspionageActionService
             $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
             $baseDamage *= (1 - $warReduction);
         }
+
+        // Techs
+        $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {

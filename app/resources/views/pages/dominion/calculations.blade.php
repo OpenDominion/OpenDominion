@@ -632,8 +632,8 @@
                             <div class="col-xs-3 text-left">
                                 <select name="calc[tech_offense]" class="form-control">
                                     <option value="0"></option>
-                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.military_genius")) ? 'selected' : null }}>Military Genius +5%</option>
-                                    <option value="10" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.magical_weaponry")) ? 'selected' : null }}>Magical Weaponry +10%</option>
+                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13")) ? 'selected' : null }}>Ares' Favor +2.5%</option>
+                                    <option value="10" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>Avatar of Ares +5%</option>
                                 </select>
                             </div>
                             <div class="col-xs-3 text-right">
