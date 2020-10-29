@@ -1,9 +1,9 @@
 tech_1_1:
-  name: Farmer's Growth
+  name: Granaries
   perks:
     food_production: 2.5
 tech_3_1:
-  name: Magician's Rise
+  name: Planar Emissaries
   perks:
     mana_production: 7.5
   requires:
@@ -11,14 +11,14 @@ tech_3_1:
     - tech_5_1
     - tech_4_3
 tech_5_1:
-  name: Forester's Growth
+  name: Green Thumb
   perks:
     lumber_production: 5
   requires:
     - tech_3_1
     - tech_7_1
 tech_7_1:
-  name: Irrigation
+  name: Underground Hydroponics
   perks:
     food_production: 7.5
     enemy_fireball_damage: -10
@@ -27,7 +27,7 @@ tech_7_1:
     - tech_9_1
     - tech_8_3
 tech_9_1:
-  name: Investor's Acuity
+  name: Midas's Bargain
   perks:
     platinum_production: 2.5
   requires:
@@ -35,14 +35,14 @@ tech_9_1:
     - tech_11_1
     - tech_10_3
 tech_11_1:
-  name: Master of Resources
+  name: Master of Efficiency
   perks:
     military_cost: -2
   requires:
     - tech_9_1
     - tech_13_1
 tech_13_1:
-  name: Caravan Leader
+  name: Explorer's Instinct
   perks:
     explore_platinum_cost: -5
   requires:
@@ -50,7 +50,7 @@ tech_13_1:
     - tech_15_1
     - tech_12_3
 tech_15_1:
-  name: Sleight of Hand
+  name: Sneaky Spies
   perks:
     theft_gains: 10
     spy_losses: -10
@@ -59,14 +59,14 @@ tech_15_1:
     - tech_17_1
     - tech_14_3
 tech_17_1:
-  name: Intermittent Fasting
+  name: Frugal Foragers
   perks:
     food_consumption: -2.5
   requires:
     - tech_15_1
     - tech_19_1
 tech_19_1:
-  name: Magician's Apprentice
+  name: Mana Pools
   perks:
     spell_cost: -10
   requires:
@@ -74,11 +74,11 @@ tech_19_1:
     - tech_21_1
     - tech_18_3
 tech_21_1:
-  name: Explorer's Intuition
+  name: Explorer's Luck
   perks:
     explore_draftee_cost: -2
 tech_2_3:
-  name: Foreman's Cache
+  name: Surplus Management
   perks:
     food_decay: -12.5
     lumber_decay: -12.5
@@ -87,15 +87,15 @@ tech_2_3:
     - tech_1_1
     - tech_4_3
 tech_4_3:
-  name: Banker's Foresight
+  name: Banker's Friend
   perks:
-    platinum_production: 2.5
+    exchange_bonus: 10
   requires:
     - tech_3_1
     - tech_2_3
     - tech_6_3
 tech_6_3:
-  name: Mason's Art
+  name: Prefabrication
   perks:
     construction_platinum_cost: -5
   requires:
@@ -109,7 +109,7 @@ tech_8_3:
     - tech_7_1
     - tech_6_3
 tech_10_3:
-  name: Spy Quarters
+  name: Sleeper Agents
   perks:
     max_population: 1
     spy_losses: -12.5
@@ -117,7 +117,7 @@ tech_10_3:
     - tech_9_1
     - tech_11_5
 tech_12_3:
-  name: Bountiful Earth
+  name: Industrial Machinery
   perks:
     lumber_production: 5
     ore_production: 5
@@ -125,14 +125,14 @@ tech_12_3:
     - tech_13_1
     - tech_11_5
 tech_14_3:
-  name: Urban Planner
+  name: Pastoral Planner
   perks:
     max_population: 1.5
   requires:
     - tech_15_1
     - tech_13_5
 tech_16_3:
-  name: Overseer's Hoard
+  name: Preservationist
   perks:
     food_decay: -25
     lumber_decay: -25
@@ -141,7 +141,7 @@ tech_16_3:
     - tech_14_3
     - tech_18_3
 tech_18_3:
-  name: Explorer's Acumen
+  name: Explorer's Intuition
   perks:
     explore_platinum_cost: -5
   requires:
@@ -150,7 +150,7 @@ tech_18_3:
     - tech_20_3
     - tech_17_5
 tech_20_3:
-  name: Mason's Expertise
+  name: Architect's Touch
   perks:
     construction_platinum_cost: -2.5
   requires:
@@ -158,27 +158,27 @@ tech_20_3:
     - tech_18_3
     - tech_19_5
 tech_3_5:
-  name: Prospector's Determination
+  name: Miner's Spirit
   perks:
     ore_production: 5
   requires:
     - tech_2_3
     - tech_4_7
 tech_5_5:
-  name: Miner's Refining
+  name: Ancient Mines
   perks:
     gem_production: 2.5
   requires:
     - tech_4_3
     - tech_6_7
 tech_7_5:
-  name: Demolition Expert
+  name: Urg Smash Technique
   perks:
     destruction_refund: 5
   requires:
     - tech_9_5
 tech_9_5:
-  name: Conjurer's Might
+  name: Dark Pact
   perks:
     mana_production: 7.5
     wizard_strength: 5
@@ -194,28 +194,28 @@ tech_11_5:
     - tech_10_3
     - tech_12_3
 tech_13_5:
-  name: Forbidden Sorcery
+  name: Maelstrom
   perks:
     cyclone_damage: 15
   requires:
     - tech_14_3
     - tech_12_7
 tech_15_5:
-  name: Explorer's Luck
+  name: Explorer's Guile
   perks:
     explore_draftee_cost: -1
     explore_platinum_cost: -7.5
   requires:
     - tech_14_7
 tech_17_5:
-  name: Adventurer's Spirit
+  name: Fearless Adventurers
   perks:
     explore_morale_cost: -50
   requires:
     - tech_18_3
     - tech_16_7
 tech_19_5:
-  name: Magician's Awe
+  name: Arcane Bloodlines
   perks:
     spy_cost: -5
     wizard_cost: -15
@@ -231,7 +231,7 @@ tech_4_7:
     - tech_6_7
     - tech_5_9
 tech_6_7:
-  name: Siege Weaponry
+  name: Goose Chase
   perks:
     improved_fools_gold: 1
   requires:
@@ -239,7 +239,7 @@ tech_6_7:
     - tech_4_7
     - tech_8_7
 tech_8_7:
-  name: Haggler's Savvy
+  name: Prospector's Determination
   perks:
     gem_production: 2.5
     ore_production: 7.5
@@ -247,19 +247,19 @@ tech_8_7:
     - tech_6_7
     - tech_10_7
 tech_10_7:
-  name: Fruits of Labor
+  name: Opulence
   perks:
     platinum_production: 5
   requires:
     - tech_8_7
 tech_12_7:
-  name: Master of Defense
+  name: Master of Strategy
   perks:
     military_cost: -2
   requires:
     - tech_13_5
 tech_14_7:
-  name: One Eye Open
+  name: Night Watch
   perks:
     enemy_assassinate_draftees_damage: -20
     enemy_assassinate_wizards_damage: -20
@@ -267,14 +267,14 @@ tech_14_7:
     - tech_15_5
     - tech_16_7
 tech_16_7:
-  name: Architect's Mastery
+  name: Architect's Flourish
   perks:
     construction_platinum_cost: -7.5
   requires:
     - tech_17_5
     - tech_18_7
 tech_18_7:
-  name: Master of Magi
+  name: Wizard Nexus
   perks:
     wizard_strength_recovery: 1
   requires:
@@ -282,7 +282,7 @@ tech_18_7:
     - tech_16_7
     - tech_17_9
 tech_5_9:
-  name: Carpenter's Expertise
+  name: Lumberjack's Devotion
   perks:
     construction_lumber_cost: -5
     lumber_decay: -15
@@ -291,7 +291,7 @@ tech_5_9:
     - tech_7_9
     - tech_6_11
 tech_7_9:
-  name: Rooftop Gardens
+  name: Weather Manipulation
   perks:
     enemy_lightning_bolt_damage: -10
     food_production: 2.5
@@ -299,28 +299,28 @@ tech_7_9:
     - tech_5_9
     - tech_9_9
 tech_9_9:
-  name: Master of Warfare
+  name: Master of Resources
   perks:
     military_cost: -2
   requires:
     - tech_7_9
     - tech_8_11
 tech_11_9:
-  name: Magical Weaponry
+  name: Avatar of Ares
   perks:
     offense: 2.5
     wizard_strength: 7.5
   requires:
     - tech_12_11
 tech_13_9:
-  name: Master of Arms
+  name: Master of Discipline
   perks:
     military_cost: -2
   requires:
     - tech_15_9
     - tech_14_11
 tech_15_9:
-  name: Urban Mastery
+  name: Visionary Expansionist
   perks:
     max_population: 1
     population_growth: 15
@@ -328,7 +328,7 @@ tech_15_9:
     - tech_13_9
     - tech_17_9
 tech_17_9:
-  name: Emperor's Regard
+  name: Ross' Benevolence
   perks:
     guard_tax: -1
   requires:
@@ -336,14 +336,14 @@ tech_17_9:
     - tech_15_9
     - tech_16_11
 tech_6_11:
-  name: Civil Engineering
+  name: Urban Planner
   perks:
     max_population: 1.5
   requires:
     - tech_5_9
     - tech_7_13
 tech_8_11:
-  name: Magician's Discovery
+  name: Jeweller's Delight
   perks:
     gem_production: 2.5
     self_spell_cost: -5
@@ -351,7 +351,7 @@ tech_8_11:
     - tech_9_9
     - tech_7_13
 tech_10_11:
-  name: Conqueror's Crafts
+  name: Carpenter's Expertise
   perks:
     construction_platinum_cost: -5
     construction_lumber_cost: -5
@@ -359,21 +359,21 @@ tech_10_11:
     - tech_9_13
     - tech_11_13
 tech_12_11:
-  name: Forester's Touch
+  name: Surveyor's Sense
   perks:
     rezone_cost: -12.5
   requires:
     - tech_11_9
     - tech_13_13
 tech_14_11:
-  name: Mystic Devotion
+  name: Siege Weaponry
   perks:
     fewer_casualties_wonders: 40
   requires:
     - tech_13_9
     - tech_15_13
 tech_16_11:
-  name: Commander's Compassion
+  name: Survivalist Mentality
   perks:
     fewer_casualties: 5
     prestige_gains: 5
@@ -390,7 +390,7 @@ tech_7_13:
     - tech_8_11
     - tech_8_15
 tech_9_13:
-  name: Commander's Legacy
+  name: Military Culture
   perks:
     prestige_gains: 5
   requires:
@@ -398,21 +398,21 @@ tech_9_13:
     - tech_8_15
     - tech_10_15
 tech_11_13:
-  name: Expert Harbormaster
+  name: Wavehacker
   perks:
     boat_capacity: 5
     fewer_casualties: 5
   requires:
     - tech_10_11
 tech_13_13:
-  name: Practical Weaponry
+  name: Ares' Favor
   perks:
     offense: 2.5
   requires:
     - tech_12_11
     - tech_14_15
 tech_15_13:
-  name: Outfitted Encampments
+  name: Rations
   perks:
     extra_barren_max_population: 2
     food_consumption: -2.5
@@ -421,7 +421,7 @@ tech_15_13:
     - tech_16_11
     - tech_14_15
 tech_8_15:
-  name: Spy Master
+  name: Spy Network
   perks:
     spy_strength_recovery: 1
   requires:
@@ -429,21 +429,21 @@ tech_8_15:
     - tech_9_13
     - tech_9_17
 tech_10_15:
-  name: Tactical Battle
+  name: Battle Commanders
   perks:
     fewer_casualties: 7.5
   requires:
     - tech_9_13
     - tech_11_17
 tech_12_15:
-  name: Expert Quartermaster
+  name: Bunk Beds
   perks:
     barracks_housing: 2
   requires:
     - tech_13_13
     - tech_11_17
 tech_14_15:
-  name: Baby Boom
+  name: Public Baths
   perks:
     population_growth: 30
   requires:
@@ -451,7 +451,7 @@ tech_14_15:
     - tech_15_13
     - tech_13_17
 tech_9_17:
-  name: Darkness Walker
+  name: Centralized Intelligence
   perks:
     spy_cost: -15
     wizard_cost: -5
@@ -459,7 +459,7 @@ tech_9_17:
     - tech_8_15
     - tech_10_19
 tech_11_17:
-  name: Indentured Servitude
+  name: Carpenter's Knowhow
   perks:
     construction_platinum_cost: -2.5
   requires:
@@ -468,14 +468,14 @@ tech_11_17:
     - tech_10_19
     - tech_12_19
 tech_13_17:
-  name: Clan Talisman
+  name: Ancestral Knowledge
   perks:
     racial_spell_cost: -15
   requires:
     - tech_14_15
     - tech_12_19
 tech_10_19:
-  name: Scorched Earth
+  name: Surveyor's Insight
   perks:
     rezone_cost: -7.5
   requires:
@@ -483,7 +483,7 @@ tech_10_19:
     - tech_11_17
     - tech_11_21
 tech_12_19:
-  name: Carpenter's Finesse
+  name: Carpenter's Touch
   perks:
     construction_lumber_cost: -5
   requires:
@@ -491,7 +491,7 @@ tech_12_19:
     - tech_13_17
     - tech_11_21
 tech_11_21:
-  name: Commander's Insight
+  name: Battle Tactics
   perks:
     fewer_casualties: 5
 commanders_insight:
@@ -525,8 +525,8 @@ explorers_intuition:
 explorers_luck:
   name: Explorer's Luck
   perks:
-    explore_platinum_cost: -10
-    explore_draftee_cost: -2
+    explore_platinum_cost: -5
+    explore_draftee_cost: -1
   requires:
     - caravan_leader
     - explorers_intuition
@@ -580,7 +580,7 @@ miners_refining:
 bankers_foresight:
   name: Banker's Foresight
   perks:
-    exchange_bonus: 10
+    platinum_production: 5
   requires:
     - farmers_growth
     - miners_refining
@@ -608,7 +608,7 @@ fruits_of_labor:
   perks:
     lumber_production: 20
     ore_production: 20
-    gem_production: 10
+    gem_production: 5
   requires:
     - bankers_foresight
     - urban_planner
@@ -616,8 +616,8 @@ fruits_of_labor:
 dark_artistry:
   name: Dark Artistry
   perks:
-    spy_strength_recovery: 3
-    wizard_strength_recovery: 3
+    spy_strength_recovery: 2
+    wizard_strength_recovery: 2
   requires:
     - spy_master
     - master_of_magi
@@ -625,7 +625,7 @@ dark_artistry:
 urban_mastery:
   name: Urban Mastery
   perks:
-    max_population: 6
+    max_population: 4
   requires:
     - urban_planner
     - explorers_luck
@@ -633,7 +633,7 @@ urban_mastery:
 treasure_hunt:
   name: Treasure Hunt
   perks:
-    platinum_production: 12.5
+    platinum_production: 7.5
   requires:
     - spy_master
     - bankers_foresight
@@ -641,7 +641,7 @@ treasure_hunt:
 magical_weaponry:
   name: Magical Weaponry
   perks:
-    offense: 10
+    offense: 5
     wizard_strength: 15
   requires:
     - master_of_magi
@@ -650,8 +650,8 @@ magical_weaponry:
 conquerors_crafts:
   name: Conqueror's Crafts
   perks:
-    construction_cost: -30
-    rezone_cost: -30
+    construction_cost: -20
+    rezone_cost: -20
   requires:
     - military_genius
     - urban_planner
@@ -667,8 +667,8 @@ master_of_resources:
 tactical_battle:
   name: Tactical Battle
   perks:
-    fewer_casualties_offense: 25
-    fewer_casualties_defense: 25
+    fewer_casualties_offense: 15
+    fewer_casualties_defense: 15
   requires:
     - spy_master
     - military_genius
@@ -676,7 +676,7 @@ tactical_battle:
 enchanted_lands:
   name: Enchanted Lands
   perks:
-    explore_platinum_cost: -20
+    explore_platinum_cost: -10
     mana_production: 15
   requires:
     - master_of_magi
