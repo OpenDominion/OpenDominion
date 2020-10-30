@@ -21,13 +21,13 @@
                         and may not invade during that time.
                     </div>
                 </div>
-            @elseif ($selectedDominion->morale < 70)
+            @elseif ($selectedDominion->morale < 80)
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
                     <div class="box-body">
-                        Your military needs at least 70% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
+                        Your military needs at least 80% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
                     </div>
                 </div>
             @else
