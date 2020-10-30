@@ -89,7 +89,7 @@
                             </p>
                         @else
                             <p>
-                                <em>Register to join the ongoing round!</em>
+                                <em><a href="{{ route('round.register', $currentRound) }}">Register</a> to join the ongoing round!</em>
                             </p>
                         @endif
                     </div>
