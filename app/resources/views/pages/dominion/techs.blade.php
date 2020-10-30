@@ -12,6 +12,22 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
                 </div>
+                <div class="box-body no-padding">
+                    <div class="row">
+                        <div class="col-md-6">
+                            @include('partials.dominion.tech-tree')
+                        </div>
+                        <div class="col-md-6">
+                            @include('partials.dominion.info.techs-combined', ['data' => $selectedDominion->techs->pluck('name', 'key')])
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                </div>
                 <form action="{{ route('dominion.techs') }}" method="post" role="form">
                     @csrf
                     <div class="box-body table-responsive no-padding">
@@ -93,3 +109,135 @@
 
     </div>
 @endsection
+
+@push('inline-styles')
+    <style type="text/css">
+        .edge {
+            stroke: lightgray;
+        }
+        .edge.active {
+            stroke: black;
+        }
+        .vertex {
+            fill: white;
+            stroke: gray;
+        }
+        .vertex.active {
+            stroke: black;
+        }
+        .vertex.selected {
+            fill: lightskyblue;
+            stroke: black;
+        }
+        .vertex:hover {
+            cursor: pointer;
+            fill: orangered;
+        }
+        .vertex.active:hover {
+            fill: lightgreen;
+            stroke: black;
+        }
+        .skin-classic .edge {
+            stroke: gray;
+        }
+        .skin-classic .edge.active {
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex {
+            fill: black;
+            stroke: gray;
+        }
+        .skin-classic .vertex.active {
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex.selected {
+            fill: #006C81;
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex:hover {
+            cursor: pointer;
+            fill: #dd4b39;
+        }
+        .skin-classic .vertex.active:hover {
+            fill: #007D1C;
+            stroke: #dddddd;
+        }
+
+        .vertex.selection {
+            fill: lightgreen;
+        }
+        .skin-classic .vertex.selection {
+            fill: #006C81;
+        }
+    </style>
+@endpush
+
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var techPerkStrings = {!! json_encode($techHelper->getTechPerkStrings()) !!};
+
+            function updateTree() {
+                // Clear all edges
+                $('.edge').removeClass('active');
+                // Clear all vertices
+                $('.vertex').removeClass('active');
+
+                // Highlight starting vertices
+                $('.vertex.starting').addClass('active');
+
+                // Highlight all adjacent edges
+                $('.vertex.selected').each(function() {
+                    var id = $(this).attr('id');
+                    $('.'+id).addClass('active');
+                });
+
+                // Highlight all adjacent vertices
+                $('.edge.active').each(function() {
+                    // Highlight all adjacent vertices
+                    var classes = $(this).attr('class');
+                    $.each(classes.split(" "), function(idx, className) {
+                        if (className !== 'edge' && className !== 'active') {
+                            $('#'+className).addClass('active');
+                        }
+                    });
+                });
+            }
+
+            var unlockedTechs = {!! json_encode($unlockedTechs) !!};
+            unlockedTechs.forEach(function(value, index, array) {
+                $('#'+value).addClass('selected');
+            });
+            updateTree();
+
+            $('.vertex').click(function() {
+                if (!$(this).hasClass('active')) return;
+
+                var techId = $(this).attr('id');
+                if (unlockedTechs.indexOf(techId) !== -1) return;
+
+                if ($(this).hasClass('selection')) {
+                    $('#tech_'+techId).get(0).scrollIntoView();
+                    return;
+                }
+
+                // Reset newly selected node
+                $('.selection').removeClass('selected');
+                $('.selection').removeClass('selection');
+
+                // Set node as newly selected
+                $(this).addClass('selected');
+                $(this).addClass('selection');
+                $('#tech_'+techId).prop('checked', true);
+            });
+
+            window.SVGElement = null;
+            $('.vertex').tooltip({
+                'container': 'body',
+                'html': true,
+                'placement': 'bottom',
+            });
+        });
+    </script>
+@endpush

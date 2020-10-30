@@ -26,23 +26,7 @@
         <div class="box-body table-responsive">
             <div class="row">
                 <div class="col-md-6">
-                    <svg class="graph" viewBox="0 0 220 220" role="img">
-                        @php $techs = $techHelper->getTechs(); @endphp
-                        @foreach ($techs as $tech)
-                            @foreach ($tech->prerequisites as $prereq)
-                                @if (isset($techs[$prereq]))
-                                    <line x1="{{ $techHelper->getX($tech) }}" y1="{{ $techHelper->getY($tech) }}" x2="{{ $techHelper->getX($techs[$prereq]) }}" y2="{{ $techHelper->getY($techs[$prereq]) }}" class="edge {{ $tech->key }} {{ $techs[$prereq]->key }}" />
-                                @endif
-                            @endforeach
-                        @endforeach
-                        @foreach ($techs as $tech)
-                            <circle r="5" cx="{{ $techHelper->getX($tech) }}" cy="{{ $techHelper->getY($tech) }}"
-                                id="{{ $tech->key }}"
-                                class="vertex {{ empty($tech->prerequisites) ? 'active starting' : null }}"
-                                title="<b>{{ $tech->name }}:</b><br/>{{ $techHelper->getTechDescription($tech, '<br/>') }}"
-                                data-perks="{!! $techHelper->getTechPerkJSON($tech) !!}" />
-                        @endforeach
-                    </svg>
+                    @include('partials.dominion.tech-tree')
                 </div>
                 <div class="col-md-6">
                     <h5>Techs Selected: <span id="tech-total">0</span></h5>
@@ -82,9 +66,9 @@
                                     <td>{!! $techHelper->getTechDescription($tech, ',<br/>') !!}</td>
                                     <td>
                                         @if ($tech->prerequisites)
-                                            @foreach ($tech->prerequisites as $key)
+                                            @foreach ($tech->prerequisites as $prereq)
                                                 @if (isset($techs[$prereq]))
-                                                    {{ $techs[$key]->name }}@if(!$loop->last),<br/>@endif
+                                                    {{ $techs[$prereq]->name }}@if(!$loop->last),<br/>@endif
                                                 @endif
                                             @endforeach
                                         @else

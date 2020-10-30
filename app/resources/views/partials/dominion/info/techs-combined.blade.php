@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table table-condensed">
     <colgroup>
         <col width="150">
         <col>
