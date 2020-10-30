@@ -73,7 +73,7 @@
                                 </tr>
                                 <tr>
                                     <td class="text-center">Players:</td>
-                                    <td class="text-center">{{ number_format($currentRound->dominions->count()) }}</td>
+                                    <td class="text-center">{{ number_format($currentRound->dominions->where('user_id', '!=', null)->count()) }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">Realms:</td>
