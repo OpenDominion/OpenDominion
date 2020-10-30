@@ -26,18 +26,18 @@ class TickTest extends AbstractBrowserKitTestCase
         $dominion = $this->createDominion($user, $round);
 
         $dominion->protection_ticks_remaining = 0;
-        $dominion->morale = 64;
+        $dominion->morale = 74;
         $dominion->save();
 
         // todo: call tickservice instead for tickHourly (so it doesnt trigger tickDaily when tests run at 00:00 UTC)
 
-        // Test +6 morale below 70
+        // Test +6 morale below 80
         Artisan::call('game:tick');
-        $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 70]);
+        $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 80]);
 
-        // Test +3 morale above 70
+        // Test +3 morale above 80
         Artisan::call('game:tick');
-        $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 73]);
+        $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 83]);
     }
 
     /**
