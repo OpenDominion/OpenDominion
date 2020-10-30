@@ -4,6 +4,13 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.1.1] - 2020-10-30
+### Fixed
+- Bug with exploration draftee cost
+- Bug with RP production from schools
+- Quickstarts updated with the new research point totals
+- Morale generation is now +6 below 80% (from +6 below 70%)
+
 ## [1.1.0] - 2020-10-29
 ### Added
 - Brand new Tech system!
@@ -1068,7 +1075,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/OpenDominion/OpenDominion/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/OpenDominion/OpenDominion/compare/1.0.10...1.1.0
 [1.0.10]: https://github.com/OpenDominion/OpenDominion/compare/1.0.9...1.0.10
 [1.0.9]: https://github.com/OpenDominion/OpenDominion/compare/1.0.8...1.0.9
