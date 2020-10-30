@@ -87,14 +87,16 @@ class ExplorationCalculator
             $draftees *= 1.25;
         }
 
-        // Techs
-        $draftees += $dominion->getTechPerkValue('explore_draftee_cost');
-        # Minimum dratee cost is 3
-        if ($draftees < 6) {
-            $draftees = 6;
-        }
+        $drafteeCost = round($draftees);
 
-        return round($draftees);
+        if ($drafteeCost < 7) {
+            // Minimum draftee cost is 4
+            return max(4, $drafteeCost);
+        } else {
+            // Techs - Cannot reduce draftee cost below 6
+            $drafteeCost += $dominion->getTechPerkValue('explore_draftee_cost');
+            return max(6, $drafteeCost);
+        }
     }
 
     /**
