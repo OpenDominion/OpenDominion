@@ -491,11 +491,14 @@ class ValhallaController extends AbstractController
     protected function getRealmsByStatistic(Round $round, string $stat)
     {
         $builder = $round->realms()
-            ->with(['dominions']);
+            ->with(['dominions'])
+            ->where('number', '>', 0);
 
         return $builder->get()
             ->map(function ($realm) use ($stat) {
-                $realm->{$stat} = $realm->dominions->sum($stat);
+                $realm->{$stat} = $realm->dominions
+                    ->where('user_id', '!=', null)
+                    ->sum($stat);
                 return $realm;
             })
             ->filter(function ($realm) use ($stat) {
