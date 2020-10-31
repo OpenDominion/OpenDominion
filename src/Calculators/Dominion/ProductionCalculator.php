@@ -716,7 +716,7 @@ class ProductionCalculator
         $tech = 0;
 
         // Values
-        $techPerSchoolPercentage = 26;
+        $techPerSchoolPercentage = 2600;
         $schoolPercentageCap = 40;
 
         // Building: School
@@ -749,9 +749,11 @@ class ProductionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
 
         // Recently invaded penalty
+        /*
         $militaryCalculator = app(MilitaryCalculator::class);
         $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($dominion);
-        $multiplier *= min(0.8, 0.1 * $recentlyInvadedCount);
+        $multiplier *= (1 - max(0.2, 0.1 * $recentlyInvadedCount));
+        */
 
         return $multiplier;
     }

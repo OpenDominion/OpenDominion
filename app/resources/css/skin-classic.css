@@ -508,6 +508,10 @@
     border-left-color: #005566;
 }
 
+.skin-classic .progress {
+    background-color: #d5e3e6 !important;
+}
+
 .skin-classic .content-header,
 .skin-classic .box .box-title {
     color: #d5e3e6;

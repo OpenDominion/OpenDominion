@@ -83,13 +83,13 @@
                         </table>
                     </div>
                     <div class="box-footer text-center">
-                        @if ($currentRound->daysUntilEnd() < 700)
+                        @if ($currentRound->daysUntilEnd() < 7)
                             <p>
                                 <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }} and {{ $currentRound->hoursUntilReset() - 1 }} {{ str_plural('hour', $currentRound->hoursUntilReset() - 1) }}.</em>
                             </p>
                         @else
                             <p>
-                                <em>Register to join the ongoing round!</em>
+                                <em><a href="{{ route('round.register', $currentRound) }}">Register</a> to join the ongoing round!</em>
                             </p>
                         @endif
                     </div>

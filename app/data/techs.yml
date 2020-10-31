@@ -263,6 +263,7 @@ tech_14_7:
   perks:
     enemy_assassinate_draftees_damage: -20
     enemy_assassinate_wizards_damage: -20
+    enemy_disband_spies_damage: -20
   requires:
     - tech_15_5
     - tech_16_7
