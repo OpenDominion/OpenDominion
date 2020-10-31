@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Visual Tech Tree for selected dominion added to Technology Page
 - Direct registration link on homepage
 
+## [1.1.2] - 2020-10-31
+### Added
+- Additional registration link on homepage
+- Visualization to technology page
+- Halloween icon/achievement
+
+### Fixed
+- Op Center archive no longer redirects to status page
+- Missing perk for the Night Watch tech
+
 ## [1.1.1] - 2020-10-30
 ### Fixed
 - Bug with exploration draftee cost
