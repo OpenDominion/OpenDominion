@@ -120,7 +120,7 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
         }
 
-        if ($selectedDominion->id != $dominion->id) {
+        if ($selectedDominion->id == $dominion->id) {
             return redirect()->route('dominion.status');
         }
 
