@@ -175,6 +175,7 @@ tech_7_5:
   name: Urg Smash Technique
   perks:
     destruction_refund: 5
+    lumber_production: 7.5
   requires:
     - tech_9_5
 tech_9_5:
