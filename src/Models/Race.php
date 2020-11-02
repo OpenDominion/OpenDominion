@@ -22,8 +22,6 @@ namespace OpenDominion\Models;
  */
 class Race extends AbstractModel
 {
-    protected const UNITS_PER_BOAT = 30;
-
     public function dominions()
     {
         return $this->hasMany(Dominion::class);
@@ -113,23 +111,5 @@ class Race extends AbstractModel
         }
 
         return $perkValue;
-    }
-
-    /**
-     * Gets a Race's boat capacity.
-     *
-     * @return int
-     */
-    public function getBoatCapacity(): int
-    {
-        $boatCapacity = static::UNITS_PER_BOAT;
-
-        // Racial Bonus
-        $boatCapacity += $this->getPerkValue('boat_capacity');
-
-        // Techs
-        $boatCapacity += $this->getTechPerkValue('boat_capacity');
-
-        return $boatCapacity;
     }
 }

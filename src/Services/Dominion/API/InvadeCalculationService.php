@@ -11,11 +11,6 @@ use OpenDominion\Services\Dominion\QueueService;
 
 class InvadeCalculationService
 {
-    /**
-     * @var int How many units can fit in a single boat
-     */
-    protected const UNITS_PER_BOAT = 30;
-
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
@@ -122,7 +117,7 @@ class InvadeCalculationService
                 $unitsThatNeedBoats += (int)$units[$unit->slot];
             }
         }
-        $this->calculationResult['boats_needed'] = ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity());
+        $this->calculationResult['boats_needed'] = ceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion));
         $this->calculationResult['boats_remaining'] = floor($dominion->resource_boats - $this->calculationResult['boats_needed']);
 
         // Calculate total offense and defense

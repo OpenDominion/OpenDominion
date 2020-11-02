@@ -105,7 +105,7 @@ class InvasionService
             }
         }
 
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity()));
+        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion)));
     }
 
     /**

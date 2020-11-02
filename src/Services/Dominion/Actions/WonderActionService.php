@@ -610,7 +610,7 @@ class WonderActionService
 
         // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / $dominion->race->getBoatCapacity());
+            $boatsByReturnHourGroup = (int)floor($amountUnits / $this->militaryCalculator->getBoatCapacity($dominion));
 
             $dominion->resource_boats -= $boatsByReturnHourGroup;
 

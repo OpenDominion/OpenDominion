@@ -16,6 +16,11 @@ class MilitaryCalculator
      */
     protected const BOATS_PROTECTED_PER_DOCK = 2.5;
 
+    /**
+     * @var int Number of units each boat carries
+     */
+    protected const UNITS_PER_BOAT = 30;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -970,6 +975,25 @@ class MilitaryCalculator
         }
 
         return $regen;
+    }
+
+    /**
+     * Returns the troop capacity of a Dominion's boats.
+     *
+     * @param Dominion $dominion
+     * @return int
+     */
+    public function getBoatCapacity(Dominion $dominion): int
+    {
+        $boatCapacity = static::UNITS_PER_BOAT;
+
+        // Racial Bonus
+        $boatCapacity += $this->race->getPerkValue('boat_capacity');
+
+        // Techs
+        $boatCapacity += $this->getTechPerkValue('boat_capacity');
+
+        return $boatCapacity;
     }
 
     /**
