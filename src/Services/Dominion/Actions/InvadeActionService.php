@@ -259,7 +259,7 @@ class InvadeActionService
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
-            $this->handleResearchPoints($dominion, $survivingUnits);
+            $this->handleResearchPoints($dominion, $target, $survivingUnits);
 
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
@@ -928,7 +928,7 @@ class InvadeActionService
      * @param Dominion $dominion
      * @param array $units
      */
-    protected function handleResearchPoints(Dominion $dominion, array $units): void
+    protected function handleResearchPoints(Dominion $dominion, Dominion $target, array $units): void
     {
         // Repeat Invasions award no research points
         if ($this->invasionResult['attacker']['repeatInvasion']) {
