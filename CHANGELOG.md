@@ -3,9 +3,14 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.1.3] - 2020-11-05
 ### Fixed
-- 500 on invasion page
+- Errors during invasion (related to RP/boat refactor)
 - Missing perk on Urg Smash Technique tech
+- Missing description for Night Watch tech
+- Fearless Adventurers tech no longer sets morale to zero
+- Update prerequisite text
 
 ## [1.1.2] - 2020-10-31
 ### Added
