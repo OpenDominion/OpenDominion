@@ -58,6 +58,7 @@ class TechHelper
 
             // Wizard related
             'cyclone_damage' => '%s%% cyclone damage',
+            'enemy_disband_spies_damage' => '%s%% enemy disband spies damage',
             'enemy_fireball_damage' => '%s%% enemy fireball damage',
             'enemy_lightning_bolt_damage' => '%s%% enemy lightning bolt damage',
             'spell_cost' => '%s%% cost of spells',
