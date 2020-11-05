@@ -123,8 +123,8 @@ class ExplorationCalculator
      */
     public function getMoraleDrop(Dominion $dominion, $amount): int
     {
-        $multiplier = (1 - $dominion->getTechPerkValue('explore_morale_cost'));
+        $multiplier = (1 + $dominion->getTechPerkMultiplier('explore_morale_cost'));
 
-        return floor(($amount + 2) / 3 * $multiplier);
+        return max(1, floor(($amount + 2) / 3 * $multiplier));
     }
 }
