@@ -55,7 +55,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Requires</th>
+                                <th>Requires one of</th>
                             </tr>
                         </thead>
                         <tbody>
