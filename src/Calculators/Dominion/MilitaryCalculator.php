@@ -988,10 +988,10 @@ class MilitaryCalculator
         $boatCapacity = static::UNITS_PER_BOAT;
 
         // Racial Bonus
-        $boatCapacity += $this->race->getPerkValue('boat_capacity');
+        $boatCapacity += $dominion->race->getPerkValue('boat_capacity');
 
         // Techs
-        $boatCapacity += $this->getTechPerkValue('boat_capacity');
+        $boatCapacity += $dominion->getTechPerkValue('boat_capacity');
 
         return $boatCapacity;
     }
