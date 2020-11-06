@@ -411,6 +411,7 @@ tech_13_13:
   perks:
     offense: 2.5
   requires:
+    - tech_12_11
     - tech_12_15
     - tech_14_15
 tech_15_13:
