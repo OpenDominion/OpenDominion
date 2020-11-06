@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Fixed
+- Wrong prerequisite for Ares' Favor tech
 
 ## [1.1.3] - 2020-11-05
 ### Fixed
@@ -1093,7 +1095,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.3...HEAD
+[1.1.3]: https://github.com/OpenDominion/OpenDominion/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/OpenDominion/OpenDominion/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/OpenDominion/OpenDominion/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/OpenDominion/OpenDominion/compare/1.0.10...1.1.0
