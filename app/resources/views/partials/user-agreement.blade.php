@@ -64,6 +64,7 @@
                 <ol style="list-style: lower-roman;">
                     <li>If sufficient evidence of breach of rules cannot be found, your account will be unsuspended and you may, at our discretion, be given resources as compensation for the time during which your dominion was suspended.</li>
                     <li>If we determine that you have broken the rules, you will receive a penalty. The penalty shall be both adequate and proportionate and is at our sole discretion.</li>
+                    <li>A player who gains an advantage due to the improper behavior of another player may be penalized even if it is completely unintentional, but the penalty shall not leave the player worse off than if they took no action.</li>
                 </ol>
             </li>
             <li>
