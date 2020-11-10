@@ -3,12 +3,57 @@
 @section('content')
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <div style="margin-bottom: 20px;">
-                <img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-responsive" alt="OpenDominion">
-            </div>
+            <p><img src="{{ asset('assets/app/images/opendominion.png') }}" class="img-responsive center-block" alt="OpenDominion"></p>
         </div>
     </div>
 
+    <div class="row">
+
+        <div class="col-sm-3 hidden-xs">
+            <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-responsive center-block" alt="Human Thief"></p>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Welcome to OpenDominion!</h3>
+                </div>
+                <div class="box-body">
+                    <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the current round!</p>
+
+                    <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="http://dominion.opendominion.net/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
+                    
+                    @if (Auth::user() == null)
+                        <p>To start playing, <a href="{{ route('auth.register') }}">register</a> an account and sign up for a round after registration. If you already have an account, <a href="{{ route('auth.login') }}">login</a> instead.</p>
+                    @else
+                        <p>Vist your <a href="{{ route('dashboard') }}">dashboard</a> to register for the current round or select a dominion to play.</p>
+                    @endif
+
+                    <p>To help you get started, please consult the following resources:</p>
+
+                    <ul>
+                        <li><a href="https://opendominion.miraheze.org/wiki/My_First_Round" target="_blank">My First Round <i class="fa fa-external-link"></i></a> on the <a href="https://opendominion.miraheze.org/" target="_blank">OpenDominion Wiki <i class="fa fa-external-link"></i></a>.</li>
+                        <li><a href="{{ route('scribes.races') }}">The Scribes</a></li>
+                        <li><a href="http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide" target="_blank">The Complete Newbie Guide <i class="fa fa-external-link"></i></a> on the Web Archive</li>
+                        <li>A mirror of Dominion's manual: <a href="http://dominion.opendominion.net/scribes.html" target="_blank">The Scribes <i class="fa fa-external-link"></i></a> <strong>(Outdated)</strong> </li>
+                    </ul>
+
+                    <p>Do note that OpenDominion is still in development and not all features from Dominion are present in OpenDominion.</p>
+
+                    @if ($discordInviteLink = config('app.discord_invite_link'))
+                        <p>Also feel free to join the OpenDominion <a href="{{ $discordInviteLink }}" target="_blank">Discord server <i class="fa fa-external-link"></i></a>! It's the main place for game announcements, game-related chat and development chat.</p>
+                    @endif
+
+                    <p>OpenDominion is open source software and can be found on <a href="https://github.com/OpenDominion/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3 hidden-xs">
+            <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-responsive center-block" alt="Dark Elf Mage"></p>
+        </div>
+
+    </div>
     <div class="row">
 
         <div class="col-sm-3">
@@ -95,44 +140,9 @@
                     </div>
                 @endif
             </div>
-            <div class="text-center">
-                <iframe src="https://discord.com/widget?id=325315157335212032&theme={{ Auth::user() && Auth::user()->skin == 'skin-classic' ? 'dark' : 'light' }}" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-            </div>
         </div>
+
         <div class="col-sm-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Welcome to OpenDominion!</h3>
-                </div>
-                <div class="box-body">
-                    <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the current round!</p>
-
-                    <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="http://dominion.opendominion.net/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
-                    
-                    @if (Auth::user() == null)
-                        <p>To start playing, <a href="{{ route('auth.register') }}">register</a> an account and sign up for a round after registration. If you already have an account, <a href="{{ route('auth.login') }}">login</a> instead.</p>
-                    @else
-                        <p>Vist your <a href="{{ route('dashboard') }}">dashboard</a> to register for the current round or select a dominion to play.</p>
-                    @endif
-
-                    <p>To help you get started, please consult the following resources:</p>
-
-                    <ul>
-                        <li><a href="https://opendominion.miraheze.org/wiki/My_First_Round" target="_blank">My First Round <i class="fa fa-external-link"></i></a> on the <a href="https://opendominion.miraheze.org/" target="_blank">OpenDominion Wiki <i class="fa fa-external-link"></i></a>.</li>
-                        <li><a href="{{ route('scribes.races') }}">The Scribes</a></li>
-                        <li><a href="http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide" target="_blank">The Complete Newbie Guide <i class="fa fa-external-link"></i></a> on the Web Archive</li>
-                        <li>A mirror of Dominion's manual: <a href="http://dominion.opendominion.net/scribes.html" target="_blank">The Scribes <i class="fa fa-external-link"></i></a> <strong>(Outdated)</strong> </li>
-                    </ul>
-
-                    <p>Do note that OpenDominion is still in development and not all features from Dominion are present in OpenDominion.</p>
-
-                    @if ($discordInviteLink = config('app.discord_invite_link'))
-                        <p>Also feel free to join the OpenDominion <a href="{{ $discordInviteLink }}" target="_blank">Discord server <i class="fa fa-external-link"></i></a>! It's the main place for game announcements, game-related chat and development chat.</p>
-                    @endif
-
-                    <p>OpenDominion is open source software and can be found on <a href="https://github.com/OpenDominion/OpenDominion" target="_blank">GitHub <i class="fa fa-external-link"></i></a>.</p>
-                </div>
-            </div>
             @if ($currentRound !== null)
                 <div class="box">
                     <div class="box-header with-border text-center">
@@ -183,8 +193,21 @@
             @endif
         </div>
 
-        <div class="col-sm-3">
-            <img src="{{ asset('assets/app/images/elf.png') }}" class="img-responsive" alt="">
+        <div class="col-sm-3 hidden-xs">
+            <div class="text-center">
+                <iframe src="https://discord.com/widget?id=325315157335212032&theme={{ Auth::user() && Auth::user()->skin == 'skin-classic' ? 'dark' : 'light' }}" width="255" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+
+        <div class="col-sm-3 hidden visible-xs">
+            <p><img src="{{ asset('assets/app/images/human-scene.jpg') }}" class="img-responsive center-block" alt="Human Thief"></p>
+        </div>
+
+        <div class="col-sm-3 hidden visible-xs">
+            <p><img src="{{ asset('assets/app/images/darkelf-scene.jpg') }}" class="img-responsive center-block" alt="Dark Elf Mage"></p>
         </div>
 
     </div>
