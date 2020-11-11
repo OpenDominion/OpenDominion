@@ -67,14 +67,8 @@
                         @endphp
 
                         @if ($recentlyInvadedCount > 0)
-                            <p class="text-center" style="margin-bottom: 0.5em;">
-                                @if ($recentlyInvadedCount >= 5)
-                                    This dominion has been invaded <strong><em>extremely heavily</em></strong> in recent times.
-                                @elseif ($recentlyInvadedCount >= 3)
-                                    This dominion has been invaded <strong>heavily</strong> in recent times.
-                                @else
-                                    This dominion has been invaded in recent times.
-                                @endif
+                            <p class="text-center" style="margin-bottom: 0.5em;" data-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.<br/>Prestige gains reduced by {{ 10 * $recentlyInvadedCount }}% (min 20).">
+                                This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> time(s) in the last 24 hours.
                             </p>
                         @endif
 

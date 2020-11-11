@@ -403,6 +403,19 @@ class InvadeActionService
             $attackerPrestigeChange = 0;
         }
 
+        // Reduce attacker prestige gain if the target was hit recently
+        if ($attackerPrestigeChange > 0) {
+            $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
+
+            if ($recentlyInvadedCount > 0) {
+                $attackerPrestigeChange *= (1 - (0.1 * $recentlyInvadedCount));
+            }
+
+            if ($attackerPrestigeChange < 20) {
+                $attackerPrestigeChange = 20;
+            }
+        }
+
         $attackerPrestigeChange = (int)round($attackerPrestigeChange);
         if ($attackerPrestigeChange !== 0) {
             if (!$isInvasionSuccessful) {
@@ -570,17 +583,8 @@ class InvadeActionService
 
         // Reduce casualties if target has been hit recently
         $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
-
-        if ($recentlyInvadedCount === 1) {
-            $defensiveCasualtiesPercentage *= 0.8;
-        } elseif ($recentlyInvadedCount === 2) {
-            $defensiveCasualtiesPercentage *= 0.6;
-        } elseif ($recentlyInvadedCount === 3) {
-            $defensiveCasualtiesPercentage *= 0.55;
-        } elseif ($recentlyInvadedCount === 4) {
-            $defensiveCasualtiesPercentage *= 0.45;
-        } elseif ($recentlyInvadedCount >= 5) {
-            $defensiveCasualtiesPercentage *= 0.35;
+        if ($recentlyInvadedCount > 0) {
+            $defensiveCasualtiesPercentage *= (1 - (0.2 * $recentlyInvadedCount));
         }
 
         // Cap max casualties
@@ -937,13 +941,16 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
+            $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
+            $researchPointsGained = max(1100, $dominion->round->daysInRound() / 0.027);
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
-            if ($range < 75) {
-                $researchPointsGained *= 0.5;
-            } elseif ($range < 60) {
+            if ($range < 60) {
                 $researchPointsGained = 0;
+            } elseif ($range < 75) {
+                $researchPointsGained *= 0.5;
+            } else {
+                $researchPointsGained += (1.5 * $productionCalculator->getTechProduction($dominion));
             }
 
             // Racial Bonus
@@ -951,6 +958,10 @@ class InvadeActionService
 
             // Wonders
             $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
+
+            // Recent invasion penalty
+            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
+            $researchPointsGained *= (1 - max(0, ($recentlyInvadedCount - 2) * 0.2));
 
             $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
             $this->queueService->queueResources(
