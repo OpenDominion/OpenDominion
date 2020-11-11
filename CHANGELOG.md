@@ -3,6 +3,16 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.1.4] - 2020-11-11
+### Changed
+- New artwork on the homepage!
+- Updated links to the wiki
+- Military Culture tech changed to +10% (from 5%)
+- Prestige gains on attack are now reduced by 10% per recent invasion, to a minimum of 20
+- Attacks against targets 75%+ your size now generate 150% of your hourly reseach point production in addition to 1100 base (from flat 1000)
+- Research point gains on attack are reduced if _you_ have been invaded many times recently (20% less for each invasion after the 2nd)
+
 ### Fixed
 - Wrong prerequisite for Ares' Favor tech
 
@@ -1095,7 +1105,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.3...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.4...HEAD
+[1.1.4]: https://github.com/OpenDominion/OpenDominion/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/OpenDominion/OpenDominion/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/OpenDominion/OpenDominion/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/OpenDominion/OpenDominion/compare/1.1.0...1.1.1
