@@ -32,13 +32,10 @@
                     <p>To help you get started, please consult the following resources:</p>
 
                     <ul>
-                        <li><a href="https://opendominion.miraheze.org/wiki/My_First_Round" target="_blank">My First Round <i class="fa fa-external-link"></i></a> on the <a href="https://opendominion.miraheze.org/" target="_blank">OpenDominion Wiki <i class="fa fa-external-link"></i></a>.</li>
                         <li><a href="{{ route('scribes.races') }}">The Scribes</a></li>
-                        <li><a href="http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide" target="_blank">The Complete Newbie Guide <i class="fa fa-external-link"></i></a> on the Web Archive</li>
-                        <li>A mirror of Dominion's manual: <a href="http://dominion.opendominion.net/scribes.html" target="_blank">The Scribes <i class="fa fa-external-link"></i></a> <strong>(Outdated)</strong> </li>
+                        <li><a href="https://wiki.opendominion.net/wiki/My_First_Round" target="_blank">My First Round <i class="fa fa-external-link"></i></a> on the <a href="https://wiki.opendominion.net/" target="_blank">OpenDominion Wiki <i class="fa fa-external-link"></i></a>.</li>
+                        <li>A mirror of the <a href="http://dominion.opendominion.net/" target="_blank">original website <i class="fa fa-external-link"></i></a> <strong>(Outdated)</strong> </li>
                     </ul>
-
-                    <p>Do note that OpenDominion is still in development and not all features from Dominion are present in OpenDominion.</p>
 
                     @if ($discordInviteLink = config('app.discord_invite_link'))
                         <p>Also feel free to join the OpenDominion <a href="{{ $discordInviteLink }}" target="_blank">Discord server <i class="fa fa-external-link"></i></a>! It's the main place for game announcements, game-related chat and development chat.</p>

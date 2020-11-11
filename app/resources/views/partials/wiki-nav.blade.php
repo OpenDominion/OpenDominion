@@ -1,3 +1,3 @@
 <li>
-    <a href="https://opendominion.miraheze.org" target="_blank">Wiki</a>
+    <a href="https://wiki.opendominion.net" target="_blank">Wiki</a>
 </li>
