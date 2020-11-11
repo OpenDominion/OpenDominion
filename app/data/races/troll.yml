@@ -31,10 +31,10 @@ units:
   - name: Basher
     type: offensive_elite
     cost:
-      platinum: 1100
+      platinum: 1000
       ore: 100
     power:
-      offense: 6
+      offense: 5
       defense: 2
     perks:
       reduce_combat_losses: 1
