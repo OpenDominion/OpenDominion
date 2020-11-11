@@ -395,7 +395,7 @@ tech_7_13:
 tech_9_13:
   name: Military Culture
   perks:
-    prestige_gains: 5
+    prestige_gains: 10
   requires:
     - tech_10_11
     - tech_8_15
