@@ -85,7 +85,7 @@
                         <p style="font-size: 1.5em;" class="text-yellow">Open for Registration</p>
                     </div>
                     <div class="box-body text-center">
-                        <p>Registration for round {{ $currentRound->number }} is open.</p>
+                        <p><a href="{{ route('round.register', $currentRound) }}">Registration</a> for Round {{ $currentRound->number }} is open.</p>
                         <p>The round starts on {{ $currentRound->start_date }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
                 @elseif (!$currentRound->hasStarted())
@@ -93,7 +93,7 @@
                         <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
                     </div>
                     <div class="box-body text-center">
-                        <p>Registration for round {{ $currentRound->number }} opens on {{ $currentRound->start_date->subDays(3) }}.</p>
+                        <p>Registration for Round {{ $currentRound->number }} opens on {{ $currentRound->start_date->subDays(3) }}.</p>
                         <p>The round starts on {{ $currentRound->start_date }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
                 @else
