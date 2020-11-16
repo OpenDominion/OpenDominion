@@ -169,16 +169,18 @@
                                 <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
 
                                 <p>You can automatically load the most recent ops into the calculator.</p>
+
+                                <p>You can also copy all ops as json, using the copy button.</p>
                             @endif
+                            <p>You can automatically load data into the calculator.</p>
+                            <p>You can also copy all data as json, using the copy button.</p>
 
                             <p>
-                                @if(!$inRealm)
-                                    <div class="pull-left">
-                                        <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
-                                            <i class="fa fa-calculator"></i> Calculate
-                                        </a>
-                                    </div>
-                                @endif
+                                <div class="pull-left">
+                                    <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
+                                        <i class="fa fa-calculator"></i> Calculate
+                                    </a>
+                                </div>
                                 <div class="pull-right">
                                     <a class="btn btn-primary" onclick="copyJson('ops_json')">
                                         <i class="fa fa-copy"></i> Copy ops
