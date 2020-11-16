@@ -583,8 +583,17 @@ class InvadeActionService
 
         // Reduce casualties if target has been hit recently
         $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
-        if ($recentlyInvadedCount > 0) {
-            $defensiveCasualtiesPercentage *= (1 - (0.2 * $recentlyInvadedCount));
+
+        if ($recentlyInvadedCount === 1) {
+            $defensiveCasualtiesPercentage *= 0.8;
+        } elseif ($recentlyInvadedCount === 2) {
+            $defensiveCasualtiesPercentage *= 0.6;
+        } elseif ($recentlyInvadedCount === 3) {
+            $defensiveCasualtiesPercentage *= 0.55;
+        } elseif ($recentlyInvadedCount === 4) {
+            $defensiveCasualtiesPercentage *= 0.45;
+        } elseif ($recentlyInvadedCount >= 5) {
+            $defensiveCasualtiesPercentage *= 0.35;
         }
 
         // Cap max casualties
@@ -944,6 +953,13 @@ class InvadeActionService
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
             $researchPointsGained = max(1100, $dominion->round->daysInRound() / 0.027);
+
+            // Racial Bonus
+            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+
+            // Wonders
+            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
+
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
             if ($range < 60) {
                 $researchPointsGained = 0;
@@ -952,12 +968,6 @@ class InvadeActionService
             } else {
                 $researchPointsGained += (1.5 * $productionCalculator->getTechProduction($dominion));
             }
-
-            // Racial Bonus
-            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
-
-            // Wonders
-            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
 
             // Recent invasion penalty
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
