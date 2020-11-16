@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
+use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
@@ -21,17 +22,42 @@ use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\InfoOpService;
 use OpenDominion\Services\Dominion\QueueService;
 use OpenDominion\Services\Dominion\RankingsService;
+use OpenDominion\Services\GameEventService;
 
 class AdvisorsController extends AbstractDominionController
 {
+    /**
+     * @var GameEventService
+     */
+    private $gameEventService;
+    /**
+     * @var SpellCalculator
+     */
+    private $spellCalculator;
+    /**
+     * @var InfoMapper
+     */
+    private $infoMapper;
+
+    public function __construct(
+        GameEventService $gameEventService,
+        SpellCalculator $spellCalculator,
+        InfoMapper $infoMapper)
+    {
+        $this->gameEventService = $gameEventService;
+        $this->spellCalculator = $spellCalculator;
+        $this->infoMapper = $infoMapper;
+    }
+
     public function getAdvisors()
     {
         return redirect()->route('dominion.advisors.production');
     }
 
-    public function getAdvisorsStatus(Dominion $target)
+    public function getAdvisorsOpCenter(Dominion $target = null)
     {
         try {
             $this->guardPackRealm($target);
@@ -40,10 +66,66 @@ class AdvisorsController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        return view('pages.dominion.advisors.status', [
-            'unitHelper' => app(UnitHelper::class),
+        $dominion = $target;
+        if($dominion == null) {
+            $dominion = $this->getSelectedDominion();
+        }
+
+        $latestInfoOps = collect([
+            (object)[
+                'type' => 'clear_sight',
+                'data' => $this->infoMapper->mapStatus($dominion, false)
+            ],
+            (object)[
+                'type' => 'revelation',
+                'data' => $this->spellCalculator->getActiveSpells($dominion)
+                    ->transform(function ($item, $key) {
+                        return (array)$item;
+                    })
+                    ->toArray()
+            ],
+            (object)[
+                'type' => 'castle_spy',
+                'data' => $this->infoMapper->mapImprovements($dominion)
+            ],
+            (object)[
+                'type' => 'barracks_spy',
+                'data' => $this->infoMapper->mapMilitary($dominion, false)
+            ],
+            (object)[
+                'type' => 'survey_dominion',
+                'data' => $this->infoMapper->mapBuildings($dominion)
+            ],
+            (object)[
+                'type' => 'land_spy',
+                'data' => $this->infoMapper->mapLand($dominion)
+            ],
+            (object)[
+                'type' => 'vision',
+                'data' => [
+                    'techs' => $this->infoMapper->mapTechs($dominion)
+                ]
+            ],
+        ]);
+
+        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 10);
+
+        return view('pages.dominion.op-center.show', [
+            'buildingHelper' => app(BuildingHelper::class),
+            'improvementHelper' => app(ImprovementHelper::class),
+            'infoOpService' => app(InfoOpService::class),
+            'landCalculator' => app(LandCalculator::class),
+            'landHelper' => app(LandHelper::class),
             'miscHelper' => app(MiscHelper::class),
-            'infoMapper' => app(InfoMapper::class),
+            'rangeCalculator' => app(RangeCalculator::class),
+            'spellCalculator' => app(SpellCalculator::class),
+            'spellHelper' => app(SpellHelper::class),
+            'techHelper' => app(TechHelper::class),
+            'unitHelper' => app(UnitHelper::class),
+            'dominion' => $dominion,
+            'latestInfoOps' => $latestInfoOps,
+            'latestInvasionEvents' => $latestInvasionEvents,
+            'inRealm' => true,
             'targetDominion' => $target
         ]);
     }
