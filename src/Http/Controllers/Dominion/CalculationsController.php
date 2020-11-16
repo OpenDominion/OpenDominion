@@ -28,7 +28,8 @@ class CalculationsController extends AbstractDominionController
 
     public function __construct(
         SpellCalculator $spellCalculator,
-        InfoMapper $infoMapper)
+        InfoMapper $infoMapper
+    )
     {
         $this->spellCalculator = $spellCalculator;
         $this->infoMapper = $infoMapper;
