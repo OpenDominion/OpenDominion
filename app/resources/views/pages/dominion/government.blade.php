@@ -60,7 +60,7 @@
                                                             data-race="{{ $dominion->race->name }}"
                                                             data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                             data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}"
-                                                            data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                                            data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}">
                                                         {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                     </option>
                                                 @endforeach
