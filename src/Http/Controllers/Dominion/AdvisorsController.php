@@ -45,7 +45,8 @@ class AdvisorsController extends AbstractDominionController
     public function __construct(
         GameEventService $gameEventService,
         SpellCalculator $spellCalculator,
-        InfoMapper $infoMapper)
+        InfoMapper $infoMapper
+    )
     {
         $this->gameEventService = $gameEventService;
         $this->spellCalculator = $spellCalculator;
