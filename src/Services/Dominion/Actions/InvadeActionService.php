@@ -391,7 +391,7 @@ class InvadeActionService
             }
 
             // Wonders - does not stack with other bonuses
-            if ($dominion->getWonderPerkValue('prestige_gains') !== 0) {
+            if ($dominion->getWonderPerkValue('prestige_gains') != 0) {
                 $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
             }
 
@@ -1013,7 +1013,7 @@ class InvadeActionService
             }
             $unitsSentPerSlot[$slot] = $units[$slot];
 
-            if ($unit->getPerkValue('plunders_resources_on_attack') !== 0) {
+            if ($unit->getPerkValue('plunders_resources_on_attack') != 0) {
                 $unitsSentPlunderSlot = $slot;
             }
         }
@@ -1100,7 +1100,7 @@ class InvadeActionService
 
             $unitsTotal += (int)$units[$unit->slot];
 
-            if ($unit->getPerkValue('sink_boats_offense') !== 0) {
+            if ($unit->getPerkValue('sink_boats_offense') != 0) {
                 $unitsThatSinkBoats += (int)$units[$unit->slot];
             }
 
@@ -1135,7 +1135,7 @@ class InvadeActionService
         // Defender sinking perk
         foreach ($target->race->units as $unit) {
             $defendingUnitsTotal += $target->{"military_unit{$unit->slot}"};
-            if ($unit->getPerkValue('sink_boats_defense') !== 0) {
+            if ($unit->getPerkValue('sink_boats_defense') != 0) {
                 $defendingUnitsThatSinkBoats += $target->{"military_unit{$unit->slot}"};
             }
         }

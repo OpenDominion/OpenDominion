@@ -571,7 +571,7 @@ class EspionageActionService
             if ($resource === 'platinum') {
                 return 0;
             }
-            if ($target->getTechPerkValue('improved_fools_gold') !== 0 && ($resource === 'ore' || $resource === 'lumber')) {
+            if ($target->getTechPerkValue('improved_fools_gold') != 0 && ($resource === 'ore' || $resource === 'lumber')) {
                 return 0;
             }
         }

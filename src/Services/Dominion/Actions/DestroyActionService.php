@@ -51,7 +51,7 @@ class DestroyActionService
         }
 
         $destructionRefundString = '';
-        if ($dominion->getTechPerkValue('destruction_refund') !== 0) {
+        if ($dominion->getTechPerkValue('destruction_refund') != 0) {
             $constructionCalculator = app(ConstructionCalculator::class);
             $multiplier =  $totalBuildingsToDestroy * $dominion->getTechPerkMultiplier('destruction_refund');
             $platinumRefund = round($constructionCalculator->getPlatinumCost($dominion) * $multiplier);
