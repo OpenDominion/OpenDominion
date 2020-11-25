@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Typo in Gobiln gem investment racial bonus
 - Additional significant digit in range calculations within dropdowns/op center
+- The Maelstrom tech now also increases the max health cap on cyclone damage
 
 ## [1.1.5] - 2020-11-15
 ### Fixed
