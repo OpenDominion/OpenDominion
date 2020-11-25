@@ -78,6 +78,24 @@ class WonderCalculator
     }
 
     /**
+     * Returns the wonder's approximate power for out-of-realm display.
+     *
+     * @param RoundWonder $wonder
+     * @return float
+     */
+    public function getApproximatePower(RoundWonder $wonder): float
+    {
+        $power = $this->getCurrentPower($wonder);
+        $approximation = round($power, -4);
+
+        if ($power == $wonder->power || $approximation > $wonder->power) {
+            return $power;
+        }
+
+        return $approximation;
+    }
+
+    /**
     * Returns total damage dealt to a wonder
     *
     * @param RoundWonder $wonder

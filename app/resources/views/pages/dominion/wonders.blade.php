@@ -40,7 +40,11 @@
                                     </td>
                                     <td>
                                         @if ($wonder->realm)
-                                            {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
+                                            @if ($wonder->realm_id == $selectedDominion->realm_id)
+                                                {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
+                                            @else
+                                                ~{{ number_format($wonderCalculator->getApproximatePower($wonder)) }}
+                                            @endif
                                         @else
                                             ???
                                         @endif

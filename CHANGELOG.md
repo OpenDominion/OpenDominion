@@ -3,6 +3,9 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- The displayed out-of-realm Wonder HP is now approximate (rounded to the nearest 10,000)
+
 ### Fixed
 - Typo in Gobiln gem investment racial bonus
 - Additional significant digit in range calculations within dropdowns/op center

@@ -243,7 +243,14 @@
                                 @foreach ($realm->roundWonders as $wonder)
                                     <tr>
                                         <td>{{ $wonder->wonder->name }}</a></td>
-                                        <td>{{ number_format($wonderCalculator->getCurrentPower($wonder)) }} / {{ number_format($wonder->power) }}</td>
+                                        <td>
+                                            @if ($wonder->realm_id == $selectedDominion->realm_id)
+                                                {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
+                                            @else
+                                                ~{{ number_format($wonderCalculator->getApproximatePower($wonder)) }}
+                                            @endif
+                                            / {{ number_format($wonder->power) }}
+                                        </td>
                                         <td>{{ $wonderHelper->getWonderDescription($wonder->wonder) }}</td>
                                     </tr>
                                 @endforeach
