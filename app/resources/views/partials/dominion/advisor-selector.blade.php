@@ -12,11 +12,9 @@
     </div>
     <div class="box-body text-center">
 
-        @if($targetDominion != null)
-            <a href="{{ route($baseRoute.'status', $targetDominion) }}" class="btn btn-app">
-                <i class="fa fa-bar-chart"></i> Status
-            </a>
-        @endif
+        <a href="{{ route($baseRoute.'op-center', $targetDominion) }}" class="btn btn-app">
+            <i class="fa fa-globe"></i> Op Center
+        </a>
 
         <a href="{{ route($baseRoute.'production', $targetDominion) }}" class="btn btn-app">
             <i class="fa fa-industry"></i> Production

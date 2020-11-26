@@ -79,7 +79,7 @@
                                                         $sharesPackWithDominion = ($dominion->pack !== null) && ($dominion->pack_id === $selectedDominion->pack_id);
                                                     @endphp
                                                     @if ($hasRealmAdvisorEnabled || (!$hasRealmAdvisorDisabled && $hasPackAdvisorEnabled && $sharesPackWithDominion))
-                                                        <a href="{{ route('dominion.realm.advisors.production', $dominion) }}">{{ $dominion->name }}</a>
+                                                        <a href="{{ route('dominion.realm.advisors.op-center', $dominion) }}">{{ $dominion->name }}</a>
                                                     @else
                                                         {{ $dominion->name }}
                                                     @endif
