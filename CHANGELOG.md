@@ -3,13 +3,15 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Fixed
+- Offensive power tech bonuses corrected in calculator
 
 ## [1.1.6] - 2020-11-25
 ### Changed
 - The displayed out-of-realm Wonder HP is now approximate (rounded to the nearest 10,000)
 
 ### Fixed
-- Typo in Gobiln gem investment racial bonus
+- Typo in Goblin gem investment racial bonus
 - Additional significant digit in range calculations within dropdowns/op center
 - The Maelstrom tech now also increases the max health cap on cyclone damage
 - Fool's gold no longer protects lumber/ore unless you have the Trick of the Light tech
@@ -1121,7 +1123,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.5...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.6...HEAD
+[1.1.6]: https://github.com/OpenDominion/OpenDominion/compare/1.1.5...1.1.6
 [1.1.5]: https://github.com/OpenDominion/OpenDominion/compare/1.1.4...1.1.5
 [1.1.4]: https://github.com/OpenDominion/OpenDominion/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/OpenDominion/OpenDominion/compare/1.1.2...1.1.3
