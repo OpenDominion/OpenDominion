@@ -8,7 +8,6 @@
         $pageHeader .= ' for '.$target->name;
     }
     $improvementsData = $infoMapper->mapImprovements($target);
-    $techsData = $infoMapper->mapTechs($target);
 @endphp
 
 @section('page-header', $pageHeader)

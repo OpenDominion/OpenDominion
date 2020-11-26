@@ -3,6 +3,12 @@
 @section('page-header', 'Op Center')
 
 @php
+
+    if(!isset($inRealm)) {
+        $inRealm = false;
+        $targetDominion = null;
+    }
+
     $latestClearSight = $latestInfoOps->firstWhere('type', 'clear_sight');
     $latestRevelation = $latestInfoOps->firstWhere('type', 'revelation');
     $latestCastle = $latestInfoOps->firstWhere('type', 'castle_spy');
@@ -24,14 +30,13 @@
     if($latestClearSight != null) {
         $infoOps['status'] = $latestClearSight->data;
         $infoOps['status']['race_name'] = $dominion->race->name;
-        $infoOps['status']['created_at'] = $latestClearSight->created_at;
+        $infoOps['status']['created_at'] = isset($latestClearSight->created_at) ? $latestClearSight->created_at : null;
         $infoOps['status']['realm'] = $dominion->realm->number;
         $infoOps['status']['name'] = $dominion->name;
         unset($infoOps['status']['race_id']);
     }
 
     if($latestRevelation != null) {
-
         $infoOps['revelation'] = [];
         $infoOps['revelation']['spells'] = [];
 
@@ -41,36 +46,41 @@
             $spell['duration'] = $latestRevelation->data[$i]['duration'];
             $infoOps['revelation']['spells'][$i] = $spell;
         }
-        $infoOps['revelation']['created_at'] = $latestRevelation->created_at;
+        $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : null;
     }
 
     if($latestCastle != null) {
         $infoOps['castle'] = $latestCastle->data;
-        $infoOps['castle']['created_at'] = $latestCastle->created_at;
+        $infoOps['castle']['created_at'] = isset($latestCastle->created_at) ? $latestCastle->created_at : null;
     }
 
     if($latestBarracks != null) {
         $infoOps['barracks'] = $latestBarracks->data;
-        $infoOps['barracks']['created_at'] = $latestBarracks->created_at;
+        $infoOps['barracks']['created_at'] = isset($latestBarracks->created_at) ? $latestBarracks->created_at : null;
     }
 
     if($latestSurvey != null) {
         $infoOps['survey'] = $latestSurvey->data;
-        $infoOps['survey']['created_at'] = $latestSurvey->created_at;
+        $infoOps['survey']['created_at'] = isset($latestSurvey->created_at) ? $latestSurvey->created_at : null;
     }
 
     if($latestLand != null) {
         $infoOps['land'] = $latestLand->data;
-        $infoOps['land']['created_at'] = $latestLand->created_at;
+        $infoOps['land']['created_at'] = isset($latestLand->created_at) ? $latestLand->created_at : null;
     }
 
     if($latestVision != null) {
         $infoOps['vision'] = $latestVision->data;
-        $infoOps['vision']['created_at'] = $latestVision->created_at;
+        $infoOps['vision']['created_at'] = isset($latestVision->created_at) ? $latestVision->created_at : null;
     }
+
+
 @endphp
 
 @section('content')
+    @if($inRealm)
+        @include('partials.dominion.advisor-selector')
+    @endif
     <div class="row">
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
@@ -111,33 +121,35 @@
                     @endif
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestClearSight !== null)
-                            <em>Revealed {{ $latestClearSight->created_at }} by {{ $latestClearSight->sourceDominion->name }}</em>
-                            @if ($latestClearSight->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestClearSight->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestClearSight !== null)
+                                <em>Revealed {{ $latestClearSight->created_at }} by {{ $latestClearSight->sourceDominion->name }}</em>
+                                @if ($latestClearSight->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestClearSight->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestClearSight->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestClearSight->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="spell" value="clear_sight">
-                            <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="spell" value="clear_sight">
+                                <button type="submit" class="btn btn-sm btn-primary">Clear Sight ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'clear_sight')) }} mana)</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'clear_sight']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'clear_sight']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
 
@@ -149,13 +161,19 @@
                             <h3 class="box-title">Information</h3>
                         </div>
                         <div class="box-body">
-                            <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
+                            @if(!$inRealm)
+                                <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
 
-                            <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
+                                <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
 
-                            <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
+                                <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
 
-                            <p>You can automatically load the most recent ops into the calculator.</p>
+                                <p>You can automatically load the most recent ops into the calculator.</p>
+
+                                <p>You can also copy all ops as json, using the copy button.</p>
+                            @endif
+                            <p>You can automatically load data into the calculator.</p>
+                            <p>You can also copy all data as json, using the copy button.</p>
 
                             <p>
                                 <div class="pull-left">
@@ -247,33 +265,35 @@
                     </table>
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestRevelation !== null)
-                            <em>Revealed {{ $latestRevelation->created_at }} by {{ $latestRevelation->sourceDominion->name }}</em>
-                            @if ($latestRevelation->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestRevelation->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestRevelation !== null)
+                                <em>Revealed {{ $latestRevelation->created_at }} by {{ $latestRevelation->sourceDominion->name }}</em>
+                                @if ($latestRevelation->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestRevelation->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestRevelation->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestRevelation->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="spell" value="revelation">
-                            <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'revelation')) }} mana)</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="spell" value="revelation">
+                                <button type="submit" class="btn btn-sm btn-primary">Revelation ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'revelation')) }} mana)</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'revelation']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'revelation']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
 
@@ -293,33 +313,35 @@
                     @include('partials.dominion.info.improvements-table', ['data' => $latestCastle->data])
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestCastle !== null)
-                            <em>Revealed {{ $latestCastle->created_at }} by {{ $latestCastle->sourceDominion->name }}</em>
-                            @if ($latestCastle->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestCastle->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestCastle !== null)
+                                <em>Revealed {{ $latestCastle->created_at }} by {{ $latestCastle->sourceDominion->name }}</em>
+                                @if ($latestCastle->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestCastle->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestCastle->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestCastle->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="operation" value="castle_spy">
-                            <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="operation" value="castle_spy">
+                                <button type="submit" class="btn btn-sm btn-primary">Castle Spy</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'castle_spy']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'castle_spy']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
 
@@ -342,33 +364,35 @@
                     @include('partials.dominion.info.military-training-table', ['data' => $latestBarracks->data, 'isOp' => true, 'race' => $dominion->race ])
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestBarracks !== null)
-                            <em>Revealed {{ $latestBarracks->created_at }} by {{ $latestBarracks->sourceDominion->name }}</em>
-                            @if ($latestBarracks->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestBarracks->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestBarracks !== null)
+                                <em>Revealed {{ $latestBarracks->created_at }} by {{ $latestBarracks->sourceDominion->name }}</em>
+                                @if ($latestBarracks->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestBarracks->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestBarracks->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestBarracks->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="operation" value="barracks_spy">
-                            <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="operation" value="barracks_spy">
+                                <button type="submit" class="btn btn-sm btn-primary">Barracks Spy</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'barracks_spy']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'barracks_spy']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
         <div class="col-sm-12 col-md-6">
@@ -409,33 +433,35 @@
                     @include('partials.dominion.info.construction-constructed-table', ['data' => $latestSurvey->data])
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestSurvey !== null)
-                            <em>Revealed {{ $latestSurvey->created_at }} by {{ $latestSurvey->sourceDominion->name }}</em>
-                            @if ($latestSurvey->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestSurvey->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestSurvey !== null)
+                                <em>Revealed {{ $latestSurvey->created_at }} by {{ $latestSurvey->sourceDominion->name }}</em>
+                                @if ($latestSurvey->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestSurvey->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestSurvey->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestSurvey->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="operation" value="survey_dominion">
-                            <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="operation" value="survey_dominion">
+                                <button type="submit" class="btn btn-sm btn-primary">Survey Dominion</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'survey_dominion']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'survey_dominion']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
 
@@ -474,33 +500,35 @@
                     @include('partials.dominion.info.land-table', ['data' => $latestLand->data, 'race' => $dominion->race])
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestLand !== null)
-                            <em>Revealed {{ $latestLand->created_at }} by {{ $latestLand->sourceDominion->name }}</em>
-                            @if ($latestLand->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestLand->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestLand !== null)
+                                <em>Revealed {{ $latestLand->created_at }} by {{ $latestLand->sourceDominion->name }}</em>
+                                @if ($latestLand->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestLand->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestLand->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestLand->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.espionage') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="operation" value="land_spy">
-                            <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.espionage') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="operation" value="land_spy">
+                                <button type="submit" class="btn btn-sm btn-primary">Land Spy</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'land_spy']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'land_spy']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
 
@@ -540,33 +568,35 @@
                     @include('partials.dominion.info.techs-table', ['data' => $latestVision->data['techs']])
                 @endif
 
-                @slot('boxFooter')
-                    <div class="pull-left">
-                        @if ($latestVision !== null)
-                            <em>Revealed {{ $latestVision->created_at }} by {{ $latestVision->sourceDominion->name }}</em>
-                            @if ($latestVision->isInvalid())
-                                <span class="label label-danger">Invalid</span>
-                            @elseif ($latestVision->isStale())
-                                <span class="label label-warning">Stale</span>
+                @if(!$inRealm)
+                    @slot('boxFooter')
+                        <div class="pull-left">
+                            @if ($latestVision !== null)
+                                <em>Revealed {{ $latestVision->created_at }} by {{ $latestVision->sourceDominion->name }}</em>
+                                @if ($latestVision->isInvalid())
+                                    <span class="label label-danger">Invalid</span>
+                                @elseif ($latestVision->isStale())
+                                    <span class="label label-warning">Stale</span>
+                                @endif
+                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestVision->created_at) }}</span>
                             @endif
-                            <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestVision->created_at) }}</span>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="pull-right">
-                        <form action="{{ route('dominion.magic') }}" method="post" role="form">
-                            @csrf
-                            <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
-                            <input type="hidden" name="spell" value="vision">
-                            <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'vision')) }} mana)</button>
-                        </form>
-                    </div>
-                    <div class="clearfix"></div>
+                        <div class="pull-right">
+                            <form action="{{ route('dominion.magic') }}" method="post" role="form">
+                                @csrf
+                                <input type="hidden" name="target_dominion" value="{{ $dominion->id }}">
+                                <input type="hidden" name="spell" value="vision">
+                                <button type="submit" class="btn btn-sm btn-primary">Vision ({{ number_format($spellCalculator->getManaCost($selectedDominion, 'vision')) }} mana)</button>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
 
-                    <div class="text-center">
-                        <a href="{{ route('dominion.op-center.archive', [$dominion, 'vision']) }}">View Archives</a>
-                    </div>
-                @endslot
+                        <div class="text-center">
+                            <a href="{{ route('dominion.op-center.archive', [$dominion, 'vision']) }}">View Archives</a>
+                        </div>
+                    @endslot
+                @endif
             @endcomponent
         </div>
 
