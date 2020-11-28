@@ -54,8 +54,13 @@ class DestroyActionService
         if ($dominion->getTechPerkValue('destruction_refund') != 0) {
             $constructionCalculator = app(ConstructionCalculator::class);
             $multiplier =  $totalBuildingsToDestroy * $dominion->getTechPerkMultiplier('destruction_refund');
-            $platinumRefund = round($constructionCalculator->getPlatinumCost($dominion) * $multiplier);
-            $lumberRefund = round($constructionCalculator->getLumberCost($dominion) * $multiplier);
+
+            $platinumRefund = round($constructionCalculator->getPlatinumCostRaw($dominion) * $multiplier);
+            $lumberRefund = round($constructionCalculator->getLumberCostRaw($dominion) * $multiplier);
+
+            $platinumRefund = min($platinumRefund, $constructionCalculator->getPlatinumCost($dominion));
+            $lumberRefund = min($lumberRefund, $constructionCalculator->getLumberCost($dominion));
+
             $destructionRefundString = " You were refunded {$platinumRefund} platinum and {$lumberRefund} lumber.";
             $dominion->resource_platinum += $platinumRefund;
             $dominion->resource_lumber += $lumberRefund;
