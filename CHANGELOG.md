@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Fixed
 - Offensive power tech bonuses corrected in calculator
+- Destroying neutral wonder, when realm already has one, does not give any prestige.
 
 ## [1.1.6] - 2020-11-25
 ### Changed
