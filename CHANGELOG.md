@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Fixed
 - Offensive power tech bonuses corrected in calculator
+- Urg Smash Technique destruction refund is now based on raw cost.
 
 ## [1.1.6] - 2020-11-25
 ### Changed
