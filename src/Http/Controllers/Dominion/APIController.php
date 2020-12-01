@@ -37,28 +37,32 @@ class APIController extends AbstractDominionController
     {
         $calc = $request->get('calc');
         $units = array_fill(0, 5, 0);
+        $accuracy = 0.85;
+        if (isset($calc['accurate'])) {
+            $accuracy = 1.0;
+        }
 
         // Calculate units home and away
         if (isset($calc['draftees'])) {
             $units[0] = $calc['draftees'];
         } elseif (isset($calc['draftees_home'])) {
-            $units[0] = (int) ($calc['draftees_home'] / 0.85);
+            $units[0] = (int) ($calc['draftees_home'] / $accuracy);
         }
         foreach(range(1, 4) as $slot) {
             if (isset($calc["unit{$slot}"])) {
                 $units[$slot] = $calc["unit{$slot}"];
                 if (isset($calc["unit{$slot}_away"])) {
-                    $unitsAway = (int) ($calc["unit{$slot}_away"] * 0.85);
+                    $unitsAway = (int) ($calc["unit{$slot}_away"] * $accuracy);
                     $units[$slot] = max($units[$slot] - $unitsAway, 0);
                     if (isset($calc["unit{$slot}_home"]) && $unitsAway > 0) {
-                        $unitsHome = (int) ($calc["unit{$slot}_home"] / 0.85);
+                        $unitsHome = (int) ($calc["unit{$slot}_home"] / $accuracy);
                         if ($unitsHome < $units[$slot]) {
                             $units[$slot] = $unitsHome;
                         }
                     }
                 }
             } elseif (isset($calc["unit{$slot}_home"])) {
-                $units[$slot] = (int) ($calc["unit{$slot}_home"] / 0.85);
+                $units[$slot] = (int) ($calc["unit{$slot}_home"] / $accuracy);
             }
         }
 
