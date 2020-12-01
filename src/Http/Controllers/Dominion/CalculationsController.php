@@ -50,11 +50,11 @@ class CalculationsController extends AbstractDominionController
                     $targetInfoOps = collect([
                         (object)[
                             'type' => 'clear_sight',
-                            'data' => $this->infoMapper->mapStatus($dominion, false)
+                            'data' => $this->infoMapper->mapStatus($targetDominion, false)
                         ],
                         (object)[
                             'type' => 'revelation',
-                            'data' => $this->spellCalculator->getActiveSpells($dominion)
+                            'data' => $this->spellCalculator->getActiveSpells($targetDominion)
                                 ->transform(function ($item, $key) {
                                     return (array)$item;
                                 })
@@ -62,24 +62,24 @@ class CalculationsController extends AbstractDominionController
                         ],
                         (object)[
                             'type' => 'castle_spy',
-                            'data' => $this->infoMapper->mapImprovements($dominion)
+                            'data' => $this->infoMapper->mapImprovements($targetDominion)
                         ],
                         (object)[
                             'type' => 'barracks_spy',
-                            'data' => $this->infoMapper->mapMilitary($dominion, false)
+                            'data' => $this->infoMapper->mapMilitary($targetDominion, false)
                         ],
                         (object)[
                             'type' => 'survey_dominion',
-                            'data' => $this->infoMapper->mapBuildings($dominion)
+                            'data' => $this->infoMapper->mapBuildings($targetDominion)
                         ],
                         (object)[
                             'type' => 'land_spy',
-                            'data' => $this->infoMapper->mapLand($dominion)
+                            'data' => $this->infoMapper->mapLand($targetDominion)
                         ],
                         (object)[
                             'type' => 'vision',
                             'data' => [
-                                'techs' => $this->infoMapper->mapTechs($dominion)
+                                'techs' => $this->infoMapper->mapTechs($targetDominion)
                             ]
                         ],
                     ])->keyBy('type');
