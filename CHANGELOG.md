@@ -3,6 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Status advisor replaced with Op Center advisor
+  - View all of you or your realm mates' info on a single page
+  - Copy ops button for in-realm dominions
+  - Load in-realm dominions into the calculator
+
 ### Fixed
 - Offensive power tech bonuses corrected in calculator
 
