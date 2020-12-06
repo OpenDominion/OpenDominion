@@ -53,10 +53,17 @@ class DestroyActionService
         $destructionRefundString = '';
         if ($dominion->getTechPerkValue('destruction_refund') != 0) {
             $constructionCalculator = app(ConstructionCalculator::class);
-            $multiplier =  $totalBuildingsToDestroy * $dominion->getTechPerkMultiplier('destruction_refund');
+            $multiplier = $dominion->getTechPerkMultiplier('destruction_refund');
 
-            $platinumRefund = round($constructionCalculator->getPlatinumCostRaw($dominion) * $multiplier);
-            $lumberRefund = round($constructionCalculator->getLumberCostRaw($dominion) * $multiplier);
+            $platinumCost = round($constructionCalculator->getPlatinumCostRaw($dominion) * $multiplier);
+            $lumberCost= round($constructionCalculator->getLumberCostRaw($dominion) * $multiplier);
+
+            // Can never get more per acre than the current modded cost per acre
+            $platinumCost = min($platinumCost, $constructionCalculator->getPlatinumCost($dominion));
+            $lumberCost = min($lumberCost, $constructionCalculator->getLumberCost($dominion));
+
+            $platinumRefund = round($platinumCost * $totalBuildingsToDestroy);
+            $lumberRefund = round($lumberCost * $totalBuildingsToDestroy);
 
             $destructionRefundString = " You were refunded {$platinumRefund} platinum and {$lumberRefund} lumber.";
             $dominion->resource_platinum += $platinumRefund;
