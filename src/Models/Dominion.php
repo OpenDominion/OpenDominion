@@ -290,7 +290,7 @@ class Dominion extends AbstractModel
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
-            $extraAttributes = ['action', 'defense_reduced', 'source_dominion_id', 'target_dominion_id'];
+            $extraAttributes = ['action', 'defense_reduced', 'source_dominion_id', 'target_dominion_id', 'target_wonder_id'];
             foreach ($extraAttributes as $attr) {
                 if (isset($options[$attr])) {
                     $deltaAttributes[$attr] = $options[$attr];
