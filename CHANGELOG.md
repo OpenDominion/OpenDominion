@@ -4,6 +4,11 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.1.8] - 2020-12-10
+### Fixed
+- Destroying a neutral wonder while you already control a wonder no longer rewards prestige
+- Using the calculator from in-realm advisors no longer sometimes uses your own info instead
+
 ## [1.1.7] - 2020-12-01
 ### Added
 - Status advisor replaced with Op Center advisor
@@ -1132,7 +1137,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.7...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.8...HEAD
+[1.1.8]: https://github.com/OpenDominion/OpenDominion/compare/1.1.7...1.1.8
 [1.1.7]: https://github.com/OpenDominion/OpenDominion/compare/1.1.6...1.1.7
 [1.1.6]: https://github.com/OpenDominion/OpenDominion/compare/1.1.5...1.1.6
 [1.1.5]: https://github.com/OpenDominion/OpenDominion/compare/1.1.4...1.1.5
