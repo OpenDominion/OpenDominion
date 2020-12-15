@@ -4,7 +4,7 @@
 
 @php
 
-    if(!isset($inRealm)) {
+    use Carbon\Carbon;if(!isset($inRealm)) {
         $inRealm = false;
         $targetDominion = null;
     }
@@ -27,10 +27,12 @@
         'vision' => null
     ];
 
+    $now = Carbon::now();
+
     if($latestClearSight != null) {
         $infoOps['status'] = $latestClearSight->data;
         $infoOps['status']['race_name'] = $dominion->race->name;
-        $infoOps['status']['created_at'] = isset($latestClearSight->created_at) ? $latestClearSight->created_at : null;
+        $infoOps['status']['created_at'] = isset($latestClearSight->created_at) ? $latestClearSight->created_at : $now;
         $infoOps['status']['realm'] = $dominion->realm->number;
         $infoOps['status']['name'] = $dominion->name;
         unset($infoOps['status']['race_id']);
@@ -46,32 +48,32 @@
             $spell['duration'] = $latestRevelation->data[$i]['duration'];
             $infoOps['revelation']['spells'][$i] = $spell;
         }
-        $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : null;
+        $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : $now;
     }
 
     if($latestCastle != null) {
         $infoOps['castle'] = $latestCastle->data;
-        $infoOps['castle']['created_at'] = isset($latestCastle->created_at) ? $latestCastle->created_at : null;
+        $infoOps['castle']['created_at'] = isset($latestCastle->created_at) ? $latestCastle->created_at : $now;
     }
 
     if($latestBarracks != null) {
         $infoOps['barracks'] = $latestBarracks->data;
-        $infoOps['barracks']['created_at'] = isset($latestBarracks->created_at) ? $latestBarracks->created_at : null;
+        $infoOps['barracks']['created_at'] = isset($latestBarracks->created_at) ? $latestBarracks->created_at : $now;
     }
 
     if($latestSurvey != null) {
         $infoOps['survey'] = $latestSurvey->data;
-        $infoOps['survey']['created_at'] = isset($latestSurvey->created_at) ? $latestSurvey->created_at : null;
+        $infoOps['survey']['created_at'] = isset($latestSurvey->created_at) ? $latestSurvey->created_at : $now;
     }
 
     if($latestLand != null) {
         $infoOps['land'] = $latestLand->data;
-        $infoOps['land']['created_at'] = isset($latestLand->created_at) ? $latestLand->created_at : null;
+        $infoOps['land']['created_at'] = isset($latestLand->created_at) ? $latestLand->created_at : $now;
     }
 
     if($latestVision != null) {
         $infoOps['vision'] = $latestVision->data;
-        $infoOps['vision']['created_at'] = isset($latestVision->created_at) ? $latestVision->created_at : null;
+        $infoOps['vision']['created_at'] = isset($latestVision->created_at) ? $latestVision->created_at : $now;
     }
 
 
