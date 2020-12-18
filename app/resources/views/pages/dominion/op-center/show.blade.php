@@ -4,7 +4,8 @@
 
 @php
 
-    use Carbon\Carbon;if(!isset($inRealm)) {
+    use Carbon\Carbon;
+    if(!isset($inRealm)) {
         $inRealm = false;
         $targetDominion = null;
     }
