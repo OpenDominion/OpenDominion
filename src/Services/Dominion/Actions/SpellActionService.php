@@ -718,7 +718,7 @@ class SpellActionService
                 // Infamy Gains
                 $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard');
                 $dominion->infamy += $infamyGain;
-    
+
                 // Mastery Gains
                 $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard');
                 $dominion->wizard_mastery += $masteryGain;

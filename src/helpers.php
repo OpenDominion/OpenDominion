@@ -155,7 +155,7 @@ if (!function_exists('error_function')) {
     {
         $t =1 / (1 + 0.5 * abs($x));
         $tau = $t * exp(
-                - $x * $x
+            - $x * $x
                 - 1.26551223
                 + 1.00002368 * $t
                 + 0.37409196 * $t * $t
@@ -165,7 +165,8 @@ if (!function_exists('error_function')) {
                 - 1.13520398 * $t * $t * $t * $t * $t * $t
                 + 1.48851587 * $t * $t * $t * $t * $t * $t * $t
                 - 0.82215223 * $t * $t * $t * $t * $t * $t * $t * $t
-                + 0.17087277 * $t * $t * $t * $t * $t * $t * $t * $t * $t);
+                + 0.17087277 * $t * $t * $t * $t * $t * $t * $t * $t * $t
+        );
         if ($x >= 0) {
             return 1 - $tau;
         } else {
