@@ -183,12 +183,6 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Spy Prestige:</td>
-                                        <td>
-                                            <strong>{{ $target->stat_spy_prestige }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td>Espionage Success:</td>
                                         <td>
                                             <strong>{{ number_format($target->stat_espionage_success) }}</strong>
@@ -353,12 +347,6 @@
                                             @if ($militaryCalculator->getWizardRatioMultiplier($target) !== 1.0)
                                                 <small class="text-muted">({{ number_format($militaryCalculator->getWizardRatioRaw($target, 'defense'), 3) }})</small>
                                             @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Wizard Prestige:</td>
-                                        <td>
-                                            <strong>{{ $target->stat_wizard_prestige }}</strong>
                                         </td>
                                     </tr>
                                     <tr>

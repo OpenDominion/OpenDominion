@@ -151,7 +151,8 @@ class InvadeActionService
         QueueService $queueService,
         RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
-    ) {
+    )
+    {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->governmentService = $governmentService;
@@ -846,7 +847,8 @@ class InvadeActionService
             !$isInvasionSuccessful ||
             ($totalDefensiveCasualties === 0) ||
             !in_array($dominion->race->name, ['Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
-        ) {
+        )
+        {
             return $convertedUnits;
         }
 
@@ -864,7 +866,8 @@ class InvadeActionService
             $landRatio,
             $units,
             $dominion
-        ) {
+        )
+        {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
                 return false;
             }

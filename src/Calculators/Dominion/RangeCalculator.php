@@ -32,7 +32,8 @@ class RangeCalculator
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService
-    ) {
+    )
+    {
         $this->guardMembershipService = $guardMembershipService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;

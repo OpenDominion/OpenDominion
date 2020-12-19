@@ -8,6 +8,7 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -50,6 +51,9 @@ class SpellActionService
     /** @var NotificationService */
     protected $notificationService;
 
+    /** @var OpsCalculator */
+    protected $opsCalculator;
+
     /** @var OpsHelper */
     protected $opsHelper;
 
@@ -83,6 +87,7 @@ class SpellActionService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsCalculator = app(OpsCalculator::class);
         $this->opsHelper = app(OpsHelper::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
@@ -496,15 +501,6 @@ class SpellActionService
                 }
                 $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
-                // Prestige Loss
-                $prestigeLossString = '';
-                if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
-                    if ($dominion->prestige > 0) {
-                        $dominion->prestige -= 1;
-                        $prestigeLossString = 'You lost 1 prestige due to mutual war.';
-                    }
-                }
-
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
                     ->queueNotification('repelled_hostile_spell', [
@@ -516,16 +512,14 @@ class SpellActionService
 
                 if ($unitsKilledString) {
                     $message = sprintf(
-                        'The enemy wizards have repelled our %s attempt and managed to kill %s. %s',
+                        'The enemy wizards have repelled our %s attempt and managed to kill %s.',
                         $spellInfo['name'],
-                        $unitsKilledString,
-                        $prestigeLossString
+                        $unitsKilledString
                     );
                 } else {
                     $message = sprintf(
-                        'The enemy wizards have repelled our %s attempt. %s',
-                        $spellInfo['name'],
-                        $prestigeLossString
+                        'The enemy wizards have repelled our %s attempt.',
+                        $spellInfo['name']
                     );
                 }
 
@@ -633,12 +627,8 @@ class SpellActionService
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
 
-            // War Duration
-            if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
-                $warHours = $this->governmentService->getWarDurationHours($dominion->realm, $target->realm);
-                $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
-                $baseDamage *= (1 - $warReduction);
-            }
+            // Resilience
+            $baseDamage *= (1 - $this->opsCalculator->getWizardResilienceBonus($dominion));
 
             // Techs
             $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
@@ -720,18 +710,20 @@ class SpellActionService
                 }
             }
 
-            // Prestige Gains
-            $prestigeGainString = '';
+            $warRewardsString = '';
             if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected && $totalDamage > 0) {
-                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
-                    $dominion->prestige += 2;
-                    $dominion->stat_wizard_prestige += 2;
-                    $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
-                } elseif (random_chance(0.25)) {
-                    $dominion->prestige += 1;
-                    $dominion->stat_wizard_prestige += 1;
-                    $prestigeGainString = 'You were awarded 1 prestige due to war.';
-                }
+                // Resilience
+                $target->wizard_resilience += $this->opsCalculator->getResilienceGain($dominion);
+
+                // Infamy Gains
+                $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard');
+                $dominion->infamy += $infamyGain;
+    
+                // Mastery Gains
+                $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard');
+                $dominion->wizard_mastery += $masteryGain;
+
+                $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
             }
 
             // Surreal Perception
@@ -774,7 +766,7 @@ class SpellActionService
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, your target lost %s. %s',
                         $damageString,
-                        $prestigeGainString
+                        $warRewardsString
                     ),
                     'wizardStrengthCost' => 5,
                 ];

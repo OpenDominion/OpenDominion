@@ -34,7 +34,8 @@ class LandCalculator
         BuildingHelper $buildingHelper,
         LandHelper $landHelper,
         QueueService $queueService
-    ) {
+    )
+    {
         $this->buildingCalculator = $buildingCalculator;
         $this->buildingHelper = $buildingHelper;
         $this->landHelper = $landHelper;

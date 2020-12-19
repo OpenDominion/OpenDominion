@@ -140,7 +140,8 @@ class WonderActionService
         SpellCalculator $spellCalculator,
         SpellHelper $spellHelper,
         WonderCalculator $wonderCalculator
-    ) {
+    )
+    {
         $this->governmentService = $governmentService;
         $this->guardMembershipService = $guardMembershipService;
         $this->invasionService = $invasionService;

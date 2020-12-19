@@ -41,7 +41,8 @@ class RoundOpenCommand extends Command implements CommandInterface
     public function __construct(
         RoundFactory $roundFactory,
         RealmFactory $realmFactory
-    ) {
+    )
+    {
         parent::__construct();
 
         $this->roundFactory = $roundFactory;

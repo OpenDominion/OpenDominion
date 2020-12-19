@@ -111,7 +111,8 @@ class MessageBoardController extends AbstractController
             if (!$defaultAvatars->contains($avatar) &&
                 $previousRankings->intersect($matchingRankings)->isEmpty() &&
                 $user->achievements->pluck('id')->intersect($matchingAchievements)->isEmpty()
-            ) {
+            )
+            {
                 throw new GameException('Invalid selection');
             }
             $settings = ($user->settings ?? []);

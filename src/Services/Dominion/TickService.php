@@ -10,6 +10,7 @@ use Log;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -43,6 +44,9 @@ class TickService
     /** @var NotificationService */
     protected $notificationService;
 
+    /** @var OpsCalculator */
+    protected $opsCalculator;
+
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
@@ -72,6 +76,7 @@ class TickService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsCalculator = app(OpsCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->queueService = app(QueueService::class);
@@ -167,8 +172,11 @@ class TickService
                     'dominions.peasants' => DB::raw('dominions.peasants + dominion_tick.peasants'),
                     'dominions.peasants_last_hour' => DB::raw('dominion_tick.peasants'),
                     'dominions.morale' => DB::raw('dominions.morale + dominion_tick.morale'),
+                    'dominions.infamy' => DB::raw('dominions.infamy + dominion_tick.infamy'),
                     'dominions.spy_strength' => DB::raw('dominions.spy_strength + dominion_tick.spy_strength'),
                     'dominions.wizard_strength' => DB::raw('dominions.wizard_strength + dominion_tick.wizard_strength'),
+                    'dominions.spy_resilience' => DB::raw('dominions.spy_resilience + dominion_tick.spy_resilience'),
+                    'dominions.wizard_resilience' => DB::raw('dominions.wizard_resilience + dominion_tick.wizard_resilience'),
                     'dominions.resource_platinum' => DB::raw('dominions.resource_platinum + dominion_tick.resource_platinum'),
                     'dominions.resource_food' => DB::raw('dominions.resource_food + dominion_tick.resource_food'),
                     'dominions.resource_lumber' => DB::raw('dominions.resource_lumber + dominion_tick.resource_lumber'),
@@ -529,6 +537,10 @@ class TickService
             $tick->morale = min(3, 100 - $dominion->morale);
         }
 
+        // Infamy
+        $infamyDecay = $this->opsCalculator->getInfamyDecay($dominion);
+        $tick->infamy = max($infamyDecay, -$dominion->infamy);
+
         // Spy Strength
         if ($dominion->spy_strength < 100) {
             $spyStrengthAdded = $this->militaryCalculator->getSpyStrengthRegen($dominion);
@@ -540,6 +552,11 @@ class TickService
             $wizardStrengthAdded = $this->militaryCalculator->getWizardStrengthRegen($dominion);
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
         }
+
+        // Resilience
+        $resilienceDecay = $this->opsCalculator->getResilienceDecay($dominion);
+        $tick->spy_resilience = max($resilienceDecay, -$dominion->spy_resilience);
+        $tick->wizard_resilience = max($resilienceDecay, -$dominion->wizard_resilience);
 
         // Store highest land total
         if ($totalLand > $dominion->highest_land_achieved) {

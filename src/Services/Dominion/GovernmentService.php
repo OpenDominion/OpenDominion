@@ -195,7 +195,8 @@ class GovernmentService
             $this->getHoursBeforeWarActive($realm) === 0 &&
             $target->war_realm_id == $realm->id &&
             $this->getHoursBeforeWarActive($target) === 0
-        ) {
+        )
+        {
             return true;
         }
 

@@ -120,6 +120,10 @@ class ProductionCalculator
         // Values (percentages)
         $spellMidasTouch = 10;
         $guardTax = 2;
+        $maxInfamyBonus = 7.5;
+
+        // Infamy
+        $multiplier += ($maxInfamyBonus / 2) * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
@@ -671,6 +675,10 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellEarthquake = 5;
+        $maxInfamyBonus = 5;
+
+        // Infamy
+        $multiplier += ($maxInfamyBonus / 2) * $this->getInfamyBonus($dominion) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
@@ -820,6 +828,21 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2;
 
         return $multiplier;
+    }
+
+    /**
+     * Returns the Dominions's infamy bonus.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getInfamyBonus(Dominion $dominion): float
+    {
+        if ($dominion->infamy == 0) {
+            return 0;
+        }
+
+        return 1 + error_function(0.00452 * ($dominion->infamy - 385));
     }
 
     //</editor-fold>

@@ -8,6 +8,7 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -61,6 +62,9 @@ class EspionageActionService
     /** @var NotificationService */
     protected $notificationService;
 
+    /** @var OpsCalculator */
+    protected $opsCalculator;
+
     /** @var OpsHelper */
     protected $opsHelper;
 
@@ -94,6 +98,7 @@ class EspionageActionService
         $this->landHelper = app(LandHelper::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsCalculator = app(OpsCalculator::class);
         $this->opsHelper = app(OpsHelper::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->protectionService = app(ProtectionService::class);
@@ -697,15 +702,6 @@ class EspionageActionService
                 }
                 $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
-                // Prestige Loss
-                $prestigeLossString = '';
-                if ($this->espionageHelper->isWarOperation($operationKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
-                    if ($dominion->prestige > 0) {
-                        $dominion->prestige -= 1;
-                        $prestigeLossString = 'You lost 1 prestige due to mutual war.';
-                    }
-                }
-
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
                         'sourceDominionId' => $dominion->id,
@@ -716,16 +712,14 @@ class EspionageActionService
 
                 if ($unitsKilledString) {
                     $message = sprintf(
-                        'The enemy has prevented our %s attempt and managed to capture %s. %s',
+                        'The enemy has prevented our %s attempt and managed to capture %s.',
                         $operationInfo['name'],
-                        $unitsKilledString,
-                        $prestigeLossString
+                        $unitsKilledString
                     );
                 } else {
                     $message = sprintf(
-                        'The enemy has prevented our %s attempt. %s',
-                        $operationInfo['name'],
-                        $prestigeLossString
+                        'The enemy has prevented our %s attempt.',
+                        $operationInfo['name']
                     );
                 }
 
@@ -741,12 +735,8 @@ class EspionageActionService
         $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
 
-        // War Duration
-        if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
-            $warHours = $this->governmentService->getWarDurationHours($dominion->realm, $target->realm);
-            $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
-            $baseDamage *= (1 - $warReduction);
-        }
+        // Resilience
+        $baseDamage *= (1 - $this->opsCalculator->getSpyResilienceBonus($dominion));
 
         // Techs
         $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));
@@ -798,18 +788,20 @@ class EspionageActionService
             }
         }
 
-        // Prestige Gains
-        $prestigeGainString = '';
+        $warRewardsString = '';
         if ($this->espionageHelper->isWarOperation($operationKey) && $totalDamage > 0) {
-            if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
-                $dominion->prestige += 2;
-                $dominion->stat_spy_prestige += 2;
-                $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
-            } elseif (random_chance(0.25)) {
-                $dominion->prestige += 1;
-                $dominion->stat_spy_prestige += 1;
-                $prestigeGainString = 'You were awarded 1 prestige due to war.';
-            }
+            // Resilience
+            $target->spy_resilience += $this->opsCalculator->getResilienceGain($dominion);
+
+            // Infamy Gains
+            $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy');
+            $dominion->infamy += $infamyGain;
+
+            // Mastery Gains
+            $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'spy');
+            $dominion->spy_mastery += $masteryGain;
+
+            $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} spy mastery.";
         }
 
         // Surreal Perception
@@ -833,7 +825,7 @@ class EspionageActionService
             'message' => sprintf(
                 'Your spies infiltrate the target\'s dominion successfully, they lost %s. %s',
                 $damageString,
-                $prestigeGainString
+                $warRewardsString
             ),
             'redirect' => route('dominion.op-center.show', $target),
         ];
