@@ -20,13 +20,8 @@ class OpsHelper
 
     public function blackOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $ratioRelative = $selfRatio / $targetRatio;
-        $ratioDifference = $selfRatio - $targetRatio;
-        $successRate = (
-            max(0, (0.08 * $ratioDifference)) +
-            ((($ratioRelative ** 0.6) * 0.25) ** 0.6) +
-            min(0, (0.05 * $ratioDifference))
-        );
+        $ratio = $selfRatio / $targetRatio;
+        $successRate = ((($ratio ** 0.6) * 0.25) ** 0.6);
         return clamp($successRate, 0.03, 0.97);
     }
 }
