@@ -131,7 +131,7 @@ class EspionageActionService
             throw new LogicException("Cannot perform unknown operation '{$operationKey}'");
         }
 
-        if ($dominion->spy_strength < 30) {
+        if ($dominion->spy_strength < 5 || ($dominion->spy_strength < 2 && $this->espionageHelper->isInfoGatheringOperation($operationKey))) {
             throw new GameException("Your spies do not have enough strength to perform {$operationInfo['name']}.");
         }
 
@@ -205,7 +205,7 @@ class EspionageActionService
                 'target_dominion_id' => $target->id
             ]);
 
-            if ($dominion->fresh()->spy_strength < 25) {
+            if ($dominion->fresh()->spy_strength < 0) {
                 throw new GameException('Your spies have run out of strength');
             }
 

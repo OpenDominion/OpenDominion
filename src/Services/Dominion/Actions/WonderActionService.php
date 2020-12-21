@@ -173,7 +173,7 @@ class WonderActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $wonder, &$result) {
-            if ($dominion->wizard_strength < 30) {
+            if ($dominion->wizard_strength < 5) {
                 throw new GameException('Your wizards to not have enough strength to cast Cyclone');
             }
 
@@ -220,7 +220,7 @@ class WonderActionService
             $this->checkGuardApplications($dominion);
 
             $dominion->resource_mana -= $manaCost;
-            $dominion->wizard_strength -= min($dominion->wizard_strength, 5);
+            $dominion->wizard_strength -= 5;
 
             $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, static::WONDER_WPA);
             if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_chance')) {
