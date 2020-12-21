@@ -858,7 +858,7 @@ class SpellActionService
         if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
             $wizardsKilled = 0;
         }
-    
+
         if ($wizardsKilled > 0) {
             $unitsKilled['wizards'] = $wizardsKilled;
             $dominion->military_wizards -= $wizardsKilled;
@@ -886,6 +886,6 @@ class SpellActionService
         }
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
-        return array($unitsKilled, $unitsKilledString);
+        return [$unitsKilled, $unitsKilledString];
     }
 }

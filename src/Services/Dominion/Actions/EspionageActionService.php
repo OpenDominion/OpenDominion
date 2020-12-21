@@ -736,6 +736,6 @@ class EspionageActionService
         }
         $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
 
-        return array($unitsKilled, $unitsKilledString);
+        return [$unitsKilled, $unitsKilledString];
     }
 }
