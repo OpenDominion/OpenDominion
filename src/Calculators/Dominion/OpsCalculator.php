@@ -28,12 +28,97 @@ class OpsCalculator
      * @param RangeCalculator $rangeCalculator
      */
     public function __construct(
+        LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         RangeCalculator $rangeCalculator
     )
     {
+        $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->rangeCalculator = $rangeCalculator;
+    }
+
+    /**
+     * Returns the percentage of spies killed after a failed operation.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function getSpyLosses(Dominion $dominion, Dominion $target, string $type): float
+    {
+        // Values (percentage)
+        if ($type == 'info') {
+            $spiesKilledBasePercentage = 0.25;
+            $min = 0.25;
+            $max = 1;
+        } elseif ($type == 'theft') {
+            $spiesKilledBasePercentage = 1;
+            $min = 0.5;
+            $max = 1.5;
+        } else {
+            $spiesKilledBasePercentage = 1;
+            $min = 0.5;
+            $max = 1.5;
+        }
+
+        $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+        $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
+
+        $spyLossSpaRatio = ($targetRatio / $selfRatio);
+        $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, $min, $max);
+
+        // Forest Havens
+        $forestHavenSpyCasualtyReduction = 3;
+        $forestHavenSpyCasualtyReductionMax = 30;
+
+        $spiesKilledMultiplier = (1 - min(
+            (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
+            ($forestHavenSpyCasualtyReductionMax / 100)
+        ));
+
+        // Techs
+        $spiesKilledMultiplier *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
+
+        return ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
+    }
+
+    /**
+     * Returns the percentage of wizards killed after a failed spell.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function getWizardLosses(Dominion $dominion, Dominion $target, string $type): float
+    {
+        // Values (percentage)
+        if ($type == 'hostile') {
+            $wizardsKilledBasePercentage = 1;
+            $min = 0.5;
+            $max = 1.5;
+        } else {
+            return 0;
+        }
+
+        $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
+        $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
+
+        $wizardLossSpaRatio = ($targetWpa / $selfWpa);
+        $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, $min, $max);
+
+        // Wizard Guilds
+        $wizardGuildCasualtyReduction = 3;
+        $wizardGuildWizardCasualtyReductionMax = 30;
+
+        $wizardsKilledMultiplier = (1 - min(
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
+            ($wizardGuildWizardCasualtyReductionMax / 100)
+        ));
+
+        return ($wizardsKilledPercentage / 100) * $wizardsKilledMultiplier;
     }
 
     /**

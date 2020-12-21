@@ -257,52 +257,7 @@ class EspionageActionService
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
             if (!random_chance($successRate)) {
-                // Values (percentage)
-                $spiesKilledBasePercentage = 0.25;
-
-                // Forest Havens
-                $forestHavenSpyCasualtyReduction = 3;
-                $forestHavenSpyCasualtyReductionMax = 30;
-
-                $spiesKilledMultiplier = (1 - min(
-                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
-                    ($forestHavenSpyCasualtyReductionMax / 100)
-                ));
-
-                $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.25, 1);
-
-                // Techs
-                $spiesKilledPercentage *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
-
-                $unitsKilled = [];
-                $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
-                if ($spiesKilled > 0) {
-                    $unitsKilled['spies'] = $spiesKilled;
-                    $dominion->military_spies -= $spiesKilled;
-                }
-
-                foreach ($dominion->race->units as $unit) {
-                    if ($unit->getPerkValue('counts_as_spy_offense')) {
-                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
-                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                        if ($unitKilled > 0) {
-                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
-                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
-                        }
-                    }
-                }
-
-                $target->stat_spies_executed += array_sum($unitsKilled);
-                $dominion->stat_spies_lost += array_sum($unitsKilled);
-
-                $unitsKilledStringParts = [];
-                foreach ($unitsKilled as $name => $amount) {
-                    $amountLabel = number_format($amount);
-                    $unitLabel = str_plural(str_singular($name), $amount);
-                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                }
-                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
@@ -406,52 +361,7 @@ class EspionageActionService
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
             if (!random_chance($successRate)) {
-                // Values (percentage)
-                $spiesKilledBasePercentage = 1;
-
-                // Forest Havens
-                $forestHavenSpyCasualtyReduction = 3;
-                $forestHavenSpyCasualtyReductionMax = 30;
-
-                $spiesKilledMultiplier = (1 - min(
-                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
-                    ($forestHavenSpyCasualtyReductionMax / 100)
-                ));
-
-                $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
-
-                // Techs
-                $spiesKilledPercentage *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
-
-                $unitsKilled = [];
-                $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
-                if ($spiesKilled > 0) {
-                    $unitsKilled['spies'] = $spiesKilled;
-                    $dominion->military_spies -= $spiesKilled;
-                }
-
-                foreach ($dominion->race->units as $unit) {
-                    if ($unit->getPerkValue('counts_as_spy_offense')) {
-                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
-                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                        if ($unitKilled > 0) {
-                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
-                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
-                        }
-                    }
-                }
-
-                $target->stat_spies_executed += array_sum($unitsKilled);
-                $dominion->stat_spies_lost += array_sum($unitsKilled);
-
-                $unitsKilledStringParts = [];
-                foreach ($unitsKilled as $name => $amount) {
-                    $amountLabel = number_format($amount);
-                    $unitLabel = str_plural(str_singular($name), $amount);
-                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                }
-                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'theft');
 
                 $this->notificationService
                     ->queueNotification('repelled_resource_theft', [
@@ -655,52 +565,7 @@ class EspionageActionService
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
 
             if (!random_chance($successRate)) {
-                // Values (percentage)
-                $spiesKilledBasePercentage = 1;
-
-                // Forest Havens
-                $forestHavenSpyCasualtyReduction = 3;
-                $forestHavenSpyCasualtyReductionMax = 30;
-
-                $spiesKilledMultiplier = (1 - min(
-                    (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
-                    ($forestHavenSpyCasualtyReductionMax / 100)
-                ));
-
-                $spyLossSpaRatio = ($targetSpa / $selfSpa);
-                $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, 0.5, 1.5);
-
-                // Techs
-                $spiesKilledPercentage *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
-
-                $unitsKilled = [];
-                $spiesKilled = (int)floor(($dominion->military_spies * ($spiesKilledPercentage / 100)) * $spiesKilledMultiplier);
-                if ($spiesKilled > 0) {
-                    $unitsKilled['spies'] = $spiesKilled;
-                    $dominion->military_spies -= $spiesKilled;
-                }
-
-                foreach ($dominion->race->units as $unit) {
-                    if ($unit->getPerkValue('counts_as_spy_offense')) {
-                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
-                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                        if ($unitKilled > 0) {
-                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
-                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
-                        }
-                    }
-                }
-
-                $target->stat_spies_executed += array_sum($unitsKilled);
-                $dominion->stat_spies_lost += array_sum($unitsKilled);
-
-                $unitsKilledStringParts = [];
-                foreach ($unitsKilled as $name => $amount) {
-                    $amountLabel = number_format($amount);
-                    $unitLabel = str_plural(str_singular($name), $amount);
-                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                }
-                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
@@ -829,5 +694,48 @@ class EspionageActionService
             ),
             'redirect' => route('dominion.op-center.show', $target),
         ];
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return array
+     * @throws Exception
+     */
+    protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
+    {
+        $spiesKilledPercentage = $this->opsCalculator->getSpyLosses($dominion, $target, $type);
+
+        $unitsKilled = [];
+        $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
+        if ($spiesKilled > 0) {
+            $unitsKilled['spies'] = $spiesKilled;
+            $dominion->military_spies -= $spiesKilled;
+        }
+
+        foreach ($dominion->race->units as $unit) {
+            if ($unit->getPerkValue('counts_as_spy_offense')) {
+                $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * $spiesKilledPercentage;
+                $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                if ($unitKilled > 0) {
+                    $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                    $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                }
+            }
+        }
+
+        $target->stat_spies_executed += array_sum($unitsKilled);
+        $dominion->stat_spies_lost += array_sum($unitsKilled);
+
+        $unitsKilledStringParts = [];
+        foreach ($unitsKilled as $name => $amount) {
+            $amountLabel = number_format($amount);
+            $unitLabel = str_plural(str_singular($name), $amount);
+            $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+        }
+        $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
+        return array($unitsKilled, $unitsKilledString);
     }
 }

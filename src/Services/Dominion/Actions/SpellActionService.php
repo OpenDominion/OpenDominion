@@ -452,54 +452,7 @@ class SpellActionService
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
             if (!random_chance($successRate)) {
-                $wizardsKilledBasePercentage = 1;
-
-                // Wizard Guilds
-                $wizardGuildCasualtyReduction = 3;
-                $wizardGuildWizardCasualtyReductionMax = 30;
-
-                $wizardsKilledBasePercentage = (1 - min(
-                    (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
-                    ($wizardGuildWizardCasualtyReductionMax / 100)
-                ));
-
-                $wizardLossSpaRatio = ($targetWpa / $selfWpa);
-                $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, 0.5, 1.5);
-
-                $unitsKilled = [];
-                $wizardsKilled = (int)floor($dominion->military_wizards * ($wizardsKilledPercentage / 100));
-
-                // Check for immortal wizards
-                if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
-                    $wizardsKilled = 0;
-                }
-
-                if ($wizardsKilled > 0) {
-                    $unitsKilled['wizards'] = $wizardsKilled;
-                    $dominion->military_wizards -= $wizardsKilled;
-                }
-
-                foreach ($dominion->race->units as $unit) {
-                    if ($unit->getPerkValue('counts_as_wizard_offense')) {
-                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * ($wizardsKilledPercentage / 100);
-                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                        if ($unitKilled > 0) {
-                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
-                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
-                        }
-                    }
-                }
-
-                $target->stat_wizards_executed += array_sum($unitsKilled);
-                $dominion->stat_wizards_lost += array_sum($unitsKilled);
-
-                $unitsKilledStringParts = [];
-                foreach ($unitsKilled as $name => $amount) {
-                    $amountLabel = number_format($amount);
-                    $unitLabel = str_plural(str_singular($name), $amount);
-                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                }
-                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
@@ -885,5 +838,54 @@ class SpellActionService
         }
 
         return 'Your wizards successfully cast %s at a cost of %s mana.';
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return array
+     * @throws Exception
+     */
+    protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
+    {
+        $wizardsKilledPercentage = $this->opsCalculator->getWizardLosses($dominion, $target, $type);
+
+        $unitsKilled = [];
+        $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
+
+        // Check for immortal wizards
+        if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
+            $wizardsKilled = 0;
+        }
+    
+        if ($wizardsKilled > 0) {
+            $unitsKilled['wizards'] = $wizardsKilled;
+            $dominion->military_wizards -= $wizardsKilled;
+        }
+
+        foreach ($dominion->race->units as $unit) {
+            if ($unit->getPerkValue('counts_as_wizard_offense')) {
+                $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * $wizardsKilledPercentage;
+                $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                if ($unitKilled > 0) {
+                    $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                    $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                }
+            }
+        }
+
+        $target->stat_wizards_executed += array_sum($unitsKilled);
+        $dominion->stat_wizards_lost += array_sum($unitsKilled);
+
+        $unitsKilledStringParts = [];
+        foreach ($unitsKilled as $name => $amount) {
+            $amountLabel = number_format($amount);
+            $unitLabel = str_plural(str_singular($name), $amount);
+            $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+        }
+        $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
+        return array($unitsKilled, $unitsKilledString);
     }
 }
