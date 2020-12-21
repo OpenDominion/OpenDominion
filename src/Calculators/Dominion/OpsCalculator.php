@@ -144,12 +144,14 @@ class OpsCalculator
         }
 
         $relativeRatio = ($targetRatio / $selfRatio);
-        if ($relativeRatio >= 0.75 && $relativeRatio < 1.0) {
-            $infamy += 5;
-        } elseif ($relativeRatio >= 1.0 && $relativeRatio < 1.25) {
-            $infamy += 10;
-        } elseif ($relativeRatio >= 1.25) {
+        if ($relativeRatio >= 0.7 && $relativeRatio < 0.9) {
             $infamy += 15;
+        } elseif ($relativeRatio >= 0.9 && $relativeRatio < 1.1) {
+            $infamy += 25;
+        } elseif ($relativeRatio >= 1.1 && $relativeRatio < 1.3) {
+            $infamy += 35;
+        } elseif ($relativeRatio >= 1.3) {
+            $infamy += 40;
         }
 
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
