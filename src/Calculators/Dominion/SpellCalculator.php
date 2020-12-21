@@ -74,9 +74,15 @@ class SpellCalculator
      */
     public function canCast(Dominion $dominion, string $spell): bool
     {
+        $wizardStrengthCost = 5;
+
+        if ($this->spellHelper->isInfoOpSpell($spell)) {
+            $wizardStrengthCost = 2;
+        }
+
         return (
             ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
-            ($dominion->wizard_strength >= 30)
+            ($dominion->wizard_strength >= $wizardStrengthCost)
         );
     }
 
