@@ -131,7 +131,7 @@ class EspionageActionService
             throw new LogicException("Cannot perform unknown operation '{$operationKey}'");
         }
 
-        if ($dominion->spy_strength < 5 || ($dominion->spy_strength < 2 && $this->espionageHelper->isInfoGatheringOperation($operationKey))) {
+        if ($dominion->spy_strength < 2 || ($dominion->spy_strength < 5 && $this->espionageHelper->isHostileOperation($operationKey))) {
             throw new GameException("Your spies do not have enough strength to perform {$operationInfo['name']}.");
         }
 

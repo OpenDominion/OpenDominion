@@ -122,7 +122,7 @@ class SpellActionService
             throw new LogicException("Cannot cast unknown spell '{$spellKey}'");
         }
 
-        if ($dominion->wizard_strength < 5 || ($dominion->wizard_strength < 2 && $this->spellHelper->isInfoOpSpell($spellKey))) {
+        if ($dominion->wizard_strength < 2 || ($dominion->wizard_strength < 5 && $this->spellHelper->isHostileSpell($spellKey))) {
             throw new GameException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
         }
 
