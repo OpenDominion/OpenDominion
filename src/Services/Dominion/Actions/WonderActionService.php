@@ -4,9 +4,9 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
-use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Exceptions\GameException;
