@@ -17,7 +17,6 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\EspionageHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
-use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\InfoOp;
@@ -65,9 +64,6 @@ class EspionageActionService
     /** @var OpsCalculator */
     protected $opsCalculator;
 
-    /** @var OpsHelper */
-    protected $opsHelper;
-
     /** @var ProductionCalculator */
     protected $productionCalculator;
 
@@ -99,7 +95,6 @@ class EspionageActionService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->notificationService = app(NotificationService::class);
         $this->opsCalculator = app(OpsCalculator::class);
-        $this->opsHelper = app(OpsHelper::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -251,7 +246,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->infoOperationSuccessChance($selfSpa, $targetSpa);
+            $successRate = $this->opsCalculator->infoOperationSuccessChance($dominion, $target, 'spy');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -355,7 +350,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->theftOperationSuccessChance($selfSpa, $targetSpa);
+            $successRate = $this->opsCalculator->theftOperationSuccessChance($dominion, $target, 'spy');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -559,7 +554,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsHelper->blackOperationSuccessChance($selfSpa, $targetSpa);
+            $successRate = $this->opsCalculator->blackOperationSuccessChance($dominion, $target, 'spy');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));

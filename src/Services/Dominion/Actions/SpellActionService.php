@@ -14,7 +14,6 @@ use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
-use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
@@ -54,9 +53,6 @@ class SpellActionService
     /** @var OpsCalculator */
     protected $opsCalculator;
 
-    /** @var OpsHelper */
-    protected $opsHelper;
-
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
@@ -88,7 +84,6 @@ class SpellActionService
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
         $this->opsCalculator = app(OpsCalculator::class);
-        $this->opsHelper = app(OpsHelper::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -318,7 +313,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->infoOperationSuccessChance($selfWpa, $targetWpa);
+            $successRate = $this->opsCalculator->infoOperationSuccessChance($dominion, $target, 'wizard');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
@@ -446,7 +441,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, $targetWpa);
+            $successRate = $this->opsCalculator->blackOperationSuccessChance($dominion, $target, 'wizard');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));

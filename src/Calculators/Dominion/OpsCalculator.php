@@ -22,6 +22,11 @@ class OpsCalculator
     protected const RESILIENCE_GAIN = 11;
 
     /**
+     * @var float Wonder defensive WPA when calculating success rates
+     */
+    protected const WONDER_WPA = 0.25;
+
+    /**
      * OpsCalculator constructor.
      *
      * @param MilitaryCalculator $militaryCalculator
@@ -36,6 +41,85 @@ class OpsCalculator
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->rangeCalculator = $rangeCalculator;
+    }
+
+    /**
+     * Returns the chance of success for an info operation or spell.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function infoOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
+    {
+        $ratio = $this->getRelativeRatio($dominion, $target, $type);
+        $successRate = 0.8 ** (2 / (($ratio * 1.4) ** 1.2));
+        return clamp($successRate, 0.03, 0.97);
+    }
+
+    /**
+     * Returns the chance of success for a theft operation.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function theftOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
+    {
+        $ratio = $this->getRelativeRatio($dominion, $target, $type);
+        $successRate = 0.6 ** (2 / (($ratio * 1.2) ** 1.2));
+        return clamp($successRate, 0.03, 0.97);
+    }
+
+    /**
+     * Returns the chance of success for a hostile operation or spell.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function blackOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
+    {
+        $ratio = $this->getRelativeRatio($dominion, $target, $type);
+        $successRate = ((($ratio ** 0.6) * 0.25) ** 0.6);
+        return clamp($successRate, 0.03, 0.97);
+    }
+
+    /**
+     * Returns the relative ratio of two dominions.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function getRelativeRatio(Dominion $dominion, ?Dominion $target, string $type): float
+    {
+        $selfRatio = 0;
+        $targetRatio = static::WONDER_WPA;
+
+        if ($type == 'spy') {
+            $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
+            if ($dominion->spy_strength < 30) {
+                $selfRatio *= (1 - max(30 - $dominion->spy_strength, 0) / 100);
+            }
+            if ($target !== null) {
+                $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
+            }
+        } elseif ($type == 'wizard') {
+            $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
+            if ($dominion->wizard_strength < 30) {
+                $selfRatio *= (1 - max(30 - $dominion->wizard_strength, 0) / 100);
+            }
+            if ($target !== null) {
+                $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
+            }
+        }
+
+        return $selfRatio / $targetRatio;
     }
 
     /**

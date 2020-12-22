@@ -4,12 +4,12 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use DB;
 use LogicException;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\WonderCalculator;
 use OpenDominion\Exceptions\GameException;
-use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
@@ -47,11 +47,6 @@ class WonderActionService
      */
     protected const CYCLONE_DAMAGE_CAP_PERCENTAGE = 2;
 
-    /**
-     * @var float Wonder defensive WPA when calculating success rates
-     */
-    protected const WONDER_WPA = 0.25;
-
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -70,8 +65,8 @@ class WonderActionService
     /** @var NotificationService */
     protected $notificationService;
 
-    /** @var OpsHelper */
-    protected $opsHelper;
+    /** @var OpsCalculator */
+    protected $opsCalculator;
 
     /** @var ProtectionService */
     protected $protectionService;
@@ -120,7 +115,7 @@ class WonderActionService
      * @param LandCalculator $landCalculator
      * @param MilitaryCalculator $militaryCalculator
      * @param NotificationService $notificationService
-     * @param OpsHelper $opsHelper
+     * @param OpsCalculator $opsCalculator
      * @param ProtectionService $protectionService
      * @param QueueService $queueService
      * @param SpellCalculator $spellCalculator
@@ -134,7 +129,7 @@ class WonderActionService
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         NotificationService $notificationService,
-        OpsHelper $opsHelper,
+        OpsCalculator $opsCalculator,
         ProtectionService $protectionService,
         QueueService $queueService,
         SpellCalculator $spellCalculator,
@@ -148,7 +143,7 @@ class WonderActionService
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->notificationService = $notificationService;
-        $this->opsHelper = $opsHelper;
+        $this->opsCalculator = $opsCalculator;
         $this->protectionService = $protectionService;
         $this->queueService = $queueService;
         $this->spellCalculator = $spellCalculator;
@@ -222,7 +217,9 @@ class WonderActionService
             $dominion->resource_mana -= $manaCost;
             $dominion->wizard_strength -= 5;
 
-            $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, static::WONDER_WPA);
+            $successRate = $this->opsCalculator->blackOperationSuccessChance($dominion, null, 'wizard');
+
+            // Wonders
             if ($wonder->wonder->perks->pluck('key')->contains('enemy_spell_chance')) {
                 $successRate *= (1 - $wonder->wonder->perks->groupBy('key')['enemy_spell_chance']->first()->pivot->value / 100);
             }
@@ -280,7 +277,7 @@ class WonderActionService
                 $dominion->stat_spell_success += 1;
 
                 $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
-                $damageDealt = round($spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion));
+                $damageDealt = $spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion);
                 $damageCap = static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100;
 
                 // Techs
@@ -293,7 +290,7 @@ class WonderActionService
                 }
 
                 // Cap at % of wonder max power
-                $damageDealt = min($damageDealt, round($wonder->power * $damageCap));
+                $damageDealt = round(min($damageDealt, $wonder->power * $damageCap));
                 $dominion->stat_cyclone_damage += $damageDealt;
 
                 $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
