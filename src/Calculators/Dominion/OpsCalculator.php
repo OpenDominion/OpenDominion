@@ -106,7 +106,7 @@ class OpsCalculator
         $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
-        $wizardLossSpaRatio = ($targetWpa / $selfWpa);
+        $wizardLossSpaRatio = ($targetRatio / $selfRatio);
         $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, $min, $max);
 
         // Wizard Guilds
