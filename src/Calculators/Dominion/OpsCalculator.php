@@ -119,6 +119,17 @@ class OpsCalculator
             }
         }
 
+        if ($target !== null) {
+            // War
+            $governmentService = app(GovernmentService::class);
+            if ($governmentService->isWarEscalated($dominion->realm, $target->realm)) {
+                $targetRatio *= 1.15;
+            }
+            if ($governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+                $selfRatio *= 1.15;
+            }
+        }
+
         return $selfRatio / $targetRatio;
     }
 

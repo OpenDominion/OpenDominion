@@ -253,7 +253,7 @@ class MilitaryCalculator
             if ($target !== null && $dominion->realm !== null) {
                 if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
                     $multiplier += 0.1;
-                } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm)) {
+                } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                     $multiplier += 0.05;
                 }
             }

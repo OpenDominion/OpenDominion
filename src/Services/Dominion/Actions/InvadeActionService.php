@@ -387,7 +387,7 @@ class InvadeActionService
             // War Bonus
             if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
                 $multiplier += 0.20;
-            } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm)) {
+            } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                 $multiplier += 0.15;
             }
 
@@ -681,7 +681,7 @@ class InvadeActionService
         // War Bonus
         if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
             $landGrabRatio = 1.2;
-        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm)) {
+        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
             $landGrabRatio = 1.15;
         }
 
