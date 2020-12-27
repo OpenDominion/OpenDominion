@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -38,7 +39,8 @@ class CreateRealmWarsTable extends Migration
                     'target_realm_id' => $warRealm->id,
                     'target_realm_name' => $warRealm->name,
                     'active_at' => $realm->war_active_at,
-                    'inactive_at' => null
+                    'inactive_at' => null,
+                    'created_at' => Carbon::parse($realm->war_active_at)->subHours(24)
                 ]);
             }
         }
