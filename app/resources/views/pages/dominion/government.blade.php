@@ -164,7 +164,7 @@
                                     <th>War Bonus</th>
                                     <th>&nbsp;</th>
                                 </tr>
-                                @foreach ($selectedDominion->realm->warsOutgoing as $war)
+                                @foreach ($selectedDominion->realm->warsOutgoing()->active()->get() as $war)
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                         $cancelHours = $governmentService->getHoursBeforeCancelWar($war);
@@ -198,7 +198,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                @foreach ($selectedDominion->realm->warsIncoming as $war)
+                                @foreach ($selectedDominion->realm->warsIncoming()->active()->get() as $war)
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                         $cancelHours = $governmentService->getHoursBeforeCancelWar($war);

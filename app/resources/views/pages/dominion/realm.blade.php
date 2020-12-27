@@ -186,7 +186,7 @@
                                     <th>Inctive at</th>
                                     <th>War Bonus</th>
                                 </tr>
-                                @foreach ($realm->warsOutgoing as $war)
+                                @foreach ($realm->warsOutgoing()->active()->get() as $war)
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                     @endphp
@@ -207,7 +207,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                @foreach ($realm->warsIncoming as $war)
+                                @foreach ($realm->warsIncoming()->active()->get() as $war)
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                     @endphp

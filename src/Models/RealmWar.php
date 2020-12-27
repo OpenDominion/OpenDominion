@@ -45,6 +45,11 @@ class RealmWar extends AbstractModel
 
     // Eloquent Query Scopes
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('inactive_at', null)->orWhere('inactive_at', '>', now());
+    }
+
     public function scopeEngaged(Builder $query): Builder
     {
         return $query->where('inactive_at', null);
