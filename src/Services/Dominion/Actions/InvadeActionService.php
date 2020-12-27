@@ -385,9 +385,9 @@ class InvadeActionService
             $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
 
             // War Bonus
-            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+            if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
                 $multiplier += 0.20;
-            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+            } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm)) {
                 $multiplier += 0.15;
             }
 
@@ -679,9 +679,9 @@ class InvadeActionService
         $bonusLandRatio = 1.6667;
 
         // War Bonus
-        if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+        if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
             $landGrabRatio = 1.2;
-        } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm)) {
             $landGrabRatio = 1.15;
         }
 

@@ -538,7 +538,7 @@ class EspionageActionService
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
         if ($this->espionageHelper->isWarOperation($operationKey)) {
-            $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);
+            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
             if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
                 throw new GameException("You cannot perform {$operationInfo['name']} outside of war.");
             }

@@ -183,37 +183,44 @@
                                     <th>Declared By</th>
                                     <th>Declared at</th>
                                     <th>Active at</th>
+                                    <th>Inctive at</th>
                                     <th>War Bonus</th>
                                 </tr>
-                                @if ($governmentService->hasDeclaredWar($realm))
+                                @foreach ($realm->warsOutgoing as $war)
                                     @php
-                                        $activeHours = $governmentService->getHoursBeforeWarActive($realm);
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                     @endphp
                                     <tr>
-                                        <td><a href="{{ route('dominion.realm', [$realm->warRealm->number]) }}">{{ $realm->warRealm->name }} (#{{ $realm->warRealm->number }})</a></td>
+                                        <td><a href="{{ route('dominion.realm', [$war->targetRealm->number]) }}">{{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})</a></td>
                                         <td>#{{ $realm->number }}</td>
-                                        <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
-                                        <td>{{ $realm->war_active_at }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
+                                        <td>{{ $war->active_at }}</td>
+                                        <td>{{ $war->inactive_at }}</td>
                                         <td>
-                                            @if ($activeHours == 0)
+                                            @if ($war->inactive_at != null)
+                                                <span class="label label-danger">Expiring</span>
+                                            @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
                                             @else
                                                 <span class="label label-warning">Pending</span>
                                             @endif
                                         </td>
                                     </tr>
-                                @endif
-                                @foreach ($realm->warRealms as $warRealm)
+                                @endforeach
+                                @foreach ($realm->warsIncoming as $war)
                                     @php
-                                        $activeHours = $governmentService->getHoursBeforeWarActive($warRealm);
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                     @endphp
                                     <tr>
-                                        <td><a href="{{ route('dominion.realm', [$warRealm->number]) }}">{{ $warRealm->name }} (#{{ $warRealm->number }})</a></td>
-                                        <td>#{{ $warRealm->number }}</td>
-                                        <td>{{ $governmentService->getWarDeclaredAt($warRealm) }}</td>
-                                        <td>{{ $warRealm->war_active_at }}</td>
+                                        <td><a href="{{ route('dominion.realm', [$war->sourceRealm->number]) }}">{{ $war->sourceRealm->name }} (#{{ $war->sourceRealm->number }})</a></td>
+                                        <td>#{{ $war->sourceRealm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
+                                        <td>{{ $war->active_at }}</td>
+                                        <td>{{ $war->inactive_at }}</td>
                                         <td>
-                                            @if ($activeHours == 0)
+                                            @if ($war->inactive_at != null)
+                                                <span class="label label-danger">Expiring</span>
+                                            @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
                                             @else
                                                 <span class="label label-warning">Pending</span>
