@@ -62,6 +62,9 @@ class TrainActionService
         $totalCosts = [
             'platinum' => 0,
             'ore' => 0,
+            'mana' => 0,
+            'lumber' => 0,
+            'gems' => 0,
             'draftees' => 0,
             'wizards' => 0,
         ];
@@ -90,7 +93,13 @@ class TrainActionService
             $unitsToTrain[$unitType] = $amountToTrain;
         }
 
-        if (($totalCosts['platinum'] > $dominion->resource_platinum) || ($totalCosts['ore'] > $dominion->resource_ore)) {
+        if (
+            $totalCosts['platinum'] > $dominion->resource_platinum ||
+            $totalCosts['ore'] > $dominion->resource_ore ||
+            $totalCosts['mana'] > $dominion->resource_mana ||
+            $totalCosts['lumber'] > $dominion->resource_lumber ||
+            $totalCosts['gems'] > $dominion->resource_gems
+        ) {
             throw new GameException('Training aborted due to lack of economical resources');
         }
 
@@ -114,6 +123,9 @@ class TrainActionService
             $this->queueService->queueResources('training', $dominion, $data);
             $dominion->resource_platinum -= $totalCosts['platinum'];
             $dominion->resource_ore -= $totalCosts['ore'];
+            $dominion->resource_mana -= $totalCosts['mana'];
+            $dominion->resource_lumber -= $totalCosts['lumber'];
+            $dominion->resource_gems -= $totalCosts['gems'];
             $dominion->military_draftees -= $totalCosts['draftees'];
             $dominion->military_wizards -= $totalCosts['wizards'];
             $dominion->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
@@ -176,7 +188,7 @@ class TrainActionService
             }
 
             $costType = str_singular($costType);
-            if (!\in_array($costType, ['platinum', 'ore'], true)) {
+            if (!\in_array($costType, ['platinum', 'ore', 'mana', 'lumber', 'gems'], true)) {
                 $costType = str_plural($costType, $cost);
             }
             $trainingCostsStringParts[] = (number_format($cost) . ' ' . $costType);

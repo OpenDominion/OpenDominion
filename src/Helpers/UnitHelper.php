@@ -3,6 +3,7 @@
 namespace OpenDominion\Helpers;
 
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Unit;
 
 class UnitHelper
 {
@@ -35,6 +36,71 @@ class UnitHelper
         $unitSlot = (((int)str_replace('unit', '', $unitType)) - 1);
 
         return $race->units[$unitSlot]->name;
+    }
+
+    public function getUnitCostStringFromArray(array $unitCosts): string
+    {
+        $labelParts = [];
+
+        foreach ($unitCosts as $costType => $value) {
+            switch ($costType) {
+                case 'platinum':
+                    $labelParts[] = "{$value}p";
+                    break;
+
+                case 'ore':
+                    $labelParts[] = "{$value}o";
+                    break;
+
+                case 'mana':
+                    $labelParts[] = "{$value}m";
+                    break;
+
+                case 'lumber':
+                    $labelParts[] = "{$value}l";
+                    break;
+
+                case 'gems':
+                    $labelParts[] = "{$value}g";
+                    break;
+
+                case 'wizards':
+                    $labelParts[] = 'Wizard';
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return implode(', ', $labelParts);
+    }
+
+    public function getUnitCostString(Unit $unit): string
+    {
+        $unitCosts = [];
+
+        if ($unit->cost_platinum) {
+            $unitCosts['platinum'] = $unit->cost_platinum;
+        }
+
+        if ($unit->cost_ore > 0) {
+            $unitCosts['ore'] = $unit->cost_ore;
+        }
+
+        if ($unit->cost_mana > 0) {
+            $unitCosts['mana'] = $unit->cost_mana;
+        }
+
+        if ($unit->cost_lumber > 0) {
+            $unitCosts['lumber'] = $unit->cost_lumber;
+        }
+
+        if ($unit->cost_gems > 0) {
+            $unitCosts['gems'] = $unit->cost_gems;
+        }
+
+        return $this->getUnitCostStringFromArray($unitCosts);
     }
 
     public function getUnitHelpString(string $unitType, Race $race, bool $withOpDp = false): ?string
