@@ -53,7 +53,7 @@ class RealmWar extends AbstractModel
     public function scopeEscalated(Builder $query): Builder
     {
         return $query->where('active_at', '<', now())->where(function ($query) {
-            $query->where('inactive_at', null)->orWhere('inactive_at', '<', now());
+            $query->where('inactive_at', null)->orWhere('inactive_at', '>', now());
         });
     }
 
