@@ -3,6 +3,7 @@
 namespace OpenDominion\Calculators\Dominion;
 
 use OpenDominion\Models\Dominion;
+use OpenDominion\Services\Dominion\GovernmentService;
 
 class OpsCalculator
 {
@@ -33,11 +34,13 @@ class OpsCalculator
      * @param RangeCalculator $rangeCalculator
      */
     public function __construct(
+        GovernmentService $governmentService,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         RangeCalculator $rangeCalculator
     )
     {
+        $this->governmentService = $governmentService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
         $this->rangeCalculator = $rangeCalculator;
@@ -121,8 +124,7 @@ class OpsCalculator
 
         if ($target !== null) {
             // War
-            $governmentService = app(GovernmentService::class);
-            if ($governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+            if ($this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                 $selfRatio *= 1.15;
             }
         }
