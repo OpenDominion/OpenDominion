@@ -492,6 +492,11 @@ class SpellActionService
 
         if (isset($spellInfo['duration'])) {
             // Cast spell with duration
+            $duration = $spellInfo['duration'];
+            if ($target->getTechPerkValue('enemy_spell_duration') !== 0) {
+                $duration += $target->getTechPerkValue('enemy_spell_duration');
+            }
+
             if ($this->spellCalculator->isSpellActive($target, $spellKey)) {
                 $where = [
                     'dominion_id' => $target->id,
@@ -509,7 +514,7 @@ class SpellActionService
                 DB::table('active_spells')
                     ->where($where)
                     ->update([
-                        'duration' => $spellInfo['duration'],
+                        'duration' => $duration,
                         'cast_by_dominion_id' => $dominion->id,
                         'updated_at' => now(),
                     ]);
@@ -518,7 +523,7 @@ class SpellActionService
                     ->insert([
                         'dominion_id' => $target->id,
                         'spell' => $spellKey,
-                        'duration' => $spellInfo['duration'],
+                        'duration' => $duration,
                         'cast_by_dominion_id' => $dominion->id,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -527,7 +532,7 @@ class SpellActionService
 
             // Update statistics
             if (isset($dominion->{"stat_{$spellInfo['key']}_hours"})) {
-                $dominion->{"stat_{$spellInfo['key']}_hours"} += $spellInfo['duration'];
+                $dominion->{"stat_{$spellInfo['key']}_hours"} += $duration;
             }
 
             // Surreal Perception
@@ -556,7 +561,7 @@ class SpellActionService
                     'success' => true,
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for the next %s hours.',
-                        $spellInfo['duration']
+                        $duration
                     ),
                     'alert-type' => 'danger'
                 ];
@@ -565,7 +570,7 @@ class SpellActionService
                     'success' => true,
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, and it will continue to affect your target for the next %s hours.',
-                        $spellInfo['duration']
+                        $duration
                     )
                 ];
             }

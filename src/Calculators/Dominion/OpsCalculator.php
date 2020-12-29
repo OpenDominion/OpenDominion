@@ -252,9 +252,12 @@ class OpsCalculator
         }
 
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
-        // TODO: Placeholder for tech perk
         if ($range >= 75 && $range <= (10000 / 75)) {
             $infamy += 10;
+        } elseif ($range >= 60 && $range <= (10000 / 60)) {
+            if ($dominion->getTechValue('infamy_royal_guard') !== 0) {
+                $infamy += 10;
+            }
         }
 
         return $infamy;

@@ -239,7 +239,7 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
         // Prestige Bonus
-        $multiplier *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion));
+        $multiplier *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion) + $dominion->getTechMultiplier('food_production_prestige'));
 
         return $multiplier;
     }
