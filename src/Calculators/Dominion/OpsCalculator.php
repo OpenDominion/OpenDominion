@@ -15,12 +15,14 @@ class OpsCalculator
     /**
      * @var float Base amount of resilience lost each hour
      */
-    protected const RESILIENCE_DECAY = -8;
+    protected const SPY_RESILIENCE_DECAY = -8;
+    protected const WIZARD_RESILIENCE_DECAY = -8;
 
     /**
      * @var float Base amount of resilience gained per op
      */
-    protected const RESILIENCE_GAIN = 11;
+    protected const SPY_RESILIENCE_GAIN = 8;
+    protected const WIZARD_RESILIENCE_GAIN = 11;
 
     /**
      * @var float Wonder defensive WPA when calculating success rates
@@ -58,7 +60,7 @@ class OpsCalculator
     {
         $ratio = $this->getRelativeRatio($dominion, $target, $type);
         $successRate = 0.8 ** (2 / (($ratio * 1.4) ** 1.2));
-        return clamp($successRate, 0.03, 0.97);
+        return clamp($successRate, 0.01, 0.99);
     }
 
     /**
@@ -73,7 +75,7 @@ class OpsCalculator
     {
         $ratio = $this->getRelativeRatio($dominion, $target, $type);
         $successRate = 0.6 ** (2 / (($ratio * 1.2) ** 1.2));
-        return clamp($successRate, 0.03, 0.97);
+        return clamp($successRate, 0.01, 0.95);
     }
 
     /**
@@ -87,8 +89,8 @@ class OpsCalculator
     public function blackOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
     {
         $ratio = $this->getRelativeRatio($dominion, $target, $type);
-        $successRate = ((($ratio ** 0.6) * 0.25) ** 0.6);
-        return clamp($successRate, 0.03, 0.97);
+        $successRate = (1 / (1 + exp(($ratio ** -0.4) - $ratio))) + (0.008 * $ratio) - 0.07;
+        return clamp($successRate, 0.03, 0.95);
     }
 
     /**
@@ -124,7 +126,9 @@ class OpsCalculator
 
         if ($target !== null) {
             // War
-            if ($this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+            if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
+                $selfRatio *= 1.2;
+            } elseif ($this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                 $selfRatio *= 1.15;
             }
         }
@@ -225,12 +229,11 @@ class OpsCalculator
      */
     public function getInfamyGain(Dominion $dominion, Dominion $target, string $type): int
     {
+        $infamy = 5;
         if ($type == 'spy') {
-            $infamy = 5;
             $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
             $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
         } elseif ($type == 'wizard') {
-            $infamy = 10;
             $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
             $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
         } else {
@@ -251,7 +254,7 @@ class OpsCalculator
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
         // TODO: Placeholder for tech perk
         if ($range >= 75 && $range <= (10000 / 75)) {
-            $infamy += 5;
+            $infamy += 10;
         }
 
         return $infamy;
@@ -273,15 +276,21 @@ class OpsCalculator
     }
 
     /**
-     * Returns the amount of infamy gained by a Dominion.
+     * Returns the amount of resilience gained by a Dominion.
      *
      * @param Dominion $dominion
-     * @param Dominion $target
+     * @param string $type
      * @return int
      */
-    public function getResilienceGain(Dominion $dominion): int
+    public function getResilienceGain(Dominion $dominion, string $type): int
     {
-        $resilience = static::RESILIENCE_GAIN;
+        if ($type == 'spy') {
+            $resilience = static::SPY_RESILIENCE_GAIN;
+        } elseif ($type == 'wizard') {
+            $resilience = static::WIZARD_RESILIENCE_GAIN;
+        } else {
+            return 0;
+        }
 
         // TODO: Placeholder for tech perk
 
@@ -292,11 +301,18 @@ class OpsCalculator
      * Returns the Dominion's hourly resilience decay.
      *
      * @param Dominion $dominion
+     * @param string $type
      * @return int
      */
-    public function getResilienceDecay(Dominion $dominion): int
+    public function getResilienceDecay(Dominion $dominion, string $type): int
     {
-        $decay = static::RESILIENCE_DECAY;
+        if ($type == 'spy') {
+            $decay = static::SPY_RESILIENCE_DECAY;
+        } elseif ($type == 'wizard') {
+            $decay = static::WIZARD_RESILIENCE_DECAY;
+        } else {
+            return 0;
+        }
 
         // TODO: Placeholder for tech perk
 

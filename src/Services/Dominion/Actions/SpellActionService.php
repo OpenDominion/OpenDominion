@@ -661,7 +661,7 @@ class SpellActionService
             $warRewardsString = '';
             if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected && $totalDamage > 0) {
                 // Resilience
-                $target->wizard_resilience += $this->opsCalculator->getResilienceGain($dominion);
+                $target->wizard_resilience += $this->opsCalculator->getResilienceGain($dominion, 'wizard');
 
                 // Infamy Gains
                 $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard');

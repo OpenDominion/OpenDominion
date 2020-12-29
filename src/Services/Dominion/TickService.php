@@ -554,9 +554,10 @@ class TickService
         }
 
         // Resilience
-        $resilienceDecay = $this->opsCalculator->getResilienceDecay($dominion);
-        $tick->spy_resilience = max($resilienceDecay, -$dominion->spy_resilience);
-        $tick->wizard_resilience = max($resilienceDecay, -$dominion->wizard_resilience);
+        $spyResilienceDecay = $this->opsCalculator->getResilienceDecay($dominion, 'spy');
+        $tick->spy_resilience = max($spyResilienceDecay, -$dominion->spy_resilience);
+        $wizardResilienceDecay = $this->opsCalculator->getResilienceDecay($dominion, 'wizard');
+        $tick->wizard_resilience = max($wizardResilienceDecay, -$dominion->wizard_resilience);
 
         // Store highest land total
         if ($totalLand > $dominion->highest_land_achieved) {

@@ -651,7 +651,7 @@ class EspionageActionService
         $warRewardsString = '';
         if ($this->espionageHelper->isWarOperation($operationKey) && $totalDamage > 0) {
             // Resilience
-            $target->spy_resilience += $this->opsCalculator->getResilienceGain($dominion);
+            $target->spy_resilience += $this->opsCalculator->getResilienceGain($dominion, 'spy');
 
             // Infamy Gains
             $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy');
