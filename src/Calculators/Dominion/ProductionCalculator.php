@@ -134,6 +134,7 @@ class ProductionCalculator
 
         // Wonders
         $multiplier += $dominion->getWonderPerkMultiplier('platinum_production');
+        $guardTax += $dominion->getWonderPerkValue('guard_tax');
 
         // Spell: Midas Touch
         $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'midas_touch', $spellMidasTouch);

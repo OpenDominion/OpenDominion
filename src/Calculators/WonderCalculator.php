@@ -145,7 +145,7 @@ class WonderCalculator
     public function getPrestigeGainForDominion(RoundWonder $wonder, Dominion $dominion): float
     {
         if ($wonder->realm == null && !$dominion->realm->wonders->isEmpty()) {
-            // Wonder is neutral, realm already has a wonder
+            // Wonder is neutral and realm already has a wonder
             return 0;
         }
 
@@ -158,7 +158,8 @@ class WonderCalculator
         }
 
         if ($wonder->realm == null || $wonder->realm_id == null) {
-            return static::PRESTIGE_BASE_GAIN;
+            // Wonder is neutral or not being rebuilt
+            return 0;
         }
 
         return round(static::PRESTIGE_BASE_GAIN + (
