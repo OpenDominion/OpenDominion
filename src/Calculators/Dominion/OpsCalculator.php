@@ -255,7 +255,7 @@ class OpsCalculator
         if ($range >= 75 && $range <= (10000 / 75)) {
             $infamy += 10;
         } elseif ($range >= 60 && $range <= (10000 / 60)) {
-            if ($dominion->getTechValue('infamy_royal_guard') !== 0) {
+            if ($dominion->getTechPerkValue('infamy_royal_guard') !== 0) {
                 $infamy += 10;
             }
         }
