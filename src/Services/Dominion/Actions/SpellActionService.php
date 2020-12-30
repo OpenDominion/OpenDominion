@@ -682,7 +682,6 @@ class SpellActionService
 
                 $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
                 if ($masteryLoss > 0) {
-                    $warRewardsString .= " Your target lost {$masteryLoss} wizard mastery.";
                     $damageDealt[] = "{$masteryLoss} wizard mastery";
                 }
             }

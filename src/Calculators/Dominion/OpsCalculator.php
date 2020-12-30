@@ -387,6 +387,9 @@ class OpsCalculator
         $mastery = 0;
         $masteryDifference = $selfMastery - $targetMastery;
 
+        if ($targetMastery <= 100) {
+            return 0;
+        }
         if (abs($masteryDifference) <= 100) {
             $mastery += 1;
         }

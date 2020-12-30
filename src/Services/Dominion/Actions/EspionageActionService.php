@@ -667,7 +667,6 @@ class EspionageActionService
 
             $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} spy mastery.";
             if ($masteryLoss > 0) {
-                $warRewardsString .= " Your target lost {$masteryLoss} spy mastery.";
                 $damageDealt[] = "{$masteryLoss} spy mastery";
             }
         }
