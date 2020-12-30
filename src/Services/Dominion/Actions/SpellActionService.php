@@ -677,8 +677,8 @@ class SpellActionService
                 $dominion->wizard_mastery += $masteryGain;
 
                 // Mastery Loss
-                $masteryLoss = $this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard');
-                $target->wizard_mastery -= min($target->wizard_mastery, $masteryLoss);
+                $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard'), $target->wizard_mastery);
+                $target->wizard_mastery -= $masteryLoss;
 
                 $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
                 if ($masteryLoss > 0) {
