@@ -704,6 +704,10 @@ class EspionageActionService
 
         $unitsKilled = [];
         $spiesKilled = (int)floor($dominion->military_spies * $spiesKilledPercentage);
+        if ($type == 'info') {
+            // Cap spy losses for info ops
+            $spiesKilled = min($spiesKilled, $this->landCalculator->getTotalLand($dominion) * 0.006);
+        }
         if ($spiesKilled > 0) {
             $unitsKilled['spies'] = $spiesKilled;
             $dominion->military_spies -= $spiesKilled;
@@ -713,6 +717,10 @@ class EspionageActionService
             if ($unit->getPerkValue('counts_as_spy_offense')) {
                 $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_spy_offense') / 2) * $spiesKilledPercentage;
                 $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                if ($type == 'info') {
+                    // Cap spy losses for info ops
+                    $unitKilled = min($unitKilled, $this->landCalculator->getTotalLand($dominion) * 0.006 / 2);
+                }
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
                     $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
