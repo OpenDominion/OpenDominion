@@ -1005,7 +1005,7 @@ class MilitaryCalculator
     public function getBoatsProtected(Dominion $dominion): float
     {
         // Docks
-        $boatsProtected = $dominion->building_dock * max(static::BOATS_PROTECTED_PER_DOCK, 0.1 * $dominion->round->daysInRound());
+        $boatsProtected = $dominion->building_dock * (static::BOATS_PROTECTED_PER_DOCK + max(0, 0.05 * ($dominion->round->daysInRound() - 25)));
 
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2);
