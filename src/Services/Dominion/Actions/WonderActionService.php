@@ -41,6 +41,11 @@ class WonderActionService
      */
     protected const CYCLONE_DAMAGE_CAP_PERCENTAGE = 0.75;
 
+    /**
+     * @var float Wizard multiplier for cyclone damage
+     */
+    protected const CYCLONE_DAMAGE_MULTIPLIER = 1.5;
+
     /** @var GovernmentService */
     protected $governmentService;
 
@@ -213,7 +218,7 @@ class WonderActionService
             $dominion->stat_spell_success += 1;
 
             $wizardRatio = min(1, $this->militaryCalculator->getWizardRatioRaw($dominion));
-            $damageDealt = $spellInfo['damage_multiplier'] * $wizardRatio * $this->landCalculator->getTotalLand($dominion);
+            $damageDealt = static::CYCLONE_DAMAGE_MULTIPLIER * $wizardRatio * $this->landCalculator->getTotalLand($dominion);
             $damageCap = static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100;
 
             // Techs

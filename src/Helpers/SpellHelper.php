@@ -418,7 +418,6 @@ class SpellHelper
                 'key' => 'cyclone',
                 'mana_cost' => 3.5,
                 'icon_class' => 'ra ra-tornado',
-                'damage_multiplier' => 3.5,
             ],
         ]);
     }

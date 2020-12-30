@@ -148,21 +148,26 @@ class WonderCalculator
     */
     public function getPrestigeGainForDominion(RoundWonder $wonder, Dominion $dominion): float
     {
+        $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
+        $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion);
+        $attackDamageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'attack');
+
         if ($wonder->realm == null && !$dominion->realm->wonders->isEmpty()) {
             // Wonder is neutral and realm already has a wonder
-            return 0;
-        }
-
-        $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
-        $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'attack');
-        $damageContribution = $damageByDominion / $damageByRealm;
-
-        if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
+            $damageContribution = $damageByDominion / $damageByRealm;
+            if ($damageContribution >= static::PRESTIGE_CONTRIBUTION_MIN) {
+                return -25;
+            }
             return 0;
         }
 
         if ($wonder->realm == null || $wonder->realm_id == null) {
             // Wonder is neutral or not being rebuilt
+            return 0;
+        }
+
+        $damageContribution = $attackDamageByDominion / $damageByRealm;
+        if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
         }
 
