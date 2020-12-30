@@ -70,7 +70,7 @@ class OpsCalculator
     {
         $ratio = $this->getRelativeRatio($dominion, $target, $type);
         $successRate = 0.6 ** (2 / (($ratio * 1.2) ** 1.2));
-        return clamp($successRate, 0.01, 0.95);
+        return clamp($successRate, 0.01, 0.99);
     }
 
     /**
@@ -85,7 +85,7 @@ class OpsCalculator
     {
         $ratio = $this->getRelativeRatio($dominion, $target, $type);
         $successRate = (1 / (1 + exp(($ratio ** -0.4) - $ratio))) + (0.008 * $ratio) - 0.07;
-        return clamp($successRate, 0.03, 0.95);
+        return clamp($successRate, 0.01, 0.95);
     }
 
     /**
