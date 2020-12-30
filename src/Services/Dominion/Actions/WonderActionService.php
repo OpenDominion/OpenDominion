@@ -15,7 +15,6 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RoundWonder;
-use OpenDominion\Models\RoundWonderDamage;
 use OpenDominion\Models\Wonder;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\GuardMembershipService;
@@ -218,7 +217,7 @@ class WonderActionService
             $damageCap = static::CYCLONE_DAMAGE_CAP_PERCENTAGE / 100;
 
             // Techs
-            $damageDealt *= (1 + $dominion->getTechPerkMultiplier('cyclone_damage'));
+            $damageDealt *= (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
 
             // Cap at % of wonder max power
             $damageDealt = round(min($damageDealt, $wonder->power * $damageCap));
@@ -228,7 +227,8 @@ class WonderActionService
             $wonder->damage()->create([
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
-                'damage' => $damageDealt
+                'damage' => $damageDealt,
+                'source' => 'attack'
             ]);
 
             $this->attackResult['attacker']['damage'] = $damageDealt;
@@ -350,11 +350,16 @@ class WonderActionService
             $this->checkGuardApplications($dominion);
 
             $damageDealt = round($this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units));
+
+            // Techs
+            $damageDealt *= (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
+
             $wonderPower = max(0, $this->wonderCalculator->getCurrentPower($wonder) - $damageDealt);
             $wonder->damage()->create([
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
-                'damage' => $damageDealt
+                'damage' => $damageDealt,
+                'source' => 'cyclone'
             ]);
 
             $this->attackResult['attacker']['op'] = $damageDealt;

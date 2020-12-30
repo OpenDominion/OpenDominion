@@ -126,13 +126,17 @@ class WonderCalculator
     *
     * @param RoundWonder $wonder
     * @param Dominion $dominion
+    * @param string $source
     * @return float
     */
-    public function getDamageDealtByDominion(RoundWonder $wonder, Dominion $dominion): float
+    public function getDamageDealtByDominion(RoundWonder $wonder, Dominion $dominion, string $source = null): float
     {
-        return $wonder->damage()
-            ->where('dominion_id', $dominion->id)
-            ->sum('damage');
+        $wonderDamage = $wonder->damage()->where('dominion_id', $dominion->id);
+        if ($source !== null) {
+            return $wonderDamage->where('source', $source)->sum('damage');
+        }
+
+        return $wonderDamage->sum('damage');
     }
 
     /**
@@ -150,7 +154,7 @@ class WonderCalculator
         }
 
         $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
-        $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion);
+        $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'attack');
         $damageContribution = $damageByDominion / $damageByRealm;
 
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
