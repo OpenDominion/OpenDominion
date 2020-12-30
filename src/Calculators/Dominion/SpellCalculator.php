@@ -85,7 +85,7 @@ class SpellCalculator
 
         return (
             ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
-            ($dominion->wizard_strength >= $wizardStrengthCost)
+            ($dominion->wizard_strength >= 30)
         );
     }
 

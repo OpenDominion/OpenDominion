@@ -28,6 +28,6 @@ class EspionageCalculator
             $spyStrengthCost = 2;
         }
 
-        return ($dominion->spy_strength >= $spyStrengthCost);
+        return ($dominion->spy_strength >= 30);
     }
 }

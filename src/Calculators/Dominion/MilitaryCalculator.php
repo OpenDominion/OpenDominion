@@ -970,10 +970,6 @@ class MilitaryCalculator
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
 
-        if ($dominion->wizard_strength < 25) {
-            $regen += 1;
-        }
-
         return $regen;
     }
 

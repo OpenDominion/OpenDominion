@@ -25,11 +25,6 @@ class OpsCalculator
     protected const WIZARD_RESILIENCE_GAIN = 11;
 
     /**
-     * @var float Wonder defensive WPA when calculating success rates
-     */
-    protected const WONDER_WPA = 0.25;
-
-    /**
      * OpsCalculator constructor.
      *
      * @param MilitaryCalculator $militaryCalculator
@@ -101,36 +96,17 @@ class OpsCalculator
      * @param string $type
      * @return float
      */
-    public function getRelativeRatio(Dominion $dominion, ?Dominion $target, string $type): float
+    public function getRelativeRatio(Dominion $dominion, Dominion $target, string $type): float
     {
         $selfRatio = 0;
-        $targetRatio = static::WONDER_WPA;
+        $targetRatio = 1;
 
         if ($type == 'spy') {
             $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
-            if ($dominion->spy_strength < 30) {
-                $selfRatio *= (1 - max(30 - $dominion->spy_strength, 0) / 100);
-            }
-            if ($target !== null) {
-                $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
-            }
+            $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
         } elseif ($type == 'wizard') {
             $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
-            if ($dominion->wizard_strength < 30) {
-                $selfRatio *= (1 - max(30 - $dominion->wizard_strength, 0) / 100);
-            }
-            if ($target !== null) {
-                $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
-            }
-        }
-
-        if ($target !== null) {
-            // War
-            if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
-                $selfRatio *= 1.2;
-            } elseif ($this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
-                $selfRatio *= 1.15;
-            }
+            $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
         }
 
         return $selfRatio / $targetRatio;
