@@ -661,7 +661,15 @@ class EspionageActionService
             $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'spy');
             $dominion->spy_mastery += $masteryGain;
 
+            // Mastery Loss
+            $masteryLoss = $this->opsCalculator->getMasteryLoss($dominion, $target, 'spy');
+            $target->spy_mastery -= min($target->spy_mastery, $masteryLoss);
+
             $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} spy mastery.";
+            if ($masteryLoss > 0) {
+                $warRewardsString .= " Your target lost {$masteryLoss} spy mastery.";
+                $damageDealt[] = "{$masteryLoss} spy mastery";
+            }
         }
 
         // Surreal Perception

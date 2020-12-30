@@ -676,7 +676,15 @@ class SpellActionService
                 $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard');
                 $dominion->wizard_mastery += $masteryGain;
 
+                // Mastery Loss
+                $masteryLoss = $this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard');
+                $target->wizard_mastery -= min($target->wizard_mastery, $masteryLoss);
+
                 $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
+                if ($masteryLoss > 0) {
+                    $warRewardsString .= " Your target lost {$masteryLoss} wizard mastery.";
+                    $damageDealt[] = "{$masteryLoss} wizard mastery";
+                }
             }
 
             // Surreal Perception

@@ -339,43 +339,58 @@ class OpsCalculator
     public function getMasteryGain(Dominion $dominion, Dominion $target, string $type): int
     {
         if ($type == 'spy') {
-            $mastery = 1;
             $selfMastery = $dominion->spy_mastery;
             $targetMastery = $target->spy_mastery;
-            $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
-            $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
         } elseif ($type == 'wizard') {
-            $mastery = 1;
             $selfMastery = $dominion->wizard_mastery;
             $targetMastery = $target->wizard_mastery;
-            $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
-            $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
         } else {
             return 0;
         }
 
+        $mastery = round($this->getInfamyGain($dominion, $target, $type) / 10);
         $masteryDifference = $selfMastery - $targetMastery;
+
         if ($masteryDifference > 500) {
-            return $mastery;
+            return 0;
         }
-        if ($masteryDifference > 300) {
-            $mastery += 5;
-        }
-        if (abs($masteryDifference) < 100) {
-            $mastery += 3;
-        }
-
-        $relativeRatio = ($targetRatio / $selfRatio);
-        if ($relativeRatio >= 0.75 && $relativeRatio < 1.0) {
+        if (abs($masteryDifference) <= 100) {
             $mastery += 1;
-        } elseif ($relativeRatio >= 1.0 && $relativeRatio < 1.25) {
-            $mastery += 2;
-        } elseif ($relativeRatio >= 1.25) {
-            $mastery += 3;
+        }
+        if ($targetMastery > $selfMastery) {
+            $mastery += 1;
         }
 
-        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
-        if ($range >= 75 && $range <= (10000 / 75)) {
+        return $mastery;
+    }
+
+    /**
+     * Returns the amount of mastery lost by a Dominion.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return int
+     */
+    public function getMasteryLoss(Dominion $dominion, Dominion $target, string $type): int
+    {
+        if ($type == 'spy') {
+            $selfMastery = $dominion->spy_mastery;
+            $targetMastery = $target->spy_mastery;
+        } elseif ($type == 'wizard') {
+            $selfMastery = $dominion->wizard_mastery;
+            $targetMastery = $target->wizard_mastery;
+        } else {
+            return 0;
+        }
+
+        $mastery = 0;
+        $masteryDifference = $selfMastery - $targetMastery;
+
+        if (abs($masteryDifference) <= 100) {
+            $mastery += 1;
+        }
+        if ($targetMastery > $selfMastery) {
             $mastery += 1;
         }
 
