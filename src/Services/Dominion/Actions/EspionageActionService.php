@@ -726,7 +726,7 @@ class EspionageActionService
                 $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
                 if ($type == 'info') {
                     // Cap spy losses for info ops
-                    $unitKilled = min($unitKilled, $this->landCalculator->getTotalLand($dominion) * 0.006 / 2);
+                    $unitKilled = min($unitKilled, $this->landCalculator->getTotalLand($dominion) * 0.003);
                 }
                 if ($unitKilled > 0) {
                     $unitsKilled[strtolower($unit->name)] = $unitKilled;
