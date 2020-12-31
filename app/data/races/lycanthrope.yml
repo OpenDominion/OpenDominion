@@ -1,8 +1,8 @@
 name: Lycanthrope
 alignment: evil
 description: >-
-  <p>Once thought to be an ancient curse that transformed men into wolves under the light of a full moon, little is understood about the Lycanthropic affliction. But one thing's for certain&#58; once bitten, you'll never be the same again.</p>
-  <p>Capable of agonising transformations into half-beast monsters, Lycanthropes are a hardy and fast-growing race, turning their enemies into werewolves and regenerating non-lethal wounds mid-combat.</p>
+  <p>Once thought to be an ancient curse that transformed men into wolves under the light of a full moon, little is understood about the Lycan affliction. But one thing's for certain: once bitten, you'll never be the same again.</p>
+  <p>Subject to agonizing transformations into half-beast monsters, Lycanthropes are a hardy and fast-growing race, turning their enemies into bloodthirsty werewolves and regenerating non-lethal wounds mid-combat.</p>
 attacker_difficulty: 2
 explorer_difficulty: 3
 converter_difficulty: 3
