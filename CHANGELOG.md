@@ -37,6 +37,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Research points gained on invasion changed to 1100 + MIN(1100, (120-SCHOOL%) x SCHOOL%)
 - Removed prestige gain from war operations (replaced with Infamy)
 - Dock protection now scales by 0.05/day after day 25 (from 0.1/day)
+- Sabotage Boats damage increased to 2.25% (from 2%)
+- Fireball damage increased to 2.65% from (2.5%)
+- Magic Snare damage changed to 3.5% of current, min 1.5 (from flat 2%)
 - Simplified the black ops success formula to a single variable
 - Changed min/max success rates on black ops to 1%/95% (from 3%/97%)
 - Changed min/max success rates on info/theft ops to 1%/99% (from 3%/97%)
