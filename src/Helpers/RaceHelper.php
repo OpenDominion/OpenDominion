@@ -51,7 +51,7 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'castle bonuses';
                 break;
-            case 'invest_bonus_gem':
+            case 'invest_bonus_gems':
                 $negativeBenefit = false;
                 $description = 'gem investment';
                 break;
@@ -175,7 +175,7 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Castle bonuses';
                 break;
-            case 'invest_bonus_gem':
+            case 'invest_bonus_gems':
                 $negativeBenefit = false;
                 $description = 'Gem investment';
                 break;

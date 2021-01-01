@@ -45,23 +45,23 @@ class UnitHelper
         foreach ($unitCosts as $costType => $value) {
             switch ($costType) {
                 case 'platinum':
-                    $labelParts[] = "{$value}p";
+                    $labelParts[] = "{$value}pl";
                     break;
 
                 case 'ore':
-                    $labelParts[] = "{$value}o";
+                    $labelParts[] = "{$value}or";
                     break;
 
                 case 'mana':
-                    $labelParts[] = "{$value}m";
+                    $labelParts[] = "{$value}ma";
                     break;
 
                 case 'lumber':
-                    $labelParts[] = "{$value}l";
+                    $labelParts[] = "{$value}lu";
                     break;
 
                 case 'gems':
-                    $labelParts[] = "{$value}g";
+                    $labelParts[] = "{$value}ge";
                     break;
 
                 case 'wizards':
