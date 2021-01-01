@@ -4,7 +4,65 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Added
-- Timestamp on ops in realm
+- New Stat: Infamy
+  - Temporarily boosts platinum production (max 7.5%) and gem production (max 5%)
+  - Gained when performing war operations
+    - Increased by 5 per op
+    - Bonus for targeting 75% (+10)
+    - Bonus for higher ratio targets (+15-40)
+  - Scales from 0 to 1000
+  - Decays by 25 each hour
+- New Stats: Spy Resilience, Wizard Resilience
+  - Temporarily reduces damage taken by war operations (max 76%)
+  - Gained when targeted by war operations
+    - Spy Resilience is increased by 8 per op
+    - Wizard Resilience is increased by 11 per op
+  - Scales from 0 to 1000
+  - Decays by 8 each hour
+- New Stats: Spy Mastery, Wizard Mastery
+  - Replaces Spy Prestige and Wizard Prestige rankings
+  - Gained when performing war operations (Infamy / 10)
+    - No gain when outclassing your target by 500 or more
+    - Bonus when outclassed by your target (+1, -1 for your target)
+    - Additional bonus when within 100pts of your target (+1, -1 for your target)
+- New Tech Perks:
+  - Tributary System, increases food production bonus from prestige by 60%
+  - Anti-Magic Sigils, decreases duration of enemy spells by 1 hour
+  - Menace, range-based infamy gain bonus expanded to 60%
+- Many other techs have had their values adjusted or changed position in the tree
+- Additional submit button at the top of the Technology page
+- Timestamps in Op Center advisor
+
+### Changed
+- Research points gained on invasion changed to 1100 + MIN(1100, (120-SCHOOL%) x SCHOOL%)
+- Removed prestige gain from war operations (replaced with Infamy)
+- Dock protection now scales by 0.05/day after day 25 (from 0.1/day)
+- Sabotage Boats damage increased to 2.25% (from 2%)
+- Fireball damage increased to 2.65% from (2.5%)
+- Magic Snare damage changed to 3.5% of current, min 1.5 (from flat 2%)
+- Simplified the black ops success formula to a single variable
+- Changed min/max success rates on black ops to 1%/95% (from 3%/97%)
+- Changed min/max success rates on info/theft ops to 1%/99% (from 3%/97%)
+- Spy losses from info ops limited to 0.006x LAND (0.003x LAND for Chameleon / Master Thief)
+- Cyclone now has a 100% success rate
+- Cyclone damage reduced to 1.5x wizards (from 3.5x) and 0.75% of max wonder health (from 2%)
+- Cyclone no longer contributes toward wonder prestige gain (only attacking)
+- Rebuilding a neutral wonder will no longer grant prestige
+- Destroying a neutral wonder without rebuilding it will incur a penalty of 25 prestige to contributors in the realm that destroyed it
+- Halls of Knowledge to spawn only in the first 14 days of the round
+- Only one of the following wonders pairs spawn in a given round
+  - Ancient Library/ Halls of Knowledge
+  - Ivory Tower / Wizard Academy
+- Ivory Tower and Wizard Academy no longer protect themselves from cyclone
+- Imperial Armada now also grants -1% platinum tax from royal guard
+- Horn of Plenty increased to +2% production to all resources (from +1%)
+- Factory of Legends reduced to -20% construction platinum cost (from -25%)
+- Base prestige gain on attacks increased to 22.5 (from 20)
+- Maximum prestige decreased to 90% of land size (from 100%)
+- Dark Elf Adept: Wizard Guild requirement increased to 9% (from 8%) per point to a maximum of +4/+4 (from +5/+5)
+
+### Fixed
+- War declarations in the town crier will now display the realm names as they were at that exact time
 
 ## [1.1.8] - 2020-12-10
 ### Fixed

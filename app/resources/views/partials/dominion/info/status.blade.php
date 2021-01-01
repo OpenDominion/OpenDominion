@@ -62,6 +62,30 @@
                     </td>
                     <td>{{ number_format($data['prestige']) }}</td>
                 </tr>
+                <tr>
+                    <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("infamy") }}">
+                            Infamy:
+                        </span>
+                    </td>
+                    <td>{{ number_format(array_get($data, 'infamy', 0)) }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("spy_mastery") }}">
+                            Spy Mastery:
+                        </span>
+                    </td>
+                    <td>{{ number_format(array_get($data, 'spy_mastery', 0)) }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("wizard_mastery") }}">
+                            Wizard Mastery:
+                        </span>
+                    </td>
+                    <td>{{ number_format(array_get($data, 'wizard_mastery', 0)) }}</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -140,6 +164,22 @@
                         </span>
                     </td>
                     <td>{{ number_format($data['resource_boats']) }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("spy_resilience") }}">
+                            Spy Resilience:
+                        </span>
+                    </td>
+                    <td>{{ number_format(array_get($data, 'spy_resilience', 0)) }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("wizard_resilience") }}">
+                            Wizard Resilience:
+                        </span>
+                    </td>
+                    <td>{{ number_format(array_get($data, 'wizard_resilience', 0)) }}</td>
                 </tr>
             </tbody>
         </table>

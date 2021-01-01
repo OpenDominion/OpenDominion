@@ -70,6 +70,11 @@ class InfoMapper
             'employment' => $this->populationCalculator->getEmploymentPercentage($dominion),
             'networth' => $this->networthCalculator->getDominionNetworth($dominion),
             'prestige' => $dominion->prestige,
+            'infamy' => $dominion->infamy,
+            'spy_resilience' => $dominion->spy_resilience,
+            'wizard_resilience' => $dominion->wizard_resilience,
+            'spy_mastery' => $dominion->spy_mastery,
+            'wizard_mastery' => $dominion->wizard_mastery,
 
             'resource_platinum' => $dominion->resource_platinum,
             'resource_food' => $dominion->resource_food,

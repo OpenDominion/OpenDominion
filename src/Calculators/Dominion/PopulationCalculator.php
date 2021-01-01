@@ -57,7 +57,8 @@ class PopulationCalculator
         QueueService $queueService,
         SpellCalculator $spellCalculator,
         UnitHelper $unitHelper
-    ) {
+    )
+    {
         $this->buildingHelper = $buildingHelper;
         $this->improvementCalculator = $improvementCalculator;
         $this->landCalculator = $landCalculator;

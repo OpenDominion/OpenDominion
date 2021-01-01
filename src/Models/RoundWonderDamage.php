@@ -9,6 +9,7 @@ namespace OpenDominion\Models;
  * @property int $realm_id
  * @property int $dominion_id
  * @property int $damage
+ * @property string $source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \OpenDominion\Models\Round $wonder

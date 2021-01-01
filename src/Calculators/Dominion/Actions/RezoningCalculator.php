@@ -22,7 +22,8 @@ class RezoningCalculator
     public function __construct(
         LandCalculator $landCalculator,
         SpellCalculator $spellCalculator
-    ) {
+    )
+    {
         $this->landCalculator = $landCalculator;
         $this->spellCalculator = $spellCalculator;
     }

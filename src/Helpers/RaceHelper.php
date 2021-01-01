@@ -85,7 +85,11 @@ class RaceHelper
                 break;
             case 'population_growth':
                 $negativeBenefit = false;
-                $description = 'Population growth';
+                $description = 'population growth';
+                break;
+            case 'prestige_gains':
+                $negativeBenefit = false;
+                $description = 'prestige gains';
                 break;
             case 'rezone_cost':
                 $negativeBenefit = true;
@@ -206,6 +210,10 @@ class RaceHelper
             case 'population_growth':
                 $negativeBenefit = false;
                 $description = 'Population growth';
+                break;
+            case 'prestige_gains':
+                $negativeBenefit = false;
+                $description = 'Prestige gains';
                 break;
             case 'rezone_cost':
                 $negativeBenefit = true;

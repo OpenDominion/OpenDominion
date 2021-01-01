@@ -1,8 +1,8 @@
 name: Halfling
 alignment: good
 description: >-
-  <p>The only creature to match drinking pace with a Dwarf, Halflings are a cheerful and adventurous race with a mischievous streak. Hairy feet and light fingers characterise Halflings, who are just as quick to steal a pie from a neighbour as they are to line their pockets with the hard-earned platinum of a foreigner.</p>
-  <p>Despite their happy-go-lucky natures, Halflings can be very dangerous when cornered, flying into a wild frenzy whenever their friends are threatened.</p>
+  <p>Halflings are strange little creatures, short and slight, caught somewhere between a human child and an elf in appearance, with oversized hands and long, dexterous fingers. They are almost completely nocturnal, with pale white skin and wet black eyes that shine a sickly green in the dark.</p>
+  <p>Halfling physiology makes them natural spies and thieves. Halflings can be very dangerous - particularly in groups, flying into a violent frenzy when cornered.</p>
 attacker_difficulty: 2
 explorer_difficulty: 1
 converter_difficulty: 3

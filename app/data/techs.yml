@@ -35,16 +35,17 @@ tech_9_1:
     - tech_11_1
     - tech_10_3
 tech_11_1:
-  name: Master of Efficiency
+  name: Industrial Machinery
   perks:
-    military_cost: -2
+    lumber_production: 5
+    ore_production: 5
   requires:
     - tech_9_1
     - tech_13_1
 tech_13_1:
-  name: Explorer's Instinct
+  name: Siege Weaponry
   perks:
-    explore_platinum_cost: -5
+    wonder_damage: 10
   requires:
     - tech_11_1
     - tech_15_1
@@ -59,37 +60,38 @@ tech_15_1:
     - tech_17_1
     - tech_14_3
 tech_17_1:
-  name: Frugal Foragers
+  name: Arcane Bloodlines
   perks:
-    food_consumption: -2.5
+    spy_cost: -5
+    wizard_cost: -15
   requires:
     - tech_15_1
     - tech_19_1
 tech_19_1:
-  name: Mana Pools
+  name: Frugal Foragers
   perks:
-    spell_cost: -10
+    food_consumption: -2.5
   requires:
     - tech_17_1
     - tech_21_1
     - tech_18_3
 tech_21_1:
-  name: Explorer's Luck
+  name: Reforestation
   perks:
-    explore_draftee_cost: -2
+    construction_lumber_cost: -10
 tech_2_3:
   name: Surplus Management
   perks:
-    food_decay: -12.5
-    lumber_decay: -12.5
-    mana_decay: -12.5
+    food_decay: -10
+    lumber_decay: -10
+    mana_decay: -10
   requires:
     - tech_1_1
     - tech_4_3
 tech_4_3:
   name: Banker's Friend
   perks:
-    exchange_bonus: 10
+    exchange_bonus: 15
   requires:
     - tech_3_1
     - tech_2_3
@@ -117,17 +119,17 @@ tech_10_3:
     - tech_9_1
     - tech_11_5
 tech_12_3:
-  name: Industrial Machinery
+  name: Explorer's Instinct
   perks:
-    lumber_production: 5
-    ore_production: 5
+    construction_platinum_cost: -2.5
+    explore_platinum_cost: -2.5
   requires:
     - tech_13_1
     - tech_11_5
 tech_14_3:
-  name: Pastoral Planner
+  name: Wizard Nexus
   perks:
-    max_population: 1.5
+    wizard_strength_recovery: 1.5
   requires:
     - tech_15_1
     - tech_16_3
@@ -135,16 +137,17 @@ tech_14_3:
 tech_16_3:
   name: Preservationist
   perks:
-    food_decay: -25
-    lumber_decay: -25
-    mana_decay: -25
+    food_decay: -15
+    lumber_decay: -15
+    mana_decay: -15
   requires:
     - tech_14_3
     - tech_18_3
 tech_18_3:
   name: Explorer's Intuition
   perks:
-    explore_platinum_cost: -5
+    explore_platinum_cost: -2.5
+    explore_draftee_cost: -1
   requires:
     - tech_19_1
     - tech_16_3
@@ -175,7 +178,7 @@ tech_5_5:
 tech_7_5:
   name: Urg Smash Technique
   perks:
-    destruction_refund: 5
+    destruction_refund: 7.5
     lumber_production: 7.5
   requires:
     - tech_9_5
@@ -188,24 +191,23 @@ tech_9_5:
     - tech_7_5
     - tech_8_3
 tech_11_5:
-  name: Dark Artistry
+  name: Master of Efficiency
   perks:
-    spy_strength_recovery: 2
-    wizard_strength_recovery: 2
+    military_cost: -3
   requires:
     - tech_10_3
     - tech_12_3
 tech_13_5:
-  name: Maelstrom
+  name: Pastoral Planner
   perks:
-    cyclone_damage: 15
+    max_population: 1.5
   requires:
     - tech_14_3
     - tech_12_7
 tech_15_5:
   name: Explorer's Guile
   perks:
-    explore_draftee_cost: -1
+    explore_draftee_cost: -2
     explore_platinum_cost: -7.5
   requires:
     - tech_14_7
@@ -217,17 +219,16 @@ tech_17_5:
     - tech_18_3
     - tech_16_7
 tech_19_5:
-  name: Arcane Bloodlines
+  name: Mana Pools
   perks:
-    spy_cost: -5
-    wizard_cost: -15
+    spell_cost: -10
   requires:
     - tech_20_3
     - tech_18_7
 tech_4_7:
   name: Shipwright's Ingenuity
   perks:
-    boat_production: 7.5
+    boat_production: 10
   requires:
     - tech_3_5
     - tech_6_7
@@ -235,6 +236,7 @@ tech_4_7:
 tech_6_7:
   name: Trick of the Light
   perks:
+    fools_gold_cost: -20
     improved_fools_gold: 1
   requires:
     - tech_5_5
@@ -255,56 +257,56 @@ tech_10_7:
   requires:
     - tech_8_7
 tech_12_7:
-  name: Master of Strategy
+  name: Menace
   perks:
-    military_cost: -2
+    infamy_royal_guard: 10
   requires:
     - tech_13_5
 tech_14_7:
-  name: Night Watch
-  perks:
-    enemy_assassinate_draftees_damage: -20
-    enemy_assassinate_wizards_damage: -20
-    enemy_disband_spies_damage: -20
-  requires:
-    - tech_15_5
-    - tech_16_7
-tech_16_7:
   name: Architect's Flourish
   perks:
     construction_platinum_cost: -7.5
   requires:
+    - tech_15_5
+    - tech_16_7
+tech_16_7:
+  name: Anti-Magic Sigils
+  perks:
+    enemy_spell_duration: -1
+  requires:
     - tech_17_5
     - tech_18_7
 tech_18_7:
-  name: Wizard Nexus
+  name: Night Watch
   perks:
-    wizard_strength_recovery: 1
+    enemy_assassinate_draftees_damage: -25
+    enemy_assassinate_wizards_damage: -25
+    enemy_disband_spies_damage: -25
   requires:
     - tech_19_5
     - tech_16_7
     - tech_17_9
 tech_5_9:
-  name: Lumberjack's Devotion
+  name: Weather Manipulation
   perks:
-    construction_lumber_cost: -5
-    lumber_decay: -15
+    enemy_lightning_bolt_damage: -10
+    food_production: 2.5
   requires:
     - tech_4_7
     - tech_7_9
     - tech_6_11
 tech_7_9:
-  name: Weather Manipulation
+  name: Lumberjack's Devotion
   perks:
-    enemy_lightning_bolt_damage: -10
-    food_production: 2.5
+    construction_lumber_cost: -10
+    lumber_decay: -20
   requires:
     - tech_5_9
     - tech_9_9
 tech_9_9:
   name: Master of Resources
   perks:
-    military_cost: -2
+    military_cost: -3
   requires:
     - tech_7_9
     - tech_8_11
@@ -318,15 +320,15 @@ tech_11_9:
 tech_13_9:
   name: Master of Discipline
   perks:
-    military_cost: -2
+    military_cost: -3
   requires:
     - tech_15_9
     - tech_14_11
 tech_15_9:
-  name: Visionary Expansionist
+  name: Dark Artistry
   perks:
-    max_population: 1
-    population_growth: 15
+    spy_strength_recovery: 1.5
+    wizard_strength_recovery: 1.5
   requires:
     - tech_13_9
     - tech_17_9
@@ -354,8 +356,9 @@ tech_8_11:
     - tech_9_9
     - tech_7_13
 tech_10_11:
-  name: Carpenter's Expertise
+  name: Wavehack's Expertise
   perks:
+    boat_capacity: 5
     construction_platinum_cost: -5
     construction_lumber_cost: -5
   requires:
@@ -369,9 +372,10 @@ tech_12_11:
     - tech_11_9
     - tech_13_13
 tech_14_11:
-  name: Siege Weaponry
+  name: Visionary Expansionist
   perks:
-    fewer_casualties_wonders: 40
+    max_population: 1
+    population_growth: 15
   requires:
     - tech_13_9
     - tech_15_13
@@ -393,18 +397,18 @@ tech_7_13:
     - tech_8_11
     - tech_8_15
 tech_9_13:
-  name: Military Culture
+  name: Spy Network
   perks:
-    prestige_gains: 10
+    spy_strength_recovery: 1.5
   requires:
     - tech_10_11
     - tech_8_15
     - tech_10_15
 tech_11_13:
-  name: Wavehacker
+  name: Field Surgery
   perks:
-    boat_capacity: 5
-    fewer_casualties: 5
+    fewer_casualties: 7.5
+    max_population: 0.75
   requires:
     - tech_10_11
 tech_13_13:
@@ -425,9 +429,9 @@ tech_15_13:
     - tech_16_11
     - tech_14_15
 tech_8_15:
-  name: Spy Network
+  name: Tributary System
   perks:
-    spy_strength_recovery: 1
+    food_production_prestige: 60
   requires:
     - tech_7_13
     - tech_9_13
@@ -449,7 +453,7 @@ tech_12_15:
 tech_14_15:
   name: Public Baths
   perks:
-    population_growth: 30
+    population_growth: 25
   requires:
     - tech_13_13
     - tech_15_13
@@ -479,17 +483,17 @@ tech_13_17:
     - tech_14_15
     - tech_12_19
 tech_10_19:
-  name: Surveyor's Insight
+  name: Military Culture
   perks:
-    rezone_cost: -7.5
+    prestige_gains: 5
   requires:
     - tech_9_17
     - tech_11_17
     - tech_11_21
 tech_12_19:
-  name: Carpenter's Touch
+  name: Surveyor's Insight
   perks:
-    construction_lumber_cost: -5
+    rezone_cost: -7.5
   requires:
     - tech_11_17
     - tech_13_17

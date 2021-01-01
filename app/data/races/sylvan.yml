@@ -1,8 +1,8 @@
 name: Sylvan
 alignment: good
 description: >-
-  <p>Legends say that the Sylvan are descendents of elves that bonded their spirits with the forces of nature itself, transforming them into an eclectic patchwork of different magical beings, from tiny sprites to massive centaurs. They share a common goal: to extinguish evil wherever it takes root.</p>
-  <p>Blessed by the Goddess Gaia, the Sylvan fight fiercely with a combination of conventional weaponry and spellsong; magical arts that enchant all Sylvan within earshot, empowering them to fight with supernatural speed and strength.</p>
+  <p>The Sylvan are descendants of elves that bonded their spirits with the forces of nature itself, transforming them into an eclectic patchwork of magical beings, from tiny sprites to massive centaurs. They share a common goal: to protect the forest and honor the Goddess.</p>
+  <p>Blessed by Gaia, nature blooms into life wherever the Sylvan set foot, transforming the land around them with their very presence into lush garden-like biomes and rich forests.</p>
 attacker_difficulty: 2
 explorer_difficulty: 1
 converter_difficulty: 3
@@ -38,8 +38,8 @@ units:
       defense_from_land: forest,20,4 # land type, ratio%, max
   - name: Centaur
     cost:
-      platinum: 900
-      ore: 35
+      platinum: 500
+      lumber: 350
     power:
       offense: 5.5
       defense: 2

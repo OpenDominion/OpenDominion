@@ -251,9 +251,9 @@ class MilitaryCalculator
             }
         } else {
             if ($target !== null && $dominion->realm !== null) {
-                if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+                if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
                     $multiplier += 0.1;
-                } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+                } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                     $multiplier += 0.05;
                 }
             }
@@ -970,10 +970,6 @@ class MilitaryCalculator
         // Techs
         $regen += $dominion->getTechPerkValue('wizard_strength_recovery');
 
-        if ($dominion->wizard_strength < 25) {
-            $regen += 1;
-        }
-
         return $regen;
     }
 
@@ -1005,7 +1001,7 @@ class MilitaryCalculator
     public function getBoatsProtected(Dominion $dominion): float
     {
         // Docks
-        $boatsProtected = $dominion->building_dock * max(static::BOATS_PROTECTED_PER_DOCK, 0.1 * $dominion->round->daysInRound());
+        $boatsProtected = $dominion->building_dock * (static::BOATS_PROTECTED_PER_DOCK + max(0, 0.05 * ($dominion->round->daysInRound() - 25)));
 
         // Habor
         $boatsProtected *= (1 + $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2);

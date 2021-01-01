@@ -48,7 +48,7 @@
                                                 data-race="{{ $dominion->race->name }}"
                                                 data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                 data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}"
-                                                data-war="{{ $governmentService->isAtWarWithRealm($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}">
+                                                data-war="{{ ($governmentService->isWarEscalated($selectedDominion->realm, $dominion->realm) || $governmentService->isWarEscalated($dominion->realm, $selectedDominion->realm)) ? 1 : 0 }}">
                                             {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                         </option>
                                     @endforeach

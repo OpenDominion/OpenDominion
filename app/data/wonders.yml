@@ -86,7 +86,7 @@ underground_society:
 factory_of_legends:
   name: Factory of Legends
   perks:
-    construction_cost: -25
+    construction_cost: -20
   power: 250000
 lair_of_the_dragon:
   name: Lair of the Dragon
@@ -100,6 +100,7 @@ imperial_armada:
   name: Imperial Armada
   perks:
     enemy_sabotage_boats_damage: -100
+    guard_tax: -1
   power: 250000
 spire_of_illusion:
   name: Spire of Illusion
@@ -136,9 +137,9 @@ school_of_war:
 horn_of_plenty:
   name: Horn of Plenty
   perks:
-    platinum_production: 1
-    food_production: 1
-    gem_production: 1
-    lumber_production: 1
-    mana_production: 1
-    ore_production: 1
+    platinum_production: 2
+    food_production: 2
+    gem_production: 2
+    lumber_production: 2
+    mana_production: 2
+    ore_production: 2

@@ -141,7 +141,7 @@ class BuildingHelper
             'guard_tower' => 'Increases defensive power.<br><br>Power increased by 1.75% per 1% owned, up to a maximum of 35% at 20% owned.',
             'shrine' => 'Reduces offensive casualties.<br><br>Casualties reduced by 5% per 1% owned, up to a maximum of 80% at 16% owned.', // todo: hero level gain and hero bonuses
             'barracks' => 'Houses 36 trained or training military units.<br><br>Does not increase in capacity for population bonuses.',
-            'dock' => 'Produces 1 boat every 20 hours on average, produces 35 bushels of food per hour and each dock prevents 2.5 of your boats from being sunk (increases by 0.1 each day after Day 25).',
+            'dock' => 'Produces 1 boat every 20 hours on average, produces 35 bushels of food per hour and each dock prevents 2.5 of your boats from being sunk (increases by 0.05 each day after Day 25).',
         ];
 
         return $helpStrings[$buildingType] ?: null;

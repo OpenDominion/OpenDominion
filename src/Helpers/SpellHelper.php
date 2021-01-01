@@ -391,7 +391,7 @@ class SpellHelper
                 'key' => 'fireball',
                 'mana_cost' => 3,
                 'decreases' => ['peasants', 'resource_food'],
-                'percentage' => 2.5,
+                'percentage' => 2.65,
             ],
             [
                 'name' => 'Lightning Bolt',
@@ -418,7 +418,6 @@ class SpellHelper
                 'key' => 'cyclone',
                 'mana_cost' => 3.5,
                 'icon_class' => 'ra ra-tornado',
-                'damage_multiplier' => 3.5,
             ],
         ]);
     }

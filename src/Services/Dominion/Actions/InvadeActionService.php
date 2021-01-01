@@ -58,7 +58,7 @@ class InvadeActionService
     /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 20;
+    protected const PRESTIGE_CHANGE_ADD = 22.5;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -151,7 +151,8 @@ class InvadeActionService
         QueueService $queueService,
         RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
-    ) {
+    )
+    {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->governmentService = $governmentService;
@@ -380,13 +381,16 @@ class InvadeActionService
             ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
+            // Racial Bonus
+            $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
+
             // Techs
             $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
 
             // War Bonus
-            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+            if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
                 $multiplier += 0.20;
-            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+            } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                 $multiplier += 0.15;
             }
 
@@ -678,9 +682,9 @@ class InvadeActionService
         $bonusLandRatio = 1.6667;
 
         // War Bonus
-        if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+        if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
             $landGrabRatio = 1.2;
-        } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
+        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
             $landGrabRatio = 1.15;
         }
 
@@ -846,7 +850,8 @@ class InvadeActionService
             !$isInvasionSuccessful ||
             ($totalDefensiveCasualties === 0) ||
             !in_array($dominion->race->name, ['Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
-        ) {
+        )
+        {
             return $convertedUnits;
         }
 
@@ -864,7 +869,8 @@ class InvadeActionService
             $landRatio,
             $units,
             $dominion
-        ) {
+        )
+        {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
                 return false;
             }
@@ -950,8 +956,6 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
-
             $researchPointsGained = max(1100, $dominion->round->daysInRound() / 0.027);
 
             // Racial Bonus
@@ -966,7 +970,10 @@ class InvadeActionService
             } elseif ($range < 75) {
                 $researchPointsGained *= 0.5;
             } else {
-                $researchPointsGained += (1.5 * $productionCalculator->getTechProduction($dominion));
+                // Bonus based on schools, up to double the base gain
+                $schoolPercentage = ($dominion->building_school / $this->landCalculator->getTotalLand($dominion) * 100);
+                $schoolBonus = min($researchPointsGained, round((120 - $schoolPercentage) * $schoolPercentage));
+                $researchPointsGained += $schoolBonus;
             }
 
             // Recent invasion penalty
@@ -994,8 +1001,7 @@ class InvadeActionService
      */
     protected function handleAfterInvasionUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
-        // todo: just hobgoblin plunder atm, need a refactor later to take into
-        //       account more post-combat unit-perk-related stuff
+        // todo: need a refactor later to take into account more post-combat unit-perk-related stuff
 
         if (!$this->invasionResult['result']['success']) {
             return; // nothing to plunder on unsuccessful invasions
@@ -1023,9 +1029,9 @@ class InvadeActionService
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
             $totalUnitsSent = array_sum($unitsSentPerSlot);
-            $hobbosToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
-            $plunderPlatinum = min($hobbosToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
-            $plunderGems = min($hobbosToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
+            $unitsToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
+            $plunderPlatinum = min($unitsToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
+            $plunderGems = min($unitsToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [

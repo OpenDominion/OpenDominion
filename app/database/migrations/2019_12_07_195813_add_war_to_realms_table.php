@@ -29,6 +29,7 @@ class AddWarToRealmsTable extends Migration
     public function down()
     {
         Schema::table('realms', function (Blueprint $table) {
+            $table->dropForeign('realms_war_realm_id_foreign');
             $table->dropColumn('war_realm_id');
             $table->dropColumn('war_active_at');
         });
