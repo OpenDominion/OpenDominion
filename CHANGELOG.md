@@ -25,7 +25,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
     - No gain when outclassing your target by 500 or more
     - Bonus when outclassed by your target (+1, -1 for your target)
     - Additional bonus when within 100pts of your target (+1, -1 for your target)
-- New Tech: 
+- New Tech Perks:
+  - Tributary System, increases food production bonus from prestige by 60%
+  - Anti-Magic Sigils, decreases duration of enemy spells by 1 hour
+- Many other techs have had their values adjusted or changed position in the tree
 - Additional submit button at the top of the Technology page
 - Timestamps in Op Center advisor
 
@@ -50,6 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Imperial Armada now also grants -1% platinum tax from royal guard
 - Horn of Plenty increased to +2% production to all resources (from +1%)
 - Factory of Legends reduced to -20% construction platinum cost (from -25%)
+- Dark Elf Adept: Wizard Guild requirement increased to 9% (from 8%) per point to a maximum of +4/+4 (from +5/+5)
 
 ### Fixed
 - War declarations in the town crier will now display the realm names as they were at that exact time

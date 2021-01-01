@@ -37,8 +37,8 @@ units:
     perks:
       counts_as_wizard_offense: 0.2
       counts_as_wizard_defense: 0.333
-      offense_from_building: wizard_guild,8,5 # building type, ratio%, max
-      defense_from_building: wizard_guild,8,5 # building type, ratio%, max
+      offense_from_building: wizard_guild,9,4 # building type, ratio%, max
+      defense_from_building: wizard_guild,9,4 # building type, ratio%, max
   - name: Spirit Warrior
     cost:
       platinum: 1050
