@@ -57,7 +57,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Imperial Armada now also grants -1% platinum tax from royal guard
 - Horn of Plenty increased to +2% production to all resources (from +1%)
 - Factory of Legends reduced to -20% construction platinum cost (from -25%)
-- Base pretige gain on attacks increased to 22.5 (from 20)
+- Base prestige gain on attacks increased to 22.5 (from 20)
 - Maximum prestige decreased to 90% of land size (from 100%)
 - Dark Elf Adept: Wizard Guild requirement increased to 9% (from 8%) per point to a maximum of +4/+4 (from +5/+5)
 

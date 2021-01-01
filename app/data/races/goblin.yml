@@ -30,7 +30,7 @@ units:
   - name: Hobgoblin
     type: offensive_elite
     cost:
-      platinum: 1000
+      platinum: 950
       ore: 80
     power:
       offense: 5

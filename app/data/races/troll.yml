@@ -31,11 +31,11 @@ units:
   - name: Basher
     type: offensive_elite
     cost:
-      platinum: 1000
+      platinum: 1100
       ore: 100
     power:
       offense: 5
-      defense: 2
+      defense: 5
     perks:
       reduce_combat_losses: 1
   - name: Smasher

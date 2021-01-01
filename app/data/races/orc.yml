@@ -11,6 +11,7 @@ home_land_type: forest
 perks:
   food_consumption: 20
   lumber_production: 50
+  prestige_gains: 10
 units:
   - name: Savage
     cost:
@@ -28,20 +29,20 @@ units:
       defense: 3
   - name: Voodoo Mage
     cost:
-      platinum: 830
+      platinum: 800
       ore: 0
     power:
       offense: 0
       defense: 3
     perks:
-      defense_from_prestige: 500,2 # amount, max
+      defense_from_prestige: 600,2 # amount, max
       reduce_combat_losses: 1
   - name: Bone Breaker
     cost:
       platinum: 1075
       ore: 105
     power:
-      offense: 7
+      offense: 6
       defense: 2
     perks:
-      offense_vs_building: guard_tower,10,-1 # building type, ratio%, max
+      plunders_resources_on_attack: 1
