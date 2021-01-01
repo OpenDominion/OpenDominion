@@ -482,11 +482,11 @@ class TickService
             $dominion->{$row->resource} += $row->amount;
         }
 
-        $totalLand = $this->landCalculator->getTotalLand($dominion);
+        // Prestige Capped at 90% of land size
+        $prestigeCap = floor($this->landCalculator->getTotalLand($dominion) * 0.9);
 
-        // Prestige Cap
-        if ($dominion->prestige > $totalLand) {
-            $tick->prestige -= ($dominion->prestige - $totalLand);
+        if ($dominion->prestige > $prestigeCap) {
+            $tick->prestige -= ($dominion->prestige - $prestigeCap);
         }
 
         // Population
