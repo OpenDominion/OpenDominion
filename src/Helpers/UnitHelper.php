@@ -181,7 +181,7 @@ class UnitHelper
 
             // Resource related
             'ore_production' => 'Each unit produces %s units of ore per hour.',
-            'plunders_resources_on_attack' => 'Plunders resources on attack.',
+            'plunders_resources_on_attack' => 'Plunders 1 hour of target\'s raw platinum/gem production on attack.',
             'sink_boats_defense' => 'Sinks boats when defending.',
             'sink_boats_offense' => 'Sinks boats when attacking.',
 

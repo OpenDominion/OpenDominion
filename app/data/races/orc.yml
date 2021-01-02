@@ -39,7 +39,7 @@ units:
       reduce_combat_losses: 1
   - name: Bone Breaker
     cost:
-      platinum: 1075
+      platinum: 1050
       ore: 105
     power:
       offense: 6
