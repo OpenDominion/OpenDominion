@@ -970,10 +970,8 @@ class InvadeActionService
             } elseif ($range < 75) {
                 $researchPointsGained *= 0.5;
             } else {
-                // Bonus based on schools, up to double the base gain
-                $schoolPercentage = ($dominion->building_school / $this->landCalculator->getTotalLand($dominion) * 100);
-                $schoolBonus = min($researchPointsGained, round((120 - $schoolPercentage) * $schoolPercentage));
-                $researchPointsGained += $schoolBonus;
+                $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
+                $researchPointsGained += (1.5 * $productionCalculator->getTechProduction($dominion));
             }
 
             // Recent invasion penalty
