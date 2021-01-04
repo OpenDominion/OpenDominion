@@ -44,31 +44,15 @@ class UnitHelper
 
         foreach ($unitCosts as $costType => $value) {
             switch ($costType) {
-                case 'platinum':
-                    $labelParts[] = "{$value}pl";
-                    break;
-
-                case 'ore':
-                    $labelParts[] = "{$value}or";
-                    break;
-
-                case 'mana':
-                    $labelParts[] = "{$value}ma";
-                    break;
-
-                case 'lumber':
-                    $labelParts[] = "{$value}lu";
-                    break;
-
-                case 'gems':
-                    $labelParts[] = "{$value}ge";
+                case 'draftees':
                     break;
 
                 case 'wizards':
-                    $labelParts[] = 'Wizard';
+                    $labelParts[] = "{$value} wizard";
                     break;
 
                 default:
+                    $labelParts[] = "{$value} {$costType}";
                     break;
             }
         }
@@ -328,7 +312,7 @@ class UnitHelper
     {
         switch ($unitType) {
             case 'draftees':
-                $iconClass = 'fa fa-user';
+                $iconClass = 'ra ra-player';
                 $colorClass = 'text-green';
                 break;
 
