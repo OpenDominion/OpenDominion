@@ -169,6 +169,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'resource_mana' => 9999999,
             'building_alchemy' => 850,
             'protection_ticks_remaining' => 0,
+            'infamy' => 0,
         ])->save();
 
         // just duplicate values, yolo
@@ -178,6 +179,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'resource_mana' => 9999999,
             'building_alchemy' => 850,
             'protection_ticks_remaining' => 0,
+            'infamy' => 0,
         ])->save();
 
         // 850 alch * 45 plat = 38,250 plat
