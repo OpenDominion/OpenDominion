@@ -3,6 +3,10 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Fixed
+- Removed troop cost abbreviations
+- Battle reports now show additional information to realmies
+- Notifications when land arrives after troops are home no longer display '0 units returned'
 
 ## [1.2.1] - 2021-01-03
 ### Added
