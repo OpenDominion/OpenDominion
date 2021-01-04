@@ -119,7 +119,7 @@
                 <div class="box-body">
                     <p>Here you can train your draftees into stronger military units. Until your draft rate is met, 1% of your peasants will join your military each hour.</p>
                     <p>Training specialist units take <b>9 hours</b> to process, while training your other units take <b>12 hours</b>.</p>
-                    <p>You {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }}.</p>
+                    <p>You have {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }}.</p>
                     <p>You may also <a href="{{ route('dominion.military.release') }}">release your troops</a> if you wish.</p>
                 </div>
             </div>

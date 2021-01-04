@@ -10,7 +10,7 @@ use OpenDominion\Models\RealmWar;
 class GovernmentService
 {
     public const WAR_ACTIVE_WAIT_IN_HOURS = 24;
-    public const WAR_INACTIVE_WAIT_IN_HOURS = 6;
+    public const WAR_INACTIVE_WAIT_IN_HOURS = 0;
     public const WAR_CANCEL_WAIT_IN_HOURS = 48;
     public const WAR_REDECLARE_WAIT_IN_HOURS = 48;
 
