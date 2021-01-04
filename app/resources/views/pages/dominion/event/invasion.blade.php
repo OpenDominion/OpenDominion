@@ -43,7 +43,7 @@
                                             @if ($event->source->id === $selectedDominion->id)
                                                 Your Losses
                                             @else
-                                                {{ $sourceName }}'s Losses
+                                                {{ $event->source->name }} (#{{ $event->source->realm->number }})'s Losses
                                             @endif
                                         </th>
                                     </tr>
@@ -90,7 +90,7 @@
                                             @if ($event->target->id === $selectedDominion->id)
                                                 Your Losses
                                             @else
-                                                {{ $event->target->name }}'s Losses
+                                                {{ $event->target->name }} (#{{ $event->target->realm->number }})'s Losses
                                             @endif
                                         </th>
                                     </tr>
@@ -232,18 +232,14 @@
                                 @endif
 
                                 @if (isset($event->data['attacker']['landVerdantBloom']))
-                                    @if ($event->source->id === $selectedDominion->id)
-                                        <p class="text-center text-green">
-                                            Additionally, {{ number_format($event->data['attacker']['landVerdantBloom']) }} acres will be converted to forest due to Verdant Bloom.
-                                        </p>
-                                    @endif
+                                    <p class="text-center text-green">
+                                        Additionally, {{ number_format($event->data['attacker']['landVerdantBloom']) }} acres will be converted to forest due to Verdant Bloom.
+                                    </p>
                                 @endif
                                 @if (isset($event->data['attacker']['landErosion']))
-                                    @if ($event->source->id === $selectedDominion->id)
-                                        <p class="text-center text-green">
-                                            Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to Erosion.
-                                        </p>
-                                    @endif
+                                    <p class="text-center text-green">
+                                        Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to Erosion.
+                                    </p>
                                 @endif
                                 @if (isset($event->data['attacker']['plunder']))
                                     <p class="text-center text-green">
