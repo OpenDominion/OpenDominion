@@ -3,6 +3,17 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.2.1] - 2021-01-03
+### Added
+- Show calculated damage reduction from resilience on status page and ops center
+- Show calculated production bonuses from infamy on production advisor page
+
+### Changed
+- Removed black ops damage reduction based on war duration
+- Removed wizard strength recovery bonus below 25% strength
+
+## [1.2.0] - 2021-01-01
 ### Added
 - New Stat: Infamy
   - Temporarily boosts platinum production (max 7.5%) and gem production (max 5%)
@@ -34,7 +45,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Timestamps in Op Center advisor
 
 ### Changed
-- Research points gained on invasion changed to 1100 + MIN(1100, (120-SCHOOL%) x SCHOOL%)
 - Removed prestige gain from war operations (replaced with Infamy)
 - Dock protection now scales by 0.05/day after day 25 (from 0.1/day)
 - Sabotage Boats damage increased to 2.25% (from 2%)
@@ -1197,7 +1207,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.1.8...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.1...HEAD
+[1.2.1]: https://github.com/OpenDominion/OpenDominion/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/OpenDominion/OpenDominion/compare/1.1.8...1.2.0
 [1.1.8]: https://github.com/OpenDominion/OpenDominion/compare/1.1.7...1.1.8
 [1.1.7]: https://github.com/OpenDominion/OpenDominion/compare/1.1.6...1.1.7
 [1.1.6]: https://github.com/OpenDominion/OpenDominion/compare/1.1.5...1.1.6
