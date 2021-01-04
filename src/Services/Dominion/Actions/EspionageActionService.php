@@ -596,7 +596,7 @@ class EspionageActionService
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
 
         // Resilience
-        $baseDamage *= (1 - $this->opsCalculator->getSpyResilienceBonus($dominion));
+        $baseDamage *= (1 - $this->opsCalculator->getResilienceBonus($dominion->spy_resilience));
 
         // Techs
         $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));

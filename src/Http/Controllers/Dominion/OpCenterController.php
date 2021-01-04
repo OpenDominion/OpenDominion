@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
@@ -101,6 +102,7 @@ class OpCenterController extends AbstractDominionController
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
             'miscHelper' => app(MiscHelper::class),
+            'opsCalculator' => app(OpsCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
@@ -149,6 +151,7 @@ class OpCenterController extends AbstractDominionController
             'infoOpService' => app(InfoOpService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
+            'opsCalculator' => app(OpsCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),

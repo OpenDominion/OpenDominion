@@ -171,7 +171,14 @@
                             Spy Resilience:
                         </span>
                     </td>
-                    <td>{{ number_format(array_get($data, 'spy_resilience', 0)) }}</td>
+                    <td>
+                        {{ number_format(array_get($data, 'spy_resilience', 0)) }}
+                        @if (array_get($data, 'spy_resilience', 0) > 0)
+                            <small class="text-muted">
+                                ({{ number_format($opsCalculator->getResilienceBonus(array_get($data, 'spy_resilience', 0)) * 100, 2) }}%)
+                            </small>
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -179,7 +186,14 @@
                             Wizard Resilience:
                         </span>
                     </td>
-                    <td>{{ number_format(array_get($data, 'wizard_resilience', 0)) }}</td>
+                    <td>
+                        {{ number_format(array_get($data, 'wizard_resilience', 0)) }}
+                        @if (array_get($data, 'wizard_resilience', 0) > 0)
+                            <small class="text-muted">
+                                ({{ number_format($opsCalculator->getResilienceBonus(array_get($data, 'wizard_resilience', 0)) * 100, 2) }}%)
+                            </small>
+                        @endif
+                    </td>
                 </tr>
             </tbody>
         </table>

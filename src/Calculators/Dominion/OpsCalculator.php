@@ -299,33 +299,18 @@ class OpsCalculator
     }
 
     /**
-     * Returns the Dominion's spy damage reduction from resilience.
+     * Returns the damage reduction from resilience.
      *
-     * @param Dominion $dominion
+     * @param int $resilience
      * @return float
      */
-    public function getSpyResilienceBonus(Dominion $dominion): float
+    public function getResilienceBonus(int $resilience): float
     {
-        if ($dominion->spy_resilience == 0) {
+        if ($resilience == 0) {
             return 0;
         }
 
-        return (1 + error_function(0.00226 * ($dominion->spy_resilience - 770))) / 2;
-    }
-
-    /**
-     * Returns the Dominion's wizard damage reduction from resilience.
-     *
-     * @param Dominion $dominion
-     * @return float
-     */
-    public function getWizardResilienceBonus(Dominion $dominion): float
-    {
-        if ($dominion->wizard_resilience == 0) {
-            return 0;
-        }
-
-        return (1 + error_function(0.00226 * ($dominion->wizard_resilience - 770))) / 2;
+        return (1 + error_function(0.00226 * ($resilience - 770))) / 2;
     }
 
     /**

@@ -123,7 +123,7 @@ class ProductionCalculator
         $maxInfamyBonus = 7.5;
 
         // Infamy
-        $multiplier += ($maxInfamyBonus / 2) * $this->getInfamyBonus($dominion) / 100;
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('platinum_production');
@@ -679,7 +679,7 @@ class ProductionCalculator
         $maxInfamyBonus = 5;
 
         // Infamy
-        $multiplier += ($maxInfamyBonus / 2) * $this->getInfamyBonus($dominion) / 100;
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('gem_production');
@@ -832,18 +832,18 @@ class ProductionCalculator
     }
 
     /**
-     * Returns the Dominions's infamy bonus.
+     * Returns the base infamy bonus.
      *
-     * @param Dominion $dominion
+     * @param int $infamy
      * @return float
      */
-    public function getInfamyBonus(Dominion $dominion): float
+    public function getInfamyBonus(int $infamy): float
     {
-        if ($dominion->infamy == 0) {
+        if ($infamy == 0) {
             return 0;
         }
 
-        return 1 + error_function(0.00452 * ($dominion->infamy - 385));
+        return (1 + error_function(0.00452 * ($infamy - 385))) / 2;
     }
 
     //</editor-fold>

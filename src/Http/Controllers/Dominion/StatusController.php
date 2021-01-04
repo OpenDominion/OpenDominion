@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
@@ -34,6 +35,7 @@ class StatusController extends AbstractDominionController
             'militaryCalculator' => app(MilitaryCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
             'notificationHelper' => app(NotificationHelper::class),
+            'opsCalculator' => app(OpsCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'protectionService' => app(ProtectionService::class),
             'queueService' => app(QueueService::class),

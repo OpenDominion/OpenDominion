@@ -581,7 +581,7 @@ class SpellActionService
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
 
             // Resilience
-            $baseDamage *= (1 - $this->opsCalculator->getWizardResilienceBonus($dominion));
+            $baseDamage *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
 
             // Techs
             $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));

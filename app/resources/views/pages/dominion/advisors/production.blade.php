@@ -260,6 +260,11 @@
                 </div>
                 <div class="box-body">
                     <p>The production advisor tells you about your resource production, population and jobs.</p>
+                    @if ($target->infamy > 0)
+                        <p>
+                            You have {{ $target->infamy }} infamy, which is increasing your platinum production by {{ number_format(7.5 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}% and gem production by {{ number_format(5 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}%.
+                        </p>
+                    @endif
                     <p>
                         <b>Population</b><br>
                         Total: {{ number_format($populationCalculator->getPopulation($target)) }} / {{ number_format($populationCalculator->getMaxPopulation($target)) }}<br>
