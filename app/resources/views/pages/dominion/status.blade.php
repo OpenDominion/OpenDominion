@@ -55,8 +55,34 @@
                 </div>
                 <div class="box-body">
                     <p>This section gives you a quick overview of your dominion.</p>
-                    <p>Your total land size is {{ number_format($landCalculator->getTotalLand($selectedDominion)) }} and networth is {{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}.</p>
-                    <p><a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a></p>
+
+                    <table class="table table-condensed" style="margin-bottom: 10px;">
+                        <thead>
+                            <tr>
+                                <th>{{ $selectedDominion->race->name }} Perks</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($selectedDominion->race->perks as $perk)
+                                @php
+                                    $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
+                                @endphp
+                                <tr>
+                                    <td>
+                                        {!! $perkDescription['description'] !!}
+                                    </td>
+                                    <td class="text-center">
+                                        {!! $perkDescription['value']  !!}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a>
+                    </div>
                 </div>
             </div>
         @endif

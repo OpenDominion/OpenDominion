@@ -32,6 +32,14 @@
                 </tr>
                 <tr>
                     <td>
+                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("networth") }}">
+                            Networth:
+                        </span>
+                    </td>
+                    <td>{{ number_format($data['networth']) }}</td>
+                </tr>
+                <tr>
+                    <td>
                         <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("peasants") }}">
                             Peasants:
                         </span>
@@ -45,14 +53,6 @@
                         </span>
                     </td>
                     <td>{{ number_format($data['employment'], 2) }}%</td>
-                </tr>
-                <tr>
-                    <td>
-                        <span data-toggle="tooltip" data-placement="top" title="{{ $miscHelper->getGeneralHelpString("networth") }}">
-                            Networth:
-                        </span>
-                    </td>
-                    <td>{{ number_format($data['networth']) }}</td>
                 </tr>
                 <tr>
                     <td>

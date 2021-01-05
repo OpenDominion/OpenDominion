@@ -10,6 +10,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\MiscHelper;
+use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -93,7 +94,7 @@ class OpCenterController extends AbstractDominionController
             ->where('latest', '=', true)
             ->get();
 
-        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 5);
+        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 10);
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
@@ -103,6 +104,7 @@ class OpCenterController extends AbstractDominionController
             'landHelper' => app(LandHelper::class),
             'miscHelper' => app(MiscHelper::class),
             'opsCalculator' => app(OpsCalculator::class),
+            'raceHelper' => app(RaceHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),

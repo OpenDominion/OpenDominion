@@ -15,6 +15,7 @@ use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\MiscHelper;
+use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Helpers\ResourceHelper;
 use OpenDominion\Helpers\SpellHelper;
@@ -118,6 +119,7 @@ class AdvisorsController extends AbstractDominionController
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
             'miscHelper' => app(MiscHelper::class),
+            'raceHelper' => app(RaceHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),

@@ -3,7 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Added realm number to status page and ops center header
+- Added racial perks to status page and ops center info pane
+
 ### Fixed
+- Tributary System was incorrectly applying a flat 60% food production
 - Removed troop cost abbreviations
 - Battle reports now show additional information to realmies
 - Notifications when land arrives after troops are home no longer display '0 units returned'

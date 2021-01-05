@@ -87,7 +87,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
-                @slot('title', ('Status Screen (' . $dominion->name . ')'))
+                @slot('title', ('Status Screen | ' . $dominion->name . ' (#' . $dominion->realm->number . ')'))
                 @slot('titleIconClass', 'fa fa-bar-chart')
                 @slot('opData', $infoOps['status'])
                 @slot('opKey', 'status')
@@ -170,15 +170,11 @@
                                 <p>Sections marked as <span class="label label-warning">stale</span> contain data from the previous hour (or earlier) and should be considered inaccurate. Sections marked as <span class="label label-danger">invalid</span> are more than 12 hours old.</p>
 
                                 <p><b>Recast your info ops before performing any offensive operations during this hour.</b></p>
-
-                                <p>You can automatically load the most recent ops into the calculator.</p>
-
-                                <p>You can also copy all ops as json, using the copy button.</p>
                             @endif
-                            <p>You can automatically load data into the calculator.</p>
-                            <p>You can also copy all data as json, using the copy button.</p>
 
-                            <p>
+                            <p>You can automatically load data into the calculator or copy all data as JSON.</p>
+
+                            <div>
                                 <div class="pull-left">
                                     <a href="{{ route('dominion.calculations') }}?dominion={{ $dominion->id }}" class="btn btn-primary">
                                         <i class="fa fa-calculator"></i> Calculate
@@ -190,24 +186,38 @@
                                     </a>
                                     <textarea class="hidden" name="ops_json" id="ops_json">{{ json_encode($infoOps, JSON_PRETTY_PRINT) }}</textarea>
                                 </div>
-                            </p>
+                                <div class="clearfix"></div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Recent Invasions</h3>
-                        </div>
-                        <div class="box-body">
-                            @if ($latestInvasionEvents->count() > 0)
-                                <p>
-                                    Of the {{ $latestInvasionEvents->count() }} most recent invasions, {{ $latestInvasionEvents->where('source_id', $dominion->id)->count() }} were attacking and {{ $latestInvasionEvents->where('target_id', $dominion->id)->count() }} were defending.
-                                </p>
-                            @else
-                                <p>This dominion has not been involved in any recent invasions.</p>
-                            @endif
-                            <a href="#recent-invasions">View Details</a>
+
+                        <div class="box-footer">
+                            <table class="table table-condensed" style="margin-bottom: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th>{{ $dominion->race->name }} Perks</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($dominion->race->perks as $perk)
+                                        @php
+                                            $perkDescription = $raceHelper->getPerkDescriptionHtmlWithValue($perk);
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                {!! $perkDescription['description'] !!}
+                                            </td>
+                                            <td class="text-center">
+                                                {!! $perkDescription['value']  !!}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                            <div class="text-center">
+                                <a href="#recent-invasions">View Recent Invasions</a>
+                            </div>
                         </div>
                     </div>
                 </div>
