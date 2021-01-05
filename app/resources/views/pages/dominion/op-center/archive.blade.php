@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
-                @slot('title', ('Archived Ops (' . $dominion->name . ')'))
+                @slot('title', ('Archived Ops - ' . $dominion->name . ' (#' . $dominion->realm->number . ')'))
                 @slot('titleIconClass', 'fa fa-book')
 
                 <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
