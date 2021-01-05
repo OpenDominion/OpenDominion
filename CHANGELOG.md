@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.2.2] - 2021-01-05
 ### Added
 - Added realm number to status page and ops center header
 - Added racial perks to status page and ops center info pane
@@ -1216,7 +1218,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.2...HEAD
+[1.2.2]: https://github.com/OpenDominion/OpenDominion/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/OpenDominion/OpenDominion/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/OpenDominion/OpenDominion/compare/1.1.8...1.2.0
 [1.1.8]: https://github.com/OpenDominion/OpenDominion/compare/1.1.7...1.1.8
