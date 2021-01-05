@@ -248,7 +248,7 @@
                                 @endif
                                 @if (isset($event->data['attacker']['conversion']))
                                     <p class="text-center text-green">
-                                        {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $selectedDominion->race) }}
+                                        {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $event->source->race) }}
                                     </p>
                                 @endif
                             @endif
