@@ -978,13 +978,18 @@ class InvadeActionService
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
             $researchPointsGained *= (1 - max(0, ($recentlyInvadedCount - 2) * 0.2));
 
-            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
-            $this->queueService->queueResources(
-                'invasion',
-                $dominion,
-                ['resource_tech' => round($researchPointsGained)],
-                $slowestTroopsReturnHours
-            );
+            // never negative
+            $researchPointsGained = max(0, $researchPointsGained);
+
+            if($researchPointsGained > 0) {
+                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
+                $this->queueService->queueResources(
+                    'invasion',
+                    $dominion,
+                    ['resource_tech' => round($researchPointsGained)],
+                    $slowestTroopsReturnHours
+                );
+            }
 
             $this->invasionResult['attacker']['researchPoints'] = round($researchPointsGained);
         }
