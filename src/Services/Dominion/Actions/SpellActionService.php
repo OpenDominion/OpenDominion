@@ -117,7 +117,7 @@ class SpellActionService
             throw new LogicException("Cannot cast unknown spell '{$spellKey}'");
         }
 
-        if ($dominion->wizard_strength < 2 || ($dominion->wizard_strength < 5 && $this->spellHelper->isHostileSpell($spellKey))) {
+        if ($dominion->wizard_strength < 30) {
             throw new GameException("Your wizards to not have enough strength to cast {$spellInfo['name']}.");
         }
 
@@ -196,7 +196,7 @@ class SpellActionService
                     'target_dominion_id' => $target->id
                 ]);
 
-                if ($dominion->fresh()->wizard_strength < 0) {
+                if ($dominion->fresh()->wizard_strength < 25) {
                     throw new GameException('Your wizards have run out of strength');
                 }
 
