@@ -180,7 +180,7 @@ class GovernmentService
     {
         if (
             $realm->warsOutgoing()->engaged()->where('target_realm_id', $target->id)->exists() ||
-            $target->warsOutgoing()->engaged()->where('source_realm_id', $realm->id)->exists()
+            $target->warsOutgoing()->engaged()->where('target_realm_id', $realm->id)->exists()
         ) {
             return true;
         }
@@ -198,7 +198,7 @@ class GovernmentService
     {
         if (
             $realm->warsOutgoing()->engaged()->where('target_realm_id', $target->id)->exists() &&
-            $target->warsOutgoing()->engaged()->where('source_realm_id', $realm->id)->exists()
+            $target->warsOutgoing()->engaged()->where('target_realm_id', $realm->id)->exists()
         ) {
             return true;
         }
