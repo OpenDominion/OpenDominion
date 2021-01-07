@@ -167,7 +167,7 @@ class WonderActionService
         $result = null;
 
         DB::transaction(function () use ($dominion, $wonder, &$result) {
-            if ($dominion->wizard_strength < 5) {
+            if ($dominion->wizard_strength < 30) {
                 throw new GameException('Your wizards to not have enough strength to cast Cyclone');
             }
 
@@ -264,7 +264,6 @@ class WonderActionService
                 ];
             }
 
-            // TODO: Add target wonder id?
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
                 'action' => 'cyclone',
