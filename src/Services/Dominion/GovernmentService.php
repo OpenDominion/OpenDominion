@@ -233,7 +233,7 @@ class GovernmentService
     {
         if (
             $realm->warsOutgoing()->escalated()->where('target_realm_id', $target->id)->exists() &&
-            $target->warsOutgoing()->escalated()->where('source_realm_id', $realm->id)->exists()
+            $target->warsOutgoing()->escalated()->where('target_realm_id', $realm->id)->exists()
         ) {
             return true;
         }
