@@ -76,7 +76,7 @@ class RankingsHelper
             [
                 'name' => 'Most Masterful Spies',
                 'key' => 'spy-mastery',
-                'stat' => 'stat_spy_mastery',
+                'stat' => 'spy_mastery',
                 'stat_label' => 'Spy Mastery',
                 'title' => 'the Shadow',
                 'title_icon' => 'ra-daggers',
