@@ -302,7 +302,7 @@
                 </div>
                 <div class="box-body">
                     <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 6th day of the round.</p>
-                    <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +15% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
+                    <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
                     <p>Successful war operations increase your infamy, which provides a bonus to platinum and gem production.</p>
                 </div>
             </div>
