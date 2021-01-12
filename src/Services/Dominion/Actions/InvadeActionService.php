@@ -956,7 +956,7 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $researchPointsGained = max(1100, $dominion->round->daysInRound() / 0.027);
+            $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
             // Racial Bonus
             $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
@@ -970,8 +970,12 @@ class InvadeActionService
             } elseif ($range < 75) {
                 $researchPointsGained *= 0.5;
             } else {
-                $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
-                $researchPointsGained += (1.5 * $productionCalculator->getTechProduction($dominion));
+                $schoolPercentageCap = 20;
+                $schoolPercentage = min(
+                    $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
+                    $schoolPercentageCap / 100
+                );
+                $researchPointsGained += (130 * $schoolPercentage * 100);
             }
 
             // Recent invasion penalty
