@@ -603,7 +603,8 @@ class EspionageActionService
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
-                $damage = $target->{$attr} * $baseDamage;
+                // Cap at 80%
+                $damage = $target->{$attr} * max(0.2, $baseDamage);
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
@@ -643,7 +644,8 @@ class EspionageActionService
         }
         if (isset($operationInfo['increases'])) {
             foreach ($operationInfo['increases'] as $attr) {
-                $damage = $target->{$attr} * $baseDamage;
+                // Cap at 80%
+                $damage = $target->{$attr} * max(0.2, $baseDamage);
                 $target->{$attr} += round($damage);
             }
         }
