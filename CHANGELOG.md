@@ -4,15 +4,16 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.2.3] - 2021-01-12
 ### Changed
 - RPs from invasion decreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, up to 1560)
 - Dwarf/Gnome: Racial spell now protects ore from earthquake
 - Goblin Hobgoblin: -25p
 - Orc: gains 10% additional prestige from invasions
 - Lightning bolt damage increased to 0.41% (from 0.40%)
-- Lightning bolt now damages science instead of towers
-- Masonries protect 1% castle per 1% owned (from 0.75% per 1%), max remains at 25%
-- War bonus to land/prestige gains changed to 10% (from 15%), mutual war remains at 20%
+- Lightning bolt now damages Science instead of Towers (Harbor is also excluded)
+- Masonries now protect 1% castle per 1% owned (from 0.75% per 1%), max remains at 25%
+- War bonus to land/prestige gains reduced to 10% (from 15%), mutual war remains at 20%
 - Infamy now boosts gem/ore/lumber production to a max of 3% (from 5% to gems only) in addition to platinum
 - Infamy decay slightly reduced to 0.5% of current + 20 (from 25)
 - Black op damage reduction is capped at 80% from all sources
@@ -1235,7 +1236,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.3...HEAD
+[1.2.3]: https://github.com/OpenDominion/OpenDominion/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/OpenDominion/OpenDominion/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/OpenDominion/OpenDominion/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/OpenDominion/OpenDominion/compare/1.1.8...1.2.0
