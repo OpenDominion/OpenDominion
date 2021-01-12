@@ -19,8 +19,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Black op damage reduction is capped at 80% from all sources
 
 ### Fixed
+- Draftees now included in RCL count
 - RPs from invasion should not become negative on multiple previous invades
-- Use of war ops was incorrectly enabled only one-way
  
 ## [1.2.2] - 2021-01-05
 ### Added
