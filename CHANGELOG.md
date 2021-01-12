@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lightning bolt now damages science instead of towers
 - Masonries protect 1% castle per 1% owned (from 0.75% per 1%), max remains at 25%
 - War bonus to land/prestige gains changed to 10% (from 15%), mutual war remains at 20%
-- Infamy now boosts ore/lumber production (max 5%) in addition to platinum/gems
+- Infamy now boosts gem/ore/lumber production to a max of 3% (from 5% to gems only) in addition to platinum
 - Infamy decay slightly reduced to 0.5% of current + 20 (from 25)
 - Black op damage reduction is capped at 80% from all sources
 

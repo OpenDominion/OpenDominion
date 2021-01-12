@@ -391,7 +391,7 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellGaiasBlessing = 10;
-        $maxInfamyBonus = 5;
+        $maxInfamyBonus = 3;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
@@ -605,7 +605,7 @@ class ProductionCalculator
         $spellMinersSight = 20;
         $spellMiningStrength = 10;
         $spellEarthquake = 5;
-        $maxInfamyBonus = 5;
+        $maxInfamyBonus = 3;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
@@ -686,7 +686,7 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellEarthquake = 5;
-        $maxInfamyBonus = 5;
+        $maxInfamyBonus = 3;
 
         // Infamy
         $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
