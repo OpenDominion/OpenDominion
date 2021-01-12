@@ -29,20 +29,20 @@ units:
       defense: 3
   - name: Voodoo Mage
     cost:
-      platinum: 800
+      platinum: 830
       ore: 0
     power:
       offense: 0
       defense: 3
     perks:
-      defense_from_prestige: 600,2 # amount, max
+      defense_from_prestige: 500,2 # amount, max
       reduce_combat_losses: 1
   - name: Bone Breaker
     cost:
-      platinum: 1050
+      platinum: 1075
       ore: 105
     power:
-      offense: 6
+      offense: 7
       defense: 2
     perks:
-      plunders_resources_on_attack: 1
+      offense_vs_building: guard_tower,10,-1 # building type, ratio%, max
