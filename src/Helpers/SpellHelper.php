@@ -160,7 +160,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Miner\'s Sight',
-                'description' => '+20% ore production (not cumulative with Mining Strength)',
+                'description' => '+20% ore production (not cumulative with Mining Strength) and protection from Earthquake',
                 'key' => 'miners_sight',
                 'mana_cost' => 5,
                 'duration' => 12,
