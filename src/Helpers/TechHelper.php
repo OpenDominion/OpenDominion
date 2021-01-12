@@ -8,7 +8,7 @@ class TechHelper
 {
     public function getTechs()
     {
-        return Tech::active()->get()->keyBy('key');
+        return Tech::with('perks')->active()->get()->keyBy('key');
     }
 
     public function getTechPerkStrings()

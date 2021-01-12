@@ -13,15 +13,18 @@
     </thead>
     <tbody>
         @php
+            $allTechs = OpenDominion\Models\Tech::with('perks')->get();
             $techPerkStrings = $techHelper->getTechPerkStrings();
             $techBonuses = [];
             foreach ($data as $techKey => $techName) {
-                $tech = OpenDominion\Models\Tech::where('key', $techKey)->firstOrFail();
-                foreach ($tech->perks as $perk) {
-                    if (isset($techBonuses[$perk->key])) {
-                        $techBonuses[$perk->key] += $perk->pivot->value;
-                    } else {
-                        $techBonuses[$perk->key] = $perk->pivot->value;
+                $tech = $allTechs->where('key', $techKey)->first();
+                if ($tech !== null) {
+                    foreach ($tech->perks as $perk) {
+                        if (isset($techBonuses[$perk->key])) {
+                            $techBonuses[$perk->key] += $perk->pivot->value;
+                        } else {
+                            $techBonuses[$perk->key] = $perk->pivot->value;
+                        }
                     }
                 }
             }
