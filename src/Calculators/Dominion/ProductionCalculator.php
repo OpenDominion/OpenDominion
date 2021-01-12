@@ -391,6 +391,10 @@ class ProductionCalculator
 
         // Values (percentages)
         $spellGaiasBlessing = 10;
+        $maxInfamyBonus = 5;
+
+        // Infamy
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('lumber_production');
@@ -601,6 +605,10 @@ class ProductionCalculator
         $spellMinersSight = 20;
         $spellMiningStrength = 10;
         $spellEarthquake = 5;
+        $maxInfamyBonus = 5;
+
+        // Infamy
+        $multiplier += $maxInfamyBonus * $this->getInfamyBonus($dominion->infamy) / 100;
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('ore_production');

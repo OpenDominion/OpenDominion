@@ -10,7 +10,12 @@ class OpsCalculator
     /**
      * @var float Base amount of infamy lost each hour
      */
-    protected const INFAMY_DECAY = -25;
+    protected const INFAMY_DECAY_BASE = -20;
+
+    /**
+     * @var float Percentage amount of infamy lost each hour
+     */
+    protected const INFAMY_DECAY_PERCENTAGE = 0.5;
 
     /**
      * @var float Base amount of resilience lost each hour
@@ -247,7 +252,7 @@ class OpsCalculator
      */
     public function getInfamyDecay(Dominion $dominion): int
     {
-        $decay = static::INFAMY_DECAY;
+        $decay = static::INFAMY_DECAY_BASE - round($dominion->infamy * static::INFAMY_DECAY_PERCENTAGE / 100);
 
         // TODO: Placeholder for tech perk
 
