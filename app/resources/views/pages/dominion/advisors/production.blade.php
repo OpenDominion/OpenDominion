@@ -262,7 +262,7 @@
                     <p>The production advisor tells you about your resource production, population and jobs.</p>
                     @if ($target->infamy > 0)
                         <p>
-                            You have {{ $target->infamy }} infamy, which is increasing your platinum production by {{ number_format(7.5 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}% and gem/lumber/ore production by {{ number_format(5 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}%.
+                            You have {{ $target->infamy }} infamy, which is increasing your platinum production by {{ number_format(7.5 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}% and gem/lumber/ore production by {{ number_format(3 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}%.
                         </p>
                     @endif
                     <p>
