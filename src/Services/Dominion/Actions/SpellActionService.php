@@ -592,6 +592,7 @@ class SpellActionService
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
                     $damage = $target->{$attr} * $baseDamage;
+                    $damageReductionMultiplier = 1;
 
                     // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
@@ -601,7 +602,7 @@ class SpellActionService
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
                             ($forestHavenFireballReductionMax / 100)
                         ));
-                        $damage *= $damageMultiplier;
+                        $damageReductionMultiplier *= $damageMultiplier;
                     }
 
                     // Disband Spies damage reduction from Forest Havens
@@ -612,7 +613,7 @@ class SpellActionService
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
                             ($forestHavenSpyCasualtyReductionMax / 100)
                         ));
-                        $damage *= $damageMultiplier;
+                        $damageReductionMultiplier *= $damageMultiplier;
                     }
 
                     // Damage reduction from Masonries
@@ -623,11 +624,14 @@ class SpellActionService
                             (($target->building_masonry / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
                             ($masonryLightningBoltReductionMax / 100)
                         ));
-                        $damage *= $damageMultiplier;
+                        $damageReductionMultiplier *= $damageMultiplier;
                     }
 
                     // Damage reduction from Towers
-                    $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                    $damageReductionMultiplier *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+
+                    // Cap at 80% reduction
+                    $damage *= max(0.2, $damageReductionMultiplier);
 
                     $totalDamage += round($damage);
                     $target->{$attr} -= round($damage);
@@ -656,7 +660,7 @@ class SpellActionService
                         $damage = $target->{$attr} * $baseDamage;
 
                         // Damage reduction from Towers
-                        $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                        $damage *= max(0.2, 1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
                         $target->{$attr} += round($damage);
                     }

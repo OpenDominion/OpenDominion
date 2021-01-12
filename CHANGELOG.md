@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 
 ### Changed
-- RPs from invasion descreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, up to 1560)
+- RPs from invasion decreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, up to 1560)
 - Dwarf/Gnome: Racial spell now protects ore from earthquake
 - Goblin Hobgoblin: -25p
 - Orc: gains 10% additional prestige from invasions
@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Lightning bolt now damages science instead of towers
 - Masonries protect 1% castle per 1% owned (from 0.75% per 1%), max remains at 25%
 - War bonus to land/prestige gains changed to 10% (from 15%), mutual war remains at 20%
+- Infamy now boosts ore/lumber production (max 5%) in addition to platinum/gems
+- Infamy decay slightly reduced to 0.5% of current + 20 (from 25)
+- Black op damage reduction is capped at 80% from all sources
 
 ### Fixed
 - Draftees now included in RCL count
