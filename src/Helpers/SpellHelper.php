@@ -399,12 +399,12 @@ class SpellHelper
                 'key' => 'lightning_bolt',
                 'mana_cost' => 3.5,
                 'decreases' => [
+                    'improvement_science',
                     'improvement_keep',
-                    'improvement_towers',
                     'improvement_forges',
                     'improvement_walls',
                 ],
-                'percentage' => 0.40,
+                'percentage' => 0.41,
             ],
         ]);
     }
