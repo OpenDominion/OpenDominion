@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\RealmWar;
@@ -95,7 +96,7 @@ class GovernmentService
      */
     public function hasDeclaredWar(Realm $realm): bool
     {
-        if ($realm->warsOutgoing()->engaged()->exists()) {
+        if ($this->getWarsEngaged($realm->warsOutgoing)->isNotEmpty()) {
             return true;
         }
         return false;
@@ -171,6 +172,48 @@ class GovernmentService
     }
 
     /**
+     * Returns only engaged wars from a collection
+     * 
+     * @param Collection $wars
+     */
+    public function getWarsEngaged(Collection $wars): Collection
+    {
+        return $wars->filter(function ($war) {
+            if ($war->inactive_at == null) {
+                return $war;
+            }
+        });
+    }
+
+    /**
+     * Returns only escalated wars from a collection
+     * 
+     * @param Collection $wars
+     */
+    public function getWarsEscalated(Collection $wars): Collection
+    {
+        return $wars->filter(function ($war) {
+            if ($war->active_at < now() && ($war->inactive_at == null || $war->inactive_at > now())) {
+                return $war;
+            }
+        });
+    }
+
+    /**
+     * Returns only cancelled wars from a collection
+     * 
+     * @param Collection $wars
+     */
+    public function getWarsCancelled(Collection $wars): Collection
+    {
+        return $wars->filter(function ($war) {
+            if ($war->inactive_at !== null && $war->inactive_at < now()) {
+                return $war;
+            }
+        });
+    }
+
+    /**
      * Returns war status between two realms
      *
      * @param Realm $realm
@@ -179,8 +222,8 @@ class GovernmentService
     public function isAtWar(Realm $realm, Realm $target): bool
     {
         if (
-            $realm->warsOutgoing()->engaged()->where('target_realm_id', $target->id)->exists() ||
-            $target->warsOutgoing()->engaged()->where('target_realm_id', $realm->id)->exists()
+            $this->getWarsEngaged($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() ||
+            $this->getWarsEngaged($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
         ) {
             return true;
         }
@@ -197,8 +240,8 @@ class GovernmentService
     public function isAtMutualWar(Realm $realm, Realm $target): bool
     {
         if (
-            $realm->warsOutgoing()->engaged()->where('target_realm_id', $target->id)->exists() &&
-            $target->warsOutgoing()->engaged()->where('target_realm_id', $realm->id)->exists()
+            $this->getWarsEngaged($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() &&
+            $this->getWarsEngaged($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
         ) {
             return true;
         }
@@ -215,7 +258,7 @@ class GovernmentService
     public function isWarEscalated(Realm $source, Realm $target): bool
     {
         if (
-            $source->warsOutgoing()->escalated()->where('target_realm_id', $target->id)->exists()
+            $this->getWarsEscalated($source->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty()
         ) {
             return true;
         }
@@ -232,8 +275,8 @@ class GovernmentService
     public function isMutualWarEscalated(Realm $realm, Realm $target): bool
     {
         if (
-            $realm->warsOutgoing()->escalated()->where('target_realm_id', $target->id)->exists() &&
-            $target->warsOutgoing()->escalated()->where('target_realm_id', $realm->id)->exists()
+            $this->getWarsEscalated($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() &&
+            $this->getWarsEscalated($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
         ) {
             return true;
         }

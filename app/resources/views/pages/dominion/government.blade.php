@@ -269,7 +269,7 @@
                                     <form action="{{ route('dominion.government.war.cancel') }}" method="post" role="form">
                                         @csrf
                                         <div class="row">
-                                            @foreach ($selectedDominion->realm->warsOutgoing()->engaged()->get() as $war)
+                                            @foreach ($governmentService->getWarsEngaged($selectedDominion->realm->warsOutgoing) as $war)
                                                 <div class="col-sm-8 col-lg-10">
                                                     You have declared <span class="text-red text-bold">WAR</span> on {{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})!
                                                     @if ($governmentService->getHoursBeforeWarActive($war) > 0)

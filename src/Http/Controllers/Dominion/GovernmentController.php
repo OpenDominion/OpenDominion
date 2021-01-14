@@ -25,9 +25,6 @@ class GovernmentController extends AbstractDominionController
         $dominions = $dominion->realm->dominions()
             ->with([
                 'race',
-                'race.perks',
-                'race.units',
-                'race.units.perks',
                 'monarchVote',
             ])
             ->get()
