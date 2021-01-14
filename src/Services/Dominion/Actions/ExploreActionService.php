@@ -124,7 +124,10 @@ class ExploreActionService
                 'morale' => ($dominion->morale - $moraleDrop),
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'military_draftees' => ($dominion->military_draftees - $drafteeCost),
-            ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
+            ])->save([
+                'event' => HistoryService::EVENT_ACTION_EXPLORE,
+                'queue' => array_filter($data)
+            ]);
         });
 
         return [

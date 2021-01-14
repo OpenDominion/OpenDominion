@@ -113,7 +113,10 @@ class ConstructActionService
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'resource_lumber' => ($dominion->resource_lumber - $lumberCost),
                 'discounted_land' => max(0, $dominion->discounted_land - $totalBuildingsToConstruct),
-            ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
+            ])->save([
+                'event' => HistoryService::EVENT_ACTION_CONSTRUCT,
+                'queue' => array_filter($data)
+            ]);
         });
 
         return [

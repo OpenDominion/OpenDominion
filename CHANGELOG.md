@@ -3,10 +3,12 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Improved dominion history logs
 
 ## [1.2.3] - 2021-01-12
 ### Changed
-- RPs from invasion decreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, up to 1560)
+- RPs from invasion decreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, max 1560)
 - Dwarf/Gnome: Racial spell now protects ore from earthquake
 - Goblin Hobgoblin: -25p
 - Orc: gains 10% additional prestige from invasions
@@ -21,7 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Draftees now included in RCL count
 - RPs from invasion should not become negative on multiple previous invades
- 
+
 ## [1.2.2] - 2021-01-05
 ### Added
 - Added realm number to status page and ops center header

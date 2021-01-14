@@ -201,7 +201,7 @@ class SpellActionService
                 }
 
                 $target->save([
-                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'event' => HistoryService::EVENT_ACTION_RECEIVE_SPELL,
                     'action' => $spellKey,
                     'source_dominion_id' => $dominion->id
                 ]);

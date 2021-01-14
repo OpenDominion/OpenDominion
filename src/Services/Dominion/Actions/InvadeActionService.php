@@ -309,8 +309,8 @@ class InvadeActionService
                 ]);
             }
 
-            $target->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
+            $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
         });
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');

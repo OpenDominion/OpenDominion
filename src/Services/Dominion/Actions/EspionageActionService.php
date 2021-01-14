@@ -205,7 +205,7 @@ class EspionageActionService
             }
 
             $target->save([
-                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+                'event' => HistoryService::EVENT_ACTION_RECEIVE_ESPIONAGE_OPERATION,
                 'action' => $operationKey,
                 'source_dominion_id' => $dominion->id
             ]);
