@@ -958,12 +958,6 @@ class InvadeActionService
         if ($isInvasionSuccessful) {
             $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
-            // Racial Bonus
-            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
-
-            // Wonders
-            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
-
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
             if ($range < 60) {
                 $researchPointsGained = 0;
@@ -977,6 +971,12 @@ class InvadeActionService
                 );
                 $researchPointsGained += (130 * $schoolPercentage * 100);
             }
+
+            // Racial Bonus
+            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+
+            // Wonders
+            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
 
             // Recent invasion penalty
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
