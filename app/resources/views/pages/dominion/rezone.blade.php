@@ -20,12 +20,14 @@
                                 <col width="10%">
                                 <col width="10%">
                                 <col width="10%">
+                                <col width="10%">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th>Land type</th>
+                                    <th class="text-center">Owned</th>
                                     <th class="text-center">Barren</th>
-                                    <th class="text-center">Amount</th> {{-- wording change? --}}
+                                    <th class="text-center">Amount</th>
                                     <th class="text-center">Convert to</th>
                                     <th class="text-center">Amount</th>
                                 </tr>
@@ -38,6 +40,12 @@
                                             <br>
                                             <small class="text-muted"><i><span title="This is the land type where your {{ strtolower($selectedDominion->race->name) }} race constructs home buildings on">Home land type</span></i></small>
                                         @endif
+                                    </td>
+                                    <td class="text-center">
+                                        {{ number_format($selectedDominion->{'land_' . $landType}) }}
+                                        <small>
+                                            ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
+                                        </small>
                                     </td>
                                     <td class="text-center">{{ number_format($amount) }}</td>
                                     <td class="text-center">
