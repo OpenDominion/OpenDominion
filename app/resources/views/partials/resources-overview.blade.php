@@ -8,8 +8,8 @@
             <div class="row">
                 <div class="col-xs-3">
                     <div class="row">
-                        <div class="col-lg-6"><b>Networth:</b></div>
-                        <div class="col-lg-6">{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</div>
+                        <div class="col-lg-6"><b>Land:</b></div>
+                        <div class="col-lg-6">{{ number_format($landCalculator->getTotalLand($selectedDominion)) }}</div>
                     </div>
                 </div>
                 <div class="col-xs-3">
