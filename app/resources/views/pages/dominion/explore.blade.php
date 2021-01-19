@@ -71,6 +71,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
+                    <a href="{{ route('dominion.explore') }}#advisor" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
                     <p>Exploration will net you additional acres of barren land to construct buildings upon and will take <b>12 hours</b> to process.</p>
@@ -81,7 +82,7 @@
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-6" id="advisor">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-honeycomb"></i> Land Advisor</h3>

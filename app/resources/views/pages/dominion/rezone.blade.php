@@ -76,6 +76,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
+                    <a href="{{ route('dominion.explore') }}#advisor" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
                     <p>Rezoning is the art of converting land of one type into another type. Rezoning land processes <b>instantly</b>.</p>
