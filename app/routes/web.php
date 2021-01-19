@@ -91,8 +91,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/op-center')->uses('Dominion\AdvisorsController@getAdvisorsOpCenter')->name('advisors.op-center');
             $router->get('advisors/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('advisors.production');
             $router->get('advisors/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('advisors.military');
-            $router->get('advisors/castle')->uses('Dominion\AdvisorsController@getAdvisorsCastle')->name('advisors.castle');
-            $router->get('advisors/techs')->uses('Dominion\AdvisorsController@getAdvisorsTechs')->name('advisors.techs');
             $router->get('advisors/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('advisors.magic');
             $router->get('advisors/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('advisors.rankings');
             $router->get('advisors/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('advisors.statistics');
@@ -100,8 +98,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('realm/advisors/{target}/op-center')->uses('Dominion\AdvisorsController@getAdvisorsOpCenter')->name('realm.advisors.op-center');
             $router->get('realm/advisors/{target}/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('realm.advisors.production');
             $router->get('realm/advisors/{target}/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('realm.advisors.military');
-            $router->get('realm/advisors/{target}/castle')->uses('Dominion\AdvisorsController@getAdvisorsCastle')->name('realm.advisors.castle');
-            $router->get('realm/advisors/{target}/techs')->uses('Dominion\AdvisorsController@getAdvisorsTechs')->name('realm.advisors.techs');
             $router->get('realm/advisors/{target}/magic')->uses('Dominion\AdvisorsController@getAdvisorsMagic')->name('realm.advisors.magic');
             $router->get('realm/advisors/{target}/rankings')->uses('Dominion\AdvisorsController@getAdvisorsRankings')->name('realm.advisors.rankings');
             $router->get('realm/advisors/{target}/statistics')->uses('Dominion\AdvisorsController@getAdvisorsStatistics')->name('realm.advisors.statistics');

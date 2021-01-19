@@ -187,39 +187,6 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    public function getAdvisorsCastle(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.castle', [
-            'improvementCalculator' => app(ImprovementCalculator::class),
-            'improvementHelper' => app(ImprovementHelper::class),
-            'infoMapper' => app(InfoMapper::class),
-            'targetDominion' => $target
-        ]);
-    }
-
-    public function getAdvisorsTechs(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.techs', [
-            'techHelper' => app(TechHelper::class),
-            'infoMapper' => app(InfoMapper::class),
-            'targetDominion' => $target
-        ]);
-    }
-
     public function getAdvisorsRankings(Dominion $target = null)
     {
         try {
