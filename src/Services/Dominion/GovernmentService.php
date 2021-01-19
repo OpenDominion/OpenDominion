@@ -173,7 +173,7 @@ class GovernmentService
 
     /**
      * Returns only engaged wars from a collection
-     * 
+     *
      * @param Collection $wars
      */
     public function getWarsEngaged(Collection $wars): Collection
@@ -187,7 +187,7 @@ class GovernmentService
 
     /**
      * Returns only escalated wars from a collection
-     * 
+     *
      * @param Collection $wars
      */
     public function getWarsEscalated(Collection $wars): Collection
@@ -201,7 +201,7 @@ class GovernmentService
 
     /**
      * Returns only cancelled wars from a collection
-     * 
+     *
      * @param Collection $wars
      */
     public function getWarsCancelled(Collection $wars): Collection
