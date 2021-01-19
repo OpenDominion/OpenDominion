@@ -91,7 +91,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('advisors/op-center')->uses('Dominion\AdvisorsController@getAdvisorsOpCenter')->name('advisors.op-center');
             $router->get('advisors/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('advisors.production');
             $router->get('advisors/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('advisors.military');
-            $router->get('advisors/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('advisors.land');
             $router->get('advisors/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('advisors.construct');
             $router->get('advisors/castle')->uses('Dominion\AdvisorsController@getAdvisorsCastle')->name('advisors.castle');
             $router->get('advisors/techs')->uses('Dominion\AdvisorsController@getAdvisorsTechs')->name('advisors.techs');
@@ -102,7 +101,6 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('realm/advisors/{target}/op-center')->uses('Dominion\AdvisorsController@getAdvisorsOpCenter')->name('realm.advisors.op-center');
             $router->get('realm/advisors/{target}/production')->uses('Dominion\AdvisorsController@getAdvisorsProduction')->name('realm.advisors.production');
             $router->get('realm/advisors/{target}/military')->uses('Dominion\AdvisorsController@getAdvisorsMilitary')->name('realm.advisors.military');
-            $router->get('realm/advisors/{target}/land')->uses('Dominion\AdvisorsController@getAdvisorsLand')->name('realm.advisors.land');
             $router->get('realm/advisors/{target}/construct')->uses('Dominion\AdvisorsController@getAdvisorsConstruction')->name('realm.advisors.construct');
             $router->get('realm/advisors/{target}/castle')->uses('Dominion\AdvisorsController@getAdvisorsCastle')->name('realm.advisors.castle');
             $router->get('realm/advisors/{target}/techs')->uses('Dominion\AdvisorsController@getAdvisorsTechs')->name('realm.advisors.techs');

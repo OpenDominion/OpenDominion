@@ -24,10 +24,6 @@
             <i class="ra ra-sword"></i> Military
         </a>
 
-        <a href="{{ route($baseRoute.'land', $targetDominion) }}" class="btn btn-app">
-            <i class="ra ra-honeycomb"></i> Land
-        </a>
-
         <a href="{{ route($baseRoute.'construct', $targetDominion) }}" class="btn btn-app">
             <i class="fa fa-home"></i> Construction
         </a>
