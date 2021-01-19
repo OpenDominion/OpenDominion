@@ -170,25 +170,6 @@ class AdvisorsController extends AbstractDominionController
         ]);
     }
 
-    public function getAdvisorsConstruction(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.construction', [
-            'buildingCalculator' => app(BuildingCalculator::class),
-            'buildingHelper' => app(BuildingHelper::class),
-            'landCalculator' => app(LandCalculator::class),
-            'queueService' => app(QueueService::class),
-            'infoMapper' => app(InfoMapper::class),
-            'targetDominion' => $target
-        ]);
-    }
-
     public function getAdvisorsMagic(Dominion $target = null)
     {
         try {

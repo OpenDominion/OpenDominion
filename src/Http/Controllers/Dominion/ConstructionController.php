@@ -9,6 +9,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ConstructActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\DestroyActionRequest;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
@@ -23,6 +24,7 @@ class ConstructionController extends AbstractDominionController
             'buildingCalculator' => app(BuildingCalculator::class),
             'buildingHelper' => app(BuildingHelper::class),
             'constructionCalculator' => app(ConstructionCalculator::class),
+            'infoMapper' => app(InfoMapper::class),
             'landCalculator' => app(LandCalculator::class),
             'queueService' => app(QueueService::class),
         ]);
