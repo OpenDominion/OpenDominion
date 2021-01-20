@@ -206,7 +206,8 @@ if (!function_exists('format_percentage')) {
      */
     function format_percentage($number, $total = 0) {
         if ($number > 0 && $total > 0 && $number != $total) {
-            return sprintf('%s <small class="text-muted">(%s%%)</small>',
+            return sprintf(
+                '%s <small class="text-muted">(%s%%)</small>',
                 number_format($number),
                 number_format($number / $total * 100, 2)
             );
