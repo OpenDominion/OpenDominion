@@ -13,4 +13,9 @@ $(() => {
         html: true,
     });
 
+    // disable mousewheel on a input number field
+    $('form').on('mousewheel', 'input[type=number]', function (e) {
+        e.preventDefault();
+    });
+
 });
