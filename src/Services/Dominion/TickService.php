@@ -313,6 +313,108 @@ class TickService
     }
 
     /**
+     * Reverts an hourly on a dominion.
+     *
+     * @throws Exception|Throwable
+     */
+    public function revertTick(Dominion $dominion)
+    {
+        $lastRestart = $dominion->history
+            ->where('event', 'restart')
+            ->sortByDesc('created_at')
+            ->first();
+        $lastTick = $dominion->history
+            ->where('event', 'tick')
+            ->sortByDesc('created_at')
+            ->first();
+        if ($lastTick == null) {
+            return;
+        }
+        $priorTick = $dominion->history
+            ->where('event', 'tick')
+            ->where('created_at', '<', $lastTick->created_at)
+            ->sortByDesc('created_at')->first();
+        if ($priorTick == null) {
+            return;
+        }
+        if ($lastRestart !== null && $lastRestart->created_at > $priorTick->created_at) {
+            return;
+        }
+
+        DB::transaction(function () use ($dominion, $priorTick) {
+            // Update spells
+            DB::table('active_spells')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'duration' => DB::raw('`duration` + 1'),
+                    'updated_at' => $this->now,
+                ]);
+
+            // TODO: Re-insert expired spells
+
+            // Update queues - two step since MySQL does not support deferred constraints
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'hours' => DB::raw('`hours` + 13'),
+                    'updated_at' => $this->now,
+                ]);
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'hours' => DB::raw('`hours` - 12'),
+                    'updated_at' => $this->now,
+                ]);
+
+            // Delete queues
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->where('hours', '>', 11)
+                ->delete();
+
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->where('hours', '>', 8)
+                ->where('source', 'training')
+                ->whereIn('resource', ['military_unit1', 'military_unit2'])
+                ->delete();
+
+            // Update attributes
+            $actions = $dominion->history->where('created_at', '>', $priorTick->created_at)->sortByDesc('created_at');
+            foreach ($actions as $action) {
+                foreach ($action->delta as $key => $value) {
+                    $type = gettype($value);
+
+                    if (isset($dominion->{$key})) {
+                        if ($type == 'bool') {
+                            $dominion->{$key} = !$value;
+                        } else {
+                            $dominion->{$key} -= $value;
+                        }
+                        if (substr($key, 0, 5) == 'land_') {
+                            $this->queueService->queueResources('exploration', $dominion, [$key => $value], 1);
+                        }
+                        if (substr($key, 0, 9) == 'building_') {
+                            $this->queueService->queueResources('construction', $dominion, [$key => $value], 1);
+                        }
+                        if (substr($key, 0, 9) == 'military_') {
+                            if ($key == 'military_draftees') {
+                                continue;
+                            }
+                            $this->queueService->queueResources('training', $dominion, [$key => $value], 1);
+                        }
+                    }
+                }
+            }
+
+            $dominion->save();
+            // TODO: Don't save new history record
+            // TODO: Erase notifications since
+            // TODO: $actions->delete()
+        });
+    }
+
+    /**
      * Does a daily tick on all active dominions and rounds.
      *
      * @throws Exception|Throwable
@@ -441,6 +543,7 @@ class TickService
                         'id',
                         'dominion_id',
                         'created_at',
+                        'updated_at'
                     ], true) &&
                     ($value != 0) // todo: strict type checking?
                 );
