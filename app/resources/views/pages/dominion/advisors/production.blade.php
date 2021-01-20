@@ -260,7 +260,7 @@
                 </div>
                 <div class="box-body">
                     <p>The production advisor tells you about your resource production, population, and jobs.</p>
-                    <table class="table">
+                    <table class="table table-condensed">
                         <colgroup>
                             <col width="50%">
                             <col width="50%">
@@ -288,7 +288,10 @@
                             </tr>
                             <tr>
                                 <td>Military:</td>
-                                <td>{{ number_format($populationCalculator->getPopulationMilitary($target)) }}</td>
+                                <td>
+                                    {{ number_format($populationCalculator->getPopulationMilitary($target)) }}
+                                    <small class="text-muted">({{ number_format((100 - ($target->peasants / $populationCalculator->getPopulation($target)) * 100), 2) }}%)</small>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Jobs:</td>
@@ -331,6 +334,21 @@
                                     <td>{{ number_format(2.7 * $jobsNeeded * $productionCalculator->getPlatinumProductionMultiplier($target)) }} platinum</td>
                                 </tr>
                             @endif
+                            <tr>
+                                <td>
+                                    <span data-toggle="tooltip" data-placement="top" title="Each barracks houses 36 trained or training military units.<br>Not affected by population bonuses.">
+                                        Barracks Housing:
+                                    </span>
+                                </td>
+                                <td>{{ number_format($populationCalculator->getMaxPopulationMilitaryBonus($target)) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Max Population:</td>
+                                <td>
+                                    {{ number_string($populationCalculator->getMaxPopulationRaw($target)) }}
+                                    <small class="text-muted">({{ number_string((($populationCalculator->getMaxPopulationMultiplier($target) - 1) * 100), 3, true) }}%)</small>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <!--
@@ -351,7 +369,7 @@
                     <h3 class="box-title"><i class="ra ra-mining-diamonds"></i> Resource Expenditure</h3>
                 </div>
                 <div class="box-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive text-nowrap">
                         <table class="table table-condensed table-striped">
                             <colgroup>
                                 <col>
@@ -378,71 +396,77 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php($totalPlatinum = $target->stat_total_platinum_production + $target->stat_total_platinum_stolen)
                                 <tr>
                                     <td>Platinum</td>
                                     <td>{{ number_format($target->stat_total_platinum_production) }}</td>
                                     <td>{{ number_format($target->stat_total_platinum_stolen) }}</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_platinum_spent_investment) }}</td>
-                                    <td>{{ number_format($target->stat_total_platinum_spent_construction) }}</td>
-                                    <td>{{ number_format($target->stat_total_platinum_spent_exploration) }}</td>
-                                    <td>{{ number_format($target->stat_total_platinum_spent_rezoning) }}</td>
-                                    <td>{{ number_format($target->stat_total_platinum_spent_training) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_platinum_spent_investment, $totalPlatinum) !!}</td>
+                                    <td>{!! format_percentage($target->stat_total_platinum_spent_construction, $totalPlatinum) !!}</td>
+                                    <td>{!! format_percentage($target->stat_total_platinum_spent_exploration, $totalPlatinum) !!}</td>
+                                    <td>{!! format_percentage($target->stat_total_platinum_spent_rezoning, $totalPlatinum) !!}</td>
+                                    <td>{!! format_percentage($target->stat_total_platinum_spent_training, $totalPlatinum) !!}</td>
                                 </tr>
+                                @php($totalFood = $target->stat_total_food_production + $target->stat_total_food_stolen)
                                 <tr>
                                     <td>Food</td>
                                     <td>{{ number_format($target->stat_total_food_production) }}</td>
                                     <td>{{ number_format($target->stat_total_food_stolen) }}</td>
-                                    <td>{{ number_format($target->stat_total_food_decay) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_food_decay, $totalFood) !!}</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
                                 </tr>
+                                @php($totalLumber = $target->stat_total_lumber_production + $target->stat_total_lumber_stolen)
                                 <tr>
                                     <td>Lumber</td>
                                     <td>{{ number_format($target->stat_total_lumber_production) }}</td>
                                     <td>{{ number_format($target->stat_total_lumber_stolen) }}</td>
-                                    <td>{{ number_format($target->stat_total_lumber_decay) }}</td>
-                                    <td>{{ number_format($target->stat_total_lumber_spent_investment) }}</td>
-                                    <td>{{ number_format($target->stat_total_lumber_spent_construction) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_lumber_decay, $totalLumber) !!}</td>
+                                    <td>{!! format_percentage($target->stat_total_lumber_spent_investment, $totalLumber) !!}</td>
+                                    <td>{!! format_percentage($target->stat_total_lumber_spent_construction, $totalLumber) !!}</td>
                                     <td>--</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_lumber_spent_training) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_lumber_spent_training, $totalLumber) !!}</td>
                                 </tr>
+                                @php($totalMana = $target->stat_total_mana_production + $target->stat_total_mana_stolen)
                                 <tr>
                                     <td>Mana</td>
                                     <td>{{ number_format($target->stat_total_mana_production) }}</td>
                                     <td>{{ number_format($target->stat_total_mana_stolen) }}</td>
-                                    <td>{{ number_format($target->stat_total_mana_decay) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_mana_decay, $totalMana) !!}</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_mana_spent_training) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_mana_spent_training, $totalMana) !!}</td>
                                 </tr>
+                                @php($totalOre = $target->stat_total_ore_production + $target->stat_total_ore_stolen)
                                 <tr>
                                     <td>Ore</td>
                                     <td>{{ number_format($target->stat_total_ore_production) }}</td>
                                     <td>{{ number_format($target->stat_total_ore_stolen) }}</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_ore_spent_investment) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_ore_spent_investment, $totalOre) !!}</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_ore_spent_training) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_ore_spent_training, $totalOre) !!}</td>
                                 </tr>
+                                @php($totalGems = $target->stat_total_gem_production + $target->stat_total_gems_stolen)
                                 <tr>
                                     <td>Gems</td>
                                     <td>{{ number_format($target->stat_total_gem_production) }}</td>
                                     <td>{{ number_format($target->stat_total_gems_stolen) }}</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_gems_spent_investment) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_gems_spent_investment, $totalGems) !!}</td>
                                     <td>--</td>
                                     <td>--</td>
                                     <td>--</td>
-                                    <td>{{ number_format($target->stat_total_gems_spent_training) }}</td>
+                                    <td>{!! format_percentage($target->stat_total_gems_spent_training, $totalGems) !!}</td>
                                 </tr>
                                 <tr>
                                     <td>Research Points</td>

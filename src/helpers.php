@@ -195,3 +195,22 @@ if (!function_exists('number_string')) {
         return $string;
     }
 }
+
+if (!function_exists('format_percentage')) {
+    /**
+     * Format a non-zero value with a sibling containing the percentage of total.
+     *
+     * @param int|float $number
+     * @param int|float $total
+     * @return string
+     */
+    function format_percentage($number, $total = 0) {
+        if ($number > 0 && $total > 0 && $number != $total) {
+            return sprintf('%s <small class="text-muted">(%s%%)</small>',
+                number_format($number),
+                number_format($number / $total * 100, 2)
+            );
+        }
+        return number_format($number);
+    }
+}
