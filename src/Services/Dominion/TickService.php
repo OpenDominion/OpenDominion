@@ -227,7 +227,10 @@ class TickService
                     'dominions.stat_total_ore_production' => DB::raw('dominions.stat_total_ore_production + dominion_tick.resource_ore'),
                     'dominions.stat_total_gem_production' => DB::raw('dominions.stat_total_gem_production + dominion_tick.resource_gems'),
                     'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
-                    'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
+                    'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boat_production'),
+                    'dominions.stat_total_food_decay' => DB::raw('dominions.stat_total_food_decay + dominion_tick.resource_food_decay'),
+                    'dominions.stat_total_lumber_decay' => DB::raw('dominions.stat_total_lumber_decay + dominion_tick.resource_lumber_decay'),
+                    'dominions.stat_total_mana_decay' => DB::raw('dominions.stat_total_mana_decay + dominion_tick.resource_mana_decay'),
                     'dominions.highest_land_achieved' => DB::raw('dominions.highest_land_achieved + dominion_tick.highest_land_achieved'),
                     'dominions.calculated_networth' => DB::raw('dominion_tick.calculated_networth'),
                     'dominions.last_tick_at' => $this->now,
@@ -603,14 +606,18 @@ class TickService
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
         $tick->resource_lumber_production += $this->productionCalculator->getLumberProduction($dominion);
+        $tick->resource_lumber_decay += $this->productionCalculator->getLumberDecay($dominion);
         $tick->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
         $tick->resource_mana_production += $this->productionCalculator->getManaProduction($dominion);
+        $tick->resource_mana_decay += $this->productionCalculator->getManaDecay($dominion);
         $tick->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
         $tick->resource_ore += $this->productionCalculator->getOreProduction($dominion);
         $tick->resource_gems += $this->productionCalculator->getGemProduction($dominion);
         $tick->resource_tech += $this->productionCalculator->getTechProduction($dominion);
         $tick->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
+        $tick->resource_boat_production += $this->productionCalculator->getBoatProduction($dominion);
         $tick->resource_food_production += $this->productionCalculator->getFoodProduction($dominion);
+        $tick->resource_food_decay += $this->productionCalculator->getFoodDecay($dominion);
         // Check for starvation before adjusting food
         $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
 

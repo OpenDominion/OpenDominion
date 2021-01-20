@@ -128,6 +128,11 @@ class TrainActionService
             $dominion->resource_gems -= $totalCosts['gems'];
             $dominion->military_draftees -= $totalCosts['draftees'];
             $dominion->military_wizards -= $totalCosts['wizards'];
+            $dominion->stat_total_platinum_spent_training += $totalCosts['platinum'];
+            $dominion->stat_total_ore_spent_training += $totalCosts['ore'];
+            $dominion->stat_total_mana_spent_training += $totalCosts['mana'];
+            $dominion->stat_total_lumber_spent_training += $totalCosts['lumber'];
+            $dominion->stat_total_gems_spent_training += $totalCosts['gems'];
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_TRAIN,
                 'queue' => array_filter($nineHourData + $data)
