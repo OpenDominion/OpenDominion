@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion\Actions;
 
+use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
@@ -49,13 +50,34 @@ class DestroyActionService
             $dominion->{'building_' . $buildingType} -= $amount;
         }
 
+        $destructionRefundString = '';
+        if ($dominion->getTechPerkValue('destruction_refund') != 0) {
+            $constructionCalculator = app(ConstructionCalculator::class);
+            $multiplier = $dominion->getTechPerkMultiplier('destruction_refund');
+
+            $platinumCost = round($constructionCalculator->getPlatinumCostRaw($dominion) * $multiplier);
+            $lumberCost= round($constructionCalculator->getLumberCostRaw($dominion) * $multiplier);
+
+            // Can never get more per acre than the current modded cost per acre
+            $platinumCost = min($platinumCost, $constructionCalculator->getPlatinumCost($dominion));
+            $lumberCost = min($lumberCost, $constructionCalculator->getLumberCost($dominion));
+
+            $platinumRefund = round($platinumCost * $totalBuildingsToDestroy);
+            $lumberRefund = round($lumberCost * $totalBuildingsToDestroy);
+
+            $destructionRefundString = " You were refunded {$platinumRefund} platinum and {$lumberRefund} lumber.";
+            $dominion->resource_platinum += $platinumRefund;
+            $dominion->resource_lumber += $lumberRefund;
+        }
+
         $dominion->save(['event' => HistoryService::EVENT_ACTION_DESTROY]);
 
         return [
             'message' => sprintf(
-                'Destruction of %s %s is complete.',
+                'Destruction of %s %s is complete.%s',
                 number_format($totalBuildingsToDestroy),
-                str_plural('building', $totalBuildingsToDestroy)
+                str_plural('building', $totalBuildingsToDestroy),
+                $destructionRefundString
             ),
             'data' => [
                 'totalBuildingsDestroyed' => $totalBuildingsToDestroy,

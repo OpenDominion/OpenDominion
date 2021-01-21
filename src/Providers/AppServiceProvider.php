@@ -17,6 +17,7 @@ use OpenDominion\Calculators\Dominion\EspionageCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\PrestigeCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
@@ -56,6 +57,7 @@ use OpenDominion\Services\Dominion\SelectorService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\ForumService;
 use OpenDominion\Services\GameEventService;
+use OpenDominion\Services\MessageBoardService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\PackService;
 use OpenDominion\Services\RealmFinderService;
@@ -104,6 +106,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(ImprovementCalculator::class);
         $this->app->singleton(LandCalculator::class);
         $this->app->singleton(MilitaryCalculator::class);
+        $this->app->singleton(OpsCalculator::class);
         $this->app->singleton(PopulationCalculator::class);
         $this->app->singleton(PrestigeCalculator::class);
         $this->app->singleton(ProductionCalculator::class);
@@ -127,7 +130,9 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(CouncilService::class);
         $this->app->singleton(ForumService::class);
         $this->app->singleton(GameEventService::class);
+        $this->app->singleton(MessageBoardService::class);
         $this->app->singleton(NotificationService::class);
+        $this->app->singleton(PackService::class);
         $this->app->singleton(RealmFinderService::class);
         $this->app->singleton(WonderService::class);
 
@@ -136,6 +141,7 @@ class AppServiceProvider extends AbstractServiceProvider
         $this->app->singleton(GuardMembershipService::class);
         $this->app->singleton(HistoryService::class);
         $this->app->singleton(InfoOpService::class);
+        $this->app->singleton(InvadeService::class);
         $this->app->singleton(ProtectionService::class);
         $this->app->singleton(QueueService::class);
         $this->app->singleton(RankingsService::class);

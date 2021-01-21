@@ -3,11 +3,240 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Improved dominion history logs
+
+## [1.2.5] - 2021-01-20
+### Changed
+- Replace networth with land in overview top banner
+
+### Fixed
+- Updated infamy tooltip
+- Bug with spy ops damage calculation
+- Prevent mousewheel events in input fields
+
+## [1.2.4] - 2021-01-17
 ### Added
-- Threads with new posts will be displayed in bold on the first page load
+- Show spy/wizard strength recovery rates in statistics advisor
+
+### Fixed
+- Nox racial was not being applied to the bonus invasion RP from schools
+- Survivalist Mentality prestige perk was incorrect
+
+## [1.2.3] - 2021-01-12
+### Changed
+- RPs from invasion decreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, max 1560)
+- Dwarf/Gnome: Racial spell now protects ore from earthquake
+- Goblin Hobgoblin: -25p
+- Orc: gains 10% additional prestige from invasions
+- Lightning bolt damage increased to 0.41% (from 0.40%)
+- Lightning bolt now damages Science instead of Towers (Harbor is also excluded)
+- Masonries now protect 1% castle per 1% owned (from 0.75% per 1%), max remains at 25%
+- War bonus to land/prestige gains reduced to 10% (from 15%), mutual war remains at 20%
+- Infamy now boosts gem/ore/lumber production to a max of 3% (from 5% to gems only) in addition to platinum
+- Infamy decay slightly reduced to 0.5% of current + 20 (from 25)
+- Black op damage reduction is capped at 80% from all sources
+
+### Fixed
+- Draftees now included in RCL count
+- RPs from invasion should not become negative on multiple previous invades
+
+## [1.2.2] - 2021-01-05
+### Added
+- Added realm number to status page and ops center header
+- Added racial perks to status page and ops center info pane
+
+### Fixed
+- Tributary System was incorrectly applying a flat 60% food production
+- Removed troop cost abbreviations
+- Battle reports now show additional information to realmies
+- Notifications when land arrives after troops are home no longer display '0 units returned'
+
+## [1.2.1] - 2021-01-03
+### Added
+- Show calculated damage reduction from resilience on status page and ops center
+- Show calculated production bonuses from infamy on production advisor page
 
 ### Changed
+- Removed black ops damage reduction based on war duration
+- Removed wizard strength recovery bonus below 25% strength
+
+## [1.2.0] - 2021-01-01
+### Added
+- New Stat: Infamy
+  - Temporarily boosts platinum production (max 7.5%) and gem production (max 5%)
+  - Gained when performing war operations
+    - Increased by 5 per op
+    - Bonus for targeting 75% (+10)
+    - Bonus for higher ratio targets (+15-40)
+  - Scales from 0 to 1000
+  - Decays by 25 each hour
+- New Stats: Spy Resilience, Wizard Resilience
+  - Temporarily reduces damage taken by war operations (max 76%)
+  - Gained when targeted by war operations
+    - Spy Resilience is increased by 8 per op
+    - Wizard Resilience is increased by 11 per op
+  - Scales from 0 to 1000
+  - Decays by 8 each hour
+- New Stats: Spy Mastery, Wizard Mastery
+  - Replaces Spy Prestige and Wizard Prestige rankings
+  - Gained when performing war operations (Infamy / 10)
+    - No gain when outclassing your target by 500 or more
+    - Bonus when outclassed by your target (+1, -1 for your target)
+    - Additional bonus when within 100pts of your target (+1, -1 for your target)
+- New Tech Perks:
+  - Tributary System, increases food production bonus from prestige by 60%
+  - Anti-Magic Sigils, decreases duration of enemy spells by 1 hour
+  - Menace, range-based infamy gain bonus expanded to 60%
+- Many other techs have had their values adjusted or changed position in the tree
+- Additional submit button at the top of the Technology page
+- Timestamps in Op Center advisor
+
+### Changed
+- Removed prestige gain from war operations (replaced with Infamy)
+- Dock protection now scales by 0.05/day after day 25 (from 0.1/day)
+- Sabotage Boats damage increased to 2.25% (from 2%)
+- Fireball damage increased to 2.65% from (2.5%)
+- Magic Snare damage changed to 3.5% of current, min 1.5 (from flat 2%)
+- Simplified the black ops success formula to a single variable
+- Changed min/max success rates on black ops to 1%/95% (from 3%/97%)
+- Changed min/max success rates on info/theft ops to 1%/99% (from 3%/97%)
+- Spy losses from info ops limited to 0.006x LAND (0.003x LAND for Chameleon / Master Thief)
+- Cyclone now has a 100% success rate
+- Cyclone damage reduced to 1.5x wizards (from 3.5x) and 0.75% of max wonder health (from 2%)
+- Cyclone no longer contributes toward wonder prestige gain (only attacking)
+- Rebuilding a neutral wonder will no longer grant prestige
+- Destroying a neutral wonder without rebuilding it will incur a penalty of 25 prestige to contributors in the realm that destroyed it
+- Halls of Knowledge to spawn only in the first 14 days of the round
+- Only one of the following wonders pairs spawn in a given round
+  - Ancient Library/ Halls of Knowledge
+  - Ivory Tower / Wizard Academy
+- Ivory Tower and Wizard Academy no longer protect themselves from cyclone
+- Imperial Armada now also grants -1% platinum tax from royal guard
+- Horn of Plenty increased to +2% production to all resources (from +1%)
+- Factory of Legends reduced to -20% construction platinum cost (from -25%)
+- Base prestige gain on attacks increased to 22.5 (from 20)
+- Maximum prestige decreased to 90% of land size (from 100%) or 250 whichever is higher
+- Dark Elf Adept: Wizard Guild requirement increased to 9% (from 8%) per point to a maximum of +4/+4 (from +5/+5)
+
+### Fixed
+- War declarations in the town crier will now display the realm names as they were at that exact time
+
+## [1.1.8] - 2020-12-10
+### Fixed
+- Destroying a neutral wonder while you already control a wonder no longer rewards prestige
+- Using the calculator from in-realm advisors no longer sometimes uses your own info instead
+
+## [1.1.7] - 2020-12-01
+### Added
+- Status advisor replaced with Op Center advisor
+  - View all of you or your realm mates' info on a single page
+  - Copy ops button for in-realm dominions
+  - Load in-realm dominions into the calculator
+
+### Fixed
+- Offensive power tech bonuses corrected in calculator
+- Urg Smash Technique destruction refund is now based on raw cost
+
+## [1.1.6] - 2020-11-25
+### Changed
+- The displayed out-of-realm Wonder HP is now approximate (rounded to the nearest 10,000)
+
+### Fixed
+- Typo in Goblin gem investment racial bonus
+- Additional significant digit in range calculations within dropdowns/op center
+- The Maelstrom tech now also increases the max health cap on cyclone damage
+- Fool's gold no longer protects lumber/ore unless you have the Trick of the Light tech
+
+## [1.1.5] - 2020-11-15
+### Fixed
+- Nox racial tech bonus no longer applies to the portion of RP generated by attacks that is based on hourly school production
+- A flawed code cleanup will no longer cause defensive casualties to sometimes be reduced to zero
+- Corrected order of operations in NPD defense calculation
+
+## [1.1.4] - 2020-11-11
+### Changed
+- New artwork on the homepage!
+- Updated links to the wiki
+- Military Culture tech changed to +10% (from 5%)
+- Prestige gains on attack are now reduced by 10% per recent invasion, to a minimum of 20 prestige
+- Attacks against targets 75%+ your size now generate 150% of your hourly research point production in addition to 1100 base (from flat 1000)
+- Research point gains on attack are reduced if _you_ have been invaded many times recently (20% less for each invasion after the 2nd)
+
+### Fixed
+- Wrong prerequisite for Ares' Favor tech
+
+## [1.1.3] - 2020-11-05
+### Fixed
+- Errors during invasion (related to RP/boat refactor)
+- Missing perk on Urg Smash Technique tech
+- Missing description for Night Watch tech
+- Fearless Adventurers tech no longer sets morale to zero
+- Update prerequisite text
+
+## [1.1.2] - 2020-10-31
+### Added
+- Visual Tech Tree for selected dominion added to Technology Page
+- Direct registration link on homepage
+- Halloween icon/achievement
+
+### Fixed
+- Op Center archive no longer redirects to status page
+- Missing perk for the Night Watch tech
+
+## [1.1.1] - 2020-10-30
+### Fixed
+- Bug with exploration draftee cost
+- Bug with RP production from schools
+- Quickstarts updated with the new research point totals
+- Morale generation is now +6 below 80% (from +6 below 70%)
+
+## [1.1.0] - 2020-10-29
+### Added
+- Brand new Tech system!
+  - Number of techs increased from 27 to 66 (with smaller bonuses)
+  - Tech cost changed to a flat 10,000
+  - Platinum bonus now rewards 750 RPs
+  - Schools now generate 26 RP/hour per 1% owned (max 40%)
+  - RPs from invasion changed to MAX(1000, daysInRound/0.03), halved for hits under 75%, none for hits under 60%
+- Three new wonders:
+  - Hanging Gardens: +20% food production
+  - Gnomish Mining Machine: +10% ore production
+  - Horn of Plenty: +1% platinum/lumber/ore/food/mana/gem production
+- Threads with new posts will be displayed in bold on the first page load
+- Added additional data to incoming land/building display in advisors/ops
+
+### Changed
+- Maximum pack size changed to 4 (from 5)
+- Maximum packed players per realm changed to 6 (from 7)
+- Cooldown before redeclaring war on same realm increased to 48 hours (from 24)
+- Prestige gain is no longer reduced due to recent invasions
+- NPD defense above 525 acres reduced slightly
 - Wonder power on respawn is now rounded to the nearest 10,000
+- Rebuilding neutral wonders now provide 25 prestige for the entire realm
+- Destroying a wonder when you already have one only awards 25 prestige
+- Neutral wonders will now have an HP cap of daysInRound*25000 (min 175k, max 500k)
+- Most Wonders Destroyed title removed
+- Max wonders available changed to: Realms * 0.4 (from 0.5)
+- Cyclone damage now capped at 2% of a wonders max HP (from 1.5%)
+- Base cyclone damage changed to 3.5x max(wizards,Acres) (from 5x)
+- Wonder invasion casualties reduced to to 3.5% casualties (from 5%)
+- Energy Mirror: mana cost increased to 4.5x (from 4x), reflection chance increased to 30% (from 20%)
+- Vision: mana cost decreased to 0.5x (from 1x)
+- Goblin: +5 population from barren acres removed, +10 gem production bonus removed, castle improvement bonus changed to +20% for gems only (from +10% for all)
+- Kobold: +5 pop on barren acres removed, population growth bonus reduced to +10% (from +20%)
+- Human Cavalry: +25p
+- Human Knight: +25p
+- Icekin: +5% platinum production, AM cost reduction reduced to -100p (from -175p)
+- Lizardfolk Chameleon: +25p
+- Lizardfolk Lizardman: -50p
+- Lycanthrope: maximum population increased to +7.5% (from +5%)
+- Nox Nightshade: -40r, +1 DP, DP increased by 1 per 12% swamp max +3 (from 1 per 10% max +4)
+- Sylvan Centaur: -35r
+- Troll Basher: +1 OP, +150p, loses race-targeting bonuses
+- Troll Smasher: -25p, loses race-targeting bonuses
+- Wood Elf Druid: +25p
+- Wood Elf Longbowman: +30p
 
 ### Fixed
 - Wonder prestige gains and damage are now rounded to the nearest integer
@@ -1026,7 +1255,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/WaveHack/OpenDominion/compare/1.0.10...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...HEAD
+[1.2.5]: https://github.com/OpenDominion/OpenDominion/compare/1.2.4...1.2.5
+[1.2.4]: https://github.com/OpenDominion/OpenDominion/compare/1.2.3...1.2.4
+[1.2.3]: https://github.com/OpenDominion/OpenDominion/compare/1.2.2...1.2.3
+[1.2.2]: https://github.com/OpenDominion/OpenDominion/compare/1.2.1...1.2.2
+[1.2.1]: https://github.com/OpenDominion/OpenDominion/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/OpenDominion/OpenDominion/compare/1.1.8...1.2.0
+[1.1.8]: https://github.com/OpenDominion/OpenDominion/compare/1.1.7...1.1.8
+[1.1.7]: https://github.com/OpenDominion/OpenDominion/compare/1.1.6...1.1.7
+[1.1.6]: https://github.com/OpenDominion/OpenDominion/compare/1.1.5...1.1.6
+[1.1.5]: https://github.com/OpenDominion/OpenDominion/compare/1.1.4...1.1.5
+[1.1.4]: https://github.com/OpenDominion/OpenDominion/compare/1.1.3...1.1.4
+[1.1.3]: https://github.com/OpenDominion/OpenDominion/compare/1.1.2...1.1.3
+[1.1.2]: https://github.com/OpenDominion/OpenDominion/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/OpenDominion/OpenDominion/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/OpenDominion/OpenDominion/compare/1.0.10...1.1.0
 [1.0.10]: https://github.com/OpenDominion/OpenDominion/compare/1.0.9...1.0.10
 [1.0.9]: https://github.com/OpenDominion/OpenDominion/compare/1.0.8...1.0.9
 [1.0.8]: https://github.com/OpenDominion/OpenDominion/compare/1.0.7...1.0.8

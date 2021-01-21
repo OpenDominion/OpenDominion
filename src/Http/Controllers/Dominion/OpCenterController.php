@@ -3,12 +3,14 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Helpers\BuildingHelper;
 use OpenDominion\Helpers\ImprovementHelper;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Helpers\MiscHelper;
+use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Helpers\TechHelper;
 use OpenDominion\Helpers\UnitHelper;
@@ -74,12 +76,16 @@ class OpCenterController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
         }
 
+        if ($selectedDominion->id == $dominion->id) {
+            return redirect()->route('dominion.status');
+        }
+
         if ($selectedDominion->round_id != $dominion->round_id) {
             return redirect()->route('dominion.op-center');
         }
 
         if ($dominion->realm_id == $selectedDominion->realm_id) {
-            return redirect()->route('dominion.realm.advisors.production', $dominion);
+            return redirect()->route('dominion.realm.advisors.op-center', $dominion);
         }
 
         $latestInfoOps = $this->getSelectedDominion()->realm->infoOps()
@@ -88,7 +94,7 @@ class OpCenterController extends AbstractDominionController
             ->where('latest', '=', true)
             ->get();
 
-        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 5);
+        $latestInvasionEvents = $this->gameEventService->getLatestInvasionEventsForDominion($dominion, 10);
 
         return view('pages.dominion.op-center.show', [
             'buildingHelper' => app(BuildingHelper::class),
@@ -97,6 +103,8 @@ class OpCenterController extends AbstractDominionController
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
             'miscHelper' => app(MiscHelper::class),
+            'opsCalculator' => app(OpsCalculator::class),
+            'raceHelper' => app(RaceHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
@@ -114,6 +122,10 @@ class OpCenterController extends AbstractDominionController
 
         if ($selectedDominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the op center.']);
+        }
+
+        if ($selectedDominion->id == $dominion->id) {
+            return redirect()->route('dominion.status');
         }
 
         if ($selectedDominion->round_id != $dominion->round_id) {
@@ -141,6 +153,7 @@ class OpCenterController extends AbstractDominionController
             'infoOpService' => app(InfoOpService::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
+            'opsCalculator' => app(OpsCalculator::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),

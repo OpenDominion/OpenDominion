@@ -21,7 +21,12 @@ use OpenDominion\Services\Realm\HistoryService;
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion[] $infoOpTargetDominions
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\InfoOp[] $infoOps
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Pack[] $packs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\RealmWar[] $warsIncoming
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\RealmWar[] $warsOutgoing
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\RoundWonder[] $roundWonders
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Wonder[] $wonders
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Realm\History[] $history
+ * @property-read \OpenDominion\Models\Dominion $monarch
  * @property-read \OpenDominion\Models\Round $round
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Realm newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Realm newQuery()
@@ -89,19 +94,19 @@ class Realm extends AbstractModel
         return $this->belongsTo(Round::class);
     }
 
-    public function warRealm()
-    {
-        return $this->belongsTo(self::class, 'war_realm_id');
-    }
-
-    public function warRealms()
-    {
-        return $this->hasMany(self::class, 'war_realm_id');
-    }
-
     public function roundWonders()
     {
         return $this->hasMany(RoundWonder::class);
+    }
+
+    public function warsIncoming()
+    {
+        return $this->hasMany(RealmWar::class, 'target_realm_id');
+    }
+
+    public function warsOutgoing()
+    {
+        return $this->hasMany(RealmWar::class, 'source_realm_id');
     }
 
     public function wonders()
@@ -152,6 +157,12 @@ class Realm extends AbstractModel
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
+            $extraAttributes = ['monarch_dominion_id', 'war_id'];
+            foreach ($extraAttributes as $attr) {
+                if (isset($options[$attr])) {
+                    $deltaAttributes[$attr] = $options[$attr];
+                }
+            }
             /** @noinspection PhpUndefinedVariableInspection */
             $realmHistoryService->record($this, $deltaAttributes, $options['event']);
         }

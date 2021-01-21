@@ -35,6 +35,11 @@ class WonderCalculator
     protected const MIN_SPAWN_POWER = 150000;
 
     /**
+     * @var float Maximum power after a neutral wonder is respawned
+     */
+    protected const MAX_SPAWN_POWER = 500000;
+
+    /**
      * @var float Constraints for RP gain formula
      */
     protected const TECH_MAX_REWARD = 2500;
@@ -50,14 +55,15 @@ class WonderCalculator
     public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
         $day = $wonder->round->daysInRound() - 1;
-        if ($wonder->realm !== null) {
+
+        if ($wonder->realm_id !== null) {
             $maxPower = min(42500 * $day, 2 * $wonder->power);
             $damageContribution = $this->getDamageDealtByRealm($wonder, $realm) / $wonder->power;
             $newPower = floor($maxPower * $damageContribution);
-        } else {
-            $newPower = 25000 * $day;
+            return max(static::MIN_SPAWN_POWER, round($newPower, -4));
         }
-        return max(static::MIN_SPAWN_POWER, round($newPower, -4));
+
+        return min(static::MAX_SPAWN_POWER, 25000 * $day);
     }
 
     /**
@@ -69,6 +75,24 @@ class WonderCalculator
     public function getCurrentPower(RoundWonder $wonder): float
     {
         return max(0, $wonder->power - $this->getDamageDealt($wonder));
+    }
+
+    /**
+     * Returns the wonder's approximate power for out-of-realm display.
+     *
+     * @param RoundWonder $wonder
+     * @return float
+     */
+    public function getApproximatePower(RoundWonder $wonder): float
+    {
+        $power = $this->getCurrentPower($wonder);
+        $approximation = round($power, -4);
+
+        if ($power == $wonder->power || $approximation > $wonder->power) {
+            return $power;
+        }
+
+        return $approximation;
     }
 
     /**
@@ -102,13 +126,17 @@ class WonderCalculator
     *
     * @param RoundWonder $wonder
     * @param Dominion $dominion
+    * @param string $source
     * @return float
     */
-    public function getDamageDealtByDominion(RoundWonder $wonder, Dominion $dominion): float
+    public function getDamageDealtByDominion(RoundWonder $wonder, Dominion $dominion, string $source = null): float
     {
-        return $wonder->damage()
-            ->where('dominion_id', $dominion->id)
-            ->sum('damage');
+        $wonderDamage = $wonder->damage()->where('dominion_id', $dominion->id);
+        if ($source !== null) {
+            return $wonderDamage->where('source', $source)->sum('damage');
+        }
+
+        return $wonderDamage->sum('damage');
     }
 
     /**
@@ -120,10 +148,30 @@ class WonderCalculator
     */
     public function getPrestigeGainForDominion(RoundWonder $wonder, Dominion $dominion): float
     {
+        if ($wonder->realm == null && !$dominion->realm->wonders->isEmpty()) {
+            // Wonder is neutral, realm already has a wonder
+            return 0;
+        }
+
         $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
         $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion);
-        $damageContribution = $damageByDominion / $damageByRealm;
+        $attackDamageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'attack');
 
+        if ($wonder->realm == null && !$dominion->realm->wonders->isEmpty()) {
+            // Wonder is neutral and realm already has a wonder
+            $damageContribution = $damageByDominion / $damageByRealm;
+            if ($damageContribution >= static::PRESTIGE_CONTRIBUTION_MIN) {
+                return -25;
+            }
+            return 0;
+        }
+
+        if ($wonder->realm == null || $wonder->realm_id == null) {
+            // Wonder is neutral or not being rebuilt
+            return 0;
+        }
+
+        $damageContribution = $attackDamageByDominion / $damageByRealm;
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {
             return 0;
         }

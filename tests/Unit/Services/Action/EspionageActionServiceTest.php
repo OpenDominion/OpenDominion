@@ -35,10 +35,12 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
 
         $this->dominion = $this->createDominion($user, $this->round, Race::where('name', 'Halfling')->firstOrFail());
         $this->dominion->protection_ticks_remaining = 0;
+        $this->dominion->land_plain = 10000;
 
         $targetUser = $this->createUser();
         $this->target = $this->createDominion($targetUser, $this->round, Race::where('name', 'Nomad')->firstOrFail());
         $this->target->protection_ticks_remaining = 0;
+        $this->target->land_plain = 10000;
 
         $this->espionageActionService = $this->app->make(EspionageActionService::class);
 
@@ -49,52 +51,52 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
     public function testPerformOperation_SameSpa_LoseQuarterPercent()
     {
         // Arrange
-        $this->dominion->military_spies = 10000;
-        $this->target->military_spies = 10000;
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 5000;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(9975, $this->dominion->military_spies);
+        $this->assertEquals(4988, $this->dominion->military_spies);
     }
 
     public function testPerformOperation_MuchLowerSpa_LoseMaxOnePercent()
     {
         // Arrange
-        $this->dominion->military_spies = 10000;
-        $this->target->military_spies = 10000000;
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 50000;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(9900, $this->dominion->military_spies);
+        $this->assertEquals(4950, $this->dominion->military_spies);
     }
 
     public function testPerformOperation_MuchHigherSpa_LoseQuarterPercent()
     {
         // Arrange
-        $this->dominion->military_spies = 10000;
-        $this->target->military_spies = 100;
+        $this->dominion->military_spies = 5000;
+        $this->target->military_spies = 500;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(9975, $this->dominion->military_spies);
+        $this->assertEquals(4988, $this->dominion->military_spies);
     }
 
     public function testPerformOperation_SameSpa_LoseMilitary()
     {
         // Arrange
-        $this->dominion->military_unit3 = 50000;
-        $this->target->military_spies = 10000;
+        $this->dominion->military_unit3 = 25000;
+        $this->target->military_spies = 5000;
 
         // Act
         $this->espionageActionService->performOperation($this->dominion, 'barracks_spy', $this->target);
 
         // Assert
-        $this->assertEquals(49988, $this->dominion->military_unit3);
+        $this->assertEquals(24994, $this->dominion->military_unit3);
     }
 }

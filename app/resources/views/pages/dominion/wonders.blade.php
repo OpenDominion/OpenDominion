@@ -40,7 +40,11 @@
                                     </td>
                                     <td>
                                         @if ($wonder->realm)
-                                            {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
+                                            @if ($wonder->realm_id == $selectedDominion->realm_id)
+                                                {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
+                                            @else
+                                                ~{{ number_format($wonderCalculator->getApproximatePower($wonder)) }}
+                                            @endif
                                         @else
                                             ???
                                         @endif
@@ -86,7 +90,7 @@
                                     <select name="target_wonder" id="target_wonder" class="form-control select2" required style="width: 100%" data-placeholder="Select a target wonder" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
                                         <option></option>
                                         @foreach ($wonders as $wonder)
-                                            @if ($wonder->realm == null || $governmentService->isAtWarWithRealm($selectedDominion->realm, $wonder->realm))
+                                            @if ($wonder->realm == null || $governmentService->isWarEscalated($selectedDominion->realm, $wonder->realm))
                                                 <option value="{{ $wonder->id }}" data-war="{{ $wonder->realm !== null ? 1 : 0 }}">
                                                     {{ $wonder->wonder->name }}
                                                     @if ($wonder->realm !== null)
@@ -328,7 +332,7 @@
                 <div class="box-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
                     <p>The first wave of wonders will appear on the 6th day of the round with a starting power of 150,000. An additional wonder will appear every 48 hours with a starting power of 250,000. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
-                    <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>5% casualties</b> (including immortal units). Each dominion that participates in destroying a wonder that is controlled by another realm is awarded prestige.</p>
+                    <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>3.5% casualties</b> (including immortal units). Each dominion that attacks a wonder controlled by another realm is awarded prestige if they destroy and rebuild it in their realm.</p>
                     @if ($selectedDominion->morale < 100)
                         <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
                     @else

@@ -13,6 +13,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
 class MagicController extends AbstractDominionController
@@ -20,6 +21,7 @@ class MagicController extends AbstractDominionController
     public function getMagic()
     {
         return view('pages.dominion.magic', [
+            'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'protectionService' => app(ProtectionService::class),

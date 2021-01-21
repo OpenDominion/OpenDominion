@@ -5,15 +5,61 @@
 @section('content')
     @php($unlockedTechs = $selectedDominion->techs->pluck('key')->all())
 
-    <div class="row">
+    <form action="{{ route('dominion.techs') }}" method="post" role="form">
+    @csrf
+        <div class="row">
 
-        <div class="col-sm-12 col-md-9">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+            <div class="col-sm-12 col-md-9">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                    </div>
+                    <div class="box-body no-padding">
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('partials.dominion.tech-tree')
+                            </div>
+                            <div class="col-md-6">
+                                @include('partials.dominion.info.techs-combined', ['data' => $selectedDominion->techs->pluck('name', 'key')])
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary" {{ ($techCalculator->getTechCost($selectedDominion) > $selectedDominion->resource_tech || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
+                    </div>
                 </div>
-                <form action="{{ route('dominion.techs') }}" method="post" role="form">
-                    @csrf
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Information</h3>
+                    </div>
+                    <div class="box-body">
+                        @php($techProgress = min(100, $selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100))
+                        <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement is {{ number_format($techCalculator->getTechCost($selectedDominion)) }}. Most advancements require unlocking another before you can select them.</p>
+                        <p><a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, $unlockedTechs)) }}">View as Interactive Tree</a> in the Scribes.</p>
+                        <p>If you pick a tech that has the same bonus as another tech, you will receive the total bonus from both.</p>
+                        <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> out of the {{ number_format($techCalculator->getTechCost($selectedDominion)) }} required to unlock a new tech.</p>
+                        <div class="progress" style="margin-bottom: 0px;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: {{ number_format($techProgress) }}%">
+                                @if ($techProgress > 5)
+                                    {{ number_format($techProgress, 2) }}%
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+        <div class="row">
+
+            <div class="col-sm-12 col-md-9">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-flask"></i> Technological Advances</h3>
+                    </div>
                     <div class="box-body table-responsive no-padding">
                         <table class="table">
                             <colgroup>
@@ -27,26 +73,26 @@
                                     <th>&nbsp;</th>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    <th>Requires</th>
+                                    <th>Requires one of</th>
                                 </tr>
                             </thead>
                             @foreach ($techs as $tech)
-                                <tr class="{{ in_array($tech->key, $unlockedTechs) ? 'text-green' : 'text-default' }}">
+                                <tr class="{{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? 'text-default' : 'text-muted' }}{{ in_array($tech->key, $unlockedTechs) ? ' text-green' : null }} {{ empty($tech->prerequisites) && !in_array($tech->key, $unlockedTechs) ? 'active' : null }}">
                                     <td class="text-center">
                                         @if(in_array($tech->key, $unlockedTechs))
                                             <i class="fa fa-check"></i>
                                         @else
-                                            <input type="radio" name="key" id="tech_{{ $tech->key }}" value="{{ $tech->key }}" {{ count(array_diff($tech->prerequisites, $unlockedTechs)) != 0 ? 'disabled' : null }}>
+                                            <input type="radio" name="key" id="tech_{{ $tech->key }}" value="{{ $tech->key }}" {{ $techCalculator->hasPrerequisites($selectedDominion, $tech) ? null : 'disabled' }}>
                                         @endif
                                     </td>
-                                    <td class="{{ count(array_diff($tech->prerequisites, $unlockedTechs)) != 0 ? 'text-muted' : 'text-default' }}">
+                                    <td>
                                         <label for="tech_{{ $tech->key }}" style="font-weight: normal;">
                                             {{ $tech->name }}
                                         </label>
                                     </td>
                                     <td>
                                         <label for="tech_{{ $tech->key }}" style="font-weight: normal;">
-                                            {{ $techHelper->getTechDescription($tech) }}
+                                            {!! $techHelper->getTechDescription($tech, '<br/>') !!}
                                         </label>
                                     </td>
                                     <td>
@@ -65,24 +111,141 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary" {{ ($techCalculator->getTechCost($selectedDominion) > $selectedDominion->resource_tech || $selectedDominion->isLocked()) ? 'disabled' : null }}>Unlock</button>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-3">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Information</h3>
-                </div>
-                <div class="box-body">
-                    <p>You can obtain technical advancements by reaching appropriate levels of research points. The cost of each advancement scales according to your highest land size or 50% of your total land conqured (whichever is higher) with a minimum of 3780 points. Some advancements require others before you can select them. Please consult the tech tree below.</p>
-                    <p>If you pick a tech that has the same bonus as another tech, only the highest technology bonus counts (they do not stack). For example, Military Genius adds +5% offense and Magical Weaponry provides +10% offense. If you obtain both, only the 10% bonus would apply.</p>
-                    <p>You have <b>{{ number_format($selectedDominion->resource_tech) }} research points</b> and currently need {{ number_format($techCalculator->getTechCost($selectedDominion)) }} to unlock a new tech.</p>
-                    <p>Your highest land achieved is <b>{{ number_format($selectedDominion->highest_land_achieved) }}</b> acres.</p>
-                    <p>Your conquered land total is <b>{{ number_format($selectedDominion->stat_total_land_conquered) }}</b> acres.</p>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
+    </form>
 @endsection
+
+@push('inline-styles')
+    <style type="text/css">
+        .edge {
+            stroke: lightgray;
+        }
+        .edge.active {
+            stroke: black;
+        }
+        .vertex {
+            fill: white;
+            stroke: gray;
+        }
+        .vertex.active {
+            stroke: black;
+        }
+        .vertex.selected {
+            fill: lightskyblue;
+            stroke: black;
+        }
+        .vertex:hover {
+            cursor: pointer;
+            fill: orangered;
+        }
+        .vertex.active:hover {
+            fill: lightgreen;
+            stroke: black;
+        }
+        .skin-classic .edge {
+            stroke: gray;
+        }
+        .skin-classic .edge.active {
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex {
+            fill: black;
+            stroke: gray;
+        }
+        .skin-classic .vertex.active {
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex.selected {
+            fill: #006C81;
+            stroke: #dddddd;
+        }
+        .skin-classic .vertex:hover {
+            cursor: pointer;
+            fill: #dd4b39;
+        }
+        .skin-classic .vertex.active:hover {
+            fill: #007D1C;
+            stroke: #dddddd;
+        }
+
+        .vertex.selection {
+            fill: lightgreen;
+        }
+        .skin-classic .vertex.selection {
+            fill: #006C81;
+        }
+    </style>
+@endpush
+
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var techPerkStrings = {!! json_encode($techHelper->getTechPerkStrings()) !!};
+
+            function updateTree() {
+                // Clear all edges
+                $('.edge').removeClass('active');
+                // Clear all vertices
+                $('.vertex').removeClass('active');
+
+                // Highlight starting vertices
+                $('.vertex.starting').addClass('active');
+
+                // Highlight all adjacent edges
+                $('.vertex.selected').each(function() {
+                    var id = $(this).attr('id');
+                    $('.'+id).addClass('active');
+                });
+
+                // Highlight all adjacent vertices
+                $('.edge.active').each(function() {
+                    // Highlight all adjacent vertices
+                    var classes = $(this).attr('class');
+                    $.each(classes.split(" "), function(idx, className) {
+                        if (className !== 'edge' && className !== 'active') {
+                            $('#'+className).addClass('active');
+                        }
+                    });
+                });
+            }
+
+            var unlockedTechs = {!! json_encode($unlockedTechs) !!};
+            unlockedTechs.forEach(function(value, index, array) {
+                $('#'+value).addClass('selected');
+            });
+            updateTree();
+
+            $('.vertex').click(function() {
+                if (!$(this).hasClass('active')) return;
+
+                var techId = $(this).attr('id');
+                if (unlockedTechs.indexOf(techId) !== -1) return;
+
+                if ($(this).hasClass('selection')) {
+                    $('#tech_'+techId).get(0).scrollIntoView();
+                    return;
+                }
+
+                // Reset newly selected node
+                $('.selection').removeClass('selected');
+                $('.selection').removeClass('selection');
+
+                // Set node as newly selected
+                $(this).addClass('selected');
+                $(this).addClass('selection');
+                $('#tech_'+techId).prop('checked', true);
+            });
+
+            window.SVGElement = null;
+            $('.vertex').tooltip({
+                'container': 'body',
+                'html': true,
+                'placement': 'bottom',
+            });
+        });
+    </script>
+@endpush

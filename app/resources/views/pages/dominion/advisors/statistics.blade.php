@@ -183,9 +183,9 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Spy Prestige:</td>
+                                        <td>Strength Recovery:</td>
                                         <td>
-                                            <strong>{{ $target->stat_spy_prestige }}</strong>
+                                            <strong>{{ number_format($militaryCalculator->getSpyStrengthRegen($target), 2) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>
@@ -356,9 +356,9 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Wizard Prestige:</td>
+                                        <td>Strength Recovery:</td>
                                         <td>
-                                            <strong>{{ $target->stat_wizard_prestige }}</strong>
+                                            <strong>{{ number_format($militaryCalculator->getWizardStrengthRegen($target), 2) }}</strong>
                                         </td>
                                     </tr>
                                     <tr>

@@ -21,5 +21,14 @@
                 <td>{{ $techDescription }}</td>
             </tr>
         @endforeach
+        @if (!empty($data))
+            <tr>
+                <td colspan=2>
+                    <a href="{{ route('scribes.techs') }}?{{ implode('&', array_map(function($key) { return str_replace('tech_', '', $key); }, array_keys($data))) }}" target="_blank">
+                        View as Interactive Tree
+                    </a>
+                </td>
+            </tr>
+        @endif
     </tbody>
 </table>

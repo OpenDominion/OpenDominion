@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-9">
             @component('partials.dominion.op-center.box')
-                @slot('title', ('Archived Ops (' . $dominion->name . ')'))
+                @slot('title', ('Archived Ops - ' . $dominion->name . ' (#' . $dominion->realm->number . ')'))
                 @slot('titleIconClass', 'fa fa-book')
 
                 <p>This page contains the data that your realmies have gathered about dominion <b>{{ $dominion->name }}</b> from realm <a href="{{ route('dominion.realm', [$dominion->realm->number]) }}">{{ $dominion->realm->name }} (#{{ $dominion->realm->number }})</a>.</p>
@@ -67,14 +67,8 @@
                         @endphp
 
                         @if ($recentlyInvadedCount > 0)
-                            <p class="text-center" style="margin-bottom: 0.5em;">
-                                @if ($recentlyInvadedCount >= 5)
-                                    This dominion has been invaded <strong><em>extremely heavily</em></strong> in recent times.
-                                @elseif ($recentlyInvadedCount >= 3)
-                                    This dominion has been invaded <strong>heavily</strong> in recent times.
-                                @else
-                                    This dominion has been invaded in recent times.
-                                @endif
+                            <p class="text-center" style="margin-bottom: 0.5em;" data-toggle="tooltip" title="Defensive casualties reduced by {{ 20 * $recentlyInvadedCount }}%.<br/>Prestige gains reduced by {{ 10 * $recentlyInvadedCount }}% (min 20).">
+                                This dominion has been invaded <strong>{{ $recentlyInvadedCount }}</strong> time(s) in the last 24 hours.
                             </p>
                         @endif
 
@@ -228,7 +222,7 @@
 
                                 @slot('noPadding', true)
                                 @slot('titleExtra')
-                                    <span class="pull-right">Barren Land: {{ number_format(array_get($infoOp->data, 'barren_land')) }}</span>
+                                    <span class="pull-right">Barren Land: <strong>{{ number_format(array_get($infoOp->data, 'barren_land')) }}</strong> <small>({{ number_format((array_get($infoOp->data, 'barren_land') / array_get($infoOp->data, 'total_land', 250)) * 100, 2) }}%)</small></span>
                                 @endslot
 
                                 @include('partials.dominion.info.construction-constructed-table', ['data' => $infoOp->data])
@@ -396,9 +390,17 @@
 
                         <div class="col-sm-12 col-md-6">
                             @component('partials.dominion.op-center.box')
-                                @slot('title', 'Heroes')
-                                @slot('titleIconClass', 'ra ra-knight-helmet')
-                                <p>Not yet implemented.</p>
+                                @slot('title', 'Tech Bonuses')
+                                @slot('titleIconClass', 'ra ra-fizzing-flask')
+
+                                @if ($infoOp === null)
+                                    <p>No recent data available.</p>
+                                    <p>Cast magic spell 'Vision' to reveal information.</p>
+                                @else
+                                    @slot('noPadding', true)
+
+                                    @include('partials.dominion.info.techs-combined', ['data' => $infoOp->data['techs']])
+                                @endif
                             @endcomponent
                         </div>
                     </div>

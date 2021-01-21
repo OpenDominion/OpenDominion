@@ -75,7 +75,7 @@ class ConstructionCalculator
         $multiplier *= (1 + $dominion->race->getPerkMultiplier('construction_cost'));
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_cost'));
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_cost') + $dominion->getTechPerkMultiplier('construction_platinum_cost'));
 
         // Wonders
         $multiplier *= (1 + $dominion->getWonderPerkMultiplier('construction_cost'));
@@ -147,7 +147,12 @@ class ConstructionCalculator
      */
     public function getLumberCostMultiplier(Dominion $dominion): float
     {
-        return $this->getCostMultiplier($dominion);
+        $multiplier = $this->getCostMultiplier($dominion);
+
+        // Techs
+        $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_lumber_cost'));
+
+        return $multiplier;
     }
 
     /**

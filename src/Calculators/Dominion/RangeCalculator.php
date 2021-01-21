@@ -32,7 +32,8 @@ class RangeCalculator
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator,
         ProtectionService $protectionService
-    ) {
+    )
+    {
         $this->guardMembershipService = $guardMembershipService;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;
@@ -176,7 +177,7 @@ class RangeCalculator
 
         // todo: this doesn't belong here since it touches the db. Move to RangeService?
         return $self->round->activeDominions()
-            ->with(['race', 'realm', 'round'])
+            ->with(['race', 'realm', 'realm.warsOutgoing', 'round'])
             ->get()
             ->filter(function ($dominion) use ($self, $recentlyInvadedByDominionIds) {
                 return (

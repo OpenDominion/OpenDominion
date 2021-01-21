@@ -141,6 +141,40 @@ if (!function_exists('random_distribution')) {
     }
 }
 
+if (!function_exists('error_function')) {
+    /**
+     * Gaussian error function
+     *
+     * https://github.com/tdebatty/php-stats/blob/master/src/webd/stats/Erf.php
+     *
+     * @param float $x
+     * @return float
+     * @throws Exception
+     */
+    function error_function(float $x): float
+    {
+        $t =1 / (1 + 0.5 * abs($x));
+        $tau = $t * exp(
+            - $x * $x
+            - 1.26551223
+            + 1.00002368 * $t
+            + 0.37409196 * $t * $t
+            + 0.09678418 * $t * $t * $t
+            - 0.18628806 * $t * $t * $t * $t
+            + 0.27886807 * $t * $t * $t * $t * $t
+            - 1.13520398 * $t * $t * $t * $t * $t * $t
+            + 1.48851587 * $t * $t * $t * $t * $t * $t * $t
+            - 0.82215223 * $t * $t * $t * $t * $t * $t * $t * $t
+            + 0.17087277 * $t * $t * $t * $t * $t * $t * $t * $t * $t
+        );
+        if ($x >= 0) {
+            return 1 - $tau;
+        } else {
+            return $tau - 1;
+        }
+    }
+}
+
 if (!function_exists('number_string')) {
     /**
      * Generates a string from a number with number_format, and optionally an
@@ -159,5 +193,25 @@ if (!function_exists('number_string')) {
         }
 
         return $string;
+    }
+}
+
+if (!function_exists('format_percentage')) {
+    /**
+     * Format a non-zero value with a sibling containing the percentage of total.
+     *
+     * @param int|float $number
+     * @param int|float $total
+     * @return string
+     */
+    function format_percentage($number, $total = 0) {
+        if ($number > 0 && $total > 0 && $number != $total) {
+            return sprintf(
+                '%s <small class="text-muted">(%s%%)</small>',
+                number_format($number),
+                number_format($number / $total * 100, 2)
+            );
+        }
+        return number_format($number);
     }
 }

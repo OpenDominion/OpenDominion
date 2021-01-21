@@ -58,7 +58,7 @@ class InvadeActionService
     /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 20;
+    protected const PRESTIGE_CHANGE_ADD = 22.5;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -151,7 +151,8 @@ class InvadeActionService
         QueueService $queueService,
         RangeCalculator $rangeCalculator,
         SpellCalculator $spellCalculator
-    ) {
+    )
+    {
         $this->buildingCalculator = $buildingCalculator;
         $this->casualtiesCalculator = $casualtiesCalculator;
         $this->governmentService = $governmentService;
@@ -259,10 +260,10 @@ class InvadeActionService
 
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
+            $this->handleResearchPoints($dominion, $target, $survivingUnits);
 
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
-            $this->handleResearchPoints($dominion, $survivingUnits);
 
             $this->invasionResult['attacker']['unitsSent'] = $units;
 
@@ -308,8 +309,8 @@ class InvadeActionService
                 ]);
             }
 
-            $target->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
             $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
+            $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
         });
 
         $this->notificationService->sendNotifications($target, 'irregular_dominion');
@@ -380,15 +381,23 @@ class InvadeActionService
             ) + static::PRESTIGE_CHANGE_ADD;
             $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
 
+            // Racial Bonus
+            $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
+
+            // Techs
+            $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
+
             // War Bonus
-            if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
-                $multiplier += 0.20;
-            } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
-                $multiplier += 0.15;
+            if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
+                $multiplier += 0.2;
+            } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+                $multiplier += 0.1;
             }
 
-            // Wonders (does not stack with war bonus)
-            $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+            // Wonders - does not stack with other bonuses
+            if ($dominion->getWonderPerkValue('prestige_gains') != 0) {
+                $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
+            }
 
             $attackerPrestigeChange *= $multiplier;
         }
@@ -402,16 +411,12 @@ class InvadeActionService
         if ($attackerPrestigeChange > 0) {
             $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
-            if ($recentlyInvadedCount === 1) {
-                $attackerPrestigeChange *= 0.8;
-            } elseif ($recentlyInvadedCount === 2) {
-                $attackerPrestigeChange *= 0.6;
-            } elseif ($recentlyInvadedCount === 3) {
-                $attackerPrestigeChange *= 0.4;
-            } elseif ($recentlyInvadedCount === 4) {
-                $attackerPrestigeChange *= 0.2;
-            } elseif ($recentlyInvadedCount >= 5) {
-                $attackerPrestigeChange = 0;
+            if ($recentlyInvadedCount > 0) {
+                $attackerPrestigeChange *= (1 - (0.1 * $recentlyInvadedCount));
+            }
+
+            if ($attackerPrestigeChange < 20) {
+                $attackerPrestigeChange = 20;
             }
         }
 
@@ -677,10 +682,10 @@ class InvadeActionService
         $bonusLandRatio = 1.6667;
 
         // War Bonus
-        if ($this->governmentService->isAtMutualWarWithRealm($dominion->realm, $target->realm)) {
+        if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
             $landGrabRatio = 1.2;
-        } elseif ($this->governmentService->isAtWarWithRealm($dominion->realm, $target->realm)) {
-            $landGrabRatio = 1.15;
+        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+            $landGrabRatio = 1.1;
         }
 
         $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
@@ -845,7 +850,8 @@ class InvadeActionService
             !$isInvasionSuccessful ||
             ($totalDefensiveCasualties === 0) ||
             !in_array($dominion->race->name, ['Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
-        ) {
+        )
+        {
             return $convertedUnits;
         }
 
@@ -863,7 +869,8 @@ class InvadeActionService
             $landRatio,
             $units,
             $dominion
-        ) {
+        )
+        {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
                 return false;
             }
@@ -935,29 +942,35 @@ class InvadeActionService
     /**
      * Handles research point generation for attacker.
      *
-     * Original formula:
-     * (Conquered acres) * max([(Days into the round)/2], 15)
-     * - Past day 30 of the round, RP gains by attacking goes up and peaks at 25 on day 50
+     * Past day 30 of the round, RP gains by attacking goes up from 1000 and peaks at 1667 on day 50
      *
      * @param Dominion $dominion
      * @param array $units
      */
-    protected function handleResearchPoints(Dominion $dominion, array $units): void
+    protected function handleResearchPoints(Dominion $dominion, Dominion $target, array $units): void
     {
         // Repeat Invasions award no research points
         if ($this->invasionResult['attacker']['repeatInvasion']) {
             return;
         }
 
-        $researchPointsPerAcre = max(15, $dominion->round->daysInRound() / 2);
-
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $landConquered = array_sum($this->invasionResult['attacker']['landConquered']);
-            $landGenerated = array_sum($this->invasionResult['attacker']['landGenerated']);
+            $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
-            $researchPointsGained = ($landConquered + $landGenerated) * $researchPointsPerAcre;
-            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
+            $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+            if ($range < 60) {
+                $researchPointsGained = 0;
+            } elseif ($range < 75) {
+                $researchPointsGained *= 0.5;
+            } else {
+                $schoolPercentageCap = 20;
+                $schoolPercentage = min(
+                    $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
+                    $schoolPercentageCap / 100
+                );
+                $researchPointsGained += (130 * $schoolPercentage * 100);
+            }
 
             // Racial Bonus
             $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
@@ -965,14 +978,24 @@ class InvadeActionService
             // Wonders
             $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
 
-            $this->queueService->queueResources(
-                'invasion',
-                $dominion,
-                ['resource_tech' => $researchPointsGained],
-                $slowestTroopsReturnHours
-            );
+            // Recent invasion penalty
+            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
+            $researchPointsGained *= (1 - max(0, ($recentlyInvadedCount - 2) * 0.2));
 
-            $this->invasionResult['attacker']['researchPoints'] = $researchPointsGained;
+            // never negative
+            $researchPointsGained = max(0, $researchPointsGained);
+
+            if($researchPointsGained > 0) {
+                $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
+                $this->queueService->queueResources(
+                    'invasion',
+                    $dominion,
+                    ['resource_tech' => round($researchPointsGained)],
+                    $slowestTroopsReturnHours
+                );
+            }
+
+            $this->invasionResult['attacker']['researchPoints'] = round($researchPointsGained);
         }
     }
 
@@ -985,8 +1008,7 @@ class InvadeActionService
      */
     protected function handleAfterInvasionUnitPerks(Dominion $dominion, Dominion $target, array $units): void
     {
-        // todo: just hobgoblin plunder atm, need a refactor later to take into
-        //       account more post-combat unit-perk-related stuff
+        // todo: need a refactor later to take into account more post-combat unit-perk-related stuff
 
         if (!$this->invasionResult['result']['success']) {
             return; // nothing to plunder on unsuccessful invasions
@@ -1004,7 +1026,7 @@ class InvadeActionService
             }
             $unitsSentPerSlot[$slot] = $units[$slot];
 
-            if ($unit->getPerkValue('plunders_resources_on_attack') !== 0) {
+            if ($unit->getPerkValue('plunders_resources_on_attack') != 0) {
                 $unitsSentPlunderSlot = $slot;
             }
         }
@@ -1014,9 +1036,9 @@ class InvadeActionService
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
             $totalUnitsSent = array_sum($unitsSentPerSlot);
-            $hobbosToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
-            $plunderPlatinum = min($hobbosToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
-            $plunderGems = min($hobbosToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
+            $unitsToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
+            $plunderPlatinum = min($unitsToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
+            $plunderGems = min($unitsToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
@@ -1091,7 +1113,7 @@ class InvadeActionService
 
             $unitsTotal += (int)$units[$unit->slot];
 
-            if ($unit->getPerkValue('sink_boats_offense') !== 0) {
+            if ($unit->getPerkValue('sink_boats_offense') != 0) {
                 $unitsThatSinkBoats += (int)$units[$unit->slot];
             }
 
@@ -1126,7 +1148,7 @@ class InvadeActionService
         // Defender sinking perk
         foreach ($target->race->units as $unit) {
             $defendingUnitsTotal += $target->{"military_unit{$unit->slot}"};
-            if ($unit->getPerkValue('sink_boats_defense') !== 0) {
+            if ($unit->getPerkValue('sink_boats_defense') != 0) {
                 $defendingUnitsThatSinkBoats += $target->{"military_unit{$unit->slot}"};
             }
         }
@@ -1136,7 +1158,7 @@ class InvadeActionService
 
         // Queue returning boats
         foreach ($unitsThatNeedsBoatsByReturnHours as $hours => $amountUnits) {
-            $boatsByReturnHourGroup = (int)floor($amountUnits / $dominion->race->getBoatCapacity());
+            $boatsByReturnHourGroup = (int)floor($amountUnits / $this->militaryCalculator->getBoatCapacity($dominion));
 
             $dominion->resource_boats -= $boatsByReturnHourGroup;
 

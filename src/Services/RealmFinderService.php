@@ -17,7 +17,7 @@ class RealmFinderService
     /**
      * @var int Maximum number of players allowed in packs in a single realm
      */
-    protected const MAX_PACKED_PLAYERS_PER_REALM = 7;
+    protected const MAX_PACKED_PLAYERS_PER_REALM = 6;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.

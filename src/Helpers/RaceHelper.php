@@ -51,6 +51,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'castle bonuses';
                 break;
+            case 'invest_bonus_gems':
+                $negativeBenefit = false;
+                $description = 'gem investment';
+                break;
             case 'invest_bonus_ore':
                 $negativeBenefit = false;
                 $description = 'ore investment';
@@ -81,7 +85,11 @@ class RaceHelper
                 break;
             case 'population_growth':
                 $negativeBenefit = false;
-                $description = 'Population growth';
+                $description = 'population growth';
+                break;
+            case 'prestige_gains':
+                $negativeBenefit = false;
+                $description = 'prestige gains';
                 break;
             case 'rezone_cost':
                 $negativeBenefit = true;
@@ -167,6 +175,10 @@ class RaceHelper
                 $negativeBenefit = false;
                 $description = 'Castle bonuses';
                 break;
+            case 'invest_bonus_gems':
+                $negativeBenefit = false;
+                $description = 'Gem investment';
+                break;
             case 'invest_bonus_ore':
                 $negativeBenefit = false;
                 $description = 'Ore investment';
@@ -198,6 +210,10 @@ class RaceHelper
             case 'population_growth':
                 $negativeBenefit = false;
                 $description = 'Population growth';
+                break;
+            case 'prestige_gains':
+                $negativeBenefit = false;
+                $description = 'Prestige gains';
                 break;
             case 'rezone_cost':
                 $negativeBenefit = true;

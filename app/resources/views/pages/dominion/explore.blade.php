@@ -1,5 +1,9 @@
 @extends('layouts.master')
 
+@php
+    $advisorData = $infoMapper->mapLand($selectedDominion);
+@endphp
+
 @section('page-header', 'Explore')
 
 @section('content')
@@ -67,13 +71,35 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
+                    <a href="{{ route('dominion.explore') }}#advisor" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
                     <p>Exploration will net you additional acres of barren land to construct buildings upon and will take <b>12 hours</b> to process.</p>
                     <p>Exploration per acre of barren land will come at a cost of {{ number_format($explorationCalculator->getPlatinumCost($selectedDominion)) }} platinum and {{ number_format($explorationCalculator->getDrafteeCost($selectedDominion)) }} {{ str_plural('draftee', $explorationCalculator->getDrafteeCost($selectedDominion)) }}.</p>
                     <p>You have {{ number_format($selectedDominion->resource_platinum) }} platinum and {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }}.</p>
                     <p>You can afford to explore for <b>{{ number_format($explorationCalculator->getMaxAfford($selectedDominion)) }} {{ str_plural('acre', $explorationCalculator->getMaxAfford($selectedDominion)) }} of barren land</b> at that rate.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6" id="advisor">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="ra ra-honeycomb"></i> Land Advisor</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    @include('partials.dominion.info.land-table', ['data' => $advisorData, 'race' => $selectedDominion->race])
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    @include('partials.dominion.info.land-incoming-table', ['data' => $advisorData, 'race' => $selectedDominion->race])
                 </div>
             </div>
         </div>

@@ -64,7 +64,7 @@
                                         }
                                     }
                                 @endphp
-                                <table class="table table-condensed">
+                                <table class="table table-condensed" style="margin-bottom: 0px;">
                                     <colgroup>
                                         <col>
                                         <col width="10%">
@@ -184,6 +184,19 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td colspan="2">
+                                                <div class="checkbox text-center" style="margin: 0px;">
+                                                    <label data-toggle="tooltip" data-placement="top" title="The unit counts entered into the Home/Away fields should be treated as 100% accurate.">
+                                                        <input type="checkbox" name="calc[accurate]" style="margin-top: 8px;" {{ ($targetDominion !== null && $targetDominion->realm_id == $selectedDominion->realm_id) ? 'checked' : null }}>
+                                                        Use exact unit counts
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     </thead>
                                 </table>
 
@@ -632,8 +645,8 @@
                             <div class="col-xs-3 text-left">
                                 <select name="calc[tech_offense]" class="form-control">
                                     <option value="0"></option>
-                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.military_genius")) ? 'selected' : null }}>Military Genius +5%</option>
-                                    <option value="10" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.magical_weaponry")) ? 'selected' : null }}>Magical Weaponry +10%</option>
+                                    <option value="2.5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_13_13")) ? 'selected' : null }}>Ares' Favor +2.5%</option>
+                                    <option value="5" {{ ($targetDominion !== null && $targetInfoOps->has('vision') && array_get($targetInfoOps['vision']->data, "techs.tech_11_9")) ? 'selected' : null }}>Avatar of Ares +5%</option>
                                 </select>
                             </div>
                             <div class="col-xs-3 text-right">

@@ -31,13 +31,26 @@
                         <div class="row" style="font-size: 48px;">
                             @foreach ($rankings as $ranking)
                                 <div class="col-xs-6 col-sm-3 col-md-2 col-xl-1">
-                                    <label class="btn-block text-center" for="{{ $ranking['title_icon'] }}" style="border: 1px solid #d2d6de; border-radius: 10px; padding-top: 10px;">
+                                    <label class="btn-block text-center" for="{{ $ranking['title_icon'] }}" style="border: 1px solid #d2d6de; border-radius: 10px; padding-top: 10px;" data-toggle="tooltip" title="{{ $ranking['name'] }}">
                                         <input type="radio" name="avatar" id="{{ $ranking['title_icon'] }}" style="height: 42px;" value="{{ $ranking['title_icon'] }}" {{ (isset($user->settings['boardavatar']) && $user->settings['boardavatar'] == $ranking['title_icon']) ? 'checked' : null }} {{ $previousRankings->contains($ranking['key']) ? null : 'disabled' }} />
                                         <i class="ra {{ $ranking['title_icon'] }} text-muted" style="{{ $previousRankings->contains($ranking['key']) ? null : 'opacity: 0.5' }}"></i>
                                     </label>
                                 </div>
                             @endforeach
                         </div>
+                        @if (!$achievements->isEmpty())
+                        <h4>Achievements</h4>
+                        <div class="row" style="font-size: 48px;">
+                            @foreach ($achievements as $achievement)
+                                <div class="col-xs-6 col-sm-3 col-md-2 col-xl-1">
+                                    <label class="btn-block text-center" for="{{ $achievement['icon'] }}" style="border: 1px solid #d2d6de; border-radius: 10px; padding-top: 10px;" data-toggle="tooltip" title="{{ $achievement['name'] }}<br/>{{ $achievement['description'] }}">
+                                        <input type="radio" name="avatar" id="{{ $achievement['icon'] }}" style="height: 42px;" value="{{ $achievement['icon'] }}" {{ (isset($user->settings['boardavatar']) && $user->settings['boardavatar'] == $achievement['icon']) ? 'checked' : null }} {{ $userAchievements->contains($achievement['id']) ? null : 'disabled' }} />
+                                        <i class="ra {{ $achievement['icon'] }} text-muted" style="{{ $userAchievements->contains($achievement['id']) ? null : 'opacity: 0.5' }}"></i>
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @endif
                     </div>
                     <div class="box-footer">
                         <button class="btn btn-primary" type="submit">Select Avatar</button>

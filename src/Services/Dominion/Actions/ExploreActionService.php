@@ -112,7 +112,7 @@ class ExploreActionService
         }
 
         // todo: refactor. see training action service. same with other action services
-        $moraleDrop = min($dominion->morale, $this->explorationCalculator->getMoraleDrop($totalLandToExplore));
+        $moraleDrop = min($dominion->morale, $this->explorationCalculator->getMoraleDrop($dominion, $totalLandToExplore));
         $platinumCost = ($this->explorationCalculator->getPlatinumCost($dominion) * $totalLandToExplore);
         $drafteeCost = ($this->explorationCalculator->getDrafteeCost($dominion) * $totalLandToExplore);
 
@@ -120,11 +120,15 @@ class ExploreActionService
             $this->queueService->queueResources('exploration', $dominion, $data);
 
             $dominion->stat_total_land_explored += $totalLandToExplore;
+            $dominion->stat_total_platinum_spent_exploration += $platinumCost;
             $dominion->fill([
                 'morale' => ($dominion->morale - $moraleDrop),
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'military_draftees' => ($dominion->military_draftees - $drafteeCost),
-            ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
+            ])->save([
+                'event' => HistoryService::EVENT_ACTION_EXPLORE,
+                'queue' => array_filter($data)
+            ]);
         });
 
         return [

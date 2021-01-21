@@ -147,7 +147,7 @@
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-wonder-damage']) }}">Most Wonder Damage</a><br>
                 </div>
                 <div class="col-sm-6 text-center">
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wonders-destroyed']) }}">Most Wonders Destroyed</a><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'realm-stat-wonders-destroyed']) }}">Most Wonders Destroyed</a><br>
                 </div>
             </div>
 
@@ -159,8 +159,8 @@
             <div class="row form-group">
                 <div class="col-sm-6 text-center">
                     <b>Spies</b><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spy-mastery']) }}">Most Masterful Spies</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-espionage-success']) }}">Most Successful Spies</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-spy-prestige']) }}">Most Prestigious Spies</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-spies-executed']) }}">Most Spies Executed</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-platinum-stolen']) }}">Top Platinum Thieves</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-total-food-stolen']) }}">Top Food Thieves</a><br>
@@ -176,8 +176,8 @@
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Wizards</b><br>
+                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wizard-mastery']) }}">Most Masterful Wizards</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-spell-success']) }}">Most Successful Wizards</a><br>
-                    <a href="{{ route('valhalla.round.type', [$round, 'stat-wizard-prestige']) }}">Most Prestigious Wizards</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-wizards-executed']) }}">Most Wizards Executed</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-fire']) }}">Masters of Fire</a><br>
                     <a href="{{ route('valhalla.round.type', [$round, 'stat-masters-of-plague']) }}">Masters of Plague</a><br>

@@ -20,12 +20,14 @@
                                 <col width="10%">
                                 <col width="10%">
                                 <col width="10%">
+                                <col width="10%">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th>Land type</th>
+                                    <th class="text-center">Owned</th>
                                     <th class="text-center">Barren</th>
-                                    <th class="text-center">Amount</th> {{-- wording change? --}}
+                                    <th class="text-center">Amount</th>
                                     <th class="text-center">Convert to</th>
                                     <th class="text-center">Amount</th>
                                 </tr>
@@ -38,6 +40,12 @@
                                             <br>
                                             <small class="text-muted"><i><span title="This is the land type where your {{ strtolower($selectedDominion->race->name) }} race constructs home buildings on">Home land type</span></i></small>
                                         @endif
+                                    </td>
+                                    <td class="text-center">
+                                        {{ number_format($selectedDominion->{'land_' . $landType}) }}
+                                        <small>
+                                            ({{ number_format((($selectedDominion->{'land_' . $landType} / $landCalculator->getTotalLand($selectedDominion)) * 100), 1) }}%)
+                                        </small>
                                     </td>
                                     <td class="text-center">{{ number_format($amount) }}</td>
                                     <td class="text-center">
@@ -68,7 +76,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
-                    <a href="{{ route('dominion.advisors.land') }}" class="pull-right">Land Advisor</a>
+                    <a href="{{ route('dominion.explore') }}#advisor" class="pull-right">Land Advisor</a>
                 </div>
                 <div class="box-body">
                     <p>Rezoning is the art of converting land of one type into another type. Rezoning land processes <b>instantly</b>.</p>

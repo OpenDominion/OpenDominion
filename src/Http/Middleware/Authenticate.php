@@ -38,7 +38,7 @@ class Authenticate
         }
 
         // Analytics
-        Analytics::setUserId(md5($user->email));
+        Analytics::setUserId(str_pad($user->id, 6, 0, STR_PAD_LEFT));
 
         return $next($request);
     }

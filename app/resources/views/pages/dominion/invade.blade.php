@@ -21,13 +21,13 @@
                         and may not invade during that time.
                     </div>
                 </div>
-            @elseif ($selectedDominion->morale < 70)
+            @elseif ($selectedDominion->morale < 80)
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="ra ra-crossed-swords"></i> Invade</h3>
                     </div>
                     <div class="box-body">
-                        Your military needs at least 70% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
+                        Your military needs at least 80% morale to invade others. Your military currently has {{ $selectedDominion->morale }}% morale.
                     </div>
                 </div>
             @else
@@ -47,8 +47,8 @@
                                         <option value="{{ $dominion->id }}"
                                                 data-race="{{ $dominion->race->name }}"
                                                 data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
-                                                data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}"
-                                                data-war="{{ $governmentService->isAtWarWithRealm($selectedDominion->realm, $dominion->realm) ? 1 : 0 }}">
+                                                data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}"
+                                                data-war="{{ ($governmentService->isWarEscalated($selectedDominion->realm, $dominion->realm) || $governmentService->isWarEscalated($dominion->realm, $selectedDominion->realm)) ? 1 : 0 }}">
                                             {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                         </option>
                                     @endforeach
@@ -305,7 +305,7 @@
                     <p>Here you can invade other players to try to capture some of their land and to gain prestige. Invasions are successful if you send more OP than they have DP.</p>
                     <p>Find targets using <a href="{{ route('dominion.magic') }}">magic</a>,  <a href="{{ route('dominion.espionage') }}">espionage</a> and the <a href="{{ route('dominion.op-center') }}">Op Center</a>. Communicate with your realmies using the <a href="{{ route('dominion.council') }}">council</a> to coordinate attacks.</p>
                     <p>Be sure to calculate your OP vs your target's DP to avoid blindly sending your units to their doom.</p>
-                    <p>You can only invade dominions that are within your range, and you will only gain prestige and discounted construction on targets <b>75% or greater</b> relative to your own land size.</p>
+                    <p>You can only invade dominions that are within your range, and you will only gain prestige, discounted construction, and research points on targets <b>75% or greater</b> relative to your own land size.</p>
                     @if ($selectedDominion->morale < 100)
                         <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
                     @else

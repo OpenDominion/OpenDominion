@@ -114,31 +114,11 @@ class CasualtiesCalculator
         }
 
         if ($multiplier !== 0) {
-            // Non-unit bonuses (hero, shrines, tech, wonders), capped at -80%
-            // Values (percentages)
-            $spellBloodrage = 10;
-            $spellRegeneration = 25;
-
-            $nonUnitBonusMultiplier = 0;
-
-            // todo: Heroes
-
-            // Shrines
-            $nonUnitBonusMultiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
-
-            // Spells
-            $nonUnitBonusMultiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'bloodrage', $spellBloodrage);
-            $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
-
-            // Techs
-            $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_offense');
+            // Non-unit bonuses
+            $nonUnitBonusMultiplier = $this->getOffensiveCasualtiesMultiplier($dominion);
 
             // Wonders
-            $nonUnitBonusMultiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_offense');
             $nonUnitBonusMultiplier -= $target->getWonderPerkMultiplier('enemy_casualties_offense');
-
-            // Cap at -80% (additive) and apply to multiplier
-            $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;
@@ -250,27 +230,11 @@ class CasualtiesCalculator
         }
 
         if ($multiplier !== 0) {
-            // Non-unit bonuses (hero, tech, wonders), capped at -80%
-
-            // Values (percentages)
-            $spellRegeneration = 25;
-
-            $nonUnitBonusMultiplier = 0;
-
-            // todo: Heroes
-
-            // Spells
-            $nonUnitBonusMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
-
-            // Techs
-            $nonUnitBonusMultiplier += $dominion->getTechPerkMultiplier('fewer_casualties_defense');
+            // Non-unit bonuses
+            $nonUnitBonusMultiplier = $this->getDefensiveCasualtiesMultiplier($dominion);
 
             // Wonders
-            $nonUnitBonusMultiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_defense');
             $nonUnitBonusMultiplier -= $attacker->getWonderPerkMultiplier('enemy_casualties_defense');
-
-            // Cap at -80% (additive) and apply to multiplier
-            $multiplier *= (1 - min(0.8, $nonUnitBonusMultiplier));
 
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;
@@ -300,6 +264,7 @@ class CasualtiesCalculator
             // We have a unit with RCL!
             if ($unitsAtHomeRCLSlot !== null) {
                 $totalUnitsAtHome = array_sum($unitsAtHomePerSlot);
+                $totalUnitsAtHome += $dominion->military_draftees;
 
                 if ($totalUnitsAtHome > 0) {
                     $reducedCombatLossesMultiplierAddition += (($unitsAtHomePerSlot[$unitsAtHomeRCLSlot] / $totalUnitsAtHome) / 2);
@@ -308,13 +273,68 @@ class CasualtiesCalculator
 
             $unitBonusMultiplier += $reducedCombatLossesMultiplierAddition;
 
-            // todo: Troll/Orc unit perks, possibly other perks elsewhere too
-
             // Apply to multiplier (multiplicative)
             $multiplier *= (1 - $unitBonusMultiplier);
         }
 
         return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's total offensive non-unit casualty reduction.
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOffensiveCasualtiesMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $spellBloodrage = 10;
+        $spellRegeneration = 25;
+
+        // Shrines
+        $multiplier += $this->getOffensiveCasualtiesReductionFromShrines($dominion);
+
+        // Spells
+        $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'bloodrage', $spellBloodrage);
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
+        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties_offense');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_offense');
+
+        // Cap at -80%
+        return (1 - min(0.8, $multiplier));
+    }
+
+    /**
+     * Returns the Dominion's total defensive non-unit casualty reduction.
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefensiveCasualtiesMultiplier(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $spellRegeneration = 25;
+
+        // Spells
+        $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'regeneration', $spellRegeneration);
+
+        // Techs
+        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties');
+        $multiplier += $dominion->getTechPerkMultiplier('fewer_casualties_defense');
+
+        // Wonders
+        $multiplier += $dominion->getWonderPerkMultiplier('fewer_casualties_defense');
+
+        // Cap at -80%
+        return (1 - min(0.8, $multiplier));
     }
 
     /**

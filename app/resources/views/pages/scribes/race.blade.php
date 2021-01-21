@@ -91,13 +91,6 @@
                         </thead>
                         <tbody>
                             @foreach ($race->units as $unit)
-                                @php
-                                    $unitCostString = (number_format($unit->cost_platinum) . 'p');
-
-                                    if ($unit->cost_ore > 0) {
-                                        $unitCostString .= (', ' . number_format($unit->cost_ore) . 'r');
-                                    }
-                                @endphp
                                 <tr>
                                     <td>
                                         {!! $unitHelper->getUnitTypeIconHtml("unit{$unit->slot}", $race) !!}
@@ -113,7 +106,7 @@
                                         {!! $unitHelper->getUnitHelpString("unit{$unit->slot}", $race) !!}
                                     </td>
                                     <td class="text-center">
-                                        {{ $unitCostString }}
+                                        {{ $unitHelper->getUnitCostString($unit) }}
                                     </td>
                                 </tr>
                             @endforeach

@@ -3,6 +3,7 @@
 namespace OpenDominion\Helpers;
 
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Unit;
 
 class UnitHelper
 {
@@ -35,6 +36,55 @@ class UnitHelper
         $unitSlot = (((int)str_replace('unit', '', $unitType)) - 1);
 
         return $race->units[$unitSlot]->name;
+    }
+
+    public function getUnitCostStringFromArray(array $unitCosts): string
+    {
+        $labelParts = [];
+
+        foreach ($unitCosts as $costType => $value) {
+            switch ($costType) {
+                case 'draftees':
+                    break;
+
+                case 'wizards':
+                    $labelParts[] = "{$value} wizard";
+                    break;
+
+                default:
+                    $labelParts[] = "{$value} {$costType}";
+                    break;
+            }
+        }
+
+        return implode(', ', $labelParts);
+    }
+
+    public function getUnitCostString(Unit $unit): string
+    {
+        $unitCosts = [];
+
+        if ($unit->cost_platinum) {
+            $unitCosts['platinum'] = $unit->cost_platinum;
+        }
+
+        if ($unit->cost_ore > 0) {
+            $unitCosts['ore'] = $unit->cost_ore;
+        }
+
+        if ($unit->cost_mana > 0) {
+            $unitCosts['mana'] = $unit->cost_mana;
+        }
+
+        if ($unit->cost_lumber > 0) {
+            $unitCosts['lumber'] = $unit->cost_lumber;
+        }
+
+        if ($unit->cost_gems > 0) {
+            $unitCosts['gems'] = $unit->cost_gems;
+        }
+
+        return $this->getUnitCostStringFromArray($unitCosts);
     }
 
     public function getUnitHelpString(string $unitType, Race $race, bool $withOpDp = false): ?string
@@ -115,7 +165,7 @@ class UnitHelper
 
             // Resource related
             'ore_production' => 'Each unit produces %s units of ore per hour.',
-            'plunders_resources_on_attack' => 'Plunders resources on attack.',
+            'plunders_resources_on_attack' => 'Plunders 1 hour of target\'s raw platinum/gem production on attack.',
             'sink_boats_defense' => 'Sinks boats when defending.',
             'sink_boats_offense' => 'Sinks boats when attacking.',
 
@@ -262,7 +312,7 @@ class UnitHelper
     {
         switch ($unitType) {
             case 'draftees':
-                $iconClass = 'fa fa-user';
+                $iconClass = 'ra ra-player';
                 $colorClass = 'text-green';
                 break;
 

@@ -83,8 +83,8 @@ class ValhallaController extends AbstractController
             case 'stat-defending-success': $data = $this->getDominionsByStatistic($round, 'stat_defending_success'); break;
             case 'stat-espionage-success': $data = $this->getDominionsByStatistic($round, 'stat_espionage_success'); break;
             case 'stat-spell-success': $data = $this->getDominionsByStatistic($round, 'stat_spell_success'); break;
-            case 'stat-spy-prestige': $data = $this->getDominionsByStatistic($round, 'stat_spy_prestige'); break;
-            case 'stat-wizard-prestige': $data = $this->getDominionsByStatistic($round, 'stat_wizard_prestige'); break;
+            case 'stat-spy-mastery': $data = $this->getDominionsByStatistic($round, 'spy_mastery'); break;
+            case 'stat-wizard-mastery': $data = $this->getDominionsByStatistic($round, 'wizard_mastery'); break;
             case 'stat-spies-executed': $data = $this->getDominionsByStatistic($round, 'stat_spies_executed'); break;
             case 'stat-wizards-executed': $data = $this->getDominionsByStatistic($round, 'stat_wizards_executed'); break;
             //case 'stat-total-platinum-production': $data = $this->getDominionsByStatistic($round, 'stat_total_platinum_production'); break;
@@ -117,8 +117,8 @@ class ValhallaController extends AbstractController
             case 'stat-top-spy-disbanders': $data = $this->getDominionsByStatistic($round, 'stat_disband_spies_damage'); break;
             case 'realm-stat-prestige': $data = $this->getRealmsByStatistic($round, 'prestige'); break;
             case 'realm-stat-attacking-success': $data = $this->getRealmsByStatistic($round, 'stat_attacking_success'); break;
-            case 'stat-wonder-damage': $data = $this->getRealmsByStatistic($round, 'stat_wonder_damage'); break;
-            case 'stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'stat_wonders_destroyed'); break;
+            case 'stat-wonder-damage': $data = $this->getDominionsByStatistic($round, 'stat_wonder_damage'); break;
+            case 'realm-stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'stat_wonders_destroyed'); break;
             case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'stat_total_land_explored'); break;
             case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'stat_total_land_conquered'); break;
 
@@ -491,11 +491,14 @@ class ValhallaController extends AbstractController
     protected function getRealmsByStatistic(Round $round, string $stat)
     {
         $builder = $round->realms()
-            ->with(['dominions']);
+            ->with(['dominions'])
+            ->where('number', '>', 0);
 
         return $builder->get()
             ->map(function ($realm) use ($stat) {
-                $realm->{$stat} = $realm->dominions->sum($stat);
+                $realm->{$stat} = $realm->dominions
+                    ->where('user_id', '!=', null)
+                    ->sum($stat);
                 return $realm;
             })
             ->filter(function ($realm) use ($stat) {

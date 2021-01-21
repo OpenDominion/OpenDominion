@@ -4,11 +4,13 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
+use OpenDominion\Helpers\RaceHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Race;
@@ -30,17 +32,19 @@ class StatusController extends AbstractDominionController
         $notifications = $selectedDominion->notifications()->paginate($resultsPerPage);
 
         return view('pages.dominion.status', [
+            'infoMapper' => app(InfoMapper::class),
             'landCalculator' => app(LandCalculator::class),
+            'miscHelper' => app(MiscHelper::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'networthCalculator' => app(NetworthCalculator::class),
             'notificationHelper' => app(NotificationHelper::class),
+            'opsCalculator' => app(OpsCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'protectionService' => app(ProtectionService::class),
             'queueService' => app(QueueService::class),
-            'unitHelper' => app(UnitHelper::class),
-            'miscHelper' => app(MiscHelper::class),
-            'infoMapper' => app(InfoMapper::class),
+            'raceHelper' => app(RaceHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
+            'unitHelper' => app(UnitHelper::class),
             'races' => $races,
             'notifications' => $notifications
         ]);

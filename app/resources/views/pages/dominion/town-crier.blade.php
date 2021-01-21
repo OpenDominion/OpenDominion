@@ -120,13 +120,25 @@
                                                     @endif
                                                 @endif
                                             @elseif ($gameEvent->type === 'war_declared')
-                                                <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
-                                                has declared <span class="text-red text-bold">WAR</span> on
-                                                <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                @if ($gameEvent->target_type === \OpenDominion\Models\RealmWar::class)
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->sourceRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->source_realm_name }}</span> (#{{ $gameEvent->target->sourceRealm->number }})</a>
+                                                    has declared <span class="text-red text-bold">WAR</span> on
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->targetRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->target_realm_name }}</span> (#{{ $gameEvent->target->targetRealm->number }})</a>.
+                                                @else
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
+                                                    has declared <span class="text-red text-bold">WAR</span> on
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                @endif
                                             @elseif ($gameEvent->type === 'war_canceled')
-                                                <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
-                                                has <span class="text-green text-bold">CANCELED</span> war against
-                                                <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                @if ($gameEvent->target_type === \OpenDominion\Models\RealmWar::class)
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->sourceRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->source_realm_name }}</span> (#{{ $gameEvent->target->sourceRealm->number }})</a>
+                                                    has <span class="text-green text-bold">CANCELED</span> war against
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->targetRealm->number]) }}"><span class="text-orange">{{ $gameEvent->target->target_realm_name }}</span> (#{{ $gameEvent->target->targetRealm->number }})</a>.
+                                                @else
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->source->number]) }}"><span class="text-orange">{{ $gameEvent->source->name }}</span> (#{{ $gameEvent->source->number }})</a>
+                                                    has <span class="text-green text-bold">CANCELED</span> war against
+                                                    <a href="{{ route('dominion.realm', [$gameEvent->target->number]) }}"><span class="text-orange">{{ $gameEvent->target->name }}</span> (#{{ $gameEvent->target->number }})</a>.
+                                                @endif
                                             @elseif ($gameEvent->type == 'wonder_spawned')
                                                 A new Wonder of the World has been discovered, the <a href="{{ route('dominion.wonders') }}"><span class="text-orange">{{ $gameEvent->source->name }}</span></a>!
                                             @elseif ($gameEvent->type == 'wonder_attacked')

@@ -11,11 +11,6 @@ use OpenDominion\Services\Dominion\QueueService;
 
 class InvadeCalculationService
 {
-    /**
-     * @var int How many units can fit in a single boat
-     */
-    protected const UNITS_PER_BOAT = 30;
-
     /** @var MilitaryCalculator */
     protected $militaryCalculator;
 
@@ -122,7 +117,7 @@ class InvadeCalculationService
                 $unitsThatNeedBoats += (int)$units[$unit->slot];
             }
         }
-        $this->calculationResult['boats_needed'] = ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity());
+        $this->calculationResult['boats_needed'] = ceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion));
         $this->calculationResult['boats_remaining'] = floor($dominion->resource_boats - $this->calculationResult['boats_needed']);
 
         // Calculate total offense and defense
@@ -130,14 +125,14 @@ class InvadeCalculationService
         if (!isset($calc['wonder'])) {
             $this->calculationResult['op_multiplier'] = $this->militaryCalculator->getOffensivePowerMultiplier($dominion);
         } else {
-            $this->calculationResult['op_multiplier'] = 0;
+            $this->calculationResult['op_multiplier'] = (1 + $dominion->getTechPerkMultiplier('wonder_damage'));
         }
 
         $this->calculationResult['away_defense'] = $this->militaryCalculator->getDefensivePower($dominion, null, null, $units);
         if (!isset($calc['wonder'])) {
             $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         } else {
-            $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
+            $this->calculationResult['away_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $units) * $this->calculationResult['op_multiplier'] * $this->militaryCalculator->getMoraleMultiplier($dominion);
         }
 
         $unitsHome = [
@@ -152,7 +147,7 @@ class InvadeCalculationService
         if (!isset($calc['wonder'])) {
             $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $unitsHome);
         } else {
-            $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $unitsHome) * $this->militaryCalculator->getMoraleMultiplier($dominion);
+            $this->calculationResult['home_offense'] = $this->militaryCalculator->getOffensivePowerRaw($dominion, $target, $landRatio, $unitsHome) * $this->calculationResult['op_multiplier'] * $this->militaryCalculator->getMoraleMultiplier($dominion);
         }
         $this->calculationResult['home_dpa'] = $this->calculationResult['home_defense'] / $this->landCalculator->getTotalLand($dominion);
 

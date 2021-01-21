@@ -74,6 +74,9 @@ class TrainingCalculator
 
                     $platinum = $units[$unitSlot]->cost_platinum;
                     $ore = $units[$unitSlot]->cost_ore;
+                    $mana = $units[$unitSlot]->cost_mana;
+                    $lumber = $units[$unitSlot]->cost_lumber;
+                    $gems = $units[$unitSlot]->cost_gems;
 
                     if ($platinum > 0) {
                         $cost['platinum'] = (int)ceil($platinum * $this->getSpecialistEliteCostMultiplier($dominion));
@@ -85,6 +88,18 @@ class TrainingCalculator
                         if ($dominion->race->name !== 'Gnome') {
                             $cost['ore'] = (int)ceil($ore * $this->getSpecialistEliteCostMultiplier($dominion));
                         }
+                    }
+
+                    if ($mana > 0) {
+                        $cost['mana'] = $mana;
+                    }
+
+                    if ($lumber > 0) {
+                        $cost['lumber'] = (int)ceil($lumber * $this->getSpecialistEliteCostMultiplier($dominion));
+                    }
+
+                    if ($gems > 0) {
+                        $cost['gems'] = (int)ceil($gems * $this->getSpecialistEliteCostMultiplier($dominion));
                     }
 
                     $cost['draftees'] = 1;
@@ -111,6 +126,9 @@ class TrainingCalculator
         $fieldMapping = [
             'platinum' => 'resource_platinum',
             'ore' => 'resource_ore',
+            'mana' => 'resource_mana',
+            'lumber' => 'resource_lumber',
+            'gems' => 'resource_gems',
             'draftees' => 'military_draftees',
             'wizards' => 'military_wizards',
         ];

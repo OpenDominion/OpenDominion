@@ -116,8 +116,13 @@ class Dominion extends AbstractModel
         'peasants_last_hour' => 'integer',
         'draft_rate' => 'integer',
         'morale' => 'integer',
+        'infamy' => 'integer',
         'spy_strength' => 'float',
         'wizard_strength' => 'float',
+        'spy_resilience' => 'integer',
+        'wizard_resilience' => 'integer',
+        'spy_mastery' => 'integer',
+        'wizard_mastery' => 'integer',
         'resource_platinum' => 'integer',
         'resource_food' => 'integer',
         'resource_lumber' => 'integer',
@@ -290,7 +295,7 @@ class Dominion extends AbstractModel
         $saved = parent::save($options);
 
         if ($saved && $recordChanges) {
-            $extraAttributes = ['action', 'defense_reduced', 'source_dominion_id', 'target_dominion_id'];
+            $extraAttributes = ['action', 'defense_reduced', 'queue', 'source_dominion_id', 'target_dominion_id', 'target_wonder_id'];
             foreach ($extraAttributes as $attr) {
                 if (isset($options[$attr])) {
                     $deltaAttributes[$attr] = $options[$attr];
@@ -422,11 +427,7 @@ class Dominion extends AbstractModel
     {
         $perks = $this->getTechPerks()->groupBy('key');
         if (isset($perks[$key])) {
-            $max = (float)$perks[$key]->max('pivot.value');
-            if ($max < 0) {
-                return (float)$perks[$key]->min('pivot.value');
-            }
-            return $max;
+            return (float)$perks[$key]->sum('pivot.value');
         }
         return 0;
     }

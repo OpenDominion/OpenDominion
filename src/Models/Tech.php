@@ -2,6 +2,8 @@
 
 namespace OpenDominion\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * OpenDominion\Models\Tech
  *
@@ -20,6 +22,11 @@ class Tech extends AbstractModel
     protected $casts = [
         'prerequisites' => 'array',
     ];
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
+    }
 
     public function perks()
     {

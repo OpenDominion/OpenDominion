@@ -3,13 +3,17 @@
 namespace OpenDominion\Services\Dominion;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\RealmWar;
 
 class GovernmentService
 {
     public const WAR_ACTIVE_WAIT_IN_HOURS = 24;
+    public const WAR_INACTIVE_WAIT_IN_HOURS = 0;
     public const WAR_CANCEL_WAIT_IN_HOURS = 48;
+    public const WAR_REDECLARE_WAIT_IN_HOURS = 48;
 
     /**
      * Gets votes for Realm monarchy by Dominion.
@@ -92,7 +96,7 @@ class GovernmentService
      */
     public function hasDeclaredWar(Realm $realm): bool
     {
-        if ($realm->war_realm_id !== null) {
+        if ($this->getWarsEngaged($realm->warsOutgoing)->isNotEmpty()) {
             return true;
         }
         return false;
@@ -105,7 +109,7 @@ class GovernmentService
      */
     public function canDeclareWar(Realm $realm): bool
     {
-        if ($realm->war_realm_id === null) {
+        if (!$this->hasDeclaredWar($realm)) {
             return true;
         }
         return false;
@@ -114,33 +118,25 @@ class GovernmentService
     /**
      * Returns the hour of war declaration
      *
-     * @param Realm $realm
+     * @param RealmWar $war
      */
-    public function getWarDeclaredAt(Realm $realm): string
+    public function getWarDeclaredAt(RealmWar $war): string
     {
-        if ($realm->war_realm_id === null) {
+        if ($war->created_at == null) {
             return '';
         }
 
-        $modifiedDate = Carbon::parse($realm->war_active_at);
-        $declaredDate = $modifiedDate->addHours(-self::WAR_ACTIVE_WAIT_IN_HOURS);
-
-        return $declaredDate->startOfHour();
+        return $war->created_at->startOfHour();
     }
 
     /**
      * Returns the number of hours remaining before war can be canceled
      *
-     * @param Realm $realm
+     * @param RealmWar $war
      */
-    public function getHoursBeforeCancelWar(Realm $realm): int
+    public function getHoursBeforeCancelWar(RealmWar $war): int
     {
-        if (!$realm->war_realm_id) {
-            return 0;
-        }
-
-        $modifiedDate = Carbon::parse($realm->war_active_at);
-        $cancelDate = $modifiedDate->addHours(self::WAR_CANCEL_WAIT_IN_HOURS);
+        $cancelDate = $war->active_at->addHours(self::WAR_CANCEL_WAIT_IN_HOURS);
 
         if ($cancelDate > now()->startOfHour()) {
             return $cancelDate->diffInHours(now()->startOfHour());
@@ -152,15 +148,69 @@ class GovernmentService
     /**
      * Returns the number of hours remaining before war becomes active
      *
-     * @param Realm $realm
+     * @param RealmWar $war
      */
-    public function getHoursBeforeWarActive(Realm $realm)
+    public function getHoursBeforeWarActive(RealmWar $war)
     {
-        $date = Carbon::parse($realm->war_active_at);
-        if ($date->startOfHour() <= now()->startOfHour()) {
+        if ($war->active_at->startOfHour() <= now()->startOfHour()) {
             return 0;
         }
-        return $date->diffInHours(now()->startOfHour());
+        return $war->active_at->diffInHours(now()->startOfHour());
+    }
+
+    /**
+     * Returns the number of hours remaining before war becomes inactive
+     *
+     * @param RealmWar $war
+     */
+    public function getHoursBeforeWarInactive(RealmWar $war)
+    {
+        if ($war->inactive_at == null || $war->inactive_at->startOfHour() <= now()->startOfHour()) {
+            return 0;
+        }
+        return $war->inactive_at->diffInHours(now()->startOfHour());
+    }
+
+    /**
+     * Returns only engaged wars from a collection
+     *
+     * @param Collection $wars
+     */
+    public function getWarsEngaged(Collection $wars): Collection
+    {
+        return $wars->filter(function ($war) {
+            if ($war->inactive_at == null) {
+                return $war;
+            }
+        });
+    }
+
+    /**
+     * Returns only escalated wars from a collection
+     *
+     * @param Collection $wars
+     */
+    public function getWarsEscalated(Collection $wars): Collection
+    {
+        return $wars->filter(function ($war) {
+            if ($war->active_at < now() && ($war->inactive_at == null || $war->inactive_at > now())) {
+                return $war;
+            }
+        });
+    }
+
+    /**
+     * Returns only cancelled wars from a collection
+     *
+     * @param Collection $wars
+     */
+    public function getWarsCancelled(Collection $wars): Collection
+    {
+        return $wars->filter(function ($war) {
+            if ($war->inactive_at !== null && $war->inactive_at < now()) {
+                return $war;
+            }
+        });
     }
 
     /**
@@ -169,13 +219,12 @@ class GovernmentService
      * @param Realm $realm
      * @param Realm $target
      */
-    public function isAtWarWithRealm(Realm $realm, Realm $target): bool
+    public function isAtWar(Realm $realm, Realm $target): bool
     {
-        if ($realm->war_realm_id == $target->id && $this->getHoursBeforeWarActive($realm) === 0) {
-            return true;
-        }
-
-        if ($target->war_realm_id == $realm->id && $this->getHoursBeforeWarActive($target) === 0) {
+        if (
+            $this->getWarsEngaged($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() ||
+            $this->getWarsEngaged($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
+        ) {
             return true;
         }
 
@@ -188,13 +237,11 @@ class GovernmentService
      * @param Realm $realm
      * @param Realm $target
      */
-    public function isAtMutualWarWithRealm(Realm $realm, Realm $target): bool
+    public function isAtMutualWar(Realm $realm, Realm $target): bool
     {
         if (
-            $realm->war_realm_id == $target->id &&
-            $this->getHoursBeforeWarActive($realm) === 0 &&
-            $target->war_realm_id == $realm->id &&
-            $this->getHoursBeforeWarActive($target) === 0
+            $this->getWarsEngaged($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() &&
+            $this->getWarsEngaged($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
         ) {
             return true;
         }
@@ -203,30 +250,37 @@ class GovernmentService
     }
 
     /**
-     * Returns the number of hours since war was declared
+     * Returns war bonus status between two realms
+     *
+     * @param Realm $source
+     * @param Realm $target
+     */
+    public function isWarEscalated(Realm $source, Realm $target): bool
+    {
+        if (
+            $this->getWarsEscalated($source->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns mutual war bonus status between two realms
      *
      * @param Realm $realm
+     * @param Realm $target
      */
-    public function getWarDurationHours(Realm $realm, Realm $target)
+    public function isMutualWarEscalated(Realm $realm, Realm $target): bool
     {
-        $hoursSince = 0;
-
-        if ($realm->war_realm_id == $target->id) {
-            $realmDeclaredAt = Carbon::parse($realm->war_active_at);
-            $realmHoursSince = now()->diffInHours($realmDeclaredAt->subHours(24));
-            $hoursSince = $realmHoursSince;
+        if (
+            $this->getWarsEscalated($realm->warsOutgoing)->where('target_realm_id', $target->id)->isNotEmpty() &&
+            $this->getWarsEscalated($target->warsOutgoing)->where('target_realm_id', $realm->id)->isNotEmpty()
+        ) {
+            return true;
         }
 
-        if ($target->war_realm_id == $realm->id) {
-            $targetDeclaredAt = Carbon::parse($target->war_active_at);
-            $targetHoursSince = now()->diffInHours($targetDeclaredAt->subHours(24));
-            $hoursSince = $targetHoursSince;
-        }
-
-        if ($realm->war_realm_id == $target->id && $target->war_realm_id == $realm->id) {
-            $hoursSince = min($realmHoursSince, $targetHoursSince);
-        }
-
-        return $hoursSince;
+        return false;
     }
 }

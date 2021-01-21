@@ -60,7 +60,7 @@
                                                             data-race="{{ $dominion->race->name }}"
                                                             data-land="{{ number_format($landCalculator->getTotalLand($dominion)) }}"
                                                             data-networth="{{ number_format($networthCalculator->getDominionNetworth($dominion)) }}"
-                                                            data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 1) }}">
+                                                            data-percentage="{{ number_format($rangeCalculator->getDominionRange($selectedDominion, $dominion), 2) }}">
                                                         {{ $dominion->name }} (#{{ $dominion->realm->number }})
                                                     </option>
                                                 @endforeach
@@ -160,28 +160,35 @@
                                     <th>Declared By</th>
                                     <th>Declared at</th>
                                     <th>Active at</th>
+                                    <!--<th>Inactive at</th>-->
                                     <th>War Bonus</th>
                                     <th>&nbsp;</th>
                                 </tr>
-                                @if ($governmentService->hasDeclaredWar($selectedDominion->realm))
+                                @foreach ($selectedDominion->realm->warsOutgoing()->active()->get() as $war)
                                     @php
-                                        $activeHours = $governmentService->getHoursBeforeWarActive($selectedDominion->realm);
-                                        $cancelHours = $governmentService->getHoursBeforeCancelWar($selectedDominion->realm);
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($war);
+                                        $cancelHours = $governmentService->getHoursBeforeCancelWar($war);
+                                        $inactiveHours = $governmentService->getHoursBeforeWarInactive($war);
                                     @endphp
                                     <tr>
-                                        <td>{{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})</td>
+                                        <td>{{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})</td>
                                         <td>#{{ $selectedDominion->realm->number }}</td>
-                                        <td>{{ $governmentService->getWarDeclaredAt($selectedDominion->realm) }}</td>
-                                        <td>{{ $selectedDominion->realm->war_active_at }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
+                                        <td>{{ $war->active_at }}</td>
+                                        <!--<td>{{ $war->inactive_at }}</td>-->
                                         <td>
-                                            @if ($activeHours == 0)
+                                            @if ($war->inactive_at != null)
+                                                <span class="label label-danger">Expiring</span>
+                                            @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
                                             @else
                                                 <span class="label label-warning">Pending</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($activeHours == 0)
+                                            @if ($inactiveHours !== 0)
+                                                <span class="small text-muted">Inactive in {{ $inactiveHours }} ticks</span>
+                                            @elseif ($activeHours == 0)
                                                 @if ($cancelHours !== 0)
                                                     <span class="small text-muted">Cancel in {{ $cancelHours }} ticks</span>
                                                 @endif
@@ -190,26 +197,32 @@
                                             @endif
                                         </td>
                                     </tr>
-                                @endif
-                                @foreach ($selectedDominion->realm->warRealms as $realm)
+                                @endforeach
+                                @foreach ($selectedDominion->realm->warsIncoming()->active()->get() as $war)
                                     @php
-                                        $activeHours = $governmentService->getHoursBeforeWarActive($realm);
-                                        $cancelHours = $governmentService->getHoursBeforeCancelWar($realm);
+                                        $activeHours = $governmentService->getHoursBeforeWarActive($war);
+                                        $cancelHours = $governmentService->getHoursBeforeCancelWar($war);
+                                        $inactiveHours = $governmentService->getHoursBeforeWarInactive($war);
                                     @endphp
                                     <tr>
-                                        <td>{{ $realm->name }} (#{{ $realm->number }})</td>
-                                        <td>#{{ $realm->number }}</td>
-                                        <td>{{ $governmentService->getWarDeclaredAt($realm) }}</td>
-                                        <td>{{ $realm->war_active_at }}</td>
+                                        <td>{{ $war->sourceRealm->name }} (#{{ $war->sourceRealm->number }})</td>
+                                        <td>#{{ $war->sourceRealm->number }}</td>
+                                        <td>{{ $governmentService->getWarDeclaredAt($war) }}</td>
+                                        <td>{{ $war->active_at }}</td>
+                                        <!--<td>{{ $war->inactive_at }}</td>-->
                                         <td>
-                                            @if ($activeHours == 0)
+                                            @if ($war->inactive_at != null)
+                                                <span class="label label-danger">Expiring</span>
+                                            @elseif ($activeHours == 0)
                                                 <span class="label label-success">Active</span>
                                             @else
                                                 <span class="label label-warning">Pending</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($activeHours == 0)
+                                            @if ($inactiveHours !== 0)
+                                                <span class="small text-muted">Inactive in {{ $inactiveHours }} ticks</span>
+                                            @elseif ($activeHours == 0)
                                                 @if ($cancelHours !== 0)
                                                     <span class="small text-muted">Cancel in {{ $cancelHours }} ticks</span>
                                                 @endif
@@ -256,20 +269,22 @@
                                     <form action="{{ route('dominion.government.war.cancel') }}" method="post" role="form">
                                         @csrf
                                         <div class="row">
-                                            <div class="col-sm-8 col-lg-10">
-                                                You have declared <span class="text-red text-bold">WAR</span> on {{ $selectedDominion->realm->warRealm->name }} (#{{ $selectedDominion->realm->warRealm->number }})!
-                                                @if ($governmentService->getHoursBeforeWarActive($selectedDominion->realm) > 0)
-                                                    <br/><small class="text-info">War bonus will be active in {{ $governmentService->getHoursBeforeWarActive($selectedDominion->realm) }} hours.</small>
-                                                @endif
-                                                @if ($governmentService->getHoursBeforeCancelWar($selectedDominion->realm) > 0)
-                                                    <br/><small class="text-warning">You cannot cancel this war for {{ $governmentService->getHoursBeforeCancelWar($selectedDominion->realm) }} hours.</small>
-                                                @endif
-                                            </div>
-                                            <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
-                                                <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $governmentService->getHoursBeforeCancelWar($selectedDominion->realm) > 0 ? 'disabled' : null }}>
-                                                    Cancel War
-                                                </button>
-                                            </div>
+                                            @foreach ($governmentService->getWarsEngaged($selectedDominion->realm->warsOutgoing) as $war)
+                                                <div class="col-sm-8 col-lg-10">
+                                                    You have declared <span class="text-red text-bold">WAR</span> on {{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})!
+                                                    @if ($governmentService->getHoursBeforeWarActive($war) > 0)
+                                                        <br/><small class="text-info">War bonus will be active in {{ $governmentService->getHoursBeforeWarActive($war) }} hours.</small>
+                                                    @endif
+                                                    @if ($governmentService->getHoursBeforeCancelWar($war) > 0)
+                                                        <br/><small class="text-warning">You cannot cancel this war for {{ $governmentService->getHoursBeforeCancelWar($war) }} hours.</small>
+                                                    @endif
+                                                </div>
+                                                <div class="col-xs-offset-6 col-xs-6 col-sm-offset-0 col-sm-4 col-lg-2">
+                                                    <button type="submit" class="btn btn-warning btn-block" {{ $selectedDominion->isLocked() || $governmentService->getHoursBeforeCancelWar($war) > 0 ? 'disabled' : null }}>
+                                                        Cancel War
+                                                    </button>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </form>
                                 @endif
@@ -287,8 +302,8 @@
                 </div>
                 <div class="box-body">
                     <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 6th day of the round.</p>
-                    <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +15% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
-                    <p>Successful war operations have a 25% chance to award +1 prestige. In mutual war, that changes to +2 prestige for a success and -1 prestige for a failure.</p>
+                    <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
+                    <p>Successful war operations increase your infamy, which provides a bonus to platinum and gem production.</p>
                 </div>
             </div>
         </div>

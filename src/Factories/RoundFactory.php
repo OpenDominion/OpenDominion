@@ -48,13 +48,13 @@ class RoundFactory
             16,
             17,
             17,
-            18,
-            18,
         ];
 
         $hoursBeforeRoundEnd = array_random($invasionEndHours);
+        $secondsBeforeRoundEnd = rand(0, 3599);
 
-        $offensiveActionsEndDate = (clone $endDate)->addHours(-$hoursBeforeRoundEnd);
+        $offensiveActionsEndDate =
+            (clone $endDate)->addHours(-$hoursBeforeRoundEnd)->addSeconds(-$secondsBeforeRoundEnd);
 
         return Round::create([
             'round_league_id' => $league->id,

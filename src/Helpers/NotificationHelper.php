@@ -271,11 +271,15 @@ class NotificationHelper
                     }
                 )->sum();
 
-                return sprintf(
-                    '%s %s returned from battle',
-                    number_format($units),
-                    str_plural('unit', $units)
-                );
+                if ($units > 0) {
+                    return sprintf(
+                        '%s %s returned from battle',
+                        number_format($units),
+                        str_plural('unit', $units)
+                    );
+                }
+
+                return 'Resources acquired in battle have arrived';
 
             case 'hourly_dominion.beneficial_magic_dissipated':
                 $effects = count($data);

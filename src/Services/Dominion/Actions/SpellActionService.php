@@ -8,12 +8,12 @@ use LogicException;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Exceptions\GameException;
-use OpenDominion\Helpers\OpsHelper;
 use OpenDominion\Helpers\SpellHelper;
 use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Models\Dominion;
@@ -50,8 +50,8 @@ class SpellActionService
     /** @var NotificationService */
     protected $notificationService;
 
-    /** @var OpsHelper */
-    protected $opsHelper;
+    /** @var OpsCalculator */
+    protected $opsCalculator;
 
     /** @var PopulationCalculator */
     protected $populationCalculator;
@@ -83,7 +83,7 @@ class SpellActionService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
-        $this->opsHelper = app(OpsHelper::class);
+        $this->opsCalculator = app(OpsCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->protectionService = app(ProtectionService::class);
         $this->queueService = app(QueueService::class);
@@ -201,7 +201,7 @@ class SpellActionService
                 }
 
                 $target->save([
-                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'event' => HistoryService::EVENT_ACTION_RECEIVE_SPELL,
                     'action' => $spellKey,
                     'source_dominion_id' => $dominion->id
                 ]);
@@ -296,6 +296,12 @@ class SpellActionService
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
+        if ($dominion->pack !== null && $dominion->pack->size > 2) {
+            $wizardStrengthLost = 2;
+        } else {
+            $wizardStrengthLost = 1.5;
+        }
+
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
 
@@ -307,7 +313,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->infoOperationSuccessChance($selfWpa, $targetWpa);
+            $successRate = $this->opsCalculator->infoOperationSuccessChance($dominion, $target, 'wizard');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
@@ -326,7 +332,7 @@ class SpellActionService
                 return [
                     'success' => false,
                     'message' => "The enemy wizards have repelled our {$spellInfo['name']} attempt.",
-                    'wizardStrengthCost' => 2,
+                    'wizardStrengthCost' => $wizardStrengthLost,
                     'alert-type' => 'warning',
                 ];
             }
@@ -390,7 +396,7 @@ class SpellActionService
         return [
             'success' => true,
             'message' => 'Your wizards cast the spell successfully, and a wealth of information appears before you.',
-            'wizardStrengthCost' => 2,
+            'wizardStrengthCost' => $wizardStrengthLost,
             'redirect' => $redirect,
         ];
     }
@@ -418,7 +424,7 @@ class SpellActionService
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if ($this->spellHelper->isWarSpell($spellKey)) {
-            $warDeclared = ($dominion->realm->war_realm_id == $target->realm->id || $target->realm->war_realm_id == $dominion->realm->id);
+            $warDeclared = $this->governmentService->isAtWar($dominion->realm, $target->realm);
             if (!$warDeclared && !in_array($target->id, $this->militaryCalculator->getRecentlyInvadedBy($dominion, 12))) {
                 throw new GameException("You cannot cast {$spellInfo['name']} outside of war.");
             }
@@ -435,69 +441,13 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsHelper->blackOperationSuccessChance($selfWpa, $targetWpa);
+            $successRate = $this->opsCalculator->blackOperationSuccessChance($dominion, $target, 'wizard');
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
 
             if (!random_chance($successRate)) {
-                $wizardsKilledBasePercentage = 1;
-
-                // Wizard Guilds
-                $wizardGuildCasualtyReduction = 3;
-                $wizardGuildWizardCasualtyReductionMax = 30;
-
-                $wizardsKilledBasePercentage = (1 - min(
-                    (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
-                    ($wizardGuildWizardCasualtyReductionMax / 100)
-                ));
-
-                $wizardLossSpaRatio = ($targetWpa / $selfWpa);
-                $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, 0.5, 1.5);
-
-                $unitsKilled = [];
-                $wizardsKilled = (int)floor($dominion->military_wizards * ($wizardsKilledPercentage / 100));
-
-                // Check for immortal wizards
-                if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
-                    $wizardsKilled = 0;
-                }
-
-                if ($wizardsKilled > 0) {
-                    $unitsKilled['wizards'] = $wizardsKilled;
-                    $dominion->military_wizards -= $wizardsKilled;
-                }
-
-                foreach ($dominion->race->units as $unit) {
-                    if ($unit->getPerkValue('counts_as_wizard_offense')) {
-                        $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * ($wizardsKilledPercentage / 100);
-                        $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
-                        if ($unitKilled > 0) {
-                            $unitsKilled[strtolower($unit->name)] = $unitKilled;
-                            $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
-                        }
-                    }
-                }
-
-                $target->stat_wizards_executed += array_sum($unitsKilled);
-                $dominion->stat_wizards_lost += array_sum($unitsKilled);
-
-                $unitsKilledStringParts = [];
-                foreach ($unitsKilled as $name => $amount) {
-                    $amountLabel = number_format($amount);
-                    $unitLabel = str_plural(str_singular($name), $amount);
-                    $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
-                }
-                $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
-
-                // Prestige Loss
-                $prestigeLossString = '';
-                if ($this->spellHelper->isWarSpell($spellKey) && ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id)) {
-                    if ($dominion->prestige > 0) {
-                        $dominion->prestige -= 1;
-                        $prestigeLossString = 'You lost 1 prestige due to mutual war.';
-                    }
-                }
+                list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
@@ -510,16 +460,14 @@ class SpellActionService
 
                 if ($unitsKilledString) {
                     $message = sprintf(
-                        'The enemy wizards have repelled our %s attempt and managed to kill %s. %s',
+                        'The enemy wizards have repelled our %s attempt and managed to kill %s.',
                         $spellInfo['name'],
-                        $unitsKilledString,
-                        $prestigeLossString
+                        $unitsKilledString
                     );
                 } else {
                     $message = sprintf(
-                        'The enemy wizards have repelled our %s attempt. %s',
-                        $spellInfo['name'],
-                        $prestigeLossString
+                        'The enemy wizards have repelled our %s attempt.',
+                        $spellInfo['name']
                     );
                 }
 
@@ -534,7 +482,7 @@ class SpellActionService
         }
 
         $spellReflected = false;
-        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
+        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.3)) {
             $spellReflected = true;
             $reflectedBy = $target;
             $target = $dominion;
@@ -544,6 +492,11 @@ class SpellActionService
 
         if (isset($spellInfo['duration'])) {
             // Cast spell with duration
+            $duration = $spellInfo['duration'];
+            if ($target->getTechPerkValue('enemy_spell_duration') !== 0) {
+                $duration += $target->getTechPerkValue('enemy_spell_duration');
+            }
+
             if ($this->spellCalculator->isSpellActive($target, $spellKey)) {
                 $where = [
                     'dominion_id' => $target->id,
@@ -561,7 +514,7 @@ class SpellActionService
                 DB::table('active_spells')
                     ->where($where)
                     ->update([
-                        'duration' => $spellInfo['duration'],
+                        'duration' => $duration,
                         'cast_by_dominion_id' => $dominion->id,
                         'updated_at' => now(),
                     ]);
@@ -570,7 +523,7 @@ class SpellActionService
                     ->insert([
                         'dominion_id' => $target->id,
                         'spell' => $spellKey,
-                        'duration' => $spellInfo['duration'],
+                        'duration' => $duration,
                         'cast_by_dominion_id' => $dominion->id,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -579,7 +532,7 @@ class SpellActionService
 
             // Update statistics
             if (isset($dominion->{"stat_{$spellInfo['key']}_hours"})) {
-                $dominion->{"stat_{$spellInfo['key']}_hours"} += $spellInfo['duration'];
+                $dominion->{"stat_{$spellInfo['key']}_hours"} += $duration;
             }
 
             // Surreal Perception
@@ -608,7 +561,7 @@ class SpellActionService
                     'success' => true,
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, but it was reflected and it will now affect your dominion for the next %s hours.',
-                        $spellInfo['duration']
+                        $duration
                     ),
                     'alert-type' => 'danger'
                 ];
@@ -617,7 +570,7 @@ class SpellActionService
                     'success' => true,
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, and it will continue to affect your target for the next %s hours.',
-                        $spellInfo['duration']
+                        $duration
                     )
                 ];
             }
@@ -626,20 +579,24 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
+            $baseDamageReductionMultiplier = 1;
 
-            // War Duration
-            if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
-                $warHours = $this->governmentService->getWarDurationHours($dominion->realm, $target->realm);
-                $warReduction = clamp(0.35 / 36 * ($warHours - 60), 0, 0.35);
-                $baseDamage *= (1 - $warReduction);
-            }
+            // Resilience
+            $baseDamageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
+
+            // Towers
+            $baseDamageReductionMultiplier *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+
+            // Techs
+            $baseDamageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
 
             // Wonders
-            $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
+            $baseDamageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
                     $damage = $target->{$attr} * $baseDamage;
+                    $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
                     // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
@@ -649,7 +606,7 @@ class SpellActionService
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
                             ($forestHavenFireballReductionMax / 100)
                         ));
-                        $damage *= $damageMultiplier;
+                        $damageReductionMultiplier *= $damageMultiplier;
                     }
 
                     // Disband Spies damage reduction from Forest Havens
@@ -660,32 +617,38 @@ class SpellActionService
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
                             ($forestHavenSpyCasualtyReductionMax / 100)
                         ));
-                        $damage *= $damageMultiplier;
+                        $damageReductionMultiplier *= $damageMultiplier;
                     }
 
                     // Damage reduction from Masonries
                     if (strpos($attr, 'improvement_') === 0) {
-                        $masonryLightningBoltReduction = 0.75;
+                        $masonryLightningBoltReduction = 1;
                         $masonryLightningBoltReductionMax = 25;
                         $damageMultiplier = (1 - min(
                             (($target->building_masonry / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
                             ($masonryLightningBoltReductionMax / 100)
                         ));
-                        $damage *= $damageMultiplier;
+                        $damageReductionMultiplier *= $damageMultiplier;
                     }
 
-                    // Damage reduction from Towers
-                    $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+                    if ($damageReductionMultiplier == 0) {
+                        // Damage immunity
+                        $damage = 0;
+                    } else {
+                        // Cap damage reduction at 80%
+                        $damage *= max(0.2, $damageReductionMultiplier);
+                        $damage = round($damage);
+                        $target->{$attr} -= $damage;
+                    }
 
-                    $totalDamage += round($damage);
-                    $target->{$attr} -= round($damage);
+                    $totalDamage += $damage;
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
                     // Update statistics
                     if (isset($dominion->{"stat_{$spellInfo['key']}_damage"})) {
                         // Only count peasants killed by fireball
                         if (!($spellInfo['key'] == 'fireball' && $attr == 'resource_food')) {
-                            $dominion->{"stat_{$spellInfo['key']}_damage"} += round($damage);
+                            $dominion->{"stat_{$spellInfo['key']}_damage"} += $damage;
                         }
                     }
                 }
@@ -700,28 +663,30 @@ class SpellActionService
                 foreach ($spellInfo['increases'] as $attr) {
                     if ($attr == 'military_draftees') {
                         $target->{$attr} += $totalDamage;
-                    } else {
-                        $damage = $target->{$attr} * $baseDamage;
-
-                        // Damage reduction from Towers
-                        $damage *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
-
-                        $target->{$attr} += round($damage);
                     }
                 }
             }
 
-            // Prestige Gains
-            $prestigeGainString = '';
+            $warRewardsString = '';
             if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected && $totalDamage > 0) {
-                if ($dominion->realm->war_realm_id == $target->realm->id && $target->realm->war_realm_id == $dominion->realm->id) {
-                    $dominion->prestige += 2;
-                    $dominion->stat_wizard_prestige += 2;
-                    $prestigeGainString = 'You were awarded 2 prestige due to mutual war.';
-                } elseif (random_chance(0.25)) {
-                    $dominion->prestige += 1;
-                    $dominion->stat_wizard_prestige += 1;
-                    $prestigeGainString = 'You were awarded 1 prestige due to war.';
+                // Resilience
+                $target->wizard_resilience += $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+
+                // Infamy Gains
+                $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard');
+                $dominion->infamy += $infamyGain;
+
+                // Mastery Gains
+                $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard');
+                $dominion->wizard_mastery += $masteryGain;
+
+                // Mastery Loss
+                $masteryLoss = min($this->opsCalculator->getMasteryLoss($dominion, $target, 'wizard'), $target->wizard_mastery);
+                $target->wizard_mastery -= $masteryLoss;
+
+                $warRewardsString = "You gained {$infamyGain} infamy and {$masteryGain} wizard mastery.";
+                if ($masteryLoss > 0) {
+                    $damageDealt[] = "{$masteryLoss} wizard mastery";
                 }
             }
 
@@ -765,7 +730,7 @@ class SpellActionService
                     'message' => sprintf(
                         'Your wizards cast the spell successfully, your target lost %s. %s',
                         $damageString,
-                        $prestigeGainString
+                        $warRewardsString
                     ),
                     'wizardStrengthCost' => 5,
                 ];
@@ -884,5 +849,54 @@ class SpellActionService
         }
 
         return 'Your wizards successfully cast %s at a cost of %s mana.';
+    }
+
+    /**
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return array
+     * @throws Exception
+     */
+    protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
+    {
+        $wizardsKilledPercentage = $this->opsCalculator->getWizardLosses($dominion, $target, $type);
+
+        $unitsKilled = [];
+        $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
+
+        // Check for immortal wizards
+        if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
+            $wizardsKilled = 0;
+        }
+
+        if ($wizardsKilled > 0) {
+            $unitsKilled['wizards'] = $wizardsKilled;
+            $dominion->military_wizards -= $wizardsKilled;
+        }
+
+        foreach ($dominion->race->units as $unit) {
+            if ($unit->getPerkValue('counts_as_wizard_offense')) {
+                $unitKilledMultiplier = ((float)$unit->getPerkValue('counts_as_wizard_offense') / 2) * $wizardsKilledPercentage;
+                $unitKilled = (int)floor($dominion->{"military_unit{$unit->slot}"} * $unitKilledMultiplier);
+                if ($unitKilled > 0) {
+                    $unitsKilled[strtolower($unit->name)] = $unitKilled;
+                    $dominion->{"military_unit{$unit->slot}"} -= $unitKilled;
+                }
+            }
+        }
+
+        $target->stat_wizards_executed += array_sum($unitsKilled);
+        $dominion->stat_wizards_lost += array_sum($unitsKilled);
+
+        $unitsKilledStringParts = [];
+        foreach ($unitsKilled as $name => $amount) {
+            $amountLabel = number_format($amount);
+            $unitLabel = str_plural(str_singular($name), $amount);
+            $unitsKilledStringParts[] = "{$amountLabel} {$unitLabel}";
+        }
+        $unitsKilledString = generate_sentence_from_array($unitsKilledStringParts);
+
+        return [$unitsKilled, $unitsKilledString];
     }
 }

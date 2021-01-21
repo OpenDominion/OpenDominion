@@ -50,6 +50,15 @@ class SpellCalculator
 
         // Techs
         $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('spell_cost'));
+        if ($this->spellHelper->isSelfSpell($spell, $dominion->race)) {
+            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('self_spell_cost'));
+        }
+        if ($this->spellHelper->isRacialSelfSpell($spell, $dominion->race)) {
+            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('racial_spell_cost'));
+        }
+        if ($spell == 'fools_gold' && $dominion->getTechPerkMultiplier('fools_gold_cost') !== 0) {
+            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('fools_gold_cost'));
+        }
 
         // Wonders
         $spellCostMultiplier *= (1 + $dominion->getWonderPerkMultiplier('spell_cost'));
@@ -68,6 +77,12 @@ class SpellCalculator
      */
     public function canCast(Dominion $dominion, string $spell): bool
     {
+        $wizardStrengthCost = 5;
+
+        if ($this->spellHelper->isInfoOpSpell($spell)) {
+            $wizardStrengthCost = 2;
+        }
+
         return (
             ($dominion->resource_mana >= $this->getManaCost($dominion, $spell)) &&
             ($dominion->wizard_strength >= 30)

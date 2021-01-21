@@ -6,6 +6,7 @@ use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\RealmWar;
 use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\Realm\HistoryService;
@@ -54,7 +55,7 @@ class GovernmentActionService
             throw new RuntimeException('Dominion not found.');
         }
         if ($dominion->realm_id != $monarch->realm_id) {
-            throw new RuntimeException('You cannot vote for a monarch outside of your realm.');
+            throw new GameException('You cannot vote for a monarch outside of your realm.');
         }
 
         $dominion->monarchy_vote_for_dominion_id = $monarch->id;
@@ -129,33 +130,42 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
-        $recentWars = GameEvent::where([
-            'type' => 'war_canceled',
-            'source_id' => $dominion->realm->id,
-            'target_id' => $target->id,
-        ])->where('created_at', '>', now()->startOfHour()->subHours(23))->get();
+        $recentWars = RealmWar::where([
+            'source_realm_id' => $dominion->realm->id,
+            'target_realm_id' => $target->id,
+        ])->where('updated_at', '>', now()->startOfHour()->subHours(GovernmentService::WAR_REDECLARE_WAIT_IN_HOURS - 1))->get();
 
         if (!$recentWars->isEmpty()) {
-            throw new GameException('You cannot redeclare war on the same realm within 24 hours of canceling.');
+            throw new GameException('You cannot redeclare war on the same realm within 48 hours of canceling.');
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {
             throw new GameException('You cannot declare war for the first five days of the round.');
         }
 
+        $war = RealmWar::create([
+            'source_realm_id' => $dominion->realm->id,
+            'source_realm_name' => $dominion->realm->name,
+            'target_realm_id' => $target->id,
+            'target_realm_name' => $target->name,
+            'active_at' => now()->startOfHour()->addHours(GovernmentService::WAR_ACTIVE_WAIT_IN_HOURS),
+        ]);
+
+        $dominion->realm->save([
+            'event' => HistoryService::EVENT_ACTION_DECLARE_WAR,
+            'monarch_dominion_id' => $dominion->id,
+            'war_id' => $war->id
+        ]);
+
         GameEvent::create([
             'round_id' => $dominion->realm->round_id,
             'source_type' => Realm::class,
             'source_id' => $dominion->realm->id,
-            'target_type' => Realm::class,
-            'target_id' => $target->id,
+            'target_type' => RealmWar::class,
+            'target_id' => $war->id,
             'type' => 'war_declared',
             'data' => ['monarchDominionID' => $dominion->id],
         ]);
-
-        $dominion->realm->war_realm_id = $target->id;
-        $dominion->realm->war_active_at = now()->startOfHour()->addHours(GovernmentService::WAR_ACTIVE_WAIT_IN_HOURS);
-        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_DECLARE_WAR]);
 
         // Send friendly notifications
         foreach ($dominion->realm->dominions as $friendlyDominion) {
@@ -193,7 +203,12 @@ class GovernmentActionService
             throw new GameException('Only the monarch can declare war.');
         }
 
-        $hoursBeforeCancelWar = $this->governmentService->getHoursBeforeCancelWar($dominion->realm);
+        $war = $this->governmentService->getWarsEngaged($dominion->realm->warsOutgoing)->first();
+        if ($war == null) {
+            throw new GameException('Realm is not currently at war.');
+        }
+
+        $hoursBeforeCancelWar = $this->governmentService->getHoursBeforeCancelWar($war);
         if ($hoursBeforeCancelWar > 0) {
             throw new GameException("You cannot cancel this war for {$hoursBeforeCancelWar} hours.");
         }
@@ -202,14 +217,19 @@ class GovernmentActionService
             'round_id' => $dominion->realm->round_id,
             'source_type' => Realm::class,
             'source_id' => $dominion->realm->id,
-            'target_type' => Realm::class,
-            'target_id' => $dominion->realm->war_realm_id,
+            'target_type' => RealmWar::class,
+            'target_id' => $war->id,
             'type' => 'war_canceled',
             'data' => ['monarchDominionID' => $dominion->id],
         ]);
 
-        $dominion->realm->war_realm_id = null;
-        $dominion->realm->war_active_at = null;
-        $dominion->realm->save(['event' => HistoryService::EVENT_ACTION_CANCEL_WAR]);
+        $war->inactive_at = now()->addHours(GovernmentService::WAR_INACTIVE_WAIT_IN_HOURS)->startOfHour();
+        $war->save();
+
+        $dominion->realm->save([
+            'event' => HistoryService::EVENT_ACTION_CANCEL_WAR,
+            'monarch_dominion_id' => $dominion->id,
+            'war_id' => $war->id
+        ]);
     }
 }

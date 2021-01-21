@@ -1,8 +1,8 @@
 name: Nox
 alignment: evil
 description: >-
-  <p>Legends say that deep under the undead swamps there exists a supernatural void; an unholy abyss absent of all light, in which unfathomable creatures skitter about in the inky dark. Among them are the Nox.</p>
-  <p>The Nox wear darkness like a cloak, dragging night into day in vast clouds that defy reason, enveloping entire empires in an alien twilight wherever they strike. When the daylight returns, there's not a trace of their enemies left.</p>
+  <p>Legends say that deep under the Undead swamps there exists a supernatural void; an unholy abyss absent of all light, in which unfathomable creatures skitter about in the inky dark. Among them are the Nox.</p>
+  <p>The Nox wear darkness like a cloak, dragging night into day in vast clouds that defy all reason, enveloping entire empires in an alien twilight wherever they strike. When the daylight returns, there's not a trace of their enemies left.</p>
 attacker_difficulty: 2
 explorer_difficulty: 1
 converter_difficulty: 2
@@ -29,12 +29,12 @@ units:
   - name: Nightshade
     cost:
       platinum: 975
-      ore: 100
+      ore: 60
     power:
       offense: 0
-      defense: 2
+      defense: 3
     perks:
-      defense_from_land: swamp,10,4 # land type, ratio%, max
+      defense_from_land: swamp,12,3 # land type, ratio%, max
   - name: Lich
     cost:
       platinum: 950

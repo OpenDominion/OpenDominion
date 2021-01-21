@@ -83,6 +83,7 @@ class RezoneActionService
 
         // All fine, perform changes.
         $dominion->resource_platinum -= $platinumCost;
+        $dominion->stat_total_platinum_spent_rezoning += $platinumCost;
 
         foreach ($remove as $landType => $amount) {
             $dominion->{'land_' . $landType} -= $amount;

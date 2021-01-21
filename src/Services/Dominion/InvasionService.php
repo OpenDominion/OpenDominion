@@ -105,7 +105,7 @@ class InvasionService
             }
         }
 
-        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $dominion->race->getBoatCapacity()));
+        return ($dominion->resource_boats >= ceil($unitsThatNeedBoats / $this->militaryCalculator->getBoatCapacity($dominion)));
     }
 
     /**
@@ -196,7 +196,7 @@ class InvasionService
             return ($unit->slot === $slot);
         })->first();
 
-        if ($unit->getPerkValue('faster_return') !== 0) {
+        if ($unit->getPerkValue('faster_return') != 0) {
             $hours -= (int)$unit->getPerkValue('faster_return');
         }
 

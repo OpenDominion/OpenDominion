@@ -10,6 +10,7 @@ use Log;
 use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
+use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\ProductionCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
@@ -43,6 +44,9 @@ class TickService
     /** @var NotificationService */
     protected $notificationService;
 
+    /** @var OpsCalculator */
+    protected $opsCalculator;
+
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
@@ -72,6 +76,7 @@ class TickService
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->networthCalculator = app(NetworthCalculator::class);
         $this->notificationService = app(NotificationService::class);
+        $this->opsCalculator = app(OpsCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
         $this->productionCalculator = app(ProductionCalculator::class);
         $this->queueService = app(QueueService::class);
@@ -167,8 +172,11 @@ class TickService
                     'dominions.peasants' => DB::raw('dominions.peasants + dominion_tick.peasants'),
                     'dominions.peasants_last_hour' => DB::raw('dominion_tick.peasants'),
                     'dominions.morale' => DB::raw('dominions.morale + dominion_tick.morale'),
+                    'dominions.infamy' => DB::raw('dominions.infamy + dominion_tick.infamy'),
                     'dominions.spy_strength' => DB::raw('dominions.spy_strength + dominion_tick.spy_strength'),
                     'dominions.wizard_strength' => DB::raw('dominions.wizard_strength + dominion_tick.wizard_strength'),
+                    'dominions.spy_resilience' => DB::raw('dominions.spy_resilience + dominion_tick.spy_resilience'),
+                    'dominions.wizard_resilience' => DB::raw('dominions.wizard_resilience + dominion_tick.wizard_resilience'),
                     'dominions.resource_platinum' => DB::raw('dominions.resource_platinum + dominion_tick.resource_platinum'),
                     'dominions.resource_food' => DB::raw('dominions.resource_food + dominion_tick.resource_food'),
                     'dominions.resource_lumber' => DB::raw('dominions.resource_lumber + dominion_tick.resource_lumber'),
@@ -219,7 +227,10 @@ class TickService
                     'dominions.stat_total_ore_production' => DB::raw('dominions.stat_total_ore_production + dominion_tick.resource_ore'),
                     'dominions.stat_total_gem_production' => DB::raw('dominions.stat_total_gem_production + dominion_tick.resource_gems'),
                     'dominions.stat_total_tech_production' => DB::raw('dominions.stat_total_tech_production + dominion_tick.resource_tech'),
-                    'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boats'),
+                    'dominions.stat_total_boat_production' => DB::raw('dominions.stat_total_boat_production + dominion_tick.resource_boat_production'),
+                    'dominions.stat_total_food_decay' => DB::raw('dominions.stat_total_food_decay + dominion_tick.resource_food_decay'),
+                    'dominions.stat_total_lumber_decay' => DB::raw('dominions.stat_total_lumber_decay + dominion_tick.resource_lumber_decay'),
+                    'dominions.stat_total_mana_decay' => DB::raw('dominions.stat_total_mana_decay + dominion_tick.resource_mana_decay'),
                     'dominions.highest_land_achieved' => DB::raw('dominions.highest_land_achieved + dominion_tick.highest_land_achieved'),
                     'dominions.calculated_networth' => DB::raw('dominion_tick.calculated_networth'),
                     'dominions.last_tick_at' => $this->now,
@@ -302,6 +313,108 @@ class TickService
                 $round->name
             ));
         }
+    }
+
+    /**
+     * Reverts an hourly on a dominion.
+     *
+     * @throws Exception|Throwable
+     */
+    public function revertTick(Dominion $dominion)
+    {
+        $lastRestart = $dominion->history
+            ->where('event', 'restart')
+            ->sortByDesc('created_at')
+            ->first();
+        $lastTick = $dominion->history
+            ->where('event', 'tick')
+            ->sortByDesc('created_at')
+            ->first();
+        if ($lastTick == null) {
+            return;
+        }
+        $priorTick = $dominion->history
+            ->where('event', 'tick')
+            ->where('created_at', '<', $lastTick->created_at)
+            ->sortByDesc('created_at')->first();
+        if ($priorTick == null) {
+            return;
+        }
+        if ($lastRestart !== null && $lastRestart->created_at > $priorTick->created_at) {
+            return;
+        }
+
+        DB::transaction(function () use ($dominion, $priorTick) {
+            // Update spells
+            DB::table('active_spells')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'duration' => DB::raw('`duration` + 1'),
+                    'updated_at' => $this->now,
+                ]);
+
+            // TODO: Re-insert expired spells
+
+            // Update queues - two step since MySQL does not support deferred constraints
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'hours' => DB::raw('`hours` + 13'),
+                    'updated_at' => $this->now,
+                ]);
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'hours' => DB::raw('`hours` - 12'),
+                    'updated_at' => $this->now,
+                ]);
+
+            // Delete queues
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->where('hours', '>', 11)
+                ->delete();
+
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->where('hours', '>', 8)
+                ->where('source', 'training')
+                ->whereIn('resource', ['military_unit1', 'military_unit2'])
+                ->delete();
+
+            // Update attributes
+            $actions = $dominion->history->where('created_at', '>', $priorTick->created_at)->sortByDesc('created_at');
+            foreach ($actions as $action) {
+                foreach ($action->delta as $key => $value) {
+                    $type = gettype($value);
+
+                    if (isset($dominion->{$key})) {
+                        if ($type == 'bool') {
+                            $dominion->{$key} = !$value;
+                        } else {
+                            $dominion->{$key} -= $value;
+                        }
+                        if (substr($key, 0, 5) == 'land_') {
+                            $this->queueService->queueResources('exploration', $dominion, [$key => $value], 1);
+                        }
+                        if (substr($key, 0, 9) == 'building_') {
+                            $this->queueService->queueResources('construction', $dominion, [$key => $value], 1);
+                        }
+                        if (substr($key, 0, 9) == 'military_') {
+                            if ($key == 'military_draftees') {
+                                continue;
+                            }
+                            $this->queueService->queueResources('training', $dominion, [$key => $value], 1);
+                        }
+                    }
+                }
+            }
+
+            $dominion->save();
+            // TODO: Don't save new history record
+            // TODO: Erase notifications since
+            // TODO: $actions->delete()
+        });
     }
 
     /**
@@ -433,6 +546,7 @@ class TickService
                         'id',
                         'dominion_id',
                         'created_at',
+                        'updated_at'
                     ], true) &&
                     ($value != 0) // todo: strict type checking?
                 );
@@ -476,9 +590,10 @@ class TickService
 
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        // Prestige Cap
-        if ($dominion->prestige > $totalLand) {
-            $tick->prestige -= ($dominion->prestige - $totalLand);
+        // Prestige Capped at 90% of land size
+        $prestigeCap = max(floor($totalLand * 0.9), 250);
+        if ($dominion->prestige > $prestigeCap) {
+            $tick->prestige -= ($dominion->prestige - $prestigeCap);
         }
 
         // Population
@@ -491,14 +606,18 @@ class TickService
         // Resources
         $tick->resource_platinum += $this->productionCalculator->getPlatinumProduction($dominion);
         $tick->resource_lumber_production += $this->productionCalculator->getLumberProduction($dominion);
+        $tick->resource_lumber_decay += $this->productionCalculator->getLumberDecay($dominion);
         $tick->resource_lumber += $this->productionCalculator->getLumberNetChange($dominion);
         $tick->resource_mana_production += $this->productionCalculator->getManaProduction($dominion);
+        $tick->resource_mana_decay += $this->productionCalculator->getManaDecay($dominion);
         $tick->resource_mana += $this->productionCalculator->getManaNetChange($dominion);
         $tick->resource_ore += $this->productionCalculator->getOreProduction($dominion);
         $tick->resource_gems += $this->productionCalculator->getGemProduction($dominion);
         $tick->resource_tech += $this->productionCalculator->getTechProduction($dominion);
         $tick->resource_boats += $this->productionCalculator->getBoatProduction($dominion);
+        $tick->resource_boat_production += $this->productionCalculator->getBoatProduction($dominion);
         $tick->resource_food_production += $this->productionCalculator->getFoodProduction($dominion);
+        $tick->resource_food_decay += $this->productionCalculator->getFoodDecay($dominion);
         // Check for starvation before adjusting food
         $foodNetChange = $this->productionCalculator->getFoodNetChange($dominion);
 
@@ -523,11 +642,15 @@ class TickService
         }
 
         // Morale
-        if ($dominion->morale < 70) {
+        if ($dominion->morale < 80) {
             $tick->morale = 6;
         } elseif ($dominion->morale < 100) {
             $tick->morale = min(3, 100 - $dominion->morale);
         }
+
+        // Infamy
+        $infamyDecay = $this->opsCalculator->getInfamyDecay($dominion);
+        $tick->infamy = max($infamyDecay, -$dominion->infamy);
 
         // Spy Strength
         if ($dominion->spy_strength < 100) {
@@ -540,6 +663,12 @@ class TickService
             $wizardStrengthAdded = $this->militaryCalculator->getWizardStrengthRegen($dominion);
             $tick->wizard_strength = min($wizardStrengthAdded, 100 - $dominion->wizard_strength);
         }
+
+        // Resilience
+        $spyResilienceDecay = $this->opsCalculator->getResilienceDecay($dominion, 'spy');
+        $tick->spy_resilience = max($spyResilienceDecay, -$dominion->spy_resilience);
+        $wizardResilienceDecay = $this->opsCalculator->getResilienceDecay($dominion, 'wizard');
+        $tick->wizard_resilience = max($wizardResilienceDecay, -$dominion->wizard_resilience);
 
         // Store highest land total
         if ($totalLand > $dominion->highest_land_achieved) {

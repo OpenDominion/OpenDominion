@@ -11,6 +11,11 @@
         if ($event->target->id === $selectedDominion->id) {
             $boxColor = ($event->data['result']['success'] ? 'danger' : 'success');
         }
+
+        $sourceName = 'You';
+        if ($event->source->id != $selectedDominion->id) {
+            $sourceName = sprintf("%s (#%s)", $event->source->name, $event->source->realm->number);
+        }
     @endphp
     <div class="row">
         <div class="col-sm-12 col-md-8 col-md-offset-2">
@@ -204,60 +209,48 @@
                                 </p>
                             @endif
 
-                            {{-- Only show prestige / research point gains if we are the attacker --}}
-                            @if ($event->source->id === $selectedDominion->id)
+                            {{-- Only show additional information if we are in the attacker's realm --}}
+                            @if ($event->source->realm_id === $selectedDominion->realm_id)
                                 @if (isset($event->data['attacker']['prestigeChange']))
                                     @php
                                         $prestigeChange = $event->data['attacker']['prestigeChange'];
                                     @endphp
                                     @if ($prestigeChange < 0)
                                         <p class="text-center text-red">
-                                            You lost <b>{{ number_format(-$prestigeChange) }}</b> prestige.
+                                            {{ $sourceName }} lost <b>{{ number_format(-$prestigeChange) }}</b> prestige.
                                         </p>
                                     @elseif ($prestigeChange > 0)
                                         <p class="text-center text-green">
-                                            You gain <b>{{ number_format($prestigeChange) }}</b> prestige.
+                                            {{ $sourceName }} gained <b>{{ number_format($prestigeChange) }}</b> prestige.
                                         </p>
                                     @endif
                                 @endif
                                 @if (isset($event->data['attacker']['researchPoints']))
                                     <p class="text-center text-green">
-                                        You gain <b>{{ number_format($event->data['attacker']['researchPoints']) }}</b> research points.
+                                        {{ $sourceName }} gained <b>{{ number_format($event->data['attacker']['researchPoints']) }}</b> research points.
                                     </p>
                                 @endif
-                            @endif
 
-                            @if (isset($event->data['attacker']['landVerdantBloom']))
-                                @if ($event->source->id === $selectedDominion->id)
+                                @if (isset($event->data['attacker']['landVerdantBloom']))
                                     <p class="text-center text-green">
                                         Additionally, {{ number_format($event->data['attacker']['landVerdantBloom']) }} acres will be converted to forest due to Verdant Bloom.
                                     </p>
                                 @endif
-                            @endif
-                            @if (isset($event->data['attacker']['landErosion']))
-                                @if ($event->source->id === $selectedDominion->id)
+                                @if (isset($event->data['attacker']['landErosion']))
                                     <p class="text-center text-green">
                                         Additionally, {{ number_format($event->data['attacker']['landErosion']) }} acres will be converted to water due to Erosion.
                                     </p>
                                 @endif
-                            @endif
-                            @if (isset($event->data['attacker']['plunder']))
-                                @if ($event->source->id === $selectedDominion->id)
+                                @if (isset($event->data['attacker']['plunder']))
                                     <p class="text-center text-green">
-                                        {{-- todo: remove hardcoded Hobgoblin mention? --}}
-                                        Your Hobgoblins plunder {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems.
-                                    </p>
-                                @else
-                                    <p class="text-center text-red">
-                                        {{-- todo: remove hardcoded Hobgoblin mention? --}}
-                                        You lost {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems due to plundering.
+                                        {{ $sourceName }} plundered {{ number_format($event->data['attacker']['plunder']['platinum']) }} platinum and {{ number_format($event->data['attacker']['plunder']['gems']) }} gems.
                                     </p>
                                 @endif
-                            @endif
-                            @if (isset($event->data['attacker']['conversion']) && $event->source->id === $selectedDominion->id)
-                                <p class="text-center text-green">
-                                    {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $selectedDominion->race) }}
-                                </p>
+                                @if (isset($event->data['attacker']['conversion']))
+                                    <p class="text-center text-green">
+                                        {{ $unitHelper->getConvertedUnitsString($event->data['attacker']['conversion'], $event->source->race) }}
+                                    </p>
+                                @endif
                             @endif
                         </div>
                     </div>

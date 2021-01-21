@@ -7,6 +7,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\LandHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\ExploreActionRequest;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
@@ -18,6 +19,7 @@ class ExplorationController extends AbstractDominionController
     {
         return view('pages.dominion.explore', [
             'explorationCalculator' => app(ExplorationCalculator::class),
+            'infoMapper' => app(InfoMapper::class),
             'landCalculator' => app(LandCalculator::class),
             'landHelper' => app(LandHelper::class),
             'queueService' => app(QueueService::class),

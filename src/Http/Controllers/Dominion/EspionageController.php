@@ -13,6 +13,7 @@ use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\EspionageActionService;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\Dominion\ProtectionService;
 
 class EspionageController extends AbstractDominionController
@@ -22,6 +23,7 @@ class EspionageController extends AbstractDominionController
         return view('pages.dominion.espionage', [
             'espionageCalculator' => app(EspionageCalculator::class),
             'espionageHelper' => app(EspionageHelper::class),
+            'governmentService' => app(GovernmentService::class),
             'landCalculator' => app(LandCalculator::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'protectionService' => app(ProtectionService::class),

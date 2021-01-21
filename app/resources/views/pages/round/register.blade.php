@@ -197,7 +197,9 @@
                     <div class="col-sm-9">
                         <select name="pack_size" id="pack_size" class="form-control">
                             @for ($i = 2; $i <= $round->pack_size; $i++)
+                                @if ($i != 3)
                                 <option value="{{ $i }}" {{ (old('pack_size') == $i) ? 'selected' : null }}>{{ $i }}</option>
+                                @endif
                             @endfor
                         </select>
                         <p class="help-block">

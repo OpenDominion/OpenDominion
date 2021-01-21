@@ -430,7 +430,7 @@ class DominionFactory
             'resource_ore' => (2500 * $days),
             'resource_mana' => (1000 * $days),
             'resource_gems' => (2000 * $days),
-            'resource_tech' => (2000 * $days),
+            'resource_tech' => (6000 * $days),
             'resource_boats' => (20 * $days),
 
             'military_draftees' => (30 * $days),
@@ -471,7 +471,7 @@ class DominionFactory
         } else {
             // 30% 525-600 acres
             $landSize = mt_rand(525, 600);
-            $defense = $landSize * (0.0105 * ($landSize - 0.3)) * $accuracy;
+            $defense = $landSize * ((0.0105 * $landSize) - 0.3) * $accuracy;
         }
 
         // Generate random starting build

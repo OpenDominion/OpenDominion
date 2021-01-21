@@ -34,7 +34,8 @@ class NetworthCalculator
         BuildingCalculator $buildingCalculator,
         LandCalculator $landCalculator,
         MilitaryCalculator $militaryCalculator
-    ) {
+    )
+    {
         $this->buildingCalculator = $buildingCalculator;
         $this->landCalculator = $landCalculator;
         $this->militaryCalculator = $militaryCalculator;

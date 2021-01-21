@@ -12,11 +12,9 @@
     </div>
     <div class="box-body text-center">
 
-        @if($targetDominion != null)
-            <a href="{{ route($baseRoute.'status', $targetDominion) }}" class="btn btn-app">
-                <i class="fa fa-bar-chart"></i> Status
-            </a>
-        @endif
+        <a href="{{ route($baseRoute.'op-center', $targetDominion) }}" class="btn btn-app">
+            <i class="fa fa-globe"></i> Op Center
+        </a>
 
         <a href="{{ route($baseRoute.'production', $targetDominion) }}" class="btn btn-app">
             <i class="fa fa-industry"></i> Production
@@ -24,19 +22,6 @@
 
         <a href="{{ route($baseRoute.'military', $targetDominion) }}" class="btn btn-app">
             <i class="ra ra-sword"></i> Military
-        </a>
-
-        <a href="{{ route($baseRoute.'land', $targetDominion) }}" class="btn btn-app">
-            <i class="ra ra-honeycomb"></i> Land
-        </a>
-
-        <a href="{{ route($baseRoute.'construct', $targetDominion) }}" class="btn btn-app">
-            <i class="fa fa-home"></i> Construction
-        </a>
-
-
-        <a href="{{ route($baseRoute.'castle', $targetDominion) }}" class="btn btn-app">
-            <i class="ra ra-tower"></i> Castle
         </a>
 
         <a href="{{ route($baseRoute.'magic', $targetDominion) }}" class="btn btn-app">

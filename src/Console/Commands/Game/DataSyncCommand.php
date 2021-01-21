@@ -143,6 +143,9 @@ class DataSyncCommand extends Command implements CommandInterface
                     'name' => $unitName,
                     'cost_platinum' => object_get($unitData, 'cost.platinum', 0),
                     'cost_ore' => object_get($unitData, 'cost.ore', 0),
+                    'cost_mana' => object_get($unitData, 'cost.mana', 0),
+                    'cost_lumber' => object_get($unitData, 'cost.lumber', 0),
+                    'cost_gems' => object_get($unitData, 'cost.gems', 0),
                     'power_offense' => object_get($unitData, 'power.offense', 0),
                     'power_defense' => object_get($unitData, 'power.defense', 0),
                     'need_boat' => (int)object_get($unitData, 'need_boat', true),
@@ -204,6 +207,7 @@ class DataSyncCommand extends Command implements CommandInterface
                 ->fill([
                     'name' => $techData->name,
                     'prerequisites' => object_get($techData, 'requires', []),
+                    'active' => object_get($techData, 'active', true),
                 ]);
 
             if (!$tech->exists) {
