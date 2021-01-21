@@ -594,26 +594,34 @@ class EspionageActionService
         $damageDealt = [];
         $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
+        $damageReductionMultiplier = 1;
 
         // Resilience
-        $baseDamage *= (1 - $this->opsCalculator->getResilienceBonus($dominion->spy_resilience));
+        $damageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->spy_resilience));
 
         // Techs
-        $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));
+        $damageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));
+
+        // Wonders
+        $damageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage"));
+
+        if ($damageReductionMultiplier == 0) {
+            // Damage immunity
+            $baseDamage = 0;
+        } else {
+            // Cap damage reduction at 80%
+            $baseDamage *= max(0.2, $damageReductionMultiplier);
+        }
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
-                // Cap at 80%
-                $damage = $target->{$attr} * max(0.2, $baseDamage);
+                $damage = $target->{$attr} * $baseDamage;
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
                     $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage;
                 }
-
-                // Wonders
-                $damage *= (1 + $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage"));
 
                 // Check for immortal wizards
                 if ($target->race->getPerkValue('immortal_wizards') != 0 && $attr == 'military_wizards') {
@@ -630,23 +638,23 @@ class EspionageActionService
                     $damage = (floor($target->{$attr} + $damage) - floor($target->{$attr}));
                 } else {
                     // Rounded for all other damage types
-                    $target->{$attr} -= round($damage);
+                    $damage = round($damage);
+                    $target->{$attr} -= $damage;
                 }
 
-                $totalDamage += round($damage);
+                $totalDamage += $damage;
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
                 // Update statistics
                 if (isset($dominion->{"stat_{$operationInfo['key']}_damage"})) {
-                    $dominion->{"stat_{$operationInfo['key']}_damage"} += round($damage);
+                    $dominion->{"stat_{$operationInfo['key']}_damage"} += $damage;
                 }
             }
         }
         if (isset($operationInfo['increases'])) {
             foreach ($operationInfo['increases'] as $attr) {
-                // Cap at 80%
-                $damage = $target->{$attr} * max(0.2, $baseDamage);
-                $target->{$attr} += round($damage);
+                $damage = round($target->{$attr} * $baseDamage);
+                $target->{$attr} += $damage;
             }
         }
 
