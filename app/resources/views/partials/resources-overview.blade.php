@@ -35,8 +35,8 @@
             <div class="row">
                 <div class="col-xs-3">
                     <div class="row">
-                        <div class="col-lg-6"><b>Peasants:</b></div>
-                        <div class="col-lg-6">{{ number_format($selectedDominion->peasants) }}</div>
+                        <div class="col-lg-6"><b>Networth:</b></div>
+                        <div class="col-lg-6">{{ number_format($networthCalculator->getDominionNetworth($selectedDominion)) }}</div>
                     </div>
                 </div>
                 <div class="col-xs-3">
@@ -55,6 +55,33 @@
                     <div class="row">
                         <div class="col-lg-6"><b>Gems:</b></div>
                         <div class="col-lg-6">{{ number_format($selectedDominion->resource_gems) }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <div class="row">
+                        <div class="col-lg-6"><b>Peasants:</b></div>
+                        <div class="col-lg-6">{{ number_format($selectedDominion->peasants) }}</div>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="row">
+                        <div class="col-lg-6"><b>Draftees:</b></div>
+                        <div class="col-lg-6">{{ number_format($selectedDominion->military_draftees) }}</div>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="row">
+                        <div class="col-lg-6"><b>Spy Strength:</b></div>
+                        <div class="col-lg-6">{{ number_format(floor($selectedDominion->spy_strength)) }}%</div>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="row">
+                        <div class="col-lg-6"><b>Research:</b></div>
+                        <div class="col-lg-6">{{ number_format($selectedDominion->resource_tech / 100, 2) }}%</div>
                     </div>
                 </div>
             </div>
