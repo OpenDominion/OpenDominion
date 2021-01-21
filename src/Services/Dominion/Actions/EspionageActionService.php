@@ -634,14 +634,13 @@ class EspionageActionService
                     if ($damage > $target->wizard_strength) {
                         $damage = (int)$target->wizard_strength;
                     }
-                    $target->{$attr} -= $damage;
                     $damage = (floor($target->{$attr} + $damage) - floor($target->{$attr}));
                 } else {
                     // Rounded for all other damage types
                     $damage = round($damage);
-                    $target->{$attr} -= $damage;
                 }
 
+                $target->{$attr} -= $damage;
                 $totalDamage += $damage;
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 

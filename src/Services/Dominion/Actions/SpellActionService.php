@@ -579,19 +579,25 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
-            $damageReductionMultiplier = 1;
+            $baseDamageReductionMultiplier = 1;
 
             // Resilience
-            $damageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
+            $baseDamageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
+
+            // Towers
+            $baseDamageReductionMultiplier *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
             // Techs
-            $damageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
+            $baseDamageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
 
             // Wonders
-            $damageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
+            $baseDamageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
+                    $damage = $target->{$attr} * $baseDamage;
+                    $damageReductionMultiplier = $baseDamageReductionMultiplier;
+
                     // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
                         $forestHavenFireballReduction = 10;
@@ -625,20 +631,16 @@ class SpellActionService
                         $damageReductionMultiplier *= $damageMultiplier;
                     }
 
-                    // Damage reduction from Towers
-                    $damageReductionMultiplier *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
-
                     if ($damageReductionMultiplier == 0) {
                         // Damage immunity
-                        $baseDamage = 0;
+                        $damage = 0;
                     } else {
                         // Cap damage reduction at 80%
-                        $baseDamage *= max(0.2, $damageReductionMultiplier);
+                        $damage *= max(0.2, $damageReductionMultiplier);
+                        $damage = round($damage);
                     }
 
-                    $damage = round($target->{$attr} * $baseDamage);
                     $target->{$attr} -= $damage;
-
                     $totalDamage += $damage;
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
