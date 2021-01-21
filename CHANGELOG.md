@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Improved dominion history logs
 
+## [1.2.5] - 2021-01-20
+### Changed
+- Replace networth with land in overview top banner
+
+### Fixed
+- Updated infamy tooltip
+- Bug with spy ops damage calculation
+- Prevent mousewheel events in input fields
+
+## [1.2.4] - 2021-01-17
+### Added
+- Show spy/wizard strength recovery rates in statistics advisor
+
+### Fixed
+- Nox racial was not being applied to the bonus invasion RP from schools
+- Survivalist Mentality prestige perk was incorrect
+
 ## [1.2.3] - 2021-01-12
 ### Changed
 - RPs from invasion decreased to 1000 (from 1100), but schools generate 130 per 1% owned up to a maximum of 2600 at 20% (from 39 per 1%, max 1560)
@@ -1238,7 +1255,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.3...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...HEAD
+[1.2.5]: https://github.com/OpenDominion/OpenDominion/compare/1.2.4...1.2.5
+[1.2.4]: https://github.com/OpenDominion/OpenDominion/compare/1.2.3...1.2.4
 [1.2.3]: https://github.com/OpenDominion/OpenDominion/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/OpenDominion/OpenDominion/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/OpenDominion/OpenDominion/compare/1.2.0...1.2.1
