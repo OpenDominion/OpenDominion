@@ -630,17 +630,18 @@ class EspionageActionService
 
                 if ($attr == 'wizard_strength') {
                     // Min damage for Magic Snare
-                    $damage = max(1.5, $baseDamage);
-                    if ($damage > $target->wizard_strength) {
-                        $damage = (int)$target->wizard_strength;
+                    $damage = max(1.5, $target->{$attr} * $baseDamage);
+                    if ($damage > $target->{$attr}) {
+                        $damage = (int)$target->{$attr};
                     }
+                    $target->{$attr} -= $damage;
                     $damage = (floor($target->{$attr} + $damage) - floor($target->{$attr}));
                 } else {
                     // Rounded for all other damage types
                     $damage = round($damage);
+                    $target->{$attr} -= $damage;
                 }
 
-                $target->{$attr} -= $damage;
                 $totalDamage += $damage;
                 $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 

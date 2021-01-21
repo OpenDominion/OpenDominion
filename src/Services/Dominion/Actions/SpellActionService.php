@@ -638,9 +638,9 @@ class SpellActionService
                         // Cap damage reduction at 80%
                         $damage *= max(0.2, $damageReductionMultiplier);
                         $damage = round($damage);
+                        $target->{$attr} -= $damage;
                     }
 
-                    $target->{$attr} -= $damage;
                     $totalDamage += $damage;
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
