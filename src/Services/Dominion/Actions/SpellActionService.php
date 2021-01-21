@@ -579,21 +579,19 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
+            $damageReductionMultiplier = 1;
 
             // Resilience
-            $baseDamage *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
+            $damageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
 
             // Techs
-            $baseDamage *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
+            $damageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
 
             // Wonders
-            $baseDamage *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
+            $damageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
-                    $damage = $target->{$attr} * $baseDamage;
-                    $damageReductionMultiplier = 1;
-
                     // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
                         $forestHavenFireballReduction = 10;
@@ -630,18 +628,25 @@ class SpellActionService
                     // Damage reduction from Towers
                     $damageReductionMultiplier *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
 
-                    // Cap at 80% reduction
-                    $damage *= max(0.2, $damageReductionMultiplier);
+                    if ($damageReductionMultiplier == 0) {
+                        // Damage immunity
+                        $baseDamage = 0;
+                    } else {
+                        // Cap damage reduction at 80%
+                        $baseDamage *= max(0.2, $damageReductionMultiplier);
+                    }
 
-                    $totalDamage += round($damage);
-                    $target->{$attr} -= round($damage);
+                    $damage = round($target->{$attr} * $baseDamage);
+                    $target->{$attr} -= $damage;
+
+                    $totalDamage += $damage;
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));
 
                     // Update statistics
                     if (isset($dominion->{"stat_{$spellInfo['key']}_damage"})) {
                         // Only count peasants killed by fireball
                         if (!($spellInfo['key'] == 'fireball' && $attr == 'resource_food')) {
-                            $dominion->{"stat_{$spellInfo['key']}_damage"} += round($damage);
+                            $dominion->{"stat_{$spellInfo['key']}_damage"} += $damage;
                         }
                     }
                 }
@@ -656,13 +661,6 @@ class SpellActionService
                 foreach ($spellInfo['increases'] as $attr) {
                     if ($attr == 'military_draftees') {
                         $target->{$attr} += $totalDamage;
-                    } else {
-                        $damage = $target->{$attr} * $baseDamage;
-
-                        // Damage reduction from Towers
-                        $damage *= max(0.2, 1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
-
-                        $target->{$attr} += round($damage);
                     }
                 }
             }
