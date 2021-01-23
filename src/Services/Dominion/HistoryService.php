@@ -146,7 +146,7 @@ class HistoryService
     protected function getChangedAttributeKeys(Dominion $dominion): array
     {
         return collect($dominion->getAttributes())
-            ->diffAssoc(collect($dominion->getOriginal()))
+            ->diffAssoc(collect($dominion->getOriginal())->except(['settings']))
             ->except([
                 'id',
                 'user_id',
