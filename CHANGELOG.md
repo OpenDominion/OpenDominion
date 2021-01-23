@@ -3,7 +3,15 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Additional resources displayed in header overview
+- Added spending statistics to production advisor
+- Rezone page now shows current percentage of each land type
+
 ### Changed
+- Construction advisor moved to construction page
+- Land advisor moved to explore page
+- Tech/Castle advisors removed
 - Improved dominion history logs
 
 ## [1.2.5] - 2021-01-20
