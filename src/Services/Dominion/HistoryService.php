@@ -157,10 +157,7 @@ class HistoryService
                 'name',
                 'ruler_name',
                 'peasants_last_hour',
-                'created_at',
-                'updated_at',
-                'daily_platinum',
-                'daily_land',
+                'calculated_networth',
                 'council_last_read',
                 'forum_last_read',
                 'town_crier_last_seen',
@@ -170,6 +167,8 @@ class HistoryService
                 'last_tick_at',
                 'locked_at',
                 'monarchy_vote_for_dominion_id',
+                'created_at',
+                'updated_at',
                 'settings'
             ])->keys()->toArray();
     }

@@ -187,7 +187,8 @@ class SpellActionService
             if ($target == null) {
                 $dominion->save([
                     'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                    'action' => $spellKey
+                    'action' => $spellKey,
+                    'queue' => ['active_spells' => [$spellKey => $result['duration']]]
                 ]);
             } else {
                 $dominion->save([
@@ -275,6 +276,7 @@ class SpellActionService
 
         return [
             'success' => true,
+            'duration' => $activeSpell !== null ? $activeSpell->duration : 12,
             'message' => sprintf(
                 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next %s hours.',
                 $spellInfo['duration']

@@ -225,6 +225,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('misc/restart')->uses('Dominion\MiscController@getRestartDominion')->name('misc.restart');
             $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion');
             $router->get('misc/tick')->uses('Dominion\MiscController@getTickDominion')->name('misc.tick');
+            $router->get('misc/undo-tick')->uses('Dominion\MiscController@getUndoTickDominion')->name('misc.undo-tick');
 
             // Debug
             // todo: remove me later

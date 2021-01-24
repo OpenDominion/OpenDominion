@@ -127,7 +127,7 @@ class ExploreActionService
                 'military_draftees' => ($dominion->military_draftees - $drafteeCost),
             ])->save([
                 'event' => HistoryService::EVENT_ACTION_EXPLORE,
-                'queue' => array_filter($data)
+                'queue' => ['exploration' => array_filter($data)]
             ]);
         });
 

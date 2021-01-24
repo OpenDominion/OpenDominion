@@ -247,4 +247,34 @@ class MiscController extends AbstractDominionController
 
         return redirect()->back();
     }
+
+    public function getUndoTickDominion(Request $request) {
+        $dominion = $this->getSelectedDominion();
+
+        $protectionService = app(ProtectionService::class);
+        $tickService = app(TickService::class);
+
+        try {
+            if (!$protectionService->isUnderProtection($dominion)) {
+                throw new GameException('You cannot undo a tick outside of protection.');
+            }
+
+            if ($dominion->last_tick_at > now()->subSeconds(1)) {
+                throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+            }
+
+            if ($dominion->protection_ticks_remaining == 72) {
+                throw new GameException('You cannot undo the first tick, use restart instead.');
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $dominion->protection_ticks_remaining += 1;
+        $tickService->revertTick($dominion);
+
+        return redirect()->back();
+    }
 }

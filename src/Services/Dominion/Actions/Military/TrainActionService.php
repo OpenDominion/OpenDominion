@@ -135,7 +135,7 @@ class TrainActionService
             $dominion->stat_total_gems_spent_training += $totalCosts['gems'];
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_TRAIN,
-                'queue' => array_filter($nineHourData + $data)
+                'queue' => ['training' => array_filter($nineHourData + $data)]
             ]);
         });
 
