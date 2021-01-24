@@ -626,7 +626,7 @@ class ProductionCalculator
         ]);
 
         // Spell: Earthquake - Miner's Sight protects from ore portion
-        if ($this->spellCalculator->isSpellActive($dominion, 'miners_sight')) {
+        if (!$this->spellCalculator->isSpellActive($dominion, 'miners_sight')) {
             $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'earthquake', $spellEarthquake);
         }
 
