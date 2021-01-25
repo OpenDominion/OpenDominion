@@ -19,7 +19,7 @@
                     <h3 class="box-title">Welcome to OpenDominion!</h3>
                 </div>
                 <div class="box-body">
-                    <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the current round!</p>
+                    <p>OpenDominion is a free online text-based strategy game in a medieval fantasy setting. You control a nation called a 'dominion', along with its resources, buildings, land and units. You are placed in a realm with other dominions and you must work together to make your realm the wealthiest and most powerful in the land and crush your enemies!</p>
 
                     <p>OpenDominion is a free and open source remake of Dominion from Kamikaze Games, which ran from 2000 to 2012 before <a href="http://dominion.opendominion.net/GameOver.htm" target="_blank">stopping indefinitely <i class="fa fa-external-link"></i></a>.</p>
                     
@@ -131,7 +131,7 @@
                             </p>
                         @else
                             <p>
-                                <em><a href="{{ route('round.register', $currentRound) }}">Register</a> to join the ongoing round!</em>
+                                <a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a>
                             </p>
                         @endif
                     </div>

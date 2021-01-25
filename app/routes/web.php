@@ -6,6 +6,7 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 /** @var Router $router */
 $router->get('/')->uses('HomeController@getIndex')->name('home');
 $router->get('user-agreement')->uses('HomeController@getUserAgreement')->name('user-agreement');
+$router->get('about')->uses('HomeController@getAboutPage')->name('about');
 
 // Authentication
 

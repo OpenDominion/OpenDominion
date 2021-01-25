@@ -45,7 +45,7 @@ class RegisterController extends AbstractController
             'display_name' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
-            'terms' => 'required',
+            'agreement_rules' => 'required',
         ]);
 
         $user = $this->create($request->all());

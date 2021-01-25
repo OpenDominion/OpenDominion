@@ -14,6 +14,9 @@
 
                     <div class="box-body">
 
+                        <p>Unlike classic Dominion, you only need to register for a user account once.</p>
+                        <p>Once you activate your user account, you can sign up for an active round and start playing. Your user account will be persistent across rounds and dominions.</p>
+
                         {{-- Display Name --}}
                         <div class="form-group">
                             <label for="display_name" class="col-sm-3 control-label">Display Name</label>
@@ -57,29 +60,22 @@
                             <div class="col-sm-offset-3 col-sm-9">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="terms" required> I agree to the <a href="#" style="text-decoration: line-through;">Terms and Conditions</a> (todo)
+                                        <input type="checkbox" id="agreement_rules" name="agreement_rules" />
+                                        I will adhere to the rules described in the <a href="#" data-toggle="modal" data-target="#user-agreement">User Agreement</a>
                                     </label>
-                                </div>
-                                <div class="help-block">
-                                    <p>TL;DR version:</p>
-                                    <ul>
-                                        <li>One account per player.</li>
-                                        <li>No cheating, botting or scripting.</li>
-                                        <li>Anonymized analytical data will be collected through Google Analytics the sole purpose of improving the game. Feel free to exempt yourself by using something like adblock or Ghostery.</li>
-                                        <li>We will not share your data to anyone.</li>
-                                        <li>We will only send you game-related emails on your email address.</li>
-                                    </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <p>Unlike vanilla Dominion, you only need to register for a user account once.</p>
-                        <p>Once you activate your user account, you can sign up for an active round and start playing. Your user account will be persistent across rounds and dominions.</p>
-
+                        <ul class="text-muted">
+                            <li>We will not share your data with anyone.</li>
+                            <li>We will only send game-related emails to your email address.</li>
+                            <li>Anonymized analytical data will be collected through Google Analytics the sole purpose of improving the game. Feel free to exempt yourself by using something like adblock or Ghostery.</li>
+                        </ul>
                     </div>
 
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Register</button>
+                        <button type="submit" class="btn btn-primary" id="register_submit" disabled>Register</button>
                         <div class="pull-right">
                             Already have an account? <a href="{{ route('auth.login') }}">Login</a>
                         </div>
@@ -90,4 +86,36 @@
 
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="user-agreement" tabindex="-1" role="dialog" aria-labelledby="user-agreement-label">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="user-agreement-label">User Agreement</h4>
+            </div>
+            <div class="modal-body">
+                @include('partials.user-agreement')
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('inline-scripts')
+    <script type="text/javascript">
+        (function ($) {
+            $('#agreement_rules').change(function() {
+                if ($(this).is(":checked")) {
+                    $('#register_submit').prop('disabled', false);
+                } else {
+                    $('#register_submit').prop('disabled', true);
+                }
+            });
+        })(jQuery);
+    </script>
+@endpush
