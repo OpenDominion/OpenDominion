@@ -157,7 +157,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nLand: %s\n%s: %s",
                     $test['attributes']['power_type'],
-                    implode($test['attributes']['perk_value'], ','),
+                    implode(',', $test['attributes']['perk_value']),
                     number_format($test['attributes']['land']),
                     ucwords($test['attributes']['land_type']),
                     number_format($test['attributes']['land_amount'])
@@ -302,7 +302,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nBuilding: %s\n%s: %s",
                     $test['attributes']['power_type'],
-                    implode($test['attributes']['perk_value'], ','),
+                    implode(',', $test['attributes']['perk_value']),
                     number_format($test['attributes']['land']),
                     ucwords($test['attributes']['building_type']),
                     number_format($test['attributes']['building_amount'])
@@ -375,7 +375,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nWPA: %s",
                     $test['attributes']['power_type'],
-                    implode($test['attributes']['perk_value'], ','),
+                    implode(',', $test['attributes']['perk_value']),
                     number_format($test['attributes']['wpa'])
                 )
             );
@@ -467,7 +467,7 @@ class MilitaryCalculatorTest extends AbstractBrowserKitTestCase
                 sprintf(
                     "Power Type: %s\nPerk Value: %s\nLand Ratio: %s",
                     $test['attributes']['power_type'],
-                    implode($test['attributes']['perk_value'][0], ';') . ',' . implode($test['attributes']['perk_value'][1], ';'),
+                    implode(';', $test['attributes']['perk_value'][0]) . ',' . implode(';', $test['attributes']['perk_value'][1]),
                     number_format($test['attributes']['ratio'])
                 )
             );
