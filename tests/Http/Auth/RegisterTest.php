@@ -24,9 +24,9 @@ class RegisterTest extends AbstractBrowserKitTestCase
             ->see('Register')
             ->type('John Doe', 'display_name')
             ->type('johndoe@example.com', 'email')
-            ->type('secret', 'password')
-            ->type('secret', 'password_confirmation')
-            ->check('terms')
+            ->type('secret123', 'password')
+            ->type('secret123', 'password_confirmation')
+            ->check('agreement_rules')
             ->press('Register')
             ->seeRouteIs('home')
             ->see('You have been successfully registered. An activation email has been dispatched to your address.')
@@ -97,7 +97,7 @@ class RegisterTest extends AbstractBrowserKitTestCase
             ->type('johndoe@example.com', 'email')
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
-            ->check('terms')
+            ->check('agreement_rules')
             ->press('Register')
             ->seeRouteIs('auth.register')
             ->see('The email has already been taken.');
@@ -113,7 +113,7 @@ class RegisterTest extends AbstractBrowserKitTestCase
             ->type('johndoe@example.com', 'email')
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
-            ->check('terms')
+            ->check('agreement_rules')
             ->press('Register')
             ->seeRouteIs('auth.register')
             ->see('The display name has already been taken.');
@@ -127,13 +127,13 @@ class RegisterTest extends AbstractBrowserKitTestCase
             ->type('johndoe@example.com', 'email')
             ->type('password1', 'password')
             ->type('password2', 'password_confirmation')
-            ->check('terms')
+            ->check('agreement_rules')
             ->press('Register')
             ->seeRouteIs('auth.register')
             ->see('The password confirmation does not match.');
     }
 
-    public function testUserCantRegisterWithoutAgreeingToTheTerms()
+    public function testUserCantRegisterWithoutAgreeingToTheRules()
     {
         $this->visitRoute('auth.register')
             ->see('Register')
@@ -142,7 +142,6 @@ class RegisterTest extends AbstractBrowserKitTestCase
             ->type('password', 'password')
             ->type('password', 'password_confirmation')
             ->press('Register')
-            ->seeRouteIs('auth.register')
-            ->see('The terms field is required.');
+            ->seeRouteIs('auth.register');
     }
 }
