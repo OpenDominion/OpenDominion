@@ -58,6 +58,11 @@ class HomeController extends AbstractController
         ]);
     }
 
+    public function getAboutPage()
+    {
+        return view('pages.about');
+    }
+
     public function getUserAgreement()
     {
         return view('pages.user-agreement');

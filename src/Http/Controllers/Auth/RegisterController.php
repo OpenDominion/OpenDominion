@@ -44,8 +44,8 @@ class RegisterController extends AbstractController
         $this->validate($request, [
             'display_name' => 'required|unique:users',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
-            'terms' => 'required',
+            'password' => 'required|confirmed|min:8',
+            'agreement_rules' => 'required',
         ]);
 
         $user = $this->create($request->all());
