@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Construction advisor moved to construction page
 - Land advisor moved to explore page
 - Tech/Castle advisors removed
+- Technology page and Vision ops now show the total number of techs unlocked
 - Rankings advisor now links to overall rankings pages
 - Improved dominion history logs
 
