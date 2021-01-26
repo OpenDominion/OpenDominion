@@ -322,21 +322,23 @@ class TickService
      */
     public function revertTick(Dominion $dominion)
     {
-        $lastRestart = $dominion->history
+        $lastRestart = $dominion->history()
             ->where('event', 'restart')
-            ->sortByDesc('created_at')
+            ->orderByDesc('created_at')
             ->first();
 
         if ($lastRestart !== null) {
             // Only revert the latest tick since the last restart
-            $ticks = $dominion->history
+            $ticks = $dominion->history()
                 ->where('event', 'tick')
                 ->where('created_at', '>', $lastRestart->created_at)
-                ->sortByDesc('created_at');
+                ->orderByDesc('created_at')
+                ->get();
         } else {
-            $ticks = $dominion->history
+            $ticks = $dominion->history()
                 ->where('event', 'tick')
-                ->sortByDesc('created_at');
+                ->orderByDesc('created_at')
+                ->get();
         }
 
         if ($ticks->count() > 1) {
@@ -351,67 +353,50 @@ class TickService
         }
 
         DB::transaction(function () use ($dominion, $revertTo) {
-            // TODO: Re-insert expired spells
-
-            // Update spells
-            DB::table('active_spells')
-                ->where('dominion_id', $dominion->id)
-                ->update([
-                    'duration' => DB::raw('`duration` + 1'),
-                    'updated_at' => $this->now,
-                ]);
-
-            // Update queues - two step since MySQL does not support deferred constraints
-            DB::table('dominion_queue')
-                ->where('dominion_id', $dominion->id)
-                ->update([
-                    'hours' => DB::raw('`hours` + 13'),
-                    'updated_at' => $this->now,
-                ]);
-            DB::table('dominion_queue')
-                ->where('dominion_id', $dominion->id)
-                ->update([
-                    'hours' => DB::raw('`hours` - 12'),
-                    'updated_at' => $this->now,
-                ]);
-
-            // Delete queues
-            DB::table('dominion_queue')
-                ->where('dominion_id', $dominion->id)
-                ->where('hours', '>', 11)
-                ->delete();
-
-            DB::table('dominion_queue')
-                ->where('dominion_id', $dominion->id)
-                ->where('hours', '>', 8)
-                ->where('source', 'training')
-                ->whereIn('resource', ['military_unit1', 'military_unit2'])
-                ->delete();
-
             // Update attributes
             $actions = $dominion->history->where('created_at', '>', $revertTo)->sortByDesc('created_at');
             foreach ($actions as $action) {
                 foreach ($action->delta as $key => $value) {
-                    $type = gettype($value);
+                    if ($key == 'calculated_networth') {
+                        continue;
+                    }
+
+                    if ($key == 'expiring_spells') {
+                        // Queued Spells
+                        foreach (json_decode($value) as $spell) {
+                            DB::table('active_spells')
+                                ->insert([
+                                    'dominion_id' => $dominion->id,
+                                    'spell' => $spell,
+                                    'duration' => 0,
+                                    'cast_by_dominion_id' => $dominion->id,
+                                    'created_at' => $this->now,
+                                    'updated_at' => $this->now,
+                                ]);
+                        }
+                    }
 
                     if (isset($dominion->{$key})) {
+                        $type = gettype($value);
                         if ($type == 'bool') {
                             $dominion->{$key} = !$value;
                         } else {
                             $dominion->{$key} -= $value;
                         }
+
                         if ($action->event == 'tick') {
+                            // Queued Resources
                             if (substr($key, 0, 5) == 'land_') {
-                                $this->queueService->queueResources('exploration', $dominion, [$key => $value], 1);
+                                $this->queueService->queueResources('exploration', $dominion, [$key => $value], 0);
                             }
                             if (substr($key, 0, 9) == 'building_') {
-                                $this->queueService->queueResources('construction', $dominion, [$key => $value], 1);
+                                $this->queueService->queueResources('construction', $dominion, [$key => $value], 0);
                             }
                             if (substr($key, 0, 9) == 'military_') {
                                 if ($key == 'military_draftees') {
                                     continue;
                                 }
-                                $this->queueService->queueResources('training', $dominion, [$key => $value], 1);
+                                $this->queueService->queueResources('training', $dominion, [$key => $value], 0);
                             }
                         }
                     }
@@ -428,6 +413,55 @@ class TickService
                             ]);
                     }
                 }
+
+                // Update spells - two step since MySQL does not support deferred constraints
+                DB::table('active_spells')
+                    ->where('dominion_id', $dominion->id)
+                    ->update([
+                        'duration' => DB::raw('`duration` + 13'),
+                        'updated_at' => $this->now,
+                    ]);
+
+                DB::table('active_spells')
+                    ->where('dominion_id', $dominion->id)
+                    ->update([
+                        'duration' => DB::raw('`duration` - 12'),
+                        'updated_at' => $this->now,
+                    ]);
+
+                // Delete spells
+                DB::table('active_spells')
+                    ->where('dominion_id', $dominion->id)
+                    ->where('duration', '>', 12)
+                    ->delete();
+
+                // Update queues - two step since MySQL does not support deferred constraints
+                DB::table('dominion_queue')
+                    ->where('dominion_id', $dominion->id)
+                    ->update([
+                        'hours' => DB::raw('`hours` + 13'),
+                        'updated_at' => $this->now,
+                    ]);
+
+                DB::table('dominion_queue')
+                    ->where('dominion_id', $dominion->id)
+                    ->update([
+                        'hours' => DB::raw('`hours` - 12'),
+                        'updated_at' => $this->now,
+                    ]);
+
+                // Delete queues
+                DB::table('dominion_queue')
+                    ->where('dominion_id', $dominion->id)
+                    ->where('hours', '>', 12)
+                    ->delete();
+
+                DB::table('dominion_queue')
+                    ->where('dominion_id', $dominion->id)
+                    ->where('hours', '>', 9)
+                    ->where('source', 'training')
+                    ->whereIn('resource', ['military_unit1', 'military_unit2'])
+                    ->delete();
 
                 if ($action->event == 'tech' && isset($action->delta['action'])) {
                     // Remove unlocked techs
@@ -583,7 +617,7 @@ class TickService
                         'created_at',
                         'updated_at'
                     ], true) &&
-                    ($value != 0) // todo: strict type checking?
+                    ((gettype($value) == 'string' && $value !== '[]') || ($value != 0))
                 );
             }, ARRAY_FILTER_USE_BOTH);
 
@@ -598,9 +632,9 @@ class TickService
 
         // Reset tick values
         foreach ($tick->getAttributes() as $attr => $value) {
-            if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties'], true)) {
+            if (!in_array($attr, ['id', 'dominion_id', 'updated_at', 'starvation_casualties', 'expiring_spells'], true)) {
                 $tick->{$attr} = 0;
-            } elseif ($attr === 'starvation_casualties') {
+            } elseif ($attr === 'starvation_casualties' || $attr === 'expiring_spells') {
                 $tick->{$attr} = [];
             }
         }
@@ -717,6 +751,12 @@ class TickService
             // Reset current resources in case object is saved later
             $dominion->{$row->resource} -= $row->amount;
         }
+
+        // Expiring spells
+        $tick->expiring_spells = DB::table('active_spells')
+            ->where('dominion_id', $dominion->id)
+            ->where('duration', '<=', 1)
+            ->pluck('spell');
 
         $tick->save();
 
