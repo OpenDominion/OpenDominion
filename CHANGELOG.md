@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Rezone page now shows current percentage of each land type
 
 ### Changed
+- Op Center now shows current land/networth
 - Construction advisor moved to construction page
 - Land advisor moved to explore page
 - Tech/Castle advisors removed
