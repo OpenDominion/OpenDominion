@@ -276,6 +276,10 @@ class MiscController extends AbstractDominionController
             if ($dominion->last_tick_at > now()->subSeconds(1)) {
                 throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
             }
+
+            if ($dominion->protection_ticks_remaining == 72) {
+                throw new GameException('You have no ticks left to undo.');
+            }
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
