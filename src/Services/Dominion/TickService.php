@@ -403,6 +403,25 @@ class TickService
                             }
                         }
                     }
+
+                    if ($action->event == 'tick') {
+                        $statMapping = [
+                            'resource_platinum' => 'stat_total_platinum_production',
+                            'resource_food_production' => 'stat_total_food_production',
+                            'resource_lumber_production' => 'stat_total_lumber_production',
+                            'resource_mana_production' => 'stat_total_mana_production',
+                            'resource_ore' => 'stat_total_ore_production',
+                            'resource_gems' => 'stat_total_gem_production',
+                            'resource_tech' => 'stat_total_tech_production',
+                            'resource_boat_production' => 'stat_total_boat_production',
+                            'resource_food_decay' => 'stat_total_food_decay',
+                            'resource_lumber_decay' => 'stat_total_lumber_decay',
+                            'resource_mana_decay' => 'stat_total_mana_decay'
+                        ];
+                        if (isset($statMapping[$key])) {
+                            $dominion->{$statMapping[$key]} -= $value;
+                        }
+                    }
                 }
 
                 if ($action->event == 'cast spell' && isset($action->delta['queue']['active_spells'])) {
