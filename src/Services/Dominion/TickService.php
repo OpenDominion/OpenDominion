@@ -436,55 +436,6 @@ class TickService
                     }
                 }
 
-                // Update spells - two step since MySQL does not support deferred constraints
-                DB::table('active_spells')
-                    ->where('dominion_id', $dominion->id)
-                    ->update([
-                        'duration' => DB::raw('`duration` + 13'),
-                        'updated_at' => $this->now,
-                    ]);
-
-                DB::table('active_spells')
-                    ->where('dominion_id', $dominion->id)
-                    ->update([
-                        'duration' => DB::raw('`duration` - 12'),
-                        'updated_at' => $this->now,
-                    ]);
-
-                // Delete spells
-                DB::table('active_spells')
-                    ->where('dominion_id', $dominion->id)
-                    ->where('duration', '>', 12)
-                    ->delete();
-
-                // Update queues - two step since MySQL does not support deferred constraints
-                DB::table('dominion_queue')
-                    ->where('dominion_id', $dominion->id)
-                    ->update([
-                        'hours' => DB::raw('`hours` + 13'),
-                        'updated_at' => $this->now,
-                    ]);
-
-                DB::table('dominion_queue')
-                    ->where('dominion_id', $dominion->id)
-                    ->update([
-                        'hours' => DB::raw('`hours` - 12'),
-                        'updated_at' => $this->now,
-                    ]);
-
-                // Delete queues
-                DB::table('dominion_queue')
-                    ->where('dominion_id', $dominion->id)
-                    ->where('hours', '>', 12)
-                    ->delete();
-
-                DB::table('dominion_queue')
-                    ->where('dominion_id', $dominion->id)
-                    ->where('hours', '>', 9)
-                    ->where('source', 'training')
-                    ->whereIn('resource', ['military_unit1', 'military_unit2'])
-                    ->delete();
-
                 if ($action->event == 'tech' && isset($action->delta['action'])) {
                     // Remove unlocked techs
                     $tech = $dominion->techs->where('key', $action->delta['action'])->first();
@@ -498,6 +449,55 @@ class TickService
 
                 $action->delete();
             }
+
+            // Update spells - two step since MySQL does not support deferred constraints
+            DB::table('active_spells')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'duration' => DB::raw('`duration` + 13'),
+                    'updated_at' => $this->now,
+                ]);
+
+            DB::table('active_spells')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'duration' => DB::raw('`duration` - 12'),
+                    'updated_at' => $this->now,
+                ]);
+
+            // Delete spells
+            DB::table('active_spells')
+                ->where('dominion_id', $dominion->id)
+                ->where('duration', '>', 12)
+                ->delete();
+
+            // Update queues - two step since MySQL does not support deferred constraints
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'hours' => DB::raw('`hours` + 13'),
+                    'updated_at' => $this->now,
+                ]);
+
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->update([
+                    'hours' => DB::raw('`hours` - 12'),
+                    'updated_at' => $this->now,
+                ]);
+
+            // Delete queues
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->where('hours', '>', 12)
+                ->delete();
+
+            DB::table('dominion_queue')
+                ->where('dominion_id', $dominion->id)
+                ->where('hours', '>', 9)
+                ->where('source', 'training')
+                ->whereIn('resource', ['military_unit1', 'military_unit2'])
+                ->delete();
 
             $dominion->save();
 
