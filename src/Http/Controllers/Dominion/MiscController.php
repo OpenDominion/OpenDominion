@@ -14,6 +14,7 @@ use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
+use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\PackService;
@@ -238,8 +239,21 @@ class MiscController extends AbstractDominionController
 
         $tickService->performTick($dominion->round, $dominion);
 
+        $saveOptions = [];
         $dominion->protection_ticks_remaining -= 1;
         if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
+            if (!$dominion->daily_land || !$dominion->daily_platinum) {
+                // Record any missed bonuses
+                $historyService = app(HistoryService::class);
+                $bonusDelta = [];
+                if (!$dominion->daily_land) {
+                    $bonusDelta['daily_land'] = true;
+                }
+                if (!$dominion->daily_platinum) {
+                    $bonusDelta['daily_platinum'] = true;
+                }
+                $historyService->record($dominion, $bonusDelta, HistoryService::EVENT_ACTION_DAILY_BONUS);
+            }
             $dominion->daily_platinum = false;
             $dominion->daily_land = false;
         }
@@ -262,16 +276,16 @@ class MiscController extends AbstractDominionController
             if ($dominion->last_tick_at > now()->subSeconds(1)) {
                 throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
             }
-
-            if ($dominion->protection_ticks_remaining == 72) {
-                throw new GameException('You cannot undo the first tick, use restart instead.');
-            }
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors([$e->getMessage()]);
         }
 
+        if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
+            $dominion->daily_platinum = true;
+            $dominion->daily_land = true;
+        }
         $dominion->protection_ticks_remaining += 1;
         $tickService->revertTick($dominion);
 

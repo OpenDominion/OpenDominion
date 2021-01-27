@@ -354,7 +354,10 @@ class TickService
 
         DB::transaction(function () use ($dominion, $revertTo) {
             // Update attributes
-            $actions = $dominion->history->where('created_at', '>', $revertTo)->sortByDesc('created_at');
+            $actions = $dominion->history()
+                ->where('created_at', '>', $revertTo)
+                ->orderByDesc('created_at')
+                ->get();
             foreach ($actions as $action) {
                 foreach ($action->delta as $key => $value) {
                     if ($key == 'calculated_networth') {
