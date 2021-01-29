@@ -33,13 +33,28 @@ class WonderService
      */
     public function getAvailableWonders(Round $round)
     {
-        $existingWonders = RoundWonder::where('round_id', $round->id)->pluck('wonder_id');
+        $wonders = Wonder::active()->get()->keyBy('key');
+        $existingWonders = RoundWonder::with('wonder')->where('round_id', $round->id)->get()->keyBy('wonder.key');
 
         if ($existingWonders->count() >= $round->realms()->count() * self::MAX_WONDERS_PER_REALM) {
             return collect();
         }
 
-        return Wonder::active()->whereNotIn('id', $existingWonders->all())->get();
+        if ($round->daysInRound() > 14) {
+            $wonders->forget('halls_of_knowledge');
+        }
+
+        if ($existingWonders->has('ancient_library') || $existingWonders->has('halls_of_knowledge')) {
+            $wonders->forget('ancient_library');
+            $wonders->forget('halls_of_knowledge');
+        }
+
+        if ($existingWonders->has('ivory_tower') || $existingWonders->has('wizard_academy')) {
+            $wonders->forget('ivory_tower');
+            $wonders->forget('wizard_academy');
+        }
+
+        return $wonders->whereNotIn('id', $existingWonders->pluck('wonder_id')->all());
     }
 
     /**
