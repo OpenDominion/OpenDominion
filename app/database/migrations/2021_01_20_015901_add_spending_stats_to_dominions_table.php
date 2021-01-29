@@ -38,6 +38,7 @@ class AddSpendingStatsToDominionsTable extends Migration
             $table->integer('resource_lumber_decay')->after('resource_lumber')->default(0);
             $table->integer('resource_mana_decay')->after('resource_mana')->default(0);
             $table->float('resource_boat_production')->after('resource_boats')->default(0);
+            $table->text('expiring_spells')->after('starvation_casualties')->nullable();
         });
     }
 
@@ -75,7 +76,8 @@ class AddSpendingStatsToDominionsTable extends Migration
                 'resource_food_decay',
                 'resource_lumber_decay',
                 'resource_mana_decay',
-                'resource_boat_production'
+                'resource_boat_production',
+                'expiring_spells'
             ]);
         });
     }

@@ -110,68 +110,6 @@ class InfoOpService
         return 'todo';
     }
 
-    public function getLand(Collection $ops): ?int
-    {
-        $clearSight = $ops->filter(function ($op) {
-            return $op->type == 'clear_sight';
-        })->first();
-
-        if ($clearSight) {
-            return $clearSight->data['land'];
-        }
-
-        return null;
-    }
-
-    public function getLandString(Collection $ops): string
-    {
-        $clearSight = $ops->filter(function ($op) {
-            return $op->type == 'clear_sight';
-        })->first();
-
-        if ($clearSight) {
-            $return = number_format($clearSight->data['land']);
-            if ($clearSight->isStale()) {
-                $return .= '?';
-            }
-        } else {
-            $return = '???';
-        }
-
-        return $return;
-    }
-
-    public function getNetworth(Collection $ops): ?int
-    {
-        $clearSight = $ops->filter(function ($op) {
-            return $op->type == 'clear_sight';
-        })->first();
-
-        if ($clearSight) {
-            return $clearSight->data['networth'];
-        }
-
-        return null;
-    }
-
-    public function getNetworthString(Collection $ops): string
-    {
-        $clearSight = $ops->filter(function ($op) {
-            return $op->type == 'clear_sight';
-        })->first();
-
-        if ($clearSight) {
-            $return = number_format($clearSight->data['networth']);
-            if ($clearSight->isStale()) {
-                $return .= '?';
-            }
-        } else {
-            $return = '???';
-        }
-
-        return $return;
-    }
-
     public function getInfoOpName(InfoOp $infoOp): string
     {
         if ($infoOp->type == 'clairvoyance') return 'Clairvoyance';

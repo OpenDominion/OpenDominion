@@ -104,7 +104,7 @@ class TechHelper
             }
         }
 
-        return implode($perkStrings, $separator);
+        return implode($separator, $perkStrings);
     }
 
     public function getX(Tech $tech): int

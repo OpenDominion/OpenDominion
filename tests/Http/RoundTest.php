@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenDominion\Tests\Feature;
+namespace OpenDominion\Tests\Http;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use OpenDominion\Models\Round;

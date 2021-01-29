@@ -143,7 +143,7 @@ class Round extends AbstractModel
      */
     public function openForRegistration()
     {
-        return $this->start_date->subDays(3) <= now();
+        return $this->start_date->subDays(3) <= now() || $this->name == 'Simulator';
     }
 
     /**

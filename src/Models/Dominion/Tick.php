@@ -111,6 +111,7 @@ class Tick extends AbstractModel
         'building_barracks' => 'integer',
         'building_dock' => 'integer',
         'starvation_casualties' => 'array',
+        'expiring_spells' => 'array',
     ];
 
     protected $guarded = ['id', 'updated_at'];

@@ -117,7 +117,7 @@ class ConstructActionService
                 'discounted_land' => max(0, $dominion->discounted_land - $totalBuildingsToConstruct),
             ])->save([
                 'event' => HistoryService::EVENT_ACTION_CONSTRUCT,
-                'queue' => array_filter($data)
+                'queue' => ['construction' => array_filter($data)]
             ]);
         });
 

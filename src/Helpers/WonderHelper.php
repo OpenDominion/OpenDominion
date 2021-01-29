@@ -72,6 +72,6 @@ class WonderHelper
             }
         }
 
-        return implode($perkStrings, ', ');
+        return implode(', ', $perkStrings);
     }
 }

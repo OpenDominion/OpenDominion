@@ -21,6 +21,10 @@
                 <td>{{ $techDescription }}</td>
             </tr>
         @endforeach
+        <tr>
+            <td><b>Total Unlocked</b></td>
+            <td>{{ count($data) }}</td>
+        </tr>
         @if (!empty($data))
             <tr>
                 <td colspan=2>

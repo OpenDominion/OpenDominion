@@ -4,7 +4,6 @@ namespace OpenDominion\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
-use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Events\DominionSavedEvent;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Services\Dominion\HistoryService;

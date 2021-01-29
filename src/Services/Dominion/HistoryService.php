@@ -119,6 +119,11 @@ class HistoryService
 
             switch ($attributeType) {
                 case 'boolean':
+                    if ((bool)$value == (bool)$oldAttributes->get($key)) {
+                        // Laravel casting between tinyint and boolean produces unexpected results
+                        // Reject values that are equal when cast to boolean
+                        return null;
+                    }
                     return (bool)$value;
                     break;
 
@@ -134,6 +139,8 @@ class HistoryService
                 default:
                     throw new LogicException("Unable to typecast attribute {$key} to type {$attributeType}");
             }
+        })->reject(function ($value) {
+            return $value === null;
         })->toArray();
     }
 
@@ -146,7 +153,7 @@ class HistoryService
     protected function getChangedAttributeKeys(Dominion $dominion): array
     {
         return collect($dominion->getAttributes())
-            ->diffAssoc(collect($dominion->getOriginal()))
+            ->diffAssoc(collect($dominion->getOriginal())->except(['settings']))
             ->except([
                 'id',
                 'user_id',
@@ -157,10 +164,7 @@ class HistoryService
                 'name',
                 'ruler_name',
                 'peasants_last_hour',
-                'created_at',
-                'updated_at',
-                'daily_platinum',
-                'daily_land',
+                'calculated_networth',
                 'council_last_read',
                 'forum_last_read',
                 'town_crier_last_seen',
@@ -170,6 +174,9 @@ class HistoryService
                 'last_tick_at',
                 'locked_at',
                 'monarchy_vote_for_dominion_id',
+                'protection_ticks_remaining',
+                'created_at',
+                'updated_at',
                 'settings'
             ])->keys()->toArray();
     }
