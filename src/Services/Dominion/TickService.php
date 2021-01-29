@@ -402,7 +402,15 @@ class TickService
                                 if ($key == 'military_draftees') {
                                     continue;
                                 }
-                                $this->queueService->queueResources('training', $dominion, [$key => $value], 0);
+                                // Starvation
+                                $unitsStarved = 0;
+                                if (isset($action->delta['starvation_casualties'])) {
+                                    $casualties = json_decode($action->delta['starvation_casualties']);
+                                    if (isset($casualties->{$key})) {
+                                        $unitsStarved = $casualties->{$key};
+                                    }
+                                }
+                                $this->queueService->queueResources('training', $dominion, [$key => ($value + $unitsStarved)], 0);
                             }
                         }
                     }
