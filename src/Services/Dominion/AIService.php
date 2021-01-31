@@ -128,50 +128,111 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
+        // TODO: Move to configuration file
+        if ($dominion->race->name == 'Firewalker') {
+            $config = [
+                'active_chance' => '0.5', // 50% chance to log in
+                'spells' => ['alchemist_flame', 'ares_call', 'midas_touch'],
+                'build' => [
+                    [
+                        'land_type' => 'plain',
+                        'building' => 'farm',
+                        'amount' => 0.07 // maintain 6.5% farms
+                    ],
+                    [
+                        'land_type' => 'swamp',
+                        'building' => 'tower',
+                        'amount' => 0.05
+                    ],
+                    [
+                        'land_type' => 'forest',
+                        'building' => 'lumberyard',
+                        'amount' => 0.05
+                    ],
+                    [
+                        'land_type' => 'cavern',
+                        'building' => 'diamond_mine',
+                        'amount' => 600 // build up to 600, then stop
+                    ],
+                    [
+                        'land_type' => 'cavern',
+                        'building' => 'home',
+                        'amount' => -1 // no limit, when jobs available
+                    ],
+                    [
+                        'land_type' => 'plain',
+                        'building' => 'alchemy',
+                        'amount' => -1 // no limit, when jobs needed
+                    ]
+                ],
+                'military' => [
+                    [
+                        'unit' => 'unit2',
+                        'amount' => -1
+                    ],
+                    [
+                        'unit' => 'spies',
+                        'amount' => 0.05 // maintain 0.05 SPA
+                    ],
+                    [
+                        'unit' => 'wizards',
+                        'amount' => 0.05 // maintain 0.05 WPA
+                    ]
+                ]
+            ];
+        } else {
+            return;
+        }
+
         // Check activity level
-        // TODO: return if !random_chance
+        if (random_chance($config['active_chance'])) {
+            return;
+        }
 
         $totalLand = $this->landCalculator->getTotalLandIncoming($dominion);
 
         // Spells
-        // TODO: check which spells to maintain in config
-        if (!$this->spellCalculator->isSpellActive($dominion, 'midas_touch')) {
-            $this->spellActionService->castSpell($dominion, 'midas_touch');
-        }
-        // Firewalker Only
-        if (!$this->spellCalculator->isSpellActive($dominion, 'alchemist_flame')) {
-            $this->spellActionService->castSpell($dominion, 'alchemist_flame');
+        foreach ($config['spells'] as $spell) {
+            if (!$this->spellCalculator->isSpellActive($dominion, $spell)) {
+                $this->spellActionService->castSpell($dominion, $spell);
+            }
         }
 
         // Construction
-        // TODO: attacker rezones
-        // TODO: get building types from config
+        // TODO: calcuate actual percentages needed for farms, towers, etc
+        $buildingsToConstruct = [];
         $maxAfford = $this->constructionCalculator->getMaxAfford($dominion);
-        if ($maxAfford > 0) {
-            $buildingsToConstruct = [];
-            $barrenLand = $this->landCalculator->getBarrenLandByLandType($dominion);
-            if ($barrenLand['forest'] > 0) {
-                $buildingsToConstruct['building_lumberyard'] = min($maxAfford, $barrenLand['forest']);
-                $maxAfford -= $buildingsToConstruct['building_lumberyard'];
-            }
-            if ($barrenLand['plain'] > 0) {
-                $buildingsToConstruct['building_farm'] = min($maxAfford, $barrenLand['plain']);
-                $maxAfford -= $buildingsToConstruct['building_farm'];
-            }
-            if ($barrenLand['swamp'] > 0) {
-                $buildingsToConstruct['building_tower'] = min($maxAfford, $barrenLand['swamp']);
-                $maxAfford -= $buildingsToConstruct['building_tower'];
-            }
-            if ($barrenLand['cavern'] > 0) {
-                if (($dominion->building_diamond_mine + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_diamond_mine')) < 600) {
-                    $buildingsToConstruct['building_diamond_mine'] = min($maxAfford, $barrenLand['cavern']);
-                    $maxAfford -= $buildingsToConstruct['building_diamond_mine'];
-                } else {
-                    // Firewalker Only
-                    $buildingsToConstruct['building_home'] = min($maxAfford, $barrenLand['cavern']);
-                    $maxAfford -= $buildingsToConstruct['building_home'];
+        $barrenLand = $this->landCalculator->getBarrenLandByLandType($dominion);
+        foreach ($config['build'] as $command) {
+            if ($maxAfford > 0) {
+                $buildingCount = (
+                    $dominion->{'building_'.$command['building']}
+                    + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_'.$command['building'])
+                );
+                $buildingPercentage = $buildingCount / $totalLand;
+
+                if ($barrenLand[$command['land_type']] > 0) {
+                    if ($command['amount'] == -1) {
+                        // Unlimited
+                        // TODO: check jobs
+                        $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']]);
+                        $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                    } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
+                        // Percentage based
+                        $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']], ceil(($command['amount'] - $buildingPercentage) * $totalLand));
+                        $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                    } else {
+                        // Limited
+                        if ($buildingCount < $command['amount']) {
+                            $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']], $command['amount'] - $buildingCount);
+                            $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                        }
+                    }
                 }
             }
+        }
+
+        if (!empty($buildingsToConstruct)) {
             $this->constructActionService->construct($dominion, $buildingsToConstruct);
         }
 
@@ -184,48 +245,57 @@ class AIService
             return [str_replace('military_unit', '', $queue->resource) => $queue->amount];
         })->toArray();
         $incomingDefense = $this->militaryCalculator->getDefensivePower($dominion, null, null, $incomingTroops, 0, true, true);
-        if (($defense + $incomingDefense) < ($totalLand * 5)) {
-            $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)['unit3'];
-            if ($maxAfford > 0) {
-                $this->trainActionService->train($dominion, ['military_unit3' => $maxAfford]);
+        foreach ($config['military'] as $command) {
+            if ($command == 'spies') {
+                // Train spies
+                // TODO: Calculate from target ratio
+            } elseif ($command == 'wizards') {
+                // Train wizards
+                // TODO: Calculate from target ratio
+            } else {
+                // Train military
+                if (($defense + $incomingDefense) < ($totalLand * 5)) {
+                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                    if ($maxAfford > 0) {
+                        $this->trainActionService->train($dominion, ['military_'.$command['unit'] => $maxAfford]);
+                    }
+                }
             }
         }
 
         // Explore
-        // TODO: get land types from config
-        // TODO: handle division by zero
-        // TODO: calcuate actual percentages needed
+        // TODO: calcuate actual percentages needed for farms, towers, etc
+        $landToExplore = [];
         $maxAfford = $this->explorationCalculator->getMaxAfford($dominion);
-        if ($maxAfford > 0) {
-            $landToExplore = [];
-            $farmPercentage = (
-                $dominion->building_farm
-                + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_farm')
-                + $this->queueService->getExplorationQueueTotalByResource($dominion, 'land_plain')
-            ) / $totalLand;
-            if ($farmPercentage < 0.065) {
-                $landToExplore['land_plain'] = min($maxAfford, ceil((0.065 - $farmPercentage) * $totalLand));
-                $maxAfford -= $landToExplore['land_plain'];
+        foreach ($config['build'] as $command) {
+            if ($maxAfford > 0) {
+                $buildingCount = (
+                    $dominion->{'building_'.$command['building']}
+                    + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_'.$command['building'])
+                    + $this->queueService->getExplorationQueueTotalByResource($dominion, 'land_'.$command['land_type'])
+                );
+                $buildingPercentage = $buildingCount / $totalLand;
+
+                if ($command['amount'] == -1) {
+                    // Unlimited
+                    // TODO: check jobs
+                    $landToExplore['land_'.$command['land_type']] = $maxAfford;
+                    $maxAfford -= $landToExplore['land_'.$command['land_type']];
+                } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
+                    // Percentage based
+                    $landToExplore['land_'.$command['land_type']] = min($maxAfford, ceil(($command['amount'] - $buildingPercentage) * $totalLand));
+                    $maxAfford -= $landToExplore['land_'.$command['land_type']];
+                } else {
+                    // Limited
+                    if ($buildingCount < $command['amount']) {
+                        $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $command['amount'] - $buildingCount);
+                        $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                    }
+                }
             }
-            $lumberyardPercentage = (
-                $dominion->building_lumberyard
-                + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_lumberyard')
-                + $this->queueService->getExplorationQueueTotalByResource($dominion, 'land_forest')
-            ) / $totalLand;
-            if ($lumberyardPercentage < 0.06) {
-                $landToExplore['land_forest'] = min($maxAfford, ceil((0.06 - $lumberyardPercentage) * $totalLand));
-                $maxAfford -= $landToExplore['land_forest'];
-            }
-            $towerPercentage = (
-                $dominion->building_tower
-                + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_tower')
-                + $this->queueService->getExplorationQueueTotalByResource($dominion, 'land_swamp')
-            ) / $totalLand;
-            if ($towerPercentage < 0.05) {
-                $landToExplore['land_swamp'] = min($maxAfford, ceil((0.05 - $towerPercentage) * $totalLand));
-                $maxAfford -= $landToExplore['land_swamp'];
-            }
-            $landToExplore['land_cavern'] = $maxAfford;
+        }
+
+        if (!empty($landToExplore)) {
             $this->exploreActionService->explore($dominion, $landToExplore);
         }
 
@@ -249,5 +319,11 @@ class AIService
         if ($dominion->military_draftees > 0) {
             $this->releaseActionService->release($dominion, ['draftees' => $dominion->military_draftees]);
         }
+
+        /*
+        $ai = app(\OpenDominion\Services\Dominion\AIService::class);
+        $ts = app(\OpenDominion\Services\Dominion\TickService::class);
+        foreach(range(1,24) as $range) { $ai->performActions($dominion); $ts->performTick($dominion->round, $dominion); }
+        */
     }
 }
