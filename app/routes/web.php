@@ -44,6 +44,8 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], static function (Router $r
 
 $router->group(['middleware' => 'auth'], static function (Router $router) {
 
+    $router->get('discordCallback')->uses('Auth\DiscordConnectController@discordOauthCallback')->name('discord-oauth-callback');
+
     // Profile
     // todo
 
