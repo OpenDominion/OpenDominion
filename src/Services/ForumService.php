@@ -174,19 +174,19 @@ class ForumService
     {
         $this->guardLockedDominion($dominion);
 
-        if (!$post->thread->flagged_by || !isset($post->thread->flagged_by['dominion_ids']) || !isset($post->thread->flagged_by['realm_ids'])) {
+        if (!$post->flagged_by || !isset($post->flagged_by['dominion_ids']) || !isset($post->thread->flagged_by['realm_ids'])) {
             $dominion_ids = [$dominion->id];
             $realm_ids = [$dominion->realm_id];
         } else {
-            $dominion_ids = $post->thread->flagged_by['dominion_ids'];
+            $dominion_ids = $post->flagged_by['dominion_ids'];
             $dominion_ids[] = $dominion->id;
             $dominion_ids = array_unique($dominion_ids);
-            $realm_ids = $post->thread->flagged_by['realm_ids'];
+            $realm_ids = $post->flagged_by['realm_ids'];
             $realm_ids[] = $dominion->realm_id;
             $realm_ids = array_unique($realm_ids);
         }
 
-        $post->thread->flagged_by = [
+        $post->flagged_by = [
             'dominion_ids' => $dominion_ids,
             'realm_ids' => $realm_ids,
         ];
@@ -194,9 +194,9 @@ class ForumService
         // Remove post if it has been flagged by
         // 5 different dominions from at least 3 different realms
         if (count($dominion_ids) >= 5 && count($realm_ids) >= 3) {
-            $post->thread->flagged_for_removal = true;
+            $post->flagged_for_removal = true;
         }
 
-        $post->thread->save();
+        $post->save();
     }
 }
