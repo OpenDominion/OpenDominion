@@ -290,7 +290,9 @@ class MiscController extends AbstractDominionController
             $dominion->daily_land = true;
         }
         $dominion->protection_ticks_remaining += 1;
-        $tickService->revertTick($dominion);
+        if (!$tickService->revertTick($dominion)) {
+            $request->session()->flash('alert-danger', 'There are no actions to undo.');
+        }
 
         return redirect()->back();
     }

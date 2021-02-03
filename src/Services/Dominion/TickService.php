@@ -355,12 +355,17 @@ class TickService
             $resetFirstHour = 1;
         }
 
-        DB::transaction(function () use ($dominion, $revertTo, $resetFirstHour) {
+        $actions = $dominion->history()
+            ->where('created_at', '>', $revertTo)
+            ->orderByDesc('created_at')
+            ->get();
+
+        if (!$actions->count()) {
+            return false;
+        }
+
+        DB::transaction(function () use ($dominion, $actions, $revertTo, $resetFirstHour) {
             // Update attributes
-            $actions = $dominion->history()
-                ->where('created_at', '>', $revertTo)
-                ->orderByDesc('created_at')
-                ->get();
             foreach ($actions as $action) {
                 foreach ($action->delta as $key => $value) {
                     if ($key == 'calculated_networth') {
@@ -517,6 +522,8 @@ class TickService
                 $notification->delete();
             }
         });
+
+        return true;
     }
 
     /**
