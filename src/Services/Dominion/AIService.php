@@ -126,18 +126,79 @@ class AIService
         $this->trainActionService = app(TrainActionService::class);
     }
 
+    public function getRequiredDefense(Dominion $dominion)
+    {
+        $defenseByDay = [
+            '4'  => 5.5,
+            '5'  => 8.5,
+            '6'  => 10.5,
+            '7'  => 12.0,
+            '8'  => 15.0,
+            '9'  => 17.0,
+            '10' => 19.0,
+            '11' => 21.5,
+            '12' => 24.0,
+            '13' => 26.5,
+            '14' => 29.0,
+            '15' => 31.5,
+            '16' => 33.0,
+            '17' => 35.0,
+            '18' => 36.0,
+            '19' => 37.5,
+            '20' => 38.5,
+            '21' => 40.5,
+            '22' => 42.5,
+            '23' => 44.0,
+            '24' => 46.0,
+            '25' => 48.0,
+            '26' => 49.5,
+            '27' => 51.0,
+            '28' => 52.5,
+            '29' => 54.0,
+            '30' => 55.0,
+            '31' => 57.0,
+            '32' => 59.0,
+            '33' => 60.5,
+            '34' => 62.0,
+            '35' => 63.5,
+            '36' => 65.0,
+            '37' => 66.5,
+            '38' => 67.0,
+            '39' => 68.5,
+            '40' => 70.0,
+            '41' => 71.0,
+            '42' => 72.0,
+            '43' => 73.0,
+            '44' => 74.0,
+            '45' => 75.0,
+            '46' => 76.0,
+            '47' => 77.0,
+            '48' => 78.0,
+            '49' => 79.0,
+            '50' => 80.0
+        ];
+
+        if ($dominion->round->daysInRound() >= 4 && $dominion->round->daysInRound() <= 50) {
+            // Defense starts 10% below chart, each invasion increases target DPA by 1%
+            $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 10) / 100);
+            return $defenseByDay[$dominion->round->daysInRound()] * $invasionMultiplier;
+        }
+
+        return 3;
+    }
+
     public function performActions(Dominion $dominion)
     {
         // TODO: Move to configuration file
         if ($dominion->race->name == 'Firewalker') {
             $config = [
-                'active_chance' => '0.5', // 50% chance to log in
+                'active_chance' => '0.40', // 40% chance to log in
                 'spells' => ['alchemist_flame', 'ares_call', 'midas_touch'],
                 'build' => [
                     [
                         'land_type' => 'plain',
                         'building' => 'farm',
-                        'amount' => 0.07 // maintain 6.5% farms
+                        'amount' => 0.07 // maintain 7% farms
                     ],
                     [
                         'land_type' => 'swamp',
@@ -147,7 +208,7 @@ class AIService
                     [
                         'land_type' => 'forest',
                         'building' => 'lumberyard',
-                        'amount' => 0.05
+                        'amount' => 0.04
                     ],
                     [
                         'land_type' => 'cavern',
@@ -237,8 +298,7 @@ class AIService
         }
 
         // Military
-        // TODO: get unit types from config
-        // TODO: check neighboring dominions
+        // TODO: check neighboring dominions?
         $defense = $this->militaryCalculator->getDefensivePower($dominion);
         $trainingQueue = $this->queueService->getTrainingQueueByPrefix($dominion, 'military_unit');
         $incomingTroops = $trainingQueue->mapWithKeys(function($queue) {
@@ -248,18 +308,25 @@ class AIService
         foreach ($config['military'] as $command) {
             if ($command == 'spies') {
                 // Train spies
-                // TODO: Calculate from target ratio
+                $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
+                if ($spyRatio < $command['amount']) {
+                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                }
             } elseif ($command == 'wizards') {
                 // Train wizards
-                // TODO: Calculate from target ratio
+                $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
+                if ($wizardRatio < $command['amount']) {
+                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                }
             } else {
                 // Train military
-                if (($defense + $incomingDefense) < ($totalLand * 5)) {
+                $defenseRequired = $totalLand * $this->getRequiredDefense($dominion);
+                if (($defense + $incomingDefense) < $defenseRequired) {
                     $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
-                    if ($maxAfford > 0) {
-                        $this->trainActionService->train($dominion, ['military_'.$command['unit'] => $maxAfford]);
-                    }
                 }
+            }
+            if ($maxAfford > 0) {
+                $this->trainActionService->train($dominion, ['military_'.$command['unit'] => $maxAfford]);
             }
         }
 
