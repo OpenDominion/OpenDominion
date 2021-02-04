@@ -6,6 +6,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Image;
+use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\User;
 use RuntimeException;
@@ -16,17 +17,17 @@ class SettingsController extends AbstractController
 {
     public function getIndex()
     {
-        /** @var User $user */
         $user = Auth::user();
 
-        /** @var NotificationHelper $notificationHelper */
         $notificationHelper = app(NotificationHelper::class);
+        $discordHelper = app(DiscordHelper::class);
 
         $notificationSettings = $user->settings['notifications'] ?? $notificationHelper->getDefaultUserNotificationSettings();
 
         return view('pages.settings', [
             'notificationHelper' => $notificationHelper,
             'notificationSettings' => $notificationSettings,
+            'discordHelper' => $discordHelper
         ]);
     }
 
