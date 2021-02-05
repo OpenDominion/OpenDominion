@@ -13,8 +13,10 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Models\Dominion;
+use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
@@ -105,6 +107,31 @@ class AIService
         $this->trainActionService = app(TrainActionService::class);
     }
 
+    public function executeAI()
+    {
+        $activeRounds = Round::active()->get();
+
+        foreach ($activeRounds as $round) {
+            if ($round->daysInRound() >= 5) {
+                $dominions = $round->activeDominions()
+                    ->where('user_id', null)
+                    ->with([
+                        'queues',
+                        'race',
+                    ])
+                    ->get();
+
+                foreach ($dominions as $dominion) {
+                    try {
+                        $this->performActions($dominion);
+                    } catch (GameException $e) {
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
     public function getRequiredDefense(Dominion $dominion)
     {
         $defenseByDay = $this->aiHelper->getDailyDPA();
@@ -120,6 +147,12 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
+        // Set max draft rate for active NPDs
+        if ($dominion->draft_rate < 90) {
+            $dominion->draft_rate = 90;
+            $dominion->save();
+        }
+
         $instructionSet = $this->aiHelper->getRaceInstructions();
 
         if (!isset($instructionSet[$dominion->race->name])) {
@@ -276,11 +309,5 @@ class AIService
         if ($dominion->military_draftees > 0) {
             $this->releaseActionService->release($dominion, ['draftees' => $dominion->military_draftees]);
         }
-
-        /*
-        $ai = app(\OpenDominion\Services\Dominion\AIService::class);
-        $ts = app(\OpenDominion\Services\Dominion\TickService::class);
-        foreach(range(1,24) as $range) { $ai->performActions($dominion); $ts->performTick($dominion->round, $dominion); }
-        */
     }
 }
