@@ -13,6 +13,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\SpellCalculator;
+use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
@@ -23,36 +24,11 @@ use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
 use RuntimeException;
 
-/**
- * Personalities
- * inactive|explorer|converter|attacker
- * 
- * Activity Level
- * every 12 hours + 0-80%
- * 
- * Explorer
- * bonuses
- *  - simulator needs to track tick count and reset bonuses
- * unlock techs
- *  - tech path
- * self spells
- *  - spells to use
- * invest
- *  - thresholds for investment
- * buildings
- *  - buildings to keep at %
- *  - employment
- *  - buildings to reach X
- * military
- *  - train up to X% of others/top OP
- * explore
- *  - based on build
- * release
- *  - release draftees
- */
-
 class AIService
 {
+    /** @var AIHelper */
+    protected $aiHelper;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -114,6 +90,9 @@ class AIService
         $this->spellCalculator = app(SpellCalculator::class);
         $this->trainingCalculator = app(TrainingCalculator::class);
 
+        // Helpers
+        $this->aiHelper = app(AIHelper::class);
+
         // Services
         $this->queueService = app(QueueService::class);
 
@@ -128,55 +107,7 @@ class AIService
 
     public function getRequiredDefense(Dominion $dominion)
     {
-        $defenseByDay = [
-            '4'  => 5.5,
-            '5'  => 8.5,
-            '6'  => 10.5,
-            '7'  => 12.0,
-            '8'  => 15.0,
-            '9'  => 17.0,
-            '10' => 19.0,
-            '11' => 21.5,
-            '12' => 24.0,
-            '13' => 26.5,
-            '14' => 29.0,
-            '15' => 31.5,
-            '16' => 33.0,
-            '17' => 35.0,
-            '18' => 36.0,
-            '19' => 37.5,
-            '20' => 38.5,
-            '21' => 40.5,
-            '22' => 42.5,
-            '23' => 44.0,
-            '24' => 46.0,
-            '25' => 48.0,
-            '26' => 49.5,
-            '27' => 51.0,
-            '28' => 52.5,
-            '29' => 54.0,
-            '30' => 55.0,
-            '31' => 57.0,
-            '32' => 59.0,
-            '33' => 60.5,
-            '34' => 62.0,
-            '35' => 63.5,
-            '36' => 65.0,
-            '37' => 66.5,
-            '38' => 67.0,
-            '39' => 68.5,
-            '40' => 70.0,
-            '41' => 71.0,
-            '42' => 72.0,
-            '43' => 73.0,
-            '44' => 74.0,
-            '45' => 75.0,
-            '46' => 76.0,
-            '47' => 77.0,
-            '48' => 78.0,
-            '49' => 79.0,
-            '50' => 80.0
-        ];
+        $defenseByDay = $this->aiHelper->getDailyDPA();
 
         if ($dominion->round->daysInRound() >= 4 && $dominion->round->daysInRound() <= 50) {
             // Defense starts 10% below chart, each invasion increases target DPA by 1%
@@ -189,60 +120,12 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
-        // TODO: Move to configuration file
-        if ($dominion->race->name == 'Firewalker') {
-            $config = [
-                'active_chance' => '0.40', // 40% chance to log in
-                'spells' => ['alchemist_flame', 'ares_call', 'midas_touch'],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.07 // maintain 7% farms
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 600 // build up to 600, then stop
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'home',
-                        'amount' => -1 // no limit, when jobs available
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'alchemy',
-                        'amount' => -1 // no limit, when jobs needed
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05 // maintain 0.05 SPA
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05 // maintain 0.05 WPA
-                    ]
-                ]
-            ];
-        } else {
+        $instructionSet = $this->aiHelper->getRaceInstructions();
+
+        if (!isset($instructionSet[$dominion->race->name])) {
             return;
+        } else {
+            $config = $instructionSet[$dominion->race->name];
         }
 
         // Check activity level
@@ -275,20 +158,24 @@ class AIService
                 if ($barrenLand[$command['land_type']] > 0) {
                     if ($command['amount'] == -1) {
                         // Unlimited
-                        // TODO: check jobs
+                        if ($command['building'] == 'home' && $this->populationCalculator->getEmploymentPercentage($dominion) < 100) {
+                            // Check employment
+                            continue;
+                        }
                         $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']]);
-                        $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
                     } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
                         // Percentage based
                         $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']], ceil(($command['amount'] - $buildingPercentage) * $totalLand));
-                        $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
                     } else {
                         // Limited
                         if ($buildingCount < $command['amount']) {
                             $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']], $command['amount'] - $buildingCount);
-                            $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                        } else {
+                            continue;
                         }
                     }
+                    $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                    $barrenLand[$command['land_type']] -= $buildingsToConstruct['building_'.$command['building']];
                 }
             }
         }
@@ -345,20 +232,23 @@ class AIService
 
                 if ($command['amount'] == -1) {
                     // Unlimited
-                    // TODO: check jobs
+                    if ($command['building'] == 'home' && $this->populationCalculator->getEmploymentPercentage($dominion) < 100) {
+                        // Check employment
+                        continue;
+                    }
                     $landToExplore['land_'.$command['land_type']] = $maxAfford;
-                    $maxAfford -= $landToExplore['land_'.$command['land_type']];
                 } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
                     // Percentage based
                     $landToExplore['land_'.$command['land_type']] = min($maxAfford, ceil(($command['amount'] - $buildingPercentage) * $totalLand));
-                    $maxAfford -= $landToExplore['land_'.$command['land_type']];
                 } else {
                     // Limited
                     if ($buildingCount < $command['amount']) {
-                        $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $command['amount'] - $buildingCount);
-                        $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
+                        $landToExplore['land_'.$command['land_type']] = min($maxAfford, $command['amount'] - $buildingCount);
+                    } else {
+                        continue;
                     }
                 }
+                $maxAfford -= $landToExplore['land_'.$command['land_type']];
             }
         }
 
@@ -367,18 +257,18 @@ class AIService
         }
 
         // Improvements
-        if ($dominion->resource_gems > 0) {
+        if ($dominion->{'resource_'.$config['invest']} > 0) {
             $sciencePercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
             $keepPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
             $wallsPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
             if ($keepPercentage < 0.20) {
-                $this->improveActionService->improve($dominion, 'gems', ['keep' => $dominion->resource_gems]);
+                $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
             } elseif ($sciencePercentage < 0.10) {
-                $this->improveActionService->improve($dominion, 'gems', ['science' => $dominion->resource_gems]);
+                $this->improveActionService->improve($dominion, $config['invest'], ['science' => $dominion->{'resource_'.$config['invest']}]);
             } elseif ($wallsPercentage < 0.10) {
-                $this->improveActionService->improve($dominion, 'gems', ['walls' => $dominion->resource_gems]);
+                $this->improveActionService->improve($dominion, $config['invest'], ['walls' => $dominion->{'resource_'.$config['invest']}]);
             } else {
-                $this->improveActionService->improve($dominion, 'gems', ['keep' => $dominion->resource_gems]);
+                $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
             }
         }
 
