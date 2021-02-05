@@ -266,7 +266,7 @@ class WonderActionService
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => 'attack',
+                'action' => 'cyclone',
                 'target_wonder_id' => $wonder->id
             ]);
             $wonder->save();
@@ -363,7 +363,7 @@ class WonderActionService
                 'realm_id' => $dominion->realm_id,
                 'dominion_id' => $dominion->id,
                 'damage' => $damageDealt,
-                'source' => 'cyclone'
+                'source' => 'attack'
             ]);
 
             $this->attackResult['attacker']['op'] = $damageDealt;
