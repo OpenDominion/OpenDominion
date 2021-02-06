@@ -190,7 +190,7 @@ class WonderActionService
                 throw new GameException('Nice try, but you cannot cast spells cross-round');
             }
 
-            if ($wonder->realm !== null && !$this->governmentService->isWarEscalated($dominion->realm, $wonder->realm)) {
+            if ($wonder->realm !== null && !($this->governmentService->isWarEscalated($dominion->realm, $wonder->realm) || $this->governmentService->isWarEscalated($wonder->realm, $dominion->realm))) {
                 throw new GameException('War must be active to cast spells at this wonder');
             }
 
@@ -302,7 +302,7 @@ class WonderActionService
                 throw new GameException('Nice try, but you cannot attack cross-round');
             }
 
-            if ($wonder->realm !== null && !$this->governmentService->isWarEscalated($dominion->realm, $wonder->realm)) {
+            if ($wonder->realm !== null && !($this->governmentService->isWarEscalated($dominion->realm, $wonder->realm) || $this->governmentService->isWarEscalated($wonder->realm, $dominion->realm))) {
                 throw new GameException('War must be active to attack this wonder');
             }
 
