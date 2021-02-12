@@ -4,6 +4,7 @@ namespace OpenDominion\Console\Commands\Game;
 
 use Illuminate\Console\Command;
 use OpenDominion\Console\Commands\CommandInterface;
+use OpenDominion\Services\Dominion\AIService;
 use OpenDominion\Services\Dominion\TickService;
 
 class TickCommand extends Command implements CommandInterface
@@ -13,6 +14,9 @@ class TickCommand extends Command implements CommandInterface
 
     /** @var string The console command description. */
     protected $description = 'Ticks the game';
+
+    /** @var AIService */
+    protected $aiService;
 
     /** @var TickService */
     protected $tickService;
@@ -24,6 +28,7 @@ class TickCommand extends Command implements CommandInterface
     {
         parent::__construct();
 
+        $this->aiService = app(AIService::class);
         $this->tickService = app(TickService::class);
     }
 
@@ -35,5 +40,6 @@ class TickCommand extends Command implements CommandInterface
         $this->tickService->tickDaily();
         $this->tickService->tickHourly();
         $this->tickService->updateDailyRankings();
+        $this->aiService->executeAI();
     }
 }
