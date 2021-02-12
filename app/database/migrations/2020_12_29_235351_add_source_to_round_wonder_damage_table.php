@@ -26,7 +26,7 @@ class AddSourceToRoundWonderDamageTable extends Migration
     public function down()
     {
         Schema::table('round_wonder_damage', function (Blueprint $table) {
-            $table->dropColumn('cost_lumber');
+            $table->dropColumn('source');
         });
     }
 }
