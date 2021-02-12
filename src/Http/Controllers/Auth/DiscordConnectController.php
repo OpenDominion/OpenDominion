@@ -29,18 +29,26 @@ class DiscordConnectController extends AbstractController
         $this->discordService = app(DiscordService::class);
     }
 
+    public function discordUnlink(Request $request)
+    {
+        $user = Auth::user();
+
+        $user->discordUser()->delete();
+        $request->session()->flash('alert-success', 'Discord account has been unlinked.');
+
+        return redirect()->route('settings');
+    }
+
     public function discordLinkCallback(Request $request)
     {
         $code = $request->get('code');
         $user = Auth::user();
 
-        $accessToken = $this->discordService->authorize($user, $code, $this->discordHelper->getDiscordUserCallbackUrl());
-        $result = $this->discordService->connectDiscordUser($user, $accessToken);
-
-        if($result) {
-            $request->session()->flash('alert-success', 'Discord account has been linked.');
+        if ($code == null) {
+            $request->session()->flash('alert-danger', 'Invalid authorization code.');
         } else {
-            $request->session()->flash('alert-warning', 'Account could not be linked at this time. Please try again later.');
+            $this->discordService->authorize($user, $code, $this->discordHelper->getDiscordUserCallbackUrl());
+            $request->session()->flash('alert-success', 'Discord account has been linked.');
         }
 
         return redirect()->route('settings');
@@ -62,13 +70,6 @@ class DiscordConnectController extends AbstractController
         }
 
         $result = $this->discordService->joinDiscordGuild($discordUser, $selectedDominion->realm, $accessToken);
-
-        // TODO: Remove this?
-        if($result) {
-            $request->session()->flash('alert-success', 'Discord account has been invited to the realm server.');
-        } else {
-            $request->session()->flash('alert-warning', 'Account could not be added to the realm server at this time. Please try again later.');
-        }
 
         return redirect()->away(sprintf(
             'https://discord.com/channels/%s/%s',

@@ -44,6 +44,7 @@ $router->group(['prefix' => 'auth', 'as' => 'auth.'], static function (Router $r
 
 $router->group(['middleware' => 'auth'], static function (Router $router) {
 
+    $router->get('discord/unlink')->uses('Auth\DiscordConnectController@discordUnlink')->name('discord-unlink');
     $router->get('discord/link')->uses('Auth\DiscordConnectController@discordLinkCallback')->name('discord-link-callback');
     $router->get('discord/join')->uses('Auth\DiscordConnectController@discordJoinCallback')->name('discord-join-callback');
 

@@ -46,6 +46,11 @@
                     @endif
                     <p>No production occurs until you have left protection.</p>
                     <p>Made a mistake? You can <a href="{{ route('dominion.misc.restart') }}">restart your dominion</a> while under protection.</p>
+                    @if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
+                        <a href="{{ $discordHelper->getDiscordConnectUrl('join') }}" target="_blank" class="btn btn-primary">
+                            <i class="fa fa-comments"></i> Join Realm Discord
+                        </a>
+                    @endif
                 </div>
             </div>
         @else

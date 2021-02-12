@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
@@ -29,6 +30,7 @@ class CouncilController extends AbstractDominionController
         $threads = $councilService->getThreads($dominion->realm);
 
         return view('pages.dominion.council.index', [
+            'discordHelper' => app(DiscordHelper::class),
             'councilThreads' => $threads,
             'lastRead' => $lastRead,
             'realm' => $dominion->realm,

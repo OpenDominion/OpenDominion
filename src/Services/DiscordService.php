@@ -21,7 +21,8 @@ class DiscordService
         $this->discordHelper = app(DiscordHelper::class);
     }
 
-    public function authorize(User $user, string $code, string $callback) {
+    public function authorize(User $user, string $code, string $callback): string
+    {
         $client = new Client();
 
         $tokenResponse = $client->post(DiscordHelper::BASE_URL.'/oauth2/token', [
@@ -39,7 +40,9 @@ class DiscordService
         $result = json_decode($tokenResponse->getBody()->getContents(), true);
 
         $discordUser = $user->discordUser()->first();
-        if ($discordUser !== null) {
+        if ($discordUser == null) {
+            $this->createDiscordUser($user, $result);
+        } else {
             $discordUser->update([
                 'refresh_token' => $result['refresh_token'],
                 'expires_at' => now()->addSeconds($result['expires_in'])
@@ -76,9 +79,10 @@ class DiscordService
         return $result['access_token'];
     }
 
-    public function connectDiscordUser(User $user, string $accessToken): bool
+    public function createDiscordUser(User $user, array $authResult): DiscordUser
     {
         $client = new Client();
+        $accessToken = $authResult['access_token'];
 
         $userResponse = $client->get(DiscordHelper::BASE_URL.'/users/@me', [
             'verify' => false,
@@ -93,18 +97,11 @@ class DiscordService
             'username' => $result['username'],
             'discriminator' => $result['discriminator'],
             'email' => $result['email'],
-            'refresh_token' => $result['refresh_token'],
-            'expires_at' => now()->addSeconds($result['expires_in'])
+            'refresh_token' => $authResult['refresh_token'],
+            'expires_at' => now()->addSeconds($authResult['expires_in'])
         ];
 
-        $discordUser = $user->discordUser()->first();
-        if ($discordUser !== null) {
-            $discordUser->update($discordUserData);
-        } else {
-            DiscordUser::create($discordUserData);
-        }
-
-        return true;
+        return DiscordUser::create($discordUserData);
     }
 
     public function joinDiscordGuild(DiscordUser $discordUser, Realm $realm, string $accessToken): bool
