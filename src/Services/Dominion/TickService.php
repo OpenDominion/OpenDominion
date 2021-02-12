@@ -344,18 +344,15 @@ class TickService
                 ->get();
         }
 
-        $resetFirstHour = 0;
         if ($ticks->count() > 1) {
             // Revert to the tick prior
             $revertTo = $ticks[1]->created_at;
         } elseif ($lastRestart !== null) {
             // Revert to the last restart
             $revertTo = $lastRestart->created_at;
-            $resetFirstHour = 1;
         } else {
             // Revert the first tick
             $revertTo = $dominion->created_at;
-            $resetFirstHour = 1;
         }
 
         $actions = $dominion->history()
@@ -367,7 +364,7 @@ class TickService
             return false;
         }
 
-        DB::transaction(function () use ($dominion, $actions, $revertTo, $resetFirstHour) {
+        DB::transaction(function () use ($dominion, $actions, $revertTo) {
             // Update attributes
             foreach ($actions as $action) {
                 foreach ($action->delta as $key => $value) {
@@ -487,7 +484,7 @@ class TickService
             // Delete spells
             DB::table('active_spells')
                 ->where('dominion_id', $dominion->id)
-                ->where('duration', '>', 12 - $resetFirstHour)
+                ->where('duration', '>=', 12)
                 ->delete();
 
             // Update queues - two step since MySQL does not support deferred constraints
@@ -508,12 +505,12 @@ class TickService
             // Delete queues
             DB::table('dominion_queue')
                 ->where('dominion_id', $dominion->id)
-                ->where('hours', '>', 12 - $resetFirstHour)
+                ->where('hours', '>=', 12)
                 ->delete();
 
             DB::table('dominion_queue')
                 ->where('dominion_id', $dominion->id)
-                ->where('hours', '>', 9 - $resetFirstHour)
+                ->where('hours', '>=', 9)
                 ->where('source', 'training')
                 ->whereIn('resource', ['military_unit1', 'military_unit2'])
                 ->delete();
