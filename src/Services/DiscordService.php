@@ -111,6 +111,7 @@ class DiscordService
         $botToken = $this->discordHelper->getBotToken();
 
         $memberResponse = $client->get(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+            'http_errors' => false,
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"]
         ]);
