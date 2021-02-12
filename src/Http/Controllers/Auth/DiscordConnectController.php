@@ -67,6 +67,7 @@ class DiscordConnectController extends AbstractController
             $accessToken = $this->discordService->refreshToken($discordUser, $this->discordHelper->getDiscordGuildCallbackUrl());
         } else {
             $accessToken = $this->discordService->authorize($user, $code, $this->discordHelper->getDiscordGuildCallbackUrl());
+            $discordUser = $user->discordUser()->first();
         }
 
         $result = $this->discordService->joinDiscordGuild($discordUser, $selectedDominion->realm, $accessToken);

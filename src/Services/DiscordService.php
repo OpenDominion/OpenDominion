@@ -110,18 +110,38 @@ class DiscordService
 
         $botToken = $this->discordHelper->getBotToken();
 
-        $joinResponse = $client->put(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+        $memberResponse = $client->get(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
             'verify' => false,
-            'headers' => ['authorization' => "Bot $botToken"],
-            'json' => [
-                'access_token' => $accessToken,
-                'roles' => [
-                    $this->getDiscordRole($realm)
-                ]
-            ]
+            'headers' => ['authorization' => "Bot $botToken"]
         ]);
 
-        $result = json_decode($joinResponse->getBody()->getContents(), true);
+        $result = json_decode($memberResponse->getBody()->getContents(), true);
+
+        if (isset($result['roles'])) {
+            $roleResponse = $client->patch(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+                'verify' => false,
+                'headers' => ['authorization' => "Bot $botToken"],
+                'json' => [
+                    'access_token' => $accessToken,
+                    'roles' => array_merge($result['roles'], [$this->getDiscordRole($realm)])
+                ]
+            ]);
+
+            $result = json_decode($roleResponse->getBody()->getContents(), true);
+        } else {
+            $joinResponse = $client->put(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+                'verify' => false,
+                'headers' => ['authorization' => "Bot $botToken"],
+                'json' => [
+                    'access_token' => $accessToken,
+                    'roles' => [
+                        $this->getDiscordRole($realm)
+                    ]
+                ]
+            ]);
+
+            $result = json_decode($joinResponse->getBody()->getContents(), true);
+        }
 
         return true;
     }
