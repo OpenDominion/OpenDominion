@@ -8,6 +8,7 @@ use OpenDominion\Calculators\Dominion\OpsCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\MiscHelper;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Helpers\RaceHelper;
@@ -32,6 +33,7 @@ class StatusController extends AbstractDominionController
         $notifications = $selectedDominion->notifications()->paginate($resultsPerPage);
 
         return view('pages.dominion.status', [
+            'discordHelper' => app(DiscordHelper::class),
             'infoMapper' => app(InfoMapper::class),
             'landCalculator' => app(LandCalculator::class),
             'miscHelper' => app(MiscHelper::class),

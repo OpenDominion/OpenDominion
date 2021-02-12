@@ -8,6 +8,7 @@ use OpenDominion\Console\Commands\CommandInterface;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Factories\RoundFactory;
 use OpenDominion\Models\RoundLeague;
+use OpenDominion\Services\DiscordService;
 use RuntimeException;
 
 class RoundOpenCommand extends Command implements CommandInterface
@@ -26,6 +27,9 @@ class RoundOpenCommand extends Command implements CommandInterface
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 3 days';
 
+    /** @var DiscordService */
+    protected $discordService;
+
     /** @var RealmFactory */
     protected $realmFactory;
 
@@ -34,17 +38,20 @@ class RoundOpenCommand extends Command implements CommandInterface
 
     /**
      * RoundOpenCommand constructor.
-     *
+     * 
+     * @param DiscordService $discordService
      * @param RoundFactory $roundFactory
      * @param RealmFactory $realmFactory
      */
     public function __construct(
+        DiscordService $discordService,
         RoundFactory $roundFactory,
         RealmFactory $realmFactory
     )
     {
         parent::__construct();
 
+        $this->discordService = $discordService;
         $this->roundFactory = $roundFactory;
         $this->realmFactory = $realmFactory;
     }
@@ -125,6 +132,8 @@ class RoundOpenCommand extends Command implements CommandInterface
             $playersPerRace,
             $mixedAlignments
         );
+
+        $discordService->getDiscordGuild($round);
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
 
