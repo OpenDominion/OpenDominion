@@ -15,21 +15,21 @@ units:
   - name: Imp
     cost:
       platinum: 300
-      ore: 0
+      mana: 0
     power:
       offense: 3
       defense: 0
   - name: Fiend
     cost:
       platinum: 325
-      ore: 25
+      mana: 10
     power:
       offense: 0
       defense: 3
   - name: Nightshade
     cost:
       platinum: 975
-      ore: 60
+      mana: 40
     power:
       offense: 0
       defense: 3
@@ -38,7 +38,7 @@ units:
   - name: Lich
     cost:
       platinum: 950
-      ore: 0
+      mana: 0
     power:
       offense: 5
       defense: 2

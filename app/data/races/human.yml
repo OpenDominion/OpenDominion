@@ -7,9 +7,9 @@ attacker_difficulty: 1
 explorer_difficulty: 1
 converter_difficulty: 1
 overall_difficulty: 1
-home_land_type: plain
+home_land_type: hill
 perks:
-  food_production: 5
+  barracks_housing: 2
 units:
   - name: Spearman
     cost:
