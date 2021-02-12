@@ -157,15 +157,5 @@ class ComposerServiceProvider extends AbstractServiceProvider
             $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
             $view->with('version', $version);
         });
-
-        view()->composer('partials.styles', function (View $view) {
-            $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
-            $view->with('version', $version);
-        });
-
-        view()->composer('partials.styles', function (View $view) {
-            $version = (Cache::has('version') ? Cache::get('version') : 'unknown');
-            $view->with('version', $version);
-        });
     }
 }
