@@ -120,7 +120,7 @@
                     <p>There {{ ($councilThreads->count() === 1) ? 'is' : 'are' }} {{ number_format($councilThreads->count()) }} {{ str_plural('thread', $councilThreads->count()) }} in the council.</p>
                     @if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
                         <a href="{{ $discordHelper->getDiscordConnectUrl('join') }}" target="_blank" class="btn btn-primary">
-                            <i class="fa fa-comments"></i> Join Realm Discord
+                            <i class="ra ra-speech-bubbles"></i> Join Realm Discord
                         </a>
                     @endif
                 </div>
