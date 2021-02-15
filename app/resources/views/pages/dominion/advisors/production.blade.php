@@ -343,10 +343,10 @@
                                 <td>{{ number_format($populationCalculator->getMaxPopulationMilitaryBonus($target)) }}</td>
                             </tr>
                             <tr>
-                                <td>Max Population:</td>
+                                <td>Population Bonus:</td>
                                 <td>
-                                    {{ number_string($populationCalculator->getMaxPopulationRaw($target)) }}
-                                    <small class="text-muted">({{ number_string((($populationCalculator->getMaxPopulationMultiplier($target) - 1) * 100), 3, true) }}%)</small>
+                                    {{ number_string((($populationCalculator->getMaxPopulationMultiplier($target) - 1) * 100), 3, true) }}%
+                                    <small class="text-muted">({{ number_string($populationCalculator->getMaxPopulationRaw($target)) }} raw)</small>
                                 </td>
                             </tr>
                         </tbody>

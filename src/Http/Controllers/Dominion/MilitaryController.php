@@ -6,10 +6,13 @@ use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Calculators\Dominion\PopulationCalculator;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\LandHelper;
+use OpenDominion\Helpers\ResourceHelper;
 use OpenDominion\Helpers\UnitHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\ChangeDraftRateActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\Military\TrainActionRequest;
 use OpenDominion\Http\Requests\Dominion\Actions\ReleaseActionRequest;
+use OpenDominion\Mappers\Dominion\InfoMapper;
 use OpenDominion\Services\Analytics\AnalyticsEvent;
 use OpenDominion\Services\Analytics\AnalyticsService;
 use OpenDominion\Services\Dominion\Actions\Military\ChangeDraftRateActionService;
@@ -22,9 +25,12 @@ class MilitaryController extends AbstractDominionController
     public function getMilitary()
     {
         return view('pages.dominion.military', [
+            'infoMapper' => app(InfoMapper::class),
+            'landHelper' => app(LandHelper::class),
             'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'queueService' => app(QueueService::class),
+            'resourceHelper' => app(ResourceHelper::class),
             'trainingCalculator' => app(TrainingCalculator::class),
             'unitHelper' => app(UnitHelper::class),
         ]);
