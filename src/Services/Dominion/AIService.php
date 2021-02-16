@@ -150,6 +150,7 @@ class AIService
         // Set max draft rate for active NPDs
         if ($dominion->draft_rate < 90) {
             $dominion->draft_rate = 90;
+            $dominion->resource_platinum = 100000;
             $dominion->save();
         }
 

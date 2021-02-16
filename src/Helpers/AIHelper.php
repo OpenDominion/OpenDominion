@@ -371,7 +371,7 @@ class AIHelper
                         'amount' => 0.04
                     ],
                     [
-                        'land_type' => 'moutain',
+                        'land_type' => 'mountain',
                         'building' => 'home',
                         'amount' => -1
                     ],
