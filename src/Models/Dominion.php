@@ -486,4 +486,42 @@ class Dominion extends AbstractModel
 
         return array_get($this->settings, $key);
     }
+
+    public function inRealmAndSharesAdvisors(?Dominion $target): bool
+    {
+        if ($target == null) {
+            return false;
+        }
+
+        if ($this->id == $target->id) {
+            return true;
+        }
+
+        if ($this->realm_id !== $target->realm_id) {
+            return false;
+        }
+
+        if ($this->locked_at !== null) {
+            return false;
+        }
+
+        $realmAdvisors = $target->getSetting('realmadvisors');
+
+        // Realm Advisor is explicitly enabled
+        if ($realmAdvisors && array_key_exists($this->id, $realmAdvisors) && $realmAdvisors[$this->id] === true) {
+            return true;
+        }
+
+        // Realm Advisor is explicity disabled
+        if ($realmAdvisors && array_key_exists($this->id, $realmAdvisors) && $realmAdvisors[$this->id] === false) {
+            return false;
+        }
+
+        // Pack Advisor is enabled
+        if ($target->user != null && $target->user->getSetting('packadvisors') !== false && ($this->pack_id != null && $this->pack_id == $target->pack_id)) {
+            return true;
+        }
+
+        return false;
+    }
 }

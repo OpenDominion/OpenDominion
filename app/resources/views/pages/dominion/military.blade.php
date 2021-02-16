@@ -110,7 +110,6 @@
         </div>
 
         <div class="col-sm-12 col-md-3">
-
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Information</h3>
@@ -119,63 +118,40 @@
                 <div class="box-body">
                     <p>Here you can train your draftees into stronger military units. Until your draft rate is met, 1% of your peasants will join your military each hour.</p>
                     <p>Training specialist units take <b>9 hours</b> to process, while training your other units take <b>12 hours</b>.</p>
-                    <p>You have {{ number_format($selectedDominion->military_draftees) }} {{ str_plural('draftee', $selectedDominion->military_draftees) }}.</p>
                     <p>You may also <a href="{{ route('dominion.military.release') }}">release your troops</a> if you wish.</p>
                 </div>
             </div>
 
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Statistics</h3>
+                    <h3 class="box-title">Draft Rate</h3>
                 </div>
                 <div class="box-body table-responsive no-padding">
-                    <table class="table">
-                        <colgroup>
-                            <col width="50%">
-                            <col width="50%">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th class="text-center">Population</th>
-                                <th class="text-center">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center">Peasants</td>
-                                <td class="text-center">
-                                    {{ number_format($selectedDominion->peasants) }}
-                                    ({{ number_format($populationCalculator->getPopulationPeasantPercentage($selectedDominion), 2) }}%)
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">Military</td>
-                                <td class="text-center">
-                                    {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}
-                                    ({{ number_format($populationCalculator->getPopulationMilitaryPercentage($selectedDominion), 2) }}%)
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Draftees</h3>
-                </div>
-                <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
-                    @csrf
-                    <div class="box-body table-responsive no-padding">
-                        <table class="table">
+                    <form action="{{ route('dominion.military.change-draft-rate') }}" method="post" role="form">
+                        @csrf
+                        <table class="table" style="margin-bottom: 0px;">
                             <colgroup>
                                 <col width="50%">
                                 <col width="50%">
                             </colgroup>
                             <tbody>
                                 <tr>
-                                    <td class="text-center">Draft Rate:</td>
-                                    <td class="text-center">
+                                    <td>Peasants</td>
+                                    <td>
+                                        {{ number_format($selectedDominion->peasants) }}
+                                        ({{ number_format($populationCalculator->getPopulationPeasantPercentage($selectedDominion), 2) }}%)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Military</td>
+                                    <td>
+                                        {{ number_format($populationCalculator->getPopulationMilitary($selectedDominion)) }}
+                                        ({{ number_format($populationCalculator->getPopulationMilitaryPercentage($selectedDominion), 2) }}%)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Target:</td>
+                                    <td>
                                         <input type="number" name="draft_rate" class="form-control text-center"
                                                style="display: inline-block; width: 80px;" placeholder="0" min="0"
                                                max="90"
@@ -187,13 +163,51 @@
                         </table>
                     </div>
                     <div class="box-footer">
-                        <button type="submit"
-                                class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>Change
+                        <button type="submit" class="btn btn-primary" {{ $selectedDominion->isLocked() ? 'disabled' : null }}>
+                            Change
                         </button>
                     </div>
                 </form>
             </div>
+        </div>
 
+
+        <div class="col-sm-12 col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="ra ra-sword"></i> Units in training and home</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    @include('partials.dominion.info.military-training-table', ['data' => $infoMapper->mapMilitary($selectedDominion, false), 'isOp' => false, 'race' => $selectedDominion->race ])
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Units returning from battle</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    @include('partials.dominion.info.military-returning-table', ['data' => $infoMapper->mapMilitary($selectedDominion, false), 'isOp' => false, 'race' => $selectedDominion->race ])
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Resources returning from battle</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    @include('partials.dominion.info.resources-incoming-table', ['data' => $infoMapper->mapResources($selectedDominion)])
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Incoming land breakdown</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    @include('partials.dominion.info.land-incoming-table', ['data' => $infoMapper->mapLand($selectedDominion), 'race' => $selectedDominion->race])
+                </div>
+            </div>
         </div>
 
     </div>

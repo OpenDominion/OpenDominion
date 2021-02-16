@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -162,10 +163,13 @@ class AdvisorsController extends AbstractDominionController
         }
 
         return view('pages.dominion.advisors.military', [
+            'casualtiesCalculator' => app(CasualtiesCalculator::class),
+            'landCalculator' => app(LandCalculator::class),
+            'militaryCalculator' => app(MilitaryCalculator::class),
             'queueService' => app(QueueService::class),
+            'resourceHelper' => app(ResourceHelper::class),
             'unitHelper' => app(UnitHelper::class),
             'infoMapper' => app(InfoMapper::class),
-            'resourceHelper' => app(ResourceHelper::class),
             'targetDominion' => $target
         ]);
     }

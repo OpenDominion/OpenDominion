@@ -26,8 +26,8 @@
                             <tr>
                                 <th class="text-center">#</th>
                                 <th>Dominion</th>
-                                @if ($isOwnRealm && $selectedDominion->pack !== null)
-                                    <th class="text-center">Player from Pack</th>
+                                @if ($isOwnRealm)
+                                    <th class="text-center">Player</th>
                                 @endif
                                 <th class="text-center">Race</th>
                                 <th class="text-center">Land</th>
@@ -43,7 +43,7 @@
                                 @if ($dominion === null)
                                     <tr>
                                         <td>&nbsp;</td>
-                                        @if ($isOwnRealm && $selectedDominion->pack !== null)
+                                        @if ($isOwnRealm)
                                             <td colspan="5"><i>Vacant</i></td>
                                         @else
                                             <td colspan="4"><i>Vacant</i></td>
@@ -68,17 +68,10 @@
                                             @endif
 
                                             @if ($dominion->id === $selectedDominion->id)
-                                                <b>{{ $dominion->name }}</b> (you)
+                                                <b>{{ $dominion->name }}</b>
                                             @else
                                                 @if ($isOwnRealm)
-                                                    @php
-                                                        $realmAdvisors = $dominion->getSetting("realmadvisors");
-                                                        $hasRealmAdvisorEnabled = ($realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === true);
-                                                        $hasRealmAdvisorDisabled = ($realmAdvisors && array_key_exists($selectedDominion->id, $realmAdvisors) && $realmAdvisors[$selectedDominion->id] === false);
-                                                        $hasPackAdvisorEnabled = ($dominion->user !== null) ? ($dominion->user->getSetting('packadvisors')) !== false : false;
-                                                        $sharesPackWithDominion = ($dominion->pack !== null) && ($dominion->pack_id === $selectedDominion->pack_id);
-                                                    @endphp
-                                                    @if ($hasRealmAdvisorEnabled || (!$hasRealmAdvisorDisabled && $hasPackAdvisorEnabled && $sharesPackWithDominion))
+                                                    @if ($selectedDominion->inRealmAndSharesAdvisors($dominion))
                                                         <a href="{{ route('dominion.realm.advisors.op-center', $dominion) }}">{{ $dominion->name }}</a>
                                                     @else
                                                         {{ $dominion->name }}
@@ -102,8 +95,8 @@
                                                 <span class="label label-danger">Locked</span>
                                             @endif
                                         </td>
-                                        @if ($isOwnRealm && $selectedDominion->pack !== null)
-                                            @if (($dominion->pack !== null) && ($dominion->pack->id === $selectedDominion->pack->id))
+                                        @if ($isOwnRealm)
+                                            @if (($dominion->pack !== null && $selectedDominion->pack !== null && $dominion->pack->id === $selectedDominion->pack->id) || $selectedDominion->inRealmAndSharesAdvisors($dominion))
                                                 <td class="text-center">{{ $dominion->user->display_name }}</td>
                                             @else
                                                 <td class="text-center"></td>
