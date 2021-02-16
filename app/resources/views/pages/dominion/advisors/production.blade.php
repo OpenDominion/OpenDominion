@@ -396,7 +396,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php($totalPlatinum = $target->stat_total_platinum_production + $target->stat_total_platinum_stolen)
+                                @php($totalPlatinum = $target->stat_total_platinum_spent_investment + $target->stat_total_platinum_spent_construction + $target->stat_total_platinum_spent_exploration + $target->stat_total_platinum_spent_rezoning + $target->stat_total_platinum_spent_training)
                                 <tr>
                                     <td>Platinum</td>
                                     <td>{{ number_format($target->stat_total_platinum_production) }}</td>
@@ -420,7 +420,7 @@
                                     <td>--</td>
                                     <td>--</td>
                                 </tr>
-                                @php($totalLumber = $target->stat_total_lumber_production + $target->stat_total_lumber_stolen)
+                                @php($totalLumber = $target->stat_total_lumber_spent_investment + $target->stat_total_lumber_spent_construction + $target->stat_total_lumber_spent_training)
                                 <tr>
                                     <td>Lumber</td>
                                     <td>{{ number_format($target->stat_total_lumber_production) }}</td>
@@ -432,7 +432,7 @@
                                     <td>--</td>
                                     <td>{!! format_percentage($target->stat_total_lumber_spent_training, $totalLumber) !!}</td>
                                 </tr>
-                                @php($totalMana = $target->stat_total_mana_production + $target->stat_total_mana_stolen)
+                                @php($totalMana = $target->stat_total_mana_spent_training)
                                 <tr>
                                     <td>Mana</td>
                                     <td>{{ number_format($target->stat_total_mana_production) }}</td>
@@ -444,7 +444,7 @@
                                     <td>--</td>
                                     <td>{!! format_percentage($target->stat_total_mana_spent_training, $totalMana) !!}</td>
                                 </tr>
-                                @php($totalOre = $target->stat_total_ore_production + $target->stat_total_ore_stolen)
+                                @php($totalOre = $target->stat_total_ore_spent_investment + $target->stat_total_ore_spent_training)
                                 <tr>
                                     <td>Ore</td>
                                     <td>{{ number_format($target->stat_total_ore_production) }}</td>
@@ -456,7 +456,7 @@
                                     <td>--</td>
                                     <td>{!! format_percentage($target->stat_total_ore_spent_training, $totalOre) !!}</td>
                                 </tr>
-                                @php($totalGems = $target->stat_total_gem_production + $target->stat_total_gems_stolen)
+                                @php($totalGems = $target->stat_total_gems_spent_investment + $target->stat_total_gems_spent_training)
                                 <tr>
                                     <td>Gems</td>
                                     <td>{{ number_format($target->stat_total_gem_production) }}</td>
