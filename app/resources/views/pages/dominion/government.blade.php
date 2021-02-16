@@ -100,7 +100,7 @@
                                                     <td>N/A</td>
                                                 @endif
                                                 <td>
-                                                    @if ($dominion->id !== $selectedDominion->id)
+                                                    @if ($dominion->user_id !== null && $dominion->id !== $selectedDominion->id)
                                                         @if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
                                                         @elseif ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === false)
