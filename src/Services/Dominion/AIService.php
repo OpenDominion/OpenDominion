@@ -142,7 +142,7 @@ class AIService
             return $defenseByDay[$dominion->round->daysInRound()] * $invasionMultiplier;
         }
 
-        return 3;
+        return 5;
     }
 
     public function performActions(Dominion $dominion)
@@ -227,6 +227,7 @@ class AIService
         })->toArray();
         $incomingDefense = $this->militaryCalculator->getDefensivePower($dominion, null, null, $incomingTroops, 0, true, true);
         foreach ($config['military'] as $command) {
+            $maxAfford = 0;
             if ($command == 'spies') {
                 // Train spies
                 $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
