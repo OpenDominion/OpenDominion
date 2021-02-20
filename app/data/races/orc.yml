@@ -16,14 +16,14 @@ units:
   - name: Savage
     cost:
       platinum: 375
-      ore: 0
+      ore: 25
     power:
       offense: 4
       defense: 0
   - name: Guard
     cost:
       platinum: 300
-      ore: 25
+      ore: 0
     power:
       offense: 0
       defense: 3
