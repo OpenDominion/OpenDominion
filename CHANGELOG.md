@@ -5,12 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Added
 - Undo button in protection
+- Every realm now has a pre-made Discord server
+- NPDs begin to train/explore/etc on day 5
 - Additional resources displayed in header overview
+- Realm page shows usernames of players who share advisors
 - Added spending statistics to production advisor
+- Military modifier breakdown displayed on advisors/invade pages
 - Rezone page now shows current percentage of each land type
 
 ### Changed
 - Op Center now shows current land/networth
+- Military advisor improved and portions moved to military page
 - Construction advisor moved to construction page
 - Land advisor moved to explore page
 - Tech/Castle advisors removed
