@@ -253,9 +253,26 @@ class Round extends AbstractModel
     {
         $hoursUntilReset = $this->end_date->hour - now()->hour;
         if ($hoursUntilReset < 1) {
-            $hoursUntilReset = 24 + $hoursUntilReset;
+            $hoursUntilReset += 24;
         }
         return $hoursUntilReset;
+    }
+
+    /**
+     * Returns the amount in hours since the current round day started.
+     *
+     * @return int
+     */
+    public function hoursInDay(Carbon $datetime = null)
+    {
+        if ($datetime == null) {
+            $datetime = now();
+        }
+        $hoursInDay = $datetime->hour - $this->end_date->hour + 1;
+        if ($hoursInDay < 1) {
+            $hoursInDay += 24;
+        }
+        return $hoursInDay;
     }
 
     /**
