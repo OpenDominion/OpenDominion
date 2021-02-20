@@ -467,12 +467,11 @@ class DominionFactory
                 // ~20% 400-450 acres
                 $landSize = mt_rand(400, 450);
             }
-            $defense = 0.0033 * ($landSize ** 2.152) * $accuracy;
         } else {
             // 30% 525-600 acres
             $landSize = mt_rand(525, 600);
-            $defense = $landSize * ((0.0105 * $landSize) - 0.3) * $accuracy;
         }
+        $defense = 120.41 * exp(0.0058 * $landSize);
 
         // Generate random starting build
         $startingAttributes = $this->getStartingAttributes();
