@@ -63,6 +63,11 @@ class DiscordConnectController extends AbstractController
         $dominionSelectorService = app(SelectorService::class);
         $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
 
+        if (!$selectedDominion->round->discord_guild_id) {
+            $request->session()->flash('alert-danger', 'Discord is not enabled for this round.');
+            return redirect()->route('dominion.status');
+        }
+
         if ($code == null && $discordUser !== null && $discordUser->expires_at > now()) {
             $accessToken = $this->discordService->refreshToken($discordUser, $this->discordHelper->getDiscordGuildCallbackUrl());
         } else {
@@ -70,7 +75,7 @@ class DiscordConnectController extends AbstractController
             $discordUser = $user->discordUser()->first();
         }
 
-        $result = $this->discordService->joinDiscordGuild($discordUser, $selectedDominion->realm, $accessToken);
+        $this->discordService->joinDiscordGuild($discordUser, $selectedDominion->realm, $accessToken);
 
         return redirect()->away(sprintf(
             'https://discord.com/channels/%s/%s',

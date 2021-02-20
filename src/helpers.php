@@ -141,6 +141,28 @@ if (!function_exists('random_distribution')) {
     }
 }
 
+if (!function_exists('root_mean_square')) {
+    /**
+     * Returns the average of a list of elements weighed by squaring each value and rooting the result.
+     *
+     * @param array $values List of elements
+     * @return float
+     * @throws Exception
+     */
+    function root_mean_square(array $values): float
+    {
+        if (count($values) == 0) {
+            return 0;
+        }
+
+        $sum = 0;
+        foreach ($values as $value) {
+            $sum += $value ** 2;
+        }
+        return sqrt($sum / count($values));
+    }
+}
+
 if (!function_exists('error_function')) {
     /**
      * Gaussian error function
