@@ -585,11 +585,11 @@ class DominionFactory
                 $queueService->queueResources('training', $dominion, ['military_unit2' => $incSpecs, 'military_unit3' => $incElites], $hour);
             } else {
                 if ($incElites > 0 && random_chance(0.5)) {
-                    $amount = mt_rand($incElites / 4, $incElites / 2);
+                    $amount = mt_rand($incElites / 5, $incElites / 3);
                     $incElites -= min($amount, $incElites);
                     $queueService->queueResources('training', $dominion, ['military_unit3' => $amount], $hour);
                 } elseif ($incSpecs > 0) {
-                    $amount = mt_rand($incSpecs / 4, $incSpecs / 2);
+                    $amount = mt_rand($incSpecs / 5, $incSpecs / 3);
                     $queueService->queueResources('training', $dominion, ['military_unit2' => $amount], $hour);
                     $incSpecs -= min($amount, $incSpecs);
                 }
