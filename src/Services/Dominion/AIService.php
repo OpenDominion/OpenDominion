@@ -167,7 +167,7 @@ class AIService
         // Spells
         foreach ($config['spells'] as $spell) {
             $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
-            if ($spellDuration == null || $spellDuration < 8) {
+            if ($spellDuration == null || $spellDuration < 4) {
                 $this->spellActionService->castSpell($dominion, $spell);
             }
         }
