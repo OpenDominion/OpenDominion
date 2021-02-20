@@ -232,7 +232,7 @@ class DiscordService
             'json' => [
                 'name' => 'realm-'.$realm->number,
                 'type' => 0,
-                'topic' => 'Text channel for Realm '.$realm->number,
+                'topic' => 'General discussion for Realm '.$realm->number,
                 'permission_overwrites' => [
                     [
                         'id' => $realm->discord_role_id,
@@ -243,9 +243,26 @@ class DiscordService
                 'parent_id' => $realm->round->discord_text_category_channel_id
             ]
         ]);
-
         $result = json_decode($createTextChannelResponse->getBody()->getContents(), true);
-        $realm->discord_text_channel_id = $result['id'];
+
+        $createOpsChannelResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/channels', [
+            'verify' => false,
+            'headers' => ['authorization' => "Bot $botToken"],
+            'json' => [
+                'name' => 'realm-'.$realm->number.'-ops',
+                'type' => 0,
+                'topic' => 'Tracking top OP for Realm '.$realm->number,
+                'permission_overwrites' => [
+                    [
+                        'id' => $realm->discord_role_id,
+                        'type' => 0,
+                        'allow' => $this->discordHelper->getPermissionsBitwise()
+                    ]
+                ],
+                'parent_id' => $realm->round->discord_text_category_channel_id
+            ]
+        ]);
+        $result = json_decode($createOpsChannelResponse->getBody()->getContents(), true);
 
         $createVoiceChannelResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/channels', [
             'verify' => false,
@@ -264,9 +281,7 @@ class DiscordService
                 'parent_id' => $realm->round->discord_voice_category_channel_id
             ]
         ]);
-
         $result = json_decode($createVoiceChannelResponse->getBody()->getContents(), true);
-        $realm->discord_voice_channel_id = $result['id'];
 
         $realm->save();
 

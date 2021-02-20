@@ -73,9 +73,8 @@ class DiscordConnectController extends AbstractController
         $result = $this->discordService->joinDiscordGuild($discordUser, $selectedDominion->realm, $accessToken);
 
         return redirect()->away(sprintf(
-            'https://discord.com/channels/%s/%s',
-            $selectedDominion->realm->round->discord_guild_id,
-            $selectedDominion->realm->discord_text_channel_id
+            'https://discord.com/channels/%s/',
+            $selectedDominion->realm->round->discord_guild_id
         ));
     }
 }
