@@ -2,66 +2,25 @@
 
 namespace OpenDominion\Helpers;
 
+use OpenDominion\Models\Round;
+
 class AIHelper
 {
-    public function getDailyDPA()
+    public function getDefenseForNonPlayer(Round $round)
     {
-        return [
-            '4'  => 5.5,
-            '5'  => 8.5,
-            '6'  => 10.5,
-            '7'  => 12.0,
-            '8'  => 15.0,
-            '9'  => 17.0,
-            '10' => 19.0,
-            '11' => 21.5,
-            '12' => 24.0,
-            '13' => 26.5,
-            '14' => 29.0,
-            '15' => 31.5,
-            '16' => 33.0,
-            '17' => 35.0,
-            '18' => 36.0,
-            '19' => 37.5,
-            '20' => 38.5,
-            '21' => 40.5,
-            '22' => 42.5,
-            '23' => 44.0,
-            '24' => 46.0,
-            '25' => 48.0,
-            '26' => 49.5,
-            '27' => 51.0,
-            '28' => 52.5,
-            '29' => 54.0,
-            '30' => 55.0,
-            '31' => 57.0,
-            '32' => 59.0,
-            '33' => 60.5,
-            '34' => 62.0,
-            '35' => 63.5,
-            '36' => 65.0,
-            '37' => 66.5,
-            '38' => 67.0,
-            '39' => 68.5,
-            '40' => 70.0,
-            '41' => 71.0,
-            '42' => 72.0,
-            '43' => 73.0,
-            '44' => 74.0,
-            '45' => 75.0,
-            '46' => 76.0,
-            '47' => 77.0,
-            '48' => 78.0,
-            '49' => 79.0,
-            '50' => 80.0
-        ];
+        $day = $round->daysInRound();
+        $hours = $round->hoursInDay();
+        $fractionalDay = $day + (($hours - 12) / 24);
+
+        // Formula based on average DPA of attacks over several rounds
+        return (-0.0162 * ($day**2)) + (2.4555 * $day) - 2.3372;
     }
 
     public function getRaceInstructions()
     {
         return [
             'Dwarf' => [
-                'active_chance' => '0.40', // 40% chance to log in
+                'active_chance' => '0.33', // 33% chance to log in
                 'invest' => 'ore', // alternate resource to invest
                 'spells' => [
                     'miners_sight',
@@ -116,7 +75,7 @@ class AIHelper
                 ]
             ],
             'Firewalker' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'alchemist_flame',
@@ -171,7 +130,7 @@ class AIHelper
                 ]
             ],
             'Goblin' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'ares_call',
@@ -230,7 +189,7 @@ class AIHelper
                 ]
             ],
             'Halfling' => [
-                'active_chance' => '0.50',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'defensive_frenzy',
@@ -289,7 +248,7 @@ class AIHelper
                 ]
             ],
             'Human' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'ares_call',
@@ -348,7 +307,7 @@ class AIHelper
                 ]
             ],
             'Icekin' => [
-                'active_chance' => '0.50',
+                'active_chance' => '0.33',
                 'invest' => 'ore',
                 'spells' => [
                     'blizzard',
@@ -397,7 +356,7 @@ class AIHelper
                 ]
             ],
             'Lizardfolk' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'ares_call',
@@ -451,7 +410,7 @@ class AIHelper
                 ]
             ],
             'Lycanthrope' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'ares_call',
@@ -510,7 +469,7 @@ class AIHelper
                 ]
             ],
             'Merfolk' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'ares_call',
@@ -564,7 +523,7 @@ class AIHelper
                 ]
             ],
             'Nomad' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'gems',
                 'spells' => [
                     'ares_call',
@@ -623,7 +582,7 @@ class AIHelper
                 ]
             ],
             'Sylvan' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'lumber',
                 'spells' => [
                     'ares_call',
@@ -667,7 +626,7 @@ class AIHelper
                 ]
             ],
             'Wood Elf' => [
-                'active_chance' => '0.40',
+                'active_chance' => '0.33',
                 'invest' => 'lumber',
                 'spells' => [
                     'gaias_blessing',

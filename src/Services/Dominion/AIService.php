@@ -112,7 +112,7 @@ class AIService
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
-            if ($round->daysInRound() >= 5) {
+            if ($round->daysInRound() >= 4) {
                 $dominions = $round->activeDominions()
                     ->where('user_id', null)
                     ->with([
@@ -134,15 +134,11 @@ class AIService
 
     public function getRequiredDefense(Dominion $dominion)
     {
-        $defenseByDay = $this->aiHelper->getDailyDPA();
+        // Defense starts 10% below formula, each invasion increases target DPA by 5%
+        $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 2) / 20);
+        $defenseByDay = $this->aiHelper->getDefenseForNonPlayer($dominion->round);
 
-        if ($dominion->round->daysInRound() >= 4 && $dominion->round->daysInRound() <= 50) {
-            // Defense starts 10% below chart, each invasion increases target DPA by 1%
-            $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 10) / 100);
-            return $defenseByDay[$dominion->round->daysInRound()] * $invasionMultiplier;
-        }
-
-        return 5;
+        return $defenseByDay * $invasionMultiplier;
     }
 
     public function performActions(Dominion $dominion)
@@ -150,7 +146,6 @@ class AIService
         // Set max draft rate for active NPDs
         if ($dominion->draft_rate < 90) {
             $dominion->draft_rate = 90;
-            $dominion->resource_platinum = 100000;
             $dominion->save();
         }
 
@@ -171,7 +166,8 @@ class AIService
 
         // Spells
         foreach ($config['spells'] as $spell) {
-            if (!$this->spellCalculator->isSpellActive($dominion, $spell)) {
+            $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
+            if ($spellDuration == null || $spellDuration < 4) {
                 $this->spellActionService->castSpell($dominion, $spell);
             }
         }
@@ -233,12 +229,14 @@ class AIService
                 $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
                 if ($spyRatio < $command['amount']) {
                     $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                    $maxAfford = min(100, $maxAfford);
                 }
             } elseif ($command == 'wizards') {
                 // Train wizards
                 $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
                 if ($wizardRatio < $command['amount']) {
                     $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                    $maxAfford = min(100, $maxAfford);
                 }
             } else {
                 // Train military

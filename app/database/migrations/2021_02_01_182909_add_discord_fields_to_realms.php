@@ -21,8 +21,6 @@ class AddDiscordFieldsToRealms extends Migration
 
         Schema::table('realms', function (Blueprint $table) {
             $table->string('discord_role_id')->nullable()->after('name');
-            $table->string('discord_text_channel_id')->nullable()->after('discord_role_id');
-            $table->string('discord_voice_channel_id')->nullable()->after('discord_text_channel_id');
         });
     }
 
@@ -43,9 +41,7 @@ class AddDiscordFieldsToRealms extends Migration
 
         Schema::table('realms', function (Blueprint $table) {
             $table->dropColumn([
-                'discord_role_id',
-                'discord_text_channel_id',
-                'discord_voice_channel_id'
+                'discord_role_id'
             ]);
         });
     }
