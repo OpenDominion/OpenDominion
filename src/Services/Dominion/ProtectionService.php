@@ -102,9 +102,6 @@ class ProtectionService
 
         $fraction = (1 - ((($minutes * 60) + $seconds) / 3600));
 
-        return min(
-            ($diffInHours + $fraction),
-            static::PROTECTION_DURATION_IN_HOURS
-        );
+        return round($diffInHours + $fraction, 2);
     }
 }
