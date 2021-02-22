@@ -9,6 +9,7 @@ use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\NotificationService;
 
 class RealmFinderService
 {
@@ -303,6 +304,7 @@ class RealmFinderService
         }
 
         // Create realms and assign dominions
+        $notificationService = app(NotificationService::class);
         foreach (shuffle($realms) as $realmies) {
             $realm = RealmFactory::create($round);
             foreach ($realmies['players'] as $player) {
@@ -313,7 +315,13 @@ class RealmFinderService
                     $dominion->pack->realm_id = $realm->id;
                     $dominion->pack->save();
                 }
-                // TODO: Send email notification
+                // Notifications
+                $notificationService->queueNotification('realm_assignment', [
+                    '_routeParams' => [$realm->number],
+                    'realmNumber' => $realm->number,
+                    'discordEnabled' => ($round->discord_guild_id !== null && $round->discord_guild_id !== '')
+                ]);
+                $notificationService->sendNotifications($dominion, 'irregular_dominion');
             }
         }
     }
