@@ -38,8 +38,7 @@ class MiscController extends AbstractDominionController
             throw new GameException('Pack may only be closed by the creator');
         }
 
-        $pack->closed_at = now();
-        $pack->save();
+        $pack->close();
 
         return redirect()->back();
     }
