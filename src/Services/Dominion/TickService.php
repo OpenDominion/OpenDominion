@@ -376,9 +376,10 @@ class TickService
                         // Queued Spells
                         foreach (json_decode($value) as $spell) {
                             DB::table('active_spells')
-                                ->insert([
+                                ->updateOrInsert([
                                     'dominion_id' => $dominion->id,
-                                    'spell' => $spell,
+                                    'spell' => $spell
+                                ],[
                                     'duration' => 0,
                                     'cast_by_dominion_id' => $dominion->id,
                                     'created_at' => $this->now,
