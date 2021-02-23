@@ -30,6 +30,11 @@ class RealmController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $round = $dominion->round;
 
+        if ($round->realmAssignmentDate() > now()) {
+            $request->session()->flash('alert-warning', 'Realms have not yet been assigned.');
+            return redirect()->back();
+        }
+
         if ($realmNumber === null) {
             $realmNumber = (int)$dominion->realm->number;
         }

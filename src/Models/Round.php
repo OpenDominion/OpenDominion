@@ -137,13 +137,57 @@ class Round extends AbstractModel
     }
 
     /**
+     * Scope a query to include only rounds that are ready to have realms assigned.
+     * Used by TickService to trigger realm assignment.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeReadyForAssignment(Builder $query): Builder
+    {
+        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_AFTER_START;
+
+        return $query
+            ->where('start_date', '<', now()->subHours($assignmentHours - 1))
+            ->where('start_date', '>=', now()->subHours($assignmentHours));
+    }
+
+    /**
+     * Returns the scheduled realm assignment date.
+     *
+     * @return bool
+     */
+    public function realmAssignmentDate()
+    {
+        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_AFTER_START;
+
+        return $this->start_date->addHours($assignmentHours);
+    }
+
+    /**
+     * Returns the minimum protection end date.
+     *
+     * @return bool
+     */
+    public function protectionEndDate()
+    {
+        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
+
+        return $this->start_date->addHours($protectionHours);
+    }
+
+    /**
      * Returns whether a user can register to this round.
      *
      * @return bool
      */
-    public function openForRegistration()
+    public function packRegistrationOpen()
     {
-        return $this->start_date->subDays(3) <= now() || $this->name == 'Simulator';
+        if (now() > $this->realmAssignmentDate() && now() < $this->protectionEndDate()) {
+            // Cannot register packs between realm assignment and OOP
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -151,11 +195,16 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function daysUntilRegistration()
+    public function hoursUntilRealmAssignment()
     {
-        return $this->start_date->subDays(3)->diffInDays(now());
+        return now()->diffInHours($this->realmAssignmentDate());
     }
 
+    /**
+     * Returns whether the user already has a dominion registered in this round.
+     * 
+     * @return bool
+     */
     public function userAlreadyRegistered(User $user)
     {
         $results = DB::table('dominions')
@@ -229,9 +278,9 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function daysUntilStart()
+    public function daysUntilCommencement()
     {
-        return $this->start_date->diffInDays(now());
+        return now()->diffInDays($this->protectionEndDate());
     }
 
     /**
@@ -241,7 +290,7 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return $this->end_date->diffInDays(now());
+        return now()->diffInDays($this->end_date);
     }
 
     /**

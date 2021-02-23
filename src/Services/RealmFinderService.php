@@ -24,19 +24,14 @@ class RealmFinderService
     protected const MAX_PACKED_PLAYERS_PER_REALM = 8;
 
     /**
-     * @var int Minimum number of realms to spawn prior to round start
-     */
-    protected const MIN_REALM_COUNT = 20;
-
-    /**
      * @var int Number of hours after round start to begin realm assignment
      */
-    protected const ASSIGNMENT_HOURS_AFTER_START = 24;
+    public const ASSIGNMENT_HOURS_AFTER_START = 36;
 
     /**
      * @var int Minimum number of realms to create
      */
-    protected const ASSIGNMENT_MIN_REALM_COUNT = 20;
+    public const ASSIGNMENT_MIN_REALM_COUNT = 20;
 
     /**
      * Finds and returns the first best realm for a new Dominion to settle in.

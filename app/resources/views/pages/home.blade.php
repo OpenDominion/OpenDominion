@@ -80,21 +80,22 @@
                             </p>
                         @endif
                     </div>
-                @elseif (!$currentRound->hasStarted() && $currentRound->openForRegistration())
+                @elseif ($currentRound->realmAssignmentDate() > now())
                     <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                         <p style="font-size: 1.5em;" class="text-yellow">Open for Registration</p>
                     </div>
                     <div class="box-body text-center">
                         <p><a href="{{ route('round.register', $currentRound) }}">Registration</a> for Round {{ $currentRound->number }} is open.</p>
-                        <p>The round starts on {{ $currentRound->start_date }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p>The deadline to register a pack is {{ $currentRound->realmAssignmentDate() }}.</p>
+                        <p>The round will commence at {{ $currentRound->protectionEndDate() }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
-                @elseif (!$currentRound->hasStarted())
+                @elseif ($currentRound->protectionEndDate() > now())
                     <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                         <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
                     </div>
                     <div class="box-body text-center">
-                        <p>Registration for Round {{ $currentRound->number }} opens on {{ $currentRound->start_date->subDays(3) }}.</p>
-                        <p>The round starts on {{ $currentRound->start_date }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p>Registration for Round {{ $currentRound->number }} is closed until round start.</p>
+                        <p>The round will commence at {{ $currentRound->protectionEndDate() }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
                     </div>
                 @else
                     <div class="box-body text-center" style="padding: 0;">
@@ -129,9 +130,13 @@
                             <p>
                                 <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }} and {{ $currentRound->hoursUntilReset() - 1 }} {{ str_plural('hour', $currentRound->hoursUntilReset() - 1) }}.</em>
                             </p>
-                        @else
+                        @elseif ($currentRound->packRegistrationOpen())
                             <p>
                                 <a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a>
+                            </p>
+                        @else
+                            <p>
+                                Registration Closed
                             </p>
                         @endif
                     </div>
