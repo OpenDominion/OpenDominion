@@ -10,10 +10,14 @@ class AIHelper
     {
         $day = $round->daysInRound();
         $hours = $round->hoursInDay();
-        $fractionalDay = $day + (($hours - 12) / 24);
+        $fractionalDay = $day + ($hours / 24);
 
         // Formula based on average DPA of attacks over several rounds
-        return (-0.0162 * ($day**2)) + (2.4555 * $day) - 2.3372;
+        $defensePerAcre = (-0.0181 * ($fractionalDay**2)) + (2.5797 * $fractionalDay) - 4.1725;
+        // Additional defense for first few days
+        $defensePerAcre += max(0, 5 - $fractionalDay/2);
+
+        return $defensePerAcre;
     }
 
     public function getRaceInstructions()
@@ -46,7 +50,7 @@ class AIHelper
                     [
                         'land_type' => 'mountain',
                         'building' => 'ore_mine',
-                        'amount' => 600 // build up to 600, then stop
+                        'amount' => 500 // build up to 600, then stop
                     ],
                     [
                         'land_type' => 'mountain',
@@ -101,7 +105,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 600
+                        'amount' => 500
                     ],
                     [
                         'land_type' => 'cavern',
@@ -160,7 +164,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 800
+                        'amount' => 600
                     ],
                     [
                         'land_type' => 'hill',
@@ -278,7 +282,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 600
+                        'amount' => 500
                     ],
                     [
                         'land_type' => 'plain',
@@ -328,6 +332,11 @@ class AIHelper
                         'land_type' => 'forest',
                         'building' => 'lumberyard',
                         'amount' => 0.04
+                    ],
+                    [
+                        'land_type' => 'mountain',
+                        'building' => 'ore_mine',
+                        'amount' => 0.6
                     ],
                     [
                         'land_type' => 'mountain',
@@ -381,7 +390,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 600
+                        'amount' => 500
                     ],
                     [
                         'land_type' => 'water',
@@ -440,7 +449,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 600
+                        'amount' => 500
                     ],
                     [
                         'land_type' => 'forest',
@@ -494,7 +503,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 750
+                        'amount' => 500
                     ],
                     [
                         'land_type' => 'water',
@@ -601,12 +610,66 @@ class AIHelper
                     ],
                     [
                         'land_type' => 'forest',
+                        'building' => 'lumberyard',
+                        'amount' => 0.05
+                    ],
+                    [
+                        'land_type' => 'forest',
                         'building' => 'home',
                         'amount' => -1
                     ],
                     [
                         'land_type' => 'forest',
                         'building' => 'lumberyard',
+                        'amount' => -1
+                    ]
+                ],
+                'military' => [
+                    [
+                        'unit' => 'unit3',
+                        'amount' => -1
+                    ],
+                    [
+                        'unit' => 'spies',
+                        'amount' => 0.05
+                    ],
+                    [
+                        'unit' => 'wizards',
+                        'amount' => 0.05
+                    ]
+                ]
+            ],
+            'Troll' => [
+                'active_chance' => '0.33',
+                'invest' => 'gems',
+                'spells' => [
+                    'ares_call',
+                    'midas_touch'
+                ],
+                'build' => [
+                    [
+                        'land_type' => 'plain',
+                        'building' => 'farm',
+                        'amount' => 0.06
+                    ],
+                    [
+                        'land_type' => 'swamp',
+                        'building' => 'tower',
+                        'amount' => 0.04
+                    ],
+                    [
+                        'land_type' => 'forest',
+                        'building' => 'lumberyard',
+                        'amount' => 0.035
+                    ],
+                    [
+                        'land_type' => 'plain',
+                        'building' => 'home',
+                        'amount' => -1
+                    ],
+                    [
+                        'land_type' => 'plain',
+                        'building' => 'smithy',
                         'amount' => -1
                     ]
                 ],
@@ -642,6 +705,11 @@ class AIHelper
                     [
                         'land_type' => 'swamp',
                         'building' => 'tower',
+                        'amount' => 0.05
+                    ],
+                    [
+                        'land_type' => 'forest',
+                        'building' => 'lumberyard',
                         'amount' => 0.05
                     ],
                     [
