@@ -27,7 +27,7 @@ class CouncilController extends AbstractDominionController
         }
 
         if ($dominion->round->realmAssignmentDate() > now()) {
-            $request->session()->flash('alert-warning', 'Realms have not yet been assigned.');
+            $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
             return redirect()->back();
         }
 
