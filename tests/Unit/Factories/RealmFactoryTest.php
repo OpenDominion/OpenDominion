@@ -33,7 +33,6 @@ class RealmFactoryTest extends AbstractBrowserKitTestCase
 
         $realm = $this->realmFactory->create($this->round, 'good');
 
-        // +1 is added here for Graveyard realm
-        $this->assertEquals(2, $this->round->realms()->count());
+        $this->assertEquals(1, $this->round->realms()->count());
     }
 }

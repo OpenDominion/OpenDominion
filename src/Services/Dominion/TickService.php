@@ -554,16 +554,18 @@ class TickService
             // Move Inactive Dominions
             // toBase required to prevent ambiguous updated_at column in query
             $graveyardRealm = $round->realms()->where('number', 0)->first();
-            $inactiveDominions = $round->dominions()
-                ->join('users', 'dominions.user_id', '=', 'users.id')
-                ->where('realms.number', '>', 0)
-                ->where('dominions.protection_ticks_remaining', '>', 0)
-                ->where('dominions.created_at', '<', now()->subDays(3))
-                ->where('users.last_online', '<', now()->subDays(3))
-                ->toBase()->update([
-                    'realm_id' => $graveyardRealm->id,
-                    'monarchy_vote_for_dominion_id' => null
-                ]);
+            if ($graveyardRealm !== null) {
+                $inactiveDominions = $round->dominions()
+                    ->join('users', 'dominions.user_id', '=', 'users.id')
+                    ->where('realms.number', '>', 0)
+                    ->where('dominions.protection_ticks_remaining', '>', 0)
+                    ->where('dominions.created_at', '<', now()->subDays(3))
+                    ->where('users.last_online', '<', now()->subDays(3))
+                    ->toBase()->update([
+                        'realm_id' => $graveyardRealm->id,
+                        'monarchy_vote_for_dominion_id' => null
+                    ]);
+            }
 
             // Spawn Wonders
             $day = $round->daysInRound();
