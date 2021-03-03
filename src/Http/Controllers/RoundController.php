@@ -126,6 +126,9 @@ class RoundController extends AbstractController
                         break;
 
                     case 'create_pack':
+                        if (!$round->packRegistrationOpen()) {
+                            throw new GameException('Pack registration is currently closed');
+                        }
                         $realm = $realmFinderService->findRealm(
                             $round,
                             $race,
@@ -173,7 +176,6 @@ class RoundController extends AbstractController
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors(["Someone already registered a dominion with the name '{$dominionName}' for this round."]);
-
         } catch (GameException $e) {
             return redirect()->back()
                 ->withInput($request->all())

@@ -163,11 +163,17 @@
                     <div class="col-sm-9">
                         <select name="realm_type" id="realm_type" class="form-control" required>
                             <option value="random" {{ (old('realm_type') === 'random') ? 'selected' : null }}>Put me in a random realm</option>
-                            <option value="join_pack" {{ (old('realm_type') === 'join_pack') ? 'selected' : null }}>Join an existing pack</option>
-                            <option value="create_pack" {{ (old('realm_type') === 'create_pack') ? 'selected' : null }}>Create a new pack</option>
+                            @if ($round->packRegistrationOpen())
+                                <option value="join_pack" {{ (old('realm_type') === 'join_pack') ? 'selected' : null }}>Join an existing pack</option>
+                                <option value="create_pack" {{ (old('realm_type') === 'create_pack') ? 'selected' : null }}>Create a new pack</option>
+                            @endif
                         </select>
                         <p class="help-block">
-                            <span class="text-danger">If you choose to join/create a pack, you will not be able to change your selection after registration.</span>
+                            @if ($round->packRegistrationOpen())
+                                <span class="text-danger">If you choose to join/create a pack, you will not be able to change your selection after registration.</span>
+                            @else
+                                <span class="text-danger">Pack registration is currently closed.</span>
+                            @endif
                         </p>
                     </div>
                 </div>

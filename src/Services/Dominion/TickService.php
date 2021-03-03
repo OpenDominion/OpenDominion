@@ -101,9 +101,15 @@ class TickService
             $this->performTick($round);
         }
 
+        // Realm Assignment
+        $rounds = Round::scopeReadyForAssignment()->get();
+        foreach ($rounds as $round) {
+            $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
+            $realmFinderService->assignRealms();
+        }
+
         // Generate Non-Player Dominions
         $rounds = Round::activeSoon()->get();
-
         foreach ($rounds as $round) {
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
             $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
