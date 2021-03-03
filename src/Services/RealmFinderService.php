@@ -9,6 +9,7 @@ use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\User;
 use OpenDominion\Services\NotificationService;
 
 class RealmFinderService
@@ -44,7 +45,7 @@ class RealmFinderService
      * @return Realm|null
      * @see DominionFactory::create()
      */
-    public function findRealm(Round $round, Race $race, int $slotsNeeded = 1, bool $forPack = false): ?Realm
+    public function findRealm(Round $round, Race $race, User $user, int $slotsNeeded = 1, bool $forPack = false): ?Realm
     {
         if (now() < $round->start_date || now()->diffInHours($round->start_date) < static::ASSIGNMENT_HOURS_AFTER_START) {
             return $round->realms()->where('number', 0)->first();
@@ -53,6 +54,7 @@ class RealmFinderService
         // Get a list of realms which are not full, disregarding pack status for now
         $realmQuery = Realm::active()
             ->with('packs.dominions')
+            ->where('number', '!=', 0)
             ->where('round_id', $round->id);
 
         if (!$round->mixed_alignment) {
@@ -75,14 +77,6 @@ class RealmFinderService
                         }
                     }
                 }
-
-                // Check if realm has enough space
-                $availableSlots = ($round->realm_size - $realm->sizeAllocated());
-                /** @noinspection IfReturnReturnSimplificationInspection */
-                if ($availableSlots < $slotsNeeded) {
-                    return false;
-                }
-
                 return true;
             });
 
@@ -90,25 +84,37 @@ class RealmFinderService
             return null;
         }
 
-        // Weight the random selection so that smallest realms
-        // are chosen twice as often as ones with one additional player
-        // and always chosen when all realms have two additional players
-        $realmsBySize = $realms->sortBy(function ($realm) {
+        // Assign new players to the smallest realms
+        $smallestRealmSize = $realms->map(function ($realm) {
             return $realm->sizeAllocated();
-        });
-        $smallestRealmSize = $realmsBySize->first()->sizeAllocated();
-
-        $realmsWeightedBySize = $realms->filter(function ($realm) use ($smallestRealmSize) {
+        })->min();
+        $smallestRealmCount = $realms->filter(function ($realm) use ($smallestRealmSize) {
             if ($realm->sizeAllocated() == $smallestRealmSize) {
                 return true;
             }
-        })->concat($realms->filter(function ($realm) use ($smallestRealmSize) {
-            if ($realm->sizeAllocated() == ($smallestRealmSize + 1)) {
-                return true;
-            }
-        }));
-
-        return $realmsWeightedBySize->random();
+        })->count();
+        // Select minimum number of smallest realms
+        $realmsBySize = $realms->sortBy(function ($realm) {
+            return $realm->sizeAllocated();
+        })->take(max($smallestRealmCount, 4));
+        if ($user->rating == 0) {
+            return $realmsBySize->first();
+        }
+        // Calculate ratings for available realms
+        $realmRatings = $realmsBySize->map(function ($realm) {
+            return [
+                'id' => $realm->id,
+                'rating' => $this->calculateRating($realm->dominions()->with('user')->get()->map(function ($dominion) {
+                    return ['rating' => $dominion->user->rating];
+                })->toArray())
+            ];
+        });
+        if ($user->rating < $realmRatings->avg('rating')) {
+            $realm = $realmRatings->sortBy('rating')->first();
+        } else {
+            $realm = $realmRatings->sortByDesc('rating')->first();
+        }
+        return $realms->find($realm->id);
     }
 
     /**
@@ -120,7 +126,7 @@ class RealmFinderService
     {
         $ratings = collect($players)->map(function ($player) {
             return $player['rating'];
-        });
+        })->toArray();
         return root_mean_square($ratings);
     }
 

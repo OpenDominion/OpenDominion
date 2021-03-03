@@ -111,7 +111,7 @@ class RoundController extends AbstractController
 
                 switch ($request->get('realm_type')) {
                     case 'random':
-                        $realm = $realmFinderService->findRealm($round, $race);
+                        $realm = $realmFinderService->findRealm($round, $race, $user);
                         break;
 
                     case 'join_pack':
@@ -132,6 +132,7 @@ class RoundController extends AbstractController
                         $realm = $realmFinderService->findRealm(
                             $round,
                             $race,
+                            $user,
                             $request->get('pack_size'),
                             true
                         );
