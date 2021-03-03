@@ -5,6 +5,7 @@ namespace OpenDominion\Services;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
+use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -226,6 +227,7 @@ class RealmFinderService
         foreach (range(0, $midpoint - 1) as $key) {
             $matchKey = count($packsByRating) - 1 - $key;
             if (!in_array($matchKey, $realms)) {
+                $players = array();
                 if ($key != $midpoint - 1 || !(count($packsByRating) % 2)) {
                     $players = array_merge($packsByRating[$key]['players'], $packsByRating[$matchKey]['players']);
                 }
@@ -236,6 +238,14 @@ class RealmFinderService
                 'players' => $players,
                 'rating' => $this->calculateRating($players)
             ];
+        }
+        if (count($realms) < static::ASSIGNMENT_MIN_REALM_COUNT) {
+            foreach (range(1, static::ASSIGNMENT_MIN_REALM_COUNT - count($realms)) as $realmKey) {
+                $realms[] = [
+                    'players' => [],
+                    'rating' => $averageRating
+                ];
+            }
         }
 
         // Separate solo players
@@ -257,7 +267,7 @@ class RealmFinderService
                 $targetRating = $averageRating;
             }
             $attempts = 0;
-            while (count($realms[$key]['players']) < 8 && $attempts < 72) {
+            while ($soloPlayers->count() > 0 && count($realms[$key]['players']) < static::MAX_PACKED_PLAYERS_PER_REALM && $attempts < 72) {
                 $randomPlayer = $soloPlayers->random();
                 if (($realm['rating'] > $targetRating && $randomPlayer['rating'] < $targetRating) || ($realm['rating'] < $targetRating && $randomPlayer['rating'] > $targetRating) || $attempts > 48) {
                     $realms[$key]['players'] = array_merge($realms[$key]['players'], [$randomPlayer]);
@@ -302,9 +312,11 @@ class RealmFinderService
         }
 
         // Create realms and assign dominions
+        $realmFactory = app(RealmFactory::class);
         $notificationService = app(NotificationService::class);
-        foreach (shuffle($realms) as $realmies) {
-            $realm = RealmFactory::create($round);
+        shuffle($realms);
+        foreach ($realms as $realmies) {
+            $realm = $realmFactory->create($round);
             foreach ($realmies['players'] as $player) {
                 $dominion = Dominion::find($player['dominion_id']);
                 $dominion->realm_id = $realm->id;

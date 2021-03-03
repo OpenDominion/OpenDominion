@@ -102,10 +102,10 @@ class TickService
         }
 
         // Realm Assignment
-        $rounds = Round::scopeReadyForAssignment()->get();
+        $rounds = Round::readyForAssignment()->get();
         foreach ($rounds as $round) {
             $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
-            $realmFinderService->assignRealms();
+            $realmFinderService->assignRealms($round);
         }
 
         // Generate Non-Player Dominions
