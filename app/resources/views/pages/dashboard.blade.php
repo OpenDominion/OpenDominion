@@ -160,8 +160,8 @@
                                             @if ($round->hasEnded())
                                                 <abbr title="Ended at {{ $round->end_date }}">Ended</abbr>
                                             @elseif ($round->protectionEndDate() > now())
-                                                <abbr title="Commences at {{ $round->protectionEndDate() }}">
-                                                    Commences at {{ $round->protectionEndDate() }} {{ str_plural('day', $round->daysUntilCommencement()) }}
+                                                <abbr title="Commences in {{ $round->timeUntilCommencement() }}">
+                                                    Commences in {{ $round->timeUntilCommencement() }}
                                                 </abbr>
                                             @else
                                                 <abbr title="Ending at {{ $round->end_date }}">
@@ -176,10 +176,8 @@
                                                 Playing
                                             @elseif ($userAlreadyRegistered && !$round->hasStarted())
                                                 Registered
-                                            @elseif ($round->packRegistrationOpen())
-                                                <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
                                             @else
-                                                Registration Closed
+                                                <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
                                             @endif
                                         </td>
                                     </tr>

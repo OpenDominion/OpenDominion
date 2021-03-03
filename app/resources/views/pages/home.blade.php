@@ -85,17 +85,18 @@
                         <p style="font-size: 1.5em;" class="text-yellow">Open for Registration</p>
                     </div>
                     <div class="box-body text-center">
-                        <p><a href="{{ route('round.register', $currentRound) }}">Registration</a> for Round {{ $currentRound->number }} is open.</p>
-                        <p>The deadline to register a pack is {{ $currentRound->realmAssignmentDate() }}.</p>
-                        <p>The round will commence at {{ $currentRound->protectionEndDate() }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p>The deadline to register a pack is in {{ $currentRound->timeUntilRealmAssignment() }} ({{ $currentRound->realmAssignmentDate() }}).</p>
+                        <p>The round will commence in {{ $currentRound->timeUntilCommencement() }} ({{ $currentRound->protectionEndDate() }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p><a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a></p>
                     </div>
                 @elseif ($currentRound->protectionEndDate() > now())
                     <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                         <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
                     </div>
                     <div class="box-body text-center">
-                        <p>Registration for Round {{ $currentRound->number }} is closed until round start.</p>
-                        <p>The round will commence at {{ $currentRound->protectionEndDate() }} and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p>Pack registration is currently closed.</p>
+                        <p>The round will commence in {{ $currentRound->timeUntilCommencement() }} ({{ $currentRound->protectionEndDate() }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                        <p><a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a></p>
                     </div>
                 @else
                     <div class="box-body text-center" style="padding: 0;">
@@ -111,7 +112,7 @@
                                 <tr>
                                     <td class="text-center">Day:</td>
                                     <td class="text-center">
-                                        {{ number_format($currentRound->start_date->subDays(1)->diffInDays(now())) }} / {{ number_format($currentRound->durationInDays()) }}
+                                        {{ number_format($currentRound->daysInRound()) }} / {{ number_format($currentRound->durationInDays()) }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -120,7 +121,7 @@
                                 </tr>
                                 <tr>
                                     <td class="text-center">Realms:</td>
-                                    <td class="text-center">{{ number_format($currentRound->realms->count()) }}</td>
+                                    <td class="text-center">{{ number_format($currentRound->realms->count() - 1) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -130,13 +131,9 @@
                             <p>
                                 <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }} and {{ $currentRound->hoursUntilReset() - 1 }} {{ str_plural('hour', $currentRound->hoursUntilReset() - 1) }}.</em>
                             </p>
-                        @elseif ($currentRound->packRegistrationOpen())
-                            <p>
-                                <a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a>
-                            </p>
                         @else
                             <p>
-                                Registration Closed
+                                <a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a>
                             </p>
                         @endif
                     </div>

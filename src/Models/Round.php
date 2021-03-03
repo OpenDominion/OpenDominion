@@ -191,13 +191,23 @@ class Round extends AbstractModel
     }
 
     /**
-     * Returns the amount in days until registration opens.
+     * Returns a string representation of time until realm assignment.
      *
-     * @return int
+     * @return string
      */
-    public function hoursUntilRealmAssignment()
+    public function timeUntilRealmAssignment()
     {
-        return now()->diffInHours($this->realmAssignmentDate());
+        return now()->longAbsoluteDiffForHumans($this->realmAssignmentDate());
+    }
+
+    /**
+     * Returns a string representation of time until protection ends.
+     *
+     * @return string
+     */
+    public function timeUntilCommencement()
+    {
+        return now()->longAbsoluteDiffForHumans($this->protectionEndDate());
     }
 
     /**
@@ -234,6 +244,16 @@ class Round extends AbstractModel
     public function hasEnded()
     {
         return ($this->end_date <= now());
+    }
+
+    /**
+     * Returns whether a round has ended.
+     *
+     * @return bool
+     */
+    public function hasAssignedRealms()
+    {
+        return ($this->realmAssignmentDate() <= now());
     }
 
     /**
@@ -329,9 +349,12 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function daysInRound()
+    public function daysInRound(Carbon $datetime = null)
     {
-        return $this->start_date->subDays(1)->diffInDays(now());
+        if ($datetime == null) {
+            $datetime = now();
+        }
+        return $this->start_date->subDays(1)->diffInDays($datetime);
     }
 
     /**
