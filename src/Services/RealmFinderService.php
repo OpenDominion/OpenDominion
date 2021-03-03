@@ -136,9 +136,6 @@ class RealmFinderService
     {
         $landCalculator = app(LandCalculator::class);
 
-        // Create a rating for each player based on land size / land conquered
-        $ratings = collect(DB::select(DB::raw("SELECT user_id, users.display_name, AVG(IF(stat_total_land_conquered > total_land, total_land, (((stat_total_land_conquered * 2) + (total_land - stat_total_land_conquered)) / 2))) AS rating FROM (SELECT user_id, stat_total_land_conquered, (land_plain+land_mountain+land_swamp+land_cavern+land_forest+land_hill+land_water) AS total_land, @land_rank := IF(@current_user = user_id, @land_rank + 1, 1) AS ranking, @current_user := user_id FROM dominions WHERE round_id IN (18, 19, 20, 22, 24, 26, 28) HAVING total_land > 700 ORDER BY user_id, total_land DESC) stats JOIN users ON users.id = user_id WHERE ranking <= 3 GROUP BY user_id ORDER BY rating;")))->keyBy('user_id');
-
         // Fetch all registered dominions
         $registeredDominions = $round->activeDominions()->get();
 
@@ -149,7 +146,7 @@ class RealmFinderService
                 'dominion_id' => $dominion->id,
                 'pack_id' => $dominion->pack_id,
                 'user_id' => $dominion->user_id,
-                'rating' => isset($ratings[$dominion->user_id]) ? $ratings[$dominion->user_id]->rating : 0
+                'rating' => $dominion->user->rating
             ]);
         }
 
