@@ -16,7 +16,7 @@ class CouncilController extends AbstractDominionController
 {
     public const RESULTS_PER_PAGE = 50;
 
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $lastRead = $dominion->council_last_read;
@@ -24,6 +24,11 @@ class CouncilController extends AbstractDominionController
 
         if ($dominion->locked_at !== null) {
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
+        }
+
+        if ($dominion->round->realmAssignmentDate() > now()) {
+            $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
+            return redirect()->back();
         }
 
         $councilService = app(CouncilService::class);

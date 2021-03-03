@@ -100,6 +100,14 @@ class NotificationHelper
     public function getIrregularDominionTypes(): array
     {
         return [
+            'realm_assignment' => [
+                'label' => 'Your dominion was assigned a realm',
+                'defaults' => ['email' => true, 'ingame' => true],
+                'route' => function (array $routeParams) {
+                    return route('dominion.realm', $routeParams);
+                },
+                'iconClass' => 'ra ra-circle-of-circles text-green',
+            ],
             'received_invasion' => [
                 'label' => 'Your dominion got invaded',
                 'defaults' => ['email' => false, 'ingame' => true],
@@ -306,6 +314,18 @@ class NotificationHelper
                     '%s %s died due to starvation',
                     number_format($units),
                     str_plural('unit', $units)
+                );
+
+            case 'irregular_dominion.realm_assignment':
+                $discordLink = '';
+                if ($data['discordEnabled']) {
+                    $discordLink = sprintf('Join the <a href="%s">realm Discord</a>.', route('discord-join-callback'));
+                }
+
+                return sprintf(
+                    'You have been assigned to Realm #%s. %s',
+                    $data['realmNumber'],
+                    $discordLink
                 );
 
             case 'irregular_dominion.received_invasion':

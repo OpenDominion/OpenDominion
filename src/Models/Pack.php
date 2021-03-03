@@ -30,7 +30,7 @@ class Pack extends AbstractModel
 {
     protected $dates = ['closed_at', 'created_at', 'updated_at'];
 
-    //    public function creatorDominion()
+//    public function creatorDominion()
 //    {
 //        return $this->hasOne(Dominion::class); // todo
 //    }
@@ -84,5 +84,13 @@ class Pack extends AbstractModel
     public function getClosingDate(): Carbon
     {
         return max($this->created_at, $this->round->start_date)->addDays(3);
+    }
+
+    public function close()
+    {
+        if ($this->closed_at == null) {
+            $this->closed_at = now();
+            $this->save();
+        }
     }
 }

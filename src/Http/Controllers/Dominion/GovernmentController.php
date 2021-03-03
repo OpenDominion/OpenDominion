@@ -17,10 +17,15 @@ use OpenDominion\Services\Dominion\ProtectionService;
 
 class GovernmentController extends AbstractDominionController
 {
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $guardMembershipService = app(GuardMembershipService::class);
+
+        if ($dominion->round->realmAssignmentDate() > now()) {
+            $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
+            return redirect()->back();
+        }
 
         $dominions = $dominion->realm->dominions()
             ->with([

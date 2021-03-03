@@ -23,6 +23,10 @@ class DiscordService
 
     public function authorize(User $user, string $code, string $callback): string
     {
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
+
         $client = new Client();
 
         $tokenResponse = $client->post(DiscordHelper::BASE_URL.'/oauth2/token', [
@@ -55,6 +59,10 @@ class DiscordService
 
     public function refreshToken(DiscordUser $discordUser, string $callback): string
     {
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
+
         $client = new Client();
 
         $tokenResponse = $client->post(DiscordHelper::BASE_URL.'/oauth2/token', [
@@ -81,6 +89,10 @@ class DiscordService
 
     public function createDiscordUser(User $user, array $authResult): DiscordUser
     {
+        if (!config('app.discord_client_id')) {
+            return null;
+        }
+
         $client = new Client();
         $accessToken = $authResult['access_token'];
 
@@ -106,8 +118,11 @@ class DiscordService
 
     public function joinDiscordGuild(DiscordUser $discordUser, Realm $realm, string $accessToken): bool
     {
-        $client = new Client();
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
 
+        $client = new Client();
         $botToken = $this->discordHelper->getBotToken();
 
         $memberResponse = $client->get(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
@@ -148,6 +163,10 @@ class DiscordService
 
     public function getDiscordGuild(Round $round): string
     {
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
+
         if ($round->discord_guild_id !== null) {
             return $round->discord_guild_id;
         }
@@ -157,8 +176,11 @@ class DiscordService
 
     public function createDiscordGuild(Round $round): string
     {
-        $client = new Client();
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
 
+        $client = new Client();
         $botToken = $this->discordHelper->getBotToken();
 
         $createGuildResponse = $client->post(DiscordHelper::BASE_URL.'/guilds', [
@@ -208,6 +230,10 @@ class DiscordService
 
     public function getDiscordRole(Realm $realm): string
     {
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
+
         if ($realm->discord_role_id !== null) {
             return $realm->discord_role_id;
         }
@@ -217,8 +243,11 @@ class DiscordService
 
     public function createDiscordRole(Realm $realm): string
     {
-        $client = new Client();
+        if (!config('app.discord_client_id')) {
+            return '';
+        }
 
+        $client = new Client();
         $botToken = $this->discordHelper->getBotToken();
 
         $createRoleResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/roles', [

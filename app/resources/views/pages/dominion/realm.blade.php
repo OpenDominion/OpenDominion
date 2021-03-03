@@ -81,13 +81,11 @@
                                                 @endif
                                             @endif
 
-                                            @if ($isOwnRealm)
-                                                @if ($dominion->user !== null)
-                                                    @if ($dominion->round->isActive() && $dominion->user->isOnline())
-                                                        <span class="label label-success">Online</span>
-                                                    @endif
-                                                @else
-                                                    <span class="label label-info">Bot</span>
+                                            @if ($dominion->user == null)
+                                                <span class="label label-info">Bot</span>
+                                            @else
+                                                @if ($isOwnRealm && $dominion->round->isActive() && $dominion->user->isOnline())
+                                                    <span class="label label-success">Online</span>
                                                 @endif
                                             @endif
 

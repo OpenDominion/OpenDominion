@@ -101,49 +101,52 @@ class TickService
             $this->performTick($round);
         }
 
+        // Realm Assignment
+        $rounds = Round::readyForAssignment()->get();
+        foreach ($rounds as $round) {
+            $realmFinderService = app(\OpenDominion\Services\RealmFinderService::class);
+            $realmFinderService->assignRealms($round);
+        }
+
         // Generate Non-Player Dominions
         $rounds = Round::activeSoon()->get();
-
         foreach ($rounds as $round) {
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
             $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
             $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')));
             $names = collect($names_json->dominion_names);
             $races = Race::all();
-            foreach ($round->realms()->active()->get() as $realm) {
-                // Number of NPDs per realm (count = 4)
-                for($cnt=0; $cnt<4; $cnt++) {
-                    if ($realm->alignment != 'neutral') {
-                        $race = $races->where('alignment', $realm->alignment)->random();
-                    } else {
-                        $race = $races->random();
+            $realm = $round->realms()->where('number', 0)->first();
+            // Number of NPDs to spawn (half the number of real players)
+            $npdCount = $round->dominions()->count() / 2;
+            for($cnt=0; $cnt<$npdCount; $cnt++) {
+                if ($realm->alignment != 'neutral') {
+                    $race = $races->where('alignment', $realm->alignment)->random();
+                } else {
+                    $race = $races->random();
+                }
+                $dominion = null;
+                $failCount = 0;
+                while ($dominion == null && $failCount < 3) {
+                    $rulerName = $names->random();
+                    $dominionName = $names->random();
+                    if (strlen($rulerName) > strlen($dominionName)) {
+                        $swap = $rulerName;
+                        $rulerName = $dominionName;
+                        $dominionName = $swap;
                     }
-                    $dominion = null;
-                    $failCount = 0;
-                    while ($dominion == null && $failCount < 3) {
-                        $rulerName = $names->random();
-                        $dominionName = $names->random();
-                        if (strlen($rulerName) > strlen($dominionName)) {
-                            $swap = $rulerName;
-                            $rulerName = $dominionName;
-                            $dominionName = $swap;
-                        }
-                        $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
-                        if ($dominion) {
-                            // Tick ahead a few times
-                            $this->precalculateTick($dominion);
-                            $this->performTick($round, $dominion);
-                            $this->performTick($round, $dominion);
-                            $this->performTick($round, $dominion);
-                        } else {
-                            $failCount++;
-                        }
+                    $dominion = $dominionFactory->createNonPlayer($realm, $race, $rulerName, $dominionName);
+                    if ($dominion) {
+                        // Tick ahead a few times
+                        $this->precalculateTick($dominion);
+                        $this->performTick($round, $dominion);
+                        $this->performTick($round, $dominion);
+                        $this->performTick($round, $dominion);
+                    } else {
+                        $failCount++;
                     }
                 }
             }
-            // Update realm size for NPDs (count = 4)
-            $round->realm_size += 4;
-            $round->save();
         }
 
         Log::debug('Hourly tick finished');
@@ -551,18 +554,16 @@ class TickService
             // Move Inactive Dominions
             // toBase required to prevent ambiguous updated_at column in query
             $graveyardRealm = $round->realms()->where('number', 0)->first();
-            if ($graveyardRealm !== null) {
-                $inactiveDominions = $round->dominions()
-                    ->join('users', 'dominions.user_id', '=', 'users.id')
-                    ->where('realms.number', '>', 0)
-                    ->where('dominions.protection_ticks_remaining', '>', 0)
-                    ->where('dominions.created_at', '<', now()->subDays(3))
-                    ->where('users.last_online', '<', now()->subDays(3))
-                    ->toBase()->update([
-                        'realm_id' => $graveyardRealm->id,
-                        'monarchy_vote_for_dominion_id' => null
-                    ]);
-            }
+            $inactiveDominions = $round->dominions()
+                ->join('users', 'dominions.user_id', '=', 'users.id')
+                ->where('realms.number', '>', 0)
+                ->where('dominions.protection_ticks_remaining', '>', 0)
+                ->where('dominions.created_at', '<', now()->subDays(3))
+                ->where('users.last_online', '<', now()->subDays(3))
+                ->toBase()->update([
+                    'realm_id' => $graveyardRealm->id,
+                    'monarchy_vote_for_dominion_id' => null
+                ]);
 
             // Spawn Wonders
             $day = $round->daysInRound();

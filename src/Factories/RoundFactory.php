@@ -3,6 +3,7 @@
 namespace OpenDominion\Factories;
 
 use Carbon\Carbon;
+use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
 use OpenDominion\Models\RoundLeague;
 
@@ -56,7 +57,7 @@ class RoundFactory
         $offensiveActionsEndDate =
             (clone $endDate)->addHours(-$hoursBeforeRoundEnd)->addSeconds(-$secondsBeforeRoundEnd);
 
-        return Round::create([
+        $round = Round::create([
             'round_league_id' => $league->id,
             'number' => $number,
             'name' => "Round {$number}",
@@ -68,6 +69,16 @@ class RoundFactory
             'players_per_race' => $playersPerRace,
             'mixed_alignment' => $mixedAlignment
         ]);
+
+        // Create special realm for realm assignment and inactives
+        Realm::create([
+            'round_id' => $round->id,
+            'alignment' => 'neutral',
+            'number' => 0,
+            'name' => 'The Graveyard'
+        ]);
+
+        return $round;
     }
 
     /**

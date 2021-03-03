@@ -22,7 +22,8 @@ class RoundOpenCommand extends Command implements CommandInterface
                              {--realm-size=8 : Maximum number of dominions in one realm}
                              {--pack-size=4 : Maximum number of players in a pack}
                              {--playersPerRace=2 : Maximum number of players using the same race, 0 = unlimited}
-                             {--mixedAlignment=true : Allows for mixed alignments}';
+                             {--mixedAlignment=true : Allows for mixed alignments}
+                             {--discordEnabled=false : Triggers creation of Discord guild for round}';
 
     /** @var string The console command description. */
     protected $description = 'Creates a new round which starts in 3 days';
@@ -69,6 +70,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         $packSize = $this->option('pack-size');
         $playersPerRace = $this->option('playersPerRace');
         $mixedAlignments = $this->option('mixedAlignment');
+        $discordEnabled = $this->option('discordEnabled');
 
         if ($now && (app()->environment() === 'production')) {
             throw new RuntimeException('Option --now may not be used on production');
@@ -133,25 +135,10 @@ class RoundOpenCommand extends Command implements CommandInterface
             $mixedAlignments
         );
 
-        $discordService->getDiscordGuild($round);
+        if ($discordEnabled) {
+            $discordService->getDiscordGuild($round);
+        }
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
-
-        if ($round->mixed_alignment) {
-            // Prepopulate round with 20 mixed realms
-            for ($i = 1; $i <= 20; $i++) {
-                $realm = $this->realmFactory->create($round);
-                $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
-            }
-        } else {
-            // Prepopulate round with 5 good and 5 evil realms
-            for ($i = 1; $i <= 5; $i++) {
-                $realm = $this->realmFactory->create($round, 'good');
-                $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
-
-                $realm = $this->realmFactory->create($round, 'evil');
-                $this->info("Realm {$realm->name} (#{$realm->number}) created in Round {$round->number} with an alignment of {$realm->alignment}");
-            }
-        }
     }
 }
