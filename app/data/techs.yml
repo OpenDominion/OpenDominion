@@ -45,7 +45,7 @@ tech_11_1:
 tech_13_1:
   name: Siege Weaponry
   perks:
-    wonder_damage: 10
+    wonder_damage: 20
   requires:
     - tech_11_1
     - tech_15_1
@@ -106,7 +106,7 @@ tech_6_3:
 tech_8_3:
   name: Miser's Grasp
   perks:
-    theft_losses: -20
+    theft_losses: -25
   requires:
     - tech_7_1
     - tech_6_3
@@ -228,7 +228,7 @@ tech_19_5:
 tech_4_7:
   name: Shipwright's Ingenuity
   perks:
-    boat_production: 10
+    boat_production: 12.5
   requires:
     - tech_3_5
     - tech_6_7
@@ -453,7 +453,7 @@ tech_12_15:
 tech_14_15:
   name: Public Baths
   perks:
-    population_growth: 25
+    population_growth: 30
   requires:
     - tech_13_13
     - tech_15_13
@@ -478,7 +478,7 @@ tech_11_17:
 tech_13_17:
   name: Ancestral Knowledge
   perks:
-    racial_spell_cost: -15
+    racial_spell_cost: -25
   requires:
     - tech_14_15
     - tech_12_19
