@@ -356,7 +356,7 @@ tech_8_11:
     - tech_9_9
     - tech_7_13
 tech_10_11:
-  name: Wavehack's Expertise
+  name: WaveHack's Expertise
   perks:
     boat_capacity: 5
     construction_platinum_cost: -5
