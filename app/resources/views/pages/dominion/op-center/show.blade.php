@@ -134,7 +134,9 @@
                                 @elseif ($latestClearSight->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestClearSight->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestClearSight->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestClearSight->created_at) }}</span>
                             @endif
                         </div>
 
@@ -288,7 +290,9 @@
                                 @elseif ($latestRevelation->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestRevelation->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestRevelation->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestRevelation->created_at) }}</span>
                             @endif
                         </div>
 
@@ -336,7 +340,9 @@
                                 @elseif ($latestCastle->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestCastle->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestCastle->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestCastle->created_at) }}</span>
                             @endif
                         </div>
 
@@ -387,7 +393,9 @@
                                 @elseif ($latestBarracks->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestBarracks->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestBarracks->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestBarracks->created_at) }}</span>
                             @endif
                         </div>
 
@@ -456,7 +464,9 @@
                                 @elseif ($latestSurvey->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestSurvey->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestSurvey->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestSurvey->created_at) }}</span>
                             @endif
                         </div>
 
@@ -523,7 +533,9 @@
                                 @elseif ($latestLand->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestLand->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestLand->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestLand->created_at) }}</span>
                             @endif
                         </div>
 
@@ -591,7 +603,9 @@
                                 @elseif ($latestVision->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($latestVision->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($latestVision->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($latestVision->created_at) }}</span>
                             @endif
                         </div>
 

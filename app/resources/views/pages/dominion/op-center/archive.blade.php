@@ -80,7 +80,9 @@
                                 @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                <br><
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -140,7 +142,9 @@
                                 @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -165,7 +169,9 @@
                                 @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                <br>
+                                <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
                         @endslot
                     @endcomponent
@@ -192,7 +198,9 @@
                                         @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
-                                        <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                        <br>
+                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -235,7 +243,9 @@
                                         @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
-                                        <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                        <br>
+                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -275,7 +285,9 @@
                                         @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
-                                        <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                        <br>
+                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
                                 @endslot
                             @endcomponent
@@ -368,7 +380,9 @@
                                         @elseif ($infoOp->isStale())
                                             <span class="label label-warning">Stale</span>
                                         @endif
-                                        <br><span class="label label-default">Day {{ $selectedDominion->round->start_date->subDays(1)->diffInDays($infoOp->created_at) }}</span>
+                                        <br>
+                                        <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
+                                        <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                                     @endif
 
                                     <div class="pull-right">
