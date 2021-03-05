@@ -69,24 +69,26 @@
                             </div>
 
                             {{-- Discord --}}
-                            <div class="form-group">
-                                @if($discordUser = $user->discordUser()->first())
-                                    <label for="skin" class="col-sm-3 control-label">Discord Account</label>
-                                    <div class="col-sm-9">
-                                        <p class="help-block">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
-                                        <a href="{{ route('discord-unlink') }}" class="btn btn-danger">
-                                            <i class="fa fa-unlink"></i> Unlink account
-                                        </a>
-                                    </div>
-                                @else
-                                    <label for="skin" class="col-sm-3 control-label">Discord</label>
-                                    <div class="col-sm-9">
-                                        <a href="{{ $discordHelper->getDiscordConnectUrl('link') }}" class="btn btn-primary">
-                                            <i class="fa fa-link"></i> Link account
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
+                            @if ($discordHelper->getClientId())
+                                <div class="form-group">
+                                    @if ($discordUser = $user->discordUser()->first())
+                                        <label for="skin" class="col-sm-3 control-label">Discord Account</label>
+                                        <div class="col-sm-9">
+                                            <p class="help-block">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
+                                            <a href="{{ route('discord-unlink') }}" class="btn btn-danger">
+                                                <i class="fa fa-unlink"></i> Unlink account
+                                            </a>
+                                        </div>
+                                    @else
+                                        <label for="skin" class="col-sm-3 control-label">Discord</label>
+                                        <div class="col-sm-9">
+                                            <a href="{{ $discordHelper->getDiscordConnectUrl('link') }}" class="btn btn-primary">
+                                                <i class="fa fa-link"></i> Link account
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                         <div class="col-md-6">
 

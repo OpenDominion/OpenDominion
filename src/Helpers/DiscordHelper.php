@@ -7,17 +7,17 @@ class DiscordHelper
     const BASE_URL = 'https://discord.com/api';
     const AUTH_SCOPES = 'email identify guilds.join';
 
-    public function getClientId(): string
+    public function getClientId()
     {
         return config('app.discord_client_id');
     }
 
-    public function getClientSecret(): string
+    public function getClientSecret()
     {
         return config('app.discord_client_secret');
     }
 
-    public function getBotToken(): string
+    public function getBotToken()
     {
         return config('app.discord_bot_token');
     }
