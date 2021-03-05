@@ -10,7 +10,7 @@ home_land_type: hill
 perks:
   max_population: 5
   extra_barren_max_population: 5
-  spy_strength: 30
+  spy_strength: 25
   food_consumption: -30
 units:
   - name: Slinger

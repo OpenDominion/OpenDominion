@@ -4,6 +4,7 @@ namespace OpenDominion\Http\Controllers\Dominion;
 
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
+use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Http\Requests\Dominion\Council\CreatePostRequest;
 use OpenDominion\Http\Requests\Dominion\Council\CreateThreadRequest;
 use OpenDominion\Models\Council;
@@ -15,7 +16,7 @@ class CouncilController extends AbstractDominionController
 {
     public const RESULTS_PER_PAGE = 50;
 
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         $dominion = $this->getSelectedDominion();
         $lastRead = $dominion->council_last_read;
@@ -25,10 +26,16 @@ class CouncilController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
         }
 
+        if ($dominion->round->realmAssignmentDate() > now()) {
+            $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
+            return redirect()->back();
+        }
+
         $councilService = app(CouncilService::class);
         $threads = $councilService->getThreads($dominion->realm);
 
         return view('pages.dominion.council.index', [
+            'discordHelper' => app(DiscordHelper::class),
             'councilThreads' => $threads,
             'lastRead' => $lastRead,
             'realm' => $dominion->realm,

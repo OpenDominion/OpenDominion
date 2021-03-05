@@ -61,6 +61,7 @@ class ImproveActionService
         }
 
         $dominion->{'resource_' . $resource} -= $totalResourcesToInvest;
+        $dominion->{'stat_total_' . $resource . '_spent_investment'} += $totalResourcesToInvest;
         $dominion->save(['event' => HistoryService::EVENT_ACTION_IMPROVE]);
 
         return [

@@ -230,5 +230,8 @@ return [
     'kofi_support_id' => env('KOFI_SUPPORT_ID'),
     'discord_report_webhook' => env('DISCORD_REPORT_WEBHOOK'),
     'discord_stats_webhook' => env('DISCORD_STATS_WEBHOOK'),
+    'discord_client_id' => env('DISCORD_CLIENT_ID'),
+    'discord_client_secret' => env('DISCORD_CLIENT_SECRET'),
+    'discord_bot_token' => env('DISCORD_BOT_TOKEN'),
 
 ];

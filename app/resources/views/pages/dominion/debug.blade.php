@@ -93,7 +93,23 @@
                             'getWizardRatioRaw',
                             'getWizardRatioMultiplier',
                             'getWizardStrengthRegen',
+                            'getBoatCapacity',
+                            'getBoatsProtected',
                             'getRecentlyInvadedCount',
+                        ]) !!}
+                    </p>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Casualties Calculator</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        {!! \OpenDominion\Http\Controllers\DebugController::printMethodValues($casualtiesCalculator, [
+                            'getOffensiveCasualtiesMultiplier',
+                            'getDefensiveCasualtiesMultiplier',
                         ]) !!}
                     </p>
                 </div>

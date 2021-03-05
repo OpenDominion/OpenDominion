@@ -167,11 +167,7 @@ class EspionageActionService
 
         DB::transaction(function () use ($dominion, $target, $operationKey, &$result) {
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
-                if ($dominion->pack !== null && $dominion->pack->size > 2) {
-                    $spyStrengthLost = 2;
-                } else {
-                    $spyStrengthLost = 1.5;
-                }
+                $spyStrengthLost = 2;
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
 
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
@@ -205,7 +201,7 @@ class EspionageActionService
             }
 
             $target->save([
-                'event' => HistoryService::EVENT_ACTION_PERFORM_ESPIONAGE_OPERATION,
+                'event' => HistoryService::EVENT_ACTION_RECEIVE_ESPIONAGE_OPERATION,
                 'action' => $operationKey,
                 'source_dominion_id' => $dominion->id
             ]);

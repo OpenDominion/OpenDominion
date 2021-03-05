@@ -29,6 +29,7 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
 
         $this->round = $this->createRound();
         $this->goodRace = Race::where('alignment', 'good')->firstOrFail();
+        $this->user = $this->createUser();
 
         $this->realmFinderService = $this->app->make(RealmFinderService::class);
     }
@@ -40,12 +41,12 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
         $evilRealm = $this->createRealm($this->round, $evilRace->alignment);
 
-        $testRealm = $this->realmFinderService->findRandomRealm($this->round, $this->goodRace);
+        $testRealm = $this->realmFinderService->findRealm($this->round, $this->goodRace, $this->user);
 
         $this->assertNotNull($testRealm);
         $this->assertEquals($goodRealm->id, $testRealm->id);
 
-        $testRealm = $this->realmFinderService->findRandomRealm($this->round, $evilRace);
+        $testRealm = $this->realmFinderService->findRealm($this->round, $evilRace, $this->user);
 
         $this->assertNotNull($testRealm);
         $this->assertEquals($evilRealm->id, $testRealm->id);
@@ -55,70 +56,19 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
     {
         $evilRace = Race::where('alignment', 'evil')->firstOrFail();
 
-        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
+        $this->assertNull($this->realmFinderService->findRealm($this->round, $this->goodRace, $this->user));
 
         $this->createRealm($this->round, $evilRace->alignment);
 
-        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
+        $this->assertNull($this->realmFinderService->findRealm($this->round, $this->goodRace, $this->user));
     }
 
-    public function testFindRandomReturnsNullIfAllValidRealmsAreFull()
-    {
-        $this->assertEquals(0, $this->round->realms()->count());
-
-        // Create 3 realms full of dominions
-        for ($i = 0; $i < 3; $i++) {
-            for ($dominionCounter = 0; $dominionCounter < 12; $dominionCounter++) {
-                $user = $this->createUser(null, ['email' => "test-{$i}-{$dominionCounter}@example.com"]); // todo: why this email?
-                $this->createDominion($user, $this->round, $this->goodRace) ;
-            }
-        }
-
-        // +1 is added here for Graveyard realm
-        $this->assertEquals(4, $this->round->realms()->count());
-
-        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
-    }
-
-    public function testFindRandomRealmRespectsReservedPackSlots()
-    {
-        // Dominion slot 1
-        $user = $this->createUser();
-        $dominion = $this->createDominion($user, $this->round, $this->goodRace);
-        $realm = $dominion->realm;
-
-        // Dominion slots 2-10
-        for ($i = 0; $i < 9; $i++) {
-            $this->createDominion($this->createUser(), $this->round, $this->goodRace);
-        }
-
-        $this->assertEquals(10, $realm->dominions()->count());
-        $this->assertEquals($realm->id, $this->realmFinderService->findRandomRealm($this->round, $this->goodRace)->id);
-
-        // Last 2 spots reserved for pack from user in spot 1
-        $pack = Pack::create([
-            'round_id' => $this->round->id,
-            'realm_id' => $realm->id,
-            'creator_dominion_id' => $dominion->id,
-            'name' => 'test pack name',
-            'password' => 'test pack password',
-            'size' => 3,
-        ]);
-
-        $dominion->pack_id = $pack->id;
-        $dominion->save();
-        $dominion->refresh();
-
-        $this->assertNull($this->realmFinderService->findRandomRealm($this->round, $this->goodRace));
-    }
-
-    public function testFindRandomRealmReturnsRealmWithClosedPacksSlots()
+    public function testFindRealmReturnsRealmWithClosedPacksSlots()
     {
         $this->realmFinderService->maxPacksPerRealm = null;
 
         // Dominion slot 1
-        $user = $this->createUser();
-        $dominion = $this->createDominion($user, $this->round, $this->goodRace);
+        $dominion = $this->createDominion($this->user, $this->round, $this->goodRace);
         $realm = $dominion->realm;
 
         // Dominion slots 2-10
@@ -127,7 +77,7 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         }
 
         $this->assertEquals(10, $realm->dominions()->count());
-        $this->assertEquals($realm->id, $this->realmFinderService->findRandomRealm($this->round, $this->goodRace)->id);
+        $this->assertEquals($realm->id, $this->realmFinderService->findRealm($this->round, $this->goodRace, $this->user)->id);
 
         // Last 2 spots reserved for pack from user in spot 1
         $pack = Pack::create([
@@ -144,10 +94,10 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
         $dominion->save();
         $dominion->refresh();
 
-        $this->assertEquals($realm->id, $this->realmFinderService->findRandomRealm($this->round, $this->goodRace)->id);
+        $this->assertEquals($realm->id, $this->realmFinderService->findRealm($this->round, $this->goodRace, $this->user)->id);
     }
 
-    public function testFindRandomRealmReturnsNullWhenMaxPacksPerRealmIsReached()
+    public function testFindRealmReturnsNullWhenMaxPacksPerRealmIsReached()
     {
         $this->markTestIncomplete();
     }

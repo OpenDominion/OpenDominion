@@ -109,11 +109,16 @@ class ConstructActionService
         DB::transaction(function () use ($dominion, $data, $platinumCost, $lumberCost, $totalBuildingsToConstruct) {
             $this->queueService->queueResources('construction', $dominion, $data);
 
+            $dominion->stat_total_platinum_spent_construction += $platinumCost;
+            $dominion->stat_total_lumber_spent_construction += $lumberCost;
             $dominion->fill([
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'resource_lumber' => ($dominion->resource_lumber - $lumberCost),
                 'discounted_land' => max(0, $dominion->discounted_land - $totalBuildingsToConstruct),
-            ])->save(['event' => HistoryService::EVENT_ACTION_CONSTRUCT]);
+            ])->save([
+                'event' => HistoryService::EVENT_ACTION_CONSTRUCT,
+                'queue' => ['construction' => array_filter($data)]
+            ]);
         });
 
         return [

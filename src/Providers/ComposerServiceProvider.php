@@ -8,11 +8,13 @@ use DB;
 use Illuminate\Contracts\View\View;
 use OpenDominion\Calculators\Dominion\Actions\TechCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\NotificationHelper;
 use OpenDominion\Models\Council;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Forum;
 use OpenDominion\Models\MessageBoard;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\SelectorService;
 
 class ComposerServiceProvider extends AbstractServiceProvider
@@ -149,6 +151,11 @@ class ComposerServiceProvider extends AbstractServiceProvider
         // todo: do we need this here in this class?
         view()->composer('partials.resources-overview', function (View $view) {
             $view->with('landCalculator', app(LandCalculator::class));
+            $view->with('networthCalculator', app(NetworthCalculator::class));
+        });
+
+        view()->composer('partials.protection-indicator', function (View $view) {
+            $view->with('protectionService', app(ProtectionService::class));
         });
 
         view()->composer('partials.styles', function (View $view) {

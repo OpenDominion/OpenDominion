@@ -46,44 +46,6 @@ class RealmTest extends AbstractBrowserKitTestCase
             ->seeInDatabase('dominions', ['id' => $anotherEvilDominion->id, 'realm_id' => $evilRealm->id]);
     }
 
-    public function testRealmsCantContainMoreThan12Dominions()
-    {
-        $round = $this->createRound();
-        $goodRace = Race::where('alignment', 'good')->firstOrFail();
-
-        $this->assertEquals(0, $round->realms()->count());
-
-        $firstDominionId = null;
-        $firstRealmId = null;
-        $lastDominionId = null;
-        $lastRealmId = null;
-
-        // Create 13 Dominions, where the first 12 should be in realm #1 and the 13th in realm #2
-        for ($i = 0; $i < 13; $i++) {
-            $user = $this->createUser();
-
-            $dominion = $this->createDominion($user, $round, $goodRace);
-
-            if ($firstDominionId === null) {
-                $firstDominionId = $dominion->id;
-                $firstRealmId = $dominion->realm->id;
-            }
-
-            $lastDominionId = $dominion->id;
-            $lastRealmId = $dominion->realm->id;
-        }
-
-        // +1 is added here for Graveyard realm
-        $this->assertEquals(3, $round->realms()->count());
-        $this->assertNotEquals($firstRealmId, $lastRealmId);
-
-        $this
-            ->seeInDatabase('realms', ['round_id' => $round->id, 'number' => 1, 'alignment' => 'good'])
-            ->seeInDatabase('realms', ['round_id' => $round->id, 'number' => 2, 'alignment' => 'good'])
-            ->seeInDatabase('dominions', ['id' => $firstDominionId, 'realm_id' => $firstRealmId])
-            ->seeInDatabase('dominions', ['id' => $lastDominionId, 'realm_id' => $lastRealmId]);
-    }
-
     public function testDominionsInAPackGetPlacedInTheSameRealm()
     {
         $this->markTestIncomplete();

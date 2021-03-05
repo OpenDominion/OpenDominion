@@ -30,6 +30,11 @@ class RealmController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $round = $dominion->round;
 
+        if ($round->realmAssignmentDate() > now()) {
+            $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
+            return redirect()->back();
+        }
+
         if ($realmNumber === null) {
             $realmNumber = (int)$dominion->realm->number;
         }
@@ -38,7 +43,7 @@ class RealmController extends AbstractDominionController
         $protectionEndDate = $protectionService->getProtectionEndDate($dominion);
 
         if ($protectionEndDate > now() && !$isOwnRealm) {
-            $request->session()->flash('alert-warning', 'You cannot view other realms before the round has started.');
+            $request->session()->flash('alert-warning', 'You cannot view other realms before the round commences.');
             return redirect()->route('dominion.realm', (int)$dominion->realm->number);
         }
 

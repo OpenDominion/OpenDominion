@@ -155,30 +155,8 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $opPerGryphonNest = 1.75;
-        $gryphonNestMaxOp = 35;
-        $spellBloodrage = 10;
-        $spellCrusade = 5;
-        $spellHowling = 10;
-        $spellKillingRage = 10;
-        $spellNightfall = 5;
-        $spellWarsong = 10;
-
         // Gryphon Nests
-        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            if (isset($dominion->calc['gryphon_nest_percent'])) {
-                $multiplier += min(
-                    (($opPerGryphonNest * $dominion->calc['gryphon_nest_percent']) / 100),
-                    ($gryphonNestMaxOp / 100)
-                );
-            }
-        } else {
-            $multiplier += min(
-                (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
-                ($gryphonNestMaxOp / 100)
-            );
-        }
+        $multiplier += $this->getOffensivePowerMultiplierFromBuildings($dominion);
 
         // Racial Bonus
         $multiplier += $dominion->race->getPerkMultiplier('offense');
@@ -197,6 +175,73 @@ class MilitaryCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('offense');
 
         // Improvement: Forges
+        $multiplier += $this->getOffensivePowerMultiplierFromImprovements($dominion);
+
+        // Spells
+        $multiplier += $this->getOffensivePowerMultiplierFromSpells($dominion);
+
+        // Prestige
+        $multiplier += $this->getOffensivePowerMultiplierFromPrestige($dominion);
+
+        // War
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
+            if (isset($dominion->calc['war_bonus'])) {
+                $multiplier += ($dominion->calc['war_bonus'] / 100);
+            }
+        } else {
+            if ($target !== null && $dominion->realm !== null) {
+                if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
+                    $multiplier += 0.1;
+                } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+                    $multiplier += 0.05;
+                }
+            }
+        }
+
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's offensive power modifier from buildings.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOffensivePowerMultiplierFromBuildings(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $opPerGryphonNest = 1.6;
+        $gryphonNestMaxOp = 32;
+
+        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
+            if (isset($dominion->calc['gryphon_nest_percent'])) {
+                $multiplier += min(
+                    (($opPerGryphonNest * $dominion->calc['gryphon_nest_percent']) / 100),
+                    ($gryphonNestMaxOp / 100)
+                );
+            }
+        } else {
+            $multiplier += min(
+                (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
+                ($gryphonNestMaxOp / 100)
+            );
+        }
+
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's offensive power modifier from castle improvements.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOffensivePowerMultiplierFromImprovements(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['forges_percent'])) {
                 $multiplier += ($dominion->calc['forges_percent'] / 100);
@@ -205,7 +250,27 @@ class MilitaryCalculator
             $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'forges');
         }
 
-        // Racial Spell
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's offensive power modifier from spells.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOffensivePowerMultiplierFromSpells(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $spellBloodrage = 10;
+        $spellCrusade = 5;
+        $spellHowling = 10;
+        $spellKillingRage = 10;
+        $spellNightfall = 5;
+        $spellWarsong = 10;
+
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['bloodrage'])) {
                 $multiplier += ($spellBloodrage / 100);
@@ -241,25 +306,18 @@ class MilitaryCalculator
             ]);
         }
 
-        // Prestige
-        $multiplier += $this->prestigeCalculator->getPrestigeMultiplier($dominion);
-
-        // War
-        if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
-            if (isset($dominion->calc['war_bonus'])) {
-                $multiplier += ($dominion->calc['war_bonus'] / 100);
-            }
-        } else {
-            if ($target !== null && $dominion->realm !== null) {
-                if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
-                    $multiplier += 0.1;
-                } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
-                    $multiplier += 0.05;
-                }
-            }
-        }
-
         return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's offensive power modifier from prestige.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getOffensivePowerMultiplierFromPrestige(Dominion $dominion): float
+    {
+        return $this->prestigeCalculator->getPrestigeMultiplier($dominion);
     }
 
     /**
@@ -383,15 +441,46 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        // Values (percentages)
-        $dpPerGuardTower = 1.75;
-        $guardTowerMaxDp = 35;
-        $spellAresCall = 10;
-        $spellBlizzard = 15;
-        $spellFrenzy = 20;
-        $spellHowling = 10;
-
         // Guard Towers
+        $multiplier += $this->getDefensivePowerMultiplierFromBuildings($dominion);
+
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('defense');
+
+        // Techs
+        // TODO: add to calc if this is implemented
+        $multiplier += $dominion->getTechPerkMultiplier('defense');
+
+        // Wonders
+        // TODO: add to calc if this is implemented
+        $multiplier += $dominion->getWonderPerkMultiplier('defense');
+
+        // Improvement: Walls
+        $multiplier += $this->getDefensivePowerMultiplierFromImprovements($dominion);
+
+        // Spells
+        $multiplier += $this->getDefensivePowerMultiplierFromSpells($dominion);
+
+        // Multiplier reduction when we want to factor in temples from another dominion
+        $multiplier = max(($multiplier - $multiplierReduction), 1);
+
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's defensive power modifier from buildings.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefensivePowerMultiplierFromBuildings(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $dpPerGuardTower = 1.6;
+        $guardTowerMaxDp = 32;
+
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['guard_tower_percent'])) {
                 $multiplier += min(
@@ -406,18 +495,19 @@ class MilitaryCalculator
             );
         }
 
-        // Racial Bonus
-        $multiplier += $dominion->race->getPerkMultiplier('defense');
+        return $multiplier;
+    }
 
-        // Techs
-        // TODO: add to calc if this is implemented
-        $multiplier += $dominion->getTechPerkMultiplier('defense');
+    /**
+     * Returns the Dominion's defensive power modifier from castle improvements.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefensivePowerMultiplierFromImprovements(Dominion $dominion): float
+    {
+        $multiplier = 0;
 
-        // Wonders
-        // TODO: add to calc if this is implemented
-        $multiplier += $dominion->getWonderPerkMultiplier('defense');
-
-        // Improvement: Walls
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['walls_percent'])) {
                 $multiplier += ($dominion->calc['walls_percent'] / 100);
@@ -426,7 +516,25 @@ class MilitaryCalculator
             $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
         }
 
-        // Racial Spell
+        return $multiplier;
+    }
+
+    /**
+     * Returns the Dominion's defensive power modifier from spells.
+     *
+     * @param Dominion $dominion
+     * @return float
+     */
+    public function getDefensivePowerMultiplierFromSpells(Dominion $dominion): float
+    {
+        $multiplier = 0;
+
+        // Values (percentages)
+        $spellAresCall = 10;
+        $spellBlizzard = 15;
+        $spellFrenzy = 20;
+        $spellHowling = 10;
+
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['howling'])) {
                 $multiplier += ($spellHowling / 100);
@@ -461,9 +569,6 @@ class MilitaryCalculator
                 $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'ares_call', $spellAresCall);
             }
         }
-
-        // Multiplier reduction when we want to factor in temples from another dominion
-        $multiplier = max(($multiplier - $multiplierReduction), 1);
 
         return $multiplier;
     }
@@ -500,8 +605,8 @@ class MilitaryCalculator
     public function getTempleReduction(Dominion $dominion): float
     {
         // Values (percentages)
-        $dpReductionPerTemple = 1.5;
-        $templeMaxDpReduction = 25;
+        $dpReductionPerTemple = 1.35;
+        $templeMaxDpReduction = 22.5;
         $dpMultiplierReduction = 0;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -921,17 +1026,15 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        if ($dominion->race->name !== 'Dark Elf') {
-            // Values (percentages)
-            $wizardGuildBonus = 2;
-            $wizardGuildBonusMax = 20;
+        // Values (percentages)
+        $wizardGuildBonus = 2;
+        $wizardGuildBonusMax = 20;
 
-            // Wizard Guilds
-            $multiplier += min(
-                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
-                ($wizardGuildBonusMax / 100)
-            );
-        }
+        // Wizard Guilds
+        $multiplier += min(
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
+            ($wizardGuildBonusMax / 100)
+        );
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');

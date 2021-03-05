@@ -125,7 +125,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Energy Mirror',
-                'description' => '30% chance to reflect incoming offensive spells for 12 hours',
+                'description' => '20% chance to reflect incoming offensive spells for 12 hours',
                 'key' => 'energy_mirror',
                 'mana_cost' => 4.5,
                 'duration' => 12,
@@ -416,7 +416,7 @@ class SpellHelper
                 'name' => 'Cyclone',
                 'description' => 'Deals damage to a wonder',
                 'key' => 'cyclone',
-                'mana_cost' => 3.5,
+                'mana_cost' => 3,
                 'icon_class' => 'ra ra-tornado',
             ],
         ]);

@@ -14,32 +14,32 @@ units:
   - name: Satyr
     cost:
       platinum: 275
-      ore: 0
+      lumber: 0
     power:
       offense: 3
       defense: 0
   - name: Sprite
     cost:
       platinum: 300
-      ore: 0
+      lumber: 0
     power:
       offense: 0
       defense: 3
   - name: Dryad
     cost:
       platinum: 1050
-      ore: 0
+      lumber: 0
     power:
       offense: 0
       defense: 3
     perks:
-      counts_as_wizard_offense: 0.2
-      counts_as_wizard_defense: 0.333
+      counts_as_wizard_offense: 0.25
+      counts_as_wizard_defense: 0.25
       defense_from_land: forest,20,4 # land type, ratio%, max
   - name: Centaur
     cost:
       platinum: 900
-      ore: 35
+      lumber: 20
     power:
       offense: 5.5
       defense: 2

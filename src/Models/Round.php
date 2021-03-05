@@ -137,25 +137,84 @@ class Round extends AbstractModel
     }
 
     /**
+     * Scope a query to include only rounds that are ready to have realms assigned.
+     * Used by TickService to trigger realm assignment.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeReadyForAssignment(Builder $query): Builder
+    {
+        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_AFTER_START;
+
+        return $query
+            ->where('start_date', '<', now()->subHours($assignmentHours - 1))
+            ->where('start_date', '>=', now()->subHours($assignmentHours));
+    }
+
+    /**
+     * Returns the scheduled realm assignment date.
+     *
+     * @return bool
+     */
+    public function realmAssignmentDate()
+    {
+        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_AFTER_START;
+
+        return $this->start_date->addHours($assignmentHours);
+    }
+
+    /**
+     * Returns the minimum protection end date.
+     *
+     * @return bool
+     */
+    public function protectionEndDate()
+    {
+        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
+
+        return $this->start_date->addHours($protectionHours);
+    }
+
+    /**
      * Returns whether a user can register to this round.
      *
      * @return bool
      */
-    public function openForRegistration()
+    public function packRegistrationOpen()
     {
-        return $this->start_date->subDays(3) <= now();
+        if (now() > $this->realmAssignmentDate() && now() < $this->protectionEndDate()) {
+            // Cannot register packs between realm assignment and OOP
+            return false;
+        }
+        return true;
     }
 
     /**
-     * Returns the amount in days until registration opens.
+     * Returns a string representation of time until realm assignment.
      *
-     * @return int
+     * @return string
      */
-    public function daysUntilRegistration()
+    public function timeUntilRealmAssignment()
     {
-        return $this->start_date->subDays(3)->diffInDays(now());
+        return now()->longAbsoluteDiffForHumans($this->realmAssignmentDate());
     }
 
+    /**
+     * Returns a string representation of time until protection ends.
+     *
+     * @return string
+     */
+    public function timeUntilCommencement()
+    {
+        return now()->longAbsoluteDiffForHumans($this->protectionEndDate());
+    }
+
+    /**
+     * Returns whether the user already has a dominion registered in this round.
+     * 
+     * @return bool
+     */
     public function userAlreadyRegistered(User $user)
     {
         $results = DB::table('dominions')
@@ -185,6 +244,16 @@ class Round extends AbstractModel
     public function hasEnded()
     {
         return ($this->end_date <= now());
+    }
+
+    /**
+     * Returns whether a round has ended.
+     *
+     * @return bool
+     */
+    public function hasAssignedRealms()
+    {
+        return ($this->realmAssignmentDate() <= now());
     }
 
     /**
@@ -229,9 +298,9 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function daysUntilStart()
+    public function daysUntilCommencement()
     {
-        return $this->start_date->diffInDays(now());
+        return now()->diffInDays($this->protectionEndDate());
     }
 
     /**
@@ -241,7 +310,7 @@ class Round extends AbstractModel
      */
     public function daysUntilEnd()
     {
-        return $this->end_date->diffInDays(now());
+        return now()->diffInDays($this->end_date);
     }
 
     /**
@@ -253,9 +322,26 @@ class Round extends AbstractModel
     {
         $hoursUntilReset = $this->end_date->hour - now()->hour;
         if ($hoursUntilReset < 1) {
-            $hoursUntilReset = 24 + $hoursUntilReset;
+            $hoursUntilReset += 24;
         }
         return $hoursUntilReset;
+    }
+
+    /**
+     * Returns the amount in hours since the current round day started.
+     *
+     * @return int
+     */
+    public function hoursInDay(Carbon $datetime = null)
+    {
+        if ($datetime == null) {
+            $datetime = now();
+        }
+        $hoursInDay = $datetime->hour - $this->end_date->hour + 1;
+        if ($hoursInDay < 1) {
+            $hoursInDay += 24;
+        }
+        return $hoursInDay;
     }
 
     /**
@@ -263,9 +349,12 @@ class Round extends AbstractModel
      *
      * @return int
      */
-    public function daysInRound()
+    public function daysInRound(Carbon $datetime = null)
     {
-        return $this->start_date->subDays(1)->diffInDays(now());
+        if ($datetime == null) {
+            $datetime = now();
+        }
+        return $this->start_date->subDays(1)->diffInDays($datetime);
     }
 
     /**

@@ -24,131 +24,6 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-12">
                             <div class="box-header with-border">
-                                <h4 class="box-title">Military</h4>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <table class="table">
-                                <colgroup>
-                                    <col width="50%">
-                                    <col width="50%">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Offensive Power</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Offensive Power:</td>
-                                        <td>
-                                            <strong>{{ number_format($militaryCalculator->getOffensivePower($target)) }}</strong>
-                                            @if ($militaryCalculator->getOffensivePowerMultiplier($target) !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getOffensivePowerRaw($target))) }} raw)</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Offensive Power Multiplier:</td>
-                                        <td>
-                                            <strong>{{ number_string(($militaryCalculator->getOffensivePowerMultiplier($target) - 1) * 100, 3, true) }}%</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Offensive Ratio:</td>
-                                        <td>
-                                            <strong>{{ number_format(($militaryCalculator->getOffensivePower($target) / $landCalculator->getTotalLand($target)), 3) }}</strong>
-                                            @if ($militaryCalculator->getOffensivePowerMultiplier($target) !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getOffensivePowerRaw($target) / $landCalculator->getTotalLand($target)), 3) }})</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <table class="table">
-                                <colgroup>
-                                    <col width="50%">
-                                    <col width="50%">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Defensive Power</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Defensive Power:</td>
-                                        <td>
-                                            <strong>{{ number_format($militaryCalculator->getDefensivePower($target)) }}</strong>
-                                            @if ($militaryCalculator->getDefensivePowerMultiplier($target) !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($target))) }} raw)</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Defensive Power Multiplier:</td>
-                                        <td>
-                                            <strong>{{ number_string(($militaryCalculator->getDefensivePowerMultiplier($target) - 1) * 100, 3, true) }}%</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Defense Ratio:</td>
-                                        <td>
-                                            <strong>{{ number_format(($militaryCalculator->getDefensivePower($target) / $landCalculator->getTotalLand($target)), 3) }}</strong>
-                                            @if ($militaryCalculator->getDefensivePowerMultiplier($target) !== 1.0)
-                                                <small class="text-muted">({{ number_format(($militaryCalculator->getDefensivePowerRaw($target) / $landCalculator->getTotalLand($target)), 3) }})</small>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <table class="table">
-                                <colgroup>
-                                    <col width="50%">
-                                    <col width="50%">
-                                </colgroup>
-                                <thead class="hidden-xs">
-                                    <tr>
-                                        <th colspan="2">Invasions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Attacking success:</td>
-                                        <td>
-                                            <strong>{{ number_format($target->stat_attacking_success) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Attacking failure:</td>
-                                        <td>
-                                            <strong>{{ number_format($target->stat_attacking_failure) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Defending success:</td>
-                                        <td>
-                                            <strong>{{ number_format($target->stat_defending_success) }}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Defending failure:</td>
-                                        <td>
-                                            <strong>{{ number_format($target->stat_defending_failure) }}</strong>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12">
-                            <div class="box-header with-border">
                                 <h4 class="box-title">Espionage</h4>
                             </div>
                         </div>
@@ -491,139 +366,6 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="box-header with-border">
-                                        <h4 class="box-title">Population</h4>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12">
-                                    <table class="table">
-                                        <colgroup>
-                                            <col width="50%">
-                                            <col width="50%">
-                                        </colgroup>
-                                        <thead>
-                                            <tr>
-                                                <th colspan="2">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Current Population:</td>
-                                                <td>
-                                                    <strong>{{ number_format($populationCalculator->getPopulation($target)) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Peasant Population:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->peasants) }}</strong>
-                                                    <small class="text-muted">({{ number_format((($target->peasants / $populationCalculator->getPopulation($target)) * 100), 2) }}%)</small>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Military Population:</td>
-                                                <td>
-                                                    <strong>{{ number_format($populationCalculator->getPopulationMilitary($target)) }}</strong>
-                                                    <small class="text-muted">({{ number_format((100 - ($target->peasants / $populationCalculator->getPopulation($target)) * 100), 2) }}%)</small>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Max Population:</td>
-                                                <td>
-                                                    <strong>{{ number_format($populationCalculator->getMaxPopulation($target)) }}</strong>
-                                                    @if ($populationCalculator->getMaxPopulationMultiplier($target) !== 1.0)
-                                                        <small class="text-muted">({{ number_format($populationCalculator->getMaxPopulationRaw($target) + $populationCalculator->getMaxPopulationMilitaryBonus($target)) }} raw)</small>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Population Multiplier:</td>
-                                                <td>
-                                                    <strong>{{ number_string((($populationCalculator->getMaxPopulationMultiplier($target) - 1) * 100), 3, true) }}%</strong>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="box-header with-border">
-                                        <h4 class="box-title">Production</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <table class="table">
-                                        <colgroup>
-                                            <col width="50%">
-                                            <col width="50%">
-                                        </colgroup>
-                                        <thead>
-                                            <tr>
-                                                <th colspan="2">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Platinum:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_platinum_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Food:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_food_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Lumber:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_lumber_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mana:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_mana_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Ore:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_ore_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Gems:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_gem_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Research Points:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_tech_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Boats:</td>
-                                                <td>
-                                                    <strong>{{ number_format($target->stat_total_boat_production) }}</strong>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="box-header with-border">
                                         <h4 class="box-title">Land Gain</h4>
                                     </div>
                                 </div>
@@ -659,10 +401,18 @@
                                                     <strong>{{ number_format($target->stat_total_land_lost) }}</strong>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>Highest Land:</td>
+                                                <td>
+                                                    <strong>{{ number_format($target->highest_land_achieved) }}</strong>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="box-header with-border">

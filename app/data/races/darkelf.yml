@@ -29,14 +29,14 @@ units:
   - name: Adept
     type: hybrid_elite
     cost:
-      platinum: 1000
+      platinum: 1100
       ore: 55
     power:
       offense: 2
       defense: 4
     perks:
       counts_as_wizard_offense: 0.2
-      counts_as_wizard_defense: 0.333
+      counts_as_wizard_defense: 0.25
       offense_from_building: wizard_guild,9,4 # building type, ratio%, max
       defense_from_building: wizard_guild,9,4 # building type, ratio%, max
   - name: Spirit Warrior
@@ -48,5 +48,5 @@ units:
       defense: 0
     perks:
       immortal_vs_land_range: 75
-      offense_staggered_land_range: 75;0.5,95;1
+      offense_staggered_land_range: 75;0.5
     need_boat: false

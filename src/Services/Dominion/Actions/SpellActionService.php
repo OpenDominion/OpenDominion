@@ -187,7 +187,8 @@ class SpellActionService
             if ($target == null) {
                 $dominion->save([
                     'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                    'action' => $spellKey
+                    'action' => $spellKey,
+                    'queue' => ['active_spells' => [$spellKey => $result['duration']]]
                 ]);
             } else {
                 $dominion->save([
@@ -201,7 +202,7 @@ class SpellActionService
                 }
 
                 $target->save([
-                    'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
+                    'event' => HistoryService::EVENT_ACTION_RECEIVE_SPELL,
                     'action' => $spellKey,
                     'source_dominion_id' => $dominion->id
                 ]);
@@ -275,6 +276,7 @@ class SpellActionService
 
         return [
             'success' => true,
+            'duration' => $activeSpell !== null ? $activeSpell->duration : 12,
             'message' => sprintf(
                 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next %s hours.',
                 $spellInfo['duration']
@@ -295,12 +297,7 @@ class SpellActionService
     protected function castInfoOpSpell(Dominion $dominion, string $spellKey, Dominion $target): array
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
-
-        if ($dominion->pack !== null && $dominion->pack->size > 2) {
-            $wizardStrengthLost = 2;
-        } else {
-            $wizardStrengthLost = 1.5;
-        }
+        $wizardStrengthLost = 2;
 
         $selfWpa = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
         $targetWpa = $this->militaryCalculator->getWizardRatio($target, 'defense');
@@ -861,18 +858,26 @@ class SpellActionService
     protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
     {
         $wizardsKilledPercentage = $this->opsCalculator->getWizardLosses($dominion, $target, $type);
+        $archmagesKilledPercentage = $this->opsCalculator->geArchmageLosses($dominion, $target, $type);
 
         $unitsKilled = [];
         $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
+        $archmagesKilled = (int)floor($dominion->military_archmages * $archmagesKilledPercentage);
 
         // Check for immortal wizards
         if ($dominion->race->getPerkValue('immortal_wizards') != 0) {
             $wizardsKilled = 0;
+            $archmagesKilled = 0;
         }
 
         if ($wizardsKilled > 0) {
             $unitsKilled['wizards'] = $wizardsKilled;
             $dominion->military_wizards -= $wizardsKilled;
+        }
+
+        if ($archmagesKilled > 0) {
+            $unitsKilled['archmages'] = $archmagesKilled;
+            $dominion->military_archmages -= $archmagesKilled;
         }
 
         foreach ($dominion->race->units as $unit) {

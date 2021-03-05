@@ -74,8 +74,8 @@ class RezoningCalculator
         $multiplier = 1;
 
         // Values (percentages)
-        $factoryReduction = 3;
-        $factoryReductionMax = 75;
+        $factoryReduction = 4;
+        $factoryReductionMax = 60;
         $spellMechanicalGeniusReduction = 30;
 
         // Factories

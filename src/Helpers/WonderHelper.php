@@ -18,17 +18,18 @@ class WonderHelper
             // Military related
             'defense' => '%s%% defensive power',
             'offense' => '%s%% offensive power',
+            'guard_tax' => '%s%% platinum tax from Royal Guard',
             'prestige_gains' => ' %s%% attacking prestige gains',
+            'barracks_housing' => '%s barracks housing',
 
             // Casualties related
             'enemy_casualties_offense' => '%s%% offensive casualties against this realm',
             'enemy_casualties_defense' => '%s%% defensive casualties inflicted by this realm',
             'fewer_casualties_defense' => '%s%% fewer casualties on defense',
             'fewer_casualties_offense' => '%s%% fewer casualties on offense',
-            'kills_immortal' => 'Can kill spirits and the undead',
+            'kills_immortal' => 'Can kill all immortal units',
 
             // Logistics
-            'barracks_housing' => '%s barracks housing',
             'construction_cost' => '%s%% construction platinum cost',
             'employment' => '%s%% employment',
             'exchange_bonus' => '%s%% bank exchange rates',
@@ -72,6 +73,6 @@ class WonderHelper
             }
         }
 
-        return implode($perkStrings, ', ');
+        return implode(', ', $perkStrings);
     }
 }

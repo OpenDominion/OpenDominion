@@ -120,11 +120,15 @@ class ExploreActionService
             $this->queueService->queueResources('exploration', $dominion, $data);
 
             $dominion->stat_total_land_explored += $totalLandToExplore;
+            $dominion->stat_total_platinum_spent_exploration += $platinumCost;
             $dominion->fill([
                 'morale' => ($dominion->morale - $moraleDrop),
                 'resource_platinum' => ($dominion->resource_platinum - $platinumCost),
                 'military_draftees' => ($dominion->military_draftees - $drafteeCost),
-            ])->save(['event' => HistoryService::EVENT_ACTION_EXPLORE]);
+            ])->save([
+                'event' => HistoryService::EVENT_ACTION_EXPLORE,
+                'queue' => ['exploration' => array_filter($data)]
+            ]);
         });
 
         return [

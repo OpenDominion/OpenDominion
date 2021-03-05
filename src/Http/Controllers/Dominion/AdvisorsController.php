@@ -3,6 +3,7 @@
 namespace OpenDominion\Http\Controllers\Dominion;
 
 use OpenDominion\Calculators\Dominion\BuildingCalculator;
+use OpenDominion\Calculators\Dominion\CasualtiesCalculator;
 use OpenDominion\Calculators\Dominion\ImprovementCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
@@ -162,48 +163,12 @@ class AdvisorsController extends AbstractDominionController
         }
 
         return view('pages.dominion.advisors.military', [
+            'casualtiesCalculator' => app(CasualtiesCalculator::class),
+            'landCalculator' => app(LandCalculator::class),
+            'militaryCalculator' => app(MilitaryCalculator::class),
             'queueService' => app(QueueService::class),
-            'unitHelper' => app(UnitHelper::class),
-            'infoMapper' => app(InfoMapper::class),
             'resourceHelper' => app(ResourceHelper::class),
-            'targetDominion' => $target
-        ]);
-    }
-
-    public function getAdvisorsLand(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.land', [
-            'landCalculator' => app(LandCalculator::class),
-            'landHelper' => app(LandHelper::class),
             'unitHelper' => app(UnitHelper::class),
-            'queueService' => app(QueueService::class),
-            'infoMapper' => app(InfoMapper::class),
-
-            'targetDominion' => $target
-        ]);
-    }
-
-    public function getAdvisorsConstruction(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.construction', [
-            'buildingCalculator' => app(BuildingCalculator::class),
-            'buildingHelper' => app(BuildingHelper::class),
-            'landCalculator' => app(LandCalculator::class),
-            'queueService' => app(QueueService::class),
             'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);
@@ -221,39 +186,6 @@ class AdvisorsController extends AbstractDominionController
         return view('pages.dominion.advisors.magic', [
             'spellCalculator' => app(SpellCalculator::class),
             'spellHelper' => app(SpellHelper::class),
-            'infoMapper' => app(InfoMapper::class),
-            'targetDominion' => $target
-        ]);
-    }
-
-    public function getAdvisorsCastle(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.castle', [
-            'improvementCalculator' => app(ImprovementCalculator::class),
-            'improvementHelper' => app(ImprovementHelper::class),
-            'infoMapper' => app(InfoMapper::class),
-            'targetDominion' => $target
-        ]);
-    }
-
-    public function getAdvisorsTechs(Dominion $target = null)
-    {
-        try {
-            $this->guardPackRealm($target);
-        } catch (GameException $e) {
-            return redirect()->back()
-                ->withErrors([$e->getMessage()]);
-        }
-
-        return view('pages.dominion.advisors.techs', [
-            'techHelper' => app(TechHelper::class),
             'infoMapper' => app(InfoMapper::class),
             'targetDominion' => $target
         ]);

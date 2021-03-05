@@ -52,7 +52,7 @@ trait CreatesData
      * @param string $endDate Carbon-parsable string
      * @return Round
      */
-    protected function createRound(string $startDate = 'today', string $endDate = '+50 days'): Round
+    protected function createRound(string $startDate = '-3 days', string $endDate = '+47 days'): Round
     {
         // todo: RoundFactory
 
@@ -112,7 +112,7 @@ trait CreatesData
             /** @var RealmFinderService $realmFinderService */
             $realmFinderService = $this->app->make(RealmFinderService::class);
 
-            $realm = $realmFinderService->findRandomRealm($round, $race);
+            $realm = $realmFinderService->findRealm($round, $race, $user);
 
             if ($realm === null) {
                 /** @var RealmFactory $realmFactory */

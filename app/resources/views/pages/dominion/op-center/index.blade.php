@@ -45,15 +45,15 @@
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->targetDominion->race->name }}">
                                         {{ $lastInfoOp->targetDominion->race->name }}
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getLand($targetDominionOps) }}">
-                                        {{ $infoOpService->getLandString($targetDominionOps) }}
+                                    <td class="text-center" data-search="" data-order="{{ $landCalculator->getTotalLand($lastInfoOp->targetDominion) }}">
+                                        {{ number_format($landCalculator->getTotalLand($lastInfoOp->targetDominion)) }}
                                         <br>
                                         <span class="small {{ $rangeCalculator->getDominionRangeSpanClass($selectedDominion, $lastInfoOp->targetDominion) }}">
                                             {{ number_format($rangeCalculator->getDominionRange($selectedDominion, $lastInfoOp->targetDominion), 2) }}%
                                         </span>
                                     </td>
-                                    <td class="text-center" data-search="" data-order="{{ $infoOpService->getNetworth($targetDominionOps) }}">
-                                        {{ $infoOpService->getNetworthString($targetDominionOps) }}
+                                    <td class="text-center" data-search="" data-order="{{ $networthCalculator->getDominionNetworth($lastInfoOp->targetDominion) }}">
+                                        {{ number_format($networthCalculator->getDominionNetworth($lastInfoOp->targetDominion)) }}
                                     </td>
                                     <td class="text-center" data-search="" data-order="{{ $lastInfoOp->created_at->getTimestamp() }}">
                                         {{ $infoOpService->getInfoOpName($lastInfoOp) }}

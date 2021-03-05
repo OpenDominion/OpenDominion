@@ -100,7 +100,7 @@
                                                     <td>N/A</td>
                                                 @endif
                                                 <td>
-                                                    @if ($dominion->id !== $selectedDominion->id)
+                                                    @if ($dominion->user_id !== null && $dominion->id !== $selectedDominion->id)
                                                         @if ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === true)
                                                             <input type="checkbox" name="realmadvisors[]" value="{{ $dominion->id }}" checked="checked">
                                                         @elseif ($realmAdvisors && array_key_exists($dominion->id, $realmAdvisors) && $realmAdvisors[$dominion->id] === false)
@@ -269,7 +269,7 @@
                                     <form action="{{ route('dominion.government.war.cancel') }}" method="post" role="form">
                                         @csrf
                                         <div class="row">
-                                            @foreach ($selectedDominion->realm->warsOutgoing()->engaged()->get() as $war)
+                                            @foreach ($governmentService->getWarsEngaged($selectedDominion->realm->warsOutgoing) as $war)
                                                 <div class="col-sm-8 col-lg-10">
                                                     You have declared <span class="text-red text-bold">WAR</span> on {{ $war->targetRealm->name }} (#{{ $war->targetRealm->number }})!
                                                     @if ($governmentService->getHoursBeforeWarActive($war) > 0)

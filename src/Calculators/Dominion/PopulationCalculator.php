@@ -226,6 +226,9 @@ class PopulationCalculator
         // Values
         $troopsPerBarracks = 36;
 
+        // Racial Bonus
+        $troopsPerBarracks += $dominion->race->getPerkValue('barracks_housing');
+
         // Techs
         $troopsPerBarracks += $dominion->getTechPerkValue('barracks_housing');
 

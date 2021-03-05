@@ -145,7 +145,7 @@
                                             $trClass = 'info';
                                         } elseif ($round->hasStarted()) {
                                             $trClass = 'warning';
-                                        } elseif ($round->openForRegistration()) {
+                                        } else {
                                             $trClass = 'success';
                                         }
                                     @endphp
@@ -159,13 +159,13 @@
                                         <td class="text-center">
                                             @if ($round->hasEnded())
                                                 <abbr title="Ended at {{ $round->end_date }}">Ended</abbr>
-                                            @elseif ($round->isActive())
-                                                <abbr title="Ending at {{ $round->end_date }}">
-                                                    Ending in {{ $round->daysUntilEnd() }} {{ str_plural('day', $round->daysUntilEnd()) }}
+                                            @elseif ($round->protectionEndDate() > now())
+                                                <abbr title="Commences in {{ $round->timeUntilCommencement() }}">
+                                                    Commences in {{ $round->timeUntilCommencement() }}
                                                 </abbr>
                                             @else
-                                                <abbr title="Starting at {{ $round->start_date }}">
-                                                    Starting in {{ $round->daysUntilStart() }} {{ str_plural('day', $round->daysUntilStart()) }}
+                                                <abbr title="Ending at {{ $round->end_date }}">
+                                                    Ending in {{ $round->daysUntilEnd() }} {{ str_plural('day', $round->daysUntilEnd()) }}
                                                 </abbr>
                                             @endif
                                         </td>
@@ -176,10 +176,8 @@
                                                 Playing
                                             @elseif ($userAlreadyRegistered && !$round->hasStarted())
                                                 Registered
-                                            @elseif ($round->openForRegistration())
-                                                <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
                                             @else
-                                                In {{ $round->daysUntilRegistration() }} day(s)
+                                                <a href="{{ route('round.register', $round) }}" class="btn btn-primary btn-flat btn-xs">Register</a>
                                             @endif
                                         </td>
                                     </tr>

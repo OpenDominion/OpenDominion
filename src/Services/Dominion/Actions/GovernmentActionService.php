@@ -203,7 +203,7 @@ class GovernmentActionService
             throw new GameException('Only the monarch can declare war.');
         }
 
-        $war = $dominion->realm->warsOutgoing()->engaged()->first();
+        $war = $this->governmentService->getWarsEngaged($dominion->realm->warsOutgoing)->first();
         if ($war == null) {
             throw new GameException('Realm is not currently at war.');
         }

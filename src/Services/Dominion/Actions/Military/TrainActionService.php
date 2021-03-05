@@ -113,8 +113,8 @@ class TrainActionService
 
         // Specialists train in 9 hours
         $nineHourData = [
-            'military_unit1' => $data['military_unit1'],
-            'military_unit2' => $data['military_unit2'],
+            'military_unit1' => array_get($data, 'military_unit1', 0),
+            'military_unit2' => array_get($data, 'military_unit2', 0),
         ];
         unset($data['military_unit1'], $data['military_unit2']);
 
@@ -128,7 +128,15 @@ class TrainActionService
             $dominion->resource_gems -= $totalCosts['gems'];
             $dominion->military_draftees -= $totalCosts['draftees'];
             $dominion->military_wizards -= $totalCosts['wizards'];
-            $dominion->save(['event' => HistoryService::EVENT_ACTION_TRAIN]);
+            $dominion->stat_total_platinum_spent_training += $totalCosts['platinum'];
+            $dominion->stat_total_ore_spent_training += $totalCosts['ore'];
+            $dominion->stat_total_mana_spent_training += $totalCosts['mana'];
+            $dominion->stat_total_lumber_spent_training += $totalCosts['lumber'];
+            $dominion->stat_total_gems_spent_training += $totalCosts['gems'];
+            $dominion->save([
+                'event' => HistoryService::EVENT_ACTION_TRAIN,
+                'queue' => ['training' => array_filter($nineHourData + $data)]
+            ]);
         });
 
         return [

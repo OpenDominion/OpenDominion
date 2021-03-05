@@ -42,7 +42,11 @@
                             @php $myRankings = $rankingsService->getRankingsForDominion($target); @endphp
                             @foreach ($rankingsHelper->getRankings() as $ranking)
                                 <tr>
-                                    <td>{{ $ranking['name'] }}</td>
+                                    <td>
+                                        <a href="{{ route('dominion.rankings', $ranking['key']) }}">
+                                            {{ $ranking['name'] }}
+                                        </a>
+                                    </td>
                                     <td class="text-right">
                                         {{ $ranking['stat_label'] }}:
                                     </td>

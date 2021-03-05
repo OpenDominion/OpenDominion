@@ -24,22 +24,6 @@
             <i class="ra ra-sword"></i> Military
         </a>
 
-        <a href="{{ route($baseRoute.'land', $targetDominion) }}" class="btn btn-app">
-            <i class="ra ra-honeycomb"></i> Land
-        </a>
-
-        <a href="{{ route($baseRoute.'construct', $targetDominion) }}" class="btn btn-app">
-            <i class="fa fa-home"></i> Construction
-        </a>
-
-        <a href="{{ route($baseRoute.'castle', $targetDominion) }}" class="btn btn-app">
-            <i class="ra ra-tower"></i> Castle
-        </a>
-
-        <a href="{{ route($baseRoute.'techs', $targetDominion) }}" class="btn btn-app">
-            <i class="fa fa-flask"></i> Tech
-        </a>
-
         <a href="{{ route($baseRoute.'magic', $targetDominion) }}" class="btn btn-app">
             <i class="ra ra-burning-embers"></i> Magic
         </a>

@@ -68,6 +68,25 @@
                                 </div>
                             </div>
 
+                            {{-- Discord --}}
+                            <div class="form-group">
+                                @if($discordUser = $user->discordUser()->first())
+                                    <label for="skin" class="col-sm-3 control-label">Discord Account</label>
+                                    <div class="col-sm-9">
+                                        <p class="help-block">{{ $discordUser->username }}#{{ $discordUser->discriminator }}</p>
+                                        <a href="{{ route('discord-unlink') }}" class="btn btn-danger">
+                                            <i class="fa fa-unlink"></i> Unlink account
+                                        </a>
+                                    </div>
+                                @else
+                                    <label for="skin" class="col-sm-3 control-label">Discord</label>
+                                    <div class="col-sm-9">
+                                        <a href="{{ $discordHelper->getDiscordConnectUrl('link') }}" class="btn btn-primary">
+                                            <i class="fa fa-link"></i> Link account
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="col-md-6">
 
@@ -235,6 +254,18 @@
                 } else {
                     allCheckbox.prop('checked', (allCheckboxes.filter(':checked').length === allCheckboxes.length) ? 'checked' : '');
                 }
+            });
+
+            // Javascript to enable link to tab
+            var hash = document.location.hash;
+            var prefix = "tab_";
+            if (hash) {
+                $('.nav-tabs a[href="'+hash.replace(prefix,"")+'"]').tab('show');
+            }
+
+            // Change hash for page-reload
+            $('.nav-tabs a').on('shown', function (e) {
+                window.location.hash = e.target.hash.replace("#", "#" + prefix);
             });
 
         })(jQuery);

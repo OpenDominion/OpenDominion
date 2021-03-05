@@ -266,7 +266,7 @@ class WonderActionService
 
             $dominion->save([
                 'event' => HistoryService::EVENT_ACTION_CAST_SPELL,
-                'action' => 'cyclone',
+                'action' => 'attack',
                 'target_wonder_id' => $wonder->id
             ]);
             $wonder->save();

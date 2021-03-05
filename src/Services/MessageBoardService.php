@@ -164,23 +164,23 @@ class MessageBoardService
      */
     public function flagPost(User $user, MessageBoard\Post $post): void
     {
-        if (!$post->thread->flagged_by || !isset($post->thread->flagged_by['user_ids'])) {
+        if (!$post->flagged_by || !isset($post->flagged_by['user_ids'])) {
             $user_ids = [$user->id];
         } else {
-            $user_ids = $post->thread->flagged_by['user_ids'];
+            $user_ids = $post->flagged_by['user_ids'];
             $user_ids[] = $user->id;
             $user_ids = array_unique($user_ids);
         }
 
-        $post->thread->flagged_by = [
+        $post->flagged_by = [
             'user_ids' => $user_ids
         ];
 
         // Remove post if it has been flagged by 5 different users
         if (count($user_ids) >= 5) {
-            $post->thread->flagged_for_removal = true;
+            $post->flagged_for_removal = true;
         }
 
-        $post->thread->save();
+        $post->save();
     }
 }

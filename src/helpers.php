@@ -141,6 +141,28 @@ if (!function_exists('random_distribution')) {
     }
 }
 
+if (!function_exists('root_mean_square')) {
+    /**
+     * Returns the average of a list of elements weighed by squaring each value and rooting the result.
+     *
+     * @param array $values List of elements
+     * @return float
+     * @throws Exception
+     */
+    function root_mean_square(array $values): float
+    {
+        if (count($values) == 0) {
+            return 0;
+        }
+
+        $sum = 0;
+        foreach ($values as $value) {
+            $sum += $value ** 2;
+        }
+        return sqrt($sum / count($values));
+    }
+}
+
 if (!function_exists('error_function')) {
     /**
      * Gaussian error function
@@ -193,5 +215,25 @@ if (!function_exists('number_string')) {
         }
 
         return $string;
+    }
+}
+
+if (!function_exists('format_percentage')) {
+    /**
+     * Format a non-zero value with a sibling containing the percentage of total.
+     *
+     * @param int|float $number
+     * @param int|float $total
+     * @return string
+     */
+    function format_percentage($number, $total = 0) {
+        if ($number > 0 && $total > 0 && $number != $total) {
+            return sprintf(
+                '%s <small class="text-muted">(%s%%)</small>',
+                number_format($number),
+                number_format($number / $total * 100, 2)
+            );
+        }
+        return number_format($number);
     }
 }
