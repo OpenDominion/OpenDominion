@@ -128,6 +128,11 @@ class PackService
 
     public function checkRaceLimitForRealm(Realm $realm, Race $race): bool
     {
+        // Exclude graveyard
+        if ($realm->number == 0) {
+            return true;
+        }
+
         $packCount = $realm->packs()->count();
         if ($packCount > 1) {
             $playersWithRace = $realm->packs->sum(
