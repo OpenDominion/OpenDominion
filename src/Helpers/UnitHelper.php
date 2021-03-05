@@ -210,7 +210,7 @@ class UnitHelper
                 $nestedArrays = false;
                 // todo: refactor all of this
                 // partially copied from Race::getUnitPerkValueForUnitSlot
-                if (str_contains($perkValue, ',')) {
+                if (str_contains($perkValue, ',') || str_contains($perkValue, ';')) {
                     $perkValue = explode(',', $perkValue);
 
                     foreach ($perkValue as $key => $value) {
