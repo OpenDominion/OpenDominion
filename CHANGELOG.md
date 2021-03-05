@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [1.3.0] - 2021-03-04
 ### Added
 - Realm Assignment & Matchmaking!
-- Dominions will now be placed in realm 0 upon registration and assigned a realm 36 hours prior to attacking being enabled (OOP). Packs will not be able to register during the 36 hours between realm assignment and OOP to preserve the qualty of the matches.
+- Dominions will now be placed in realm 0 upon registration and assigned a realm 36 hours prior to attacking being enabled (OOP). Packs will not be able to register during the 36 hours between realm assignment and OOP to preserve the quality of the matches.
 - Dominions will be assigned to 20+ realms with up to 8 packed players per realm based on previous performance. Creating a new account in an attempt to circumvent these measures is against the rules and will not be effective as new players will be assigned an above-average rating.
 - Undo button in protection
 - Every realm now has a pre-made Discord server
@@ -46,7 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Halfling: Spy power bonus reduced to +25% (from +30%)
 - Nox Fiend: -25o, +12 mana
 - Nox Nightshade: -60o, +25 mana
-- Sylvan Centar: -35o, +20 lumber
+- Sylvan Centaur: -35o, +20 lumber
 - New Wonder: Fountain of Youth +2.5% maximum population
 - New Wonder: Golden Throne +15% attacking prestige gains
 - New Wonder: Ruby Monolith -7.5% casualties on offense and defense

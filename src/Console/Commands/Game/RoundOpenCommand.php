@@ -136,7 +136,7 @@ class RoundOpenCommand extends Command implements CommandInterface
         );
 
         if ($discordEnabled) {
-            $discordService->getDiscordGuild($round);
+            $this->discordService->getDiscordGuild($round);
         }
 
         $this->info("Round {$round->number} created in {$roundLeague->key} league, starting at {$round->start_date}. With a realm size of {$round->realm_size} and a pack size of {$round->pack_size}");
