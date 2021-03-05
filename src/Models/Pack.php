@@ -83,7 +83,10 @@ class Pack extends AbstractModel
 
     public function getClosingDate(): Carbon
     {
-        return max($this->created_at, $this->round->start_date)->addDays(3);
+        if ($this->round->realmAssignmentDate() > now()) {
+            return $this->round->realmAssignmentDate();
+        }
+        return $this->created_at->addDays(3);
     }
 
     public function close()
