@@ -131,7 +131,7 @@ class BuildingHelper
             'ore_mine' => 'Produces 60 ore per hour.',
             'gryphon_nest' => 'Increases offensive power.<br><br>Power increased by 1.6% per 1% owned, up to a maximum of 32% at 20% owned.',
             'tower' => 'Produces 25 mana per hour.',
-            'wizard_guild' => 'Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Wizard power increased by 2% per 1% owned, up to a maximum of 20% at 10% owned (except Dark Elf).<br>Wizard and Archmage training costs reduced by 4% per 1% owned, up to a maximum of 40% at 10% owned.<br/>Spell cost and losses on failed black ops reduced by 3% per 1% owned, up to a maximum of 30% at 10% owned.',
+            'wizard_guild' => 'Wizard Strength refresh rate increased by 0.1% per 1% owned, up to a maximum of 2% at 20% owned.<br>Wizard power increased by 2% per 1% owned, up to a maximum of 20% at 10% owned.<br>Wizard and Archmage training costs reduced by 4% per 1% owned, up to a maximum of 40% at 10% owned.<br/>Spell cost and losses on failed black ops reduced by 3% per 1% owned, up to a maximum of 30% at 10% owned.',
             'temple' => 'Increases population growth and reduces defensive bonuses of dominions you invade.<br><br>Population growth increased by 6% per 1% owned.<br>Defensive bonuses reduced by 1.35% per 1% owned, up to a maximum of 25% at 18.5% owned.',
             'diamond_mine' => 'Produces 15 gems per hour.',
             'school' => 'Produces 26 research points each hour per 1% owned, up to a maximum of 1040 at 40% owned.<br><br>Generates an additional 130 research points per 1% owned when invading targets at least 75% of your size, up to a maximum of 2600 at 20% owned.',

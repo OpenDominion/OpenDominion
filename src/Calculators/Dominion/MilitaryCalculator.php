@@ -606,7 +606,7 @@ class MilitaryCalculator
     {
         // Values (percentages)
         $dpReductionPerTemple = 1.35;
-        $templeMaxDpReduction = 25;
+        $templeMaxDpReduction = 22.5;
         $dpMultiplierReduction = 0;
 
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
@@ -1026,17 +1026,15 @@ class MilitaryCalculator
     {
         $multiplier = 1;
 
-        if ($dominion->race->name !== 'Dark Elf') {
-            // Values (percentages)
-            $wizardGuildBonus = 2;
-            $wizardGuildBonusMax = 20;
+        // Values (percentages)
+        $wizardGuildBonus = 2;
+        $wizardGuildBonusMax = 20;
 
-            // Wizard Guilds
-            $multiplier += min(
-                (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
-                ($wizardGuildBonusMax / 100)
-            );
-        }
+        // Wizard Guilds
+        $multiplier += min(
+            (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildBonus),
+            ($wizardGuildBonusMax / 100)
+        );
 
         // Racial bonus
         $multiplier += $dominion->race->getPerkMultiplier('wizard_strength');

@@ -13,11 +13,6 @@ class OpsCalculator
     protected const INFAMY_DECAY_BASE = -20;
 
     /**
-     * @var float Percentage amount of infamy lost each hour
-     */
-    protected const INFAMY_DECAY_PERCENTAGE = 0.5;
-
-    /**
      * @var float Base amount of resilience lost each hour
      */
     protected const SPY_RESILIENCE_DECAY = -8;
@@ -160,6 +155,11 @@ class OpsCalculator
         // Techs
         $spiesKilledMultiplier *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
 
+        // Mutual War
+        if ($governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
+            $spiesKilledMultiplier *= 0.8;
+        }
+
         return ($spiesKilledPercentage / 100) * $spiesKilledMultiplier;
     }
 
@@ -197,7 +197,25 @@ class OpsCalculator
             ($wizardGuildWizardCasualtyReductionMax / 100)
         ));
 
+        // Mutual War
+        if ($governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
+            $wizardsKilledMultiplier *= 0.8;
+        }
+
         return ($wizardsKilledPercentage / 100) * $wizardsKilledMultiplier;
+    }
+
+    /**
+     * Returns the percentage of archmages killed after a failed spell.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $type
+     * @return float
+     */
+    public function getArchmageLosses(Dominion $dominion, Dominion $target, string $type): float
+    {
+        return $this->getWizardLosses($dominion, $target, $type) / 10;
     }
 
     /**
@@ -225,11 +243,11 @@ class OpsCalculator
         if ($relativeRatio >= 0.7 && $relativeRatio < 0.9) {
             $infamy += 15;
         } elseif ($relativeRatio >= 0.9 && $relativeRatio < 1.1) {
-            $infamy += 25;
+            $infamy += 30;
         } elseif ($relativeRatio >= 1.1 && $relativeRatio < 1.3) {
-            $infamy += 35;
-        } elseif ($relativeRatio >= 1.3) {
             $infamy += 40;
+        } elseif ($relativeRatio >= 1.3) {
+            $infamy += 50;
         }
 
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
@@ -252,7 +270,7 @@ class OpsCalculator
      */
     public function getInfamyDecay(Dominion $dominion): int
     {
-        $decay = static::INFAMY_DECAY_BASE - round($dominion->infamy * static::INFAMY_DECAY_PERCENTAGE / 100);
+        $decay = static::INFAMY_DECAY_BASE;
 
         // TODO: Placeholder for tech perk
 

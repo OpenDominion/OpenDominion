@@ -68,9 +68,6 @@ class CasualtiesCalculator
 
                 // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
                 // invasion targets
-
-                // Wonders
-                $multiplier = $dominion->getWonderPerkValue('kills_immortal');
             }
 
             if ($multiplier == 0) {
@@ -111,6 +108,11 @@ class CasualtiesCalculator
             if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $target, $slot)) {
                 $multiplier = 0;
             }
+        }
+
+        // Wonders
+        if ($dominion->getWonderPerkValue('kills_immortal')) {
+            $multiplier = 1;
         }
 
         if ($multiplier !== 0) {
@@ -188,9 +190,6 @@ class CasualtiesCalculator
                 // additional race-based checks in here for any new units. So always assume we're running SPUD at the
                 // moment
 
-                // Wonders
-                $multiplier = $attacker->getWonderPerkValue('kills_immortal');
-
                 $attackerHasCrusadeActive = ($this->spellCalculator->isSpellActive($attacker, 'crusade'));
                 if ($attackerHasCrusadeActive) {
                     $multiplier = 1;
@@ -227,6 +226,11 @@ class CasualtiesCalculator
             if (($multiplier !== 0) && $this->isImmortalVersusRacePerk($dominion, $attacker, $slot)) {
                 $multiplier = 0;
             }
+        }
+
+        // Wonders
+        if ($attacker->getWonderPerkValue('kills_immortal')) {
+            $multiplier = 1;
         }
 
         if ($multiplier !== 0) {
