@@ -211,8 +211,8 @@ class DiscordService
         ]);
 
         $result = json_decode($getChannelsResponse->getBody()->getContents(), true);
-        $round->discord_text_category_channel_id = $result['channels'][0]['id'];
-        $round->discord_voice_category_channel_id = $result['channels'][1]['id'];
+        $round->discord_text_category_channel_id = $result[0]['id'];
+        $round->discord_voice_category_channel_id = $result[1]['id'];
 
         $round->save();
 
