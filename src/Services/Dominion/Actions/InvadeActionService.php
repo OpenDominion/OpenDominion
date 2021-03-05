@@ -65,6 +65,16 @@ class InvadeActionService
      */
     protected const PRESTIGE_CHANGE_PERCENTAGE = 5.0;
 
+    /**
+     * @var float Additional prestige % change for defender from recent invasions
+     */
+    protected const PRESTIGE_LOSS_PERCENTAGE_PER_INVASION = 1.0;
+
+    /**
+     * @var float Maximum prestige % change for defender
+     */
+    protected const PRESTIGE_LOSS_PERCENTAGE_CAP = 15.0;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -379,7 +389,13 @@ class InvadeActionService
                 $target->prestige * (($range / 100) / 10), // Gained through invading
                 static::PRESTIGE_CAP // But capped at 130
             ) + static::PRESTIGE_CHANGE_ADD;
-            $targetPrestigeChange = (int)round($target->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
+
+            $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 7);
+            $prestigeLossPercentage = min(
+                (static::PRESTIGE_CHANGE_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $recent),
+                (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
+            );
+            $targetPrestigeChange = (int)round($target->prestige * -($prestigeLossPercentage));
 
             // Racial Bonus
             $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
@@ -958,6 +974,10 @@ class InvadeActionService
         if ($isInvasionSuccessful) {
             $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
+            // Recent invasion penalty
+            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 72);
+            $schoolPenalty = (1 - max(0.8, ($recentlyInvadedCount - 2) * 0.2));
+
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
             if ($range < 60) {
                 $researchPointsGained = 0;
@@ -969,7 +989,8 @@ class InvadeActionService
                     $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
                     $schoolPercentageCap / 100
                 );
-                $researchPointsGained += (130 * $schoolPercentage * 100);
+                $researchPointsGained += (130 * $schoolPercentage * 100 * $schoolPenalty);
+                $researchPointsGained = max(0, $researchPointsGained);
             }
 
             // Racial Bonus
@@ -977,13 +998,6 @@ class InvadeActionService
 
             // Wonders
             $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
-
-            // Recent invasion penalty
-            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion);
-            $researchPointsGained *= (1 - max(0, ($recentlyInvadedCount - 2) * 0.2));
-
-            // never negative
-            $researchPointsGained = max(0, $researchPointsGained);
 
             if($researchPointsGained > 0) {
                 $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);

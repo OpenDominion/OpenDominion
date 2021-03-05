@@ -3,15 +3,22 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.3.0] - 2021-03-04
 ### Added
+- Realm Assignment & Matchmaking!
+- Dominions will now be placed in realm 0 upon registration and assigned a realm 36 hours prior to attacking being enabled (OOP). Packs will not be able to register during the 36 hours between realm assignment and OOP to preserve the qualty of the matches.
+- Dominions will be assigned to 20+ realms with up to 8 packed players per realm based on previous performance. Creating a new account in an attempt to circumvent these measures is against the rules and will not be effective as new players will be assigned an above-average rating.
 - Undo button in protection
 - Every realm now has a pre-made Discord server
-- NPDs begin to train/explore/etc on day 5
+- Non Player Dominions (bots) will now be assigned to realm 0
+- Some bots will now to train/explore/etc
 - Additional resources displayed in header overview
 - Realm page shows usernames of players who share advisors
 - Added spending statistics to production advisor
 - Military modifier breakdown displayed on advisors/invade pages
 - Rezone page now shows current percentage of each land type
+- Added the hour number (1-24) to info ops for the day they were created
 
 ### Changed
 - Op Center now shows current land/networth
@@ -22,6 +29,45 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Technology page and Vision ops now show the total number of techs unlocked
 - Rankings advisor now links to overall rankings pages
 - Improved dominion history logs
+- Guard Tower / Gryphon Nest: OP/DP bonus reduced to 1.6x per 1% owned up to a maximum of 32% at 20% owned (from 1.75x per 1%, max 35% at 20% owned)
+- Temples: DP reduction reduced to 1.35x per 1% owned up to a maximum of 22.5% at 16.7% owned (from 1.5x per 1% owned, max 25% at 16.7% owned)
+- Factories: Construction cost reduction now capped at 60% at 15% owned (from 75% at 18.75%), rezone cost reduction increased to 4x per 1% owned up to a maximum of 60% at 15% owned (from 3x per 1%, max 75% at 25% owned)
+- Wizard Guilds: No longer excludes Dark Elf from wizard power bonus
+- Orc: Savage +25o (from 0o)
+- Orc: Guard -25o (from 25o)
+- Orc: Voodoo Magi changed to flat 5 DP for 975p (from 3 +1 per 600 prestige for 830p)
+- Orc: Bone Breaker changed to 5 +1 per 625 prestige (max +2) for 1150p (from 7 -1 per 10% GT of target for 1075p)
+- Wood Elf: Druid +25p (from 1075p)
+- Goblin: Gem investment bonus decreased to +15% (from +20%)
+- Sylvan: Dryad changed to .25 wizard on offense/defense (from .2/.333)
+- Dark Elf: Adept changed to .25 wizard on defense (from .333) but is effectively .3 with WG bonus
+- Dark Elf: Adept +100p (from 1000p)
+- Dark Elf: Spirit Warrior loses bonus +0.5 OP vs 95%
+- Halfling: Spy power bonus reduced to +25% (from +30%)
+- Nox Fiend: -25o, +12 mana
+- Nox Nightshade: -60o, +25 mana
+- Sylvan Centar: -35o, +20 lumber
+- New Wonder: Fountain of Youth +2.5% maximum population
+- New Wonder: Golden Throne +15% attacking prestige gains
+- New Wonder: Ruby Monolith -7.5% casualties on offense and defense
+- Gnomish Mining Machine changed to +15% ore production (from +10%)
+- High Cleric's Tower - now kills ALL immortal units (including Spirit Warriors and Phoenix)
+- Maximum prestige gain from destroying another realm's wonder reduced to 75 (from 100)
+- Cyclone mana cost reduced to 3x (from 3.5x)
+- The least impactful wonders have been reduced to 150k HP
+- A few wonders will spawn at the start of the round, with the remaining spawning as usual
+- Energy Mirror reflect chance reduced to 20% (from 30%)
+- Spy/Wizard losses reduced by 20% during mutual war
+- Archmages can now die on failed black ops at 1/10th the rate of wizards
+- Infamy gain vs targets with relative ratios > 90% of yours increased by 5-10
+- Infamy decay decreased to 20 per hour (from 20-25 sliding scale)
+- Prestige loss increased by 1% for every invasion after the second in the previous 7 days, to a max of 15%
+- School bonuses reduced by 20% for every invasion after the second in the previous 3 days, to a max of -80% effectiveness
+- Siege Weaponry tech increased to 20% (from 10%)
+- Ancestral Knowledge tech increased to 25% (from 15%)
+- Public Baths tech increased to 30% (from 25%)
+- Miser's Grasp tech increased to 25% (from 20%)
+- Shipwright's Ingenuity tech increased to 12.5% (from 10%)
 
 ## [1.2.5] - 2021-01-20
 ### Changed
@@ -1272,7 +1318,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.3.0...HEAD
+[1.3.0]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...1.3.0
 [1.2.5]: https://github.com/OpenDominion/OpenDominion/compare/1.2.4...1.2.5
 [1.2.4]: https://github.com/OpenDominion/OpenDominion/compare/1.2.3...1.2.4
 [1.2.3]: https://github.com/OpenDominion/OpenDominion/compare/1.2.2...1.2.3

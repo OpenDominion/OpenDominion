@@ -226,7 +226,7 @@ class ConstructionCalculator
 
         // Values (percentages)
         $factoryReduction = 4;
-        $factoryReductionMax = 75;
+        $factoryReductionMax = 60;
 
         // Factories
         $multiplier -= min(
