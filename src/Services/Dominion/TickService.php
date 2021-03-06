@@ -517,7 +517,7 @@ class TickService
                 ->delete();
 
             $dominion->last_tick_at = $this->now;
-            $dominion->save();
+            $dominion->save(['protection' => true]);
 
             foreach ($dominion->notifications->where('created_at', '>', $revertTo) as $notification) {
                 // Erase notifications

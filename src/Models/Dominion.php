@@ -287,7 +287,7 @@ class Dominion extends AbstractModel
         }
 
         // Verify tick hasn't happened during this request
-        if ($this->exists && $this->last_tick_at != $this->fresh()->last_tick_at) {
+        if ($this->exists && !isset($options['protection']) && $this->last_tick_at != $this->fresh()->last_tick_at) {
             throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
         }
 
