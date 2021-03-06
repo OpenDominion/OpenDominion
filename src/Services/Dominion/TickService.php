@@ -516,6 +516,7 @@ class TickService
                 ->whereIn('resource', ['military_unit1', 'military_unit2'])
                 ->delete();
 
+            $dominion->last_tick_at = $this->now;
             $dominion->save();
 
             foreach ($dominion->notifications->where('created_at', '>', $revertTo) as $notification) {
