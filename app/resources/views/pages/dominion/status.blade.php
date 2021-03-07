@@ -18,18 +18,16 @@
 
     <div class="col-sm-12 col-md-3">
         @if ($protectionService->isUnderProtection($selectedDominion))
-            @if ($selectedDominion->protection_ticks_remaining == 72)
-                <div class="box box-success">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-forward"></i> Quick Start</h3>
-                    </div>
-                    <div class="box-body">
-                        <p>New to the game or just want to get straight to the action?</p>
-                        <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Skip Protection</a></p>
-                        <p><a href="https://wiki.opendominion.net/wiki/My_First_Round" target="_blank">New Player Guide</a></p>
-                    </div>
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-forward"></i> Quick Start</h3>
                 </div>
-            @endif
+                <div class="box-body">
+                    <p>New to the game or just want to get straight to the action?</p>
+                    <p><a href="{{ route('dominion.misc.restart') }}" class="btn btn-success">Skip Protection</a></p>
+                    <p><a href="https://wiki.opendominion.net/wiki/My_First_Round" target="_blank">New Player Guide</a></p>
+                </div>
+            </div>
             <div class="box box-warning">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="ra ra-shield text-aqua"></i> Under Protection</h3>
