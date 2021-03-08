@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Services;
 
-use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
 use OpenDominion\Models\Dominion;
@@ -141,8 +140,6 @@ class RealmFinderService
      */
     public function assignRealms(Round $round)
     {
-        $landCalculator = app(LandCalculator::class);
-
         // Fetch all registered dominions
         $registeredDominions = $round->activeDominions()->get();
 
@@ -158,7 +155,7 @@ class RealmFinderService
         }
 
         // Calculations to be used later
-        $averageRating = $allPlayers->where('rating', '!=', 0)->median('rating');
+        $averageRating = $allPlayers->where('rating', '!=', 0)->avg('rating');
 
         // Separate packed players
         $packs = [];
@@ -213,7 +210,7 @@ class RealmFinderService
 
         // Randomize in chunks
         $packsByRating = array_values(collect($packsMerged)->sortByDesc('rating')->toArray());
-        $packsChunked = array_chunk($packsByRating, 4);
+        $packsChunked = array_chunk($packsByRating, 3);
         $packsByRating = array();
         foreach ($packsChunked as $chunk) {
             shuffle($chunk);
@@ -321,7 +318,7 @@ class RealmFinderService
                 $dominion = Dominion::find($player['dominion_id']);
                 $dominion->realm_id = $realm->id;
                 $dominion->save();
-                if ($dominion->pack_id !== null && $pack->realm_id !== $realm->id) {
+                if ($dominion->pack_id !== null && $dominion->pack->realm_id !== $realm->id) {
                     $dominion->pack->realm_id = $realm->id;
                     $dominion->pack->save();
                 }
