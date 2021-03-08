@@ -91,7 +91,7 @@ class TrainingCalculator
                     }
 
                     if ($mana > 0) {
-                        $cost['mana'] = $mana;
+                        $cost['mana'] = (int)ceil($mana * $this->getSpecialistEliteCostMultiplier($dominion));
                     }
 
                     if ($lumber > 0) {
