@@ -68,6 +68,7 @@ class CasualtiesCalculator
 
                 // This is to help the smaller OD player base (compared to DC) by not excluding HuNo as potential
                 // invasion targets
+                $multiplier = 0;
             }
 
             if ($multiplier == 0) {
@@ -189,6 +190,7 @@ class CasualtiesCalculator
                 // other units later, we need to add checks in here so Crusade only works vs SPUD. And possibly
                 // additional race-based checks in here for any new units. So always assume we're running SPUD at the
                 // moment
+                $multiplier = 0;
 
                 $attackerHasCrusadeActive = ($this->spellCalculator->isSpellActive($attacker, 'crusade'));
                 if ($attackerHasCrusadeActive) {
