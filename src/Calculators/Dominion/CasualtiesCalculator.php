@@ -123,6 +123,8 @@ class CasualtiesCalculator
             // Wonders
             $nonUnitBonusMultiplier -= $target->getWonderPerkMultiplier('enemy_casualties_offense');
 
+            $multiplier *= $nonUnitBonusMultiplier;
+
             // Unit bonuses (multiplicative with non-unit bonuses)
             $unitBonusMultiplier = 0;
 
