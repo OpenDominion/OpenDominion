@@ -220,7 +220,7 @@ class DiscordService
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'permissions' => "0"
+                'permissions' => "67108864" // CHANGE_NICKNAME
             ]
         ]);
 
