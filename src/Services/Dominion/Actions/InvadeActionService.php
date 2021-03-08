@@ -392,7 +392,7 @@ class InvadeActionService
 
             $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 7);
             $prestigeLossPercentage = min(
-                (static::PRESTIGE_CHANGE_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $recent),
+                (static::PRESTIGE_CHANGE_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
                 (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
             );
             $targetPrestigeChange = (int)round($target->prestige * -($prestigeLossPercentage));
