@@ -96,7 +96,7 @@ class RealmFinderService
         // Select minimum number of smallest realms
         $realmsBySize = $realms->sortBy(function ($realm) {
             return $realm->sizeAllocated();
-        })->take(max($smallestRealmCount, 4));
+        })->take(max($smallestRealmCount, 3));
         if ($user->rating == 0) {
             return $realmsBySize->first();
         }
@@ -114,7 +114,7 @@ class RealmFinderService
         } else {
             $realm = $realmRatings->sortByDesc('rating')->first();
         }
-        return $realms->find($realm->id);
+        return $realms->find($realm['id']);
     }
 
     /**
@@ -223,7 +223,7 @@ class RealmFinderService
         $midpoint = (int)ceil(count($packsByRating)/2);
         foreach (range(0, $midpoint - 1) as $key) {
             $matchKey = count($packsByRating) - 1 - $key;
-            if (!in_array($matchKey, $realms)) {
+            if (!in_array($matchKey, $realms)) { // TODO: $packsByRating[$key] != $packsByRating[$matchKey] ??
                 $players = array();
                 if ($key != $midpoint - 1 || !(count($packsByRating) % 2)) {
                     $players = array_merge($packsByRating[$key]['players'], $packsByRating[$matchKey]['players']);
