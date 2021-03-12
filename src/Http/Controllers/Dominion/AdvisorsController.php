@@ -146,6 +146,7 @@ class AdvisorsController extends AbstractDominionController
         }
 
         return view('pages.dominion.advisors.production', [
+            'militaryCalculator' => app(MilitaryCalculator::class),
             'populationCalculator' => app(PopulationCalculator::class),
             'productionCalculator' => app(ProductionCalculator::class),
             'infoMapper' => app(InfoMapper::class),
