@@ -3,8 +3,19 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Added
+- Production advisor now shows information about infamy and schools penalty from recent invasions
+
 ### Changed
 - Dark Elf: wizard power racial removed (was +10%)
+- NPD defense adjusted
+
+### Fixed
+- Various 500 errors, issues with casualties modifiers, schools penalty
+- Can now change nickname in Realm Discord
+- Remove race restrictions in Realm 0
+- Allow Undo at hour 73
+- Smithies now reduce mana costs for Nox
 
 ## [1.3.0] - 2021-03-04
 ### Added
