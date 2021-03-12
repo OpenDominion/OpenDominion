@@ -768,11 +768,9 @@ class ProductionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
 
         // Recently invaded penalty
-        /*
         $militaryCalculator = app(MilitaryCalculator::class);
         $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($dominion);
-        $multiplier *= (1 - max(0.2, 0.1 * $recentlyInvadedCount));
-        */
+        $multiplier *= (1 - min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2));
 
         return $multiplier;
     }
