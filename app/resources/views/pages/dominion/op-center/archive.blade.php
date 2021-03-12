@@ -57,7 +57,7 @@
                         @include('partials.dominion.info.status', ['data' => $statusOpData, 'race' => $dominion->race, 'range' => $range, 'rangeClass' => $rangeClass])
 
                         @if (isset($infoOp->data['clear_sight_accuracy']) && $infoOp->data['clear_sight_accuracy'] != 1)
-                            <p class="text-center text-danger" style="margin-bottom: 0.5em;">
+                            <p class="text-center text-red" style="margin-bottom: 0.5em;">
                                 Illusory magic deceives your wizards! Military information is only {{ $infoOp->data['clear_sight_accuracy'] * 100 }}% accurate.
                             </p>
                         @endif
@@ -80,7 +80,7 @@
                                 @elseif ($infoOp->isStale())
                                     <span class="label label-warning">Stale</span>
                                 @endif
-                                <br><
+                                <br>
                                 <span class="label label-default">Day {{ $selectedDominion->round->daysInRound($infoOp->created_at) }}</span>
                                 <span class="label label-default">Hour {{ $selectedDominion->round->hoursInDay($infoOp->created_at) }}</span>
                             @endif
