@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Can now change nickname in Realm Discord
 - Remove race restrictions in Realm 0
 - Allow Undo at hour 73
+- Spells no longer magically disappear with Undo
 - Smithies now reduce mana costs for Nox
 
 ## [1.3.0] - 2021-03-04

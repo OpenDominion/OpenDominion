@@ -858,7 +858,7 @@ class SpellActionService
     protected function handleLosses(Dominion $dominion, Dominion $target, string $type): array
     {
         $wizardsKilledPercentage = $this->opsCalculator->getWizardLosses($dominion, $target, $type);
-        $archmagesKilledPercentage = $this->opsCalculator->geArchmageLosses($dominion, $target, $type);
+        $archmagesKilledPercentage = $this->opsCalculator->getArchmageLosses($dominion, $target, $type);
 
         $unitsKilled = [];
         $wizardsKilled = (int)floor($dominion->military_wizards * $wizardsKilledPercentage);
