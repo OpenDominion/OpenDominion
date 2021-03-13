@@ -251,7 +251,7 @@
                     </div>
                 </div>
                 @php
-                    $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($target);
+                    $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($target, 24 * 3);
                     $schoolPenalty = min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2) * 100;
                 @endphp
                 @if ($schoolPenalty > 0 || $target->infamy > 0)
