@@ -390,7 +390,7 @@ class TickService
 
                     if (isset($dominion->{$key})) {
                         $type = gettype($value);
-                        if ($type == 'bool') {
+                        if ($type == 'boolean') {
                             $dominion->{$key} = !$value;
                         } else {
                             $dominion->{$key} -= $value;
@@ -467,18 +467,11 @@ class TickService
                 $action->delete();
             }
 
-            // Update spells - two step since MySQL does not support deferred constraints
+            // Update spells
             DB::table('active_spells')
                 ->where('dominion_id', $dominion->id)
                 ->update([
-                    'duration' => DB::raw('`duration` + 13'),
-                    'updated_at' => $this->now,
-                ]);
-
-            DB::table('active_spells')
-                ->where('dominion_id', $dominion->id)
-                ->update([
-                    'duration' => DB::raw('`duration` - 12'),
+                    'duration' => DB::raw('`duration` + 1'),
                     'updated_at' => $this->now,
                 ]);
 

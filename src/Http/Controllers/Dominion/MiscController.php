@@ -240,15 +240,15 @@ class MiscController extends AbstractDominionController
 
         $dominion->protection_ticks_remaining -= 1;
         if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
-            if (!$dominion->daily_land || !$dominion->daily_platinum) {
-                // Record any missed bonuses
+            if ($dominion->daily_land || $dominion->daily_platinum) {
+                // Record reset bonuses
                 $historyService = app(HistoryService::class);
                 $bonusDelta = [];
-                if (!$dominion->daily_land) {
-                    $bonusDelta['daily_land'] = true;
+                if ($dominion->daily_land) {
+                    $bonusDelta['daily_land'] = false;
                 }
-                if (!$dominion->daily_platinum) {
-                    $bonusDelta['daily_platinum'] = true;
+                if ($dominion->daily_platinum) {
+                    $bonusDelta['daily_platinum'] = false;
                 }
                 $historyService->record($dominion, $bonusDelta, HistoryService::EVENT_ACTION_DAILY_BONUS);
             }
@@ -284,10 +284,6 @@ class MiscController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
-            $dominion->daily_platinum = true;
-            $dominion->daily_land = true;
-        }
         $dominion->protection_ticks_remaining += 1;
         if (!$tickService->revertTick($dominion)) {
             $request->session()->flash('alert-danger', 'There are no actions to undo.');
