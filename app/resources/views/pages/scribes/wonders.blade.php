@@ -29,11 +29,13 @@
                     <table class="table table-striped" style="margin-bottom: 0">
                         <colgroup>
                             <col width="200">
+                            <col width="200">
                             <col>
                         </colgroup>
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Starting Power</th>
                                 <th>Description</th>
                             </tr>
                         </thead>
@@ -42,6 +44,7 @@
                             @foreach($wonders as $wonder)
                                 <tr>
                                     <td>{{ $wonder->name }}</td>
+                                    <td>{{ number_format($wonder->power) }}</td>
                                     <td>{{ $wonderHelper->getWonderDescription($wonder) }}</td>
                                 </tr>
                             @endforeach
