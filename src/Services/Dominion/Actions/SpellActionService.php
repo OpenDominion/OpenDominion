@@ -479,7 +479,7 @@ class SpellActionService
         }
 
         $spellReflected = false;
-        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.3)) {
+        if ($this->spellCalculator->isSpellActive($target, 'energy_mirror') && random_chance(0.2)) {
             $spellReflected = true;
             $reflectedBy = $target;
             $target = $dominion;
@@ -576,67 +576,65 @@ class SpellActionService
             $damageDealt = [];
             $totalDamage = 0;
             $baseDamage = (isset($spellInfo['percentage']) ? $spellInfo['percentage'] : 1) / 100;
-            $baseDamageReductionMultiplier = 1;
-
-            // Resilience
-            $baseDamageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->wizard_resilience));
+            $baseDamageReductionMultiplier = 0;
 
             // Towers
-            $baseDamageReductionMultiplier *= (1 - $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers'));
+            $baseDamageReductionMultiplier += $this->improvementCalculator->getImprovementMultiplierBonus($target, 'towers');
 
             // Techs
-            $baseDamageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage"));
+            $baseDamageReductionMultiplier += $target->getTechPerkMultiplier("enemy_{$spellInfo['key']}_damage");
 
             // Wonders
-            $baseDamageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier('enemy_spell_damage'));
+            $baseDamageReductionMultiplier += $target->getWonderPerkMultiplier('enemy_spell_damage');
+
+            // Resilience
+            $resilienceDamageReductionMultiplier = $this->opsCalculator->getResilienceBonus($target->wizard_resilience);
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
-                    $damage = $target->{$attr} * $baseDamage;
                     $damageReductionMultiplier = $baseDamageReductionMultiplier;
 
                     // Fireball damage reduction from Forest Havens
                     if ($attr == 'peasants') {
                         $forestHavenFireballReduction = 10;
                         $forestHavenFireballReductionMax = 80;
-                        $damageMultiplier = (1 - min(
+                        $damageMultiplier = min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenFireballReduction),
                             ($forestHavenFireballReductionMax / 100)
-                        ));
-                        $damageReductionMultiplier *= $damageMultiplier;
+                        );
+                        $damageReductionMultiplier += $damageMultiplier;
                     }
 
                     // Disband Spies damage reduction from Forest Havens
                     if ($attr == 'military_spies') {
                         $forestHavenSpyCasualtyReduction = 3;
                         $forestHavenSpyCasualtyReductionMax = 30;
-                        $damageMultiplier = (1 - min(
+                        $damageMultiplier = min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
                             ($forestHavenSpyCasualtyReductionMax / 100)
-                        ));
-                        $damageReductionMultiplier *= $damageMultiplier;
+                        );
+                        $damageReductionMultiplier += $damageMultiplier;
                     }
 
                     // Damage reduction from Masonries
                     if (strpos($attr, 'improvement_') === 0) {
                         $masonryLightningBoltReduction = 1;
                         $masonryLightningBoltReductionMax = 25;
-                        $damageMultiplier = (1 - min(
+                        $damageMultiplier = min(
                             (($target->building_masonry / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
                             ($masonryLightningBoltReductionMax / 100)
-                        ));
-                        $damageReductionMultiplier *= $damageMultiplier;
+                        );
+                        $damageReductionMultiplier += $damageMultiplier;
                     }
 
-                    if ($damageReductionMultiplier == 0) {
-                        // Damage immunity
-                        $damage = 0;
-                    } else {
-                        // Cap damage reduction at 80%
-                        $damage *= max(0.2, $damageReductionMultiplier);
-                        $damage = round($damage);
-                        $target->{$attr} -= $damage;
-                    }
+                    // Cap damage reduction at 80%, then apply resilience
+                    $damage = round(
+                        $target->{$attr} *
+                        $baseDamage *
+                        (1 - min(0.8, $damageReductionMultiplier)) *
+                        (1 - $resilienceDamageReductionMultiplier)
+                    );
+                    $target->{$attr} -= $damage;
 
                     $totalDamage += $damage;
                     $damageDealt[] = sprintf('%s %s', number_format($damage), dominion_attr_display($attr, $damage));

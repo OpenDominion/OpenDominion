@@ -590,24 +590,25 @@ class EspionageActionService
         $damageDealt = [];
         $totalDamage = 0;
         $baseDamage = (isset($operationInfo['percentage']) ? $operationInfo['percentage'] : 1) / 100;
-        $damageReductionMultiplier = 1;
-
-        // Resilience
-        $damageReductionMultiplier *= (1 - $this->opsCalculator->getResilienceBonus($dominion->spy_resilience));
+        $baseDamageReductionMultiplier = 0;
 
         // Techs
-        $damageReductionMultiplier *= (1 + $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage"));
+        $baseDamageReductionMultiplier += $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage");
 
         // Wonders
-        $damageReductionMultiplier *= (1 + $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage"));
-
-        if ($damageReductionMultiplier == 0) {
-            // Damage immunity
+        $wonderDamagePerk = $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage");
+        if ($wonderDamagePerk == -1) {
+            // Special case for damage immunity
             $baseDamage = 0;
         } else {
-            // Cap damage reduction at 80%
-            $baseDamage *= max(0.2, $damageReductionMultiplier);
+            $baseDamageReductionMultiplier += $wonderDamagePerk;
         }
+
+        // Resilience
+        $resilienceDamageReductionMultiplier = $this->opsCalculator->getResilienceBonus($target->spy_resilience);
+
+        // Cap damage reduction at 80%, then apply resilience
+        $baseDamage *= (1 - min(0.8, $baseDamageReductionMultiplier)) * (1 - $resilienceDamageReductionMultiplier);
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
