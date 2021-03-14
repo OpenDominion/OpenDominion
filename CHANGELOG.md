@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Changed
 - Dark Elf: wizard power racial removed (was +10%)
+- Black ops protection bonuses are now additive with resilience multiplied after
 - NPD defense adjusted
+- Numerous improvments to NPD behavior
 
 ### Fixed
 - Various 500 errors, issues with casualties modifiers, schools penalty

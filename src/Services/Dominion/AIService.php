@@ -143,12 +143,6 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
-        // Set max draft rate for active NPDs
-        if ($dominion->draft_rate < 90) {
-            $dominion->draft_rate = 90;
-            $dominion->save();
-        }
-
         $instructionSet = $this->aiHelper->getRaceInstructions();
 
         if (!isset($instructionSet[$dominion->race->name])) {
@@ -157,22 +151,51 @@ class AIService
             $config = $instructionSet[$dominion->race->name];
         }
 
+        // Set max draft rate for active NPDs
+        if ($dominion->draft_rate < 90) {
+            $dominion->draft_rate = 90;
+            $dominion->save();
+        }
+
         // Check activity level
         if (random_chance($config['active_chance'])) {
             return;
         }
 
         $totalLand = $this->landCalculator->getTotalLandIncoming($dominion);
+        $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
 
         // Spells
+        $this->castSpells($dominion, $config);
+
+        // Construction
+        $this->constructBuildings($dominion, $config, $totalLand);
+
+        // Military
+        $this->trainMilitary($dominion, $config, $totalLand + $incomingLand);
+
+        // Explore
+        if ($incomingLand < 72) {
+            $this->exploreLand($dominion, $config, $totalLand);
+        }
+
+        // Improvements
+        $this->investCastle($dominion, $config);
+
+        // Release
+        $this->releaseDraftees($dominion, $config);
+    }
+
+    public function castSpells(Dominion $dominion, array $config) {
         foreach ($config['spells'] as $spell) {
             $spellDuration = $this->spellCalculator->getSpellDuration($dominion, $spell);
             if ($spellDuration == null || $spellDuration < 4) {
                 $this->spellActionService->castSpell($dominion, $spell);
             }
         }
+    }
 
-        // Construction
+    public function constructBuildings(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $buildingsToConstruct = [];
         $maxAfford = $this->constructionCalculator->getMaxAfford($dominion);
@@ -213,47 +236,12 @@ class AIService
         if (!empty($buildingsToConstruct)) {
             $this->constructActionService->construct($dominion, $buildingsToConstruct);
         }
+    }
 
-        // Military
-        // TODO: check neighboring dominions?
-        $defense = $this->militaryCalculator->getDefensivePower($dominion);
-        $trainingQueue = $this->queueService->getTrainingQueueByPrefix($dominion, 'military_unit');
-        $incomingTroops = $trainingQueue->mapWithKeys(function($queue) {
-            return [str_replace('military_unit', '', $queue->resource) => $queue->amount];
-        })->toArray();
-        $incomingDefense = $this->militaryCalculator->getDefensivePower($dominion, null, null, $incomingTroops, 0, true, true);
-        foreach ($config['military'] as $command) {
-            $maxAfford = 0;
-            if ($command == 'spies') {
-                // Train spies
-                $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
-                if ($spyRatio < $command['amount']) {
-                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
-                    $maxAfford = min(100, $maxAfford);
-                }
-            } elseif ($command == 'wizards') {
-                // Train wizards
-                $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
-                if ($wizardRatio < $command['amount']) {
-                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
-                    $maxAfford = min(100, $maxAfford);
-                }
-            } else {
-                // Train military
-                $defenseRequired = $totalLand * $this->getRequiredDefense($dominion);
-                if (($defense + $incomingDefense) < $defenseRequired) {
-                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
-                }
-            }
-            if ($maxAfford > 0) {
-                $this->trainActionService->train($dominion, ['military_'.$command['unit'] => $maxAfford]);
-            }
-        }
-
-        // Explore
+    public function exploreLand(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $landToExplore = [];
-        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 21);
+        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 18);
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (
@@ -288,15 +276,53 @@ class AIService
         if (!empty($landToExplore)) {
             $this->exploreActionService->explore($dominion, $landToExplore);
         }
+    }
 
-        // Improvements
+    public function trainMilitary(Dominion $dominion, array $config, int $totalLand) {
+        // TODO: check neighboring dominions?
+        $defense = $this->militaryCalculator->getDefensivePower($dominion);
+        $trainingQueue = $this->queueService->getTrainingQueueByPrefix($dominion, 'military_unit');
+        $incomingTroops = $trainingQueue->mapWithKeys(function($queue) {
+            return [str_replace('military_unit', '', $queue->resource) => $queue->amount];
+        })->toArray();
+        $incomingDefense = $this->militaryCalculator->getDefensivePower($dominion, null, null, $incomingTroops, 0, true, true);
+        foreach ($config['military'] as $command) {
+            $maxAfford = 0;
+            if ($command['unit'] == 'spies') {
+                // Train spies
+                $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
+                if ($spyRatio < $command['amount']) {
+                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                    $maxAfford = min(5, $maxAfford);
+                }
+            } elseif ($command['unit'] == 'wizards') {
+                // Train wizards
+                $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
+                if ($wizardRatio < $command['amount']) {
+                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                    $maxAfford = min(5, $maxAfford);
+                }
+            } else {
+                // Train military
+                $defenseRequired = $totalLand * $this->getRequiredDefense($dominion);
+                if (($defense + $incomingDefense) < $defenseRequired) {
+                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                }
+            }
+            if ($maxAfford > 0) {
+                $this->trainActionService->train($dominion, ['military_'.$command['unit'] => $maxAfford]);
+            }
+        }
+    }
+
+    public function investCastle(Dominion $dominion, array $config) {
         if ($dominion->{'resource_'.$config['invest']} > 0) {
             $sciencePercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
             $keepPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
             $wallsPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
-            if ($keepPercentage < 0.20) {
+            if ($keepPercentage < 0.15) {
                 $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
-            } elseif ($sciencePercentage < 0.10) {
+            } elseif ($sciencePercentage < 0.08) {
                 $this->improveActionService->improve($dominion, $config['invest'], ['science' => $dominion->{'resource_'.$config['invest']}]);
             } elseif ($wallsPercentage < 0.10) {
                 $this->improveActionService->improve($dominion, $config['invest'], ['walls' => $dominion->{'resource_'.$config['invest']}]);
@@ -304,8 +330,9 @@ class AIService
                 $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
             }
         }
+    }
 
-        // Release
+    public function releaseDraftees(Dominion $dominion, array $config) {
         if ($dominion->military_draftees > 0) {
             $this->releaseActionService->release($dominion, ['draftees' => $dominion->military_draftees]);
         }

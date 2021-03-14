@@ -458,20 +458,18 @@ class DominionFactory
         $this->guardAgainstMismatchedAlignments($race, $realm, $realm->round);
 
         // Calculate size/defense
-        $accuracy = 1 + (mt_rand(-10, 10) / 100);
-        if (random_chance(0.70)) {
-            if (random_chance(0.70)) {
-                // ~50% 451-500 acres
-                $landSize = mt_rand(451, 525);
+        if (random_chance(0.50)) {
+            // 50% 451-500 acres
+            $landSize = mt_rand(451, 525);
+        } else {
+            if (random_chance(0.60)) {
+                // 30% 525-600 acres
+                $landSize = mt_rand(525, 600);
             } else {
-                // ~20% 400-450 acres
+                // 20% 400-450 acres
                 $landSize = mt_rand(400, 450);
             }
-        } else {
-            // 30% 525-600 acres
-            $landSize = mt_rand(525, 600);
         }
-        $defense = 120 * exp(0.0058 * $landSize) * $accuracy;
 
         // Generate random starting build
         $startingAttributes = $this->getStartingAttributes();
@@ -550,6 +548,7 @@ class DominionFactory
             'building_barracks' => 0,
             'building_dock' => 0,
 
+            'royal_guard_active_at' => $realm->round->start_date->addDays(6),
             'protection_ticks_remaining' => 0,
         ]);
 
@@ -564,6 +563,8 @@ class DominionFactory
         $specPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[1], 'defense');
         $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
 
+        $accuracy = 1 + (mt_rand(-5, 5) / 100);
+        $defense = 120 * exp(0.0058 * $landSize) * $accuracy;
         $defense -= ($dominion->military_draftees * $defenseMod);
         $dominion->military_unit2 = (int) $defense / $defenseMod / $specPower * $specRatio;
         $dominion->military_unit3 = (int) $defense / $defenseMod / $elitePower * (1 - $specRatio);
@@ -643,7 +644,7 @@ class DominionFactory
             'building_school' => 0,
             'building_lumberyard' => 20,
             'building_forest_haven' => 0,
-            'building_factory' => 56 * random_chance(0.75),
+            'building_factory' => 42 * random_chance(0.75),
             'building_guard_tower' => 0,
             'building_shrine' => 0,
             'building_barracks' => 0,
@@ -651,26 +652,27 @@ class DominionFactory
         ];
 
         $landAvailable = $landSize - array_sum($startingBuildings);
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Spirit', 'Sylvan', 'Undead'];
+        $landBasedRaces = ['Gnome', 'Icekin', 'Nox', 'Sylvan', 'Wood Elf'];
 
         // Ore Mines
-        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Spirit', 'Sylvan', 'Undead'];
         if (!in_array($race->name, $racesWithoutOre)) {
             $startingBuildings['building_ore_mine'] += 20;
             $landAvailable -= $startingBuildings['building_ore_mine'];
         }
 
-        // Temples for larger doms
+        // Temples
         if ($landAvailable > 100) {
             $startingBuildings['building_temple'] += min(mt_rand(15, max(30, 0.05 * $landSize)), $landAvailable);
             $landAvailable -= $startingBuildings['building_temple'];
         }
 
         // Alchemies
-        $startingBuildings['building_alchemy'] += min(mt_rand(0.33 * $landSize, 220), $landAvailable);
+        $startingBuildings['building_alchemy'] += min(mt_rand(0.33 * $landSize, 200), $landAvailable);
         $landAvailable -= ($startingBuildings['building_alchemy'] - 30);
 
-        // Up to max Smithies
-        if ($landAvailable > 50) {
+        // Smithies
+        if (!in_array($race->name, $landBasedRaces) && $landAvailable > 50) {
             $maxSmithies = (int) round(0.18 * $landSize);
             if ($maxSmithies < $landAvailable) {
                 $startingBuildings['building_smithy'] += $maxSmithies;
@@ -681,7 +683,7 @@ class DominionFactory
         }
 
         // Guard Towers
-        if ($landAvailable > 50) {
+        if (!in_array($race->name, $landBasedRaces) && $landAvailable > 100) {
             $startingBuildings['building_guard_tower'] += min(mt_rand(25, 0.20 * $landSize), $landAvailable);
             $landAvailable -= $startingBuildings['building_guard_tower'];
         }

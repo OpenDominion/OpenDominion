@@ -105,7 +105,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 500
+                        'amount' => 150
                     ],
                     [
                         'land_type' => 'cavern',
@@ -164,7 +164,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 600
+                        'amount' => 150
                     ],
                     [
                         'land_type' => 'hill',
@@ -223,7 +223,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 500
+                        'amount' => 150
                     ],
                     [
                         'land_type' => 'hill',
@@ -239,65 +239,6 @@ class AIHelper
                 'military' => [
                     [
                         'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Human' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.06
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 500
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'factory',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
                         'amount' => -1
                     ],
                     [
@@ -390,7 +331,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 500
+                        'amount' => 150
                     ],
                     [
                         'land_type' => 'water',
@@ -449,7 +390,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 500
+                        'amount' => 150
                     ],
                     [
                         'land_type' => 'forest',
@@ -503,7 +444,12 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 500
+                        'amount' => 150
+                    ],
+                    [
+                        'land_type' => 'cavern',
+                        'building' => 'diamond_mine',
+                        'amount' => 0.20
                     ],
                     [
                         'land_type' => 'water',
@@ -562,7 +508,7 @@ class AIHelper
                     [
                         'land_type' => 'cavern',
                         'building' => 'diamond_mine',
-                        'amount' => 600
+                        'amount' => 150
                     ],
                     [
                         'land_type' => 'plain',
@@ -572,104 +518,6 @@ class AIHelper
                     [
                         'land_type' => 'hill',
                         'building' => 'shrine',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Sylvan' => [
-                'active_chance' => '0.33',
-                'invest' => 'lumber',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.065
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Troll' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.06
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'smithy',
                         'amount' => -1
                     ]
                 ],
