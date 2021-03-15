@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Black ops protection bonuses are now additive with resilience multiplied after
 - NPD defense adjusted
 - Numerous improvements to NPD behavior
-- Search page 'My Range' in 'Limit' dropdown now excludes your realm
+- On the search page, 'My Range' in 'Limit' dropdown now excludes your realm
 
 ### Fixed
 - Various 500 errors, issues with casualties modifiers, schools penalty

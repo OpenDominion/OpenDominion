@@ -31,6 +31,7 @@ class HistoryService
     public const EVENT_ACTION_JOIN_ELITE_GUARD = 'join elite guard';
     public const EVENT_ACTION_LEAVE_ROYAL_GUARD = 'leave royal guard';
     public const EVENT_ACTION_LEAVE_ELITE_GUARD = 'leave elite guard';
+    public const EVENT_ACTION_PROTECTION_ADVANCE_TICK = 'advance tick';
     public const EVENT_ACTION_RESTART = 'restart';
     public const EVENT_ACTION_WONDER_ATTACKED = 'wonder attacked';
     public const EVENT_ACTION_WONDER_DESTROYED = 'wonder destroyed';
@@ -174,7 +175,6 @@ class HistoryService
                 'last_tick_at',
                 'locked_at',
                 'monarchy_vote_for_dominion_id',
-                'protection_ticks_remaining',
                 'created_at',
                 'updated_at',
                 'settings'
