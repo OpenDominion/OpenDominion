@@ -7,10 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Production advisor now shows information about infamy and schools penalty from recent invasions
 
 ### Changed
-- Dark Elf: wizard power racial removed (was +10%)
 - Black ops protection bonuses are now additive with resilience multiplied after
 - NPD defense adjusted
-- Numerous improvments to NPD behavior
+- Numerous improvements to NPD behavior
+- Search page 'My Range' in 'Limit' dropdown now excludes your realm
 
 ### Fixed
 - Various 500 errors, issues with casualties modifiers, schools penalty
@@ -60,6 +60,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dark Elf: Adept changed to .25 wizard on defense (from .333) but is effectively .3 with WG bonus
 - Dark Elf: Adept +100p (from 1000p)
 - Dark Elf: Spirit Warrior loses bonus +0.5 OP vs 95%
+- Dark Elf: wizard power racial removed (was +10%)
 - Halfling: Spy power bonus reduced to +25% (from +30%)
 - Nox Fiend: -25o, +12 mana
 - Nox Nightshade: -60o, +25 mana

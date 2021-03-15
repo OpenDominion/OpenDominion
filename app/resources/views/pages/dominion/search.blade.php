@@ -127,7 +127,7 @@
                                                     {{ number_format($networthCalculator->getDominionNetworth($dominion)) }}
                                                 </td>
                                                 <td class="hidden">
-                                                    @if ($rangeCalculator->isInRange($selectedDominion, $dominion))
+                                                    @if ($rangeCalculator->isInRange($selectedDominion, $dominion) && $selectedDominion->realm_id != $dominion->realm_id)
                                                         true
                                                     @else
                                                         false
