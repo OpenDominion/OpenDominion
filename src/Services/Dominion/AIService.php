@@ -112,7 +112,7 @@ class AIService
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
-            if ($round->daysInRound() >= 4) {
+            if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 3)) {
                 $dominions = $round->activeDominions()
                     ->where('user_id', null)
                     ->with([
