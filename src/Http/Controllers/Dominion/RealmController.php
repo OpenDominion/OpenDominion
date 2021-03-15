@@ -30,7 +30,7 @@ class RealmController extends AbstractDominionController
         $dominion = $this->getSelectedDominion();
         $round = $dominion->round;
 
-        if ($round->realmAssignmentDate()->addSeconds(30) > now()) {
+        if ($round->realmAssignmentDate()->addMinutes(5) > now()) {
             $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
             return redirect()->back();
         }

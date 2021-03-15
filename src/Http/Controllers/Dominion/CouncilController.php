@@ -26,7 +26,7 @@ class CouncilController extends AbstractDominionController
             return redirect()->back()->withErrors(['Locked dominions are not allowed access to the council.']);
         }
 
-        if ($dominion->round->realmAssignmentDate()->addSeconds(30) > now()) {
+        if ($dominion->round->realmAssignmentDate()->addMinutes(5) > now()) {
             $request->session()->flash('alert-warning', 'You cannot access this page until realm assignment is finished.');
             return redirect()->back();
         }
