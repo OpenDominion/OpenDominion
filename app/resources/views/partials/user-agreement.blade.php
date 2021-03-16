@@ -119,7 +119,7 @@
         </thead>
         <tbody>
             <tr class="active">
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Farming: possible violations of 2a, 3b, 3c, and 3d
                 </td>
                 <td>
@@ -148,7 +148,7 @@
                 </td>
             </tr>
             <tr>
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Account Sharing: violations of 2a and 2d
                 </td>
                 <td>
@@ -177,7 +177,7 @@
                 </td>
             </tr>
             <tr class="active">
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Creating Multiple Same-Round Accounts: violations of 2a, 2d, possibly 3c and 3e
                 </td>
                 <td>
@@ -206,7 +206,7 @@
                 </td>
             </tr>
             <tr>
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Information Sharing: possible violations of 3b, 3c, and 3e
                 </td>
                 <td>
@@ -235,7 +235,7 @@
                 </td>
             </tr>
             <tr class="active">
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Multiple Dominions Playing from Same IP: possible violations of 2a, 2d, and 2f
                 </td>
                 <td>
@@ -264,7 +264,7 @@
                 </td>
             </tr>
             <tr>
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Alliances, NAPs, and Inter-Realm Teamwork: possible violations of 3a, 3b, 3c, 3d, and 3e
                 </td>
                 <td>
@@ -293,7 +293,7 @@
                 </td>
             </tr>
             <tr class="active">
-                <td rowspan="3" style="vertical-align: midivle;">
+                <td rowspan="3" style="vertical-align: middle;">
                     Avoiding Matchmaking System with Multiple Lifetime Accounts: violation of 2a
                 </td>
                 <td>
