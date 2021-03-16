@@ -33,7 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Undo button in protection
 - Every realm now has a pre-made Discord server
 - Non Player Dominions (bots) will now be assigned to realm 0
-- Some bots will now to train/explore/etc
+- Some bots will now begin to train/explore/etc
 - Additional resources displayed in header overview
 - Realm page shows usernames of players who share advisors
 - Added spending statistics to production advisor
