@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.3.1] - 2021-03-16
 ### Added
 - Production advisor now shows information about infamy and schools penalty from recent invasions
 
@@ -1338,7 +1340,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.3.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.3.1...HEAD
+[1.3.1]: https://github.com/OpenDominion/OpenDominion/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...1.3.0
 [1.2.5]: https://github.com/OpenDominion/OpenDominion/compare/1.2.4...1.2.5
 [1.2.4]: https://github.com/OpenDominion/OpenDominion/compare/1.2.3...1.2.4
