@@ -13,16 +13,26 @@ class WonderService
 {
     public const MAX_WONDERS_PER_REALM = 0.4;
 
-    public const STARTING_WONDERS = ['high_clerics_tower', 'onyx_mausoleum'];
-
     /**
      * Get the starting wonders to spawn in the first wave.
      *
      * @return Collection
      */
-    public function getStartingWonders()
+    public function getStartingWonders(Round $round)
     {
-        return Wonder::active()->whereIn('key', static::STARTING_WONDERS)->get();
+        $tier1 = Wonder::active()->where('power', 250000)->get();
+        $tier2 = Wonder::active()->where('power', 150000)->get();
+
+        $wonderOptions = $tier1->random(3)->keyBy('key');
+        if ($wonderOptions->has('halls_of_knowledge')) {
+            $wonderOptions->forget('ancient_library');
+        }
+        if ($wonderOptions->has('ancient_library')) {
+            $wonderOptions->forget('halls_of_knowledge');
+        }
+
+        // Spawn two Tier 1 and one Tier 2
+        return $wonderOptions->random(2)->merge($tier2->random(1));
     }
 
     /**
@@ -36,11 +46,16 @@ class WonderService
         $wonders = Wonder::active()->get()->keyBy('key');
         $existingWonders = RoundWonder::with('wonder')->where('round_id', $round->id)->get()->keyBy('wonder.key');
 
+        // Limit to three Tier 1
+        if ($existingWonders->where('wonder.power', 250000)->count() >= 3) {
+            $wonders = $wonders->where('power', 150000);
+        }
+
         if ($existingWonders->count() >= $round->realms()->count() * self::MAX_WONDERS_PER_REALM) {
             return collect();
         }
 
-        if ($round->daysInRound() > 14) {
+        if ($round->daysInRound() > 12) {
             $wonders->forget('halls_of_knowledge');
         }
 

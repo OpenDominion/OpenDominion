@@ -32,7 +32,7 @@ hanging_gardens:
   name: Hanging Gardens
   perks:
     food_production: 20
-  power: 250000
+  power: 150000
 ancient_library:
   name: Ancient Library
   perks:

@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - NPD defense adjusted
 - Numerous improvements to NPD behavior
 - On the search page, 'My Range' in 'Limit' dropdown now excludes your realm
+- Updated User Agreement
+- Wonders grouped into tiers
 
 ### Fixed
 - Various 500 errors, issues with casualties modifiers, schools penalty
