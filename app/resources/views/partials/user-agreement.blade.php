@@ -1,3 +1,4 @@
+<h4 class="text-center">Rules</h4>
 <ol style="list-style: decimal;">
     <li>
         General
@@ -15,6 +16,7 @@
                 <ol style="list-style: lower-roman;">
                     <li>One person per account: only one person is permitted to make use of an account.</li>
                     <li>One account per person: each person is permitted to have only one account.</li>
+                    <li>Using multiple accounts to circumvent or gain an advantage from the realm assignment system is not allowed, even if those accounts are not used during the same time period(s).</li>
                 </ol>
             </li>
             <li>If your account is suspended or banned, you are not permitted to open a new account or use another account.</li>
@@ -28,6 +30,7 @@
                 </ol>
             </li>
             <li>Account username, ruler name, and dominion names must not be offensive, misleading, or otherwise cause or risk to cause damage to the game.</li>
+            <li>Multiple persons may only play from the same IP address if they create a pack together. Limited exceptions to this rule may be granted by the Rules Committee, but players must notify the Rules Committee prior to play and absolutely no cooperation between those dominions will be allowed.</li>
         </ol>
     </li>
     <li>
@@ -80,3 +83,244 @@
         </ol>
     </li>
 </ol>
+
+<h4 class="text-center">FAQ</h4>
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+        <p>
+            <div class="text-bold">Q. Can I create multiple accounts?</div>
+            <div>A. No. Creating multiple accounts is a violation of rule 2, which will result in your account being suspended.</div>
+            <div class="text-bold">Q. I cannot access my account. What do I do?</div>
+            <div>A. You can reset your password from the login page. If you no longer have access to the email account, you can contact an administrator for assistance*</div>
+            <div class="text-bold">Q. I don't like my account name. Can I create a new one?</div>
+            <div>A. No, if you'd like to change your lifetime account name, you can contact an administrator for assistance*</div>
+            <div class="text-bold">Q. I forgot to create/join a pack. Should I create a new dominion?</div>
+            <div>A. No, if you'd like to change your pack affiliation prior to being assigned a realm, you can contact an administrator for assistance*</div>
+            <div class="text-bold">Q. Can I play from the same location as someone else?</div>
+            <div>A. Yes, but only if you disclose your relationship with another player to the Rules Committee prior to the start of play. If you live in the same household, those dominions must be in the same pack.</div>
+            <div class="text-bold">Q. I think I found a bug. What do I do?</div>
+            <div>A. You can post a message to the #bug-reports channel on Discord. If it involves sensitive information about a specific dominion, contact an administrator*</div>
+            <div class="text-bold">Q. I think someone is cheating. What do I do?</div>
+            <div>A. Contact an administrator*</div>
+        </p>
+        <p class="small">* You can contact an administrator for assistance by: sending a direct message on Discord, using the Report a Problem link in the bottom right corner of the page, or sending an email to info@opendominion.net.</p>
+    </div>
+</div>
+
+<h4 class="text-center">Enforcement</h4>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rule</th>
+                <th>Determinations</th>
+                <th>Punishment</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="active">
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Farming: possible violations of 2a, 3b, 3c, and 3d
+                </td>
+                <td>
+                    Unintentional (ex: lost power and couldn't log in)
+                </td>
+                <td>
+                    Account(s) locked. Generated land may be reduced by up to 20%. Following an investigation, the player will be interviewed and allowed to regain access to the account after a commitment to train some DP.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: released DP after bouncing)
+                </td>
+                <td>
+                    Account(s) locked. Generated land may be reduced by up to 50%. Player is suspended for the duration of the round.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: created additional accounts to invade)
+                </td>
+                <td>
+                    Account(s) locked. Guilty players will be suspended for the duration of the round and may face suspension in the following round.
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Account Sharing: violations of 2a and 2d
+                </td>
+                <td>
+                    Unintentional
+                </td>
+                <td>
+                    N/A
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: two separate people occassionally log in for each other but don't try to benefit)
+                </td>
+                <td>
+                    Account(s) locked. Players will be suspended for no less than two weeks. Players will be able to regain access to their account after a commitment to using only their own account.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: two people consistently share accounts and attempt to benefit from doing so)
+                </td>
+                <td>
+                    Account(s) locked. Players will be suspended for the duration of the round.
+                </td>
+            </tr>
+            <tr class="active">
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Creating Multiple Same-Round Accounts: violations of 2a, 2d, possibly 3c and 3e
+                </td>
+                <td>
+                    Unintentional
+                </td>
+                <td>
+                    N/A
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: for fun; playing two at once without record of abuse)
+                </td>
+                <td>
+                    Accounts locked. Players will be suspended for no less than one week. The player will be able to regain access to their account after a commitment to using only one dominion.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: for gain such as realm hopping or farming)
+                </td>
+                <td>
+                    Accounts locked. Players will be suspended for the duration of the round.
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Information Sharing: possible violations of 3b, 3c, and 3e
+                </td>
+                <td>
+                    Unintentional (ex: accidentally posting a CS in Discord)
+                </td>
+                <td>
+                    Player will be asked to delete the sensitive information or refrain from spreading it again/more. Player may be warned against future violations of this rule depending on the severity.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: discussing sensitive information outside the realm)
+                </td>
+                <td>
+                    Player(s) will be warned and asked to cease violating the rules. Future violations of this rule will result in a suspension of no less than one week.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: sharing sensitive information with intent to gain/harm)
+                </td>
+                <td>
+                    Account locked. Player will be suspended for no less than two weeks. Player will be able to regain access to their account after a commitment to abiding by the information sharing rules.
+                </td>
+            </tr>
+            <tr class="active">
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Multiple Dominions Playing from Same IP: possible violations of 2a, 2d, and 2f
+                </td>
+                <td>
+                    Unintentional (ex: two brothers play from the same house and different devices without disclosing to RC)
+                </td>
+                <td>
+                    Based on evidence of zero malicious behavior, the players will be instructed to disclose their relationship to the RC in the future.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: a husband and wife play from the same house on the same device in different realms without disclosing to RC)
+                </td>
+                <td>
+                    Following an investigation, the players will receive punishment appropriate to the violation. This may include merging two randoms together on a first-time offense without evidence of malicious behavior, up to a round-long suspension of at least one dominion.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: a player tries to pass a multi off for a family member)
+                </td>
+                <td>
+                    Accounts locked. Player will be suspended for the duration of the round. Player may also face suspension in the following round.
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Alliances, NAPs, and Inter-Realm Teamwork: possible violations of 3a, 3b, 3c, 3d, and 3e
+                </td>
+                <td>
+                    Unintentional (ex: a player determines the round winner by suiciding one of two players in a similar position, both in different realms)
+                </td>
+                <td>
+                    N/A
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: two friends in different realms choose to avoid confrontation with one another despite it undisputably being in their best interest for one to invade the other)
+                </td>
+                <td>
+                    Players suspect will be investigated. Those found guilty will be suspended for no less than 7 days.
+                </td>
+            </tr>
+            <tr>
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: players in different realms intentionally coordinate to target another player/realm with black ops/invasions)
+                </td>
+                <td>
+                    All associated accounts locked. Players will be suspended for the duration of the round. Players may be prohibited from packing in the following round.
+                </td>
+            </tr>
+            <tr class="active">
+                <td rowspan="3" style="vertical-align: midivle;">
+                    Avoiding Matchmaking System with Multiple Lifetime Accounts: violation of 2a
+                </td>
+                <td>
+                    Unintentional (ex: already had a second lifetime and used it accidentally, or forgot password)
+                </td>
+                <td>
+                    Player will be asked to notify the development team as soon as possible and the situation will be resolved by them.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Intentional (ex: attempting to favorably game the matchmaking and realm placement system)
+                </td>
+                <td>
+                    Account locked. Player will be suspended for the duration of the round.
+                </td>
+            </tr>
+            <tr class="active">
+                <!-- <td></td> -->
+                <td>
+                    Malicious (ex: conspiring with other players to favorably game the matchmaking and realm placement system as a group)
+                </td>
+                <td>
+                    All associated accounts locked. Players will be suspended for the duration of the round. Players may be prohibited from packing in the following round.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

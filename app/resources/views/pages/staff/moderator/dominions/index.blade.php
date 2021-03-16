@@ -14,7 +14,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             @if ($round->start_date->addHours(72) < now())
                 <table class="table table-hover" id="dominions-table">
                     <colgroup>

@@ -7,7 +7,7 @@
         <div class="box-header">
             <h3 class="box-title">Staff Members</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <table class="table table-hover">
                 <colgroup>
                     <col>

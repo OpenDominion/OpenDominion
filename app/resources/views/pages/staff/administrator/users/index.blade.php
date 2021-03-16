@@ -7,7 +7,7 @@
         <div class="box-header">
             <h3 class="box-title">Users</h3>
         </div>
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <table class="table table-hover" id="users-table">
                 <colgroup>
                     <col width="50">

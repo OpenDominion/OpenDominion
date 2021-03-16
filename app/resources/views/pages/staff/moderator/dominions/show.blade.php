@@ -7,8 +7,8 @@
         <div class="box-header">
             <h3 class="box-title">{{ $dominion->name }} (#{{ $dominion->realm->number }})</h3>
         </div>
-        <div class="box-body">
-            <table class="table">
+        <div class="box-body table-responsive">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th># Logins</th>
