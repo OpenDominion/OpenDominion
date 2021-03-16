@@ -69,7 +69,7 @@ class NotificationService
                 $dominion->notify(new WebNotification($category, $type, $data));
             }
 
-            if ($dominion->protection_ticks_remaining) {
+            if ($dominion->protection_ticks_remaining && $type !== 'realm_assignment') {
                 // Disable email notfications during protection
                 continue;
             }
@@ -91,6 +91,7 @@ class NotificationService
             switch ($category) {
                 case 'general':
                     throw new \LogicException('todo');
+
                 case 'hourly_dominion':
                     $dominion->notify(new HourlyEmailDigestNotification($emailNotifications));
                     break;
@@ -99,9 +100,9 @@ class NotificationService
                     $dominion->notify(new IrregularDominionEmailNotification($emailNotifications));
                     break;
 
-//                case 'irregular_realm':
-//                    $dominion->notify(new IrregularRealmEmailNotification($emailNotifications));
-//                    break;
+                case 'irregular_realm':
+                    $dominion->notify(new IrregularDominionEmailNotification($emailNotifications));
+                    break;
             }
 
         }

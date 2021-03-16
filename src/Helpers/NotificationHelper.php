@@ -317,15 +317,9 @@ class NotificationHelper
                 );
 
             case 'irregular_dominion.realm_assignment':
-                $discordLink = '';
-                if ($data['discordEnabled']) {
-                    $discordLink = sprintf('Join the <a href="%s">realm Discord</a>.', route('discord-join-callback'));
-                }
-
                 return sprintf(
-                    'You have been assigned to Realm #%s. %s',
-                    $data['realmNumber'],
-                    $discordLink
+                    'You have been assigned to Realm #%s.',
+                    $data['realmNumber']
                 );
 
             case 'irregular_dominion.received_invasion':
@@ -553,11 +547,11 @@ class NotificationHelper
                         break;
 
                     case 'vision':
-                        $resultString = 'A magical precence was detected within our schools.';
+                        $resultString = 'A magical presence was detected within our schools.';
                         break;
 
                     case 'revelation':
-                        $resultString = 'A magical precence was detected within our towers.';
+                        $resultString = 'A magical presence was detected within our towers.';
                         break;
 
                     case 'plague':

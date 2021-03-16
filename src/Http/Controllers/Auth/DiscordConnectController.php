@@ -63,6 +63,11 @@ class DiscordConnectController extends AbstractController
         $dominionSelectorService = app(SelectorService::class);
         $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
 
+        if ($selectedDominion == null) {
+            $request->session()->flash('alert-warning', 'You must first select a dominion.');
+            return redirect()->route('dashboard');
+        }
+
         if ($selectedDominion->realm->number == 0) {
             $request->session()->flash('alert-danger', 'Discord is not enabled for this realm.');
             return redirect()->route('dominion.status');

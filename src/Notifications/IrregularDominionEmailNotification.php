@@ -67,6 +67,10 @@ class IrregularDominionEmailNotification extends Notification implements ShouldQ
                 $notification['type'],
                 $notification['data']
             ));
+
+            if (isset($notification['data']['discordEnabled']) && $notification['data']['discordEnabled']) {
+                $mailMessage = $mailMessage->line('Join the realm Discord! ' . route('discord-join-callback'));
+            }
         }
 
         $mailMessage = $mailMessage->line('You are receiving this email because you have turned on email notifications for one or more of the above events.')
