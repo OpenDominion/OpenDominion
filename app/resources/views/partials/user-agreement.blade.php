@@ -80,6 +80,7 @@
                 </ol>
             </li>
             <li>If you have been negatively impacted by other players breaching the rules and this can be substantiated during the investigation, you may receive an adequate and proportionate compensation, at our sole discretion.</li>
+            <li>Purposefully breaking the rules in order to have your account locked will incur penalties in future rounds.</li>
         </ol>
     </li>
 </ol>
@@ -193,7 +194,7 @@
                     Intentional (ex: for fun; playing two at once without record of abuse)
                 </td>
                 <td>
-                    Accounts locked. Players will be suspended for no less than one week. The player will be able to regain access to their account after a commitment to using only one dominion.
+                    Accounts locked. Players will be suspended for no less than one week. The player will be able to regain access to one account after a commitment to using only one dominion.
                 </td>
             </tr>
             <tr class="active">
@@ -280,7 +281,7 @@
                     Intentional (ex: two friends in different realms choose to avoid confrontation with one another despite it undisputably being in their best interest for one to invade the other)
                 </td>
                 <td>
-                    Players suspect will be investigated. Those found guilty will be suspended for no less than 7 days.
+                    Players suspect will be investigated. Those found guilty will be suspended for no less than one week.
                 </td>
             </tr>
             <tr>
