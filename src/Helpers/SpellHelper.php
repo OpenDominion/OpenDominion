@@ -127,7 +127,7 @@ class SpellHelper
                 'name' => 'Energy Mirror',
                 'description' => '20% chance to reflect incoming offensive spells for 12 hours',
                 'key' => 'energy_mirror',
-                'mana_cost' => 4.5,
+                'mana_cost' => 4,
                 'duration' => 12,
             ]
         ]));
