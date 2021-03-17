@@ -153,6 +153,20 @@ class Round extends AbstractModel
     }
 
     /**
+     * Scope a query to include only rounds that are starting during the current hours.
+     * Used by TickService to spawn starting wonders.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeStarting(Builder $query): Builder
+    {
+        return $query
+            ->where('start_date', '<', now())
+            ->where('start_date', '>=', now()->subHours(1));
+    }
+
+    /**
      * Returns the scheduled realm assignment date.
      *
      * @return bool
