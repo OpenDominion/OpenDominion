@@ -43,7 +43,7 @@
                         <p>If you have not completed your protection prior to this time, you will be unable to leave for an additional 24 hours.</p>
                     @endif
                     <p>No production occurs until you have left protection.</p>
-                    <p>Made a mistake? You can <a href="{{ route('dominion.misc.restart') }}">restart your dominion</a> while under protection.</p>
+                    <p>Made a mistake? You can <a href="{{ route('dominion.misc.restart') }}">restart or rename</a> your dominion while under protection.</p>
                     @if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
                         <a href="{{ $discordHelper->getDiscordConnectUrl('join') }}" target="_blank" class="btn btn-primary">
                             <i class="ra ra-speech-bubbles"></i> Join Realm Discord

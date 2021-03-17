@@ -100,16 +100,13 @@ class MiscController extends AbstractDominionController
         ]);
     }
 
-    public function postRestartDominion(RestartActionRequest $request)
+    public function postRenameDominion(Request $request)
     {
         $dominion = $this->getSelectedDominion();
 
-        $dominionFactory = app(DominionFactory::class);
-        $packService = app(PackService::class);
         $protectionService = app(ProtectionService::class);
 
         $this->validate($request, [
-            'race' => 'required|exists:races,id',
             'dominion_name' => [
                 'nullable',
                 'string',
@@ -129,6 +126,39 @@ class MiscController extends AbstractDominionController
                 })->ignore($dominion->id)
             ]
         ]);
+
+        try {
+            if (!$protectionService->isUnderProtection($dominion)) {
+                throw new GameException('You can only rename your dominion during protection.');
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        try {
+            if ($request->get('dominion_name')) {
+                $dominion->name = $request->get('dominion_name');
+            }
+            if ($request->get('ruler_name')) {
+                $dominion->ruler_name = $request->get('ruler_name');
+            }
+            $dominion->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect()->back()->withErrors(['There was a problem renaming your dominion.']);
+        }
+
+        return redirect()->route('dominion.status');
+    }
+
+    public function postRestartDominion(RestartActionRequest $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        $dominionFactory = app(DominionFactory::class);
+        $packService = app(PackService::class);
+        $protectionService = app(ProtectionService::class);
 
         // Additional Race validation
         $race = Race::findOrFail($request->get('race'));
@@ -172,7 +202,7 @@ class MiscController extends AbstractDominionController
         try {
             $dominionFactory->restart($dominion, $race, $request->get('dominion_name'), $request->get('ruler_name'), $start_option, $customize);
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->withErrors(['There was a problem restarting your account.']);
+            return redirect()->back()->withErrors(['There was a problem restarting your dominion.']);
         }
 
         return redirect()->route('dominion.status');
