@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-xs-3">
                     <div class="row">
-                        <div class="col-lg-6"><b>Spy Strength:</b></div>
+                        <div class="col-lg-6"><b>Spy Str<span class="hidden-xs">ength</span>:</b></div>
                         <div class="col-lg-6">{{ number_format(floor($selectedDominion->spy_strength)) }}%</div>
                     </div>
                 </div>
