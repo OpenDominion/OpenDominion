@@ -445,8 +445,9 @@ class TickService
                         // Update spells that were refreshed early
                         DB::table('active_spells')
                             ->where('dominion_id', $dominion->id)
+                            ->where('spell', $spellKey)
                             ->update([
-                                'duration' => $duration,
+                                'duration' => $duration - 1,
                                 'updated_at' => $this->now,
                             ]);
                     }
