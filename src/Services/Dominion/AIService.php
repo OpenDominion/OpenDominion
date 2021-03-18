@@ -134,8 +134,8 @@ class AIService
 
     public function getRequiredDefense(Dominion $dominion)
     {
-        // Defense starts 10% below formula, each invasion increases target DPA by 5%
-        $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 2) / 20);
+        // Defense starts 4% below formula, each invasion increases target DPA by 2%
+        $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 2) / 50);
         $defenseByDay = $this->aiHelper->getDefenseForNonPlayer($dominion->round);
 
         return $defenseByDay * $invasionMultiplier;

@@ -118,7 +118,7 @@ class TickService
             $races = Race::all();
             $realm = $round->realms()->where('number', 0)->first();
             // Number of NPDs to spawn (half the number of real players)
-            $npdCount = $round->dominions()->count() / 2;
+            $npdCount = round($round->dominions()->count() * 0.575);
             for($cnt=0; $cnt<$npdCount; $cnt++) {
                 if ($realm->alignment != 'neutral') {
                     $race = $races->where('alignment', $realm->alignment)->random();

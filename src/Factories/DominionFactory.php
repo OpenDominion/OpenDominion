@@ -459,11 +459,11 @@ class DominionFactory
 
         // Calculate size/defense
         if (random_chance(0.50)) {
-            // 50% 451-500 acres
+            // 50% 451-525 acres
             $landSize = mt_rand(451, 525);
         } else {
             if (random_chance(0.60)) {
-                // 30% 525-600 acres
+                // 30% 526-600 acres
                 $landSize = mt_rand(525, 600);
             } else {
                 // 20% 400-450 acres
@@ -563,11 +563,21 @@ class DominionFactory
         $specPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[1], 'defense');
         $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
 
-        $accuracy = 1 + (mt_rand(-5, 5) / 100);
+        if (random_chance(0.85)) {
+            $accuracy = mt_rand(95, 105) * mt_rand(95, 105) / 10000;
+        } else {
+            // 15% spawn with 15-20% more DP
+            $accuracy = 1.1 + (mt_rand(50, 100) / 1000);
+        }
         $defense = 120 * exp(0.0058 * $landSize) * $accuracy;
         $defense -= ($dominion->military_draftees * $defenseMod);
-        $dominion->military_unit2 = (int) $defense / $defenseMod / $specPower * $specRatio;
-        $dominion->military_unit3 = (int) $defense / $defenseMod / $elitePower * (1 - $specRatio);
+        $dominion->military_unit2 = (int) ($defense / $defenseMod / $specPower * $specRatio);
+        $dominion->military_unit3 = (int) ($defense / $defenseMod / $elitePower * (1 - $specRatio));
+        if ($accuracy < 1.15) {
+            // Add some spec OP to normalize networth
+            $specOP = (int) (($accuracy - 0.9) / 0.2 * $landSize);
+            $dominion->military_unit1 = $specOP + mt_rand(50, 100);
+        }
 
         try {
             $dominion->save();
@@ -577,8 +587,8 @@ class DominionFactory
 
         // Add incoming units
         $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
-        $incSpecs = (int) $dominion->military_unit2 * (mt_rand(25, 50) / 100);
-        $incElites = (int) $dominion->military_unit3 * (mt_rand(25, 50) / 100);
+        $incSpecs = (int) $dominion->military_unit2 * (mt_rand(20, 35) / 100);
+        $incElites = (int) $dominion->military_unit3 * (mt_rand(20, 35) / 100);
         $hours = array_rand(range(4, 12), mt_rand(2, 5));
         foreach ($hours as $key => $hour) {
             if ($key === array_key_last($hours)) {
