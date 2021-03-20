@@ -357,6 +357,7 @@ class TickService
         $actions = $dominion->history()
             ->where('created_at', '>', $revertTo)
             ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->get();
 
         if (!$actions->count()) {
