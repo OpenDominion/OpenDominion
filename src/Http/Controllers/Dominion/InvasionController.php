@@ -36,7 +36,8 @@ class InvasionController extends AbstractDominionController
             $result = $invasionActionService->invade(
                 $dominion,
                 Dominion::findOrFail($request->get('target_dominion')),
-                $request->get('unit')
+                $request->get('unit'),
+                $request->get('cancel_leave_range')
             );
 
         } catch (GameException $e) {

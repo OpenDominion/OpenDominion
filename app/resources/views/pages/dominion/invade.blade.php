@@ -284,6 +284,16 @@
                                                     {{ number_format($militaryCalculator->getDefensivePower($selectedDominion) / $landCalculator->getTotalLand($selectedDominion), 3) }}
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="checkbox">
+                                                        <label style="font-weight: normal; margin-left: 5px;">
+                                                            <input type="checkbox" name="cancel_leave_range" />
+                                                            Cancel my attack if the target leaves my 75% range
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

@@ -185,12 +185,12 @@ class InvadeActionService
      * @return array
      * @throws GameException
      */
-    public function invade(Dominion $dominion, Dominion $target, array $units): array
+    public function invade(Dominion $dominion, Dominion $target, array $units, ?bool $cancel_leave_range): array
     {
         $this->guardLockedDominion($dominion);
         $this->guardLockedDominion($target);
 
-        DB::transaction(function () use ($dominion, $target, $units) {
+        DB::transaction(function () use ($dominion, $target, $units, $cancel_leave_range) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {
                 throw new GameException('Invasions have been disabled for the remainder of the round');
             }
@@ -213,6 +213,13 @@ class InvadeActionService
 
             if ($dominion->realm->id === $target->realm->id) {
                 throw new GameException('Nice try, but you cannot invade your realmies');
+            }
+
+            if ($cancel_leave_range === true) {
+                $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+                if ($range < 75) {
+                    throw new GameException('Your attack was canceled because the target is no longer in your 75% range');
+                }
             }
 
             // Sanitize input
