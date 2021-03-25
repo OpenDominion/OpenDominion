@@ -254,10 +254,10 @@
                     $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($target, 24 * 3, true);
                     $schoolPenalty = min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2) * 100;
                 @endphp
-                @if ($schoolPenalty > 0 || $target->infamy > 0)
+                @if ($schoolPenalty > -1 || $target->infamy > 0)
                     <div class="box-footer text-center">
-                        @if ($schoolPenalty > 0)
-                            <p class="text-red">Recent invasions are reducing the effectiveness of our schools by <b>{{ $schoolPenalty }}</b>%.</p>
+                        @if ($schoolPenalty > -1)
+                            <p class="text-red">Recent invasions (72 hours) are reducing the effectiveness of our schools by <b>{{ $schoolPenalty }}</b>%.</p>
                         @endif
                         @if ($target->infamy > 0)
                             <p>You have <b>{{ $target->infamy }}</b> infamy, which is increasing your platinum production by {{ number_format(7.5 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}% and gem/lumber/ore production by {{ number_format(3 * $productionCalculator->getInfamyBonus($target->infamy), 2) }}%.</p>
