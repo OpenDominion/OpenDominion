@@ -1136,10 +1136,11 @@ class MilitaryCalculator
      *
      * @param Dominion $dominion
      * @param int $hours
+     * @param bool $success_only
      * @param Dominion $attacker
      * @return int
      */
-    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, Dominion $attacker = null): int
+    public function getRecentlyInvadedCount(Dominion $dominion, int $hours = 24, bool $success_only = false, Dominion $attacker = null): int
     {
         // todo: this touches the db. should probably be in invasion or military service instead
         $invasionEvents = GameEvent::query()
@@ -1159,10 +1160,16 @@ class MilitaryCalculator
             return !$event->data['result']['overwhelmed'];
         });
 
+        if ($success_only) {
+            $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+                return $event->data['result']['success'];
+            });
+        }
+
         if ($attacker !== null) {
-            return $invasionEvents->filter(function (GameEvent $event) use ($attacker) {
+            $invasionEvents = $invasionEvents->filter(function (GameEvent $event) use ($attacker) {
                 return $event->source_id == $attacker->id && $event->data['result']['success'];
-            })->count();
+            });
         }
 
         return $invasionEvents->count();

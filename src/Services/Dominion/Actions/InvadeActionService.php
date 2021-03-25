@@ -266,7 +266,7 @@ class InvadeActionService
 
             $this->rangeCalculator->checkGuardApplications($dominion, $target);
 
-            $this->invasionResult['attacker']['repeatInvasion'] = $this->militaryCalculator->getRecentlyInvadedCount($target, 8, $dominion) > 1;
+            $this->invasionResult['attacker']['repeatInvasion'] = $this->militaryCalculator->getRecentlyInvadedCount($target, 8, true, $dominion) > 1;
             $this->invasionResult['defender']['recentlyInvadedCount'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
@@ -397,7 +397,7 @@ class InvadeActionService
                 static::PRESTIGE_CAP // But capped at 130
             ) + static::PRESTIGE_CHANGE_ADD;
 
-            $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 7);
+            $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 7, true);
             $prestigeLossPercentage = min(
                 (static::PRESTIGE_CHANGE_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
                 (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
@@ -982,7 +982,7 @@ class InvadeActionService
             $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
             // Recent invasion penalty
-            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 72);
+            $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
             $schoolPenalty = (1 - min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2));
 
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);

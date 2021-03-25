@@ -769,7 +769,7 @@ class ProductionCalculator
 
         // Recently invaded penalty
         $militaryCalculator = app(MilitaryCalculator::class);
-        $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3);
+        $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
         $multiplier *= (1 - min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2));
 
         return $multiplier;
