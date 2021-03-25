@@ -254,9 +254,9 @@
                     $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($target, 24 * 3, true);
                     $schoolPenalty = min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2) * 100;
                 @endphp
-                @if ($schoolPenalty > -1 || $target->infamy > 0)
+                @if ($schoolPenalty > 0 || $target->infamy > 0)
                     <div class="box-footer text-center">
-                        @if ($schoolPenalty > -1)
+                        @if ($schoolPenalty > 0)
                             <p class="text-red">Recent invasions (72 hours) are reducing the effectiveness of our schools by <b>{{ $schoolPenalty }}</b>%.</p>
                         @endif
                         @if ($target->infamy > 0)
