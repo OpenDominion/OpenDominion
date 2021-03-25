@@ -59,6 +59,10 @@ class DiscordConnectController extends AbstractController
         $code = $request->get('code');
         $user = Auth::user();
 
+        if ($code == null) {
+            return redirect($this->discordHelper->getDiscordConnectUrl('join'));
+        }
+
         $discordUser = $user->discordUser()->first();
         $dominionSelectorService = app(SelectorService::class);
         $selectedDominion = $dominionSelectorService->getUserSelectedDominion();
@@ -78,7 +82,7 @@ class DiscordConnectController extends AbstractController
             return redirect()->route('dominion.status');
         }
 
-        if ($code == null && $discordUser !== null && $discordUser->expires_at > now()) {
+        if ($discordUser !== null && $discordUser->expires_at > now()) {
             $accessToken = $this->discordService->refreshToken($discordUser, $this->discordHelper->getDiscordGuildCallbackUrl());
         } else {
             $accessToken = $this->discordService->authorize($user, $code, $this->discordHelper->getDiscordGuildCallbackUrl());
