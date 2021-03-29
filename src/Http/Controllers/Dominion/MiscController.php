@@ -18,10 +18,13 @@ use OpenDominion\Services\Dominion\HistoryService;
 use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Services\Dominion\TickService;
 use OpenDominion\Services\PackService;
+use OpenDominion\Traits\DominionGuardsTrait;
 
 // misc functions, probably could use a refactor later
 class MiscController extends AbstractDominionController
 {
+    use DominionGuardsTrait;
+
     public function postClearNotifications()
     {
         $this->getSelectedDominion()->notifications->markAsRead();
@@ -79,6 +82,8 @@ class MiscController extends AbstractDominionController
         $protectionService = app(ProtectionService::class);
 
         try {
+            $this->guardLockedDominion($dominion);
+
             if (!$protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You can only restart your dominion during protection.');
             }
@@ -128,6 +133,8 @@ class MiscController extends AbstractDominionController
         ]);
 
         try {
+            $this->guardLockedDominion($dominion);
+
             if (!$protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You can only rename your dominion during protection.');
             }
@@ -166,6 +173,8 @@ class MiscController extends AbstractDominionController
         $customize = $request->get('customize') == 'on';
 
         try {
+            $this->guardLockedDominion($dominion);
+
             if (!$race->playable) {
                 throw new GameException('Invalid race selection');
             }
@@ -214,6 +223,8 @@ class MiscController extends AbstractDominionController
         $tickService = app(TickService::class);
 
         try {
+            $this->guardLockedDominion($dominion);
+
             if ($dominion->protection_ticks_remaining == 0) {
                 throw new GameException('You have no protection ticks remaining.');
             }
@@ -297,6 +308,8 @@ class MiscController extends AbstractDominionController
         $tickService = app(TickService::class);
 
         try {
+            $this->guardLockedDominion($dominion);
+
             if (!$protectionService->isUnderProtection($dominion)) {
                 throw new GameException('You cannot undo a tick outside of protection.');
             }
