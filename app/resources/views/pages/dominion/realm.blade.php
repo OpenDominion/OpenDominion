@@ -90,7 +90,11 @@
                                             @endif
 
                                             @if ($dominion->locked_at !== null)
-                                                <span class="label label-danger">Locked</span>
+                                                @if ($dominion->protection_ticks_remaining > 0)
+                                                    <span class="label label-warning">Abandoned</span>
+                                                @else
+                                                    <span class="label label-danger">Locked</span>
+                                                @endif
                                             @endif
                                         </td>
                                         @if ($isOwnRealm)
