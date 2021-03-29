@@ -95,6 +95,7 @@ tech_4_3:
   requires:
     - tech_3_1
     - tech_2_3
+    - tech_5_5
     - tech_6_3
 tech_6_3:
   name: Prefabrication
