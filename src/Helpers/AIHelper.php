@@ -6,18 +6,21 @@ use OpenDominion\Models\Round;
 
 class AIHelper
 {
-    public function getDefenseForNonPlayer(Round $round)
+    public function getDefenseForNonPlayer(Round $round, int $totalLand)
     {
         $day = $round->daysInRound();
         $hours = $round->hoursInDay();
         $fractionalDay = $day + ($hours / 24);
+        $expectedLandSize = 410 + ($fractionalDay * 40);
 
         // Formula based on average DPA of attacks over several rounds
         $defensePerAcre = (-0.0181 * ($fractionalDay**2)) + (2.5797 * $fractionalDay) - 4.1725;
         // Additional defense for first few days
         $defensePerAcre += max(0, 5 - $fractionalDay/2);
+        // Scale by expected land size
+        $scaleFactor = clamp(0.80, $totalLand / $expectedLandSize, 1.20);
 
-        return $defensePerAcre;
+        return $totalLand * $defensePerAcre * $scaleFactor;
     }
 
     public function getRaceInstructions()

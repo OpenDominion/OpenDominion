@@ -132,11 +132,11 @@ class AIService
         }
     }
 
-    public function getRequiredDefense(Dominion $dominion)
+    public function getRequiredDefense(Dominion $dominion, int $totalLand)
     {
         // Defense starts 4% below formula, each invasion increases target DPA by 2%
         $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 2) / 50);
-        $defenseByDay = $this->aiHelper->getDefenseForNonPlayer($dominion->round);
+        $defenseByDay = $this->aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand);
 
         return $defenseByDay * $invasionMultiplier;
     }
@@ -304,7 +304,7 @@ class AIService
                 }
             } else {
                 // Train military
-                $defenseRequired = $totalLand * $this->getRequiredDefense($dominion);
+                $defenseRequired = $this->getRequiredDefense($dominion, $totalLand);
                 if (($defense + $incomingDefense) < $defenseRequired) {
                     $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
                 }
