@@ -172,7 +172,7 @@ class AIService
         $this->constructBuildings($dominion, $config, $totalLand);
 
         // Military
-        $this->trainMilitary($dominion, $config, $totalLand + $incomingLand);
+        $this->trainMilitary($dominion, $config, $totalLand);
 
         // Explore
         if ($incomingLand < 72) {
@@ -282,9 +282,14 @@ class AIService
         // TODO: check neighboring dominions?
         $defense = $this->militaryCalculator->getDefensivePower($dominion);
         $trainingQueue = $this->queueService->getTrainingQueueByPrefix($dominion, 'military_unit');
-        $incomingTroops = $trainingQueue->mapWithKeys(function($queue) {
-            return [str_replace('military_unit', '', $queue->resource) => $queue->amount];
-        })->toArray();
+        $incomingTroops = $trainingQueue
+            ->mapToGroups(function($queue) {
+                return [str_replace('military_unit', '', $queue->resource) => $queue->amount];
+            })
+            ->map(function($unitType) {
+                return $unitType->sum();
+            })
+            ->toArray();
         $incomingDefense = $this->militaryCalculator->getDefensivePower($dominion, null, null, $incomingTroops, 0, true, true);
         foreach ($config['military'] as $command) {
             $maxAfford = 0;
