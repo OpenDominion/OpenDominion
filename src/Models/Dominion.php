@@ -90,8 +90,6 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int|null $monarch_dominion_id
  * @property int $calculated_networth
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
- * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsSource
- * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\GameEvent[] $gameEventsTarget
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion\History[] $history
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \OpenDominion\Models\Pack|null $pack
@@ -199,18 +197,6 @@ class Dominion extends AbstractModel
     public function councilThreads()
     {
         return $this->hasMany(Council\Thread::class);
-    }
-
-    // todo: info op target/source?
-
-    public function gameEventsSource()
-    {
-        return $this->morphMany(GameEvent::class, 'source');
-    }
-
-    public function gameEventsTarget()
-    {
-        return $this->morphMany(GameEvent::class, 'target');
     }
 
     public function history()

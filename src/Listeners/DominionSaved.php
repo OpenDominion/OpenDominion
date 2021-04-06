@@ -24,14 +24,16 @@ class DominionSaved
         $networthCalculator = app(NetworthCalculator::class);
         $networth = $networthCalculator->getDominionNetworth($dominion, true);
 
-        DB::table('dominions')
-            ->where('id', $dominion->id)
-            ->update([
-                'calculated_networth' => $networth
-            ]);
+        if ($dominion->calculated_networth !== $networth) {
+            DB::table('dominions')
+                ->where('id', $dominion->id)
+                ->update([
+                    'calculated_networth' => $networth
+                ]);
 
-        // Recalculate next tick
-        $tickService = app(TickService::class);
-        $tickService->precalculateTick($dominion);
+            // Recalculate next tick
+            $tickService = app(TickService::class);
+            $tickService->precalculateTick($dominion);
+        }
     }
 }

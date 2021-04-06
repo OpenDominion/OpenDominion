@@ -679,7 +679,14 @@ class TickService
         }
 
         // Hacky refresh for dominion
-        $dominion->refresh();
+        $dominion->refresh()->load([
+            'race',
+            'race.perks',
+            'race.units',
+            'race.units.perks',
+            'techs',
+            'techs.perks',
+        ]);
 
         // Active spells
         $this->spellCalculator->getActiveSpells($dominion, true);
