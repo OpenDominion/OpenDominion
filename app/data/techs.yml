@@ -87,6 +87,7 @@ tech_2_3:
     mana_decay: -10
   requires:
     - tech_1_1
+    - tech_3_5
     - tech_4_3
 tech_4_3:
   name: Banker's Friend
