@@ -89,7 +89,9 @@ class DataSyncCommand extends Command implements CommandInterface
                 foreach ($newValues as $key => $newValue) {
                     $originalValue = $race->getOriginal($key);
 
-                    $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    if ($originalValue != $newValue) {
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
                 }
             }
 
@@ -219,8 +221,12 @@ class DataSyncCommand extends Command implements CommandInterface
 
                 foreach ($newValues as $key => $newValue) {
                     $originalValue = $tech->getOriginal($key);
-
-                    $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    if (gettype($originalValue) == 'array') {
+                        $originalValue = implode(', ', $originalValue);
+                    }
+                    if ($originalValue != $newValue) {
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
                 }
             }
 
@@ -281,7 +287,9 @@ class DataSyncCommand extends Command implements CommandInterface
                 foreach ($newValues as $key => $newValue) {
                     $originalValue = $wonder->getOriginal($key);
 
-                    $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    if ($originalValue != $newValue) {
+                        $this->info("[Change] {$key}: {$originalValue} -> {$newValue}");
+                    }
                 }
             }
 
