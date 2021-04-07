@@ -30,10 +30,10 @@ class DominionSaved
                 ->update([
                     'calculated_networth' => $networth
                 ]);
-
-            // Recalculate next tick
-            $tickService = app(TickService::class);
-            $tickService->precalculateTick($dominion);
         }
+
+        // Recalculate next tick
+        $tickService = app(TickService::class);
+        $tickService->precalculateTick($dominion);
     }
 }
