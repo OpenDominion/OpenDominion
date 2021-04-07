@@ -71,6 +71,25 @@ class GameEventService
                     RoundWonder::class => ['realm', 'wonder'],
                 ]);
             }])
+            ->where(function (Builder $query) use ($realm, $dominionIds) {
+                $query
+                    ->orWhere(function (Builder $query) use ($dominionIds) {
+                        $query->where('source_type', Dominion::class)
+                            ->whereIn('source_id', $dominionIds);
+                    })
+                    ->orWhere(function (Builder $query) use ($dominionIds) {
+                        $query->where('target_type', Dominion::class)
+                            ->whereIn('target_id', $dominionIds);
+                    })
+                    ->orWhere(function (Builder $query) use ($realm) {
+                        $query->where('source_type', Realm::class)
+                            ->where('source_id', $realm->id);
+                    })
+                    ->orWhere(function (Builder $query) use ($realm) {
+                        $query->where('target_type', Realm::class)
+                            ->where('target_id', $realm->id);
+                    });
+            })
             ->where('round_id', $realm->round->id)
             ->where('created_at', '<', $createdBefore)
             ->orderBy('created_at', 'desc')
