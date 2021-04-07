@@ -4,10 +4,14 @@ namespace OpenDominion\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Realm;
+use OpenDominion\Models\RealmWar;
+use OpenDominion\Models\RoundWonder;
+use OpenDominion\Models\Wonder;
 
 class GameEventService
 {
@@ -54,29 +58,21 @@ class GameEventService
             ->toArray();
 
         $gameEvents = GameEvent::query()
-            ->with(['source', 'target'])
+            ->with(['source' => function (MorphTo $morphTo) {
+                $morphTo->morphWith([
+                    Dominion::class => ['race', 'realm'],
+                    RoundWonder::class => ['wonder'],
+                ]);
+            }])
+            ->with(['target' => function (MorphTo $morphTo) {
+                $morphTo->morphWith([
+                    Dominion::class => ['race', 'realm'],
+                    RealmWar::class => ['sourceRealm', 'targetRealm'],
+                    RoundWonder::class => ['realm', 'wonder'],
+                ]);
+            }])
             ->where('round_id', $realm->round->id)
             ->where('created_at', '<', $createdBefore)
-            //->where('created_at', '>', now()->subDays(7))
-            ->where(function (Builder $query) use ($realm, $dominionIds) {
-                $query
-                    ->orWhere(function (Builder $query) use ($dominionIds) {
-                        $query->where('source_type', Dominion::class)
-                            ->whereIn('source_id', $dominionIds);
-                    })
-                    ->orWhere(function (Builder $query) use ($dominionIds) {
-                        $query->where('target_type', Dominion::class)
-                            ->whereIn('target_id', $dominionIds);
-                    })
-                    ->orWhere(function (Builder $query) use ($realm) {
-                        $query->where('source_type', Realm::class)
-                            ->where('source_id', $realm->id);
-                    })
-                    ->orWhere(function (Builder $query) use ($realm) {
-                        $query->where('target_type', Realm::class)
-                            ->where('target_id', $realm->id);
-                    });
-            })
             ->orderBy('created_at', 'desc')
             ->orderBy('type', 'desc')
             ->paginate(100);
@@ -94,10 +90,21 @@ class GameEventService
             ->toArray();
 
         $gameEvents = GameEvent::query()
-            ->with(['source', 'target'])
+            ->with(['source' => function (MorphTo $morphTo) {
+                $morphTo->morphWith([
+                    Dominion::class => ['race', 'realm'],
+                    RoundWonder::class => ['wonder'],
+                ]);
+            }])
+            ->with(['target' => function (MorphTo $morphTo) {
+                $morphTo->morphWith([
+                    Dominion::class => ['race', 'realm'],
+                    RealmWar::class => ['sourceRealm', 'targetRealm'],
+                    RoundWonder::class => ['realm', 'wonder'],
+                ]);
+            }])
             ->where('round_id', $dominion->round_id)
             ->where('created_at', '<', $createdBefore)
-            //->where('created_at', '>', now()->subDays(7))
             ->orderBy('created_at', 'desc')
             ->orderBy('type', 'desc')
             ->paginate(100);
