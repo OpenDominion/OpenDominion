@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use DB;
 use OpenDominion\Calculators\Dominion\RangeCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -15,8 +16,6 @@ class TownCrierController extends AbstractDominionController
 
         $dominion = $this->getSelectedDominion();
 
-        $this->updateDominionTownCrierLastSeen($dominion);
-
         if ($realmNumber !== null) {
             $realm = Realm::where([
                 'round_id' => $dominion->round_id,
@@ -28,6 +27,11 @@ class TownCrierController extends AbstractDominionController
         }
 
         $townCrierData = $gameEventService->getTownCrier($dominion, $realm);
+
+        $latestEventTime = $townCrierData['gameEvents']->max('created_at');
+        if ($latestEventTime !== null && $latestEventTime > $dominion->town_crier_last_seen) {
+            $this->updateDominionTownCrierLastSeen($dominion);
+        }
 
         $gameEvents = $townCrierData['gameEvents'];
         $dominionIds = $townCrierData['dominionIds'];
@@ -46,7 +50,11 @@ class TownCrierController extends AbstractDominionController
 
     protected function updateDominionTownCrierLastSeen(Dominion $dominion): void
     {
-        $dominion->town_crier_last_seen = now();
-        $dominion->save();
+        // Avoid using save method, which recalculates tick
+        DB::table('dominions')
+            ->where('id', $dominion->id)
+            ->update([
+                'town_crier_last_seen' => now()
+            ]);
     }
 }
