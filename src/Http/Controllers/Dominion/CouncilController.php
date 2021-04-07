@@ -260,7 +260,11 @@ class CouncilController extends AbstractDominionController
 
     protected function updateDominionCouncilLastRead(Dominion $dominion): void
     {
-        $dominion->council_last_read = now();
-        $dominion->save();
+        // Avoid using save method, which recalculates tick
+        DB::table('dominions')
+            ->where('id', $dominion->id)
+            ->update([
+                'council_last_read' => now()
+            ]);
     }
 }

@@ -316,7 +316,11 @@ class ForumController extends AbstractDominionController
 
     protected function updateDominionForumLastRead(Dominion $dominion): void
     {
-        $dominion->forum_last_read = now();
-        $dominion->save();
+        // Avoid using save method, which recalculates tick
+        DB::table('dominions')
+            ->where('id', $dominion->id)
+            ->update([
+                'forum_last_read' => now()
+            ]);
     }
 }
