@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Http\Controllers\Dominion;
 
+use DB;
 use Illuminate\Http\Request;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Helpers\RankingsHelper;
