@@ -410,16 +410,14 @@ class InvadeActionService
             // Techs
             $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
 
+            // Wonders
+            $multiplier = $dominion->getWonderPerkMultiplier('prestige_gains');
+
             // War Bonus
             if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
                 $multiplier += 0.2;
             } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
                 $multiplier += 0.1;
-            }
-
-            // Wonders - does not stack with other bonuses
-            if ($dominion->getWonderPerkValue('prestige_gains') != 0) {
-                $multiplier = (1 + $dominion->getWonderPerkMultiplier('prestige_gains'));
             }
 
             $attackerPrestigeChange *= $multiplier;
