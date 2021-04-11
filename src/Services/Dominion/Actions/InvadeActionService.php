@@ -411,7 +411,7 @@ class InvadeActionService
             $multiplier += $dominion->getTechPerkMultiplier('prestige_gains');
 
             // Wonders
-            $multiplier = $dominion->getWonderPerkMultiplier('prestige_gains');
+            $multiplier += $dominion->getWonderPerkMultiplier('prestige_gains');
 
             // War Bonus
             if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
