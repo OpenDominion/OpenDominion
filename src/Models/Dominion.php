@@ -241,6 +241,11 @@ class Dominion extends AbstractModel
         return $this->hasMany(Dominion\Queue::class);
     }
 
+    public function spells()
+    {
+        return $this->hasMany(Dominion\Spell::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

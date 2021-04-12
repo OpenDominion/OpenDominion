@@ -571,7 +571,7 @@ class WonderActionService
      */
     protected function handleResearchPoints(RoundWonder $wonder, Dominion $dominion, array $units): void
     {
-        $mindSwellActive = $this->spellCalculator->getActiveSpells($dominion, true)->firstWhere('spell', 'mindswell');
+        $mindSwellActive = $this->spellCalculator->getActiveSpells($dominion)->firstWhere('spell', 'mindswell');
         if ($mindSwellActive !== null) {
             $offenseSent = $this->militaryCalculator->getOffensivePowerRaw($dominion, null, null, $units) * $this->militaryCalculator->getMoraleMultiplier($dominion);
             $researchPointsGained = $this->wonderCalculator->getTechGainForDominion($wonder, $dominion, $offenseSent);

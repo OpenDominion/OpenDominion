@@ -8,6 +8,10 @@ use OpenDominion\Models\AbstractModel;
  * OpenDominion\Models\Dominion\Queue
  *
  * @property int $dominion_id
+ * @property string $source
+ * @property string $resource
+ * @property int $hours
+ * @property int $amount
  * @property \Illuminate\Support\Carbon|null $created_at
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Dominion\Queue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\OpenDominion\Models\Dominion\Queue newQuery()

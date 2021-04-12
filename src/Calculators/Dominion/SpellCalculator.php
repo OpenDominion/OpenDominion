@@ -17,9 +17,6 @@ class SpellCalculator
     /** @var SpellHelper */
     protected $spellHelper;
 
-    /** @var array */
-    protected $activeSpells = [];
-
     /**
      * SpellCalculator constructor.
      *
@@ -141,30 +138,12 @@ class SpellCalculator
      * @param bool $forceRefresh
      * @return Collection
      */
-    public function getActiveSpells(Dominion $dominion, bool $forceRefresh = false): Collection
+    public function getActiveSpells(Dominion $dominion): Collection
     {
-        $cacheKey = $dominion->id;
-
-        if (!$forceRefresh && array_has($this->activeSpells, $cacheKey)) {
-            return collect(array_get($this->activeSpells, $cacheKey));
-        }
-
-        $data = DB::table('active_spells')
-            ->join('dominions', 'dominions.id', '=', 'cast_by_dominion_id')
-            ->join('realms', 'realms.id', '=', 'dominions.realm_id')
-            ->where('dominion_id', $dominion->id)
+        return $dominion->spells
             ->where('duration', '>', 0)
-            ->orderBy('duration', 'desc')
-            ->orderBy('created_at')
-            ->get([
-                'active_spells.*',
-                'dominions.name AS cast_by_dominion_name',
-                'realms.number AS cast_by_dominion_realm_number',
-            ]);
-
-        array_set($this->activeSpells, $cacheKey, $data->toArray());
-
-        return $data;
+            ->sortByDesc('duration')
+            ->sortBy('created_at');
     }
 
     /**

@@ -689,7 +689,7 @@ class TickService
         ]);
 
         // Active spells
-        $this->spellCalculator->getActiveSpells($dominion, true);
+        $this->spellCalculator->getActiveSpells($dominion);
 
         // Queues
         $incomingQueue = DB::table('dominion_queue')

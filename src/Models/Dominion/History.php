@@ -30,4 +30,9 @@ class History extends AbstractModel
     protected $dates = ['created_at'];
 
     const UPDATED_AT = null;
+
+    public function getDateFormat()
+    {
+        return 'Y-m-d H:i:s.u';
+    }
 }

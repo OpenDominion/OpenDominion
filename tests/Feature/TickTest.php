@@ -200,11 +200,11 @@ class TickTest extends AbstractBrowserKitTestCase
         $spellActionService->castSpell($dominion2, 'midas_touch');
 
         // Refresh active spells
-        $spellCalculator->getActiveSpells($dominion1, true);
+        $dominion1->refresh();
         $this->assertFalse($spellCalculator->isSpellActive($dominion1, 'midas_touch'));
         $this->assertEquals($platToBeAdded * 1.0, $productionCalculator->getPlatinumProduction($dominion1));
 
-        $spellCalculator->getActiveSpells($dominion2, true);
+        $dominion2->refresh();
         $this->assertTrue($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
         $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion2));
 
@@ -253,7 +253,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $spellActionService->castSpell($dominion, 'gaias_watch');
 
         // Refresh active spells
-        $spellCalculator->getActiveSpells($dominion, true);
+        $dominion->refresh();
 
         // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7544 food
         // Note: Prestige calc got changed around 2019-06-05, calculation for
