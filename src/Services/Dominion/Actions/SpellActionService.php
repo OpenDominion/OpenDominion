@@ -109,6 +109,9 @@ class SpellActionService
         $this->guardLockedDominion($dominion);
         if ($target !== null) {
             $this->guardLockedDominion($target);
+            $this->guardActionsDuringTick(5);
+        } else {
+            $this->guardActionsDuringTick();
         }
 
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);

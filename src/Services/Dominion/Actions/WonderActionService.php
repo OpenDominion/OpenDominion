@@ -163,6 +163,7 @@ class WonderActionService
     {
         $this->guardLockedDominion($dominion);
         $this->guardGraveyardRealm($dominion->realm);
+        $this->guardActionsDuringTick(5);
 
         $result = null;
 
@@ -288,6 +289,7 @@ class WonderActionService
     {
         $this->guardLockedDominion($dominion);
         $this->guardGraveyardRealm($dominion->realm);
+        $this->guardActionsDuringTick(5);
 
         DB::transaction(function () use ($dominion, $wonder, $units) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {

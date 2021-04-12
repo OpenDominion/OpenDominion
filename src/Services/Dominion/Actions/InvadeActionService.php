@@ -189,6 +189,7 @@ class InvadeActionService
     {
         $this->guardLockedDominion($dominion);
         $this->guardLockedDominion($target);
+        $this->guardActionsDuringTick(5);
 
         DB::transaction(function () use ($dominion, $target, $units, $cancel_leave_range) {
             if ($dominion->round->hasOffensiveActionsDisabled()) {

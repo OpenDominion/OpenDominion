@@ -119,6 +119,7 @@ class EspionageActionService
     {
         $this->guardLockedDominion($dominion);
         $this->guardLockedDominion($target);
+        $this->guardActionsDuringTick();
 
         $operationInfo = $this->espionageHelper->getOperationInfo($operationKey);
 
