@@ -24,16 +24,19 @@ trait DominionGuardsTrait
     /**
      * Guards against actions during tick.
      *
+     * @param Dominion $dominion
      * @param int $seconds
      * @throws RuntimeException
      */
-    public function guardActionsDuringTick(int $seconds = 3): void
+    public function guardActionsDuringTick(Dominion $dominion, int $seconds = 3): void
     {
-        $requestTimestamp = request()->server('REQUEST_TIME');
-        if ($requestTimestamp !== null) {
-            $requestTime = Carbon::createFromTimestamp($requestTimestamp);
-            if ($requestTime->minute == 0 && $requestTime->second < $seconds) {
-                throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+        if ($dominion->protection_ticks_remaining == 0) {
+            $requestTimestamp = request()->server('REQUEST_TIME');
+            if ($requestTimestamp !== null) {
+                $requestTime = Carbon::createFromTimestamp($requestTimestamp);
+                if ($requestTime->minute == 0 && $requestTime->second < $seconds) {
+                    throw new GameException('The Emperor is currently collecting taxes and cannot fulfill your request. Please try again.');
+                }
             }
         }
     }

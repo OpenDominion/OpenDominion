@@ -60,7 +60,7 @@ class ExploreActionService
     public function explore(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
-        $this->guardActionsDuringTick();
+        $this->guardActionsDuringTick($dominion);
 
         if($dominion->round->hasOffensiveActionsDisabled())
         {

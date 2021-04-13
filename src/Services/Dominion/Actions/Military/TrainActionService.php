@@ -46,7 +46,7 @@ class TrainActionService
     public function train(Dominion $dominion, array $data): array
     {
         $this->guardLockedDominion($dominion);
-        $this->guardActionsDuringTick();
+        $this->guardActionsDuringTick($dominion);
 
         $data = array_only($data, array_map(function ($value) {
             return "military_{$value}";
