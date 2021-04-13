@@ -277,6 +277,7 @@ class TickService
                     'race.perks',
                     'race.units',
                     'race.units.perks',
+                    'spells',
                     'techs',
                     'techs.perks',
                     'tick',
@@ -345,10 +346,10 @@ class TickService
 
         if ($ticks->count() > 1) {
             // Revert to the tick prior
-            $revertTo = $ticks[1]->created_at;
+            $revertTo = $ticks[1]->created_at->toDateTimeLocalString('millisecond');
         } elseif ($lastRestart !== null) {
             // Revert to the last restart
-            $revertTo = $lastRestart->created_at;
+            $revertTo = $lastRestart->created_at->toDateTimeLocalString('millisecond');
         } else {
             // Revert the first tick
             $revertTo = $dominion->created_at;
@@ -357,7 +358,6 @@ class TickService
         $actions = $dominion->history()
             ->where('created_at', '>', $revertTo)
             ->orderByDesc('created_at')
-            ->orderByDesc('id')
             ->get();
 
         if (!$actions->count()) {

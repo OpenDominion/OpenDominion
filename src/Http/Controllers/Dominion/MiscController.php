@@ -277,8 +277,6 @@ class MiscController extends AbstractDominionController
                 ->withErrors([$e->getMessage()]);
         }
 
-        $tickService->performTick($dominion->round, $dominion);
-
         $dominion->protection_ticks_remaining -= 1;
         if ($dominion->protection_ticks_remaining == 48 || $dominion->protection_ticks_remaining == 24 || $dominion->protection_ticks_remaining == 0) {
             if ($dominion->daily_land || $dominion->daily_platinum) {
@@ -291,12 +289,13 @@ class MiscController extends AbstractDominionController
                 if ($dominion->daily_platinum) {
                     $bonusDelta['daily_platinum'] = false;
                 }
-                //$historyService->record($dominion, $bonusDelta, HistoryService::EVENT_ACTION_DAILY_BONUS);
             }
             $dominion->daily_platinum = false;
             $dominion->daily_land = false;
         }
         $dominion->save(['event' => HistoryService::EVENT_ACTION_PROTECTION_ADVANCE_TICK]);
+
+        $tickService->performTick($dominion->round, $dominion);
 
         return redirect()->back();
     }

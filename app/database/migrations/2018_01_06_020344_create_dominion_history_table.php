@@ -8,6 +8,8 @@ class CreateDominionHistoryTable extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * ALTER TABLE `dominion_history` MODIFY created_at TIMESTAMP(3) NULL DEFAULT NULL;
      *
      * @return void
      */
@@ -18,7 +20,7 @@ class CreateDominionHistoryTable extends Migration
             $table->unsignedInteger('dominion_id');
             $table->string('event');
             $table->text('delta');
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at', 3)->nullable();
 
             $table->foreign('dominion_id')->references('id')->on('dominions');
         });
