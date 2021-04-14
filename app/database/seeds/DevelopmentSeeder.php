@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;

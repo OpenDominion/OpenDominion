@@ -55,7 +55,7 @@ task('supervisorctl:restart', function () {
 
 desc('Enable maintenance mode');
 task('artisan:down', function () {
-    $output = run('if [ -f {{deploy_path}}/current/artisan ]; then {{bin/php}} {{deploy_path}}/current/artisan down --retry=120 --message="Deploying new update"; fi');
+    $output = run('if [ -f {{deploy_path}}/current/artisan ]; then {{bin/php}} {{deploy_path}}/current/artisan down --retry=120; fi');
     writeln('<info>' . $output . '</info>');
 });
 
