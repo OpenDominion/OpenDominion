@@ -36,6 +36,9 @@ jobs:
     - name: Create dummy mix-manifest.json file
       run: echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
 
+    - name: Wait for MySQL
+      run: sleep 10
+
     - name: Run database migrations
       run: php artisan migrate
 
