@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use DB;
 use Illuminate\Database\Seeder;
 use OpenDominion\Models\MessageBoard\Category;
 use OpenDominion\Models\RoundLeague;

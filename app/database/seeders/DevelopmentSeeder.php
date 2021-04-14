@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use DB;
 use Illuminate\Database\Seeder;
 use OpenDominion\Factories\DominionFactory;
 use OpenDominion\Factories\RealmFactory;
