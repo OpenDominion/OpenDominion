@@ -62,8 +62,12 @@
     "psr-4": {
       "OpenDominion\\": "src/",
       "Database\\Factories\\": "database/factories/",
-      "Database\\Seeders\\": "database/seeders/",
+      "Database\\Seeders\\": "database/seeders/"
     },
+    "classmap": [
+      "app/database/factories",
+      "app/database/seeders"
+    ],
     "files": [
       "src/helpers.php"
     ]
