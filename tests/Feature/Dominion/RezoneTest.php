@@ -13,7 +13,7 @@ class RezoneTest extends AbstractBrowserKitTestCase
     /** @var Dominion */
     protected $dominion;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -38,7 +38,7 @@ class DominionFactoryTest extends AbstractBrowserKitTestCase
     /** @var RealmFactory */
     protected $realmFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -23,7 +23,7 @@ class RealmFinderServiceTest extends AbstractBrowserKitTestCase
     /** @var RealmFinderService */
     protected $realmFinderService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

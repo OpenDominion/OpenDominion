@@ -26,7 +26,7 @@ class EspionageActionServiceTest extends AbstractBrowserKitTestCase
     /** @var Dominion */
     protected $target;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

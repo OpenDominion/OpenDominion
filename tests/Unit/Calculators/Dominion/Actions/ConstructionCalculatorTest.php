@@ -24,7 +24,7 @@ class ConstructionCalculatorTest extends AbstractBrowserKitTestCase
     /** @var Mock|ConstructionCalculator */
     protected $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
