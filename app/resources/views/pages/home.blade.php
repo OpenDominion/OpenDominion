@@ -97,7 +97,6 @@
                         <div class="box-body text-center">
                             <p>Pack registration is currently closed.</p>
                             <p>The round will commence in {{ $currentRound->timeUntilCommencement() }} ({{ $currentRound->protectionEndDate() }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
-                            <p><a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a></p>
                         </div>
                     @else
                         <div class="box-body text-center" style="padding: 0;">
@@ -133,11 +132,10 @@
                             <p>
                                 <em class="text-red">The round ends in {{ $currentRound->daysUntilEnd() }} {{ str_plural('day', $currentRound->daysUntilEnd()) }} and {{ $currentRound->hoursUntilReset() - 1 }} {{ str_plural('hour', $currentRound->hoursUntilReset() - 1) }}.</em>
                             </p>
-                        @else
-                            <p>
-                                <a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a>
-                            </p>
                         @endif
+                        <p>
+                            <a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a>
+                        </p>
                     </div>
                 @endif
             </div>
