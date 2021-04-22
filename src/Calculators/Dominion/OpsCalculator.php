@@ -153,7 +153,7 @@ class OpsCalculator
         ));
 
         // Techs
-        $spiesKilledMultiplier *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
+        $spiesKilledMultiplier += $dominion->getTechPerkMultiplier('spy_losses');
 
         // Mutual War
         if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {

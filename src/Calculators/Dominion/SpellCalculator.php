@@ -46,19 +46,19 @@ class SpellCalculator
         $spellCostMultiplier = (1 - clamp(3 * $wizardGuildRatio, 0, 0.3));
 
         // Techs
-        $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('spell_cost'));
+        $spellCostMultiplier += $dominion->getTechPerkMultiplier('spell_cost');
         if ($this->spellHelper->isSelfSpell($spell, $dominion->race)) {
-            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('self_spell_cost'));
+            $spellCostMultiplier += $dominion->getTechPerkMultiplier('self_spell_cost');
         }
         if ($this->spellHelper->isRacialSelfSpell($spell, $dominion->race)) {
-            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('racial_spell_cost'));
+            $spellCostMultiplier += $dominion->getTechPerkMultiplier('racial_spell_cost');
         }
         if ($spell == 'fools_gold' && $dominion->getTechPerkMultiplier('fools_gold_cost') !== 0) {
-            $spellCostMultiplier *= (1 + $dominion->getTechPerkMultiplier('fools_gold_cost'));
+            $spellCostMultiplier += $dominion->getTechPerkMultiplier('fools_gold_cost');
         }
 
         // Wonders
-        $spellCostMultiplier *= (1 + $dominion->getWonderPerkMultiplier('spell_cost'));
+        $spellCostMultiplier += $dominion->getWonderPerkMultiplier('spell_cost');
 
         return round($spellInfo['mana_cost'] * $totalLand * $spellCostMultiplier);
     }

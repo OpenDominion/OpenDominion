@@ -999,11 +999,15 @@ class InvadeActionService
                 $researchPointsGained = max(0, $researchPointsGained);
             }
 
+            $multiplier = 1;
+
             // Racial Bonus
-            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+            $multiplier += $dominion->race->getPerkMultiplier('tech_production');
 
             // Wonders
-            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
+            $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
+
+            $researchPointsGained *= $multiplier;
 
             if($researchPointsGained > 0) {
                 $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);

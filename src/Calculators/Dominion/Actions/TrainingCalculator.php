@@ -169,7 +169,7 @@ class TrainingCalculator
         );
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('military_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('military_cost');
 
         return $multiplier;
     }
@@ -195,7 +195,7 @@ class TrainingCalculator
         );
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('spy_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('spy_cost');
 
         return $multiplier;
     }
@@ -221,7 +221,7 @@ class TrainingCalculator
         );
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('wizard_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('wizard_cost');
 
         return $multiplier;
     }

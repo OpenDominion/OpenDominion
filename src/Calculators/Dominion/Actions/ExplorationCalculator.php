@@ -50,11 +50,13 @@ class ExplorationCalculator
 
         $platinum += 1000;
 
+        $multiplier = 1;
+
         // Techs
-        $multiplier = (1 + $dominion->getTechPerkMultiplier('explore_platinum_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('explore_platinum_cost');
 
         // Wonders
-        $multiplier *= (1 + $dominion->getWonderPerkMultiplier('explore_platinum_cost'));
+        $multiplier += $dominion->getWonderPerkMultiplier('explore_platinum_cost');
 
         // Elite Guard Tax
         if ($this->guardMembershipService->isEliteGuardMember($dominion)) {

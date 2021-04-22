@@ -85,13 +85,13 @@ class RezoningCalculator
         );
 
         // Racial Bonus
-        $multiplier *= (1 + $dominion->race->getPerkMultiplier('rezone_cost'));
+        $multiplier += $dominion->race->getPerkMultiplier('rezone_cost');
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('rezone_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('rezone_cost');
 
         // Wonders
-        $multiplier *= (1 + $dominion->getWonderPerkMultiplier('rezone_cost'));
+        $multiplier += $dominion->getWonderPerkMultiplier('rezone_cost');
 
         // Racial Spell
         $mechanicalGeniusReduction = $this->spellCalculator->getActiveSpellMultiplierBonus(
@@ -99,7 +99,7 @@ class RezoningCalculator
             'mechanical_genius',
             $spellMechanicalGeniusReduction
         );
-        $multiplier *= (1 - $mechanicalGeniusReduction);
+        $multiplier += $mechanicalGeniusReduction;
 
         return $multiplier;
     }
