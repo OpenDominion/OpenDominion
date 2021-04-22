@@ -58,7 +58,7 @@ class InvadeActionService
     /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 22.5;
+    protected const PRESTIGE_CHANGE_ADD = 20;
 
     /**
      * @var float Base prestige % change for both parties when invading
