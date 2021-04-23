@@ -260,7 +260,7 @@ class MiscController extends AbstractDominionController
 
                 foreach ($incomingQueue as $row) {
                     // Reset current resources
-                    $dominion->{$row->resource} += $row->amount;
+                    $dominion->{$row->resource} -= $row->amount;
                 }
 
                 if ($totalLand < 600 && $defensivePower < $totalLand * 3) {
