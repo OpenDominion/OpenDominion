@@ -4,7 +4,6 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Mockery as m;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
@@ -37,12 +36,6 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
         $this->dominion = $this->createDominion($user, $this->round);
         $this->landCalculator = $this->app->make(LandCalculator::class);
         $this->rezoneActionService = $this->app->make(RezoneActionService::class);
-    }
-
-    protected function tearDown(): void
-    {
-        // todo: add this to other test classes
-        m::close();
     }
 
     /**
