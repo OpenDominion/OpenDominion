@@ -53,10 +53,6 @@ class CalculationsController extends AbstractDominionController
                     (object)[
                         'type' => 'revelation',
                         'data' => $this->spellCalculator->getActiveSpells($targetDominion)
-                            ->transform(function ($item, $key) {
-                                return (array)$item;
-                            })
-                            ->toArray()
                     ],
                     (object)[
                         'type' => 'castle_spy',
@@ -104,7 +100,7 @@ class CalculationsController extends AbstractDominionController
             'landCalculator' => app(LandCalculator::class),
             'targetDominion' => $targetDominion,
             'targetInfoOps' => $targetInfoOps,
-            'races' => Race::with(['units', 'units.perks'])->orderBy('name')->get(),
+            'races' => Race::with(['units', 'units.perks'])->where('playable', true)->orderBy('name')->get(),
             'raceHelper' => app(RaceHelper::class),
             'spellHelper' => app(SpellHelper::class),
             'unitHelper' => app(UnitHelper::class),

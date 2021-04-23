@@ -83,10 +83,6 @@ class AdvisorsController extends AbstractDominionController
             (object)[
                 'type' => 'revelation',
                 'data' => $this->spellCalculator->getActiveSpells($dominion)
-                    ->transform(function ($item, $key) {
-                        return (array)$item;
-                    })
-                    ->toArray()
             ],
             (object)[
                 'type' => 'castle_spy',
