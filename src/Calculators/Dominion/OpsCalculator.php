@@ -144,8 +144,8 @@ class OpsCalculator
         $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, $min, $max);
 
         // Forest Havens
-        $forestHavenSpyCasualtyReduction = 3;
-        $forestHavenSpyCasualtyReductionMax = 30;
+        $forestHavenSpyCasualtyReduction = 2.5;
+        $forestHavenSpyCasualtyReductionMax = 25;
 
         $spiesKilledMultiplier = (1 - min(
             (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
@@ -189,8 +189,8 @@ class OpsCalculator
         $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, $min, $max);
 
         // Wizard Guilds
-        $wizardGuildCasualtyReduction = 3;
-        $wizardGuildWizardCasualtyReductionMax = 30;
+        $wizardGuildCasualtyReduction = 2.5;
+        $wizardGuildWizardCasualtyReductionMax = 25;
 
         $wizardsKilledMultiplier = (1 - min(
             (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),

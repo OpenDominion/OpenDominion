@@ -608,8 +608,8 @@ class SpellActionService
 
                     // Disband Spies damage reduction from Forest Havens
                     if ($attr == 'military_spies') {
-                        $forestHavenSpyCasualtyReduction = 3;
-                        $forestHavenSpyCasualtyReductionMax = 30;
+                        $forestHavenSpyCasualtyReduction = 2.5;
+                        $forestHavenSpyCasualtyReductionMax = 25;
                         $damageMultiplier = min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
                             ($forestHavenSpyCasualtyReductionMax / 100)
