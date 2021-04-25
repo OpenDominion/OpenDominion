@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Sneaky Spies: spy loss reduction increased to -15% (from -10%)
 - Sleeper Agents: spy losses reduction decreased to -7.5% (from -12.5%)
 - Master of Efficiency/Resources/Discipline: military cost reduction decreased to -1.75% (from -3%)
+- Menace: now adds +2 raw mana production per tower for each war declaration (max 2)
 - Forest Haven: disband spy damage and spy losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 - Wizard Guild: spell cost and wizard losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 

@@ -62,7 +62,7 @@ class TechHelper
             'enemy_fireball_damage' => '%s%% enemy fireball damage',
             'enemy_lightning_bolt_damage' => '%s%% enemy lightning bolt damage',
             'enemy_spell_duration' => '%s black op spell duration',
-            'infamy_royal_guard' => '%s infamy gain against targets 60-166%% of your size',
+            'wartime_mana_production_raw' => '%s mana production from towers for each war declaration (max 2)',
             'spell_cost' => '%s%% cost of spells',
             'self_spell_cost' => '%s%% cost of self spells',
             'racial_spell_cost' => '%s%% cost of racial spells',

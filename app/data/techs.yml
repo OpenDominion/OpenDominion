@@ -261,7 +261,7 @@ tech_10_7:
 tech_12_7:
   name: Menace
   perks:
-    infamy_royal_guard: 10
+    wartime_mana_production_raw: 2
   requires:
     - tech_13_5
 tech_14_7:
