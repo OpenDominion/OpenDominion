@@ -54,7 +54,7 @@ tech_15_1:
   name: Sneaky Spies
   perks:
     theft_gains: 10
-    spy_losses: -10
+    spy_losses: -15
   requires:
     - tech_13_1
     - tech_17_1
@@ -116,7 +116,7 @@ tech_10_3:
   name: Sleeper Agents
   perks:
     max_population: 1
-    spy_losses: -12.5
+    spy_losses: -7.5
   requires:
     - tech_9_1
     - tech_11_5
@@ -195,7 +195,7 @@ tech_9_5:
 tech_11_5:
   name: Master of Efficiency
   perks:
-    military_cost: -3
+    military_cost: -1.75
   requires:
     - tech_10_3
     - tech_12_3
@@ -308,7 +308,7 @@ tech_7_9:
 tech_9_9:
   name: Master of Resources
   perks:
-    military_cost: -3
+    military_cost: -1.75
   requires:
     - tech_7_9
     - tech_8_11
@@ -322,7 +322,7 @@ tech_11_9:
 tech_13_9:
   name: Master of Discipline
   perks:
-    military_cost: -3
+    military_cost: -1.75
   requires:
     - tech_15_9
     - tech_14_11
@@ -360,7 +360,7 @@ tech_8_11:
 tech_10_11:
   name: WaveHack's Expertise
   perks:
-    boat_capacity: 5
+    boat_capacity: 3
     construction_platinum_cost: -5
     construction_lumber_cost: -5
   requires:
