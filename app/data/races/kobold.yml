@@ -25,14 +25,14 @@ units:
       defense: 0
   - name: Underling
     cost:
-      platinum: 245
+      platinum: 250
       ore: 20
     power:
       offense: 0
       defense: 2
   - name: Beast
     cost:
-      platinum: 975
+      platinum: 960
       ore: 0
     power:
       offense: 0

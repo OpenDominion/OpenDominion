@@ -3,10 +3,10 @@ alignment: good
 description: >-
   <p>Trapped in the land of the living, Spirits are the souls of the dead that cannot move on. They wander the lands, drawn towards towns and cities, turning thriving communities into ghost towns as people flee in terror.</p>
   <p>It is said that Spirits are capable of snatching the very soul from your body in a jealous rage; and once you're trapped in limbo with them, it's only a matter of time before you begin to resent the living; before you succumb to your envy and become just like them. Spirit "populations" swell with every invasion as more damned souls join their ranks.</p>
-attacker_difficulty: 1
+attacker_difficulty: 2
 explorer_difficulty: 2
 converter_difficulty: 3
-overall_difficulty: 1
+overall_difficulty: 2
 home_land_type: swamp
 perks:
   max_population: 12.5
@@ -34,7 +34,7 @@ units:
       immortal: 1
   - name: Ghost
     cost:
-      platinum: 900
+      platinum: 880
       ore: 0
     power:
       offense: 2
