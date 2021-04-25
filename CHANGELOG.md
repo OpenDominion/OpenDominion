@@ -3,6 +3,28 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- All bonuses are now additive with one another with the following exceptions that remain multiplicitive with one another: max population from prestige / other sources, construction cost from invasions / other sources, and casualty reductions from unit / non-unit sources
+- Construction cost reductions are now capped at 75% before invasion discount
+- Base prestige gain reverted to 20 (from 22.5)
+- Black ops will now be available on Day 7 (instead of Day 8)
+- Firewalker: construction cost bonus reduced to -7.5% (from -10%)
+- Goblin Hobgoblin: +25p
+- Kobold Underling: +5p
+- Kobold Beast: -15p
+- Lizardfolk Lizardman: -15p
+- Lycanthrope: maximum population bonus increased to 10% (from 7.5%)
+- Orc: removed 10% increased prestige gain bonus
+- Spirit Ghost: -20p
+- Undead Progeny: -20p
+- WaveHack's Expertise: boat capacity reduced to +3 (from +5)
+- Sneaky Spies: spy loss reduction increased to -15% (from -10%)
+- Sleeper Agents: spy losses reduction decreased to -7.5% (from -12.5%)
+- Master of Efficiency/Resources/Discipline: military cost reduction decreased to -1.75% (from -3%)
+- Forest Haven: disband spy damage and spy losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
+- Wizard Guild: spell cost and wizard losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
+
+## [1.3.2] - ???
 ### Added
 - Checkbox added to invade page to prevent accidental bottomfeeds
 
