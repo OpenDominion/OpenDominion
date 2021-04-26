@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('game:tick')->hourly();
+        $schedule->command('game:ai')->hourlyAt(30);
 
         $schedule->command('backup:clean')->daily()->at('01:20');
         $schedule->command('backup:run')->daily()->at('01:40');

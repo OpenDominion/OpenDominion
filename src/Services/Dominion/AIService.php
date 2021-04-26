@@ -4,6 +4,7 @@ namespace OpenDominion\Services\Dominion;
 
 use DB;
 use Illuminate\Database\Eloquent\Collection;
+use Log;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
 use OpenDominion\Calculators\Dominion\Actions\TrainingCalculator;
@@ -109,10 +110,14 @@ class AIService
 
     public function executeAI()
     {
+        Log::debug('AI started');
+
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
             if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 3)) {
+                $now = now();
+
                 $dominions = $round->activeDominions()
                     ->where('user_id', null)
                     ->with([
@@ -128,8 +133,17 @@ class AIService
                         continue;
                     }
                 }
+
+                Log::info(sprintf(
+                    'Executed actions for %s AI dominions in %s ms in %s',
+                    number_format($dominions->count()),
+                    number_format($now->diffInMilliseconds(now())),
+                    $round->name
+                ));
             }
         }
+
+        Log::debug('AI finished');
     }
 
     public function getRequiredDefense(Dominion $dominion, int $totalLand)
