@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - All bonuses are now additive with one another with the following exceptions that remain multiplicitive with one another: max population from prestige / other sources, construction cost from invasions / other sources, and casualty reductions from unit / non-unit sources
 - Construction cost reductions are now capped at 75% before invasion discount
 - Base prestige gain reverted to 20 (from 22.5)
+- Schools penalty due to recent invasions reduced to -15% per invasion, max -75% (from -20% per invasion, max -80%)
 - Black ops will now be available on Day 7 (instead of Day 8)
 - Every 100 points of mastery (spy + wizard combined) will add 50 to the minimum infamy after decay
 - The +10 infamy gain bonus changed to targets >75% (from >75% and <133%)

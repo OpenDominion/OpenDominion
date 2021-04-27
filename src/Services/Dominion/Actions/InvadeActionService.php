@@ -982,7 +982,7 @@ class InvadeActionService
 
             // Recent invasion penalty
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
-            $schoolPenalty = (1 - min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2));
+            $schoolPenalty = (1 - min(0.75, max(0, $recentlyInvadedCount - 2) * 0.15));
 
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
             if ($range < 60) {
