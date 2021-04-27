@@ -131,7 +131,7 @@ tech_12_3:
 tech_14_3:
   name: Wizard Nexus
   perks:
-    wizard_strength_recovery: 1.5
+    wizard_strength_recovery: 1.25
   requires:
     - tech_15_1
     - tech_16_3
@@ -329,8 +329,8 @@ tech_13_9:
 tech_15_9:
   name: Dark Artistry
   perks:
-    spy_strength_recovery: 1.5
-    wizard_strength_recovery: 1.5
+    spy_strength_recovery: 1
+    wizard_strength_recovery: 1
   requires:
     - tech_13_9
     - tech_17_9
@@ -401,7 +401,7 @@ tech_7_13:
 tech_9_13:
   name: Spy Network
   perks:
-    spy_strength_recovery: 1.5
+    spy_strength_recovery: 1.25
   requires:
     - tech_10_11
     - tech_8_15
