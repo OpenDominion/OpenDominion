@@ -764,8 +764,7 @@ class TickService
         }
 
         // Infamy
-        $infamyDecay = $this->opsCalculator->getInfamyDecay($dominion);
-        $tick->infamy = max($infamyDecay, -$dominion->infamy);
+        $tick->infamy = $this->opsCalculator->getInfamyDecay($dominion);
 
         // Spy Strength
         if ($dominion->spy_strength < 100) {
@@ -780,10 +779,8 @@ class TickService
         }
 
         // Resilience
-        $spyResilienceDecay = $this->opsCalculator->getResilienceDecay($dominion, 'spy');
-        $tick->spy_resilience = max($spyResilienceDecay, -$dominion->spy_resilience);
-        $wizardResilienceDecay = $this->opsCalculator->getResilienceDecay($dominion, 'wizard');
-        $tick->wizard_resilience = max($wizardResilienceDecay, -$dominion->wizard_resilience);
+        $tick->spy_resilience = $this->opsCalculator->getResilienceDecay($dominion, 'spy');
+        $tick->wizard_resilience = $this->opsCalculator->getResilienceDecay($dominion, 'wizard');
 
         // Store highest land total
         if ($totalLand > $dominion->highest_land_achieved) {

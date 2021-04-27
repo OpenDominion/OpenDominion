@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Construction cost reductions are now capped at 75% before invasion discount
 - Base prestige gain reverted to 20 (from 22.5)
 - Black ops will now be available on Day 7 (instead of Day 8)
+- Every 100 points of mastery (spy + wizard combined) will add 50 to the minimum infamy after decay
 - Firewalker: construction cost bonus reduced to -7.5% (from -10%)
 - Goblin Hobgoblin: +25p
 - Kobold Underling: +5p

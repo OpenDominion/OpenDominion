@@ -274,7 +274,12 @@ class OpsCalculator
 
         // TODO: Placeholder for tech perk
 
-        return $decay;
+        $minInfamy = floor(($dominion->spy_mastery + $dominion->wizard_mastery) / 100) * 50;
+        if ($dominion->infamy + $decay < $minInfamy) {
+            return $minInfamy - $dominion->infamy;
+        }
+
+        return max($decay, -$dominion->infamy);
     }
 
     /**
@@ -310,15 +315,17 @@ class OpsCalculator
     {
         if ($type == 'spy') {
             $decay = static::SPY_RESILIENCE_DECAY;
+            $resilience = $dominion->spy_resilience;
         } elseif ($type == 'wizard') {
             $decay = static::WIZARD_RESILIENCE_DECAY;
+            $resilience = $dominion->wizard_resilience;
         } else {
             return 0;
         }
 
         // TODO: Placeholder for tech perk
 
-        return $decay;
+        return max($decay, -$resilience);
     }
 
     /**
