@@ -291,7 +291,7 @@ tech_18_7:
 tech_5_9:
   name: Weather Manipulation
   perks:
-    enemy_lightning_bolt_damage: -10
+    enemy_lightning_bolt_damage: -12.5
     food_production: 2.5
   requires:
     - tech_4_7

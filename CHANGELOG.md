@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Construction cost reductions are now capped at 75% before invasion discount
 - Base prestige gain reverted to 20 (from 22.5)
 - Schools penalty due to recent invasions reduced to -15% per invasion, max -75% (from -20% per invasion, max -80%)
+- Towers improvement coefficient reverted to 5000 (from 4000)
+- Towers/Harbor improements increased to max 60% (from 40%)
+- Harbor boat production/protection reduced to 1.33x relative to food production (from 2x)
+- Sabotage boat damage increased to 2.4% (from 2.25%)
 - Black ops will now be available on Day 7 (instead of Day 8)
 - Every 100 points of mastery (spy + wizard combined) will add 50 to the minimum infamy after decay
 - The +10 infamy gain bonus changed to targets >75% (from >75% and <133%)
@@ -21,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Spirit Ghost: -20p
 - Undead Progeny: -20p
 - WaveHack's Expertise: boat capacity reduced to +3 (from +5)
+- Weather Manipulation: lightning bolt protection increased to 12.5% (from 10%)
 - Sneaky Spies: spy loss reduction increased to -15% (from -10%)
 - Sleeper Agents: spy losses reduction decreased to -7.5% (from -12.5%)
 - Spy Network: spy strength recovery reduced to +1.25 (from +1.5)

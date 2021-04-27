@@ -252,7 +252,7 @@
                 </div>
                 @php
                     $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($target, 24 * 3, true);
-                    $schoolPenalty = min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2) * 100;
+                    $schoolPenalty = min(0.75, max(0, $recentlyInvadedCount - 2) * 0.15) * 100;
                 @endphp
                 @if ($schoolPenalty > 0 || $target->infamy > 0)
                     <div class="box-footer text-center">

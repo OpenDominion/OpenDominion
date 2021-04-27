@@ -841,7 +841,7 @@ class ProductionCalculator
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2;
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.5;
 
         return $multiplier;
     }
