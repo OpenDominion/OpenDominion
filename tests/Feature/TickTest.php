@@ -242,34 +242,32 @@ class TickTest extends AbstractBrowserKitTestCase
             'protection_ticks_remaining' => 0,
         ])->save();
 
-        // 80 farms * 80 food * 1.05 human * 1.025 prestige = 6888 food
-        $this->assertEquals(6888, $productionCalculator->getFoodProduction($dominion));
+        // 80 farms * 80 food * 1.075 human+prestige = 6880 food
+        $this->assertEquals(6880, $productionCalculator->getFoodProduction($dominion));
         $this->assertEquals(7553, $productionCalculator->getFoodConsumption($dominion));
         $this->assertEquals(275, round($productionCalculator->getFoodDecay($dominion)));
 
-        // 6888 - 7553 - 275 = -940 food
-        $this->assertEquals(-940, $productionCalculator->getFoodNetChange($dominion));
+        // 6880 - 7553 - 275 = -948 food
+        $this->assertEquals(-948, $productionCalculator->getFoodNetChange($dominion));
 
         $spellActionService->castSpell($dominion, 'gaias_watch');
 
         // Refresh active spells
         $dominion->refresh();
 
-        // 80 farms * 80 food * 1.15 human+gaias * 1.025 prestige = 7544 food
-        // Note: Prestige calc got changed around 2019-06-05, calculation for
-        // food production multiplier and max pop is slightly different now
-        $this->assertEquals(7544, $productionCalculator->getFoodProduction($dominion));
+        // 80 farms * 80 food * 1.175 human+gaias+prestige = 7520 food
+        $this->assertEquals(7520, $productionCalculator->getFoodProduction($dominion));
         $this->assertEquals(7553, $productionCalculator->getFoodConsumption($dominion));
         $this->assertEquals(275, round($productionCalculator->getFoodDecay($dominion)));
 
-        // 7544 - 7553 - 275 = -284
-        $this->assertEquals(-284, $productionCalculator->getFoodNetChange($dominion));
+        // 7520 - 7553 - 275 = -308
+        $this->assertEquals(-308, $productionCalculator->getFoodNetChange($dominion));
 
         $tickService->precalculateTick($dominion);
         Artisan::call('game:tick');
         $dominion->refresh();
 
-        // 27487 food - 284 net change = 27203 food
+        // 27487 food - 308 net change = 27179 food
         $this->assertEquals(27203, $dominion->resource_food);
     }
 }
