@@ -114,7 +114,7 @@ class AIService
         foreach ($activeRounds as $round) {
             if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 3)) {
                 $dominions = $round->activeDominions()
-                    ->where('user_id', null)
+                    ->where('ai_enabled', true)
                     ->with([
                         'queues',
                         'race',
@@ -143,13 +143,7 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
-        $instructionSet = $this->aiHelper->getRaceInstructions();
-
-        if (!isset($instructionSet[$dominion->race->name])) {
-            return;
-        } else {
-            $config = $instructionSet[$dominion->race->name];
-        }
+        $config = $dominion->ai_config;
 
         // Set max draft rate for active NPDs
         if ($dominion->draft_rate < 90) {
@@ -166,7 +160,10 @@ class AIService
         $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
 
         // Spells
-        $this->castSpells($dominion, $config);
+        try {
+            $this->castSpells($dominion, $config);
+        } catch (GameException $e) {
+        }
 
         // Construction
         $this->constructBuildings($dominion, $config, $totalLand);

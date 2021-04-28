@@ -154,7 +154,7 @@ class HistoryService
     protected function getChangedAttributeKeys(Dominion $dominion): array
     {
         return collect($dominion->getAttributes())
-            ->diffAssoc(collect($dominion->getOriginal())->except(['settings']))
+            ->diffAssoc(collect($dominion->getOriginal())->except(['ai_config', 'settings']))
             ->except([
                 'id',
                 'user_id',
@@ -174,10 +174,12 @@ class HistoryService
                 'elite_guard_active_at',
                 'last_tick_at',
                 'locked_at',
+                'ai_enabled',
+                'ai_config',
                 'monarchy_vote_for_dominion_id',
+                'settings',
                 'created_at',
                 'updated_at',
-                'settings'
             ])->keys()->toArray();
     }
 }
