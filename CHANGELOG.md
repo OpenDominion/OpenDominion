@@ -10,29 +10,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Schools penalty due to recent invasions reduced to -15% per invasion, max -75% (from -20% per invasion, max -80%)
 - Towers improvement coefficient reverted to 5000 (from 4000)
 - Towers/Harbor improements increased to max 60% (from 40%)
-- Harbor boat production/protection reduced to 1.33x relative to food production (from 2x)
+- Harbor boat production/protection reduced to 1.25x relative to food production (from 2x)
 - Sabotage boat damage increased to 2.4% (from 2.25%)
 - Black ops will now be available on Day 7 (instead of Day 8)
 - Every 100 points of mastery (spy + wizard combined) will add 50 to the minimum infamy after decay
 - The +10 infamy gain bonus changed to targets >75% (from >75% and <133%)
 - Firewalker: construction cost bonus reduced to -7.5% (from -10%)
-- Goblin Hobgoblin: +25p
-- Kobold Underling: +5p
-- Kobold Beast: -15p
-- Lizardfolk Lizardman: -15p
+- Goblin Hobgoblin: +50p (from 975p)
+- Human Knight: -25p (from 1050p)
+- Kobold Underling: +5p (from 245p)
+- Kobold Beast: -15p (from 975p)
+- Lizardfolk Lizardman: -15p (from 1100p)
 - Lycanthrope: maximum population bonus increased to 10% (from 7.5%)
 - Orc: removed 10% increased prestige gain bonus
-- Spirit Ghost: -20p
-- Undead Progeny: -20p
+- Spirit Ghost: -20p (from 900p)
+- Undead Progeny: -20p (from 900p)
+- Wood Elf Mystic: +25p (from 1125p)
 - WaveHack's Expertise: boat capacity reduced to +3 (from +5)
 - Weather Manipulation: lightning bolt protection increased to 12.5% (from 10%)
 - Sneaky Spies: spy loss reduction increased to -15% (from -10%)
 - Sleeper Agents: spy losses reduction decreased to -7.5% (from -12.5%)
-- Spy Network: spy strength recovery reduced to +1.25 (from +1.5)
-- Wizard Nexus: wizard strength recovery reduced to +1.25 (from +1.5)
+- Spy Network: spy strength recovery reduced to +1 (from +1.5)
+- Wizard Nexus: wizard strength recovery reduced to +1 (from +1.5)
 - Dark Artistry: spy/wizard strength recovery reduced to +1 (from +1.5)
 - Master of Efficiency/Resources/Discipline: military cost reduction decreased to -1.75% (from -3%)
-- Menace: now adds +2 raw mana production per tower for each war declaration (max 2)
+- Menace: reworked, now adds +1 raw mana production per tower and an additional +2 for up to two war relations
 - Forest Haven: disband spy damage and spy losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 - Wizard Guild: spell cost and wizard losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 
@@ -43,6 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Missing prerequisites for a few techs
 - Better performance on town crier page
+- Numerous bugs related to bots; including overtraining spies, not considering in-training troops in defense calculation (thus training continuously), adding incoming land twice (thus overtraining DP), starving themselves, etc.
 
 ## [1.3.1] - 2021-03-16
 ### Added

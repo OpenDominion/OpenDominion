@@ -34,7 +34,7 @@ class WonderHelper
             'employment' => '%s%% employment',
             'exchange_bonus' => '%s%% bank exchange rates',
             'explore_platinum_cost' => '%s%% exploring platinum cost',
-            'invest_bonus' => '%s%% castle bonuses',
+            'invest_bonus' => '%s%% castle investment bonus',
             'max_population' => '%s%% maximum population',
             'rezone_cost' => '%s%% rezoning platinum cost',
 

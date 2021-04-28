@@ -480,6 +480,8 @@ class ProductionCalculator
         $mana += ($dominion->building_tower * $manaPerTower);
 
         // Techs
+        $mana += $dominion->getTechPerkValue('mana_production_raw');
+
         $wartimeManaProduction = $dominion->getTechPerkValue('wartime_mana_production_raw');
         if ($wartimeManaProduction > 0) {
             $warCount = min(2, $dominion->realm->warsIncoming->count() + $dominion->realm->warsOutgoing->count());
@@ -841,7 +843,7 @@ class ProductionCalculator
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.5;
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25;
 
         return $multiplier;
     }

@@ -131,7 +131,7 @@ tech_12_3:
 tech_14_3:
   name: Wizard Nexus
   perks:
-    wizard_strength_recovery: 1.25
+    wizard_strength_recovery: 1
   requires:
     - tech_15_1
     - tech_16_3
@@ -261,6 +261,7 @@ tech_10_7:
 tech_12_7:
   name: Menace
   perks:
+    mana_production_raw: 1
     wartime_mana_production_raw: 2
   requires:
     - tech_13_5
@@ -401,7 +402,7 @@ tech_7_13:
 tech_9_13:
   name: Spy Network
   perks:
-    spy_strength_recovery: 1.25
+    spy_strength_recovery: 1
   requires:
     - tech_10_11
     - tech_8_15
