@@ -268,6 +268,6 @@ class TickTest extends AbstractBrowserKitTestCase
         $dominion->refresh();
 
         // 27487 food - 308 net change = 27179 food
-        $this->assertEquals(27203, $dominion->resource_food);
+        $this->assertEquals(27179, $dominion->resource_food);
     }
 }
