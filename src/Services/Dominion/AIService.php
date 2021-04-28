@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion;
 
 use DB;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -124,7 +125,7 @@ class AIService
                 foreach ($dominions as $dominion) {
                     try {
                         $this->performActions($dominion);
-                    } catch (GameException $e) {
+                    } catch (Exception $e) {
                         continue;
                     }
                 }
@@ -163,24 +164,45 @@ class AIService
         try {
             $this->castSpells($dominion, $config);
         } catch (GameException $e) {
+            // Get out, you old Wight! Vanish in the sunlight!
         }
 
         // Construction
-        $this->constructBuildings($dominion, $config, $totalLand);
+        try {
+            $this->constructBuildings($dominion, $config, $totalLand);
+        } catch (GameException $e) {
+            // Shrivel like the cold mist, like the winds go wailing,
+        }
 
         // Military
-        $this->trainMilitary($dominion, $config, $totalLand);
+        try {
+            $this->trainMilitary($dominion, $config, $totalLand);
+        } catch (GameException $e) {
+            // Out into the barren lands far beyond the mountains!
+        }
 
         // Explore
-        if ($incomingLand < 72) {
-            $this->exploreLand($dominion, $config, $totalLand);
+        try {
+            if ($incomingLand < 72) {
+                $this->exploreLand($dominion, $config, $totalLand);
+            }
+        } catch (GameException $e) {
+            // Come never here again! Leave your barrow empty!
         }
 
         // Improvements
-        $this->investCastle($dominion, $config);
+        try {
+            $this->investCastle($dominion, $config);
+        } catch (GameException $e) {
+            // Lost and forgotten be, darker than the darkness,
+        }
 
         // Release
-        $this->releaseDraftees($dominion, $config);
+        try {
+            $this->releaseDraftees($dominion, $config);
+        } catch (GameException $e) {
+            // Where gates stand for ever shut, till the world is mended.
+        }
     }
 
     public function castSpells(Dominion $dominion, array $config) {
