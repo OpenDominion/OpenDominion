@@ -633,10 +633,10 @@ class EspionageActionService
                         $damage = (int)$target->{$attr};
                     }
                     $target->{$attr} -= $damage;
-                    $damage = (floor($target->{$attr} + $damage) - floor($target->{$attr}));
+                    $damage = floor($target->{$attr} + $damage) - floor($target->{$attr});
                 } else {
-                    // Rounded for all other damage types
-                    $damage = round($damage);
+                    // Rounded up for all other damage types
+                    $damage = ceil($damage);
                     $target->{$attr} -= $damage;
                 }
 

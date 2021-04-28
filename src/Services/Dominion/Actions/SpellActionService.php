@@ -629,7 +629,7 @@ class SpellActionService
                     }
 
                     // Cap damage reduction at 80%, then apply resilience
-                    $damage = round(
+                    $damage = ceil(
                         $target->{$attr} *
                         $baseDamage *
                         (1 - min(0.8, $damageReductionMultiplier)) *
