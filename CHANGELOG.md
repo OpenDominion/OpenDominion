@@ -4,12 +4,12 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Changed
-- All bonuses are now additive with one another with the following exceptions that remain multiplicitive with one another: max population from prestige / other sources, construction cost from invasions / other sources, and casualty reductions from unit / non-unit sources
+- All bonuses are now additive with one another with the following exceptions that remain multiplicative with one another: max population from prestige / other sources, construction cost from invasions / other sources, and casualty reductions from unit / non-unit sources
 - Construction cost reductions are now capped at 75% before invasion discount
 - Base prestige gain reverted to 20 (from 22.5)
 - Schools penalty due to recent invasions reduced to -15% per invasion, max -75% (from -20% per invasion, max -80%)
 - Towers improvement coefficient reverted to 5000 (from 4000)
-- Towers/Harbor improements increased to max 60% (from 40%)
+- Towers/Harbor improvements increased to max 60% (from 40%)
 - Harbor boat production/protection reduced to 1.25x relative to food production (from 2x)
 - Sabotage boat damage increased to 2.4% (from 2.25%)
 - Black ops will now be available on Day 7 (instead of Day 8)
