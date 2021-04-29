@@ -589,6 +589,7 @@
                                                     class="form-control text-center"
                                                     placeholder="3"
                                                     min="0"
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) && (array_get($targetInfoOps['clear_sight']->data, "military_wizards") !== null) ? ((array_get($targetInfoOps['clear_sight']->data, "military_wizards") + array_get($targetInfoOps['clear_sight']->data, "military_archmages") * 2) / array_get($targetInfoOps['clear_sight']->data, "land")) : null }}"
                                                     disabled />
                                         </div>
                                     @endif
