@@ -270,7 +270,8 @@ class OpsCalculator
 
         // TODO: Placeholder for tech perk
 
-        $minInfamy = floor(($dominion->spy_mastery + $dominion->wizard_mastery) / 100) * 50;
+        $masteryCombined = min($dominion->spy_mastery, 500) + min($dominion->wizard_mastery, 500);
+        $minInfamy = floor($masteryCombined / 100) * 50;
         if ($dominion->infamy + $decay < $minInfamy) {
             return $minInfamy - $dominion->infamy;
         }

@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Harbor boat production/protection reduced to 1.25x relative to food production (from 2x)
 - Sabotage boat damage increased to 2.4% (from 2.25%)
 - Black ops will now be available on Day 7 (instead of Day 8)
-- Every 100 points of mastery (spy + wizard combined) will add 50 to the minimum infamy after decay
+- Every 100 points of mastery (up to 500 per type, rounded down) will add 50 to the minimum infamy after decay (max 500)
 - The +10 infamy gain bonus changed to targets >75% (from >75% and <133%)
 - Firewalker: construction cost bonus reduced to -7.5% (from -10%)
 - Goblin Hobgoblin: +50p (from 975p)
