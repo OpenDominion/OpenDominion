@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Kobold Beast: -15p (from 975p)
 - Lizardfolk Lizardman: -15p (from 1100p)
 - Lycanthrope: maximum population bonus increased to 10% (from 7.5%)
+- Nomad Blademaster: -25p (from 1050p)
 - Orc: removed 10% increased prestige gain bonus
 - Spirit Ghost: -20p (from 900p)
 - Undead Progeny: -20p (from 900p)
