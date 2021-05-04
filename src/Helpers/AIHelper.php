@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Helpers;
 
+use OpenDominion\Models\Race;
 use OpenDominion\Models\Round;
 
 class AIHelper
@@ -23,570 +24,166 @@ class AIHelper
         return $totalLand * $defensePerAcre * $scaleFactor;
     }
 
-    public function getRaceInstructions()
+    public function generateConfig(Race $race)
+    {
+        $config = $this->getDefaultInstructions();
+
+        $config['active_chance'] = mt_rand(20, 35) / 100;
+        $config['max_land'] = mt_rand(600, 3000);
+
+        $investOreRaces = ['Dwarf', 'Gnome', 'Icekin'];
+        if (in_array($race->name, $investOreRaces)) {
+            $config['invest'] = 'ore';
+        }
+        $investLumberRaces = ['Sylvan', 'Wood Elf'];
+        if (in_array($race->name, $investLumberRaces)) {
+            $config['invest'] = 'ore';
+        }
+
+        if ($race->name == 'Halfling') {
+            $config['spells'][] = 'defensive_frenzy';
+        } elseif ($race->name == 'Icekin') {
+            $config['spells'][] = 'blizzard';
+        } else {
+            $config['spells'][] = 'ares_call';
+        }
+
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead'];
+        if (!in_array($race->name, $racesWithoutOre)) {
+            $config['build'][] = [
+                'land_type' => 'mountain',
+                'building' => 'ore_mine',
+                'amount' => 0.6
+            ];
+        }
+
+        $specOnlyRaces = ['Goblin', 'Halfling', 'Lizardfolk'];
+        if (in_array($race->name, $specOnlyRaces) || random_chance(0.4)) {
+            $config['military'][0]['unit'] = 'unit2';
+        }
+
+        $landBasedRaces = ['Gnome', 'Icekin', 'Nox', 'Sylvan', 'Wood Elf'];
+        if (in_array($race->name, $landBasedRaces)) {
+            if ($race->name == 'Nox') {
+                $config['build'][] = [
+                    'land_type' => 'swamp',
+                    'building' => 'wizard_guild',
+                    'amount' => mt_rand(8, 15) / 100
+                ];
+            }
+            if (in_array($race->name, ['Gnome', 'Icekin'])) {
+                $config['build'][] = [
+                    'land_type' => 'mountain',
+                    'building' => 'ore_mine',
+                    'amount' => -1
+                ];
+            }
+            if (in_array($race->name, ['Sylvan', 'Wood Elf'])) {
+                $config['build'][] = [
+                    'land_type' => 'forest',
+                    'building' => 'lumberyard',
+                    'amount' => -1
+                ];
+            }
+        } else {
+            if ($config['military'][0]['unit'] == 'unit2' && random_chance(0.75)) {
+                $config['build'][] = [
+                    'land_type' => 'hill',
+                    'building' => 'guard_tower',
+                    'amount' => mt_rand(10, 20) / 100
+                ];
+            } else {
+                $config['build'][] = [
+                    'land_type' => 'plain',
+                    'building' => 'smithy',
+                    'amount' => mt_rand(5, 18) / 100
+                ];
+            }
+
+            $config['build'][] = [
+                'land_type' => 'cavern',
+                'building' => 'diamond_mine',
+                'amount' => mt_rand(50, 150)
+            ];
+
+            $jobBuildings = collect([
+                [
+                    'land_type' => 'plain',
+                    'building' => 'alchemy',
+                    'amount' => -1
+                ],
+                [
+                    'land_type' => 'plain',
+                    'building' => 'masonry',
+                    'amount' => -1
+                ],
+                [
+                    'land_type' => 'cavern',
+                    'building' => 'school',
+                    'amount' => -1
+                ],
+                [
+                    'land_type' => 'hill',
+                    'building' => 'shrine',
+                    'amount' => -1
+                ],
+                [
+                    'land_type' => 'cavern',
+                    'building' => 'school',
+                    'amount' => -1
+                ]
+            ]);
+
+            $config['build'][] = $jobBuildings->random();
+        }
+
+        $config['build'][] = [
+            'land_type' => $race->home_land_type,
+            'building' => 'home',
+            'amount' => -1
+        ];
+
+        return $config;
+    }
+
+    public function getDefaultInstructions()
     {
         return [
-            'Dwarf' => [
-                'active_chance' => '0.33', // 33% chance to log in
-                'invest' => 'ore', // alternate resource to invest
-                'spells' => [
-                    'miners_sight',
-                    'ares_call',
-                    'midas_touch'
+            'active_chance' => '0.25',
+            'max_land' => 3000,
+            'invest' => 'gems',
+            'spells' => [
+                'midas_touch'
+            ],
+            'build' => [
+                [
+                    'land_type' => 'plain',
+                    'building' => 'farm',
+                    'amount' => 0.06
                 ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.07 // maintain 7% farms
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 500 // build up to 600, then stop
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'home',
-                        'amount' => -1 // no limit, when jobs available
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'masonry',
-                        'amount' => -1 // no limit, when jobs needed
-                    ]
+                [
+                    'land_type' => 'swamp',
+                    'building' => 'tower',
+                    'amount' => 0.05
                 ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05 // maintain 0.05 SPA
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05 // maintain 0.05 WPA
-                    ]
+                [
+                    'land_type' => 'forest',
+                    'building' => 'lumberyard',
+                    'amount' => 0.035
                 ]
             ],
-            'Firewalker' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'alchemist_flame',
-                    'ares_call',
-                    'midas_touch'
+            'military' => [
+                [
+                    'unit' => 'unit3',
+                    'amount' => -1
                 ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.07
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'alchemy',
-                        'amount' => -1
-                    ]
+                [
+                    'unit' => 'spies',
+                    'amount' => 0.05
                 ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Goblin' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.08
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 0.03
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'guard_tower',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Halfling' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'defensive_frenzy',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.07
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.045
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 0.03
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'guard_tower',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Icekin' => [
-                'active_chance' => '0.33',
-                'invest' => 'ore',
-                'spells' => [
-                    'blizzard',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.065
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.045
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 0.6
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Lizardfolk' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.07
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'water',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'guard_tower',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Lycanthrope' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.07
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 0.03
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'guard_tower',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit2',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Merfolk' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.065
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.045
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 0.20
-                    ],
-                    [
-                        'land_type' => 'water',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'masonry',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Nomad' => [
-                'active_chance' => '0.33',
-                'invest' => 'gems',
-                'spells' => [
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.065
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.04
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.035
-                    ],
-                    [
-                        'land_type' => 'mountain',
-                        'building' => 'ore_mine',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'cavern',
-                        'building' => 'diamond_mine',
-                        'amount' => 150
-                    ],
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'hill',
-                        'building' => 'shrine',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
-                ]
-            ],
-            'Wood Elf' => [
-                'active_chance' => '0.33',
-                'invest' => 'lumber',
-                'spells' => [
-                    'gaias_blessing',
-                    'ares_call',
-                    'midas_touch'
-                ],
-                'build' => [
-                    [
-                        'land_type' => 'plain',
-                        'building' => 'farm',
-                        'amount' => 0.065
-                    ],
-                    [
-                        'land_type' => 'swamp',
-                        'building' => 'tower',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'home',
-                        'amount' => -1
-                    ],
-                    [
-                        'land_type' => 'forest',
-                        'building' => 'lumberyard',
-                        'amount' => -1
-                    ]
-                ],
-                'military' => [
-                    [
-                        'unit' => 'unit3',
-                        'amount' => -1
-                    ],
-                    [
-                        'unit' => 'spies',
-                        'amount' => 0.05
-                    ],
-                    [
-                        'unit' => 'wizards',
-                        'amount' => 0.05
-                    ]
+                [
+                    'unit' => 'wizards',
+                    'amount' => 0.05
                 ]
             ]
         ];

@@ -113,21 +113,20 @@ class AIService
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
-            if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 3)) {
-                $dominions = $round->activeDominions()
-                    ->where('ai_enabled', true)
-                    ->with([
-                        'queues',
-                        'race',
-                    ])
-                    ->get();
+            $dominions = $round->activeDominions()
+                ->where('ai_enabled', true)
+                ->with([
+                    'queues',
+                    'race',
+                    'round',
+                ])
+                ->get();
 
-                foreach ($dominions as $dominion) {
-                    try {
-                        $this->performActions($dominion);
-                    } catch (Exception $e) {
-                        continue;
-                    }
+            foreach ($dominions as $dominion) {
+                try {
+                    $this->performActions($dominion);
+                } catch (Exception $e) {
+                    continue;
                 }
             }
         }
@@ -183,7 +182,7 @@ class AIService
 
         // Explore
         try {
-            if ($incomingLand < 72) {
+            if ($dominion->round->daysInRound() > 4 && $incomingLand <= 36 && $totalLand < $config['max_land']) {
                 $this->exploreLand($dominion, $config, $totalLand);
             }
         } catch (GameException $e) {
@@ -260,7 +259,7 @@ class AIService
     public function exploreLand(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $landToExplore = [];
-        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 18);
+        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 12);
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (

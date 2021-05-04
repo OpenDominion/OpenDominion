@@ -112,6 +112,7 @@ class TickService
         $rounds = Round::activeSoon()->get();
         foreach ($rounds as $round) {
             $dominionFactory = app(\OpenDominion\Factories\DominionFactory::class);
+            $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
             $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
             $names_json = json_decode($filesystem->get(base_path('app/data/dominion_names.json')));
             $names = collect($names_json->dominion_names);
@@ -119,7 +120,7 @@ class TickService
             $realm = $round->realms()->where('number', 0)->first();
             // Number of NPDs to spawn (half the number of real players)
             $npdCount = round($round->dominions()->count() * 0.575);
-            for($cnt=0; $cnt<$npdCount; $cnt++) {
+            for ($cnt=0; $cnt<$npdCount; $cnt++) {
                 if ($realm->alignment != 'neutral') {
                     $race = $races->where('alignment', $realm->alignment)->random();
                 } else {
@@ -145,6 +146,14 @@ class TickService
                         $failCount++;
                     }
                 }
+            }
+            // 30% of NPDs are active
+            $activeCount = round($npdCount * 0.30);
+            $npds = $round->dominions()->where('user_id', null)->get()->random($activeCount);
+            foreach ($npds as $npd) {
+                $npd->ai_enabled = true;
+                $npd->ai_config = $aiHelper->generateConfig($npd->race);
+                $npd->save();
             }
         }
 
