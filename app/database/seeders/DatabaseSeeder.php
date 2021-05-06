@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
+use Artisan;
 use Illuminate\Database\Seeder;
 use OpenDominion\Console\Commands\Game\DataSyncCommand;
 

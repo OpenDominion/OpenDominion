@@ -28,7 +28,7 @@ trait CreatesData
             $attributes['password'] = bcrypt($password);
         }
 
-        return factory(User::class)->create($attributes);
+        return User::factory()->create($attributes);
     }
 
     /**

@@ -8,9 +8,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    # Apparently Laravel 5.7 doesn't work on PHP 7.4 (More info: https://github.com/laravel/framework/issues/30737)
-    - name: Set PHP version to PHP 7.3
-      run: sudo update-alternatives --set php /usr/bin/php7.3 > /dev/null
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
 
     - name: Shut down MySQL server
       run: sudo service mysql stop
@@ -34,6 +35,9 @@ jobs:
 
     - name: Create dummy mix-manifest.json file
       run: echo '{"/assets/app/css/app.css":"/dummy","/assets/app/js/app.js":"/dummy"}' > public/mix-manifest.json
+
+    - name: Wait for MySQL
+      run: sleep 10
 
     - name: Run database migrations
       run: php artisan migrate

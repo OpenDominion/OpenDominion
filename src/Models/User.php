@@ -3,12 +3,14 @@
 namespace OpenDominion\Models;
 
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Gravatar;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use OpenDominion\Notifications\User\ResetPasswordNotification;
@@ -44,7 +46,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends AbstractModel implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, HasRoles, Notifiable;
+    use Authenticatable, Authorizable, CanResetPassword, HasFactory, HasRoles, Notifiable;
 
     protected $casts = [
         'settings' => 'array',
@@ -204,5 +206,15 @@ class User extends AbstractModel implements AuthenticatableContract, Authorizabl
         {
             return '<i>(Moderator)</i>';
         }
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return UserFactory::new();
     }
 }

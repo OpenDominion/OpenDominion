@@ -26,7 +26,7 @@ class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
     /** @var SelectorService */
     protected $dominionSelectorService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -47,11 +47,10 @@ class DominionSelectorServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals($this->dominion->id, $this->dominionSelectorService->getUserSelectedDominion()->id);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testUserCannotSelectSomeoneElsesDominion()
     {
+        $this->expectException(Exception::class);
+
         $user2 = $this->createUser();
         $dominion2 = $this->createDominion($user2, $this->round);
 

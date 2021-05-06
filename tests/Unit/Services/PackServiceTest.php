@@ -2,7 +2,9 @@
 
 namespace OpenDominion\Tests\Unit\Services;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
@@ -33,7 +35,7 @@ class PackServiceTest extends AbstractBrowserKitTestCase
     /** @var PackService */
     protected $packService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -61,11 +63,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->assertTrue($pack->exists);
     }
 
-    /**
-     * @expectedException \OpenDominion\Exceptions\GameException
-     */
     public function testCreatePackWhenPackSizeIsLowerThan2Throws()
     {
+        $this->expectException(GameException::class);
+
         // Act
         $this->packService->createPack(
             $this->goodDominion,
@@ -75,11 +76,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         );
     }
 
-    /**
-     * @expectedException \OpenDominion\Exceptions\GameException
-     */
     public function testCreatePackWhenPackSizeIsGreaterThanRoundPackSizeThrows()
     {
+        $this->expectException(GameException::class);
+
         // Act
         $this->packService->createPack(
             $this->goodDominion,
@@ -91,11 +91,11 @@ class PackServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Currently limited by UNIQUE-constraint in the database.
-     *
-     * @expectedException \Illuminate\Database\QueryException
      */
     public function testCreatePackWhenPackWithSameNameAndPasswordAlreadyExistsThrows()
     {
+        $this->expectException(QueryException::class);
+
         // Act
         for ($i = 0; $i < 2; $i++) {
             $this->packService->createPack(
@@ -132,11 +132,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->assertEquals($this->goodRealm->id, $pack2->realm_id);
     }
 
-    /**
-     * @expectedException \OpenDominion\Exceptions\GameException
-     */
     public function testGetPackWhenNoPackExistsThrows()
     {
+        $this->expectException(GameException::class);
+
         // Act
         $pack = $this->packService->getPack(
             $this->round,
@@ -146,11 +145,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         );
     }
 
-    /**
-     * @expectedException \OpenDominion\Exceptions\GameException
-     */
     public function testGetPackWhenPackIsFullThrows()
     {
+        $this->expectException(GameException::class);
+
         // Arrange
         $pack = $this->packService->createPack(
             $this->goodDominion,
@@ -186,11 +184,10 @@ class PackServiceTest extends AbstractBrowserKitTestCase
         $this->assertTrue($pack->isFull());
     }
 
-    /**
-     * @expectedException \OpenDominion\Exceptions\GameException
-     */
     public function testGetPackWhenRaceAlignmentMismatchThrows()
     {
+        $this->expectException(GameException::class);
+
         // Arrange
         $this->packService->createPack(
             $this->goodDominion,

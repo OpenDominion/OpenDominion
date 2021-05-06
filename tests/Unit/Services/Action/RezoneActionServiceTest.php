@@ -4,8 +4,8 @@ namespace OpenDominion\Tests\Unit\Services\Action;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Mockery as m;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\Actions\RezoneActionService;
@@ -27,7 +27,7 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
     /** @var RezoneActionService */
     protected $rezoneActionService;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,19 +38,13 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
         $this->rezoneActionService = $this->app->make(RezoneActionService::class);
     }
 
-    public function tearDown()
-    {
-        // todo: add this to other test classes
-        m::close();
-    }
-
     /**
      * Baseline.
-     *
-     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testDoingNothing()
     {
+        $this->expectException(GameException::class);
+
         $this->assertEquals(100000, $this->dominion->resource_platinum);
 
         $this->rezoneActionService->rezone($this->dominion, [], []);
@@ -74,11 +68,11 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Test that nothing happens when the target land is the same as the source.
-     *
-     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testConvertingToSameTypeIsFree()
     {
+        $this->expectException(GameException::class);
+
         $this->assertEquals(100000, $this->dominion->resource_platinum);
         $this->assertEquals(20, $this->dominion->land_cavern);
 
@@ -110,11 +104,11 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Test that rezoning a locked dominion is prohibited.
-     *
-     * @expectedException \RuntimeException
      */
     public function testRezoningLockedDominion()
     {
+        $this->expectException(GameException::class);
+
         $this->assertFalse($this->dominion->isLocked());
 
         // todo: investigate why $this->round->end_date doesn't work
@@ -127,21 +121,21 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Test that the amount of land to add cannot be different from the land to remove.
-     *
-     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testMismatchedRezoning()
     {
+        $this->expectException(GameException::class);
+
         $this->rezoneActionService->rezone($this->dominion, ['cavern' => 1], ['hill' => 2]);
     }
 
     /**
      * Test that only barren land can be converted.
-     *
-     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testRemovingMoreThanBarrenLand()
     {
+        $this->expectException(GameException::class);
+
         $this->dominion->land_cavern = 20;
         $this->dominion->building_diamond_mine = 15;
 
@@ -152,11 +146,11 @@ class RezoneActionServiceTest extends AbstractBrowserKitTestCase
 
     /**
      * Test that you cannot perform a conversion you can't afford.
-     *
-     * @expectedException \OpenDominion\Exceptions\GameException
      */
     public function testRemovingMoreThanCanBeAfforded()
     {
+        $this->expectException(GameException::class);
+
         $this->dominion->resource_platinum = 0;
 
         $this->rezoneActionService->rezone($this->dominion, ['cavern' => 1], ['hill' => 1]);
