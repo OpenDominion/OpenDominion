@@ -15,6 +15,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $id
  * @property int $user_id
  * @property int $round_id
+ * @property int|null $pack_id
  * @property int $realm_id
  * @property int $race_id
  * @property string $name
@@ -24,8 +25,13 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $peasants_last_hour
  * @property int $draft_rate
  * @property int $morale
+ * @property int $infamy
  * @property float $spy_strength
  * @property float $wizard_strength
+ * @property int $spy_resilience
+ * @property int $wizard_resilience
+ * @property int $spy_mastery
+ * @property int $wizard_mastery
  * @property bool $daily_platinum
  * @property bool $daily_land
  * @property int $resource_platinum
@@ -77,18 +83,22 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property int $building_shrine
  * @property int $building_barracks
  * @property int $building_dock
+ * @property int $calculated_networth
  * @property \Illuminate\Support\Carbon|null $council_last_read
  * @property \Illuminate\Support\Carbon|null $forum_last_read
  * @property \Illuminate\Support\Carbon|null $town_crier_last_seen
  * @property \Illuminate\Support\Carbon|null $wonders_last_seen
- * @property \Illuminate\Support\Carbon|null $royal_guard
- * @property \Illuminate\Support\Carbon|null $elite_guard
+ * @property \Illuminate\Support\Carbon|null $royal_guard_active_at
+ * @property \Illuminate\Support\Carbon|null $elite_guard_active_at
+ * @property \Illuminate\Support\Carbon|null $last_tick_at
+ * @property \Illuminate\Support\Carbon|null $locked_at
+ * @property int $protection_ticks_remaining
+ * @property bool $ai_enabled
+ * @property array|null $ai_config
+ * @property int $monarchy_vote_for_dominion_id
+ * @property array|null $settings
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $pack_id
- * @property array|null $settings
- * @property int|null $monarch_dominion_id
- * @property int $calculated_networth
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion\History[] $history
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -120,6 +130,8 @@ class Dominion extends AbstractModel
         'wizard_resilience' => 'integer',
         'spy_mastery' => 'integer',
         'wizard_mastery' => 'integer',
+        'daily_platinum' => 'boolean',
+        'daily_land' => 'boolean',
         'resource_platinum' => 'integer',
         'resource_food' => 'integer',
         'resource_lumber' => 'integer',
@@ -168,8 +180,7 @@ class Dominion extends AbstractModel
         'building_shrine' => 'integer',
         'building_barracks' => 'integer',
         'building_dock' => 'integer',
-        'daily_platinum' => 'boolean',
-        'daily_land' => 'boolean',
+        'calculated_networth' => 'integer',
         'council_last_read' => 'datetime',
         'forum_last_read' => 'datetime',
         'town_crier_last_seen' => 'datetime',
@@ -179,6 +190,8 @@ class Dominion extends AbstractModel
         'last_tick_at' => 'datetime',
         'locked_at' => 'datetime',
         'protection_ticks_remaining' => 'integer',
+        'ai_enabled' => 'boolean',
+        'ai_config' => 'array',
         'settings' => 'array',
     ];
 

@@ -192,7 +192,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Blizzard',
-                'description' => '+15% defensive strength (not cumulative with Ares Call)',
+                'description' => '+15% defensive power (not cumulative with Ares Call)',
                 'key' => 'blizzard',
                 'mana_cost' => 5,
                 'duration' => 12,

@@ -58,7 +58,7 @@ class InvadeActionService
     /**
      * @var int Bonus prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 22.5;
+    protected const PRESTIGE_CHANGE_ADD = 20;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -982,7 +982,7 @@ class InvadeActionService
 
             // Recent invasion penalty
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
-            $schoolPenalty = (1 - min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2));
+            $schoolPenalty = (1 - min(0.75, max(0, $recentlyInvadedCount - 2) * 0.15));
 
             $range = $this->rangeCalculator->getDominionRange($dominion, $target);
             if ($range < 60) {
@@ -999,11 +999,15 @@ class InvadeActionService
                 $researchPointsGained = max(0, $researchPointsGained);
             }
 
+            $multiplier = 1;
+
             // Racial Bonus
-            $researchPointsGained *= (1 + $dominion->race->getPerkMultiplier('tech_production'));
+            $multiplier += $dominion->race->getPerkMultiplier('tech_production');
 
             // Wonders
-            $researchPointsGained *= (1 + $dominion->getWonderPerkMultiplier('tech_production'));
+            $multiplier += $dominion->getWonderPerkMultiplier('tech_production');
+
+            $researchPointsGained *= $multiplier;
 
             if($researchPointsGained > 0) {
                 $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);

@@ -662,7 +662,7 @@ class DominionFactory
         ];
 
         $landAvailable = $landSize - array_sum($startingBuildings);
-        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Spirit', 'Sylvan', 'Undead'];
+        $racesWithoutOre = ['Firewalker', 'Lizardfolk', 'Merfolk', 'Nox', 'Spirit', 'Sylvan', 'Undead'];
         $landBasedRaces = ['Gnome', 'Icekin', 'Nox', 'Sylvan', 'Wood Elf'];
 
         // Ore Mines

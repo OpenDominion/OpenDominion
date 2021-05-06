@@ -239,7 +239,7 @@ class ProductionCalculator
         $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor');
 
         // Prestige Bonus
-        $multiplier *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion) * (1 + $dominion->getTechPerkMultiplier('food_production_prestige')));
+        $multiplier += ($this->prestigeCalculator->getPrestigeMultiplier($dominion) * (1 + $dominion->getTechPerkMultiplier('food_production_prestige')));
 
         return $multiplier;
     }
@@ -478,6 +478,15 @@ class ProductionCalculator
 
         // Building: Tower
         $mana += ($dominion->building_tower * $manaPerTower);
+
+        // Techs
+        $mana += $dominion->getTechPerkValue('mana_production_raw');
+
+        $wartimeManaProduction = $dominion->getTechPerkValue('wartime_mana_production_raw');
+        if ($wartimeManaProduction > 0) {
+            $warCount = min(2, $dominion->realm->warsIncoming->count() + $dominion->realm->warsOutgoing->count());
+            $mana += ($dominion->building_tower * $wartimeManaProduction * $warCount);
+        }
 
         return $mana;
     }
@@ -770,7 +779,7 @@ class ProductionCalculator
         // Recently invaded penalty
         $militaryCalculator = app(MilitaryCalculator::class);
         $recentlyInvadedCount = $militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
-        $multiplier *= (1 - min(0.8, max(0, $recentlyInvadedCount - 2) * 0.2));
+        $multiplier *= (1 - min(0.75, max(0, $recentlyInvadedCount - 2) * 0.15));
 
         return $multiplier;
     }
@@ -834,7 +843,7 @@ class ProductionCalculator
         $multiplier -= $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'great_flood', $spellGreatFlood);
 
         // Improvement: Harbor
-        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 2;
+        $multiplier += $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'harbor') * 1.25;
 
         return $multiplier;
     }

@@ -3,6 +3,7 @@
 namespace OpenDominion\Services\Dominion;
 
 use DB;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Log;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
@@ -115,23 +116,20 @@ class AIService
         $activeRounds = Round::active()->get();
 
         foreach ($activeRounds as $round) {
-            if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 3)) {
-                $now = now();
+            $dominions = $round->activeDominions()
+                ->where('ai_enabled', true)
+                ->with([
+                    'queues',
+                    'race',
+                    'round',
+                ])
+                ->get();
 
-                $dominions = $round->activeDominions()
-                    ->where('user_id', null)
-                    ->with([
-                        'queues',
-                        'race',
-                    ])
-                    ->get();
-
-                foreach ($dominions as $dominion) {
-                    try {
-                        $this->performActions($dominion);
-                    } catch (GameException $e) {
-                        continue;
-                    }
+            foreach ($dominions as $dominion) {
+                try {
+                    $this->performActions($dominion);
+                } catch (Exception $e) {
+                    continue;
                 }
 
                 Log::info(sprintf(
@@ -157,13 +155,7 @@ class AIService
 
     public function performActions(Dominion $dominion)
     {
-        $instructionSet = $this->aiHelper->getRaceInstructions();
-
-        if (!isset($instructionSet[$dominion->race->name])) {
-            return;
-        } else {
-            $config = $instructionSet[$dominion->race->name];
-        }
+        $config = $dominion->ai_config;
 
         // Set max draft rate for active NPDs
         if ($dominion->draft_rate < 90) {
@@ -180,24 +172,48 @@ class AIService
         $incomingLand = $this->queueService->getExplorationQueueTotal($dominion);
 
         // Spells
-        $this->castSpells($dominion, $config);
+        try {
+            $this->castSpells($dominion, $config);
+        } catch (GameException $e) {
+            // Get out, you old Wight! Vanish in the sunlight!
+        }
 
         // Construction
-        $this->constructBuildings($dominion, $config, $totalLand);
+        try {
+            $this->constructBuildings($dominion, $config, $totalLand);
+        } catch (GameException $e) {
+            // Shrivel like the cold mist, like the winds go wailing,
+        }
 
         // Military
-        $this->trainMilitary($dominion, $config, $totalLand);
+        try {
+            $this->trainMilitary($dominion, $config, $totalLand);
+        } catch (GameException $e) {
+            // Out into the barren lands far beyond the mountains!
+        }
 
         // Explore
-        if ($incomingLand < 72) {
-            $this->exploreLand($dominion, $config, $totalLand);
+        try {
+            if ($dominion->round->daysInRound() > 4 && $incomingLand <= 36 && $totalLand < $config['max_land']) {
+                $this->exploreLand($dominion, $config, $totalLand);
+            }
+        } catch (GameException $e) {
+            // Come never here again! Leave your barrow empty!
         }
 
         // Improvements
-        $this->investCastle($dominion, $config);
+        try {
+            $this->investCastle($dominion, $config);
+        } catch (GameException $e) {
+            // Lost and forgotten be, darker than the darkness,
+        }
 
         // Release
-        $this->releaseDraftees($dominion, $config);
+        try {
+            $this->releaseDraftees($dominion, $config);
+        } catch (GameException $e) {
+            // Where gates stand for ever shut, till the world is mended.
+        }
     }
 
     public function castSpells(Dominion $dominion, array $config) {
@@ -255,7 +271,7 @@ class AIService
     public function exploreLand(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $landToExplore = [];
-        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 18);
+        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 12);
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (

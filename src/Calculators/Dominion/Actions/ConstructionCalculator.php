@@ -72,15 +72,17 @@ class ConstructionCalculator
         $multiplier = $this->getCostMultiplier($dominion);
 
         // Racial Bonus
-        $multiplier *= (1 + $dominion->race->getPerkMultiplier('construction_cost'));
+        $multiplier += $dominion->race->getPerkMultiplier('construction_cost');
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_cost') + $dominion->getTechPerkMultiplier('construction_platinum_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('construction_cost');
+        $multiplier += $dominion->getTechPerkMultiplier('construction_platinum_cost');
 
         // Wonders
-        $multiplier *= (1 + $dominion->getWonderPerkMultiplier('construction_cost'));
+        $multiplier += $dominion->getWonderPerkMultiplier('construction_cost');
 
-        return $multiplier;
+        // Cap at -75%
+        return min($multiplier, 0.75);
     }
 
     /**
@@ -150,9 +152,10 @@ class ConstructionCalculator
         $multiplier = $this->getCostMultiplier($dominion);
 
         // Techs
-        $multiplier *= (1 + $dominion->getTechPerkMultiplier('construction_lumber_cost'));
+        $multiplier += $dominion->getTechPerkMultiplier('construction_lumber_cost');
 
-        return $multiplier;
+        // Cap at -75%
+        return min($multiplier, 0.75);
     }
 
     /**

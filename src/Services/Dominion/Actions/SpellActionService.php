@@ -92,7 +92,7 @@ class SpellActionService
         $this->spellHelper = app(SpellHelper::class);
     }
 
-    public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 7;
+    public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 6;
 
     /**
      * Casts a magic spell for a dominion, optionally aimed at another dominion.
@@ -416,7 +416,7 @@ class SpellActionService
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
-            throw new GameException('You cannot perform black ops for the first seven days of the round');
+            throw new GameException('You cannot perform black ops for the first six days of the round');
         }
 
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
@@ -608,8 +608,8 @@ class SpellActionService
 
                     // Disband Spies damage reduction from Forest Havens
                     if ($attr == 'military_spies') {
-                        $forestHavenSpyCasualtyReduction = 3;
-                        $forestHavenSpyCasualtyReductionMax = 30;
+                        $forestHavenSpyCasualtyReduction = 2.5;
+                        $forestHavenSpyCasualtyReductionMax = 25;
                         $damageMultiplier = min(
                             (($target->building_forest_haven / $this->landCalculator->getTotalLand($target)) * $forestHavenSpyCasualtyReduction),
                             ($forestHavenSpyCasualtyReductionMax / 100)
@@ -620,7 +620,7 @@ class SpellActionService
                     // Damage reduction from Masonries
                     if (strpos($attr, 'improvement_') === 0) {
                         $masonryLightningBoltReduction = 1;
-                        $masonryLightningBoltReductionMax = 25;
+                        $masonryLightningBoltReductionMax = 10;
                         $damageMultiplier = min(
                             (($target->building_masonry / $this->landCalculator->getTotalLand($target)) * $masonryLightningBoltReduction),
                             ($masonryLightningBoltReductionMax / 100)
@@ -629,7 +629,7 @@ class SpellActionService
                     }
 
                     // Cap damage reduction at 80%, then apply resilience
-                    $damage = round(
+                    $damage = ceil(
                         $target->{$attr} *
                         $baseDamage *
                         (1 - min(0.8, $damageReductionMultiplier)) *

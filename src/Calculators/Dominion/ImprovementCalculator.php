@@ -63,10 +63,10 @@ class ImprovementCalculator
         $maximumPercentages = [
             'science' => 20,
             'keep' => 30,
-            'towers' => 40,
+            'towers' => 60,
             'forges' => 30,
             'walls' => 30,
-            'harbor' => 40,
+            'harbor' => 60,
         ];
 
         return (($maximumPercentages[$improvementType] / 100) ?: null);
@@ -85,7 +85,7 @@ class ImprovementCalculator
         $coefficients = [
             'science' => 4000,
             'keep' => 4000,
-            'towers' => 4000,
+            'towers' => 5000,
             'forges' => 7500,
             'walls' => 7500,
             'harbor' => 5000,

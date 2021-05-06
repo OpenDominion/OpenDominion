@@ -31,7 +31,7 @@ units:
       defense: 4
   - name: Mystic
     cost:
-      platinum: 1125
+      platinum: 1150
       ore: 0
     power:
       offense: 0

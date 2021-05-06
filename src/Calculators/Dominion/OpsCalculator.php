@@ -144,8 +144,8 @@ class OpsCalculator
         $spiesKilledPercentage = clamp($spiesKilledBasePercentage * $spyLossSpaRatio, $min, $max);
 
         // Forest Havens
-        $forestHavenSpyCasualtyReduction = 3;
-        $forestHavenSpyCasualtyReductionMax = 30;
+        $forestHavenSpyCasualtyReduction = 2.5;
+        $forestHavenSpyCasualtyReductionMax = 25;
 
         $spiesKilledMultiplier = (1 - min(
             (($dominion->building_forest_haven / $this->landCalculator->getTotalLand($dominion)) * $forestHavenSpyCasualtyReduction),
@@ -153,7 +153,7 @@ class OpsCalculator
         ));
 
         // Techs
-        $spiesKilledMultiplier *= (1 + $dominion->getTechPerkMultiplier('spy_losses'));
+        $spiesKilledMultiplier += $dominion->getTechPerkMultiplier('spy_losses');
 
         // Mutual War
         if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
@@ -189,8 +189,8 @@ class OpsCalculator
         $wizardsKilledPercentage = clamp($wizardsKilledBasePercentage * $wizardLossSpaRatio, $min, $max);
 
         // Wizard Guilds
-        $wizardGuildCasualtyReduction = 3;
-        $wizardGuildWizardCasualtyReductionMax = 30;
+        $wizardGuildCasualtyReduction = 2.5;
+        $wizardGuildWizardCasualtyReductionMax = 25;
 
         $wizardsKilledMultiplier = (1 - min(
             (($dominion->building_wizard_guild / $this->landCalculator->getTotalLand($dominion)) * $wizardGuildCasualtyReduction),
@@ -251,12 +251,8 @@ class OpsCalculator
         }
 
         $range = $this->rangeCalculator->getDominionRange($dominion, $target);
-        if ($range >= 75 && $range <= (10000 / 75)) {
+        if ($range >= 75) {
             $infamy += 10;
-        } elseif ($range >= 60 && $range <= (10000 / 60)) {
-            if ($dominion->getTechPerkValue('infamy_royal_guard') !== 0) {
-                $infamy += 10;
-            }
         }
 
         return $infamy;
@@ -274,7 +270,13 @@ class OpsCalculator
 
         // TODO: Placeholder for tech perk
 
-        return $decay;
+        $masteryCombined = min($dominion->spy_mastery, 500) + min($dominion->wizard_mastery, 500);
+        $minInfamy = floor($masteryCombined / 100) * 50;
+        if ($dominion->infamy + $decay < $minInfamy) {
+            return $minInfamy - $dominion->infamy;
+        }
+
+        return max($decay, -$dominion->infamy);
     }
 
     /**
@@ -310,15 +312,17 @@ class OpsCalculator
     {
         if ($type == 'spy') {
             $decay = static::SPY_RESILIENCE_DECAY;
+            $resilience = $dominion->spy_resilience;
         } elseif ($type == 'wizard') {
             $decay = static::WIZARD_RESILIENCE_DECAY;
+            $resilience = $dominion->wizard_resilience;
         } else {
             return 0;
         }
 
         // TODO: Placeholder for tech perk
 
-        return $decay;
+        return max($decay, -$resilience);
     }
 
     /**
