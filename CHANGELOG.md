@@ -39,7 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Forest Haven: disband spy damage and spy losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 - Wizard Guild: spell cost and wizard losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 
-## [1.3.2] - ???
+## [1.3.2] - 2021-05-6
 ### Added
 - Checkbox added to invade page to prevent accidental bottomfeeds
 
@@ -1384,7 +1384,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.3.1...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.3.2...HEAD
+[1.3.2]: https://github.com/OpenDominion/OpenDominion/compare/1.3.1...1.3.2
 [1.3.1]: https://github.com/OpenDominion/OpenDominion/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...1.3.0
 [1.2.5]: https://github.com/OpenDominion/OpenDominion/compare/1.2.4...1.2.5
