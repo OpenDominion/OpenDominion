@@ -678,23 +678,19 @@ class DominionFactory
         }
 
         // Alchemies
-        $startingBuildings['building_alchemy'] += min(mt_rand(0.33 * $landSize, 200), $landAvailable);
+        $startingBuildings['building_alchemy'] += min(mt_rand(20, 170), $landAvailable);
         $landAvailable -= ($startingBuildings['building_alchemy'] - 30);
 
         // Smithies
         if (!in_array($race->name, $landBasedRaces) && $landAvailable > 50) {
             $maxSmithies = (int) round(0.18 * $landSize);
-            if ($maxSmithies < $landAvailable) {
-                $startingBuildings['building_smithy'] += $maxSmithies;
-            } else {
-                $startingBuildings['building_smithy'] += mt_rand(50, $landAvailable);
-            }
+            $startingBuildings['building_smithy'] += min(mt_rand(20, $maxSmithies), $landAvailable);
             $landAvailable -= $startingBuildings['building_smithy'];
         }
 
         // Guard Towers
-        if (!in_array($race->name, $landBasedRaces) && $landAvailable > 100) {
-            $startingBuildings['building_guard_tower'] += min(mt_rand(25, 0.20 * $landSize), $landAvailable);
+        if (!in_array($race->name, $landBasedRaces) && $landAvailable > 150) {
+            $startingBuildings['building_guard_tower'] += min(mt_rand(40, 100), $landAvailable);
             $landAvailable -= $startingBuildings['building_guard_tower'];
         }
 

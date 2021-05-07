@@ -63,6 +63,9 @@ class AIService
     /** @var PopulationCalculator */
     protected $populationCalculator;
 
+    /** @var ProductionCalculator */
+    protected $productionCalculator;
+
     /** @var ReleaseActionService */
     protected $releaseActionService;
 
@@ -91,6 +94,7 @@ class AIService
         $this->landCalculator = app(LandCalculator::class);
         $this->militaryCalculator = app(MilitaryCalculator::class);
         $this->populationCalculator = app(PopulationCalculator::class);
+        $this->productionCalculator = app(ProductionCalculator::class);
         $this->spellCalculator = app(SpellCalculator::class);
         $this->trainingCalculator = app(TrainingCalculator::class);
 
@@ -352,17 +356,22 @@ class AIService
 
     public function investCastle(Dominion $dominion, array $config) {
         if ($dominion->{'resource_'.$config['invest']} > 0) {
-            $sciencePercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
-            $keepPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
-            $wallsPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
-            if ($keepPercentage < 0.15) {
-                $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
-            } elseif ($sciencePercentage < 0.08) {
-                $this->improveActionService->improve($dominion, $config['invest'], ['science' => $dominion->{'resource_'.$config['invest']}]);
-            } elseif ($wallsPercentage < 0.10) {
-                $this->improveActionService->improve($dominion, $config['invest'], ['walls' => $dominion->{'resource_'.$config['invest']}]);
+            $foodProduction = $this->productionCalculator->getFoodNetChange($dominion);
+            if ($foodProduction < 0) {
+                $this->improveActionService->improve($dominion, $config['invest'], ['harbor' => $dominion->{'resource_'.$config['invest']}]);
             } else {
-                $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
+                $sciencePercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
+                $keepPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
+                $wallsPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
+                if ($keepPercentage < 0.15) {
+                    $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
+                } elseif ($sciencePercentage < 0.08) {
+                    $this->improveActionService->improve($dominion, $config['invest'], ['science' => $dominion->{'resource_'.$config['invest']}]);
+                } elseif ($wallsPercentage < 0.10) {
+                    $this->improveActionService->improve($dominion, $config['invest'], ['walls' => $dominion->{'resource_'.$config['invest']}]);
+                } else {
+                    $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
+                }
             }
         }
     }

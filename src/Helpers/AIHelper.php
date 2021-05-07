@@ -37,7 +37,7 @@ class AIHelper
         }
         $investLumberRaces = ['Sylvan', 'Wood Elf'];
         if (in_array($race->name, $investLumberRaces)) {
-            $config['invest'] = 'ore';
+            $config['invest'] = 'lumber';
         }
 
         if ($race->name == 'Halfling') {
@@ -106,6 +106,12 @@ class AIHelper
                 'amount' => mt_rand(50, 150)
             ];
 
+            $config['build'][] = [
+                'land_type' => $race->home_land_type,
+                'building' => 'home',
+                'amount' => -1
+            ];
+
             $jobBuildings = collect([
                 [
                     'land_type' => 'plain',
@@ -136,12 +142,6 @@ class AIHelper
 
             $config['build'][] = $jobBuildings->random();
         }
-
-        $config['build'][] = [
-            'land_type' => $race->home_land_type,
-            'building' => 'home',
-            'amount' => -1
-        ];
 
         return $config;
     }

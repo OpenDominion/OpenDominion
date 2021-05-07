@@ -419,6 +419,10 @@ class SpellActionService
             throw new GameException('You cannot perform black ops for the first six days of the round');
         }
 
+        if ($target->user_id == null) {
+            throw new GameException("You cannot perform black ops on bots");
+        }
+
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
 
         if ($this->spellHelper->isWarSpell($spellKey)) {
