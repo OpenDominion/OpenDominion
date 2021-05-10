@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Menace: reworked, now adds +1 raw mana production per tower and an additional +2 for up to two war relations
 - Forest Haven: disband spy damage and spy losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
 - Wizard Guild: spell cost and wizard losses reduced by 2.5% per 1% owned, max 25% (from 3% per 1%, max 30%)
+- Masonries now protect 1% castle per 1% owned, up to a maximum of 10% at 10% owned (from 25% at 25% owned)
 - Realm assignment will happen 48 hours prior to OOP (was 36)
 - NPDs cannot be targeted by black ops or resource theft
 - NPDs will start with more homes and behave less predictably

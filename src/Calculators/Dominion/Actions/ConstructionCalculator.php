@@ -82,7 +82,7 @@ class ConstructionCalculator
         $multiplier += $dominion->getWonderPerkMultiplier('construction_cost');
 
         // Cap at -75%
-        return min($multiplier, 0.75);
+        return max($multiplier, 0.75);
     }
 
     /**
@@ -155,7 +155,7 @@ class ConstructionCalculator
         $multiplier += $dominion->getTechPerkMultiplier('construction_lumber_cost');
 
         // Cap at -75%
-        return min($multiplier, 0.75);
+        return max($multiplier, 0.75);
     }
 
     /**
