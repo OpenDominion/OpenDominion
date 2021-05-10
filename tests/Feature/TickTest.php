@@ -24,19 +24,18 @@ class TickTest extends AbstractBrowserKitTestCase
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
         $dominion = $this->createDominion($user, $round);
+        $tickService = app(TickService::class);
 
         $dominion->protection_ticks_remaining = 0;
         $dominion->morale = 74;
         $dominion->save();
 
-        // todo: call tickservice instead for tickHourly (so it doesnt trigger tickDaily when tests run at 00:00 UTC)
-
         // Test +6 morale below 80
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 80]);
 
         // Test +3 morale above 80
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $this->seeInDatabase('dominions', ['id' => $dominion->id, 'morale' => 83]);
     }
 
@@ -48,6 +47,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
         $dominion = $this->createDominion($user, $round);
+        $tickService = app(TickService::class);
         $queueService = app(QueueService::class);
 
         $dominion->protection_ticks_remaining = 0;
@@ -60,21 +60,21 @@ class TickTest extends AbstractBrowserKitTestCase
         $queueService->queueResources('construction', $dominion, ['building_home' => 10], 3);
 
         // Test queue hours 3 -> 2
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 0, 'building_home' => 0])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 2, 'amount' => 10])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 2, 'amount' => 10]);
 
         // Test queue hours 2 -> 1
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 5, 'building_home' => 0])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain', 'hours' => 1, 'amount' => 10])
             ->seeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'construction', 'resource' => 'building_home', 'hours' => 1, 'amount' => 10]);
 
         // Test queues get processed on hour 0
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $this
             ->seeInDatabase('dominions', ['id' => $dominion->id, 'land_plain' => 15, 'building_home' => 10])
             ->dontSeeInDatabase('dominion_queue', ['dominion_id' => $dominion->id, 'source' => 'exploration', 'resource' => 'land_plain'])
@@ -87,8 +87,9 @@ class TickTest extends AbstractBrowserKitTestCase
     public function testQueueShouldntTickLockedDominions()
     {
         $user = $this->createUser();
-        $round = $this->createRound('-2 days', '-1 days');
+        $round = $this->createRound('-7 days');
         $dominion = $this->createDominion($user, $round);
+        $tickService = app(TickService::class);
         $queueService = app(QueueService::class);
 
         $dominion->fill([
@@ -100,6 +101,7 @@ class TickTest extends AbstractBrowserKitTestCase
             'building_home' => 100,
             'building_alchemy' => 100,
             'protection_ticks_remaining' => 0,
+            'locked_at' => now(),
         ])->save();
 
         $this->assertTrue($dominion->isLocked());
@@ -107,7 +109,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $queueService->queueResources('exploration', $dominion, ['land_plain' => 10], 3);
         $queueService->queueResources('construction', $dominion, ['building_home' => 10], 3);
 
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
 
         $this
             ->seeInDatabase('dominions', [
@@ -127,8 +129,8 @@ class TickTest extends AbstractBrowserKitTestCase
         $user = $this->createUser();
         $round = $this->createRound('-7 days');
         $dominion = $this->createDominion($user, $round);
-        $queueService = app(QueueService::class);
         $tickService = app(TickService::class);
+        $queueService = app(QueueService::class);
 
         $dominion->protection_ticks_remaining = 0;
         $dominion->resource_gems = 0;
@@ -140,7 +142,7 @@ class TickTest extends AbstractBrowserKitTestCase
         // Manually precalculate when queuing for next hour
         $tickService->precalculateTick($dominion);
 
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
 
         $this->seeInDatabase('dominions', [
             'id' => $dominion->id,
@@ -157,6 +159,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $round = $this->createRound('-7 days');
         $dominion1 = $this->createDominion($user1, $round);
         $dominion2 = $this->createDominion($user2, $round);
+        $tickService = app(TickService::class);
 
         $populationCalculator = $this->app->make(PopulationCalculator::class);
         $productionCalculator = $this->app->make(ProductionCalculator::class);
@@ -208,7 +211,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertTrue($spellCalculator->isSpellActive($dominion2, 'midas_touch'));
         $this->assertEquals($platToBeAdded * 1.1, $productionCalculator->getPlatinumProduction($dominion2));
 
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $dominion1->refresh();
         $dominion2->refresh();
 
@@ -264,7 +267,7 @@ class TickTest extends AbstractBrowserKitTestCase
         $this->assertEquals(-308, $productionCalculator->getFoodNetChange($dominion));
 
         $tickService->precalculateTick($dominion);
-        Artisan::call('game:tick');
+        $tickService->performTick($round);
         $dominion->refresh();
 
         // 27487 food - 308 net change = 27179 food
