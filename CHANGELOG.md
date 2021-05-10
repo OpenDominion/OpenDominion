@@ -3,7 +3,10 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.4.0] - 2021-05-09
 ### Changed
+- Several types of actions can no longer be performed during the hourly tick in order to prevent unintuitive behavior/timestamps. Anything that requires a target (info/black ops, wonders) or goes into queue (construction, exploration, military training, and self spells) will be prevented during the first 3 seconds of the hour (:00-:02) with invasions requiring an additional 2 seconds (:00-04)
 - All bonuses are now additive with one another with the following exceptions that remain multiplicative with one another: max population from prestige / other sources, construction cost from invasions / other sources, and casualty reductions from unit / non-unit sources
 - Construction cost reductions are now capped at 75% before invasion discount
 - Base prestige gain reverted to 20 (from 22.5)
@@ -44,8 +47,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Performance improvements from upgrade to Laravel 8
+- Legacy spell caching removed (in favor of eager loaded relation)
 
-## [1.3.2] - 2021-05-6
+## [1.3.2] - 2021-05-06
 ### Added
 - Checkbox added to invade page to prevent accidental bottomfeeds
 
@@ -1390,7 +1394,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.3.2...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.4.0...HEAD
+[1.4.0]: https://github.com/OpenDominion/OpenDominion/compare/1.3.2...1.4.0
 [1.3.2]: https://github.com/OpenDominion/OpenDominion/compare/1.3.1...1.3.2
 [1.3.1]: https://github.com/OpenDominion/OpenDominion/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/OpenDominion/OpenDominion/compare/1.2.5...1.3.0
