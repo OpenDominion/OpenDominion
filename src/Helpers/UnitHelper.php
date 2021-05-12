@@ -106,7 +106,7 @@ class UnitHelper
             'unit4' => 'Offensive elite',
             'spies' => 'Used for espionage.',
             'wizards' => 'Used for casting offensive spells.',
-            'archmages' => 'Used for casting offensive spells.<br><br>Immortal and twice as strong as regular wizards.',
+            'archmages' => 'Used for casting offensive spells.<br><br>Twice as strong as regular wizards and cannot be assassinated.',
         ];
 
         // todo: refactor this. very inefficient
