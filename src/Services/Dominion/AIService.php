@@ -142,14 +142,14 @@ class AIService
                 } catch (Exception $e) {
                     continue;
                 }
-
-                Log::info(sprintf(
-                    'Executed actions for %s AI dominions in %s ms in %s',
-                    number_format($dominions->count()),
-                    number_format($this->now->diffInMilliseconds(now())),
-                    $round->name
-                ));
             }
+
+            Log::info(sprintf(
+                'Executed actions for %s AI dominions in %s ms in %s',
+                number_format($dominions->count()),
+                number_format($this->now->diffInMilliseconds(now())),
+                $round->name
+            ));
         }
 
         Log::debug('AI finished');
