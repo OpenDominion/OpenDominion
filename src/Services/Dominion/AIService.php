@@ -5,6 +5,7 @@ namespace OpenDominion\Services\Dominion;
 use DB;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Log;
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
 use OpenDominion\Calculators\Dominion\Actions\ExplorationCalculator;
@@ -31,6 +32,9 @@ use RuntimeException;
 
 class AIService
 {
+    /** @var Carbon */
+    protected $now;
+
     /** @var AIHelper */
     protected $aiHelper;
 
@@ -87,6 +91,8 @@ class AIService
      */
     public function __construct()
     {
+        $this->now = now();
+
         // Calculators
         $this->buildingCalculator = app(BuildingCalculator::class);
         $this->constructionCalculator = app(ConstructionCalculator::class);
@@ -140,7 +146,7 @@ class AIService
                 Log::info(sprintf(
                     'Executed actions for %s AI dominions in %s ms in %s',
                     number_format($dominions->count()),
-                    number_format($now->diffInMilliseconds(now())),
+                    number_format($this->now->diffInMilliseconds(now())),
                     $round->name
                 ));
             }
