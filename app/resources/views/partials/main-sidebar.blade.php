@@ -63,7 +63,7 @@
                 <li class="{{ Route::is('dominion.construct') ? 'active' : null }}">
                     <a href="{{ route('dominion.construct') }}">
                         <i class="fa fa-home fa-fw"></i> <span>Construct Buildings</span>
-                        @if($barrenLand > 0)
+                        @if ($barrenLand > 0)
                             <span class="pull-right-container">
                                 <span class="label label-primary pull-right">{{ $barrenLand }}</span>
                             </span>
@@ -76,7 +76,7 @@
                 <li class="{{ Route::is('dominion.techs') ? 'active' : null }}">
                     <a href="{{ route('dominion.techs') }}">
                         <i class="fa fa-flask fa-fw"></i> <span>Technology</span>
-                        @if($unlockableTechCount > 0)
+                        @if ($unlockableTechCount > 0)
                             <span class="pull-right-container">
                                 <span class="label label-primary pull-right">{{ $unlockableTechCount }}</span>
                             </span>
@@ -90,7 +90,7 @@
                 <li class="{{ Route::is('dominion.magic') ? 'active' : null }}">
                     <a href="{{ route('dominion.magic') }}">
                         <i class="ra ra-fairy-wand ra-fw"></i> <span>Magic</span>
-                        @if($activeSelfSpells > 0 || $activeHostileSpells > 0)
+                        @if ($activeSelfSpells > 0 || $activeHostileSpells > 0)
                             <span class="pull-right-container">
                                 {!! $activeSelfSpells > 0 ? ('<small class="label pull-right bg-blue">' . $activeSelfSpells . '</small>') : null !!}
                                 {!! $activeHostileSpells > 0 ? ('<small class="label pull-right bg-red">' . $activeHostileSpells . '</small>') : null !!}
@@ -106,12 +106,21 @@
                 <li class="header">RELATIONS</li>
                 <li class="{{ Route::is('dominion.realm') ? 'active' : null }}"><a href="{{ route('dominion.realm') }}"><i class="ra ra-circle-of-circles ra-fw"></i> <span>Realms</span></a></li>
                 <li class="{{ Route::is('dominion.search') ? 'active' : null }}"><a href="{{ route('dominion.search') }}"><i class="fa fa-search fa-fw"></i> <span>Search</span></a></li>
-                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}"><a href="{{ route('dominion.council') }}"><i class="fa fa-group fa-fw"></i> <span>The Council</span> {!! $councilUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $councilUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('dominion.council*') ? 'active' : null }}">
+                    <a href="{{ route('dominion.council') }}">
+                        <i class="fa fa-group fa-fw"></i> <span>The Council</span>
+                        @if ($councilUnreadCount > 0 && !Route::is('dominion.council'))
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green">{{ $councilUnreadCount }}</small>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.government') ? 'active' : null }}"><a href="{{ route('dominion.government') }}"><i class="fa fa-university fa-fw"></i> <span>Government</span></a></li>
                 <li class="{{ Route::is('dominion.wonders') ? 'active' : null }}">
                     <a href="{{ route('dominion.wonders') }}">
                         <i class="ra ra-pyramids ra-fw ra-lg"></i> <span>Wonders</span>
-                        @if($unseenWonders > 0)
+                        @if ($unseenWonders > 0 && !Route::is('dominion.wonders'))
                             <span class="pull-right-container">
                                 <span class="label pull-right bg-green">{{ $unseenWonders }}</span>
                             </span>
@@ -119,11 +128,20 @@
                     </a>
                 </li>
                 <li class="{{ Route::is('dominion.rankings') ? 'active' : null }}"><a href="{{ route('dominion.rankings') }}"><i class="fa fa-trophy fa-fw"></i> <span>Rankings</span></a></li>
-                <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}"><a href="{{ route('dominion.forum') }}"><i class="fa fa-comments fa-fw"></i> <span>Round Forum</span> {!! $forumUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $forumUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('dominion.forum*') ? 'active' : null }}">
+                    <a href="{{ route('dominion.forum') }}">
+                        <i class="fa fa-comments fa-fw"></i> <span>Round Forum</span>
+                        @if ($forumUnreadCount > 0 && !Route::is('dominion.forum'))
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green">{{ $forumUnreadCount }}</small>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="{{ Route::is('dominion.town-crier') ? 'active' : null }}">
                     <a href="{{ route('dominion.town-crier') }}">
                         <i class="fa fa-newspaper-o fa-fw"></i> <span>Town Crier</span>
-                        @if($unseenGameEvents > 0)
+                        @if ($unseenGameEvents > 0 && !Route::is('dominion.town-crier'))
                             <span class="pull-right-container">
                                 <span class="label pull-right bg-green">{{ $unseenGameEvents }}</span>
                             </span>
@@ -132,7 +150,16 @@
                 </li>
 
                 <li class="header">USER</li>
-                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $messageBoardUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $messageBoardUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('message-board*') ? 'active' : null }}">
+                    <a href="{{ route('message-board') }}">
+                        <i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span>
+                        @if ($messageBoardUnreadCount > 0 && !Route::is('dominion.message-board'))
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green">{{ $messageBoardUnreadCount }}</small>
+                            </span>
+                        @endif
+                    </a>
+                </li>
                 @if (app()->environment() !== 'production')
                     <li class="{{ Request::is('dominion/debug') ? 'active' : null }}"><a href="{{ url('dominion/debug') }}"><i class="ra ra-dragon ra-fw"></i> <span>Debug Page</span></a></li>
                 @endif
@@ -141,7 +168,16 @@
 
                 <li class="header">USER</li>
                 <li class="{{ Route::is('dashboard') ? 'active' : null }}"><a href="{{ route('dashboard') }}"><i class="ra ra-capitol ra-fw"></i> <span>Select Dominion</span></a></li>
-                <li class="{{ Route::is('message-board*') ? 'active' : null }}"><a href="{{ route('message-board') }}"><i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span> {!! $messageBoardUnreadCount > 0 ? ('<span class="pull-right-container"><small class="label pull-right bg-green">' . $messageBoardUnreadCount . '</small></span>') : null !!}</a></li>
+                <li class="{{ Route::is('message-board*') ? 'active' : null }}">
+                    <a href="{{ route('message-board') }}">
+                        <i class="ra ra-wooden-sign ra-fw"></i> <span>Message Board</span>
+                        @if ($messageBoardUnreadCount > 0 && !Route::is('dominion.message-board'))
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green">{{ $messageBoardUnreadCount }}</small>
+                            </span>
+                        @endif
+                    </a>
+                </li>
 
             @endif
         </ul>

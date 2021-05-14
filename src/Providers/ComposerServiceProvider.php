@@ -136,7 +136,6 @@ class ComposerServiceProvider extends AbstractServiceProvider
                 ->count();
 
             $view->with('unseenGameEvents', $unseenGameEvents);
-
         });
 
         view()->composer('partials.main-footer', function (View $view) {
