@@ -480,7 +480,7 @@ class ProductionCalculator
         $mana += ($dominion->building_tower * $manaPerTower);
 
         // Techs
-        $mana += $dominion->getTechPerkValue('mana_production_raw');
+        $mana += ($dominion->building_tower * $dominion->getTechPerkValue('mana_production_raw'));
 
         $wartimeManaProduction = $dominion->getTechPerkValue('wartime_mana_production_raw');
         if ($wartimeManaProduction > 0) {
