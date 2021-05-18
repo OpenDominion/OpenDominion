@@ -23,6 +23,6 @@
     "resolve-url-loader": "^3.1.2",
     "sass": "^1.32.5",
     "sass-loader": "^8.0.2",
-    "select2": "^4.0.5"
+    "select2": "^4.0.13"
   }
 }
