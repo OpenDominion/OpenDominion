@@ -53,7 +53,7 @@ class AIHelper
             $config['build'][] = [
                 'land_type' => 'mountain',
                 'building' => 'ore_mine',
-                'amount' => 0.6
+                'amount' => 0.06
             ];
         }
 
@@ -134,8 +134,8 @@ class AIHelper
                     'amount' => -1
                 ],
                 [
-                    'land_type' => 'cavern',
-                    'building' => 'school',
+                    'land_type' => 'hill',
+                    'building' => 'factory',
                     'amount' => -1
                 ]
             ]);
