@@ -3,6 +3,13 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Forest Haven: cost of spies reduced by 3.5% per 1% owned, max 35% (from 4% per 1%, max 40%)
+- Wizard Guild: cost of wizards and archmages reduced by 3.5% per 1% owned, max 35% (from 4% per 1%, max 40%)
+
+### Fixed
+- Sidebar menu notifications will now be cleared immediately when visiting the page
+- Bots no longer overbuild ore mines by 10x
 
 ## [1.4.0] - 2021-05-09
 ### Changed
