@@ -174,6 +174,7 @@ class HistoryService
                 'elite_guard_active_at',
                 'last_tick_at',
                 'locked_at',
+                'abandoned_at',
                 'ai_enabled',
                 'ai_config',
                 'monarchy_vote_for_dominion_id',

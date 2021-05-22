@@ -92,6 +92,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property \Illuminate\Support\Carbon|null $elite_guard_active_at
  * @property \Illuminate\Support\Carbon|null $last_tick_at
  * @property \Illuminate\Support\Carbon|null $locked_at
+ * @property \Illuminate\Support\Carbon|null $abandoned_at
  * @property int $protection_ticks_remaining
  * @property bool $ai_enabled
  * @property array|null $ai_config
@@ -189,6 +190,7 @@ class Dominion extends AbstractModel
         'elite_guard_active_at' => 'datetime',
         'last_tick_at' => 'datetime',
         'locked_at' => 'datetime',
+        'abandoned_at' => 'datetime',
         'protection_ticks_remaining' => 'integer',
         'ai_enabled' => 'boolean',
         'ai_config' => 'array',
@@ -361,7 +363,7 @@ class Dominion extends AbstractModel
     }
 
     /**
-     * Returns whether this Dominion is locked due to the round having ended or administrative action.
+     * Returns whether this Dominion is locked due to abandonment, the round having ended, or administrative action.
      *
      * Locked Dominions cannot perform actions and are read-only.
      *
@@ -369,7 +371,50 @@ class Dominion extends AbstractModel
      */
     public function isLocked()
     {
-        return (now() >= $this->round->end_date) || ($this->locked_at !== null);
+        return ($this->isAbandoned() || $this->round->hasEnded() || $this->locked_at !== null);
+    }
+
+    /**
+     * Returns whether this Dominion has been abandoned.
+     *
+     * @return bool
+     */
+    public function isAbandoned()
+    {
+        return ($this->abandoned_at !== null && $this->abandoned_at <= now());
+    }
+
+    /**
+     * Marks the dominion as having requested abandonment.
+     * 
+     * @return void
+     */
+    public function requestAbandonment()
+    {
+        $this->abandoned_at = now()->addHours(24)->startOfHour();
+    }
+
+    /**
+     * Resets the abandonment request timer.
+     * 
+     * @return void
+     */
+    public function resetAbandonment()
+    {
+        $resetTime = now()->addHours(12)->startOfHour();
+        if ($this->abandoned_at !== null && $this->abandoned_at < $resetTime) {
+            $this->abandoned_at = $resetTime;
+        }
+    }
+
+    /**
+     * Marks the dominion as no longer having requested abandonment.
+     * 
+     * @return void
+     */
+    public function cancelAbandonment()
+    {
+        $this->abandoned_at = null;
     }
 
     /**

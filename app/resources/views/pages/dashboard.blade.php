@@ -62,8 +62,12 @@
                                                     <span class="label label-warning">Starting soon</span>
                                                 @endif
 
-                                                @if ($dominion->isLocked())
+                                                @if ($dominion->locked_at !== null)
                                                     <span class="label label-danger">Locked</span>
+                                                @elseif ($dominion->isAbandoned())
+                                                    <span class="label label-warning">Abandoned</span>
+                                                @elseif ($dominion->round->hasEnded())
+                                                    <span class="label label-info">Finished</span>
                                                 @endif
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
@@ -74,8 +78,12 @@
                                                         <span class="label label-warning">Starting soon</span>
                                                     @endif
 
-                                                    @if ($dominion->isLocked())
+                                                    @if ($dominion->locked_at !== null)
                                                         <span class="label label-danger">Locked</span>
+                                                    @elseif ($dominion->isAbandoned())
+                                                        <span class="label label-warning">Abandoned</span>
+                                                    @elseif ($dominion->round->hasEnded())
+                                                        <span class="label label-info">Finished</span>
                                                     @endif
                                                 </form>
                                             @endif

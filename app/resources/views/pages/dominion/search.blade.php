@@ -110,6 +110,8 @@
                                                     <a href="{{ route('dominion.op-center.show', $dominion) }}">{{ $dominion->name }}</a>
                                                     @if ($dominion->locked_at !== null)
                                                         <span class="label label-danger">Locked</span>
+                                                    @elseif ($dominion->isAbandoned())
+                                                        <span class="label label-warning">Abandoned</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">

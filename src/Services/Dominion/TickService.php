@@ -168,7 +168,12 @@ class TickService
     public function performTick(Round $round, Dominion $dominion = null)
     {
         if ($dominion == null) {
-            $where = ['dominions.round_id' => $round->id, 'protection_ticks_remaining' => 0, 'locked_at' => null];
+            $where = [
+                ['dominions.round_id', '=', $round->id],
+                ['protection_ticks_remaining', '=', 0],
+                ['locked_at', '=', null],
+                ['abandoned_at', '<', $this->now]
+            ];
         } else {
             $where = ['dominions.id' => $dominion->id];
         }

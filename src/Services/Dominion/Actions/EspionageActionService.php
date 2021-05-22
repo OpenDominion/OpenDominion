@@ -176,15 +176,13 @@ class EspionageActionService
             if ($this->espionageHelper->isInfoGatheringOperation($operationKey)) {
                 $spyStrengthLost = 2;
                 $result = $this->performInfoGatheringOperation($dominion, $operationKey, $target);
-
             } elseif ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
                 $spyStrengthLost = 5;
                 $result = $this->performResourceTheftOperation($dominion, $operationKey, $target);
-
             } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
                 $spyStrengthLost = 5;
                 $result = $this->performHostileOperation($dominion, $operationKey, $target);
-
+                $dominion->resetAbandonment();
             } else {
                 throw new LogicException("Unknown type for espionage operation {$operationKey}");
             }

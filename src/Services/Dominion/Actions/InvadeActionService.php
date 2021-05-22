@@ -327,7 +327,9 @@ class InvadeActionService
                 ]);
             }
 
+            $dominion->resetAbandonment();
             $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
+            $target->resetAbandonment();
             $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
         });
 

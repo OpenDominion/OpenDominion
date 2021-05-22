@@ -41,9 +41,7 @@
                                 </form>
                             </div>
                             <div class="col-md-12">
-                                <div class="row">
-                                    <hr/>
-                                </div>
+                                <hr/>
                             </div>
                         @endif
                         <div class="col-md-12">

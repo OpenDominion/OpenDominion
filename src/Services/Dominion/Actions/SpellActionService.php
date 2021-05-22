@@ -163,13 +163,11 @@ class SpellActionService
         DB::transaction(function () use ($dominion, $manaCost, $spellKey, &$result, $target) {
             if ($this->spellHelper->isSelfSpell($spellKey, $dominion->race)) {
                 $result = $this->castSelfSpell($dominion, $spellKey);
-
             } elseif ($this->spellHelper->isInfoOpSpell($spellKey)) {
                 $result = $this->castInfoOpSpell($dominion, $spellKey, $target);
-
             } elseif ($this->spellHelper->isHostileSpell($spellKey)) {
                 $result = $this->castHostileSpell($dominion, $spellKey, $target);
-
+                $dominion->resetAbandonment();
             } else {
                 throw new LogicException("Unknown type for spell {$spellKey}");
             }
