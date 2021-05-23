@@ -3,12 +3,17 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.4.1] - 2021-05-23
 ### Added
 - Abandon dominion feature is now available on the government page
 
 ### Changed
 - Forest Haven: cost of spies reduced by 3.5% per 1% owned, max 35% (from 4% per 1%, max 40%)
 - Wizard Guild: cost of wizards and archmages reduced by 3.5% per 1% owned, max 35% (from 4% per 1%, max 40%)
+- The 48 hour cooldown for redeclaring war after canceling will be ignored if the target realm has declared war back during that timeframe
+- Mutual war now increases infamy gains by 20%
+- Mutual war now decreases resilience gains by 50%
 
 ### Fixed
 - Sidebar menu notifications will now be cleared immediately when visiting the page

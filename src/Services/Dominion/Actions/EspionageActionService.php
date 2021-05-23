@@ -662,12 +662,18 @@ class EspionageActionService
 
         $warRewardsString = '';
         if ($this->espionageHelper->isWarOperation($operationKey) && $totalDamage > 0) {
-            // Resilience
-            $target->spy_resilience += $this->opsCalculator->getResilienceGain($dominion, 'spy');
-
-            // Infamy Gains
+            // Infamy and Resilience Gains
             $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'spy');
+            $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'spy');
+
+            // Mutual War
+            if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
+                $infamyGain = round(1.2 * $infamyGain);
+                $resilienceGain = round(0.5 * $resilienceGain);
+            }
+
             $dominion->infamy += $infamyGain;
+            $target->spy_resilience += $resilienceGain;
 
             // Mastery Gains
             $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'spy');

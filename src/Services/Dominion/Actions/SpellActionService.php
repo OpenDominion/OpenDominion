@@ -667,12 +667,18 @@ class SpellActionService
 
             $warRewardsString = '';
             if ($this->spellHelper->isWarSpell($spellKey) && !$spellReflected && $totalDamage > 0) {
-                // Resilience
-                $target->wizard_resilience += $this->opsCalculator->getResilienceGain($dominion, 'wizard');
-
-                // Infamy Gains
+                // Infamy and Resilience Gains
                 $infamyGain = $this->opsCalculator->getInfamyGain($dominion, $target, 'wizard');
+                $resilienceGain = $this->opsCalculator->getResilienceGain($dominion, 'wizard');
+
+                // Mutual War
+                if ($this->governmentService->isAtMutualWar($dominion->realm, $target->realm)) {
+                    $infamyGain = round(1.2 * $infamyGain);
+                    $resilienceGain = round(0.5 * $resilienceGain);
+                }
+
                 $dominion->infamy += $infamyGain;
+                $target->wizard_resilience += $resilienceGain;
 
                 // Mastery Gains
                 $masteryGain = $this->opsCalculator->getMasteryGain($dominion, $target, 'wizard');
