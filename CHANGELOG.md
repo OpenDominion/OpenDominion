@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Abandon dominion feature is now available on the government page
 
 ### Changed
+- Goblin Hobgoblin: additional +25p (now 1050p)
 - Forest Haven: cost of spies reduced by 3.5% per 1% owned, max 35% (from 4% per 1%, max 40%)
 - Wizard Guild: cost of wizards and archmages reduced by 3.5% per 1% owned, max 35% (from 4% per 1%, max 40%)
 - The 48 hour cooldown for redeclaring war after canceling will be ignored if the target realm has declared war back during that timeframe
