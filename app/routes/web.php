@@ -224,6 +224,9 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->get('town-crier/{realmNumber?}')->uses('Dominion\TownCrierController@getIndex')->name('town-crier');
 
             // Misc
+            $router->get('misc/abandon')->uses('Dominion\MiscController@getAbandonDominion')->name('misc.abandon');
+            $router->post('misc/abandon')->uses('Dominion\MiscController@postAbandonDominion');
+            $router->post('misc/abandon/cancel')->uses('Dominion\MiscController@postCancelAbandonDominion')->name('misc.abandon.cancel');
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
             $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report');

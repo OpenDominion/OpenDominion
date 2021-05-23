@@ -99,6 +99,7 @@ class TickService
 
         foreach ($activeRounds as $round) {
             $this->performTick($round);
+            $this->checkForAbandonedDominions($round);
         }
 
         // Realm Assignment
@@ -329,6 +330,27 @@ class TickService
                 number_format($this->now->diffInMilliseconds(now())),
                 $round->name
             ));
+        }
+    }
+
+    /**
+     * Checks for dominions whose abandonment wait period has expired.
+     * 
+     * @throws Exception|Throwable
+     */
+    public function checkForAbandonedDominions(Round $round)
+    {
+        $abandonedDominions = $round->dominions()
+            ->where('abandoned_at', now()->startOfHour())
+            ->get();
+
+        foreach ($abandonedDominions as $dominion) {
+            \OpenDominion\Models\GameEvent::create([
+                'round_id' => $round->id,
+                'source_type' => Dominion::class,
+                'source_id' => $dominion->id,
+                'type' => 'abandoned',
+            ]);
         }
     }
 

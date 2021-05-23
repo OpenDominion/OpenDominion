@@ -328,8 +328,11 @@ class InvadeActionService
             }
 
             $dominion->resetAbandonment();
+            if ($this->invasionResult['result']['success']) {
+                $target->resetAbandonment(12);
+            }
+
             $dominion->save(['event' => HistoryService::EVENT_ACTION_INVADE]);
-            $target->resetAbandonment();
             $target->save(['event' => HistoryService::EVENT_ACTION_INVADED]);
         });
 

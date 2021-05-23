@@ -25,6 +25,55 @@ class MiscController extends AbstractDominionController
 {
     use DominionGuardsTrait;
 
+    public function getAbandonDominion(Request $request)
+    {
+        return view('pages.dominion.abandon');
+    }
+
+    public function postAbandonDominion(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        $protectionService = app(ProtectionService::class);
+
+        try {
+            $this->guardLockedDominion($dominion);
+
+            if ($protectionService->isUnderProtection($dominion)) {
+                throw new GameException('You cannot abandon your dominion while under protection.');
+            }
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $dominion->requestAbandonment();
+        $dominion->save();
+
+        $request->session()->flash('alert-success', 'Your dominion will be abandoned in 24 hours.');
+        return redirect()->route('dominion.misc.abandon');
+    }
+
+    public function postCancelAbandonDominion(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        try {
+            $this->guardLockedDominion($dominion);
+        } catch (GameException $e) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors([$e->getMessage()]);
+        }
+
+        $dominion->cancelAbandonment();
+        $dominion->save();
+
+        $request->session()->flash('alert-success', 'Your dominion will no longer be abandoned.');
+        return redirect()->route('dominion.misc.abandon');
+    }
+
     public function postClearNotifications()
     {
         $this->getSelectedDominion()->notifications->markAsRead();

@@ -78,7 +78,16 @@
                                 @csrf
                                 <div class="form-group">
                                     <table class="table table-condensed">
-                                        <tr><th>Dominion</th><th>Voted for</th><th>Advisors</th></tr>
+                                        <colgroup>
+                                            <col>
+                                            <col>
+                                            <col width="200">
+                                        </colgroup>
+                                        <tr>
+                                            <th>Dominion</th>
+                                            <th>Voted for</th>
+                                            <th>Can See Advisors</th>
+                                        </tr>
                                         @php
                                             $realmAdvisors = $selectedDominion->getSetting("realmadvisors");
                                             $packAdvisors = $selectedDominion->user->getSetting("packadvisors");
@@ -138,6 +147,8 @@
                 <div class="box-body">
                     <p>Here you can vote for the monarch of your realm. You can change your vote at any time.</p>
                     <p>The monarch has the power to declare war, update the realm's message of the day, and moderate council posts.</p>
+                    <p>You can share your advisors with other members of your realm. Players who have access to your advisors can see your username and all data about your dominion. It can be turned on by default for packmates in <a href="{{ route('settings') }}">User Settings</a>.</p>
+                    <p>If you are no longer able to play, you can <a href="{{ route('dominion.misc.abandon') }}">abandon</a> your dominion.</p>
                 </div>
             </div>
         </div>

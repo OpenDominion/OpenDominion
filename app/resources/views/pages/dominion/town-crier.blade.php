@@ -173,6 +173,10 @@
                                                 @else
                                                     has been destroyed!
                                                 @endif
+                                            @elseif ($gameEvent->type == 'abandoned')
+                                                <a href="{{ route('dominion.op-center.show', [$gameEvent->source->id]) }}"><span class="text-light-blue">{{ $gameEvent->source->name }}</span></a>
+                                                <a href="{{ route('dominion.realm', [$gameEvent->source->realm->number]) }}">(#{{ $gameEvent->source->realm->number }})</a>
+                                                has been abandoned by its ruler.
                                             @endif
                                         </td>
                                         <td class="text-center">

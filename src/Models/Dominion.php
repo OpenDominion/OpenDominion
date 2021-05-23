@@ -399,9 +399,9 @@ class Dominion extends AbstractModel
      * 
      * @return void
      */
-    public function resetAbandonment()
+    public function resetAbandonment(int $hours = 24)
     {
-        $resetTime = now()->addHours(12)->startOfHour();
+        $resetTime = now()->addHours($hours)->startOfHour();
         if ($this->abandoned_at !== null && $this->abandoned_at < $resetTime) {
             $this->abandoned_at = $resetTime;
         }
