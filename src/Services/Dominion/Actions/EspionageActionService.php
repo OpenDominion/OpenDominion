@@ -610,19 +610,19 @@ class EspionageActionService
         }
 
         // Resilience
-        $resilienceDamageReductionMultiplier = $this->opsCalculator->getResilienceBonus($target->spy_resilience);
+        $resilienceDamageReductionMultiplier = (1 - $this->opsCalculator->getResilienceBonus($target->spy_resilience));
 
-        // Cap damage reduction at 80%, then apply resilience
-        $baseDamage *= (1 - min(0.8, $baseDamageReductionMultiplier)) * (1 - $resilienceDamageReductionMultiplier);
+        // Cap damage reduction at 80% before applying resilience
+        $baseDamage *= (1 - min(0.8, $baseDamageReductionMultiplier));
 
         if (isset($operationInfo['decreases'])) {
             foreach ($operationInfo['decreases'] as $attr) {
-                $damage = $target->{$attr} * $baseDamage;
+                $damage = $target->{$attr} * $baseDamage * $resilienceDamageReductionMultiplier;
 
                 // Damage reduction from Docks / Harbor
                 if ($attr == 'resource_boats') {
                     $boatsProtected = $this->militaryCalculator->getBoatsProtected($target);
-                    $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage;
+                    $damage = max($target->{$attr} - $boatsProtected, 0) * $baseDamage * $resilienceDamageReductionMultiplier;
                 }
 
                 // Check for immortal wizards
@@ -632,7 +632,7 @@ class EspionageActionService
 
                 if ($attr == 'wizard_strength') {
                     // Min damage for Magic Snare
-                    $damage = max(1.5, $target->{$attr} * $baseDamage);
+                    $damage = max(1.5, $target->{$attr} * $baseDamage) * $resilienceDamageReductionMultiplier;
                     if ($damage > $target->{$attr}) {
                         $damage = (int)$target->{$attr};
                     }
@@ -655,7 +655,7 @@ class EspionageActionService
         }
         if (isset($operationInfo['increases'])) {
             foreach ($operationInfo['increases'] as $attr) {
-                $damage = round($target->{$attr} * $baseDamage);
+                $damage = round($target->{$attr} * $baseDamage * $resilienceDamageReductionMultiplier);
                 $target->{$attr} += $damage;
             }
         }

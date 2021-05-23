@@ -591,7 +591,7 @@ class SpellActionService
             $baseDamageReductionMultiplier += $target->getWonderPerkMultiplier('enemy_spell_damage');
 
             // Resilience
-            $resilienceDamageReductionMultiplier = $this->opsCalculator->getResilienceBonus($target->wizard_resilience);
+            $resilienceDamageReductionMultiplier = (1 - $this->opsCalculator->getResilienceBonus($target->wizard_resilience));
 
             if (isset($spellInfo['decreases'])) {
                 foreach ($spellInfo['decreases'] as $attr) {
@@ -635,7 +635,7 @@ class SpellActionService
                         $target->{$attr} *
                         $baseDamage *
                         (1 - min(0.8, $damageReductionMultiplier)) *
-                        (1 - $resilienceDamageReductionMultiplier)
+                        $resilienceDamageReductionMultiplier
                     );
                     $target->{$attr} -= $damage;
 
