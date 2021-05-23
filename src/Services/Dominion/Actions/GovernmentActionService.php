@@ -130,13 +130,22 @@ class GovernmentActionService
             throw new GameException('You cannot declare additional wars at this time.');
         }
 
-        $recentWars = RealmWar::where([
+        $recentlyCanceled = RealmWar::where([
             'source_realm_id' => $dominion->realm->id,
             'target_realm_id' => $target->id,
         ])->where('updated_at', '>', now()->startOfHour()->subHours(GovernmentService::WAR_REDECLARE_WAIT_IN_HOURS - 1))->get();
 
-        if (!$recentWars->isEmpty()) {
-            throw new GameException('You cannot redeclare war on the same realm within 48 hours of canceling.');
+        if (!$recentlyCanceled->isEmpty()) {
+            $lastCanceled = $recentlyCanceled->sortByDesc('updated_at')->first();
+
+            $recentlyDeclared = RealmWar::where([
+                'source_realm_id' => $target->id,
+                'target_realm_id' => $dominion->realm->id,
+            ])->where('created_at', '>', $lastCanceled->updated_at->startOfHour())->get();
+
+            if ($recentlyDeclared->isEmpty()) {
+                throw new GameException('You cannot redeclare war on the same realm within 48 hours of canceling.');
+            }
         }
 
         if (now()->diffInHours($dominion->round->start_date) < self::WAR_HOURS_AFTER_ROUND_START) {
