@@ -56,7 +56,6 @@
                                         <td>
                                             @if ($dominion->isSelectedByAuthUser())
                                                 <a href="{{ route('dominion.status') }}">{{ $dominion->name }}</a>
-                                                <span class="label label-success">Selected</span>
 
                                                 @if (!$dominion->round->hasStarted())
                                                     <span class="label label-warning">Starting soon</span>
@@ -66,9 +65,11 @@
                                                     <span class="label label-danger">Locked</span>
                                                 @elseif ($dominion->isAbandoned())
                                                     <span class="label label-warning">Abandoned</span>
-                                                @elseif ($dominion->round->hasEnded())
-                                                    <span class="label label-info">Finished</span>
+                                                @elseif (!$dominion->round->hasEnded())
+                                                    <span class="label label-info">In Progress</span>
                                                 @endif
+
+                                                <span class="label label-success">Selected</span>
                                             @else
                                                 <form action="{{ route('dominion.select', $dominion) }}" method="post">
                                                     @csrf
@@ -82,8 +83,8 @@
                                                         <span class="label label-danger">Locked</span>
                                                     @elseif ($dominion->isAbandoned())
                                                         <span class="label label-warning">Abandoned</span>
-                                                    @elseif ($dominion->round->hasEnded())
-                                                        <span class="label label-info">Finished</span>
+                                                    @elseif (!$dominion->round->hasEnded())
+                                                        <span class="label label-info">In Progress</span>
                                                     @endif
                                                 </form>
                                             @endif
