@@ -205,8 +205,10 @@ class AIService
 
         // Explore
         try {
-            if ($dominion->round->daysInRound() > 4 && $incomingLand < 36 && $totalLand < $config['max_land']) {
-                $this->exploreLand($dominion, $config, $totalLand);
+            if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 12)) {
+                if ($incomingLand < 36 && $totalLand < $config['max_land']) {
+                    $this->exploreLand($dominion, $config, $totalLand);
+                }
             }
         } catch (GameException $e) {
             // Come never here again! Leave your barrow empty!
