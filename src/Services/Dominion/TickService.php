@@ -170,10 +170,9 @@ class TickService
     {
         if ($dominion == null) {
             $where = [
-                ['dominions.round_id', '=', $round->id],
+                ['round_id', '=', $round->id],
                 ['protection_ticks_remaining', '=', 0],
-                ['locked_at', '=', null],
-                ['abandoned_at', '<', $this->now]
+                ['locked_at', '=', null]
             ];
         } else {
             $where = ['dominions.id' => $dominion->id];
@@ -184,6 +183,9 @@ class TickService
             DB::table('dominions')
                 ->join('dominion_tick', 'dominions.id', '=', 'dominion_tick.dominion_id')
                 ->where($where)
+                ->where(function($query) {
+                    $query->where('abandoned_at', null)->orWhere('abandoned_at', '>', $this->now);
+                })
                 ->update([
                     'dominions.prestige' => DB::raw('dominions.prestige + dominion_tick.prestige'),
                     'dominions.peasants' => DB::raw('dominions.peasants + dominion_tick.peasants'),
