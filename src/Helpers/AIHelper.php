@@ -28,8 +28,8 @@ class AIHelper
     {
         $config = $this->getDefaultInstructions();
 
-        $config['active_chance'] = mt_rand(20, 35) / 100;
-        $config['max_land'] = mt_rand(600, 3000);
+        $config['active_chance'] = mt_rand(25, 40) / 100;
+        $config['max_land'] = mt_rand(500, 3000);
 
         $investOreRaces = ['Dwarf', 'Gnome', 'Icekin'];
         if (in_array($race->name, $investOreRaces)) {

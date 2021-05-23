@@ -148,8 +148,8 @@ class TickService
                     }
                 }
             }
-            // 40% of NPDs are active
-            $activeCount = round($npdCount * 0.40);
+            // 60% of NPDs are active
+            $activeCount = round($npdCount * 0.60);
             $npds = $round->dominions()->where('user_id', null)->get()->random($activeCount);
             foreach ($npds as $npd) {
                 $npd->ai_enabled = true;
