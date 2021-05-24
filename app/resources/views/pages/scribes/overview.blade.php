@@ -6,28 +6,26 @@
         <div class="col-md-3">
             <div class="box box-primary">
                 <div class="box-body table-responsive no-padding">
-                    <table class="table">
-                        <tbody>
-                            <tr><td><a href="#game-overview">Game Overview</a></td></tr>
-                            <tr><td><a href="#status">Status</a></td></tr>
-                            <tr><td><a href="#advisors">Advisors</a></td></tr>
-                            <tr><td><a href="#daily-bonus">Daily Bonus</a></td></tr>
-                            <tr><td><a href="#explore">Explore</a></td></tr>
-                            <tr><td><a href="#construct">Construct</a></td></tr>
-                            <tr><td><a href="#rezone">Rezone</a></td></tr>
-                            <tr><td><a href="#improvements">Improvements</a></td></tr>
-                            <tr><td><a href="#national-bank">National Bank</a></td></tr>
-                            <tr><td><a href="#technology">Technology</a></td></tr>
-                            <tr><td><a href="#military">Military</a></td></tr>
-                            <tr><td><a href="#government">Government</a></td></tr>
-                        </tbody>
-                    </table>
+                    <ul class="nav">
+                            <li><a href="#game-overview">Game Overview</a></li>
+                            <li><a href="#status">Status</a></li>
+                            <li><a href="#advisors">Advisors</a></li>
+                            <li><a href="#daily-bonus">Daily Bonus</a></li>
+                            <li><a href="#explore">Explore</a></li>
+                            <li><a href="#construct">Construct</a></li>
+                            <li><a href="#rezone">Rezone</a></li>
+                            <li><a href="#improvements">Improvements</a></li>
+                            <li><a href="#national-bank">National Bank</a></li>
+                            <li><a href="#technology">Technology</a></li>
+                            <li><a href="#military">Military</a></li>
+                            <li><a href="#government">Government</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">
-                <div class="box-header with-border">
+                <div class="box-header with-border text-center">
                     <h3 class="box-title">Game Overview</h3>
                 </div>
                 <div class="box-body" id="scribes">
