@@ -158,7 +158,7 @@
                         <h3 class="box-title">Pack</h3>
                     </div>
                     <div class="box-body">
-                        <p>You are in pack <em>{{$selectedDominion->pack->name}}</em> with:</p>
+                        <p>You are a member of <b>{{ $selectedDominion->pack->name }}</b> ({{ $selectedDominion->pack->password }}) with:</p>
                         <ul>
                             @foreach ($selectedDominion->pack->dominions as $dominion)
                                 <li>
@@ -194,6 +194,26 @@
                             @endif
                         @endif
                     </div>
+                </div>
+            </div>
+        @elseif (!$selectedDominion->round->hasAssignedRealms())
+            <div class="col-sm-12 col-md-3">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Join a Pack</h3>
+                    </div>
+                    <form action="{{ route('dominion.misc.join-pack') }}" method="post">
+                        @csrf
+                        <div class="box-body">
+                            <div class="form-group">
+                                <input type="text" name="pack_name" id="pack_name" class="form-control" placeholder="Pack Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="pack_password" id="pack_password" class="form-control" placeholder="Pack Password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Join</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         @endif

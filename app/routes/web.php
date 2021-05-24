@@ -229,6 +229,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
             $router->post('misc/abandon/cancel')->uses('Dominion\MiscController@postCancelAbandonDominion')->name('misc.abandon.cancel');
             $router->post('misc/clear-notifications')->uses('Dominion\MiscController@postClearNotifications')->name('misc.clear-notifications');
             $router->post('misc/close-pack')->uses('Dominion\MiscController@postClosePack')->name('misc.close-pack');
+            $router->post('misc/join-pack')->uses('Dominion\MiscController@postJoinPack')->name('misc.join-pack');
             $router->post('misc/report')->uses('Dominion\MiscController@postReport')->name('misc.report');
             $router->get('misc/restart')->uses('Dominion\MiscController@getRestartDominion')->name('misc.restart');
             $router->post('misc/restart')->uses('Dominion\MiscController@postRestartDominion');

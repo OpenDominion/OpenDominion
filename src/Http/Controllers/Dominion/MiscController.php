@@ -87,12 +87,41 @@ class MiscController extends AbstractDominionController
 
         // Only pack creator can manually close it
         if ($pack->creator_dominion_id !== $dominion->id) {
-            throw new GameException('Pack may only be closed by the creator');
+            return redirect()->back()->withErrors(['Pack may only be closed by the creator.']);
         }
 
         $pack->close();
 
         return redirect()->back();
+    }
+
+    public function postJoinPack(Request $request)
+    {
+        $dominion = $this->getSelectedDominion();
+
+        if ($dominion->pack_id !== null) {
+            return redirect()->back()->withErrors(['You are already a member of a pack.']);
+        }
+
+        if ($dominion->round->hasAssignedRealms()) {
+            return redirect()->back()->withErrors(['You cannot join a pack after realms have been assigned.']);
+        }
+
+        $pack = Pack::where([
+            'round_id' => $dominion->round_id,
+            'name' => $request->get('pack_name'),
+            'password' => $request->get('pack_password')
+        ])->first();
+
+        if ($pack == null) {
+            return redirect()->back()->withErrors(['Pack not found.']);
+        } else {
+            $dominion->pack_id = $pack->id;
+            $dominion->save();
+
+            $request->session()->flash('alert-success', 'You have successfully joined a pack.');
+            return redirect()->back();
+        }
     }
 
     public function postReport(Request $request)
