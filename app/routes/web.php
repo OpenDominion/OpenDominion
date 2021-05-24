@@ -251,6 +251,7 @@ $router->group(['middleware' => 'auth'], static function (Router $router) {
 // Scribes
 
 $router->group(['prefix' => 'scribes', 'as' => 'scribes.'], static function (Router $router) {
+    $router->get('/')->uses('ScribesController@getOverview')->name('overview');
     $router->get('races')->uses('ScribesController@getRaces')->name('races');
     $router->get('construction')->uses('ScribesController@getConstruction')->name('construction');
     $router->get('espionage')->uses('ScribesController@getEspionage')->name('espionage');

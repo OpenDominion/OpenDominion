@@ -58,7 +58,7 @@ class AdvisorsController extends AbstractDominionController
 
     public function getAdvisors()
     {
-        return redirect()->route('dominion.advisors.production');
+        return redirect()->route('dominion.advisors.op-center');
     }
 
     public function getAdvisorsOpCenter(Dominion $target = null)

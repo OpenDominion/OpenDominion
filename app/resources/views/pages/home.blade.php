@@ -32,7 +32,7 @@
                     <p>To help you get started, please consult the following resources:</p>
 
                     <ul>
-                        <li><a href="{{ route('scribes.races') }}">The Scribes</a></li>
+                        <li><a href="{{ route('scribes.overview') }}">How to Play (The Scribes)</a></li>
                         <li><a href="https://wiki.opendominion.net/wiki/My_First_Round" target="_blank">My First Round <i class="fa fa-external-link"></i></a> on the <a href="https://wiki.opendominion.net/" target="_blank">OpenDominion Wiki <i class="fa fa-external-link"></i></a>.</li>
                         <li>A mirror of the <a href="http://dominion.opendominion.net/" target="_blank">original website <i class="fa fa-external-link"></i></a> <strong>(Outdated)</strong> </li>
                     </ul>

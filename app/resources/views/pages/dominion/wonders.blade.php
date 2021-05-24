@@ -12,6 +12,7 @@
                 </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table">
+                        <colgroup>
                             <col>
                             <col width="10%">
                             <col width="20%">

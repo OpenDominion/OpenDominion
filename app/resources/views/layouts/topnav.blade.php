@@ -57,7 +57,7 @@
                     <ul class="nav navbar-nav">
                         <li class="{{ Route::is('about') ? 'active' : null }}"><a href="{{ route('about') }}">About</a></li>
                         <li class="{{ Route::is('valhalla.*') ? 'active' : null }}"><a href="{{ route('valhalla.index') }}">Valhalla</a></li>
-                        <li class="{{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.races') }}">Scribes</a></li>
+                        <li class="{{ Route::is('scribes.*') ? 'active' : null }}"><a href="{{ route('scribes.overview') }}">Scribes</a></li>
                         @include('partials.wiki-nav')
                         <li class="{{ Route::is('user-agreement') ? 'active' : null }}"><a href="{{ route('user-agreement') }}">Rules</a></li>
                         @auth
