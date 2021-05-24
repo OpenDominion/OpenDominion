@@ -347,9 +347,9 @@
     color: #d5e3e6 !important;
 }
 
-.skin-classic .navbar-nav > li > a:active,
-.skin-classic .navbar-nav > li > a:hover,
-.skin-classic .navbar-nav > li > a:focus {
+.skin-classic .nav > li > a:active,
+.skin-classic .nav > li > a:hover,
+.skin-classic .nav > li > a:focus {
     background-color: #29252a !important;
     color: #eee !important;
 }
