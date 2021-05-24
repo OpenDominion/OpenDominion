@@ -1,3 +1,3 @@
 <li>
-    <a href="{{ route('scribes.races') }}">Scribes</a>
+    <a href="{{ route('scribes.overview') }}">Scribes</a>
 </li>
