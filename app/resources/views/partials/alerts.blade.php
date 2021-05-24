@@ -3,7 +3,7 @@
         <div class="alert alert-warning">
             @if ($selectedDominion->locked_at !== null)
                 <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to a rules violation. No actions can be performed and no ticks will be processed.</p>
-            @elseif ($selectedDominion->abandoned_at < now())
+            @elseif ($selectedDominion->abandoned_at !== null && $selectedDominion->abandoned_at < now())
                 <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to abandonment. No actions can be performed and no ticks will be processed.</p>
             @else
                 <p><i class="icon fa fa-warning"></i> This dominion is <strong>locked</strong> due to the round having ended. No actions can be performed and no ticks will be processed.</p>
