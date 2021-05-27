@@ -10,7 +10,7 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
-    "@opendominion/admin-lte": "^2.4.18",
+    "@opendominion/admin-lte": "^2.4.19",
     "@opendominion/rpg-awesome": "0.0.9",
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",

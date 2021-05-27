@@ -849,10 +849,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     "fastq" "^1.6.0"
 
-"@opendominion/admin-lte@^2.4.18":
-  "integrity" "sha512-XfwZJNLTpPLX4naCTdOlm+9dEXuXbqrozVgfntOaK5qopsskpFZ/eU9hECjcAVE9h9cUXOrNM+rQVRMIi7NBSw=="
-  "resolved" "https://registry.npmjs.org/@opendominion/admin-lte/-/admin-lte-2.4.18.tgz"
-  "version" "2.4.18"
+"@opendominion/admin-lte@^2.4.19":
+  "integrity" "sha512-7v2YeVTs5I0VdGvMwufv+FU7WLBTEOYOQqv2JpDaAMg7pLkjMvTzkhpIyf87RwCCUMiKBdQfJJAhSjbug8psyg=="
+  "resolved" "https://registry.npmjs.org/@opendominion/admin-lte/-/admin-lte-2.4.19.tgz"
+  "version" "2.4.19"
   dependencies:
     "bootstrap" "^3.4"
     "bootstrap-colorpicker" "^2.5.3"
@@ -861,8 +861,8 @@
     "bootstrap-slider" "^9.10.0"
     "chart.js" "^1"
     "ckeditor" "^4.11.2"
-    "datatables.net" "^1.10.19"
-    "datatables.net-bs" "^1.10.19"
+    "datatables.net" "^1.10.22"
+    "datatables.net-bs" "^1.10.22"
     "fastclick" "^1.0.6"
     "flot" "^0.8.3"
     "font-awesome" "^4.7"
@@ -2643,18 +2643,18 @@
   "resolved" "https://registry.npmjs.org/dash-ast/-/dash-ast-1.0.0.tgz"
   "version" "1.0.0"
 
-"datatables.net-bs@^1.10.19":
-  "integrity" "sha512-4mpesFXNEkLlQET3IDLclLz95Xit4Kp/jHcOM2X0nc/ijDfO3qJk3ehZ+NSEAkXZDge6ZtY5Zxq2O90ISiIjwQ=="
-  "resolved" "https://registry.npmjs.org/datatables.net-bs/-/datatables.net-bs-1.10.21.tgz"
-  "version" "1.10.21"
+"datatables.net-bs@^1.10.22":
+  "integrity" "sha512-tV8MAZtUw8DJJhplDaIp0cBa9r6jjZ1wcJx3aMJ0m4Mbyqx3g71UL4mY2NqTOuoDYHvh0lhKF5ZGA3Ol8c86uQ=="
+  "resolved" "https://registry.npmjs.org/datatables.net-bs/-/datatables.net-bs-1.10.24.tgz"
+  "version" "1.10.24"
   dependencies:
-    "datatables.net" "1.10.21"
+    "datatables.net" "1.10.24"
     "jquery" ">=1.7"
 
-"datatables.net@^1.10.19", "datatables.net@1.10.21":
-  "integrity" "sha512-/bSZtxmf3GTpYcvEmwZ8q26I1yhSx8qklR2B+s1K8+/51UW/zc2zTYwJMqr/Z+iCYixAc00ildj4g2x0Qamolw=="
-  "resolved" "https://registry.npmjs.org/datatables.net/-/datatables.net-1.10.21.tgz"
-  "version" "1.10.21"
+"datatables.net@^1.10.22", "datatables.net@1.10.24":
+  "integrity" "sha512-CwXixvOdinvBCLXvcTloDinWiEM7Geaz+GwyjPrZL+MXIGPcLv4Op1bbWn8ErsI1JWMIWC8Cuf1rnDU2RrFV5w=="
+  "resolved" "https://registry.npmjs.org/datatables.net/-/datatables.net-1.10.24.tgz"
+  "version" "1.10.24"
   dependencies:
     "jquery" ">=1.7"
 
