@@ -191,14 +191,14 @@ class AIService
 
         // Construction
         try {
-            $this->constructBuildings($dominion, $config, $totalLand);
+            $this->constructBuildings($dominion->refresh(), $config, $totalLand);
         } catch (GameException $e) {
             // Shrivel like the cold mist, like the winds go wailing,
         }
 
         // Military
         try {
-            $this->trainMilitary($dominion, $config, $totalLand);
+            $this->trainMilitary($dominion->refresh(), $config, $totalLand);
         } catch (GameException $e) {
             // Out into the barren lands far beyond the mountains!
         }
@@ -207,7 +207,7 @@ class AIService
         try {
             if ($dominion->round->daysInRound() > 4 || ($dominion->round->daysInRound() == 4 && $dominion->round->hoursInDay() >= 12)) {
                 if ($incomingLand < 36 && $totalLand < $config['max_land']) {
-                    $this->exploreLand($dominion, $config, $totalLand);
+                    $this->exploreLand($dominion->refresh(), $config, $totalLand);
                 }
             }
         } catch (GameException $e) {
