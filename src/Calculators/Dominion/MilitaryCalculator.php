@@ -1162,6 +1162,9 @@ class MilitaryCalculator
 
         if ($success_only) {
             $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+                if (isset($event->data['attacker']['prestigeChange'])) {
+                    return $event->data['attacker']['prestigeChange'] > 0;
+                }
                 return $event->data['result']['success'];
             });
         }
