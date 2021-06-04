@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [1.4.2] - 2021-06-03
 ### Added
 - Solo players can join a pack prior to realm assignment
-- The Scribes have been updated with additonal information
+- The Scribes have been updated with additional information
 
 ### Changed
 - Op Center is now the default Advisors page
