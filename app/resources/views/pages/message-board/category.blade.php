@@ -77,6 +77,9 @@
                 </div>
                 <div class="box-footer">
                     <a href="{{ route('message-board.create') }}?category={{ $category->id }}" class="btn btn-primary">New Thread</a>
+                    <div class="pull-right">
+                        {{ $threads->links() }}
+                    </div>
                 </div>
             </div>
         </div>

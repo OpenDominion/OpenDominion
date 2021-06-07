@@ -2,8 +2,6 @@
     <colgroup>
         <col width="150">
         <col>
-        <col width="100">
-        <col width="200">
     </colgroup>
     <thead>
         <tr>

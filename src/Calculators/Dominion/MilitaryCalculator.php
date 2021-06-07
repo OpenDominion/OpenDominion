@@ -1162,7 +1162,12 @@ class MilitaryCalculator
 
         if ($success_only) {
             $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
-                return $event->data['result']['success'];
+                $successful = $event->data['result']['success'];
+                $prestigious = true;
+                if (isset($event->data['attacker']['landSize']) && isset($event->data['defender']['landSize'])) {
+                    $prestigious = ($event->data['defender']['landSize'] / $event->data['attacker']['landSize']) >= 0.75;
+                }
+                return $successful && $prestigious;
             });
         }
 

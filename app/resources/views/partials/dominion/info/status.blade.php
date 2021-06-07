@@ -163,7 +163,7 @@
                             Boats:
                         </span>
                     </td>
-                    <td>{{ number_format($data['resource_boats']) }}</td>
+                    <td>{{ number_format(floor($data['resource_boats'])) }}</td>
                 </tr>
                 <tr>
                     <td>

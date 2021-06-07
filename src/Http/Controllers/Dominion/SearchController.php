@@ -27,6 +27,10 @@ class SearchController extends AbstractDominionController
                 'race',
             ])
             ->where('round_id', $dominion->round_id)
+            ->where('locked_at', null)
+            ->where(function ($query) {
+                $query->where('abandoned_at', null)->orWhere('abandoned_at', '>', now());
+            })
             ->get();
 
         return view('pages.dominion.search', compact(

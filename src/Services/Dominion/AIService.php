@@ -191,23 +191,23 @@ class AIService
 
         // Construction
         try {
-            $this->constructBuildings($dominion, $config, $totalLand);
+            $this->constructBuildings($dominion->refresh(), $config, $totalLand);
         } catch (GameException $e) {
             // Shrivel like the cold mist, like the winds go wailing,
         }
 
         // Military
         try {
-            $this->trainMilitary($dominion, $config, $totalLand);
+            $this->trainMilitary($dominion->refresh(), $config, $totalLand);
         } catch (GameException $e) {
             // Out into the barren lands far beyond the mountains!
         }
 
         // Explore
         try {
-            if ($round->daysInRound() > 4 || ($round->daysInRound() == 4 && $round->hoursInDay() >= 12)) {
+            if ($dominion->round->daysInRound() > 4 || ($dominion->round->daysInRound() == 4 && $dominion->round->hoursInDay() >= 12)) {
                 if ($incomingLand < 36 && $totalLand < $config['max_land']) {
-                    $this->exploreLand($dominion, $config, $totalLand);
+                    $this->exploreLand($dominion->refresh(), $config, $totalLand);
                 }
             }
         } catch (GameException $e) {
@@ -340,15 +340,21 @@ class AIService
                 // Train spies
                 $spyRatio = $this->militaryCalculator->getSpyRatio($dominion, 'defense');
                 if ($spyRatio < $command['amount']) {
-                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
-                    $maxAfford = min(5, $maxAfford);
+                    $incomingSpies = $this->queueService->getTrainingQueueTotalByResource($dominion, 'military_spies');
+                    if ($incomingSpies == 0) {
+                        $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                        $maxAfford = min(5, $maxAfford);
+                    }
                 }
             } elseif ($command['unit'] == 'wizards') {
                 // Train wizards
                 $wizardRatio = $this->militaryCalculator->getWizardRatio($dominion, 'defense');
                 if ($wizardRatio < $command['amount']) {
-                    $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
-                    $maxAfford = min(5, $maxAfford);
+                    $incomingWizards = $this->queueService->getTrainingQueueTotalByResource($dominion, 'military_spies');
+                    if ($incomingWizards == 0) {
+                        $maxAfford = $this->trainingCalculator->getMaxTrainable($dominion)[$command['unit']];
+                        $maxAfford = min(5, $maxAfford);
+                    }
                 }
             } else {
                 // Train military
