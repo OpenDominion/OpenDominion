@@ -99,6 +99,8 @@ class MiscController extends AbstractDominionController
     {
         $dominion = $this->getSelectedDominion();
 
+        $packService = app(PackService::class);
+
         if ($dominion->pack_id !== null) {
             return redirect()->back()->withErrors(['You are already a member of a pack.']);
         }
@@ -107,20 +109,25 @@ class MiscController extends AbstractDominionController
             return redirect()->back()->withErrors(['You cannot join a pack after realms have been assigned.']);
         }
 
-        $pack = Pack::where([
-            'round_id' => $dominion->round_id,
-            'name' => $request->get('pack_name'),
-            'password' => $request->get('pack_password')
-        ])->first();
+        try {
+            $pack = $packService->getPack(
+                $dominion->round,
+                $request->get('pack_name'),
+                $request->get('pack_password'),
+                $dominion->race
+            );
+        } catch (GameException $e) {
+            return redirect()->back()->withErrors([$e->getMessage()]);
+        }
 
-        if ($pack == null) {
-            return redirect()->back()->withErrors(['Pack not found.']);
-        } else {
+        if ($pack !== null) {
             $dominion->pack_id = $pack->id;
             $dominion->save();
 
             $request->session()->flash('alert-success', 'You have successfully joined a pack.');
             return redirect()->back();
+        } else {
+            return redirect()->back()->withErrors(['Pack not found.']);
         }
     }
 
