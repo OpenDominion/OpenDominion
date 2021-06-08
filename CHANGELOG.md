@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Locked and abandoned dominions no longer appear on the Search page
 
+### Fixed
+- Prestige loss is now correctly calculated by your recently invaded count instead of invader's
+
 ## [1.4.2] - 2021-06-03
 ### Added
 - Solo players can join a pack prior to realm assignment
