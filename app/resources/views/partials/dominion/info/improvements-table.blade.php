@@ -22,7 +22,7 @@
                     {{ sprintf(
                         $improvementHelper->getImprovementRatingString($improvementType),
                         number_format((array_get($data, "{$improvementType}.rating") * 100), 2),
-                        number_format((array_get($data, "{$improvementType}.rating") * 100 * 2), 2)
+                        number_format((array_get($data, "{$improvementType}.rating") * 100 * 1.25), 2)
                     ) }}
                 </td>
                 <td class="text-center">{{ number_format(array_get($data, "{$improvementType}.points")) }}</td>

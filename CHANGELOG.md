@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 
 ### Fixed
 - Prestige loss is now correctly calculated by your recently invaded count instead of invader's
+- Op Center now shows correct value for Harbor
 
 ## [1.4.2] - 2021-06-03
 ### Added
