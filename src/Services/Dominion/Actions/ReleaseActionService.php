@@ -64,15 +64,16 @@ class ReleaseActionService
             4 => array_get($data, 'unit4', 0)
         ];
 
-        $rawDpReleased = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
+        // Check for excessive DP reduction
+        $defensiveMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defenseReduced = $this->militaryCalculator->getDefensivePowerRaw($dominion, null, null, $units, true);
+        $defenseReduced *= $defensiveMultiplier;
 
-        if ($rawDpReleased > 0 && !$this->protectionService->isUnderProtection($dominion))
-        {
-            // Check for excessive release restriction
-            $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion);
+        if ($defenseReduced > 0 && !$this->protectionService->isUnderProtection($dominion)) {
+            $defenseBeforeRelease = $this->militaryCalculator->getDefensivePowerRaw($dominion) * $defensiveMultiplier;
             $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
-            if ((($rawDpReleased + $defenseReducedRecently) / ($defenseBeforeRelease + $defenseReducedRecently)) > 0.15) {
-                throw new GameException('You cannot release more than 15% of your raw defense during a 24 hour period.');
+            if ((($defenseReduced + $defenseReducedRecently) / ($defenseBeforeRelease + $defenseReducedRecently)) > 0.15) {
+                throw new GameException('You cannot reduce your defense by more than 15% during a 24 hour period.');
             }
         }
 
@@ -107,7 +108,7 @@ class ReleaseActionService
 
         $dominion->save([
             'event' => HistoryService::EVENT_ACTION_RELEASE,
-            'defense_reduced' => $rawDpReleased
+            'defense_reduced' => $defenseReduced
         ]);
 
         return [

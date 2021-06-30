@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - Locked and abandoned dominions no longer appear on the Search page
+- You can no longer destroy buildings or rezone land to reduce your defense by more than 15%
 
 ### Fixed
 - Prestige loss is now correctly calculated by your recently invaded count instead of invader's

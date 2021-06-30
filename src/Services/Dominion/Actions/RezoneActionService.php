@@ -4,9 +4,11 @@ namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\Actions\RezoningCalculator;
 use OpenDominion\Calculators\Dominion\LandCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class RezoneActionService
@@ -16,19 +18,24 @@ class RezoneActionService
     /** @var LandCalculator */
     protected $landCalculator;
 
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var ProtectionService */
+    protected $protectionService;
+
     /** @var RezoningCalculator */
     protected $rezoningCalculator;
 
     /**
      * RezoneActionService constructor.
-     *
-     * @param LandCalculator $landCalculator
-     * @param RezoningCalculator $rezoningCalculator
      */
-    public function __construct(LandCalculator $landCalculator, RezoningCalculator $rezoningCalculator)
+    public function __construct()
     {
-        $this->landCalculator = $landCalculator;
-        $this->rezoningCalculator = $rezoningCalculator;
+        $this->landCalculator = app(LandCalculator::class);
+        $this->militaryCalculator = app(MilitaryCalculator::class);
+        $this->protectionService = app(ProtectionService::class);
+        $this->rezoningCalculator = app(RezoningCalculator::class);
     }
 
     /**
@@ -81,6 +88,11 @@ class RezoneActionService
             throw new GameException("You do not have enough platinum to re-zone {$totalLand} acres of land.");
         }
 
+        // Check for excessive DP reduction
+        $defensiveMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defenseBeforeDestroy = $this->militaryCalculator->getDefensivePowerRaw($dominion);
+        $defenseBeforeDestroy *= $defensiveMultiplier;
+
         // All fine, perform changes.
         $dominion->resource_platinum -= $platinumCost;
         $dominion->stat_total_platinum_spent_rezoning += $platinumCost;
@@ -92,7 +104,23 @@ class RezoneActionService
             $dominion->{'land_' . $landType} += $amount;
         }
 
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_REZONE]);
+        // Check for excessive DP reduction
+        $defensiveMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defenseAfterDestroy = $this->militaryCalculator->getDefensivePowerRaw($dominion);
+        $defenseAfterDestroy *= $defensiveMultiplier;
+        $defenseReduced = $defenseBeforeDestroy - $defenseAfterDestroy;
+
+        if ($defenseReduced > 0 && !$this->protectionService->isUnderProtection($dominion)) {
+            $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
+            if ((($defenseReduced + $defenseReducedRecently) / ($defenseBeforeDestroy + $defenseReducedRecently)) > 0.15) {
+                throw new GameException('You cannot reduce your defense by more than 15% during a 24 hour period.');
+            }
+        }
+
+        $dominion->save([
+            'event' => HistoryService::EVENT_ACTION_REZONE,
+            'defense_reduced' => $defenseReduced
+        ]);
 
         return [
             'message' => sprintf(

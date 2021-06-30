@@ -3,14 +3,32 @@
 namespace OpenDominion\Services\Dominion\Actions;
 
 use OpenDominion\Calculators\Dominion\Actions\ConstructionCalculator;
+use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\HistoryService;
+use OpenDominion\Services\Dominion\ProtectionService;
 use OpenDominion\Traits\DominionGuardsTrait;
 
 class DestroyActionService
 {
     use DominionGuardsTrait;
+
+    /** @var MilitaryCalculator */
+    protected $militaryCalculator;
+
+    /** @var ProtectionService */
+    protected $protectionService;
+
+    /**
+     * DestroyActionService constructor.
+     */
+    public function __construct()
+    {
+        $this->constructionCalculator = app(ConstructionCalculator::class);
+        $this->militaryCalculator = app(MilitaryCalculator::class);
+        $this->protectionService = app(ProtectionService::class);
+    }
 
     /**
      * Does a destroy buildings action for a Dominion.
@@ -32,6 +50,11 @@ class DestroyActionService
             throw new GameException('The destruction was not completed due to bad input.');
         }
 
+        // Check for excessive DP reduction
+        $defensiveMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defenseBeforeDestroy = $this->militaryCalculator->getDefensivePowerRaw($dominion);
+        $defenseBeforeDestroy *= $defensiveMultiplier;
+
         foreach ($data as $buildingType => $amount) {
             if ($amount === 0) {
                 continue;
@@ -50,17 +73,29 @@ class DestroyActionService
             $dominion->{'building_' . $buildingType} -= $amount;
         }
 
+        // Check for excessive DP reduction
+        $defensiveMultiplier = $this->militaryCalculator->getDefensivePowerMultiplier($dominion);
+        $defenseAfterDestroy = $this->militaryCalculator->getDefensivePowerRaw($dominion);
+        $defenseAfterDestroy *= $defensiveMultiplier;
+        $defenseReduced = $defenseBeforeDestroy - $defenseAfterDestroy;
+
+        if ($defenseReduced > 0 && !$this->protectionService->isUnderProtection($dominion)) {
+            $defenseReducedRecently = $this->militaryCalculator->getDefenseReducedRecently($dominion);
+            if ((($defenseReduced + $defenseReducedRecently) / ($defenseBeforeDestroy + $defenseReducedRecently)) > 0.15) {
+                throw new GameException('You cannot reduce your defense by more than 15% during a 24 hour period.');
+            }
+        }
+
         $destructionRefundString = '';
         if ($dominion->getTechPerkValue('destruction_refund') != 0) {
-            $constructionCalculator = app(ConstructionCalculator::class);
             $multiplier = $dominion->getTechPerkMultiplier('destruction_refund');
 
-            $platinumCost = round($constructionCalculator->getPlatinumCostRaw($dominion) * $multiplier);
-            $lumberCost= round($constructionCalculator->getLumberCostRaw($dominion) * $multiplier);
+            $platinumCost = round($this->constructionCalculator->getPlatinumCostRaw($dominion) * $multiplier);
+            $lumberCost= round($this->constructionCalculator->getLumberCostRaw($dominion) * $multiplier);
 
             // Can never get more per acre than the current modded cost per acre
-            $platinumCost = min($platinumCost, $constructionCalculator->getPlatinumCost($dominion));
-            $lumberCost = min($lumberCost, $constructionCalculator->getLumberCost($dominion));
+            $platinumCost = min($platinumCost, $this->constructionCalculator->getPlatinumCost($dominion));
+            $lumberCost = min($lumberCost, $this->constructionCalculator->getLumberCost($dominion));
 
             $platinumRefund = round($platinumCost * $totalBuildingsToDestroy);
             $lumberRefund = round($lumberCost * $totalBuildingsToDestroy);
@@ -70,7 +105,10 @@ class DestroyActionService
             $dominion->resource_lumber += $lumberRefund;
         }
 
-        $dominion->save(['event' => HistoryService::EVENT_ACTION_DESTROY]);
+        $dominion->save([
+            'event' => HistoryService::EVENT_ACTION_DESTROY,
+            'defense_reduced' => $defenseReduced
+        ]);
 
         return [
             'message' => sprintf(

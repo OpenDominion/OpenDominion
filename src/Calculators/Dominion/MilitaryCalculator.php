@@ -1219,8 +1219,8 @@ class MilitaryCalculator
 
         $releaseEvents = DB::table('dominion_history')
             ->where('dominion_id', $dominion->id)
-            ->where('event', 'release')
             ->where('created_at', '>', now()->subDay(1))
+            ->whereIn('event', ['destroy', 'release', 'rezone'])
             ->get();
 
         foreach ($releaseEvents as $release) {
