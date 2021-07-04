@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.4.3] - 2021-07-04
 ### Changed
 - Locked and abandoned dominions no longer appear on the Search page
 - You can no longer destroy buildings or rezone land to reduce your defense by more than 15%
@@ -10,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Fixed
 - Prestige loss is now correctly calculated by your recently invaded count instead of invader's
 - Op Center now shows correct value for Harbor
+- Defensive casualty bonuses from techs are now properly applied
 
 ## [1.4.2] - 2021-06-03
 ### Added
