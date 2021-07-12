@@ -18,8 +18,12 @@ use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Helpers\RankingsHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Dominion\Tick;
+use OpenDominion\Models\GameEvent;
 use OpenDominion\Models\Race;
+use OpenDominion\Models\Realm;
+use OpenDominion\Models\RealmWar;
 use OpenDominion\Models\Round;
+use OpenDominion\Services\Dominion\GovernmentService;
 use OpenDominion\Services\NotificationService;
 use OpenDominion\Services\WonderService;
 use Throwable;
@@ -99,6 +103,7 @@ class TickService
 
         foreach ($activeRounds as $round) {
             $this->performTick($round);
+            $this->expireWars($round);
             $this->checkForAbandonedDominions($round);
         }
 
@@ -332,6 +337,34 @@ class TickService
                 number_format($this->now->diffInMilliseconds(now())),
                 $round->name
             ));
+        }
+    }
+
+    /**
+     * Checks for wars beyond maximum duration and cancels them.
+     * 
+     * @throws Exception|Throwable
+     */
+    public function expireWars(Round $round)
+    {
+        $expiry = now()->subHours(GovernmentService::WAR_MAXIMUM_DURATION)->endOfHour();
+        $expiredWars = $round->wars()
+            ->where('realm_wars.inactive_at', null)
+            ->where('realm_wars.created_at', '<', $expiry)
+            ->get();
+
+        foreach ($expiredWars as $war) {
+            GameEvent::create([
+                'round_id' => $round->id,
+                'source_type' => Realm::class,
+                'source_id' => $war->source_realm_id,
+                'target_type' => RealmWar::class,
+                'target_id' => $war->id,
+                'type' => 'war_canceled',
+            ]);
+    
+            $war->inactive_at = now()->addHours(GovernmentService::WAR_INACTIVE_WAIT_IN_HOURS)->startOfHour();
+            $war->save();
         }
     }
 

@@ -14,6 +14,7 @@ class GovernmentService
     public const WAR_INACTIVE_WAIT_IN_HOURS = 0;
     public const WAR_CANCEL_WAIT_IN_HOURS = 48;
     public const WAR_REDECLARE_WAIT_IN_HOURS = 48;
+    public const WAR_MAXIMUM_DURATION = 24 * 5;
 
     /**
      * Gets votes for Realm monarchy by Dominion.
@@ -140,6 +141,22 @@ class GovernmentService
 
         if ($cancelDate > now()->startOfHour()) {
             return $cancelDate->diffInHours(now()->startOfHour());
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the number of hours remaining before war is automatically canceled
+     *
+     * @param RealmWar $war
+     */
+    public function getHoursBeforeWarEnds(RealmWar $war): int
+    {
+        $endingDate = $war->created_at->addHours(self::WAR_MAXIMUM_DURATION)->startOfHour();
+
+        if ($endingDate > now()->startOfHour()) {
+            return $endingDate->diffInHours(now()->startOfHour());
         }
 
         return 0;

@@ -177,6 +177,7 @@
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                         $cancelHours = $governmentService->getHoursBeforeCancelWar($war);
+                                        $endingHours = $governmentService->getHoursBeforeWarEnds($war);
                                         $inactiveHours = $governmentService->getHoursBeforeWarInactive($war);
                                     @endphp
                                     <tr>
@@ -200,6 +201,8 @@
                                             @elseif ($activeHours == 0)
                                                 @if ($cancelHours !== 0)
                                                     <span class="small text-muted">Cancel in {{ $cancelHours }} ticks</span>
+                                                @else
+                                                    <span class="small text-muted">Ends in {{ $endingHours }} ticks</span>
                                                 @endif
                                             @else
                                                 <span class="small text-muted">Active in {{ $activeHours }} ticks</span>
@@ -234,6 +237,8 @@
                                             @elseif ($activeHours == 0)
                                                 @if ($cancelHours !== 0)
                                                     <span class="small text-muted">Cancel in {{ $cancelHours }} ticks</span>
+                                                @else
+                                                    <span class="small text-muted">Ends in {{ $endingHours }} ticks</span>
                                                 @endif
                                             @else
                                                 <span class="small text-muted">Active in {{ $activeHours }} ticks</span>
