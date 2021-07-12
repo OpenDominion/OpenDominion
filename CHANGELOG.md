@@ -4,7 +4,9 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Changed
-- Schools now generate 25 Research Points per 1% owned up to a maxium of 875 at 35% owned (down from 25, max 1040 at 40%)
+- Schools now generate 25 Research Points per 1% owned up to a maximum of 875 at 35% owned (down from 25, max 1040 at 40%)
+- Orc: +20% food consumption removed
+- Orc Bone Breaker: Offense increased by 1 for every 375 prestige, max +3 (from 1 every 625 prestige, max +2)
 
 ## [1.4.3] - 2021-07-04
 ### Changed

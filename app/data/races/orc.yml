@@ -9,7 +9,6 @@ converter_difficulty: 3
 overall_difficulty: 3
 home_land_type: forest
 perks:
-  food_consumption: 20
   lumber_production: 50
 units:
   - name: Savage
@@ -40,7 +39,7 @@ units:
       platinum: 1150
       ore: 100
     power:
-      offense: 5
+      offense: 4
       defense: 2
     perks:
-      offense_from_prestige: 625,2 # amount, max
+      offense_from_prestige: 375,3 # amount, max
