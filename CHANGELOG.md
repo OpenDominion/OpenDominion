@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - Schools now generate 25 Research Points per 1% owned up to a maximum of 875 at 35% owned (down from 25, max 1040 at 40%)
+- Dwarf Warrior: -10r (from 110r)
+- Gnome Juggernaut: -50p (from 775p)
 - Orc: +20% food consumption removed
 - Orc Bone Breaker: Offense increased by 1 for every 375 prestige, max +3 (from 1 every 625 prestige, max +2)
 

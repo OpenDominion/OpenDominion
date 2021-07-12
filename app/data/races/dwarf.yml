@@ -43,7 +43,7 @@ units:
   - name: Warrior
     cost:
       platinum: 1250
-      ore: 110
+      ore: 100
     power:
       offense: 7
       defense: 2
