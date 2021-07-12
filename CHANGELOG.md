@@ -4,6 +4,8 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 ### Changed
+- Barracks now house 35 trained or in training military units, modified by prestige (from 36 unmodified)
+- School of War has been removed
 - Schools now generate 25 Research Points per 1% owned up to a maximum of 875 at 35% owned (down from 25, max 1040 at 40%)
 - Dwarf Warrior: -10r (from 110r)
 - Gnome Juggernaut: -50p (from 775p)

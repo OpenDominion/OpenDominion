@@ -131,6 +131,7 @@ school_of_war:
   perks:
     barracks_housing: 5
   power: 250000
+  active: false
 horn_of_plenty:
   name: Horn of Plenty
   perks:

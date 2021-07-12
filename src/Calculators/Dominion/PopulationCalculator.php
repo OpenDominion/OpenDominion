@@ -224,7 +224,7 @@ class PopulationCalculator
     public function getMaxPopulationMilitaryBonus(Dominion $dominion): float
     {
         // Values
-        $troopsPerBarracks = 36;
+        $troopsPerBarracks = 35;
 
         // Racial Bonus
         $troopsPerBarracks += $dominion->race->getPerkValue('barracks_housing');
@@ -235,9 +235,12 @@ class PopulationCalculator
         // Wonders
         $troopsPerBarracks += $dominion->getWonderPerkValue('barracks_housing');
 
+        // Prestige
+        $troopsPerBarracks *= (1 + $this->prestigeCalculator->getPrestigeMultiplier($dominion));
+
         return min(
             ($this->getPopulationMilitary($dominion) - $dominion->military_draftees),
-            ($dominion->building_barracks * $troopsPerBarracks)
+            round($dominion->building_barracks * $troopsPerBarracks)
         );
     }
 
