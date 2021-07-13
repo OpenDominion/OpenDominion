@@ -179,9 +179,9 @@ class MiscController extends AbstractDominionController
         }
 
         if ($dominion->realm->alignment == 'neutral') {
-            $races = Race::all()->sortBy('name');
+            $races = Race::where('playable', true)->get()->sortBy('name');
         } else {
-            $races = Race::where('alignment', $dominion->realm->alignment)->get()->sortBy('name');
+            $races = Race::where('playable', true)->where('alignment', $dominion->realm->alignment)->get()->sortBy('name');
         }
 
         return view('pages.dominion.restart', [

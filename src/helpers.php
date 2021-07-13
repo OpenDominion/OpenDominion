@@ -130,7 +130,7 @@ if (!function_exists('random_distribution')) {
      *
      * @param float $mean
      * @param float $standard_deviation
-     * @return bool
+     * @return float
      * @throws Exception
      */
     function random_distribution(float $mean, float $standard_deviation): float
@@ -138,6 +138,23 @@ if (!function_exists('random_distribution')) {
         $x = mt_rand()/mt_getrandmax();
         $y = mt_rand()/mt_getrandmax();
         return sqrt(-2 * log($x)) * cos(2 * pi() * $y) * $standard_deviation + $mean;
+    }
+}
+
+if (!function_exists('skewed_distribution')) {
+    /**
+     * Returns a random value between min/max from a right-skewed probability distribution.
+     *
+     * @param float $min
+     * @param float $max
+     * @return float
+     * @throws Exception
+     */
+    function skewed_distribution(float $min, float $max): float
+    {
+        $x = mt_rand()/mt_getrandmax();
+        $y = mt_rand()/mt_getrandmax();
+        return floor(abs($x - $y) * ($max - $min) + $min);
     }
 }
 

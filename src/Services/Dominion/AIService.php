@@ -157,8 +157,8 @@ class AIService
 
     public function getRequiredDefense(Dominion $dominion, int $totalLand)
     {
-        // Defense starts 4% below formula, each invasion increases target DPA by 2%
-        $invasionMultiplier = (1 + ($dominion->stat_defending_failure - 2) / 50);
+        // Each invasion increases target DPA by 2%
+        $invasionMultiplier = (1 + $dominion->stat_defending_failure / 50);
         $defenseByDay = $this->aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand);
 
         return $defenseByDay * $invasionMultiplier;
@@ -217,6 +217,9 @@ class AIService
         // Improvements
         try {
             $this->investCastle($dominion, $config);
+            if ($dominion->resource_platinum > 100000) {
+                $this->investCastle($dominion, ['invest' => 'platinum']);
+            }
         } catch (GameException $e) {
             // Lost and forgotten be, darker than the darkness,
         }

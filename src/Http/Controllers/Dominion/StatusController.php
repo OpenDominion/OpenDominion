@@ -25,11 +25,6 @@ class StatusController extends AbstractDominionController
         $resultsPerPage = 25;
         $selectedDominion = $this->getSelectedDominion();
 
-        if ($selectedDominion->realm->alignment == 'neutral') {
-            $races = Race::all();
-        } else {
-            $races = Race::where('alignment', $selectedDominion->realm->alignment)->get();
-        }
         $notifications = $selectedDominion->notifications()->paginate($resultsPerPage);
 
         return view('pages.dominion.status', [
@@ -47,7 +42,6 @@ class StatusController extends AbstractDominionController
             'raceHelper' => app(RaceHelper::class),
             'rangeCalculator' => app(RangeCalculator::class),
             'unitHelper' => app(UnitHelper::class),
-            'races' => $races,
             'notifications' => $notifications
         ]);
     }
