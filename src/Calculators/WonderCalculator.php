@@ -86,7 +86,7 @@ class WonderCalculator
     public function getApproximatePower(RoundWonder $wonder): float
     {
         $power = $this->getCurrentPower($wonder);
-        $approximation = round($power, -4);
+        $approximation = max(round($power, -4), 5000);
 
         if ($power == $wonder->power || $approximation > $wonder->power) {
             return $power;
@@ -153,23 +153,8 @@ class WonderCalculator
             return 0;
         }
 
-        $damageByRealm = $this->getDamageDealtByRealm($wonder, $dominion->realm);
-        $damageByDominion = $this->getDamageDealtByDominion($wonder, $dominion);
+        $damageByRealm = min($this->getDamageDealtByRealm($wonder, $dominion->realm), $wonder->power);
         $attackDamageByDominion = $this->getDamageDealtByDominion($wonder, $dominion, 'attack');
-
-        if ($wonder->realm == null && !$dominion->realm->wonders->isEmpty()) {
-            // Wonder is neutral and realm already has a wonder
-            $damageContribution = $damageByDominion / $damageByRealm;
-            if ($damageContribution >= static::PRESTIGE_CONTRIBUTION_MIN) {
-                return -25;
-            }
-            return 0;
-        }
-
-        if ($wonder->realm == null || $wonder->realm_id == null) {
-            // Wonder is neutral or not being rebuilt
-            return 0;
-        }
 
         $damageContribution = $attackDamageByDominion / $damageByRealm;
         if ($damageContribution < static::PRESTIGE_CONTRIBUTION_MIN) {

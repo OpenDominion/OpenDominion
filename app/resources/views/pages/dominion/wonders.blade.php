@@ -41,7 +41,7 @@
                                     </td>
                                     <td>
                                         @if ($wonder->realm)
-                                            @if ($wonder->realm_id == $selectedDominion->realm_id)
+                                            @if ($wonder->realm_id == $selectedDominion->realm_id || $governmentService->isAtWar($selectedDominion->realm, $wonder->realm))
                                                 {{ number_format($wonderCalculator->getCurrentPower($wonder)) }}
                                             @else
                                                 ~{{ number_format($wonderCalculator->getApproximatePower($wonder)) }}
