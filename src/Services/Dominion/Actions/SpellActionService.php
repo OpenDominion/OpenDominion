@@ -309,7 +309,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsCalculator->infoOperationSuccessChance($dominion, $target, 'wizard');
+            $successRate = $this->opsCalculator->infoOperationSuccessChance($selfWpa, $targetWpa);
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));
@@ -441,7 +441,7 @@ class SpellActionService
 
         // 100% spell success if target has a WPA of 0
         if ($targetWpa !== 0.0) {
-            $successRate = $this->opsCalculator->blackOperationSuccessChance($dominion, $target, 'wizard');
+            $successRate = $this->opsCalculator->blackOperationSuccessChance($selfWpa, $targetWpa);
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_spell_chance'));

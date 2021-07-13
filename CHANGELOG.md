@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - School of War has been removed
 - Schools now generate 25 Research Points per 1% owned up to a maximum of 875 at 35% owned (down from 25, max 1040 at 40%)
 - Wars will now automatically expire after 5 days
+- Black ops success rate reduced when target's spy/wizard ratio is high
 - Dwarf Warrior: -10r (from 110r)
 - Gnome Juggernaut: -50p (from 775p)
 - Orc: +20% food consumption removed

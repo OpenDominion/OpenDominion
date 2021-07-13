@@ -46,70 +46,44 @@ class OpsCalculator
     /**
      * Returns the chance of success for an info operation or spell.
      *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param string $type
+     * @param float $selfRatio
+     * @param float $targetRatio
      * @return float
      */
-    public function infoOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
+    public function infoOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $ratio = $this->getRelativeRatio($dominion, $target, $type);
-        $successRate = 0.8 ** (2 / (($ratio * 1.4) ** 1.2));
+        $relativeRatio = $selfRatio / $targetRatio;
+        $successRate = 0.8 ** (2 / (($relativeRatio * 1.4) ** 1.2));
         return clamp($successRate, 0.01, 0.99);
     }
 
     /**
      * Returns the chance of success for a theft operation.
      *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param string $type
+     * @param float $selfRatio
+     * @param float $targetRatio
      * @return float
      */
-    public function theftOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
+    public function theftOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $ratio = $this->getRelativeRatio($dominion, $target, $type);
-        $successRate = 0.6 ** (2 / (($ratio * 1.2) ** 1.2));
+        $relativeRatio = $selfRatio / $targetRatio;
+        $successRate = 0.6 ** (2 / (($relativeRatio * 1.2) ** 1.2));
         return clamp($successRate, 0.01, 0.99);
     }
 
     /**
      * Returns the chance of success for a hostile operation or spell.
      *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param string $type
+     * @param float $selfRatio
+     * @param float $targetRatio
      * @return float
      */
-    public function blackOperationSuccessChance(Dominion $dominion, ?Dominion $target, string $type): float
+    public function blackOperationSuccessChance(float $selfRatio, float $targetRatio): float
     {
-        $ratio = $this->getRelativeRatio($dominion, $target, $type);
-        $successRate = (1 / (1 + exp(($ratio ** -0.4) - $ratio))) + (0.008 * $ratio) - 0.07;
+        $relativeRatio = $selfRatio / $targetRatio;
+        $successRate = (1 / (1 + exp(($relativeRatio ** -0.6) - $relativeRatio))) + (0.008 * $relativeRatio) + 0.07;
+        $successRate *= (1 - (0.25 * sqrt($targetRatio)));
         return clamp($successRate, 0.01, 0.95);
-    }
-
-    /**
-     * Returns the relative ratio of two dominions.
-     *
-     * @param Dominion $dominion
-     * @param Dominion $target
-     * @param string $type
-     * @return float
-     */
-    public function getRelativeRatio(Dominion $dominion, Dominion $target, string $type): float
-    {
-        $selfRatio = 0;
-        $targetRatio = 1;
-
-        if ($type == 'spy') {
-            $selfRatio = $this->militaryCalculator->getSpyRatio($dominion, 'offense');
-            $targetRatio = $this->militaryCalculator->getSpyRatio($target, 'defense');
-        } elseif ($type == 'wizard') {
-            $selfRatio = $this->militaryCalculator->getWizardRatio($dominion, 'offense');
-            $targetRatio = $this->militaryCalculator->getWizardRatio($target, 'defense');
-        }
-
-        return $selfRatio / $targetRatio;
     }
 
     /**

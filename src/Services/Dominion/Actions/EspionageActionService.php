@@ -247,7 +247,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsCalculator->infoOperationSuccessChance($dominion, $target, 'spy');
+            $successRate = $this->opsCalculator->infoOperationSuccessChance($selfSpa, $targetSpa);
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -351,7 +351,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsCalculator->theftOperationSuccessChance($dominion, $target, 'spy');
+            $successRate = $this->opsCalculator->theftOperationSuccessChance($selfSpa, $targetSpa);
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
@@ -555,7 +555,7 @@ class EspionageActionService
         }
 
         if ($targetSpa !== 0.0) {
-            $successRate = $this->opsCalculator->blackOperationSuccessChance($dominion, $target, 'spy');
+            $successRate = $this->opsCalculator->blackOperationSuccessChance($selfSpa, $targetSpa);
 
             // Wonders
             $successRate *= (1 - $target->getWonderPerkMultiplier('enemy_espionage_chance'));
