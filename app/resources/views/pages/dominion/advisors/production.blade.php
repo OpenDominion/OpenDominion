@@ -350,7 +350,7 @@
                             @endif
                             <tr>
                                 <td>
-                                    <span data-toggle="tooltip" data-placement="top" title="Each barracks houses 36 trained or training military units.<br>Not affected by population bonuses.">
+                                    <span data-toggle="tooltip" data-placement="top" title="Each barracks houses 35 trained or training military units.<br>Does not increase in capacity for population bonuses other than prestige.">
                                         Barracks Housing:
                                     </span>
                                 </td>
