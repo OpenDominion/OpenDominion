@@ -389,7 +389,7 @@ class SpellHelper
                 'name' => 'Fireball',
                 'description' => 'Kills peasants and destroys crops',
                 'key' => 'fireball',
-                'mana_cost' => 3,
+                'mana_cost' => 3.3,
                 'decreases' => ['peasants', 'resource_food'],
                 'percentage' => 2.65,
             ],
