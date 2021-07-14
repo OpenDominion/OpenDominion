@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Changed
 - Barracks now house 35 trained or in training military units, modified by prestige (from 36 unmodified)
 - School of War has been removed
-- Schools now generate 25 Research Points per 1% owned up to a maximum of 875 at 35% owned (down from 25, max 1040 at 40%)
+- Schools now generate 25 Research Points per 1% owned up to a maximum of 875 at 35% owned (down from 26, max 1040 at 40%)
 - Wars will now automatically expire after 5 days
 - Black ops success rate reduced when target's spy/wizard ratio is high
 - Fireball mana cost reverted to 3.3x (from 3x)
@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Dwarf Warrior: -10r (from 110r)
 - Gnome Juggernaut: -50p (from 775p)
 - Orc: +20% food consumption removed
-- Orc Bone Breaker: Offense increased by 1 for every 375 prestige, max +3 (from 1 every 625 prestige, max +2)
+- Orc Bone Breaker: 4/3, +1 OP for every 375 prestige, max +3 (from 5/2, +1 OP for every 625 prestige, max +2)
 
 ## [1.4.3] - 2021-07-04
 ### Changed

@@ -745,7 +745,7 @@ class ProductionCalculator
 
         // Values
         $techPerSchoolPercentage = 2500;
-        $schoolPercentageCap = 35;
+        $schoolPercentageCap = 30;
 
         // Building: School
         $schoolPercentage = min(

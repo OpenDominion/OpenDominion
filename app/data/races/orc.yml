@@ -40,6 +40,6 @@ units:
       ore: 100
     power:
       offense: 4
-      defense: 2
+      defense: 3
     perks:
       offense_from_prestige: 375,3 # amount, max
