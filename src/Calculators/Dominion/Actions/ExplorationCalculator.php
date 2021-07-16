@@ -52,6 +52,9 @@ class ExplorationCalculator
 
         $multiplier = 1;
 
+        // Racial Bonus
+        $multiplier += $dominion->race->getPerkMultiplier('explore_platinum_cost');
+
         // Techs
         $multiplier += $dominion->getTechPerkMultiplier('explore_platinum_cost');
 

@@ -27,6 +27,10 @@ class RaceHelper
                 $negativeBenefit = true;
                 $description = 'construction cost';
                 break;
+            case 'explore_platinum_cost':
+                $negativeBenefit = true;
+                $description = 'explore platinum cost';
+                break;
             case 'defense':
                 $negativeBenefit = false;
                 $description = 'defensive power';
@@ -153,6 +157,10 @@ class RaceHelper
             case 'construction_cost':
                 $negativeBenefit = true;
                 $description = 'Construction cost';
+                break;
+            case 'explore_platinum_cost':
+                $negativeBenefit = true;
+                $description = 'Explore platinum cost';
                 break;
             case 'defense':
                 $negativeBenefit = false;

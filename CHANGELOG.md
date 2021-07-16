@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - NPDs now lose 25 prestige when invaded
 - Dark Elf Adept: +50p (from 1100p), Wizard Guild requirement increased to 10% (from 9%) per point
 - Dwarf Warrior: -10r (from 110r)
+- Firewalker: construction cost reduced to -10% (from -7.5%), explore cost increased by 5%
 - Gnome Juggernaut: -50p (from 775p)
 - Orc: +20% food consumption removed
 - Orc Bone Breaker: 4/3, +1 OP for every 375 prestige, max +3 (from 5/2, +1 OP for every 625 prestige, max +2)
