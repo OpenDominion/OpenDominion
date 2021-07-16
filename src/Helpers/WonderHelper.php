@@ -49,6 +49,7 @@ class WonderHelper
             'enemy_spell_damage' => '%s%% hostile spell damage',
             'enemy_spell_chance' => '%s%% chance of causing hostile spells to fail',
             'spell_cost' => '%s%% cost of spells',
+            'surreal_perception' => 'Grants the effects of Surreal Perception',
             'wizard_strength' => '%s%% wizard power',
 
             // Resource related
