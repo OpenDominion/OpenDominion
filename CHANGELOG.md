@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Black ops success rate reduced when target's spy/wizard ratio is high
 - Fireball mana cost reverted to 3.3x (from 3x)
 - All NPDs will now actively train troops, cast spells, etc.
+- NPDs now lose 25 prestige when invaded
 - Dark Elf Adept: +50p (from 1100p), Wizard Guild requirement increased to 10% (from 9%) per point
 - Dwarf Warrior: -10r (from 110r)
 - Gnome Juggernaut: -50p (from 775p)

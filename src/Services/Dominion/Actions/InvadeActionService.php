@@ -409,6 +409,10 @@ class InvadeActionService
                 (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
             );
             $targetPrestigeChange = (int)round($target->prestige * -($prestigeLossPercentage));
+            // Flat Prestige Loss of 25 for NPDs
+            if ($target->user_id == null && $target->prestige >= 25) {
+                $targetPrestigeChange = -25;
+            }
 
             // Racial Bonus
             $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
