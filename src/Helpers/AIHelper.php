@@ -17,7 +17,7 @@ class AIHelper
         // Formula based on average DPA of attacks over several rounds
         $defensePerAcre = (-0.0181 * ($fractionalDay**2)) + (2.5797 * $fractionalDay) - 4.1725;
         // Additional defense for first few days
-        $defensePerAcre += max(0, 5 - $fractionalDay/2);
+        $defensePerAcre += max(0, 6 - $fractionalDay/2);
         // Scale by expected land size
         $scaleFactor = clamp(0.80, $totalLand / $expectedLandSize, 1.20);
 

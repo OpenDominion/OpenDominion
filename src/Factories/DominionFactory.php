@@ -587,7 +587,7 @@ class DominionFactory
 
         // Add incoming units
         $queueService = app(\OpenDominion\Services\Dominion\QueueService::class);
-        $additionalDefense = (2 * $landSize) + mt_rand(800, 1000);
+        $additionalDefense = (2 * $landSize) + mt_rand(400, 600);
         $incSpecs = (int) ($additionalDefense / $defenseMod / $specPower * $specRatio);
         $incElites = (int) ($additionalDefense / $defenseMod / $elitePower * (1 - $specRatio));
         $hours = array_rand(range(4, 12), mt_rand(2, 5));
