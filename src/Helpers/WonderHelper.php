@@ -18,6 +18,7 @@ class WonderHelper
             // Military related
             'defense' => '%s%% defensive power',
             'offense' => '%s%% offensive power',
+            'faster_return' => 'Units return %s hours faster from battle',
             'guard_tax' => '%s%% platinum tax from Royal Guard',
             'prestige_gains' => ' %s%% attacking prestige gains',
             'barracks_housing' => '%s barracks housing',
@@ -34,6 +35,7 @@ class WonderHelper
             'employment' => '%s%% employment',
             'exchange_bonus' => '%s%% bank exchange rates',
             'explore_platinum_cost' => '%s%% exploring platinum cost',
+            'extra_barren_max_population' => '%s population from barren land',
             'invest_bonus' => '%s%% castle investment bonus',
             'max_population' => '%s%% maximum population',
             'rezone_cost' => '%s%% rezoning platinum cost',
@@ -49,6 +51,7 @@ class WonderHelper
             'enemy_spell_damage' => '%s%% hostile spell damage',
             'enemy_spell_chance' => '%s%% chance of causing hostile spells to fail',
             'spell_cost' => '%s%% cost of spells',
+            'spell_duration' => '%s hour self spell duration',
             'surreal_perception' => 'Grants the effects of Surreal Perception',
             'wizard_strength' => '%s%% wizard power',
 

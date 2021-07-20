@@ -200,6 +200,9 @@ class InvasionService
             $hours -= (int)$unit->getPerkValue('faster_return');
         }
 
+        // Wonders
+        $hours -= $dominion->getWonderPerkValue('faster_return');
+
         return $hours;
     }
 

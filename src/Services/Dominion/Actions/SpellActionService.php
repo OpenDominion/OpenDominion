@@ -241,6 +241,10 @@ class SpellActionService
     protected function castSelfSpell(Dominion $dominion, string $spellKey): array
     {
         $spellInfo = $this->spellHelper->getSpellInfo($spellKey);
+        $duration = $spellInfo['duration'];
+
+        // Wonders
+        $duration += $dominion->getWonderPerkValue('spell_duration');
 
         $where = [
             'dominion_id' => $dominion->id,
@@ -252,13 +256,13 @@ class SpellActionService
             ->first();
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->duration === $spellInfo['duration']) {
+            if ((int)$activeSpell->duration === $duration) {
                 throw new GameException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
             }
             DB::table('active_spells')
                 ->where($where)
                 ->update([
-                    'duration' => $spellInfo['duration'],
+                    'duration' => $duration,
                     'updated_at' => now(),
                 ]);
         } else {
@@ -266,7 +270,7 @@ class SpellActionService
                 ->insert([
                     'dominion_id' => $dominion->id,
                     'spell' => $spellKey,
-                    'duration' => $spellInfo['duration'],
+                    'duration' => $duration,
                     'cast_by_dominion_id' => $dominion->id,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -278,7 +282,7 @@ class SpellActionService
             'duration' => $activeSpell !== null ? $activeSpell->duration : 12,
             'message' => sprintf(
                 'Your wizards cast the spell successfully, and it will continue to affect your dominion for the next %s hours.',
-                $spellInfo['duration']
+                $duration
             )
         ];
     }

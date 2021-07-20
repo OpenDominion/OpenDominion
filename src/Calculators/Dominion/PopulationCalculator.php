@@ -153,6 +153,9 @@ class PopulationCalculator
         // Techs
         $housingPerBarrenLand += $dominion->getTechPerkValue('extra_barren_max_population');
 
+        // Wonders
+        $housingPerBarrenLand += $dominion->getWonderPerkValue('extra_barren_max_population');
+
         // Constructed buildings
         foreach ($this->buildingHelper->getBuildingTypes() as $buildingType) {
             switch ($buildingType) {

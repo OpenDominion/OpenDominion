@@ -1,3 +1,9 @@
+portals_of_transportation:
+  name: Portals of Transportation
+  perks:
+    faster_return: 3
+  power: 250000
+  active: false
 obelisk_of_power:
   name: Obelisk of Power
   perks:
@@ -147,3 +153,15 @@ panoptic_obelisk:
   perks:
     surreal_perception: 1
   power: 150000
+magical_ley_lines:
+  name: Magical Ley Lines
+  perks:
+    spell_duration: 13
+  power: 150000
+  active: false
+yurts_of_the_wayfarer:
+  name: Yurts of the Wayfarer
+  perks:
+    extra_barren_max_population: 10
+  power: 250000
+  active: false
