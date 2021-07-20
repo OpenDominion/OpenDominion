@@ -148,8 +148,8 @@ horn_of_plenty:
     mana_production: 2
     ore_production: 2
   power: 250000
-panoptic_obelisk:
-  name: Panoptic Obelisk
+astral_panopticon:
+  name: Astral Panopticon
   perks:
     surreal_perception: 1
   power: 150000
