@@ -22,7 +22,9 @@
                     $roundDurationInDays = $selectedDominion->round->durationInDays();
                     $currentHour = ($diff->h + 1);
                 @endphp
-                Day <strong>{{ $roundDay }}</strong>/{{ $roundDurationInDays }}, hour <strong>{{ $currentHour }}</strong>
+                <span data-toggle="tooltip" data-placement="top" title="{{ now() }}">
+                    Day <strong>{{ $roundDay }}</strong>/{{ $roundDurationInDays }}, hour <strong>{{ $currentHour }}</strong>
+                </span>
             @endif
         </div>
 
