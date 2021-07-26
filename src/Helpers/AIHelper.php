@@ -19,7 +19,7 @@ class AIHelper
         // Additional defense for first few days
         $defensePerAcre += max(0, 6 - $fractionalDay/2);
         // Scale by expected land size
-        $scaleFactor = clamp(0.80, $totalLand / $expectedLandSize, 1.20);
+        $scaleFactor = clamp($totalLand / $expectedLandSize, 0.80, 1.20);
 
         return $totalLand * $defensePerAcre * $scaleFactor;
     }
