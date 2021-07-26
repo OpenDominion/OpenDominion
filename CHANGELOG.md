@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.5.0] - 2021-07-25
 ### Changed
 - Barracks now house 35 trained or in training military units, modified by prestige (from 36 unmodified)
 - Bunk Beds tech reduced to +1 barracks housing (from +2)
@@ -1452,7 +1454,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.4.3...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.5.0...HEAD
+[1.5.0]: https://github.com/OpenDominion/OpenDominion/compare/1.4.3...1.5.0
 [1.4.3]: https://github.com/OpenDominion/OpenDominion/compare/1.4.2...1.4.3
 [1.4.2]: https://github.com/OpenDominion/OpenDominion/compare/1.4.1...1.4.2
 [1.4.1]: https://github.com/OpenDominion/OpenDominion/compare/1.4.0...1.4.1
