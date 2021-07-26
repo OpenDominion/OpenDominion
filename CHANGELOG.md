@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ## [Unreleased]
 ### Changed
 - Barracks now house 35 trained or in training military units, modified by prestige (from 36 unmodified)
+- Bunk Beds tech reduced to +1 barracks housing (from +2)
 - School of War has been removed
 - New Wonder: Astral Panopticon grants surreal perception
 - Schools now generate 25 Research Points per 1% owned up to a maximum of 750 at 30% owned (down from 26 per 1%, max 1040 at 40%)

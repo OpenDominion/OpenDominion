@@ -449,7 +449,7 @@ tech_10_15:
 tech_12_15:
   name: Bunk Beds
   perks:
-    barracks_housing: 2
+    barracks_housing: 1
   requires:
     - tech_13_13
     - tech_11_17
