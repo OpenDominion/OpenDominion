@@ -53,7 +53,7 @@
                         @if ($sharedDominion && ($selectedDominionId == -1 || $sharedDominion->id == $dominion->id || ($selectedDominionId == $sharedDominion->id)))
                             <tr>
                                 <td>
-                                    {{ $sharedDominions[$activity->user_id]->name }}
+                                    {{ $sharedDominion->name }}
                                 </td>
                                 <td>
                                     {{ $activity->key }}
