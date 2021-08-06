@@ -399,6 +399,12 @@
     color: #fff;
 }
 
+.skin-classic .text-success {
+    color: #008d4c !important;
+}
+.skin-classic .text-danger {
+    color: #d73925 !important;
+}
 .skin-classic .text-green {
     color: #00C851 !important;
 }
