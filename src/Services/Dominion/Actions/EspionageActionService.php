@@ -598,7 +598,7 @@ class EspionageActionService
         $baseDamageReductionMultiplier = 0;
 
         // Techs
-        $baseDamageReductionMultiplier += $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage");
+        $baseDamageReductionMultiplier -= $target->getTechPerkMultiplier("enemy_{$operationInfo['key']}_damage");
 
         // Wonders
         $wonderDamagePerk = $target->getWonderPerkMultiplier("enemy_{$operationKey}_damage");
@@ -606,7 +606,7 @@ class EspionageActionService
             // Special case for damage immunity
             $baseDamage = 0;
         } else {
-            $baseDamageReductionMultiplier += $wonderDamagePerk;
+            $baseDamageReductionMultiplier -= $wonderDamagePerk;
         }
 
         // Resilience
