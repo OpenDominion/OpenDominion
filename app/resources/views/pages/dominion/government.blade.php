@@ -214,6 +214,7 @@
                                     @php
                                         $activeHours = $governmentService->getHoursBeforeWarActive($war);
                                         $cancelHours = $governmentService->getHoursBeforeCancelWar($war);
+                                        $endingHours = $governmentService->getHoursBeforeWarEnds($war);
                                         $inactiveHours = $governmentService->getHoursBeforeWarInactive($war);
                                     @endphp
                                     <tr>
