@@ -271,14 +271,14 @@ class InvadeActionService
             $this->invasionResult['defender']['recentlyInvadedCount'] = $this->militaryCalculator->getRecentlyInvadedCount($target);
             $this->handleBoats($dominion, $target, $units);
             $this->handlePrestigeChanges($dominion, $target, $units);
+            $this->handleDefensiveCasualties($dominion, $target, $units);
 
             $survivingUnits = $this->handleOffensiveCasualties($dominion, $target, $units);
-            $totalDefensiveCasualties = $this->handleDefensiveCasualties($dominion, $target, $units);
-            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $totalDefensiveCasualties);
-
-            $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
             $this->handleResearchPoints($dominion, $target, $survivingUnits);
+
+            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $survivingUnits);
+            $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
 
             $this->handleMoraleChanges($dominion, $target);
             $this->handleLandGrabs($dominion, $target);
@@ -576,6 +576,12 @@ class InvadeActionService
             }
         }
 
+        // Special case for Ascendance
+        $spellAscendanceConversionRate = 2;
+        if ($isInvasionSuccessful && $survivingUnits[1] !== 0 && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
+            $survivingUnits[1] -= floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
+        }
+
         return $survivingUnits;
     }
 
@@ -865,102 +871,56 @@ class InvadeActionService
      * @param Dominion $dominion
      * @param float $landRatio
      * @param array $units
-     * @param int $totalDefensiveCasualties
      * @return array
      */
     protected function handleConversions(
         Dominion $dominion,
         float $landRatio,
         array $units,
-        int $totalDefensiveCasualties
+        array $survivingUnits
     ): array {
+        $spellFeralHungerConversionRate = 10;
+        $spellParasiticHungerMultiplier = 20;
+
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         $convertedUnits = array_fill(1, 4, 0);
 
         if (
             !$isInvasionSuccessful ||
-            ($totalDefensiveCasualties === 0) ||
-            !in_array($dominion->race->name, ['Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
+            !in_array($dominion->race->name, ['Dark Elf', 'Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
         )
         {
             return $convertedUnits;
         }
 
-        $conversionBaseMultiplier = 0.06;
-        $spellParasiticHungerMultiplier = 50;
+        $conversionMultiplier = 1;
+        $conversionMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHungerMultiplier);
 
-        $conversionMultiplier = (
-            $conversionBaseMultiplier *
-            (1 + $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHungerMultiplier))
-        );
-
-        $totalConvertingUnits = 0;
-
-        $unitsWithConversionPerk = $dominion->race->units->filter(static function (Unit $unit) use (
-            $landRatio,
-            $units,
-            $dominion
-        )
-        {
+        foreach ($dominion->race->units as $unit) {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
-                return false;
+                continue;
             }
 
-            $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
-                $unit->slot,
-                'staggered_conversion'
-            );
-
-            if ($staggeredConversionPerk) {
-                foreach ($staggeredConversionPerk as $rangeConversionPerk) {
-                    $range = ((int)$rangeConversionPerk[0]) / 100;
-                    if ($range <= $landRatio) {
-                        return true;
-                    }
-                }
-
-                return false;
+            $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
+            if (!$perkValue) {
+                continue;
             }
 
-            return $unit->getPerkValue('conversion');
-        });
+            $unitSlot = (int)$perkValue[0];
+            $conversionRate = (1 / (int)$perkValue[1]);
+            if ($unit->slot == 3 && $this->spellCalculator->isSpellActive($dominion, 'feral_hunger')) {
+                $conversionRate = $spellFeralHungerConversionRate;
+            }
 
-        foreach ($unitsWithConversionPerk as $unit) {
-            $totalConvertingUnits += $units[$unit->slot];
+            $convertingUnitsForSlot = $units[$unit->slot];
+            $converts = floor($convertingUnitsForSlot * $conversionRate * $conversionMultiplier * ($landRatio ** 2));
+            $convertedUnits[$unitSlot] += $converts;
         }
 
-        $totalConverts = min($totalConvertingUnits * $conversionMultiplier, $totalDefensiveCasualties * 1.65) * $landRatio;
-
-        foreach ($unitsWithConversionPerk as $unit) {
-            $conversionPerk = $unit->getPerkValue('conversion');
-            $convertingUnitsForSlot = $units[$unit->slot];
-            $convertingUnitsRatio = $convertingUnitsForSlot / $totalConvertingUnits;
-            $totalConversionsForUnit = floor($totalConverts * $convertingUnitsRatio);
-
-            if (!$conversionPerk) {
-                $staggeredConversionPerk = $dominion->race->getUnitPerkValueForUnitSlot(
-                    $unit->slot,
-                    'staggered_conversion'
-                );
-
-                foreach ($staggeredConversionPerk as $rangeConversionPerk) {
-                    $range = ((int)$rangeConversionPerk[0]) / 100;
-                    $slots = $rangeConversionPerk[1];
-
-                    if ($range > $landRatio) {
-                        continue;
-                    }
-
-                    $conversionPerk = $slots;
-                }
-            }
-
-            $slotsToConvertTo = strlen($conversionPerk);
-            $totalConvertsForSlot = floor($totalConversionsForUnit / $slotsToConvertTo);
-
-            foreach (str_split($conversionPerk) as $slot) {
-                $convertedUnits[(int)$slot] += (int)$totalConvertsForSlot;
-            }
+        // Special case for Ascendance
+        $spellAscendanceConversionRate = 2;
+        if ($isInvasionSuccessful && $survivingUnits[1] !== 0 && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
+            $convertedUnits[4] += floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
         }
 
         if (!isset($this->invasionResult['attacker']['conversion']) && array_sum($convertedUnits) > 0) {

@@ -67,8 +67,9 @@ class DataSyncCommand extends Command implements CommandInterface
             $data = Yaml::parse($file->getContents(), Yaml::PARSE_OBJECT_FOR_MAP);
 
             // Race
-            $race = Race::firstOrNew(['name' => $data->name])
+            $race = Race::firstOrNew(['key' => $data->key])
                 ->fill([
+                    'name' => object_get($data, 'name'),
                     'alignment' => object_get($data, 'alignment'),
                     'description' => object_get($data, 'description'),
                     'attacker_difficulty' => object_get($data, 'attacker_difficulty', 0),

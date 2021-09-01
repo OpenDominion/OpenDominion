@@ -220,7 +220,7 @@ class SpellHelper
                 'key' => 'unholy_ghost',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Dark Elf']),
+                'races' => collect(['Spirit']),
             ],
             [
                 'name' => 'Defensive Frenzy',
@@ -264,11 +264,27 @@ class SpellHelper
             ],
             [
                 'name' => 'Parasitic Hunger',
-                'description' => '+50% conversion rate',
+                'description' => '+20% conversion rate if the enemy is afflicted with Plague',
                 'key' => 'parasitic_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Lycanthrope', 'Spirit', 'Undead']),
+                'races' => collect(['Undead']),
+            ],
+            [
+                'name' => 'Feral Hunger',
+                'description' => 'Werewolves convert enemy peasants into Werewolves (one for every 10 sent on attack)',
+                'key' => 'feral_hunger',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Lycanthrope']),
+            ],
+            [
+                'name' => 'Ascendance',
+                'description' => '5% of surviving Swordsmen return from battle as Spellblades',
+                'key' => 'ascendance',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Dark Elf']),
             ],
             [
                 'name' => 'Gaia\'s Blessing',
