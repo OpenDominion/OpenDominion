@@ -93,29 +93,9 @@ class PackService
             $playersPerRace = 1;
         }
 
-        if ($playersPerRace !== 0) {
-            if ($race->name === 'Spirit') {
-                // Count Undead with Spirit
-                $otherRaceId = Race::where('name', 'Undead')->firstOrFail()->id;
-            } elseif ($race->name === 'Undead') {
-                // Count Spirit with Undead
-                $otherRaceId = Race::where('name', 'Spirit')->firstOrFail()->id;
-            } elseif ($race->name === 'Nomad') {
-                // Count Human with Nomad
-                $otherRaceId = Race::where('name', 'Human')->firstOrFail()->id;
-            } elseif ($race->name === 'Human') {
-                // Count Nomad with Human
-                $otherRaceId = Race::where('name', 'Nomad')->firstOrFail()->id;
-            }
-        }
-
         $pack = Pack::where('id', $pack->id)->withCount([
             'dominions AS players_with_race' => static function (Builder $query) use ($race, $otherRaceId) {
                 $query->where('race_id', $race->id);
-
-                if ($otherRaceId) {
-                    $query->orWhere('race_id', $otherRaceId);
-                }
             }
         ])->first();
 
