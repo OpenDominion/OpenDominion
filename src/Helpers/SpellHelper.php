@@ -156,7 +156,15 @@ class SpellHelper
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Human', 'Nomad']),
+                'races' => collect(['Human']),
+            ],
+            [
+                'name' => 'Favorable Terrain',
+                'description' => '+1% offensive power for every 2% barren land (max +10%)',
+                'key' => 'favorable_terrain',
+                'mana_cost' => 5,
+                'duration' => 12,
+                'races' => collect(['Nomad']),
             ],
             [
                 'name' => 'Miner\'s Sight',

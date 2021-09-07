@@ -218,13 +218,13 @@ class MilitaryCalculator
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             if (isset($dominion->calc['gryphon_nest_percent'])) {
                 $multiplier += min(
-                    (($opPerGryphonNest * $dominion->calc['gryphon_nest_percent']) / 100),
+                    ($opPerGryphonNest * $dominion->calc['gryphon_nest_percent'] / 100),
                     ($gryphonNestMaxOp / 100)
                 );
             }
         } else {
             $multiplier += min(
-                (($opPerGryphonNest * $dominion->building_gryphon_nest) / $this->landCalculator->getTotalLand($dominion)),
+                ($opPerGryphonNest * $dominion->building_gryphon_nest / $this->landCalculator->getTotalLand($dominion)),
                 ($gryphonNestMaxOp / 100)
             );
         }
@@ -266,6 +266,8 @@ class MilitaryCalculator
         // Values (percentages)
         $spellBloodrage = 10;
         $spellCrusade = 5;
+        $spellFavorableTerrain = 0.5;
+        $spellFavorableTerrainCap = 10;
         $spellHowling = 10;
         $spellKillingRage = 10;
         $spellNightfall = 5;
@@ -295,6 +297,13 @@ class MilitaryCalculator
             if (isset($dominion->calc['warsong'])) {
                 $multiplier += ($spellWarsong / 100);
             }
+
+            if (isset($dominion->calc['favorable_terrain'])) {
+                $multiplier += min(
+                    ($spellFavorableTerrain * $dominion->calc['barren_percent'] / 100),
+                    ($spellFavorableTerrainCap / 100)
+                );
+            }
         } else {
             $multiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, [
                 'bloodrage' => $spellBloodrage,
@@ -304,6 +313,13 @@ class MilitaryCalculator
                 'nightfall' => $spellNightfall,
                 'warsong' => $spellWarsong,
             ]);
+
+            if ($this->spellCalculator->isSpellActive($dominion, 'favorable_terrain')) {
+                $multiplier += min(
+                    ($spellFavorableTerrain * $this->landCalculator->getTotalBarrenLand($dominion) / $this->landCalculator->getTotalLand($dominion)),
+                    ($spellFavorableTerrainCap / 100)
+                );
+            }
         }
 
         return $multiplier;

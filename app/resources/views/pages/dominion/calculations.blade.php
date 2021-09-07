@@ -536,12 +536,12 @@
                                         $racialSpell = $spellHelper->getRacialSelfSpell($race);
                                     @endphp
                                     <div class="col-xs-3 text-right">
-                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'howling', 'killing_rage', 'nightfall']))
+                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'favorable_terrain', 'howling', 'killing_rage', 'nightfall']))
                                             {{ $racialSpell['name'] }}
                                         @endif
                                     </div>
                                     <div class="col-xs-3 text-left">
-                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'howling', 'killing_rage', 'nightfall']))
+                                        @if (in_array($racialSpell['key'], ['bloodrage', 'crusade', 'favorable_terrain', 'howling', 'killing_rage', 'nightfall']))
                                             <input type="checkbox"
                                                     step="any"
                                                     name="calc[{{ $racialSpell['key'] }}]"
@@ -549,6 +549,20 @@
                                                     disabled />
                                         @endif
                                     </div>
+                                    @if ($racialSpell['key'] == 'favorable_terrain')
+                                        <div class="col-xs-3 text-right">
+                                            Barren Land %
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <input type="number"
+                                                    step="any"
+                                                    name="calc[barren_percent]"
+                                                    class="form-control text-center"
+                                                    placeholder="0"
+                                                    min="0"
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('survey_dominion')) ? round(array_get($targetInfoOps['survey_dominion']->data, "barren_land") / array_get($targetInfoOps['survey_dominion']->data, "total_land") * 100, 2) : 50 }}" />
+                                        </div>
+                                    @endif
                                     @foreach ($buildingFieldsRequired as $building)
                                         <div class="col-xs-3 text-right">
                                             {{ ucwords(dominion_attr_display("building_{$building}")) }} %
