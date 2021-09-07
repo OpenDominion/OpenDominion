@@ -41,6 +41,8 @@ class SpellCalculator
         $spellInfo = $this->spellHelper->getSpellInfo($spell);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
+        $spellCostMultiplier = 1;
+
         // Techs
         $spellCostMultiplier += $dominion->getTechPerkMultiplier('spell_cost');
         if ($this->spellHelper->isSelfSpell($spell, $dominion->race)) {
