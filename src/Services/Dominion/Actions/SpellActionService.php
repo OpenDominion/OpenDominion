@@ -256,7 +256,7 @@ class SpellActionService
             ->first();
 
         if ($activeSpell !== null) {
-            if ((int)$activeSpell->duration === $duration) {
+            if ((int)$activeSpell->duration == $duration) {
                 throw new GameException("Your wizards refused to recast {$spellInfo['name']}, since it is already at maximum duration.");
             }
             DB::table('active_spells')
