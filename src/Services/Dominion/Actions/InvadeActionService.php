@@ -53,17 +53,17 @@ class InvadeActionService
     /**
      * @var float Used to cap prestige gain formula
      */
-    protected const PRESTIGE_CAP = 130;
+    protected const PRESTIGE_CAP = 80;
 
     /**
-     * @var int Bonus prestige when invading successfully
+     * @var int Base prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_ADD = 20;
+    protected const PRESTIGE_CHANGE_BASE = 60;
 
     /**
      * @var float Base prestige % change for both parties when invading
      */
-    protected const PRESTIGE_CHANGE_PERCENTAGE = 5.0;
+    protected const PRESTIGE_LOSS_PERCENTAGE = 5.0;
 
     /**
      * @var float Additional prestige % change for defender from recent invasions
@@ -396,16 +396,16 @@ class InvadeActionService
         $multiplier = 1;
 
         if ($isOverwhelmed || ($range < 60)) {
-            $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_CHANGE_PERCENTAGE / 100));
+            $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = min(
-                $target->prestige * (($range / 100) / 10), // Gained through invading
-                static::PRESTIGE_CAP // But capped at 130
-            ) + static::PRESTIGE_CHANGE_ADD;
+                static::PRESTIGE_CHANGE_BASE * ($range / 100), // Gained through invading
+                static::PRESTIGE_CAP // But capped at 133%
+            );
 
             $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
             $prestigeLossPercentage = min(
-                (static::PRESTIGE_CHANGE_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
+                (static::PRESTIGE_LOSS_PERCENTAGE / 100) + (static::PRESTIGE_LOSS_PERCENTAGE_PER_INVASION / 100 * $weeklyInvadedCount),
                 (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
             );
             $targetPrestigeChange = (int)round($target->prestige * -($prestigeLossPercentage));
@@ -436,19 +436,6 @@ class InvadeActionService
         // Repeat Invasions award no prestige
         if ($this->invasionResult['attacker']['repeatInvasion']) {
             $attackerPrestigeChange = 0;
-        }
-
-        // Reduce attacker prestige gain if the target was hit recently
-        if ($attackerPrestigeChange > 0) {
-            $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
-
-            if ($recentlyInvadedCount > 0) {
-                $attackerPrestigeChange *= (1 - (0.1 * $recentlyInvadedCount));
-            }
-
-            if ($attackerPrestigeChange < 20) {
-                $attackerPrestigeChange = 20;
-            }
         }
 
         $attackerPrestigeChange = (int)round($attackerPrestigeChange);
