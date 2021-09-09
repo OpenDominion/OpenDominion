@@ -33,12 +33,12 @@ class InvadeActionService
     /**
      * @var float Base percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 4.05;
+    protected const CASUALTIES_DEFENSIVE_BASE_PERCENTAGE = 3.6;
 
     /**
      * @var float Max percentage of defensive casualties
      */
-    protected const CASUALTIES_DEFENSIVE_MAX_PERCENTAGE = 6.0;
+    protected const CASUALTIES_DEFENSIVE_MAX_PERCENTAGE = 4.8;
 
     /**
      * @var float Base percentage of offensive casualties
@@ -613,15 +613,11 @@ class InvadeActionService
         $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
         if ($recentlyInvadedCount === 1) {
-            $defensiveCasualtiesPercentage *= 0.8;
+            $defensiveCasualtiesPercentage *= 0.75;
         } elseif ($recentlyInvadedCount === 2) {
-            $defensiveCasualtiesPercentage *= 0.6;
-        } elseif ($recentlyInvadedCount === 3) {
-            $defensiveCasualtiesPercentage *= 0.55;
-        } elseif ($recentlyInvadedCount === 4) {
-            $defensiveCasualtiesPercentage *= 0.45;
-        } elseif ($recentlyInvadedCount >= 5) {
-            $defensiveCasualtiesPercentage *= 0.35;
+            $defensiveCasualtiesPercentage *= 0.5;
+        } elseif ($recentlyInvadedCount >= 3) {
+            $defensiveCasualtiesPercentage *= 0.25;
         }
 
         // Cap max casualties
@@ -703,7 +699,7 @@ class InvadeActionService
         $rangeMultiplier = ($range / 100);
 
         $landGrabRatio = 1;
-        $bonusLandRatio = 1.6667;
+        $bonusLandRatio = 2;
 
         // War Bonus
         if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
@@ -722,7 +718,7 @@ class InvadeActionService
             $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
         }
 
-        $acresLost *= 0.90;
+        $acresLost *= 0.80;
 
         $acresLost = (int)max(floor($acresLost), 10);
 
@@ -745,9 +741,6 @@ class InvadeActionService
 
             // Remove land
             $target->{"land_$landType"} -= $landLost;
-
-            // Add discounted land for buildings destroyed
-            $target->discounted_land += $buildingsToDestroy;
 
             // Destroy buildings
             foreach ($buildingsLostForLandType as $buildingType => $buildingsLost) {
@@ -874,7 +867,7 @@ class InvadeActionService
 
         if (
             !$isInvasionSuccessful ||
-            !in_array($dominion->race->name, ['Dark Elf', 'Lycanthrope', 'Spirit', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
+            !in_array($dominion->race->name, ['Dark Elf', 'Lycanthrope', 'Undead'], true) // todo: might want to check for conversion unit perks here, instead of hardcoded race names
         )
         {
             return $convertedUnits;
