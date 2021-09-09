@@ -2,6 +2,7 @@
 
 namespace OpenDominion\Services\Dominion;
 
+use DB;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Services\Dominion\QueueService;
@@ -238,5 +239,44 @@ class InvasionService
         }
 
         return $hours;
+    }
+
+    /**
+     * Apply a spell to a target dominion with given duration
+     * 
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @param string $spellKey
+     * @param int $duration
+     */
+    public function applySpell(Dominion $dominion, Dominion $target, $spellKey, $duration)
+    {
+        $where = [
+            'dominion_id' => $target->id,
+            'spell' => $spellKey,
+        ];
+
+        $activeSpell = DB::table('active_spells')
+            ->where($where)
+            ->first();
+
+        if ($activeSpell !== null) {
+            DB::table('active_spells')
+                ->where($where)
+                ->update([
+                    'duration' => $duration,
+                    'updated_at' => now(),
+                ]);
+        } else {
+            DB::table('active_spells')
+                ->insert([
+                    'dominion_id' => $target->id,
+                    'spell' => $spellKey,
+                    'duration' => $duration,
+                    'cast_by_dominion_id' => $dominion->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+        }
     }
 }

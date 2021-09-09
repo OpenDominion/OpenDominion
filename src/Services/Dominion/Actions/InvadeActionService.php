@@ -566,8 +566,8 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        $spellAscendanceConversionRate = 2;
-        if ($isInvasionSuccessful && $survivingUnits[1] !== 0 && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
+        $spellAscendanceConversionRate = 5;
+        if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
             $survivingUnits[1] -= floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
         }
 
@@ -900,8 +900,8 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        $spellAscendanceConversionRate = 2;
-        if ($isInvasionSuccessful && $survivingUnits[1] !== 0 && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
+        $spellAscendanceConversionRate = 5;
+        if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
             $convertedUnits[4] += floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
         }
 
@@ -1030,6 +1030,14 @@ class InvadeActionService
                     'resource_gems' => $plunderGems,
                 ]
             );
+        }
+
+        // Plague from Parasitic Hunger
+        if ($this->spellCalculator->isSpellActive($dominion, 'parasitic_hunger')) {
+            $this->invasionService->applySpell($dominion, $target, 'plague', 8);
+        }
+        if ($this->spellCalculator->isSpellActive($target, 'parasitic_hunger')) {
+            $this->invasionService->applySpell($target, $dominion, 'plague', 8);
         }
     }
 

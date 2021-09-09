@@ -272,7 +272,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Parasitic Hunger',
-                'description' => '+20% conversion rate if the enemy is afflicted with Plague',
+                'description' => '+20% conversion rate and afflicts your enemies with Plague',
                 'key' => 'parasitic_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,
