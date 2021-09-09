@@ -216,16 +216,16 @@ class InvadeActionService
                 throw new GameException('Nice try, but you cannot invade your realmies');
             }
 
-            if ($cancel_leave_range === true) {
-                $range = $this->rangeCalculator->getDominionRange($dominion, $target);
-                if ($range < 75) {
-                    throw new GameException('Your attack was canceled because the target is no longer in your 75% range');
-                }
-            }
-
             // Sanitize input
             $units = array_map('intval', array_filter($units));
-            $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+
+            $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+            $this->invasionResult['result']['range'] = $range;
+            $landRatio = $range / 100;
+
+            if ($cancel_leave_range === true && $range < 75) {
+                throw new GameException('Your attack was canceled because the target is no longer in your 75% range');
+            }
 
             if (!$this->invasionService->hasAnyOP($dominion, $units)) {
                 throw new GameException('You need to send at least some units');
@@ -290,9 +290,11 @@ class InvadeActionService
             if ($this->invasionResult['result']['success']) {
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landConquered']);
                 $dominion->stat_total_land_conquered += (int)array_sum($this->invasionResult['attacker']['landGenerated']);
-                $dominion->stat_attacking_success += 1;
                 $target->stat_total_land_lost += (int)array_sum($this->invasionResult['attacker']['landConquered']);
-                $target->stat_defending_failure += 1;
+                if ($range >= 75) {
+                    $dominion->stat_attacking_success += 1;
+                    $target->stat_defending_failure += 1;
+                }
             } else {
                 $target->stat_defending_success += 1;
                 $dominion->stat_attacking_failure += 1;
@@ -389,7 +391,7 @@ class InvadeActionService
     {
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         $isOverwhelmed = $this->invasionResult['result']['overwhelmed'];
-        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+        $range = $this->invasionResult['result']['range'];
 
         $attackerPrestigeChange = 0;
         $targetPrestigeChange = 0;
@@ -484,7 +486,7 @@ class InvadeActionService
     {
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         $isOverwhelmed = $this->invasionResult['result']['overwhelmed'];
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $landRatio = $this->invasionResult['result']['range'] / 100;
         $attackingForceOP = $this->invasionResult['attacker']['op'];
         $targetDP = $this->invasionResult['defender']['dp'];
         $offensiveCasualtiesPercentage = (static::CASUALTIES_OFFENSIVE_BASE_PERCENTAGE / 100);
@@ -603,7 +605,7 @@ class InvadeActionService
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
         // Modify casualties percentage based on relative land size
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $landRatio = $this->invasionResult['result']['range'] / 100;
         $defensiveCasualtiesPercentage *= clamp($landRatio, 0.4, 1);
 
         // Scale casualties further with invading OP vs target DP
@@ -695,7 +697,7 @@ class InvadeActionService
             $this->invasionResult['attacker']['landGenerated'] = [];
         }
 
-        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+        $range = $this->invasionResult['result']['range'];
         $rangeMultiplier = ($range / 100);
 
         $landGrabRatio = 1;
@@ -836,7 +838,7 @@ class InvadeActionService
      */
     protected function handleMoraleChanges(Dominion $dominion, Dominion $target): void
     {
-        $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+        $range = $this->invasionResult['result']['range'];
 
         $dominion->morale -= 5;
 
@@ -933,7 +935,7 @@ class InvadeActionService
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
             $schoolPenalty = (1 - min(0.75, max(0, $recentlyInvadedCount - 2) * 0.15));
 
-            $range = $this->rangeCalculator->getDominionRange($dominion, $target);
+            $range = $this->invasionResult['result']['range'];
             if ($range < 60) {
                 $researchPointsGained = 0;
             } elseif ($range < 75) {
@@ -1163,7 +1165,7 @@ class InvadeActionService
      */
     protected function checkInvasionSuccess(Dominion $dominion, Dominion $target, array $units): void
     {
-        $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
+        $landRatio = $this->invasionResult['result']['range'] / 100;
         $attackingForceOP = $this->militaryCalculator->getOffensivePower($dominion, $target, $landRatio, $units);
         $targetDP = $this->getDefensivePowerWithTemples($dominion, $target);
         $this->invasionResult['attacker']['op'] = $attackingForceOP;
