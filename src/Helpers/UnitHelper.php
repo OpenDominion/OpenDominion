@@ -112,7 +112,7 @@ class UnitHelper
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
             // Conversions
-            'conversion' => 'Converts enemy peasants into %1$s (one for every %2$s sent on attack).',
+            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$s sent on attack).',
             'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$s%%+ of your size.',
 
             // OP/DP related

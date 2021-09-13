@@ -280,7 +280,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Feral Hunger',
-                'description' => 'Werewolves convert enemy peasants into Werewolves (one for every 10 sent on attack)',
+                'description' => 'Werewolves convert enemy peasants into Werewolves (one for every 25 sent on attack)',
                 'key' => 'feral_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,

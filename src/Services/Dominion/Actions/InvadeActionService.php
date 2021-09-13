@@ -851,20 +851,20 @@ class InvadeActionService
 
     /**
      * @param Dominion $dominion
-     * @param float $landRatio
      * @param array $units
+     * @param array $survivingUnits
      * @return array
      */
     protected function handleConversions(
         Dominion $dominion,
-        float $landRatio,
         array $units,
         array $survivingUnits
     ): array {
-        $spellFeralHungerConversionRate = 10;
+        $spellFeralHungerConversionRate = 25;
         $spellParasiticHungerMultiplier = 20;
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
+        $landRatio = min(1, $this->invasionResult['result']['range'] / 100);
         $convertedUnits = array_fill(1, 4, 0);
 
         if (
