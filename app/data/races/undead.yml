@@ -7,12 +7,11 @@ description: >-
 attacker_difficulty: 2
 explorer_difficulty: 2
 converter_difficulty: 3
-overall_difficulty: 2
 home_land_type: swamp
 perks:
   max_population: 15
-  mana_production: 15
   food_consumption: -75
+  mana_production: 15
   immortal_wizards: 1
 units:
   - name: Skeleton

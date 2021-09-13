@@ -2,11 +2,11 @@ key: dark-elf-rework
 name: Dark Elf
 alignment: evil
 description: >-
-  <p>With ashen skin, inky-black eyes and bat-like features, Dark Elves are the cave-dwelling distant cousins of the majestic Wood Elves. Corrupted long ago by the whispered promises of power from demonic entities, Dark Elves are a cruel species who thrive on torment, pain and suffering.</p>
-  <p>Dark Elves have black magic coursing through their veins. Capable of calling down a rain of fire and lightning upon their enemies, they are a terrifying force to reckon with - and that's before they even set foot on the battlefield.</p>
+  <p>With ashen skin and ink-black eyes, Dark Elves are the cave-dwelling distant cousins of the majestic Wood Elves. Corrupted long ago by whispered promises of power from demonic entities, Dark Elves are a cruel species who thrive on torment and suffering.</p>
+  <p>Dark Elves have black magic coursing through their veins. Capable of calling down a rain of fire and lightning upon their enemies, they are a terrifying force to reckon with. Their most gifted Swordsmen, tempered through combat, can ascend to become revered Spellblades; masters of both sword and sorcery.</p>
 attacker_difficulty: 1
 explorer_difficulty: 1
-converter_difficulty: 3
+converter_difficulty: 2
 home_land_type: cavern
 perks:
   gem_production: 10
