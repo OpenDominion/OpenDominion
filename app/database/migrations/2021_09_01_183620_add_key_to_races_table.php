@@ -16,6 +16,9 @@ class AddKeyToRacesTable extends Migration
         Schema::table('races', function (Blueprint $table) {
             $table->string('key')->after('id')->nullable();
         });
+        // foreach (Race::all() as $race) { $race->key = str_slug($race->name); $race->save(); }
+        // Race::where('name', 'Dark Elf')->update(['key' => 'dark-elf-rework']);
+        // Race::where('name', 'Spirit')->update(['key' => 'spirit-rework']);
     }
 
     /**

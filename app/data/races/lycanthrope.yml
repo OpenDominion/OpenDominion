@@ -8,7 +8,7 @@ attacker_difficulty: 2
 explorer_difficulty: 3
 converter_difficulty: 3
 overall_difficulty: 3
-home_land_type: forest
+home_land_type: cavern
 perks:
   max_population: 10
   defense: 5
