@@ -453,6 +453,11 @@ class SpellActionService
             if (!random_chance($successRate)) {
                 list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
 
+                // Resilience gain for failure
+                if ($this->spellHelper->isWarSpell($spellKey)) {
+                    $target->wizard_resilience += 2;
+                }
+
                 // Inform target that they repelled a hostile spell
                 $this->notificationService
                     ->queueNotification('repelled_hostile_spell', [
@@ -475,7 +480,6 @@ class SpellActionService
                     );
                 }
 
-                // Return here, thus completing the spell cast and reducing the caster's mana
                 return [
                     'success' => false,
                     'message' => $message,
