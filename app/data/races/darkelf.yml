@@ -9,14 +9,15 @@ explorer_difficulty: 1
 converter_difficulty: 2
 home_land_type: cavern
 perks:
-  gem_production: 10
+  max_population: -5
+  gem_production: 5
 units:
   - name: Swordsman
     cost:
-      platinum: 325
+      platinum: 350
       ore: 25
     power:
-      offense: 4
+      offense: 3
       defense: 0
   - name: Gargoyle
     cost:
@@ -26,23 +27,22 @@ units:
       offense: 0
       defense: 3
   - name: Adept
-    type: hybrid_elite
     cost:
-      platinum: 1000
-      ore: 50
+      platinum: 1150
+      ore: 60
     power:
-      offense: 2
-      defense: 5
+      offense: 0
+      defense: 6
     perks:
       counts_as_wizard_offense: 0.25
       counts_as_wizard_defense: 0.25
   - name: Spellblade
     cost:
-      platinum: 1150
-      ore: 35
-      mana: 15
+      platinum: 1350
+      ore: 75
+      gems: 10
     power:
-      offense: 5
+      offense: 6.5
       defense: 2
     perks:
-      offense_from_building: wizard_guild,10,2 # building type, ratio%, max
+      fewer_casualties: 15

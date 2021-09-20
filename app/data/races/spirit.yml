@@ -9,6 +9,7 @@ explorer_difficulty: 2
 converter_difficulty: 3
 home_land_type: swamp
 perks:
+  max_population: 2.5
   food_consumption: -90
   mana_production: 10
   immortal_wizards: 1
@@ -20,8 +21,6 @@ units:
     power:
       offense: 3
       defense: 0
-    perks:
-      immortal: 1
     need_boat: false
   - name: Geist
     cost:
@@ -37,10 +36,10 @@ units:
       platinum: 1050
       mana: 30
     power:
-      offense: 3
+      offense: 4
       defense: 5
     perks:
-      immortal: 1
+      fewer_casualties_defense: 50
     need_boat: false
   - name: Spectral Warrior
     cost:
