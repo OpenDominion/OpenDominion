@@ -46,4 +46,4 @@ units:
       defense: 3
     perks:
       faster_return: 3
-      plunders_resources_on_attack: 1
+      plunder_platinum: 20

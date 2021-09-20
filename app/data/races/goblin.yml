@@ -37,7 +37,8 @@ units:
       offense: 5
       defense: 3
     perks:
-      plunders_resources_on_attack: 1
+      plunder_platinum: 20
+      plunder_gems: 5
   - name: Wolf Rider
     cost:
       platinum: 1300

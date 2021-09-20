@@ -277,7 +277,7 @@ class InvadeActionService
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
             $this->handleResearchPoints($dominion, $target, $survivingUnits);
 
-            $convertedUnits = $this->handleConversions($dominion, $landRatio, $units, $survivingUnits);
+            $convertedUnits = $this->handleConversions($dominion, $units, $survivingUnits);
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
 
             $this->handleMoraleChanges($dominion, $target);
@@ -411,10 +411,6 @@ class InvadeActionService
                 (static::PRESTIGE_LOSS_PERCENTAGE_CAP / 100)
             );
             $targetPrestigeChange = (int)round($target->prestige * -($prestigeLossPercentage));
-            // Flat Prestige Loss of 25 for NPDs
-            if ($target->user_id == null && $target->prestige >= 25) {
-                $targetPrestigeChange = -25;
-            }
 
             // Racial Bonus
             $multiplier += $dominion->race->getPerkMultiplier('prestige_gains');
@@ -990,7 +986,8 @@ class InvadeActionService
         }
 
         $unitsSentPerSlot = [];
-        $unitsSentPlunderSlot = null;
+        $plunderPlatinum = 0;
+        $plunderGems = 0;
 
         // todo: inefficient to do run this code per slot. needs refactoring
         foreach ($dominion->race->units as $unit) {
@@ -999,21 +996,22 @@ class InvadeActionService
             if (!isset($units[$slot])) {
                 continue;
             }
-            $unitsSentPerSlot[$slot] = $units[$slot];
 
-            if ($unit->getPerkValue('plunders_resources_on_attack') != 0) {
-                $unitsSentPlunderSlot = $slot;
+            // We have a unit with plunder!
+            if ($unit->getPerkValue('plunder_platinum') != 0) {
+                $plunderPlatinum += $units[$slot] * (int)$unit->getPerkValue('plunder_platinum');
+            }
+            if ($unit->getPerkValue('plunder_gems') != 0) {
+                $plunderGems += $units[$slot] * (int)$unit->getPerkValue('plunder_gems');
             }
         }
 
         // We have a unit with plunder!
-        if ($unitsSentPlunderSlot !== null) {
+        if ($plunderPlatinum > 0 || $plunderGems > 0) {
             $productionCalculator = app(\OpenDominion\Calculators\Dominion\ProductionCalculator::class);
 
-            $totalUnitsSent = array_sum($unitsSentPerSlot);
-            $unitsToPlunderWith = $unitsSentPerSlot[$unitsSentPlunderSlot];
-            $plunderPlatinum = min($unitsToPlunderWith * 20, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
-            $plunderGems = min($unitsToPlunderWith * 5, (int)floor($productionCalculator->getGemProductionRaw($target)));
+            $plunderPlatinum = min($plunderPlatinum, (int)floor($productionCalculator->getPlatinumProductionRaw($target)));
+            $plunderGems = min($plunderGems, (int)floor($productionCalculator->getGemProductionRaw($target)));
 
             if (!isset($this->invasionResult['attacker']['plunder'])) {
                 $this->invasionResult['attacker']['plunder'] = [
