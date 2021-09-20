@@ -3,6 +3,25 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+### Changed
+- Construction costs reduced across the board by up to 20% and further reduced based on your conquered land total
+- Destroyed buildings during invasion no longer grant the target discounted construction
+- Prestige gain is now based only on relative land size, target prestige and recent invasions are ignored
+- Land loss decreased to 80% of the DC formula (from 90%), generated land now equal to 100% land lost (from 66.67% of land lost)
+- Base defensive casualties reduced to 3.6% (from 4.05%), modifier for recent invasions reduced to 100%/75%/50%/25% (from 100%/80%/60%/55%/45%/35%)
+- Conversions are now based only on units sent and relative land size, defensive casualties are ignored
+- Dock food production increased to 40 (from 35)
+- Forest Haven lumber production increased to 25 (from 20)
+- Wizard Guilds now produce 15 mana (reduced spell cost bonus removed)
+- Failed war operations increase the target's resilience by 2
+- Dark Elf reworked
+- Nomad reworked
+- Orc Bone Breaker: 4/2, +1 OP for every 250 prestige (from 4/3, +1 OP for every 375 prestige)
+- Lycanthrope: homeland reverted to caverns (from plains), new spell Feral Hunger allows werewolves to convert more werewolves
+- Spirit reworked
+- Undead: maximum population increased to 15% (from 12.5%)
+- Undead: Parasitic Hunger always increases conversions by 20% and spreads plague
+- Attacking success and defending failure stats are now only recorded for 75%+ invasions
 
 ## [1.5.0] - 2021-07-25
 ### Changed

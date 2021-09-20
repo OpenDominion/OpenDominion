@@ -11,7 +11,7 @@ home_land_type: swamp
 perks:
   max_population: 15
   food_consumption: -75
-  mana_production: 15
+  mana_production: 10
   immortal_wizards: 1
 units:
   - name: Skeleton
