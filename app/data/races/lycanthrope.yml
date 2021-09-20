@@ -46,4 +46,4 @@ units:
       offense: 6
       defense: 0
     perks:
-      conversion: 3,10 # slot 3, one per 15 sent
+      conversion: 3,12 # slot 3, one per 15 sent

@@ -181,7 +181,7 @@ class ProductionCalculator
 
         // Values
         $foodPerFarm = 80;
-        $foodPerDock = 35;
+        $foodPerDock = 40;
 
         // Techs
         $foodPerDock += $dominion->getTechPerkValue('food_production_docks');
@@ -363,7 +363,7 @@ class ProductionCalculator
 
         // Values
         $lumberPerLumberyard = 50;
-        $lumberPerForestHaven = 20;
+        $lumberPerForestHaven = 25;
 
         // Building: Lumberyard
         $lumber += ($dominion->building_lumberyard * $lumberPerLumberyard);
@@ -474,7 +474,7 @@ class ProductionCalculator
         $mana = 0;
 
         // Values
-        $manaPerWizardGuild = 10;
+        $manaPerWizardGuild = 15;
         $manaPerTower = 25;
 
         // Buildings
