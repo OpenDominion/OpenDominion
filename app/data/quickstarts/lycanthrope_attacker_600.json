@@ -21,8 +21,8 @@
             "land_plain": 340,
             "land_mountain": 40,
             "land_swamp": 55,
-            "land_cavern": 0,
-            "land_forest": 90,
+            "land_cavern": 70,
+            "land_forest": 20,
             "land_hill": 55,
             "land_water": 20,
             "building_home": 70,
@@ -86,8 +86,8 @@
             "land_plain": 340,
             "land_mountain": 40,
             "land_swamp": 55,
-            "land_cavern": 0,
-            "land_forest": 90,
+            "land_cavern": 70,
+            "land_forest": 20,
             "land_hill": 55,
             "land_water": 20,
             "building_home": 70,
@@ -120,7 +120,7 @@
             "stat_total_land_explored": 350,
             "protection_ticks_remaining": 0
         },
-        "spells": ["ares_call", "midas_touch", "parasitic_hunger"],
+        "spells": ["ares_call", "midas_touch", "feral_hunger"],
         "queues": {
             "construction": [
                 [],
