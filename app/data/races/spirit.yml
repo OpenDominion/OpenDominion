@@ -1,56 +1,53 @@
+key: spirit-rework
 name: Spirit
 alignment: good
 description: >-
-  <p>Trapped in the land of the living, Spirits are the souls of the dead that cannot move on. They wander the lands, drawn towards towns and cities, turning thriving communities into ghost towns as people flee in terror.</p>
-  <p>It is said that Spirits are capable of snatching the very soul from your body in a jealous rage; and once you're trapped in limbo with them, it's only a matter of time before you begin to resent the living; before you succumb to your envy and become just like them. Spirit "populations" swell with every invasion as more damned souls join their ranks.</p>
+  <p>Trapped between the realm of the living and what lies beyond, Spirits are a melancholic collection of lost souls, drifting the swamplands, forever restless.</p>
+  <p>Lately, Spirit incursions into the territories of the living have become more frequent, though nobody knows why. With soul-rending wails, Spirits can strike fear in the hearts of those unprepared to face such horrors, sending many fleeing in terror before the battle even begins.</p>
 attacker_difficulty: 2
 explorer_difficulty: 2
 converter_difficulty: 3
-overall_difficulty: 2
 home_land_type: swamp
 perks:
-  max_population: 12.5
-  food_consumption: -80
+  max_population: 2.5
+  food_consumption: -90
+  mana_production: 15
   immortal_wizards: 1
 units:
-  - name: Phantom
-    cost:
-      platinum: 225
-      ore: 0
-    power:
-      offense: 2.5
-      defense: 0
-    perks:
-      immortal: 1
-    need_boat: false
   - name: Banshee
     cost:
-      platinum: 225
-      ore: 0
+      platinum: 300
+      mana: 10
+    power:
+      offense: 3
+      defense: 0
+    need_boat: false
+  - name: Geist
+    cost:
+      platinum: 300
+      mana: 10
     power:
       offense: 0
-      defense: 2.5
-    perks:
-      immortal: 1
-  - name: Ghost
-    cost:
-      platinum: 880
-      ore: 0
-    power:
-      offense: 2
-      defense: 4
-    perks:
-      immortal: 1
-      conversion: 12 # slot 1 and slot 2 aka specs
-    need_boat: false
-  - name: Spectre
-    cost:
-      platinum: 1000
-      ore: 0
-    power:
-      offense: 4
       defense: 3
     perks:
       immortal: 1
-      staggered_conversion: 50;12,65;3 # slot 1 and 2 below 65%, slot 3 above
+  - name: Phantom Knight
+    cost:
+      platinum: 1050
+      mana: 30
+    power:
+      offense: 4
+      defense: 5
+    perks:
+      fewer_casualties_defense: 50
+    need_boat: false
+  - name: Spectral Warrior
+    cost:
+      platinum: 1200
+      mana: 40
+    power:
+      offense: 6
+      defense: 0
+    perks:
+      immortal_vs_land_range: 75
     need_boat: false

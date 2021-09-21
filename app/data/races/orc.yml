@@ -1,3 +1,4 @@
+key: orc
 name: Orc
 alignment: evil
 description: >-
@@ -6,7 +7,6 @@ description: >-
 attacker_difficulty: 2
 explorer_difficulty: 3
 converter_difficulty: 3
-overall_difficulty: 3
 home_land_type: forest
 perks:
   lumber_production: 50
@@ -40,6 +40,6 @@ units:
       ore: 100
     power:
       offense: 4
-      defense: 3
+      defense: 2
     perks:
-      offense_from_prestige: 375,3 # amount, max
+      offense_from_prestige: 250,3 # amount, max

@@ -112,7 +112,7 @@ class CasualtiesCalculator
         }
 
         // Wonders
-        if ($dominion->getWonderPerkValue('kills_immortal')) {
+        if ($target->getWonderPerkValue('kills_immortal')) {
             $multiplier = 1;
         }
 

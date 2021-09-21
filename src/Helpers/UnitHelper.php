@@ -112,7 +112,7 @@ class UnitHelper
         // todo: refactor this. very inefficient
         $perkTypeStrings = [
             // Conversions
-            'conversion' => 'Converts some enemy casualties into %s.',
+            'conversion' => 'Converts enemy peasants into %1$s (up to one for every %2$s sent on attack).',
             'staggered_conversion' => 'Converts some enemy casualties into %2$s against dominions %1$s%%+ of your size.',
 
             // OP/DP related
@@ -165,7 +165,8 @@ class UnitHelper
 
             // Resource related
             'ore_production' => 'Each unit produces %s units of ore per hour.',
-            'plunders_resources_on_attack' => 'Plunders 1 hour of target\'s raw platinum/gem production on attack.',
+            'plunder_platinum' => 'Each unit plunders %s platinum on attack (max 1 hour of target\'s raw production).',
+            'plunder_gems' => 'Each unit plunders %s gems on attack (max 1 hour of target\'s raw production).',
             'sink_boats_defense' => 'Sinks boats when defending.',
             'sink_boats_offense' => 'Sinks boats when attacking.',
 
@@ -240,35 +241,15 @@ class UnitHelper
 
                 // Special case for conversions
                 if ($perk->key === 'conversion') {
-                    $unitSlotsToConvertTo = array_map('intval', str_split($perkValue));
-                    $unitNamesToConvertTo = [];
+                    $slot = (int)$perkValue[0];
+                    $amount = (int)$perkValue[1];
 
-                    foreach ($unitSlotsToConvertTo as $slot) {
-                        $unitToConvertTo = $race->units->filter(static function ($unit) use ($slot) {
-                            return ($unit->slot === $slot);
-                        })->first();
+                    $unitToConvertTo = $race->units->filter(static function ($unit) use ($slot) {
+                        return ($unit->slot === $slot);
+                    })->first();
 
-                        $unitNamesToConvertTo[] = str_plural($unitToConvertTo->name);
-                    }
-
-                    $perkValue = generate_sentence_from_array($unitNamesToConvertTo);
-                } elseif ($perk->key === 'staggered_conversion') {
-                    foreach ($perkValue as $index => $conversion) {
-                        [$convertAboveLandRatio, $slots] = $conversion;
-
-                        $unitSlotsToConvertTo = array_map('intval', str_split($slots));
-                        $unitNamesToConvertTo = [];
-
-                        foreach ($unitSlotsToConvertTo as $slot) {
-                            $unitToConvertTo = $race->units->filter(static function ($unit) use ($slot) {
-                                return ($unit->slot === $slot);
-                            })->first();
-
-                            $unitNamesToConvertTo[] = str_plural($unitToConvertTo->name);
-                        }
-
-                        $perkValue[$index][1] = generate_sentence_from_array($unitNamesToConvertTo);
-                    }
+                    $perkValue[0] = str_plural($unitToConvertTo->name);
+                    $perkValue[1] = $amount;
                 }
 
                 if (is_array($perkValue)) {
@@ -381,7 +362,7 @@ class UnitHelper
 
     public function getConvertedUnitsString(array $convertedUnits, Race $race): string
     {
-        $result = 'In addition, your army converts some of the enemy casualties into ';
+        $result = 'In addition, your army converts ';
         $convertedUnitsFiltered = array_filter($convertedUnits, function ($item) {
             return $item > 0;
         });

@@ -1,9 +1,9 @@
 [
     {
         "attributes": {
-            "peasants": 10666,
+            "peasants": 10893,
             "draft_rate": 60,
-            "resource_platinum": 648973,
+            "resource_platinum": 652901,
             "resource_food": 55679,
             "resource_lumber": 23257,
             "resource_mana": 9886,
@@ -44,7 +44,7 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 0,
-            "stat_total_platinum_production": 1140077,
+            "stat_total_platinum_production": 1141871,
             "stat_total_food_production": 88560,
             "stat_total_lumber_production": 60000,
             "stat_total_mana_production": 24063,
@@ -104,9 +104,9 @@
     },
     {
         "attributes": {
-            "peasants": 10229,
+            "peasants": 10431,
             "draft_rate": 60,
-            "resource_platinum": 327622,
+            "resource_platinum": 334184,
             "resource_food": 55897,
             "resource_lumber": 31976,
             "resource_mana": 11908,
@@ -147,7 +147,7 @@
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 0,
-            "stat_total_platinum_production": 1675526,
+            "stat_total_platinum_production": 1679954,
             "stat_total_food_production": 105288,
             "stat_total_lumber_production": 72000,
             "stat_total_mana_production": 32312.5,

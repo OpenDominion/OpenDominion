@@ -30,9 +30,7 @@ class ScribesController extends AbstractController
 
     public function getRace(string $raceName)
     {
-        $raceName = ucwords(str_replace('-', ' ', $raceName));
-
-        $race = Race::where('name', $raceName)
+        $race = Race::where('key', $raceName)
             ->firstOrFail();
 
         return view('pages.scribes.race', [

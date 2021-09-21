@@ -1,0 +1,58 @@
+key: spirit
+name: Spirit (Legacy)
+alignment: good
+description: >-
+  <p>Trapped in the land of the living, Spirits are the souls of the dead that cannot move on. They wander the lands, drawn towards towns and cities, turning thriving communities into ghost towns as people flee in terror.</p>
+  <p>It is said that Spirits are capable of snatching the very soul from your body in a jealous rage; and once you're trapped in limbo with them, it's only a matter of time before you begin to resent the living; before you succumb to your envy and become just like them. Spirit "populations" swell with every invasion as more damned souls join their ranks.</p>
+attacker_difficulty: 2
+explorer_difficulty: 2
+converter_difficulty: 3
+overall_difficulty: 2
+home_land_type: swamp
+perks:
+  max_population: 12.5
+  food_consumption: -80
+  immortal_wizards: 1
+units:
+  - name: Phantom
+    cost:
+      platinum: 225
+      ore: 0
+    power:
+      offense: 2.5
+      defense: 0
+    perks:
+      immortal: 1
+    need_boat: false
+  - name: Banshee
+    cost:
+      platinum: 225
+      ore: 0
+    power:
+      offense: 0
+      defense: 2.5
+    perks:
+      immortal: 1
+  - name: Ghost
+    cost:
+      platinum: 880
+      ore: 0
+    power:
+      offense: 2
+      defense: 4
+    perks:
+      immortal: 1
+      conversion: 2,20 # slot 2, one per 20 sent
+    need_boat: false
+  - name: Spectre
+    cost:
+      platinum: 1000
+      ore: 0
+    power:
+      offense: 4
+      defense: 3
+    perks:
+      immortal: 1
+      conversion: 3,20 # slot 3, one per 20 sent
+    need_boat: false
+playable: false

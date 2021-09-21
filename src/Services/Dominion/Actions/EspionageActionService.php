@@ -255,6 +255,12 @@ class EspionageActionService
             if (!random_chance($successRate)) {
                 list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 
+                // Resilience gain for failure
+                if ($this->espionageHelper->isWarOperation($operationKey)) {
+                    $target->spy_resilience += 2;
+                }
+
+                // Inform target that they repelled a hostile spy operation
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
                         'sourceDominionId' => $dominion->id,
@@ -264,9 +270,16 @@ class EspionageActionService
                     ->sendNotifications($target, 'irregular_dominion');
 
                 if ($unitsKilledString) {
-                    $message = "The enemy has prevented our {$operationInfo['name']} attempt and managed to capture $unitsKilledString.";
+                    $message = sprintf(
+                        'The enemy has prevented our %s attempt and managed to capture %s.',
+                        $operationInfo['name'],
+                        $unitsKilledString
+                    );
                 } else {
-                    $message = "The enemy has prevented our {$operationInfo['name']} attempt.";
+                    $message = sprintf(
+                        'The enemy has prevented our %s attempt.',
+                        $operationInfo['name']
+                    );
                 }
 
                 return [

@@ -45,18 +45,16 @@ class ConstructionCalculator
      */
     public function getPlatinumCostRaw(Dominion $dominion): int
     {
-        $platinum = 0;
-        $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
+        if ($dominion->stat_total_land_lost >= $dominion->stat_total_land_conquered) {
+            $conqueredLand = 0;
+            $exploredLand = $totalLand - 250 + $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+        } else {
+            $conqueredLand = $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+            $exploredLand = $totalLand - 250 - $conqueredLand;
+        }
 
-        $platinum += max(
-            max($totalBuildings, 250),
-            (3 * $totalLand) / 4
-        );
-
-        $platinum -= 250;
-        $platinum *= 1.53;
-        $platinum += 850;
+        $platinum = 850 + $conqueredLand + (1.25 * $exploredLand);
 
         return round($platinum);
     }
@@ -125,18 +123,16 @@ class ConstructionCalculator
      */
     public function getLumberCostRaw(Dominion $dominion): int
     {
-        $lumber = 0;
-        $totalBuildings = $this->buildingCalculator->getTotalBuildings($dominion);
         $totalLand = $this->landCalculator->getTotalLand($dominion);
+        if ($dominion->stat_total_land_lost >= $dominion->stat_total_land_conquered) {
+            $conqueredLand = 0;
+            $exploredLand = $totalLand - 250 + $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+        } else {
+            $conqueredLand = $dominion->stat_total_land_conquered - $dominion->stat_total_land_lost;
+            $exploredLand = $totalLand - 250 - $conqueredLand;
+        }
 
-        $lumber += max(
-            max($totalBuildings, 250),
-            (3 * $totalLand) / 4
-        );
-
-        $lumber -= 250;
-        $lumber *= 0.35;
-        $lumber += 87.5;
+        $lumber = 87.5 + ($conqueredLand / 4.25) + (0.285 * $exploredLand);
 
         return round($lumber);
     }

@@ -1,0 +1,53 @@
+key: dark-elf
+name: Dark Elf (Legacy)
+alignment: evil
+description: >-
+  <p>With ashen skin, inky-black eyes and bat-like features, Dark Elves are the cave-dwelling distant cousins of the majestic Wood Elves. Corrupted long ago by the whispered promises of power from demonic entities, Dark Elves are a cruel species who thrive on torment, pain and suffering.</p>
+  <p>Dark Elves have black magic coursing through their veins. Capable of calling down a rain of fire and lightning upon their enemies, they are a terrifying force to reckon with - and that's before they even set foot on the battlefield.</p>
+attacker_difficulty: 1
+explorer_difficulty: 1
+converter_difficulty: 3
+home_land_type: cavern
+perks:
+  mana_production: 5
+  gem_production: 5
+units:
+  - name: Swordsman
+    cost:
+      platinum: 325
+      ore: 25
+    power:
+      offense: 4
+      defense: 0
+  - name: Gargoyle
+    cost:
+      platinum: 300
+      ore: 15
+    power:
+      offense: 0
+      defense: 3
+  - name: Adept
+    type: hybrid_elite
+    cost:
+      platinum: 1150
+      ore: 55
+    power:
+      offense: 2
+      defense: 4
+    perks:
+      counts_as_wizard_offense: 0.2
+      counts_as_wizard_defense: 0.25
+      offense_from_building: wizard_guild,10,4 # building type, ratio%, max
+      defense_from_building: wizard_guild,10,4 # building type, ratio%, max
+  - name: Spirit Warrior
+    cost:
+      platinum: 1050
+      ore: 55
+    power:
+      offense: 5.5
+      defense: 0
+    perks:
+      immortal_vs_land_range: 75
+      offense_staggered_land_range: 75;0.5
+    need_boat: false
+playable: false

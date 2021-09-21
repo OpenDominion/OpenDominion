@@ -1,3 +1,4 @@
+key: lycanthrope
 name: Lycanthrope
 alignment: evil
 description: >-
@@ -7,7 +8,7 @@ attacker_difficulty: 2
 explorer_difficulty: 3
 converter_difficulty: 3
 overall_difficulty: 3
-home_land_type: forest
+home_land_type: cavern
 perks:
   max_population: 10
   defense: 5
@@ -45,4 +46,4 @@ units:
       offense: 6
       defense: 0
     perks:
-      conversion: 3 # slot 3
+      conversion: 3,12 # slot 3, one per 15 sent

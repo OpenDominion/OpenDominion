@@ -1,3 +1,4 @@
+key: dwarf
 name: Dwarf
 alignment: good
 description: >-
@@ -32,11 +33,11 @@ units:
   - name: Cleric
     type: hybrid_elite  
     cost:
-      platinum: 760
+      platinum: 825
       ore: 0
     power:
       offense: 4
-      defense: 4
+      defense: 4.5
     perks:
       reduce_combat_losses: 1
       kills_immortal: 1

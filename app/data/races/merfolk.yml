@@ -1,9 +1,10 @@
+key: merfolk
 name: Merfolk
 alignment: good
 description: >-
   <p>An aquatic race that lives in beautiful coral reefs where food is plentiful, Merfolk are the guardians of the great oceans.</p>
   <p>Though typically peaceful, Merfolk are legendary for their wrath when angered, summoning terrors of the deep to destroy entire naval fleets with the thrashing tentacles of ravenous krakens. The chilling and alluring call of the siren might be the last thing you ever hear... before you're snatched from your ship and dragged down to the bottom of the cold, dark sea.</p>
-attacker_difficulty: 2
+attacker_difficulty: 1
 explorer_difficulty: 1
 converter_difficulty: 3
 overall_difficulty: 1
