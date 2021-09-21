@@ -28,7 +28,7 @@ units:
       defense: 3
   - name: Adept
     cost:
-      platinum: 1150
+      platinum: 1200
       ore: 60
     power:
       offense: 0
@@ -38,7 +38,7 @@ units:
       counts_as_wizard_defense: 0.25
   - name: Spellblade
     cost:
-      platinum: 1300
+      platinum: 1250
       ore: 75
       gems: 10
     power:

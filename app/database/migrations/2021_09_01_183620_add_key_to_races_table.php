@@ -20,9 +20,6 @@ class AddKeyToRacesTable extends Migration
 
         foreach (Race::all() as $race) {
             $race->key = str_slug($race->name);
-            if (in_array($race->key, ['dark-elf', 'nomad', 'spirit'])) {
-                $race->key .= '-rework';
-            }
             $race->save();
         }
     }
