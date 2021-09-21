@@ -288,7 +288,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Ascendance',
-                'description' => '5% of surviving Swordsmen return from battle as Spellblades',
+                'description' => '6% of surviving Swordsmen return from battle as Spellblades',
                 'key' => 'ascendance',
                 'mana_cost' => 5,
                 'duration' => 12,

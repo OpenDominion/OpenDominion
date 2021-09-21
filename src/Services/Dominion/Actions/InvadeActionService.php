@@ -562,7 +562,7 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        $spellAscendanceConversionRate = 5;
+        $spellAscendanceConversionRate = 6;
         if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
             $survivingUnits[1] -= floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
         }
@@ -896,7 +896,7 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        $spellAscendanceConversionRate = 5;
+        $spellAscendanceConversionRate = 6;
         if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
             $convertedUnits[4] += floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
         }
