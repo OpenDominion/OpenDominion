@@ -28,8 +28,14 @@ class GameEventService
     {
         return GameEvent::query()
             ->with(['source', 'target'])
-            ->where('source_id', $dominion->id)
-            ->orWhere('target_id', $dominion->id)
+            ->where(function($query) use ($dominion) {
+                $query->where('source_id', $dominion->id);
+                $query->where('source_type', Dominion::class);
+            })
+            ->orWhere(function($query) use ($dominion) {
+                $query->where('target_id', $dominion->id);
+                $query->where('target_type', Dominion::class);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -38,9 +44,16 @@ class GameEventService
     {
         return GameEvent::query()
             ->with(['source', 'target'])
-            ->where('type', 'invasion')
-            ->where('source_id', $dominion->id)
-            ->orWhere('target_id', $dominion->id)
+            ->where(function($query) use ($dominion) {
+                $query->where('type', 'invasion');
+                $query->where('source_id', $dominion->id);
+                $query->where('source_type', Dominion::class);
+            })
+            ->orWhere(function($query) use ($dominion) {
+                $query->where('type', 'invasion');
+                $query->where('target_id', $dominion->id);
+                $query->where('target_type', Dominion::class);
+            })
             ->orderBy('created_at', 'desc')
             ->take($count)
             ->get();
