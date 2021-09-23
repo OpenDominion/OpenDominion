@@ -12,16 +12,15 @@ class AIHelper
         $day = $round->daysInRound();
         $hours = $round->hoursInDay();
         $fractionalDay = $day + ($hours / 24);
-        $expectedLandSize = 410 + ($fractionalDay * 40);
 
         // Formula based on average DPA of attacks over several rounds
-        $defensePerAcre = (-0.0181 * ($fractionalDay**2)) + (2.5797 * $fractionalDay) - 4.1725;
-        // Additional defense for first few days
-        $defensePerAcre += max(0, 6 - $fractionalDay/2);
+        $topOffense = (0.039 * $fractionalDay**4) - (0.45 * $fractionalDay**3) + (12.3 * $fractionalDay**2) + (5950 * $fractionalDay)- 19400;
+        // Approximate land size at max growth rate
+        $expectedLandSize = (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
         // Scale by expected land size
-        $scaleFactor = clamp($totalLand / $expectedLandSize, 0.80, 1.20);
+        $defenseRequired = $topOffense * (0.95 * ($expectedLandSize / $totalLand));
 
-        return $totalLand * $defensePerAcre * $scaleFactor;
+        return $defenseRequired;
     }
 
     public function generateConfig(Race $race)
