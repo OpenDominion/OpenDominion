@@ -445,7 +445,6 @@ class InvadeActionService
             } else {
                 // todo: possible bug if all 12hr units die (somehow) and only 9hr units survive, prestige gets returned after 12 hrs, since $units is input, not surviving units. fix?
                 $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
-
                 $this->queueService->queueResources(
                     'invasion',
                     $dominion,
@@ -1016,13 +1015,15 @@ class InvadeActionService
                 ];
             }
 
+            $slowestTroopsReturnHours = $this->invasionService->getSlowestUnitReturnHours($dominion, $units);
             $this->queueService->queueResources(
                 'invasion',
                 $dominion,
                 [
                     'resource_platinum' => $plunderPlatinum,
                     'resource_gems' => $plunderGems,
-                ]
+                ],
+                $slowestTroopsReturnHours
             );
         }
 
