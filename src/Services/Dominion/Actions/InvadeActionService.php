@@ -561,12 +561,6 @@ class InvadeActionService
             }
         }
 
-        // Special case for Ascendance
-        $spellAscendanceConversionRate = 6;
-        if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
-            $survivingUnits[1] -= floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
-        }
-
         return $survivingUnits;
     }
 
@@ -896,12 +890,14 @@ class InvadeActionService
         }
 
         // Special case for Ascendance
-        $spellAscendanceConversionRate = 6;
         if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
-            $convertedUnits[4] += floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
+            $spellAscendanceConversionRate = 6;
+            $ascendedUnits = floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
+            $convertedUnits[1] -= $ascendedUnits;
+            $convertedUnits[4] += $ascendedUnits;
         }
 
-        if (!isset($this->invasionResult['attacker']['conversion']) && array_sum($convertedUnits) > 0) {
+        if (!isset($this->invasionResult['attacker']['conversion']) && $convertedUnits !== array_fill(1, 4, 0)) {
             $this->invasionResult['attacker']['conversion'] = $convertedUnits;
         }
 
