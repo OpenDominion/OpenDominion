@@ -278,7 +278,7 @@ class AIService
     public function exploreLand(Dominion $dominion, array $config, int $totalLand) {
         // TODO: calcuate actual percentages needed for farms, towers, etc
         $landToExplore = [];
-        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 12);
+        $maxAfford = min($this->explorationCalculator->getMaxAfford($dominion), 15);
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (
