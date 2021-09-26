@@ -13,12 +13,12 @@ class AIHelper
         $hours = $round->hoursInDay();
         $fractionalDay = $day + ($hours / 24);
 
-        // Formula based on average DPA of attacks over several rounds
+        // Formula based on average DP of attacks over several rounds
         $topOffense = (0.039 * $fractionalDay**4) - (0.45 * $fractionalDay**3) + (12.3 * $fractionalDay**2) + (5950 * $fractionalDay)- 19400;
         // Approximate land size at max growth rate
         $expectedLandSize = (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
         // Scale by expected land size
-        $defenseRequired = $topOffense * (0.95 * ($expectedLandSize / $totalLand));
+        $defenseRequired = $topOffense * (0.95 * clamp($expectedLandSize / $totalLand, 0.1, 1.75));
 
         return $defenseRequired;
     }
