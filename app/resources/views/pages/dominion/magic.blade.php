@@ -276,11 +276,11 @@
             const war = state.element.dataset.war;
             let difficultyClass;
 
-            if (percentage >= 120) {
+            if (percentage >= 133) {
                 difficultyClass = 'text-red';
             } else if (percentage >= 75) {
                 difficultyClass = 'text-green';
-            } else if (percentage >= 66) {
+            } else if (percentage >= 60) {
                 difficultyClass = 'text-muted';
             } else {
                 difficultyClass = 'text-gray';

@@ -134,7 +134,7 @@ class RangeCalculator
             return 'text-green';
         }
 
-        if ($range >= 66) {
+        if ($range >= 60) {
             return 'text-muted';
         }
 
