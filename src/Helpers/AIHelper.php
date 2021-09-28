@@ -14,7 +14,7 @@ class AIHelper
         $fractionalDay = $day + ($hours / 24);
 
         // Formula based on average DP of attacks over several rounds
-        $topOffense = (0.039 * $fractionalDay**4) - (0.45 * $fractionalDay**3) + (12.3 * $fractionalDay**2) + (5950 * $fractionalDay)- 19400;
+        $topOffense = (0.039 * $fractionalDay**4) - (0.45 * $fractionalDay**3) + (12.3 * $fractionalDay**2) + (5950 * $fractionalDay) - 19400;
         // Approximate land size at max growth rate
         $expectedLandSize = (0.063 * $fractionalDay**3) - (4.8 * $fractionalDay**2) + (181 * $fractionalDay) - 116;
         // Scale by expected land size
@@ -61,6 +61,40 @@ class AIHelper
             $config['military'][0]['unit'] = 'unit2';
         }
 
+        $config['build'][] = [
+            'land_type' => $race->home_land_type,
+            'building' => 'home',
+            'amount' => -1
+        ];
+
+        $jobBuildings = collect([
+            [
+                'land_type' => 'plain',
+                'building' => 'alchemy',
+                'amount' => -1
+            ],
+            [
+                'land_type' => 'plain',
+                'building' => 'masonry',
+                'amount' => -1
+            ],
+            [
+                'land_type' => 'cavern',
+                'building' => 'school',
+                'amount' => -1
+            ],
+            [
+                'land_type' => 'hill',
+                'building' => 'shrine',
+                'amount' => -1
+            ],
+            [
+                'land_type' => 'hill',
+                'building' => 'factory',
+                'amount' => -1
+            ]
+        ]);
+
         $landBasedRaces = ['Gnome', 'Icekin', 'Nox', 'Sylvan', 'Wood Elf'];
         if (in_array($race->name, $landBasedRaces)) {
             if ($race->name == 'Nox') {
@@ -69,6 +103,8 @@ class AIHelper
                     'building' => 'wizard_guild',
                     'amount' => mt_rand(8, 15) / 100
                 ];
+
+                $config['build'][] = $jobBuildings->random();
             }
             if (in_array($race->name, ['Gnome', 'Icekin'])) {
                 $config['build'][] = [
@@ -104,40 +140,6 @@ class AIHelper
                 'building' => 'diamond_mine',
                 'amount' => mt_rand(50, 150)
             ];
-
-            $config['build'][] = [
-                'land_type' => $race->home_land_type,
-                'building' => 'home',
-                'amount' => -1
-            ];
-
-            $jobBuildings = collect([
-                [
-                    'land_type' => 'plain',
-                    'building' => 'alchemy',
-                    'amount' => -1
-                ],
-                [
-                    'land_type' => 'plain',
-                    'building' => 'masonry',
-                    'amount' => -1
-                ],
-                [
-                    'land_type' => 'cavern',
-                    'building' => 'school',
-                    'amount' => -1
-                ],
-                [
-                    'land_type' => 'hill',
-                    'building' => 'shrine',
-                    'amount' => -1
-                ],
-                [
-                    'land_type' => 'hill',
-                    'building' => 'factory',
-                    'amount' => -1
-                ]
-            ]);
 
             $config['build'][] = $jobBuildings->random();
         }
