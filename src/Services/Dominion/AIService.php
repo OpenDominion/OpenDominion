@@ -208,9 +208,6 @@ class AIService
         // Improvements
         try {
             $this->investCastle($dominion, $config);
-            if ($dominion->resource_platinum > 100000) {
-                $this->investCastle($dominion, ['invest' => 'platinum']);
-            }
         } catch (GameException $e) {
             // Lost and forgotten be, darker than the darkness,
         }
