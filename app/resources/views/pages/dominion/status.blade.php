@@ -87,6 +87,13 @@
                         <a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a>
                     </div>
                 </div>
+                @if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
+                    <div class="box-footer text-center">
+                        <a href="{{ $discordHelper->getDiscordConnectUrl('join') }}" target="_blank" class="btn btn-primary">
+                            <i class="ra ra-speech-bubbles"></i> Join Realm Discord
+                        </a>
+                    </div>
+                @endif
             </div>
         @endif
     </div>
