@@ -182,9 +182,9 @@
                             @if (isset($event->data['defender']['recentlyInvadedCount']) && $event->data['defender']['recentlyInvadedCount'] > 0 && $event->data['result']['success'])
                                 <p class="text-center">
                                     @if ($event->source->id === $selectedDominion->id)
-                                        Because the target was recently invaded, your prestige gains and their defensive losses are reduced.
+                                        Because the target was recently invaded, their defensive losses are reduced.
                                     @else
-                                        Because the target was recently invaded, {{ $event->source->name }} (# {{ $event->source->realm->number }})'s prestige gains and {{ $event->target->name }} (# {{ $event->target->realm->number }})'s defensive losses are reduced.
+                                        Because the target was recently invaded, {{ $event->target->name }} (# {{ $event->target->realm->number }})'s defensive losses are reduced.
                                     @endif
                                 </p>
                             @endif
