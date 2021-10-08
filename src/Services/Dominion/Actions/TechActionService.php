@@ -43,7 +43,7 @@ class TechActionService
         $this->guardLockedDominion($dominion);
 
         // Get the tech information
-        $techToUnlock = Tech::where('key', $key)->first();
+        $techToUnlock = Tech::active()->where('key', $key)->first();
         if ($techToUnlock == null) {
             throw new LogicException('Failed to find tech ' . $key);
         }
