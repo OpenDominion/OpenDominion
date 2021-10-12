@@ -12,7 +12,7 @@ home_land_type: water
 perks:
   lumber_production: -15
   food_production: 5
-  explore_cost: 5
+  explore_platinum_cost: 5
   offense: 5
 units:
   - name: Merman
