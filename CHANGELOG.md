@@ -15,14 +15,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Wizard Guilds now produce 15 mana (reduced spell cost bonus removed)
 - Failed war operations increase the target's resilience by 2
 - Dark Elf reworked
-- Dwarf Cleric: increased DP to 4.5 (from 4), +65p (from 760)
+- Dwarf Cleric: increased DP to 4.5 (from 4), +90p (from 760)
 - Nomad reworked
-- Orc Bone Breaker: 4/2, +1 OP for every 250 prestige (from 4/3, +1 OP for every 375 prestige)
 - Lycanthrope: homeland reverted to caverns (from forest), new spell Feral Hunger allows werewolves to convert more werewolves
+- Merfolk: food production decreased to 5% (from 15%), explore cost increased by 5%
+- Orc Bone Breaker: 4/2, +1 OP for every 250 prestige (from 4/3, +1 OP for every 375 prestige)
 - Spirit reworked
 - Undead: maximum population increased to 15% (from 12.5%)
 - Undead: Parasitic Hunger always increases conversions by 20% and spreads plague
+- Wood Elf: rezone cost increased by 25%
 - Attacking success and defending failure stats are now only recorded for 75%+ invasions
+- Bots will now grow faster, defense formula adjusted
+- Reduced prestige gain for each attack against a specific target or any of the bots when invading them repeatedly over the course of the round
 
 ## [1.5.0] - 2021-07-25
 ### Changed
