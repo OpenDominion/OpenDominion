@@ -277,7 +277,7 @@ class InvadeActionService
             $this->handleAfterInvasionUnitPerks($dominion, $target, $survivingUnits);
             $this->handleResearchPoints($dominion, $target, $survivingUnits);
 
-            $convertedUnits = $this->handleConversions($dominion, $units, $survivingUnits);
+            $convertedUnits = $this->handleConversions($dominion, $target, $units, $survivingUnits);
             $this->handleReturningUnits($dominion, $survivingUnits, $convertedUnits);
 
             $this->handleMoraleChanges($dominion, $target);
@@ -492,8 +492,7 @@ class InvadeActionService
             $totalUnitsSent = array_sum($units);
 
             $averageOPPerUnitSent = ($attackingForceOP / $totalUnitsSent);
-            $OPNeededToBreakTarget = ($targetDP + 1);
-            $unitsNeededToBreakTarget = round($OPNeededToBreakTarget / $averageOPPerUnitSent);
+            $unitsNeededToBreakTarget = round($targetDP / $averageOPPerUnitSent);
 
             $totalUnitsLeftToKill = (int)ceil($unitsNeededToBreakTarget * $offensiveCasualtiesPercentage);
 
@@ -846,9 +845,11 @@ class InvadeActionService
      */
     protected function handleConversions(
         Dominion $dominion,
+        Dominion $target,
         array $units,
         array $survivingUnits
     ): array {
+        $spellAscendanceConversionRate = 6;
         $spellFeralHungerConversionRate = 25;
         $spellParasiticHungerMultiplier = 20;
 
@@ -867,30 +868,53 @@ class InvadeActionService
         $conversionMultiplier = 1;
         $conversionMultiplier += $this->spellCalculator->getActiveSpellMultiplierBonus($dominion, 'parasitic_hunger', $spellParasiticHungerMultiplier);
 
-        foreach ($dominion->race->units as $unit) {
+        $unitsWithConversionPerk = $dominion->race->units->filter(function ($unit) use ($dominion, $units) {
             if (!array_key_exists($unit->slot, $units) || ($units[$unit->slot] === 0)) {
-                continue;
+                return false;
             }
 
-            $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
-            if (!$perkValue) {
-                continue;
-            }
-
-            $unitSlot = (int)$perkValue[0];
-            $conversionRate = (1 / (int)$perkValue[1]);
             if ($unit->slot == 3 && $this->spellCalculator->isSpellActive($dominion, 'feral_hunger')) {
-                $conversionRate = $spellFeralHungerConversionRate;
+                return true;
             }
 
-            $convertingUnitsForSlot = $units[$unit->slot];
-            $converts = floor($convertingUnitsForSlot * $conversionRate * $conversionMultiplier * ($landRatio ** 2));
-            $convertedUnits[$unitSlot] += $converts;
+            return $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
+        });
+
+        $unitConversionRates = $unitsWithConversionPerk->map(function ($unit) use ($dominion, $units) {
+            if ($unit->slot == 3 && $this->spellCalculator->isSpellActive($dominion, 'feral_hunger')) {
+                $unitSlot = 3;
+                $conversionRate = $spellFeralHungerConversionRate;
+            } else {
+                $perkValue = $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
+                $unitSlot = (int)$perkValue[0];
+                $conversionRate = (1 / (int)$perkValue[1]);
+            }
+
+            return [
+                'convertSlot' => $unitSlot,
+                'unitSlot' => $unit->slot,
+                'unitPower' => $unit->power_offense, // TODO: Support units with dynamic power perks
+                'conversionRate' => $conversionRate
+            ];
+        });
+
+        $offensiveModifier = $this->militaryCalculator->getOffensivePowerMultiplier($dominion, $target);
+        $targetDP = $this->invasionResult['defender']['dp'];
+
+        foreach ($unitConversionRates->sortByDesc('rate') as $convertingUnit) {
+            if ($targetDP <= 0) {
+                continue;
+            }
+
+            $unitsNeededToBreakTarget = ceil($targetDP / $convertingUnit['unitPower'] * $offensiveModifier);
+            $convertingUnitsForSlot = min($unitsNeededToBreakTarget, $units[$convertingUnit['unitSlot']]);
+            $targetDP -= ($convertingUnitsForSlot * $convertingUnit['unitPower'] * $offensiveModifier);
+            $converts = floor($convertingUnitsForSlot * $convertingUnit['conversionRate'] * $conversionMultiplier * ($landRatio ** 2));
+            $convertedUnits[$convertingUnit['convertSlot']] += $converts;
         }
 
         // Special case for Ascendance
-        if ($isInvasionSuccessful && isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance')) {
-            $spellAscendanceConversionRate = 6;
+        if (isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance') && $this->invasionResult['result']['range'] >= 75) {
             $ascendedUnits = floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
             $convertedUnits[1] -= $ascendedUnits;
             $convertedUnits[4] += $ascendedUnits;
