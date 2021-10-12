@@ -849,7 +849,7 @@ class InvadeActionService
         array $units,
         array $survivingUnits
     ): array {
-        $spellAscendanceConversionRate = 6;
+        $spellAscendanceConversionPercentage = 8;
         $spellFeralHungerConversionRate = 25;
         $spellParasiticHungerMultiplier = 20;
 
@@ -915,7 +915,7 @@ class InvadeActionService
 
         // Special case for Ascendance
         if (isset($survivingUnits[1]) && $this->spellCalculator->isSpellActive($dominion, 'ascendance') && $this->invasionResult['result']['range'] >= 75) {
-            $ascendedUnits = floor($survivingUnits[1] * $spellAscendanceConversionRate / 100);
+            $ascendedUnits = floor($survivingUnits[1] * $spellAscendanceConversionPercentage / 100);
             $convertedUnits[1] -= $ascendedUnits;
             $convertedUnits[4] += $ascendedUnits;
         }

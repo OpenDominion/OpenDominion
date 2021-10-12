@@ -280,7 +280,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Feral Hunger',
-                'description' => 'Werewolves convert enemy peasants into Werewolves (one for every 25 sent on attack)',
+                'description' => 'Werewolves convert enemy peasants into Werewolves (up to one for every 25 sent on attack)',
                 'key' => 'feral_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -288,7 +288,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Ascendance',
-                'description' => '6% of surviving Swordsmen return from battle as Spellblades',
+                'description' => '8% of surviving Swordsmen return from battle as Spellblades',
                 'key' => 'ascendance',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -368,28 +368,28 @@ class SpellHelper
         return collect([
             [
                 'name' => 'Plague',
-                'description' => 'Slows population growth',
+                'description' => '-50% population growth',
                 'key' => 'plague',
                 'mana_cost' => 3,
                 'duration' => 8,
             ],
             [
                 'name' => 'Insect Swarm',
-                'description' => 'Slows food production',
+                'description' => '-15% food production',
                 'key' => 'insect_swarm',
                 'mana_cost' => 3,
                 'duration' => 8,
             ],
             [
                 'name' => 'Great Flood',
-                'description' => 'Slows boat production',
+                'description' => '-25% boat production',
                 'key' => 'great_flood',
                 'mana_cost' => 3,
                 'duration' => 8,
             ],
             [
                 'name' => 'Earthquake',
-                'description' => 'Slows mine production',
+                'description' => '-5% ore/gem production',
                 'key' => 'earthquake',
                 'mana_cost' => 3,
                 'duration' => 8,
