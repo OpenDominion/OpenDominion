@@ -3,6 +3,8 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.6.0] - 2021-10-12
 ### Changed
 - Construction costs reduced across the board by up to 20% and further reduced based on your conquered land total
 - Destroyed buildings during invasion no longer grant the target discounted construction
@@ -1478,7 +1480,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.5.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.6.0...HEAD
+[1.6.0]: https://github.com/OpenDominion/OpenDominion/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/OpenDominion/OpenDominion/compare/1.4.3...1.5.0
 [1.4.3]: https://github.com/OpenDominion/OpenDominion/compare/1.4.2...1.4.3
 [1.4.2]: https://github.com/OpenDominion/OpenDominion/compare/1.4.1...1.4.2
