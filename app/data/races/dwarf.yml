@@ -33,7 +33,7 @@ units:
   - name: Cleric
     type: hybrid_elite  
     cost:
-      platinum: 825
+      platinum: 850
       ore: 0
     power:
       offense: 4

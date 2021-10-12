@@ -14,7 +14,7 @@ perks:
 units:
   - name: Lancer
     cost:
-      platinum: 300
+      platinum: 325
       ore: 25
     power:
       offense: 3

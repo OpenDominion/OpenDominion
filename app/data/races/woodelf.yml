@@ -14,6 +14,7 @@ perks:
   spy_strength: 10
   max_population: -5
   lumber_production: 10
+  rezone_cost: 25
   offense: 5
 units:
   - name: Ranger
