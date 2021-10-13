@@ -209,6 +209,16 @@
                                 </p>
                             @endif
 
+                            @if (isset($event->data['attacker']['habitualInvasion']) && $event->data['attacker']['habitualInvasion'])
+                                <p class="text-center text-red">
+                                    @if ($event->source->id === $selectedDominion->id)
+                                        Due to repeated invasions, prestige gain is reduced.
+                                    @else
+                                        Due to repeated invasions, {{ $event->source->name }} (# {{ $event->source->realm->number }})'s prestige gain is reduced.
+                                    @endif
+                                </p>
+                            @endif
+
                             {{-- Only show additional information if we are in the attacker's realm --}}
                             @if ($event->source->realm_id === $selectedDominion->realm_id)
                                 @if (isset($event->data['attacker']['prestigeChange']))

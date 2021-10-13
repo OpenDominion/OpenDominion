@@ -1222,6 +1222,31 @@ class MilitaryCalculator
     }
 
     /**
+     * Returns count of attacks by a Dominion against a specific target or bots.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @return bool
+     */
+    public function getHabitualInvasionCount(Dominion $dominion, Dominion $target): int
+    {
+        // todo: this touches the db. should probably be in invasion or military service instead
+        $invasionEvents = GameEvent::query()
+            ->where([
+                'source_type' => Dominion::class,
+                'source_id' => $dominion->id,
+                'type' => 'invasion',
+            ])
+            ->get();
+
+        $invasionEvents = $invasionEvents->filter(function (GameEvent $event) {
+            return $event->data['result']['success'];
+        });
+
+        return $invasionEvents->where('target.user_id', $target->user_id)->count();
+    }
+
+    /**
      * Gets amount of raw DP that Dominion has relased.
      *
      * 'Recent' refers to the past 24 hours.
