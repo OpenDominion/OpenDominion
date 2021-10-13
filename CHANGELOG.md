@@ -30,6 +30,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Bots will now grow faster, defense formula adjusted
 - Reduced prestige gain for each attack against a specific target or any of the bots when invading them repeatedly over the course of the round
 
+### Fixed
+- Revelations cast at hour change no longer have a chance to cause 500 errors
+- Dark Elf and Spirit quick starts now have the correct amount of docks and alchemies
+
 ## [1.5.0] - 2021-07-25
 ### Changed
 - Barracks now house 35 trained or in training military units, modified by prestige (from 36 unmodified)
