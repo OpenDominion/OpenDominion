@@ -88,7 +88,6 @@
                         <div class="box-body text-center">
                             <p>The deadline to register a pack is in {{ $currentRound->timeUntilRealmAssignment() }} ({{ $currentRound->realmAssignmentDate() }}).</p>
                             <p>The round will commence in {{ $currentRound->timeUntilCommencement() }} ({{ $currentRound->protectionEndDate() }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
-                            <p><a href="{{ route('round.register', $currentRound) }}" class="btn btn-primary">Register</a></p>
                         </div>
                     @elseif ($currentRound->protectionEndDate() > now())
                         <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
