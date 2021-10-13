@@ -43,11 +43,8 @@
         $infoOps['revelation'] = [];
         $infoOps['revelation']['spells'] = [];
 
-        for ($i = 0; $i < count($latestRevelation->data); $i++) {
-            $spell = [];
-            $spell['spell'] = $latestRevelation->data[$i]['spell'];
-            $spell['duration'] = $latestRevelation->data[$i]['duration'];
-            $infoOps['revelation']['spells'][$i] = $spell;
+        foreach ($latestRevelation->data as $spell) {
+            $infoOps['revelation']['spells'][] = ['spell' => $spell['spell'], 'duration' => $spell['duration']];
         }
         $infoOps['revelation']['created_at'] = isset($latestRevelation->created_at) ? $latestRevelation->created_at : $now;
     }
