@@ -439,7 +439,7 @@ class InvadeActionService
             } else {
                 // Penalty for human players
                 $penalty = 0.10;
-                $penaltyHits = max(0, $penaltyHits - 1);
+                $penaltyHits = max(0, $habitualHits - 1);
             }
             $this->invasionResult['attacker']['habitualInvasion'] = $penaltyHits > 0;
             $attackerPrestigeChange *= max(0.50, (1 - $penalty * $penaltyHits));
