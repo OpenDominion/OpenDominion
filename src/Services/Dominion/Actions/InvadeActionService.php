@@ -894,7 +894,7 @@ class InvadeActionService
             return $dominion->race->getUnitPerkValueForUnitSlot($unit->slot, 'conversion');
         });
 
-        $unitConversionRates = $unitsWithConversionPerk->map(function ($unit) use ($dominion, $units) {
+        $unitConversionRates = $unitsWithConversionPerk->map(function ($unit) use ($dominion, $units, $spellFeralHungerConversionRate) {
             if ($unit->slot == 3 && $this->spellCalculator->isSpellActive($dominion, 'feral_hunger')) {
                 $unitSlot = 3;
                 $conversionRate = $spellFeralHungerConversionRate;
