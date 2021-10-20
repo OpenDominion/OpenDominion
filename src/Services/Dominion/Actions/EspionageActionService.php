@@ -647,7 +647,7 @@ class EspionageActionService
                     // Min damage for Magic Snare
                     $damage = max(1.5, $target->{$attr} * $baseDamage) * $resilienceDamageReductionMultiplier;
                     if ($damage > $target->{$attr}) {
-                        $damage = (int)$target->{$attr};
+                        $damage = max(0, $target->{$attr});
                     }
                     $target->{$attr} -= $damage;
                     $damage = floor($target->{$attr} + $damage) - floor($target->{$attr});

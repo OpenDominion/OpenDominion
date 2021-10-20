@@ -214,6 +214,26 @@ class Dominion extends AbstractModel
         return $this->hasMany(Council\Thread::class);
     }
 
+    public function councilPosts()
+    {
+        return $this->hasMany(Council\Post::class);
+    }
+
+    public function events()
+    {
+        return $this->sourceEvents()->union($this->targetEvents());
+    }
+
+    public function sourceEvents()
+    {
+        return $this->hasMany(GameEvent::class, 'source_id', 'id')->where('source_type', Dominion::class);
+    }
+
+    public function targetEvents()
+    {
+        return $this->hasMany(GameEvent::class, 'target_id', 'id')->where('target_type', Dominion::class);
+    }
+
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
