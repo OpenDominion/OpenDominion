@@ -234,6 +234,11 @@ class Dominion extends AbstractModel
         return $this->hasMany(GameEvent::class, 'target_id', 'id')->where('target_type', Dominion::class);
     }
 
+    public function infoOps()
+    {
+        return $this->hasMany(InfoOp::class, 'source_dominion_id', 'id');
+    }
+
     public function history()
     {
         return $this->hasMany(Dominion\History::class);
