@@ -920,7 +920,7 @@ class InvadeActionService
                 continue;
             }
 
-            $unitsNeededToBreakTarget = ceil($targetDP / $convertingUnit['unitPower'] * $offensiveModifier);
+            $unitsNeededToBreakTarget = ceil($targetDP / ($convertingUnit['unitPower'] * $offensiveModifier));
             $convertingUnitsForSlot = min($unitsNeededToBreakTarget, $units[$convertingUnit['unitSlot']]);
             $targetDP -= ($convertingUnitsForSlot * $convertingUnit['unitPower'] * $offensiveModifier);
             $converts = floor($convertingUnitsForSlot * $convertingUnit['conversionRate'] * $conversionMultiplier * ($landRatio ** 2));
