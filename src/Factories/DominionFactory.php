@@ -240,7 +240,7 @@ class DominionFactory
             $dominion->ruler_name = $ruler_name;
         }
 
-        $dominion->created_at = now();
+        $dominion->updated_at = now();
         $dominion->save([
             'event' => \OpenDominion\Services\Dominion\HistoryService::EVENT_ACTION_RESTART,
             'action' => $start_option
