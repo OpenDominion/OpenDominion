@@ -255,11 +255,6 @@ class EspionageActionService
             if (!random_chance($successRate)) {
                 list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'info');
 
-                // Resilience gain for failure
-                if ($this->espionageHelper->isWarOperation($operationKey)) {
-                    $target->spy_resilience += 2;
-                }
-
                 // Inform target that they repelled a hostile spy operation
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
@@ -575,6 +570,11 @@ class EspionageActionService
 
             if (!random_chance($successRate)) {
                 list($unitsKilled, $unitsKilledString) = $this->handleLosses($dominion, $target, 'hostile');
+
+                // Resilience gain for failure
+                if ($this->espionageHelper->isWarOperation($operationKey)) {
+                    $target->spy_resilience += 2;
+                }
 
                 $this->notificationService
                     ->queueNotification('repelled_spy_op', [
