@@ -29,7 +29,7 @@ class DiscordService
 
         $client = new Client();
 
-        $tokenResponse = $client->post(DiscordHelper::BASE_URL.'/oauth2/token', [
+        $tokenResponse = $client->post(DiscordHelper::BASE_URL . '/oauth2/token', [
             'verify' => false,
             'form_params' => [
                 'client_id' => $this->discordHelper->getClientId(),
@@ -65,7 +65,7 @@ class DiscordService
 
         $client = new Client();
 
-        $tokenResponse = $client->post(DiscordHelper::BASE_URL.'/oauth2/token', [
+        $tokenResponse = $client->post(DiscordHelper::BASE_URL . '/oauth2/token', [
             'verify' => false,
             'form_params' => [
                 'client_id' => $this->discordHelper->getClientId(),
@@ -96,7 +96,7 @@ class DiscordService
         $client = new Client();
         $accessToken = $authResult['access_token'];
 
-        $userResponse = $client->get(DiscordHelper::BASE_URL.'/users/@me', [
+        $userResponse = $client->get(DiscordHelper::BASE_URL . '/users/@me', [
             'verify' => false,
             'headers' => ['authorization' => "Bearer $accessToken"]
         ]);
@@ -125,7 +125,7 @@ class DiscordService
         $client = new Client();
         $botToken = $this->discordHelper->getBotToken();
 
-        $memberResponse = $client->get(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+        $memberResponse = $client->get(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/members/' . $discordUser->discord_user_id, [
             'http_errors' => false,
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"]
@@ -134,7 +134,7 @@ class DiscordService
         $result = json_decode($memberResponse->getBody()->getContents(), true);
 
         if (isset($result['roles'])) {
-            $roleResponse = $client->patch(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+            $roleResponse = $client->patch(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/members/' . $discordUser->discord_user_id, [
                 'verify' => false,
                 'headers' => ['authorization' => "Bot $botToken"],
                 'json' => [
@@ -145,7 +145,7 @@ class DiscordService
 
             $result = json_decode($roleResponse->getBody()->getContents(), true);
         } else {
-            $joinResponse = $client->put(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/members/'.$discordUser->discord_user_id, [
+            $joinResponse = $client->put(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/members/' . $discordUser->discord_user_id, [
                 'verify' => false,
                 'headers' => ['authorization' => "Bot $botToken"],
                 'json' => [
@@ -184,11 +184,11 @@ class DiscordService
         $client = new Client();
         $botToken = $this->discordHelper->getBotToken();
 
-        $createGuildResponse = $client->post(DiscordHelper::BASE_URL.'/guilds', [
+        $createGuildResponse = $client->post(DiscordHelper::BASE_URL . '/guilds', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'OpenDominion Realm Chat - Round '.$round->number,
+                'name' => 'OpenDominion Realm Chat - Round ' . $round->number,
                 'channels' => [
                     [
                         'name' => 'Text Channels',
@@ -205,7 +205,7 @@ class DiscordService
         $result = json_decode($createGuildResponse->getBody()->getContents(), true);
         $round->discord_guild_id = $result['id'];
 
-        $getChannelsResponse = $client->get(DiscordHelper::BASE_URL.'/guilds/'.$round->discord_guild_id.'/channels', [
+        $getChannelsResponse = $client->get(DiscordHelper::BASE_URL . '/guilds/' . $round->discord_guild_id . '/channels', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"]
         ]);
@@ -216,11 +216,11 @@ class DiscordService
 
         $round->save();
 
-        $disablePermissionsResponse = $client->patch(DiscordHelper::BASE_URL.'/guilds/'.$round->discord_guild_id.'/roles/'.$round->discord_guild_id, [
+        $disablePermissionsResponse = $client->patch(DiscordHelper::BASE_URL . '/guilds/' . $round->discord_guild_id . '/roles/' . $round->discord_guild_id, [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'permissions' => "67108864" // CHANGE_NICKNAME
+                'permissions' => '67108864' // CHANGE_NICKNAME
             ]
         ]);
 
@@ -251,11 +251,11 @@ class DiscordService
         $client = new Client();
         $botToken = $this->discordHelper->getBotToken();
 
-        $createRoleResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/roles', [
+        $createRoleResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/roles', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'Realm '.$realm->number,
+                'name' => 'Realm ' . $realm->number,
                 'permissions' => '0'
             ]
         ]);
@@ -263,13 +263,13 @@ class DiscordService
         $result = json_decode($createRoleResponse->getBody()->getContents(), true);
         $realm->discord_role_id = $result['id'];
 
-        $createTextChannelResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/channels', [
+        $createTextChannelResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'realm-'.$realm->number,
+                'name' => 'realm-' . $realm->number,
                 'type' => 0,
-                'topic' => 'General discussion for Realm '.$realm->number,
+                'topic' => 'General discussion for Realm ' . $realm->number,
                 'permission_overwrites' => [
                     [
                         'id' => $realm->discord_role_id,
@@ -283,13 +283,13 @@ class DiscordService
 
         $result = json_decode($createTextChannelResponse->getBody()->getContents(), true);
 
-        $createOpsChannelResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/channels', [
+        $createOpsChannelResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'realm-'.$realm->number.'-ops',
+                'name' => 'realm-' . $realm->number . '-ops',
                 'type' => 0,
-                'topic' => 'Tracking top OP for Realm '.$realm->number,
+                'topic' => 'Tracking top OP for Realm ' . $realm->number,
                 'permission_overwrites' => [
                     [
                         'id' => $realm->discord_role_id,
@@ -303,13 +303,13 @@ class DiscordService
 
         $result = json_decode($createOpsChannelResponse->getBody()->getContents(), true);
 
-        $createVoiceChannelResponse = $client->post(DiscordHelper::BASE_URL.'/guilds/'.$realm->round->discord_guild_id.'/channels', [
+        $createVoiceChannelResponse = $client->post(DiscordHelper::BASE_URL . '/guilds/' . $realm->round->discord_guild_id . '/channels', [
             'verify' => false,
             'headers' => ['authorization' => "Bot $botToken"],
             'json' => [
-                'name' => 'realm-'.$realm->number,
+                'name' => 'realm-' . $realm->number,
                 'type' => 2,
-                'topic' => 'Voice channel for Realm '.$realm->number,
+                'topic' => 'Voice channel for Realm ' . $realm->number,
                 'permission_overwrites' => [
                     [
                         'id' => $realm->discord_role_id,

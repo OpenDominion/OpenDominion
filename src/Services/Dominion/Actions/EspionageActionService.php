@@ -151,14 +151,14 @@ class EspionageActionService
                 throw new GameException('You cannot perform resource theft on targets smaller than yourself');
             }
             if ($target->user_id == null) {
-                throw new GameException("You cannot perform resource theft on bots");
+                throw new GameException('You cannot perform resource theft on bots');
             }
         } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
             if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
                 throw new GameException('You cannot perform black ops for the first six days of the round');
             }
             if ($target->user_id == null) {
-                throw new GameException("You cannot perform black ops on bots");
+                throw new GameException('You cannot perform black ops on bots');
             }
         }
 

@@ -238,7 +238,7 @@ class Round extends AbstractModel
 
     /**
      * Returns whether the user already has a dominion registered in this round.
-     * 
+     *
      * @return bool
      */
     public function userAlreadyRegistered(User $user)

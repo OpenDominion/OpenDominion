@@ -187,7 +187,7 @@ class TickService
             DB::table('dominions')
                 ->join('dominion_tick', 'dominions.id', '=', 'dominion_tick.dominion_id')
                 ->where($where)
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->where('abandoned_at', null)->orWhere('abandoned_at', '>', $this->now);
                 })
                 ->update([
@@ -341,7 +341,7 @@ class TickService
 
     /**
      * Checks for wars beyond maximum duration and cancels them.
-     * 
+     *
      * @throws Exception|Throwable
      */
     public function expireWars(Round $round)
@@ -361,7 +361,7 @@ class TickService
                 'target_id' => $war->id,
                 'type' => 'war_canceled',
             ]);
-    
+
             $war->inactive_at = now()->addHours(GovernmentService::WAR_INACTIVE_WAIT_IN_HOURS)->startOfHour();
             $war->save();
         }
@@ -369,7 +369,7 @@ class TickService
 
     /**
      * Checks for dominions whose abandonment wait period has expired.
-     * 
+     *
      * @throws Exception|Throwable
      */
     public function checkForAbandonedDominions(Round $round)
@@ -449,7 +449,7 @@ class TickService
                                 ->updateOrInsert([
                                     'dominion_id' => $dominion->id,
                                     'spell' => $spell
-                                ],[
+                                ], [
                                     'duration' => 0,
                                     'cast_by_dominion_id' => $dominion->id,
                                     'created_at' => $this->now,

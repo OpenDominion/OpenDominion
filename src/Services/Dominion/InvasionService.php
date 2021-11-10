@@ -243,7 +243,7 @@ class InvasionService
 
     /**
      * Apply a spell to a target dominion with given duration
-     * 
+     *
      * @param Dominion $dominion
      * @param Dominion $target
      * @param string $spellKey

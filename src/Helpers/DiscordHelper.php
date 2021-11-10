@@ -30,7 +30,8 @@ class DiscordHelper
             $callback = $this->getDiscordUserCallbackUrl();
         }
 
-        return sprintf("%s/oauth2/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s",
+        return sprintf(
+            '%s/oauth2/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s',
             DiscordHelper::BASE_URL,
             $this->getClientId(),
             urlencode(DiscordHelper::AUTH_SCOPES),

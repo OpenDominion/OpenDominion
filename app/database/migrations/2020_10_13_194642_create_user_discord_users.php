@@ -23,7 +23,7 @@ class CreateUserDiscordUsers extends Migration
             $table->integer('discriminator')->unsigned();
             $table->string('email');
             $table->string('refresh_token');
-            $table->timestamp('expires_at')->nullable();;
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
