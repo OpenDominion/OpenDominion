@@ -28,9 +28,9 @@ Original intro text: <sup>[\[1\]](#notes-1)</sup>
 
 ## Progress
 
-Although in development, OpenDominion is already playable as an open beta. See the [links](#links) section below. 
+Although in development, OpenDominion is already playable. See the [links](#links) section below. 
 
-Status bars displayed here show the current state of a system or page. Pretty much everything that has some status is already present in one way or another on the open beta.
+Status bars displayed here show the current state of a system or page. Pretty much everything that has some status is already present in one way or another.
 
 ### Systems
 
@@ -86,14 +86,19 @@ Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
 
 ## Links
 
-- [Open Beta](https://beta.opendominion.net)
-  - The open beta is used for development and testing purposes. Feel free to register and participate!
+- [Play](https://www.opendominion.net)
+  - The game is no longer in beta. Feel free to register and participate!
   - To help you get started playing OpenDominion, consult the original Dominion's [scribes](https://dominion.opendominion.net/scribes.html) and the old wiki's [newbie guide](http://web.archive.org/web/20131226013425/http://dominion.lykanthropos.com:80/wiki/index.php/The_Complete_Newbie_Guide) for general gameplay information.
   - Do note that not every functionality has been implemented yet in OpenDominion.
+- [Test](https://test.opendominion.net)
+  - The test server is publicly available for in-game simming and often used for small scale feature betas.
 - [Discord](https://discord.gg/mFk2wZT)
   - This will be the main place for out of game communication, development talk and game announcements.
+- [Donate](https://ko-fi.com/opendominion)
+  - OpenDominion is powered by player donations
 - [Issue tracker](https://github.com/OpenDominion/OpenDominion/issues)
-- [Wiki](https://opendominion.miraheze.org)
+- [Wiki](https://wiki.opendominion.net)
+- [Idea Board](https://trello.com/b/izLWLplj/opendominion-gpc)
 
 
 ## License
@@ -120,7 +125,7 @@ All rights belong to their respective owners.
 - Mevnie from Discord for creating the amazing Elf drawing on the homepage
 - Other people and sites involved with Dominion and from the original Dominion community, including (but not limited to) Dreki, Fingal, Ladeda, Rio, Talium from igalaxie, Sparticus, Lala's Crypt and Mickles from DomHQ
 - All the contributors to the OpenDominion project
-- All the people who are participating in the open beta or otherwise being involved with the OpenDominion project
+- All the people who are participating in Discord, forums, or otherwise involved with the OpenDominion project
 
 
 ## Notes
