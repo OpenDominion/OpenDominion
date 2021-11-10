@@ -24,8 +24,8 @@ use OpenDominion\Models\Round;
 use OpenDominion\Services\Dominion\Actions\ConstructActionService;
 use OpenDominion\Services\Dominion\Actions\ExploreActionService;
 use OpenDominion\Services\Dominion\Actions\ImproveActionService;
-use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\Military\TrainActionService;
+use OpenDominion\Services\Dominion\Actions\ReleaseActionService;
 use OpenDominion\Services\Dominion\Actions\SpellActionService;
 use OpenDominion\Services\Dominion\QueueService;
 use RuntimeException;
@@ -237,8 +237,8 @@ class AIService
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (
-                    $dominion->{'building_'.$command['building']}
-                    + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_'.$command['building'])
+                    $dominion->{'building_' . $command['building']}
+                    + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_' . $command['building'])
                 );
                 $buildingPercentage = $buildingCount / $totalLand;
 
@@ -249,20 +249,20 @@ class AIService
                             // Check employment
                             continue;
                         }
-                        $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']]);
+                        $buildingsToConstruct['building_' . $command['building']] = min($maxAfford, $barrenLand[$command['land_type']]);
                     } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
                         // Percentage based
-                        $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']], ceil(($command['amount'] - $buildingPercentage) * $totalLand));
+                        $buildingsToConstruct['building_' . $command['building']] = min($maxAfford, $barrenLand[$command['land_type']], ceil(($command['amount'] - $buildingPercentage) * $totalLand));
                     } else {
                         // Limited
                         if ($buildingCount < $command['amount']) {
-                            $buildingsToConstruct['building_'.$command['building']] = min($maxAfford, $barrenLand[$command['land_type']], $command['amount'] - $buildingCount);
+                            $buildingsToConstruct['building_' . $command['building']] = min($maxAfford, $barrenLand[$command['land_type']], $command['amount'] - $buildingCount);
                         } else {
                             continue;
                         }
                     }
-                    $maxAfford -= $buildingsToConstruct['building_'.$command['building']];
-                    $barrenLand[$command['land_type']] -= $buildingsToConstruct['building_'.$command['building']];
+                    $maxAfford -= $buildingsToConstruct['building_' . $command['building']];
+                    $barrenLand[$command['land_type']] -= $buildingsToConstruct['building_' . $command['building']];
                 }
             }
         }
@@ -279,9 +279,9 @@ class AIService
         foreach ($config['build'] as $command) {
             if ($maxAfford > 0) {
                 $buildingCount = (
-                    $dominion->{'building_'.$command['building']}
-                    + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_'.$command['building'])
-                    + $this->queueService->getExplorationQueueTotalByResource($dominion, 'land_'.$command['land_type'])
+                    $dominion->{'building_' . $command['building']}
+                    + $this->queueService->getConstructionQueueTotalByResource($dominion, 'building_' . $command['building'])
+                    + $this->queueService->getExplorationQueueTotalByResource($dominion, 'land_' . $command['land_type'])
                 );
                 $buildingPercentage = $buildingCount / $totalLand;
 
@@ -291,19 +291,19 @@ class AIService
                         // Check employment
                         continue;
                     }
-                    $landToExplore['land_'.$command['land_type']] = $maxAfford;
+                    $landToExplore['land_' . $command['land_type']] = $maxAfford;
                 } elseif ($command['amount'] < 1 && $buildingPercentage < $command['amount']) {
                     // Percentage based
-                    $landToExplore['land_'.$command['land_type']] = min($maxAfford, ceil(($command['amount'] - $buildingPercentage) * $totalLand));
+                    $landToExplore['land_' . $command['land_type']] = min($maxAfford, ceil(($command['amount'] - $buildingPercentage) * $totalLand));
                 } else {
                     // Limited
                     if ($buildingCount < $command['amount']) {
-                        $landToExplore['land_'.$command['land_type']] = min($maxAfford, $command['amount'] - $buildingCount);
+                        $landToExplore['land_' . $command['land_type']] = min($maxAfford, $command['amount'] - $buildingCount);
                     } else {
                         continue;
                     }
                 }
-                $maxAfford -= $landToExplore['land_'.$command['land_type']];
+                $maxAfford -= $landToExplore['land_' . $command['land_type']];
             }
         }
 
@@ -317,10 +317,10 @@ class AIService
         $defense = $this->militaryCalculator->getDefensivePower($dominion);
         $trainingQueue = $this->queueService->getTrainingQueueByPrefix($dominion, 'military_unit');
         $incomingTroops = $trainingQueue
-            ->mapToGroups(function($queue) {
+            ->mapToGroups(function ($queue) {
                 return [str_replace('military_unit', '', $queue->resource) => $queue->amount];
             })
-            ->map(function($unitType) {
+            ->map(function ($unitType) {
                 return $unitType->sum();
             })
             ->toArray();
@@ -355,28 +355,28 @@ class AIService
                 }
             }
             if ($maxAfford > 0) {
-                $this->trainActionService->train($dominion, ['military_'.$command['unit'] => $maxAfford]);
+                $this->trainActionService->train($dominion, ['military_' . $command['unit'] => $maxAfford]);
             }
         }
     }
 
     public function investCastle(Dominion $dominion, array $config) {
-        if ($dominion->{'resource_'.$config['invest']} > 0) {
+        if ($dominion->{'resource_' . $config['invest']} > 0) {
             $foodProduction = $this->productionCalculator->getFoodNetChange($dominion);
             if ($foodProduction < 0) {
-                $this->improveActionService->improve($dominion, $config['invest'], ['harbor' => $dominion->{'resource_'.$config['invest']}]);
+                $this->improveActionService->improve($dominion, $config['invest'], ['harbor' => $dominion->{'resource_' . $config['invest']}]);
             } else {
                 $sciencePercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'science');
                 $keepPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'keep');
                 $wallsPercentage = $this->improvementCalculator->getImprovementMultiplierBonus($dominion, 'walls');
                 if ($keepPercentage < 0.15) {
-                    $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
+                    $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_' . $config['invest']}]);
                 } elseif ($sciencePercentage < 0.08) {
-                    $this->improveActionService->improve($dominion, $config['invest'], ['science' => $dominion->{'resource_'.$config['invest']}]);
+                    $this->improveActionService->improve($dominion, $config['invest'], ['science' => $dominion->{'resource_' . $config['invest']}]);
                 } elseif ($wallsPercentage < 0.10) {
-                    $this->improveActionService->improve($dominion, $config['invest'], ['walls' => $dominion->{'resource_'.$config['invest']}]);
+                    $this->improveActionService->improve($dominion, $config['invest'], ['walls' => $dominion->{'resource_' . $config['invest']}]);
                 } else {
-                    $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_'.$config['invest']}]);
+                    $this->improveActionService->improve($dominion, $config['invest'], ['keep' => $dominion->{'resource_' . $config['invest']}]);
                 }
             }
         }

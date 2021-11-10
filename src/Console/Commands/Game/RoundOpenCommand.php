@@ -39,7 +39,7 @@ class RoundOpenCommand extends Command implements CommandInterface
 
     /**
      * RoundOpenCommand constructor.
-     * 
+     *
      * @param DiscordService $discordService
      * @param RoundFactory $roundFactory
      * @param RealmFactory $realmFactory

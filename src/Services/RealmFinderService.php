@@ -219,7 +219,7 @@ class RealmFinderService
         // Randomize in chunks
         $packsByRating = array_values(collect($packsMerged)->sortByDesc('rating')->toArray());
         $packsChunked = array_chunk($packsByRating, 2);
-        $packsByRating = array();
+        $packsByRating = [];
         foreach ($packsChunked as $chunk) {
             shuffle($chunk);
             $packsByRating = array_merge($packsByRating, $chunk);

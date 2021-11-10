@@ -411,7 +411,7 @@ class Dominion extends AbstractModel
 
     /**
      * Marks the dominion as having requested abandonment.
-     * 
+     *
      * @return void
      */
     public function requestAbandonment()
@@ -421,7 +421,7 @@ class Dominion extends AbstractModel
 
     /**
      * Resets the abandonment request timer.
-     * 
+     *
      * @return void
      */
     public function resetAbandonment(int $hours = 24)
@@ -434,7 +434,7 @@ class Dominion extends AbstractModel
 
     /**
      * Marks the dominion as no longer having requested abandonment.
-     * 
+     *
      * @return void
      */
     public function cancelAbandonment()

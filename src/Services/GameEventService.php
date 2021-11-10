@@ -28,11 +28,11 @@ class GameEventService
     {
         return GameEvent::query()
             ->with(['source', 'target'])
-            ->where(function($query) use ($dominion) {
+            ->where(function ($query) use ($dominion) {
                 $query->where('source_id', $dominion->id);
                 $query->where('source_type', Dominion::class);
             })
-            ->orWhere(function($query) use ($dominion) {
+            ->orWhere(function ($query) use ($dominion) {
                 $query->where('target_id', $dominion->id);
                 $query->where('target_type', Dominion::class);
             })
@@ -44,12 +44,12 @@ class GameEventService
     {
         return GameEvent::query()
             ->with(['source', 'target'])
-            ->where(function($query) use ($dominion) {
+            ->where(function ($query) use ($dominion) {
                 $query->where('type', 'invasion');
                 $query->where('source_id', $dominion->id);
                 $query->where('source_type', Dominion::class);
             })
-            ->orWhere(function($query) use ($dominion) {
+            ->orWhere(function ($query) use ($dominion) {
                 $query->where('type', 'invasion');
                 $query->where('target_id', $dominion->id);
                 $query->where('target_type', Dominion::class);

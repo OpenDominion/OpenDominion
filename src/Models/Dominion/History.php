@@ -42,96 +42,96 @@ class History extends AbstractModel
         $deltaValues = [];
 
         switch ($this->event) {
-            case "bank":
+            case 'bank':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "resource_")) {
-                        $prettyKey = Str::remove("resource_", $key);
+                    if (Str::startsWith($key, 'resource_')) {
+                        $prettyKey = Str::remove('resource_', $key);
                         array_push($deltaValues, "{$prettyKey}: {$value}");
                     }
                 }
                 break;
-            case "cast spell":
+            case 'cast spell':
                 foreach ($this->delta['queue']['active_spells'] as $key => $value) {
                     array_push($deltaValues, "{$key}: {$value}");
                 }
                 break;
-            case "change draft rate";
+            case 'change draft rate':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "draft_rate")) {
+                    if (Str::startsWith($key, 'draft_rate')) {
                         array_push($deltaValues, "{$key}: +{$value}");
                     }
                 }
                 break;
-            case "construct":
+            case 'construct':
                 foreach ($this->delta['queue']['construction'] as $key => $value) {
-                    $prettyKey = Str::remove("building_", $key);
+                    $prettyKey = Str::remove('building_', $key);
                     array_push($deltaValues, "{$prettyKey}: {$value}");
                 }
                 break;
-            case "daily bonus":
+            case 'daily bonus':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "daily_")) {
+                    if (Str::startsWith($key, 'daily_')) {
                         array_push($deltaValues, "{$key}");
                     }
                 }
                 break;
-            case "destroy":
+            case 'destroy':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "building_")) {
-                        $prettyKey = Str::remove("building_", $key);
+                    if (Str::startsWith($key, 'building_')) {
+                        $prettyKey = Str::remove('building_', $key);
                         array_push($deltaValues, "{$prettyKey}: {$value}");
                     }
                 }
                 break;
-            case "explore":
+            case 'explore':
                 foreach ($this->delta['queue']['exploration'] as $key => $value) {
-                    $prettyKey = Str::remove("land_", $key);
+                    $prettyKey = Str::remove('land_', $key);
                     array_push($deltaValues, "{$prettyKey}: {$value}");
                 }
                 break;
-            case "improve":
+            case 'improve':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "resource_")) {
-                        $prettyKey = Str::remove("resource_", $key);
+                    if (Str::startsWith($key, 'resource_')) {
+                        $prettyKey = Str::remove('resource_', $key);
                         array_push($deltaValues, "{$prettyKey}: {$value}");
                     }
-                    if (Str::startsWith($key, "improvement_")) {
-                        $prettyKey = Str::remove("improvement_", $key);
-                        array_push($deltaValues, "{$prettyKey}: {$value}");
-                    }
-                }
-                break;
-            case "release":
-                foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "military_")) {
-                        $prettyKey = Str::remove("military_", $key);
+                    if (Str::startsWith($key, 'improvement_')) {
+                        $prettyKey = Str::remove('improvement_', $key);
                         array_push($deltaValues, "{$prettyKey}: {$value}");
                     }
                 }
                 break;
-            case "rezone":
+            case 'release':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "land_")) {
-                        $prettyKey = Str::remove("land_", $key);
+                    if (Str::startsWith($key, 'military_')) {
+                        $prettyKey = Str::remove('military_', $key);
                         array_push($deltaValues, "{$prettyKey}: {$value}");
                     }
                 }
                 break;
-            case "tech":
+            case 'rezone':
                 foreach ($this->delta as $key => $value) {
-                    if (Str::startsWith($key, "action")) {
+                    if (Str::startsWith($key, 'land_')) {
+                        $prettyKey = Str::remove('land_', $key);
+                        array_push($deltaValues, "{$prettyKey}: {$value}");
+                    }
+                }
+                break;
+            case 'tech':
+                foreach ($this->delta as $key => $value) {
+                    if (Str::startsWith($key, 'action')) {
                         array_push($deltaValues, "{$value}");
                     }
                 }
                 break;
-            case "train":
+            case 'train':
                 foreach ($this->delta['queue']['training'] as $key => $value) {
-                    $prettyKey = Str::remove("military_", $key);
+                    $prettyKey = Str::remove('military_', $key);
                     array_push($deltaValues, "{$prettyKey}: {$value}");
                 }
                 break;
         }
 
-        return implode(", ", $deltaValues);
+        return implode(', ', $deltaValues);
     }
 }

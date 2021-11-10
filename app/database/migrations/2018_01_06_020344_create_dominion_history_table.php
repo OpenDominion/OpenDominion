@@ -8,7 +8,7 @@ class CreateDominionHistoryTable extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * ALTER TABLE `dominion_history` MODIFY created_at TIMESTAMP(3) NULL DEFAULT NULL;
      *
      * @return void
