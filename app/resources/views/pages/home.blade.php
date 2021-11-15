@@ -138,6 +138,12 @@
                     </div>
                 @endif
             </div>
+
+            <div>
+                <a href="https://anchor.fm/riol-talk" target="_blank">
+                    <img class="img-responsive" src="https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/19200887/19200887-1636311189500-b3f26a6c8046e.jpg" />
+                </a>
+            </div>
         </div>
 
         <div class="col-sm-6">
