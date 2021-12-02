@@ -754,7 +754,7 @@ class ProductionCalculator
             $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
             $schoolPercentageCap / 100
         );
-        $tech += $techPerSchoolPercentage * $schoolPercentage;
+        $tech += min($this->landCalculator->getTotalLand($dominion), $techPerSchoolPercentage * $schoolPercentage);
 
         return $tech;
     }

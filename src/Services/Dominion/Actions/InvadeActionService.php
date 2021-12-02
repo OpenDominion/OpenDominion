@@ -958,7 +958,7 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
+            $baseResearchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
             // Recent invasion penalty
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
@@ -968,15 +968,17 @@ class InvadeActionService
             if ($range < 60) {
                 $researchPointsGained = 0;
             } elseif ($range < 75) {
-                $researchPointsGained *= 0.5;
+                $researchPointsGained = $baseResearchPointsGained / 2;
             } else {
                 $schoolPercentageCap = 20;
                 $schoolPercentage = min(
                     $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
                     $schoolPercentageCap / 100
                 );
-                $researchPointsGained += (130 * $schoolPercentage * 100 * $schoolPenalty);
+                $researchPointsGained = (125 * $schoolPercentage * 100 * $schoolPenalty);
+                $researchPointsGained = min(5 * $this->landCalculator->getTotalLand($dominion), $researchPointsGained);
                 $researchPointsGained = max(0, $researchPointsGained);
+                $researchPointsGained += $baseResearchPointsGained;
             }
 
             $multiplier = 1;
