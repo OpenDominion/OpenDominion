@@ -306,6 +306,38 @@ class Dominion extends AbstractModel
         });
     }
 
+    // Eloquent Attributes
+
+    public function getResourceBoatsAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    public function setResourceBoatsAttribute($value)
+    {
+        $this->attributes['resource_boats'] = $value * 100;
+    }
+
+    public function getSpyStrengthAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    public function setSpyStrengthAttribute($value)
+    {
+        $this->attributes['spy_strength'] = $value * 100;
+    }
+
+    public function getWizardStrengthAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    public function setWizardStrengthAttribute($value)
+    {
+        $this->attributes['wizard_strength'] = $value * 100;
+    }
+
     // Methods
 
     // todo: move to eloquent events, see $dispatchesEvents
@@ -349,6 +381,9 @@ class Dominion extends AbstractModel
 
         foreach ($deltaAttributes as $attr => $value) {
             if (gettype($this->getAttribute($attr)) != 'boolean') {
+                if ($attr == 'resource_boats' || $attr == 'spy_strength' || $attr == 'wizard_strength') {
+                    $value *= 100;
+                }
                 $wrapped = $query->toBase()->grammar->wrap($attr);
                 $dirty[$attr] = $query->toBase()->raw("$wrapped + $value");
             }

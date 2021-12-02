@@ -130,18 +130,18 @@ class HistoryService
 
                 case 'float':
                 case 'double':
-                    return ((float)$value - (float)$oldAttributes->get($key));
+                    return ((float)$dominion->getAttribute($key) - (float)$oldAttributes->get($key));
                     break;
 
                 case 'integer':
-                    return ((int)$value - (int)$oldAttributes->get($key));
+                    return ((int)$dominion->getAttribute($key) - (int)$oldAttributes->get($key));
                     break;
 
                 default:
                     throw new LogicException("Unable to typecast attribute {$key} to type {$attributeType}");
             }
         })->reject(function ($value) {
-            return $value === null;
+            return $value === null || $value === 0 || $value === 0.0;
         })->toArray();
     }
 
