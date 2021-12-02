@@ -756,6 +756,9 @@ class ProductionCalculator
         );
         $tech += min($this->landCalculator->getTotalLand($dominion), $techPerSchoolPercentage * $schoolPercentage);
 
+        // Wonders
+        $tech += $dominion->getWonderPerkValue('tech_production_raw');
+
         return $tech;
     }
 
