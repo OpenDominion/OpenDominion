@@ -96,7 +96,7 @@
                                             @endif
                                         </td>
                                         @if ($isOwnRealm)
-                                            @if (($dominion->pack !== null && $selectedDominion->pack !== null && $dominion->pack->id === $selectedDominion->pack->id) || $selectedDominion->inRealmAndSharesAdvisors($dominion))
+                                            @if (($dominion->round->hasEnded() && $dominion->user_id != null) || ($dominion->pack !== null && $selectedDominion->pack !== null && $dominion->pack->id === $selectedDominion->pack->id) || $selectedDominion->inRealmAndSharesAdvisors($dominion))
                                                 <td class="text-center"><a href="{{ route('valhalla.user', $dominion->user_id) }}">{{ $dominion->user->display_name }}</a></td>
                                             @else
                                                 <td class="text-center"></td>
