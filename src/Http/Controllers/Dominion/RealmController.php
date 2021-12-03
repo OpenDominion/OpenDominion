@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
 use OpenDominion\Calculators\WonderCalculator;
+use OpenDominion\Helpers\DiscordHelper;
 use OpenDominion\Helpers\WonderHelper;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Realm;
@@ -19,6 +20,7 @@ class RealmController extends AbstractDominionController
 {
     public function getRealm(Request $request, int $realmNumber = null)
     {
+        $discordHelper = app(DiscordHelper::class);
         $governmentService = app(GovernmentService::class);
         $guardMembershipService = app(GuardMembershipService::class);
         $landCalculator = app(LandCalculator::class);
@@ -105,6 +107,7 @@ class RealmController extends AbstractDominionController
             ->count();
 
         return view('pages.dominion.realm', compact(
+            'discordHelper',
             'governmentService',
             'guardMembershipService',
             'landCalculator',

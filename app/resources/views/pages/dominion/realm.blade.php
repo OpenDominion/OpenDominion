@@ -158,6 +158,7 @@
                     </div>
                 @endif
             </div>
+            @include('partials.dominion.join-discord')
         </div>
     </div>
 
