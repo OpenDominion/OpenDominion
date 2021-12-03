@@ -883,7 +883,7 @@ class InvadeActionService
         array $survivingUnits
     ): array {
         $spellAscendanceConversionPercentage = 8;
-        $spellFeralHungerConversionRate = 25;
+        $spellFeralHungerConversionRate = 15;
         $spellParasiticHungerMultiplier = 20;
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];

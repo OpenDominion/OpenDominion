@@ -160,7 +160,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Favorable Terrain',
-                'description' => '+1% offensive power for every 2% barren land (max +10%)',
+                'description' => '+1% offensive power for every 1% barren land (max +10%)',
                 'key' => 'favorable_terrain',
                 'mana_cost' => 5,
                 'duration' => 12,
@@ -280,7 +280,7 @@ class SpellHelper
             ],
             [
                 'name' => 'Feral Hunger',
-                'description' => 'Werewolves convert enemy peasants into Werewolves (up to one for every 25 sent on attack)',
+                'description' => 'Werewolves convert enemy peasants into Werewolves (up to one for every 15 sent on attack)',
                 'key' => 'feral_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,

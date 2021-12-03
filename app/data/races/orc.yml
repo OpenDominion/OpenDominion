@@ -13,10 +13,10 @@ perks:
 units:
   - name: Savage
     cost:
-      platinum: 375
-      ore: 25
+      platinum: 330
+      ore: 20
     power:
-      offense: 4
+      offense: 3.5
       defense: 0
   - name: Guard
     cost:

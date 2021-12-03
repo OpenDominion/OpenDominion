@@ -40,7 +40,6 @@ units:
       defense: 4.5
     perks:
       reduce_combat_losses: 1
-      kills_immortal: 1
   - name: Warrior
     cost:
       platinum: 1250
