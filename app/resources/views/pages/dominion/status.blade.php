@@ -44,11 +44,6 @@
                         @endif
                         <p>No production occurs until you have left protection.</p>
                         <p>Made a mistake? You can <a href="{{ route('dominion.misc.restart') }}">restart or rename</a> your dominion while under protection.</p>
-                        @if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
-                            <a href="{{ $discordHelper->getDiscordConnectUrl('join') }}" target="_blank" class="btn btn-primary">
-                                <i class="ra ra-speech-bubbles"></i> Join Realm Discord
-                            </a>
-                        @endif
                     </div>
                 </div>
             @else
@@ -87,13 +82,6 @@
                             <a href="{{ route('dominion.advisors.rankings') }}">My Rankings</a>
                         </div>
                     </div>
-                    @if ($selectedDominion->round->discord_guild_id && $selectedDominion->realm->number != 0)
-                        <div class="box-footer text-center">
-                            <a href="{{ $discordHelper->getDiscordConnectUrl('join') }}" target="_blank" class="btn btn-primary">
-                                <i class="ra ra-speech-bubbles"></i> Join Realm Discord
-                            </a>
-                        </div>
-                    @endif
                 </div>
             @endif
         </div>
@@ -202,6 +190,7 @@
                         @endif
                     </div>
                 </div>
+                @include('partials.dominion.join-discord')
             </div>
         @elseif (!$selectedDominion->round->hasAssignedRealms())
             <div class="col-sm-12 col-md-3">
@@ -222,6 +211,7 @@
                         </div>
                     </form>
                 </div>
+                @include('partials.dominion.join-discord')
             </div>
         @endif
     </div>

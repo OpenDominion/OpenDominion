@@ -104,7 +104,10 @@ class CouncilController extends AbstractDominionController
 
         $posts = $thread->posts()->paginate(static::RESULTS_PER_PAGE);
 
+        $discordHelper = app(DiscordHelper::class);
+
         return view('pages.dominion.council.thread', compact(
+            'discordHelper',
             'thread',
             'posts'
         ));

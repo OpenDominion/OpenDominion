@@ -112,6 +112,7 @@
                     <p>There {{ ($thread->posts->count() === 1) ? 'is' : 'are' }} {{ number_format($thread->posts->count()) }} {{ str_plural('reply', $thread->posts->count()) }} in this thread.</p>
                 </div>
             </div>
+            @include('partials.dominion.join-discord')
         </div>
 
     </div>
