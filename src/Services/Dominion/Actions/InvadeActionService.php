@@ -58,7 +58,7 @@ class InvadeActionService
     /**
      * @var int Land ratio multiplier for prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_MULTIPLIER = 100;
+    protected const PRESTIGE_RANGE_MULTIPLIER = 100;
 
     /**
      * @var int Base prestige when invading successfully
@@ -406,7 +406,7 @@ class InvadeActionService
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = min(
-                static::PRESTIGE_CHANGE_MULTIPLIER * ($range / 100) - static::PRESTIGE_CHANGE_BASE, // Gained through invading
+                static::PRESTIGE_RANGE_MULTIPLIER * ($range / 100) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
                 static::PRESTIGE_CAP // But capped at 100%
             ) + ($this->landCalculator->getTotalLand($target) / 250); // Bonus for land size of target
 
@@ -618,6 +618,12 @@ class InvadeActionService
 
             // Scale casualties further with invading OP vs target DP
             $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+
+            // Cap max casualties
+            $defensiveCasualtiesPercentage = min(
+                $defensiveCasualtiesPercentage,
+                (static::CASUALTIES_DEFENSIVE_MAX_PERCENTAGE / 100)
+            );
         } else {
             // Raze casualties scale linearly from 0% at overwhelmed to 100% at OP == DP
             $minRatio = (100 - static::OVERWHELMED_PERCENTAGE) / 100;
@@ -629,18 +635,14 @@ class InvadeActionService
         $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
         if ($recentlyInvadedCount === 1) {
-            $defensiveCasualtiesPercentage *= 0.75;
+            $recentInvasionModifier = 0.75;
         } elseif ($recentlyInvadedCount === 2) {
-            $defensiveCasualtiesPercentage *= 0.5;
+            $recentInvasionModifier = 0.5;
         } elseif ($recentlyInvadedCount >= 3) {
-            $defensiveCasualtiesPercentage *= 0.25;
+            $recentInvasionModifier = 0.25;
+        } else {
+            $recentInvasionModifier = 1;
         }
-
-        // Cap max casualties
-        $defensiveCasualtiesPercentage = min(
-            $defensiveCasualtiesPercentage,
-            (static::CASUALTIES_DEFENSIVE_MAX_PERCENTAGE / 100)
-        );
 
         $defensiveUnitsLost = [];
 
@@ -649,9 +651,9 @@ class InvadeActionService
             $drafteesLost = 0;
         } else {
             $finalCasualtiesPercentage = min(
-                $defensiveCasualtiesPercentage,
+                $recentInvasionModifier,
                 $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null)
-            );
+            ) * $defensiveCasualtiesPercentage;
             $drafteesLost = (int)floor($target->military_draftees * $finalCasualtiesPercentage);
         }
         if ($drafteesLost > 0) {
@@ -667,9 +669,9 @@ class InvadeActionService
                 continue;
             }
             $finalCasualtiesPercentage = min(
-                $defensiveCasualtiesPercentage,
+                $recentInvasionModifier,
                 $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units)
-            );
+            ) * $defensiveCasualtiesPercentage;
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
 
             if ($slotLost > 0) {
