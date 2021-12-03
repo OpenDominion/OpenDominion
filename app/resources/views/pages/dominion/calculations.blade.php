@@ -603,7 +603,8 @@
                                                     class="form-control text-center"
                                                     placeholder="3"
                                                     min="0"
-                                                    disabled />
+                                                    disabled
+                                                    value="{{ ($targetDominion !== null && $targetDominion->race_id == $race->id && $targetInfoOps->has('clear_sight')) ? round(array_get($targetInfoOps['clear_sight']->data, "wpa", 3), 3) : null }}" />
                                         </div>
                                     @endif
                                     @foreach ($targetBuildingFieldsRequired as $building)
