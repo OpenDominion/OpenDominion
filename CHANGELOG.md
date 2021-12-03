@@ -4,6 +4,38 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.7.0] - 2021-12-03
+### Changed
+- Quickstarts for all races have been redesigned in order to be easier to update
+- Exploration costs reduced, formula coefficients changed to 0.6 (from 0.61) and 1.299 (from 1.305)
+- Tech cost changed to base 9500 research points, +100 for each tech unlocked
+- Hourly RP production capped at current land total
+- Schools now generate an additional 125 RPs (down from 130) per 1% owned when invading targets 75%+ your size, up to a maximum of 2500 at 20% owned and capped at 5x current land total
+- Raze casualties (unsuccessful attacks) will now scale linearly from zero casualties at 80% of OP:DP up to full casualties when successful
+- Prestige gain on bots will now be reduced by 10% per hit after the 4th attack (up from 5%)
+- Prestige gain formula adjusted to 100 x min(1, LandRatio) - 40 + TargetLand/250 (from 60 x LandRatio)
+- Defensive casualties will now use either total reduction for the dominion OR the penalty from recent invasions NOT both
+- Halls of Knowledge now produces 100 RP/hr (from 15% production bonus) and spawns with 150k HP (from 250k)
+- Wood Elf: rezone costs down to +10% (from +25%)
+- Orc Savage: offense reduced to 3.5 (from 4), costs 330p, 20r (from 375p, 25r)
+- Lycanthrope Scavenger: +25p (from 325)
+- Lycanthrope Garou: now converts up to one for every 15 sent on attack (from 12)
+- Lycanthrope Feral Hunger: now converts up to one for every 15 sent on attack (from 25)
+- Nomad: 10% construction cost penalty removed
+- Nomad Favorable Terrain: now grants +1% OP for every 1% barren land (from 2% barren land), max unchanged at +10%
+- Kobold: population growth bonus increased to 20% (from 10%)
+- Dwarf Cleric: no longer kills immortal units
+- Spirit: maximum population increased to 2.5% (from 0%)
+
+### Added
+- Current Icekin WPA visible on clear sight and in calculator
+- Additional Discord info/links
+- Player names are now visible on the realm page after the round has ended
+- Player names now link to their valhalla page
+
+### Fixed
+- War declarations against a realm will now appear in their realm's town crier
+
 ## [1.6.0] - 2021-10-12
 ### Changed
 - Construction costs reduced across the board by up to 20% and further reduced based on your conquered land total
