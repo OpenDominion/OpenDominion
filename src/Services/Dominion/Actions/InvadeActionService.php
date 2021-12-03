@@ -41,11 +41,6 @@ class InvadeActionService
     protected const CASUALTIES_DEFENSIVE_MAX_PERCENTAGE = 4.8;
 
     /**
-     * @var float Min percentage of defensive casualties
-     */
-    protected const CASUALTIES_DEFENSIVE_MIN_PERCENTAGE = 0.72;
-
-    /**
      * @var float Base percentage of offensive casualties
      */
     protected const CASUALTIES_OFFENSIVE_BASE_PERCENTAGE = 8.5;
@@ -53,7 +48,7 @@ class InvadeActionService
     /**
      * @var float Failing an invasion by this percentage (or more) results in 'being overwhelmed'
      */
-    protected const OVERWHELMED_PERCENTAGE = 15.0;
+    protected const OVERWHELMED_PERCENTAGE = 20.0;
 
     /**
      * @var float Used to cap prestige gain formula
@@ -616,12 +611,19 @@ class InvadeActionService
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
-        // Modify casualties percentage based on relative land size
-        $landRatio = $this->invasionResult['result']['range'] / 100;
-        $defensiveCasualtiesPercentage *= clamp($landRatio, 0.4, 1);
+        if ($this->invasionResult['result']['success']) {
+            // Modify casualties percentage based on relative land size
+            $landRatio = $this->invasionResult['result']['range'] / 100;
+            $defensiveCasualtiesPercentage *= clamp($landRatio, 0.4, 1);
 
-        // Scale casualties further with invading OP vs target DP
-        $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+            // Scale casualties further with invading OP vs target DP
+            $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+        } else {
+            // Raze casualties scale linearly from 0% at overwhelmed to 100% at OP == DP
+            $minRatio = (100 - static::OVERWHELMED_PERCENTAGE) / 100;
+            $steps = (100 / static::OVERWHELMED_PERCENTAGE);
+            $defensiveCasualtiesPercentage *= (($attackingForceOP / $targetDP) - $minRatio) * $steps;
+        }
 
         // Reduce casualties if target has been hit recently
         $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
@@ -646,11 +648,10 @@ class InvadeActionService
         if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
             $drafteesLost = 0;
         } else {
-            $finalCasualtiesPercentage = 0;
-            $defensiveCasualtiesForSlot = $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null);
-            if ($defensiveCasualtiesForSlot > 0) {
-                $finalCasualtiesPercentage = max($defensiveCasualtiesPercentage * $defensiveCasualtiesForSlot, (static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100));
-            }
+            $finalCasualtiesPercentage = min(
+                $defensiveCasualtiesPercentage,
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null)
+            );
             $drafteesLost = (int)floor($target->military_draftees * $finalCasualtiesPercentage);
         }
         if ($drafteesLost > 0) {
@@ -665,13 +666,10 @@ class InvadeActionService
             if ($unit->power_defense === 0.0) {
                 continue;
             }
-
-            $finalCasualtiesPercentage = 0;
-            $defensiveCasualtiesForSlot = $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units);
-            if ($defensiveCasualtiesForSlot > 0) {
-                $finalCasualtiesPercentage = max($defensiveCasualtiesPercentage * $defensiveCasualtiesForSlot, (static::CASUALTIES_DEFENSIVE_MIN_PERCENTAGE / 100));
-            }
-
+            $finalCasualtiesPercentage = min(
+                $defensiveCasualtiesPercentage,
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units)
+            );
             $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
 
             if ($slotLost > 0) {
