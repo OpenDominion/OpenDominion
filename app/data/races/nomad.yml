@@ -9,7 +9,6 @@ explorer_difficulty: 2
 converter_difficulty: 2
 home_land_type: plain
 perks:
-  construction_cost: 10
   extra_barren_max_population: 20
 units:
   - name: Lancer

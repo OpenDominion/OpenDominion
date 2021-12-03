@@ -48,17 +48,22 @@ class InvadeActionService
     /**
      * @var float Failing an invasion by this percentage (or more) results in 'being overwhelmed'
      */
-    protected const OVERWHELMED_PERCENTAGE = 15.0;
+    protected const OVERWHELMED_PERCENTAGE = 20.0;
 
     /**
      * @var float Used to cap prestige gain formula
      */
-    protected const PRESTIGE_CAP = 80;
+    protected const PRESTIGE_CAP = 60;
+
+    /**
+     * @var int Land ratio multiplier for prestige when invading successfully
+     */
+    protected const PRESTIGE_RANGE_MULTIPLIER = 100;
 
     /**
      * @var int Base prestige when invading successfully
      */
-    protected const PRESTIGE_CHANGE_BASE = 60;
+    protected const PRESTIGE_CHANGE_BASE = -40;
 
     /**
      * @var float Base prestige % change for both parties when invading
@@ -401,9 +406,9 @@ class InvadeActionService
             $attackerPrestigeChange = ($dominion->prestige * -(static::PRESTIGE_LOSS_PERCENTAGE / 100));
         } elseif ($isInvasionSuccessful && ($range >= 75)) {
             $attackerPrestigeChange = min(
-                static::PRESTIGE_CHANGE_BASE * ($range / 100), // Gained through invading
-                static::PRESTIGE_CAP // But capped at 133%
-            );
+                static::PRESTIGE_RANGE_MULTIPLIER * ($range / 100) + static::PRESTIGE_CHANGE_BASE, // Gained through invading
+                static::PRESTIGE_CAP // But capped at 100%
+            ) + ($this->landCalculator->getTotalLand($target) / 250); // Bonus for land size of target
 
             $weeklyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($target, 24 * 7, true);
             $prestigeLossPercentage = min(
@@ -434,7 +439,7 @@ class InvadeActionService
             $habitualHits = $this->militaryCalculator->getHabitualInvasionCount($dominion, $target);
             if ($target->user_id == null) {
                 // Penalty for bots
-                $penalty = 0.05;
+                $penalty = 0.10;
                 $penaltyHits = max(0, $habitualHits - 3);
             } else {
                 // Penalty for human players
@@ -606,29 +611,38 @@ class InvadeActionService
         $targetDP = $this->invasionResult['defender']['dp'];
         $defensiveCasualtiesPercentage = (static::CASUALTIES_DEFENSIVE_BASE_PERCENTAGE / 100);
 
-        // Modify casualties percentage based on relative land size
-        $landRatio = $this->invasionResult['result']['range'] / 100;
-        $defensiveCasualtiesPercentage *= clamp($landRatio, 0.4, 1);
+        if ($this->invasionResult['result']['success']) {
+            // Modify casualties percentage based on relative land size
+            $landRatio = $this->invasionResult['result']['range'] / 100;
+            $defensiveCasualtiesPercentage *= clamp($landRatio, 0.4, 1);
 
-        // Scale casualties further with invading OP vs target DP
-        $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+            // Scale casualties further with invading OP vs target DP
+            $defensiveCasualtiesPercentage *= ($attackingForceOP / $targetDP);
+
+            // Cap max casualties
+            $defensiveCasualtiesPercentage = min(
+                $defensiveCasualtiesPercentage,
+                (static::CASUALTIES_DEFENSIVE_MAX_PERCENTAGE / 100)
+            );
+        } else {
+            // Raze casualties scale linearly from 0% at overwhelmed to 100% at OP == DP
+            $minRatio = (100 - static::OVERWHELMED_PERCENTAGE) / 100;
+            $steps = (100 / static::OVERWHELMED_PERCENTAGE);
+            $defensiveCasualtiesPercentage *= (($attackingForceOP / $targetDP) - $minRatio) * $steps;
+        }
 
         // Reduce casualties if target has been hit recently
         $recentlyInvadedCount = $this->invasionResult['defender']['recentlyInvadedCount'];
 
         if ($recentlyInvadedCount === 1) {
-            $defensiveCasualtiesPercentage *= 0.75;
+            $recentInvasionModifier = 0.75;
         } elseif ($recentlyInvadedCount === 2) {
-            $defensiveCasualtiesPercentage *= 0.5;
+            $recentInvasionModifier = 0.5;
         } elseif ($recentlyInvadedCount >= 3) {
-            $defensiveCasualtiesPercentage *= 0.25;
+            $recentInvasionModifier = 0.25;
+        } else {
+            $recentInvasionModifier = 1;
         }
-
-        // Cap max casualties
-        $defensiveCasualtiesPercentage = min(
-            $defensiveCasualtiesPercentage,
-            (static::CASUALTIES_DEFENSIVE_MAX_PERCENTAGE / 100)
-        );
 
         $defensiveUnitsLost = [];
 
@@ -636,8 +650,11 @@ class InvadeActionService
         if ($this->spellCalculator->isSpellActive($dominion, 'unholy_ghost')) {
             $drafteesLost = 0;
         } else {
-            $drafteesLost = (int)floor($target->military_draftees * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null));
+            $finalCasualtiesPercentage = min(
+                $recentInvasionModifier,
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, null, null)
+            ) * $defensiveCasualtiesPercentage;
+            $drafteesLost = (int)floor($target->military_draftees * $finalCasualtiesPercentage);
         }
         if ($drafteesLost > 0) {
             $target->military_draftees -= $drafteesLost;
@@ -651,9 +668,11 @@ class InvadeActionService
             if ($unit->power_defense === 0.0) {
                 continue;
             }
-
-            $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $defensiveCasualtiesPercentage *
-                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units));
+            $finalCasualtiesPercentage = min(
+                $recentInvasionModifier,
+                $this->casualtiesCalculator->getDefensiveCasualtiesMultiplierForUnitSlot($target, $dominion, $unit->slot, $units)
+            ) * $defensiveCasualtiesPercentage;
+            $slotLost = (int)floor($target->{"military_unit{$unit->slot}"} * $finalCasualtiesPercentage);
 
             if ($slotLost > 0) {
                 $defensiveUnitsLost[$unit->slot] = $slotLost;
@@ -864,7 +883,7 @@ class InvadeActionService
         array $survivingUnits
     ): array {
         $spellAscendanceConversionPercentage = 8;
-        $spellFeralHungerConversionRate = 25;
+        $spellFeralHungerConversionRate = 15;
         $spellParasiticHungerMultiplier = 20;
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
@@ -958,7 +977,7 @@ class InvadeActionService
 
         $isInvasionSuccessful = $this->invasionResult['result']['success'];
         if ($isInvasionSuccessful) {
-            $researchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
+            $baseResearchPointsGained = max(1000, $dominion->round->daysInRound() / 0.03);
 
             // Recent invasion penalty
             $recentlyInvadedCount = $this->militaryCalculator->getRecentlyInvadedCount($dominion, 24 * 3, true);
@@ -968,15 +987,17 @@ class InvadeActionService
             if ($range < 60) {
                 $researchPointsGained = 0;
             } elseif ($range < 75) {
-                $researchPointsGained *= 0.5;
+                $researchPointsGained = $baseResearchPointsGained / 2;
             } else {
                 $schoolPercentageCap = 20;
                 $schoolPercentage = min(
                     $dominion->building_school / $this->landCalculator->getTotalLand($dominion),
                     $schoolPercentageCap / 100
                 );
-                $researchPointsGained += (130 * $schoolPercentage * 100 * $schoolPenalty);
+                $researchPointsGained = (125 * $schoolPercentage * 100 * $schoolPenalty);
+                $researchPointsGained = min(5 * $this->landCalculator->getTotalLand($dominion), $researchPointsGained);
                 $researchPointsGained = max(0, $researchPointsGained);
+                $researchPointsGained += $baseResearchPointsGained;
             }
 
             $multiplier = 1;

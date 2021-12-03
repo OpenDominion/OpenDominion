@@ -39,7 +39,7 @@ class ExplorationCalculator
     {
         $totalLand = $this->landCalculator->getTotalLand($dominion);
 
-        $platinum = max(0.61 * ($totalLand ** 1.305), 850);
+        $platinum = max(0.6 * ($totalLand ** 1.299), 850);
 
         $multiplier = 1;
 

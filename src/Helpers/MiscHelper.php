@@ -7,7 +7,7 @@ class MiscHelper
     public function getResourceHelpString(string $resource): ?string {
         $helpStrings = [
             'platinum' => 'Produced via alchemies and peasants paying taxes.',
-            'food' => 'Produced via farms and docks.<br>Each citizen (peasants and military) eats 0.25 bushels per hour',
+            'food' => 'Produced via farms and docks.<br>Each citizen (peasants and military) eats 0.25 bushels per hour.',
             'lumber' => 'Produced via lumberyards.<br>Used for constructing buildings.',
             'mana' => 'Produced via towers.<br>Used for casting spells.',
             'ore' => 'Produced via ore mines.<br>Used to train <i>some</i> units.',
@@ -31,6 +31,7 @@ class MiscHelper
             'wizard_mastery' => 'Gained and lost via war operations.<br>Every 100 mastery adds 50 to your minimum infamy.',
             'spy_resilience' => 'Gained by victims of war operations.<br>Reduces damage taken from spy ops.',
             'wizard_resilience' => 'Gained by victims of war operations.<br>Reduces damage taken from wizard ops.',
+            'wpa' => 'Raw Wizard Ratio.<br>Used to calculate offense of Ice Elementals.',
         ];
 
         return $helpStrings[$type] ?: null;

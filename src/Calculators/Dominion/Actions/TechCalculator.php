@@ -15,7 +15,7 @@ class TechCalculator
      */
     public function getTechCost(Dominion $dominion): int
     {
-        return 10000;
+        return 9500 + (100 * $dominion->techs->count());
     }
 
     /**

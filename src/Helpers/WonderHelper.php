@@ -63,6 +63,7 @@ class WonderHelper
             'ore_production' => '%s%% ore production',
             'platinum_production' => '%s%% platinum production',
             'tech_production' => '%s%% research point production',
+            'tech_production_raw' => '%s research point production per hour',
         ];
 
         $perkStrings = [];

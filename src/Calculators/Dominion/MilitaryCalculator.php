@@ -266,7 +266,7 @@ class MilitaryCalculator
         // Values (percentages)
         $spellBloodrage = 10;
         $spellCrusade = 5;
-        $spellFavorableTerrain = 0.5;
+        $spellFavorableTerrain = 1;
         $spellFavorableTerrainCap = 10;
         $spellHowling = 10;
         $spellKillingRage = 10;
