@@ -15,7 +15,7 @@ use OpenDominion\Models\Wonder;
 
 class GameEventService
 {
-    public function getTownCrier(Dominion $dominion, Realm $realm = null) : array
+    public function getTownCrier(Dominion $dominion, Realm $realm = null): array
     {
         if ($realm === null) {
             return $this->getGameEventsforRound($dominion, now());
@@ -64,9 +64,13 @@ class GameEventService
         return $this->getGameEventsForRealm($realm, $clairvoyanceCreatedAt);
     }
 
-    private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore) : array
+    private function getGameEventsForRealm(Realm $realm, Carbon $createdBefore): array
     {
         $dominionIds = $realm->dominions
+            ->pluck('id')
+            ->toArray();
+
+        $realmWarIds = RealmWar::where('target_realm_id', $realm->id)
             ->pluck('id')
             ->toArray();
 
@@ -84,7 +88,7 @@ class GameEventService
                     RoundWonder::class => ['realm', 'wonder'],
                 ]);
             }])
-            ->where(function (Builder $query) use ($realm, $dominionIds) {
+            ->where(function (Builder $query) use ($realm, $dominionIds, $realmWarIds) {
                 $query
                     ->orWhere(function (Builder $query) use ($dominionIds) {
                         $query->where('source_type', Dominion::class)
@@ -98,9 +102,9 @@ class GameEventService
                         $query->where('source_type', Realm::class)
                             ->where('source_id', $realm->id);
                     })
-                    ->orWhere(function (Builder $query) use ($realm) {
-                        $query->where('target_type', Realm::class)
-                            ->where('target_id', $realm->id);
+                    ->orWhere(function (Builder $query) use ($realmWarIds) {
+                        $query->where('target_type', RealmWar::class)
+                            ->whereIn('target_id', $realmWarIds);
                     });
             })
             ->where('round_id', $realm->round->id)
@@ -115,7 +119,7 @@ class GameEventService
         ];
     }
 
-    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore) : array
+    private function getGameEventsForRound(Dominion $dominion, Carbon $createdBefore): array
     {
         $dominionIds = $dominion->realm->dominions
             ->pluck('id')
