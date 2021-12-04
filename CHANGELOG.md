@@ -16,16 +16,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 - Prestige gain formula adjusted to 100 x min(1, LandRatio) - 40 + TargetLand/250 (from 60 x LandRatio)
 - Defensive casualties will now use either total reduction for the dominion OR the penalty from recent invasions NOT both
 - Halls of Knowledge now produces 100 RP/hr (from 15% production bonus) and spawns with 150k HP (from 250k)
-- Wood Elf: rezone costs down to +10% (from +25%)
-- Orc Savage: offense reduced to 3.5 (from 4), costs 330p, 20r (from 375p, 25r)
+- Dwarf Cleric: no longer kills immortal units
+- Icekin Frostmage: +50p (from 850)
+- Kobold: population growth bonus increased to 20% (from 10%)
 - Lycanthrope Scavenger: +25p (from 325)
 - Lycanthrope Garou: now converts up to one for every 15 sent on attack (from 12)
 - Lycanthrope Feral Hunger: now converts up to one for every 15 sent on attack (from 25)
 - Nomad: 10% construction cost penalty removed
 - Nomad Favorable Terrain: now grants +1% OP for every 1% barren land (from 2% barren land), max unchanged at +10%
-- Kobold: population growth bonus increased to 20% (from 10%)
-- Dwarf Cleric: no longer kills immortal units
+- Orc Savage: offense reduced to 3.5 (from 4), costs 330p, 20r (from 375p, 25r)
 - Spirit: maximum population increased to 2.5% (from 0%)
+- Wood Elf: rezone costs down to +10% (from +25%)
 
 ### Added
 - Current Icekin WPA visible on clear sight and in calculator
