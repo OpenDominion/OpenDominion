@@ -1,53 +1,53 @@
 [
     {
         "attributes": {
-            "peasants": 8702,
+            "peasants": 8753,
             "draft_rate": 60,
-            "resource_platinum": 720270,
-            "resource_food": 56756,
-            "resource_lumber": 28961,
-            "resource_mana": 28465,
+            "resource_platinum": 600000,
+            "resource_food": 50000,
+            "resource_lumber": 20000,
+            "resource_mana": 21500,
             "resource_ore": 0,
             "resource_gems": 0,
             "resource_tech": 2250,
             "resource_boats": 0,
-            "military_draftees": 1807,
+            "military_draftees": 1652,
             "military_unit1": 0,
             "military_unit2": 0,
             "military_unit3": 0,
             "military_unit4": 0,
             "military_spies": 25,
             "military_wizards": 25,
-            "land_plain": 350,
+            "land_plain": 385,
             "land_mountain": 0,
-            "land_swamp": 175,
+            "land_swamp": 150,
             "land_cavern": 0,
             "land_forest": 20,
-            "land_hill": 55,
+            "land_hill": 45,
             "land_water": 0,
-            "building_home": 70,
-            "building_alchemy": 227,
-            "building_farm": 15,
+            "building_home": 80,
+            "building_alchemy": 274,
+            "building_farm": 3,
             "building_smithy": 108,
             "building_masonry": 0,
             "building_ore_mine": 0,
             "building_gryphon_nest": 0,
-            "building_tower": 75,
+            "building_tower": 45,
             "building_wizard_guild": 0,
-            "building_temple": 30,
+            "building_temple": 25,
             "building_diamond_mine": 0,
             "building_school": 0,
             "building_lumberyard": 20,
             "building_forest_haven": 0,
-            "building_factory": 55,
+            "building_factory": 45,
             "building_guard_tower": 0,
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 0,
-            "stat_total_platinum_production": 1096647,
-            "stat_total_food_production": 76752,
-            "stat_total_lumber_production": 60000,
-            "stat_total_mana_production": 45281,
+            "stat_total_platinum_production": 600000,
+            "stat_total_food_production": 50000,
+            "stat_total_lumber_production": 20000,
+            "stat_total_mana_production": 21500,
             "stat_total_ore_production": 0,
             "stat_total_gem_production": 0,
             "stat_total_tech_production": 0,
@@ -66,53 +66,53 @@
     },
     {
         "attributes": {
-            "peasants": 7728,
+            "peasants": 7760,
             "draft_rate": 60,
-            "resource_platinum": 92516,
-            "resource_food": 58485,
-            "resource_lumber": 37031,
-            "resource_mana": 12548,
+            "resource_platinum": 301200,
+            "resource_food": 50000,
+            "resource_lumber": 29000,
+            "resource_mana": 14000,
             "resource_ore": 0,
             "resource_gems": 0,
             "resource_tech": 2250,
             "resource_boats": 0,
-            "military_draftees": 402,
+            "military_draftees": 434,
             "military_unit1": 0,
-            "military_unit2": 1005,
-            "military_unit3": 250,
-            "military_unit4": 575,
+            "military_unit2": 1304,
+            "military_unit3": 21,
+            "military_unit4": 586,
             "military_spies": 25,
             "military_wizards": 25,
-            "land_plain": 350,
+            "land_plain": 385,
             "land_mountain": 0,
-            "land_swamp": 175,
+            "land_swamp": 150,
             "land_cavern": 0,
             "land_forest": 20,
-            "land_hill": 55,
+            "land_hill": 45,
             "land_water": 0,
-            "building_home": 70,
-            "building_alchemy": 227,
-            "building_farm": 15,
+            "building_home": 80,
+            "building_alchemy": 274,
+            "building_farm": 3,
             "building_smithy": 108,
             "building_masonry": 0,
             "building_ore_mine": 0,
             "building_gryphon_nest": 0,
-            "building_tower": 75,
+            "building_tower": 45,
             "building_wizard_guild": 0,
-            "building_temple": 30,
+            "building_temple": 25,
             "building_diamond_mine": 0,
             "building_school": 0,
             "building_lumberyard": 20,
             "building_forest_haven": 0,
-            "building_factory": 55,
+            "building_factory": 45,
             "building_guard_tower": 0,
             "building_shrine": 0,
             "building_barracks": 0,
             "building_dock": 0,
-            "stat_total_platinum_production": 1526813,
-            "stat_total_food_production": 88560,
-            "stat_total_lumber_production": 72000,
-            "stat_total_mana_production": 71156.5,
+            "stat_total_platinum_production": 301200,
+            "stat_total_food_production": 50000,
+            "stat_total_lumber_production": 29000,
+            "stat_total_mana_production": 14000,
             "stat_total_ore_production": 0,
             "stat_total_gem_production": 0,
             "stat_total_tech_production": 0,
@@ -120,7 +120,7 @@
             "stat_total_land_explored": 350,
             "protection_ticks_remaining": 0
         },
-        "spells": ["ares_call", "midas_touch", "unholy_ghost"],
+        "spells": ["midas_touch", "ares_call", "unholy_ghost"],
         "queues": {
             "construction": [
                 [],
@@ -151,44 +151,30 @@
                 []
             ],
             "training": [
-                [
-                    {
-                        "resource": "military_unit2",
-                        "amount": 90
-                    }
-                ],
-                [
-                    {
-                        "resource": "military_unit2",
-                        "amount": 95
-                    }
-                ],
+                [],
                 [],
                 [
                     {
                         "resource": "military_unit2",
-                        "amount": 125
+                        "amount": 150
                     }
                 ],
-                [],
-                [],
                 [],
                 [],
                 [
                     {
-                        "resource": "military_unit4",
-                        "amount": 120
+                        "resource": "military_unit2",
+                        "amount": 150
                     }
                 ],
                 [],
-                [
-                    {
-                        "resource": "military_unit4",
-                        "amount": 135
-                    }
-                ],
+                [],
+                [],
+                [],
+                [],
                 []
             ]
         }
     }
 ]
+
