@@ -72,7 +72,7 @@
             "resource_food": 50000,
             "resource_lumber": 29000,
             "resource_mana": 10000,
-Error 2042
+            "resource_ore": 83240,
             "resource_gems": 0,
             "resource_tech": 2250,
             "resource_boats": 0,
@@ -113,7 +113,7 @@ Error 2042
             "stat_total_food_production": 50000,
             "stat_total_lumber_production": 29000,
             "stat_total_mana_production": 10000,
-Error 2042
+            "stat_total_ore_production": 83240,
             "stat_total_gem_production": 0,
             "stat_total_tech_production": 0,
             "stat_total_boat_production": 0,
