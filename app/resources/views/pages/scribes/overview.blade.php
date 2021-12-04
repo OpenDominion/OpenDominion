@@ -100,7 +100,7 @@
                     </div>
                     <div id="technology">
                         <h4 class="text-center">Technology</h4>
-                        <p>Technological advancements offer a way to add permanent upgrades to your dominion. Each tech costs 10,000 research points, which can be earned through building schools, invading other dominions and taking your daily platinum bonus. Most techs require you to have taken certain other techs before them, which is outlined in the tech tree below.</p>
+                        <p>Technological advancements offer a way to add permanent upgrades to your dominion. Each tech costs 9500 research points (+100 after each unlock), which can be earned through building schools, invading other dominions and taking your daily platinum bonus. Most techs require you to have taken certain other techs before them, which is outlined in the tech tree below.</p>
                     </div>
                     <div id="military">
                         <h4 class="text-center">Military</h4>
