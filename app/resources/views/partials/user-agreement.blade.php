@@ -44,8 +44,27 @@
                     <li>An "alliance" is defined as intentionally cooperating and/or planning actions with a player or players from another realm in any way, including if it benefits both realms.</li>
                 </ol>
             </li>
-            <li>You must not in any way intentionally take any action which solely benefits another realm or a dominion in another realm, whether directly or indirectly.</li>
-            <li>You must not share information about any dominion with anyone except with players in your own realm.</li>
+            <li>
+                You must not in any way intentionally take any action which solely benefits another realm or a dominion in another realm, whether directly or indirectly.
+                <ol style="list-style: lower-roman;">
+                    <li>"Intentionally" means that the primary purpose of the action taken is a violation of the rules.</li>
+                    <li>"Solely" means that there is no material benefit to your own dominion or the dominions in your realm.</li>
+                    <li>"Benefit" means some material and/or statistical measure of gain within the game itself (land, military, etc.), and cannot solely consist of qualitative values (feelings, opinions, etc.).</li>
+                </ol>
+            </li>
+            <li>
+                You must make a reasonable effort to defend your dominion from invasion.
+                <ol style="list-style: lower-roman;">
+                    <li>"Reasonable" means that, governed by a player’s skillset, he/she will train defensive troops, leave troops at home, and/or forgo growth when deemed necessary to protect their dominion’s land.</li>
+                    <li>Being invaded, razing, and suiciding alone are not against the rules, but could be if the context or course of those actions is a violation of the rules.</li>
+                </ol>
+            </li>
+            <li>
+                You must not share non-public information about any dominion with anyone except with players in your own realm.
+                <ol style="list-style: lower-roman;">
+                    <li>"Non-public" means any information that is not publicly available through the game itself, or information that is not clearly implied by publicly available information. The current military training of a dominion in another realm is not public information. The timing of invasions on the Town Crier is public information.</li>
+                </ol>
+            </li>
             <li>You must at all times refrain from using excessive profanity or abusive, offensive language. Banter and smack talk are allowed; just keep it mostly civil.</li>
             <li>You must not use any scripts, bots, automation software, hacks or other means to perform in-game actions with your dominion at any time.</li>
             <li>
@@ -99,10 +118,16 @@
             <div>A. No, if you'd like to change your pack affiliation prior to being assigned a realm, you can contact an administrator for assistance*</div>
             <div class="text-bold">Q. Can I play from the same location as someone else?</div>
             <div>A. Yes, but only if you disclose your relationship with another player to the Rules Committee prior to the start of play. If you live in the same household, those dominions must be in the same pack.</div>
-            <div class="text-bold">Q. I think I found a bug. What do I do?</div>
-            <div>A. You can post a message to the #bug-reports channel on Discord. If it involves sensitive information about a specific dominion, contact an administrator*</div>
             <div class="text-bold">Q. I think someone is cheating. What do I do?</div>
             <div>A. Contact an administrator*</div>
+            <div class="text-bold">Q. I think I found a bug. What do I do?</div>
+            <div>A. You can post a message to the #bug-reports channel on Discord. If it involves sensitive information about a specific dominion, contact an administrator*</div>
+            <div class="text-bold">Q. Can I help out a friend in another realm?</div>
+            <div>A. Giving general advice is encouraged, but sharing ops or giving any form of in-game assistance is strictly prohibited.</div>
+            <div class="text-bold">Q. Can I "raze" a dominion for a player in a realm that isn't my own??</div>
+            <div>A. If there is no clear material, in-game benefit to your dominion or your realm, then the answer is no. This is a violation of rule 3d.</div>
+            <div class="text-bold">Q. What if I don't want to keep playing during the round?</div>
+            <div>A. Please use the "abandon dominion" feature which can be found under "Information" on the Government page.</div>
         </p>
         <p class="small">* You can contact an administrator for assistance by: sending a direct message on Discord, using the Report a Problem link in the bottom right corner of the page, or sending an email to info@opendominion.net.</p>
     </div>
@@ -121,13 +146,13 @@
         <tbody>
             <tr class="active">
                 <td rowspan="3" style="vertical-align: middle;">
-                    Farming: possible violations of 2a, 3b, 3c, and 3d
+                    Farming: possible violations of 2a, 3b, 3c, 3d, and 3f
                 </td>
                 <td>
                     Unintentional (ex: lost power and couldn't log in)
                 </td>
                 <td>
-                    Account(s) locked. Generated land may be reduced by up to 20%. Following an investigation, the player will be interviewed and allowed to regain access to the account after a commitment to train some DP.
+                    Account(s) locked. Land gains will be reduced by at least 25% unless the RC decides otherwise. Following an investigation, the player will be interviewed and allowed to regain access to the account after a commitment to train some DP.
                 </td>
             </tr>
             <tr class="active">
@@ -136,7 +161,7 @@
                     Intentional (ex: released DP after bouncing)
                 </td>
                 <td>
-                    Account(s) locked. Generated land may be reduced by up to 50%. Player is suspended for the duration of the round.
+                    Account(s) locked. Land gains will be reduced by at least 50% unless the Rules Committee decides otherwise. Player is suspended for at least the duration of the current round.
                 </td>
             </tr>
             <tr class="active">
@@ -145,7 +170,7 @@
                     Malicious (ex: created additional accounts to invade)
                 </td>
                 <td>
-                    Account(s) locked. Guilty players will be suspended for the duration of the round and may face suspension in the following round.
+                    Account(s) locked. Land gains will be reduced 100% or the game may be rolled back if possible at the administrator's discretion. Guilty players will be suspended for at least the duration of the currentround and may face suspension in following rounds.
                 </td>
             </tr>
             <tr>
@@ -165,7 +190,7 @@
                     Intentional (ex: two separate people occassionally log in for each other but don't try to benefit)
                 </td>
                 <td>
-                    Account(s) locked. Players will be suspended for no less than two weeks. Players will be able to regain access to their account after a commitment to using only their own account.
+                    Account(s) locked. Players will be suspended for no less than two weeks unless the RC decides otherwise. Players will be able to regain access to their account after a commitment to using only their own account.
                 </td>
             </tr>
             <tr>
@@ -174,7 +199,7 @@
                     Malicious (ex: two people consistently share accounts and attempt to benefit from doing so)
                 </td>
                 <td>
-                    Account(s) locked. Players will be suspended for the duration of the round.
+                    Account(s) locked. Players will be suspended for at least the duration of the round.
                 </td>
             </tr>
             <tr class="active">
@@ -194,7 +219,7 @@
                     Intentional (ex: for fun; playing two at once without record of abuse)
                 </td>
                 <td>
-                    Accounts locked. Players will be suspended for no less than one week. The player will be able to regain access to one account after a commitment to using only one dominion.
+                    Accounts locked. Players will be suspended for no less than one week unless the RC decides otherwise. The player will be able to regain access to one account after a commitment to using only one dominion.
                 </td>
             </tr>
             <tr class="active">
@@ -203,12 +228,12 @@
                     Malicious (ex: for gain such as realm hopping or farming)
                 </td>
                 <td>
-                    Accounts locked. Players will be suspended for the duration of the round.
+                    Accounts locked. Players will be suspended for at least the duration of the current round.
                 </td>
             </tr>
             <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Information Sharing: possible violations of 3b, 3c, and 3e
+                    Information Sharing: possible violations of 3b, 3c, and 3f
                 </td>
                 <td>
                     Unintentional (ex: accidentally posting a CS in Discord)
@@ -223,7 +248,7 @@
                     Intentional (ex: discussing sensitive information outside the realm)
                 </td>
                 <td>
-                    Player(s) will be warned and asked to cease violating the rules. Future violations of this rule will result in a suspension of no less than one week.
+                    Player(s) will be warned and asked to cease violating the rules. Future violations of this rule will result in a suspension of no less than one week unless the RC decides otherwise.
                 </td>
             </tr>
             <tr>
@@ -232,7 +257,7 @@
                     Malicious (ex: sharing sensitive information with intent to gain/harm)
                 </td>
                 <td>
-                    Account locked. Player will be suspended for no less than two weeks. Player will be able to regain access to their account after a commitment to abiding by the information sharing rules.
+                    Account locked. Player will be suspended for no less than two weeks unless the RC decides otherwise. Player will be able to regain access to their account after a commitment to abiding by the information sharing rules.
                 </td>
             </tr>
             <tr class="active">
@@ -261,15 +286,15 @@
                     Malicious (ex: a player tries to pass a multi off for a family member)
                 </td>
                 <td>
-                    Accounts locked. Player will be suspended for the duration of the round. Player may also face suspension in the following round.
+                    Accounts locked. Player will be suspended for at least the duration of the current round.
                 </td>
             </tr>
             <tr>
                 <td rowspan="3" style="vertical-align: middle;">
-                    Alliances, NAPs, and Inter-Realm Teamwork: possible violations of 3a, 3b, 3c, 3d, and 3e
+                    Alliances, NAPs, and Inter-Realm Teamwork: possible violations of 3a, 3b, 3c, 3d, 3e, and 3f
                 </td>
                 <td>
-                    Unintentional (ex: a player determines the round winner by suiciding one of two players in a similar position, both in different realms)
+                    Unintentional (ex: 2 different realms decide to fireball a potential runaway)
                 </td>
                 <td>
                     N/A
@@ -281,7 +306,7 @@
                     Intentional (ex: two friends in different realms choose to avoid confrontation with one another despite it undisputably being in their best interest for one to invade the other)
                 </td>
                 <td>
-                    Players suspect will be investigated. Those found guilty will be suspended for no less than one week.
+                    Players suspected will be investigated. Those found guilty will be suspended for no less than one week unless the RC decides otherwise. Players may be prohibited from joining any pack in following rounds.
                 </td>
             </tr>
             <tr>
@@ -290,7 +315,7 @@
                     Malicious (ex: players in different realms intentionally coordinate to target another player/realm with black ops/invasions)
                 </td>
                 <td>
-                    All associated accounts locked. Players will be suspended for the duration of the round. Players may be prohibited from packing in the following round.
+                    All associated accounts locked. Players will be suspended for at least the duration of the current round. Players may be prohibited from joining any pack in following rounds.
                 </td>
             </tr>
             <tr class="active">
@@ -310,7 +335,7 @@
                     Intentional (ex: attempting to favorably game the matchmaking and realm placement system)
                 </td>
                 <td>
-                    Account locked. Player will be suspended for the duration of the round.
+                    Account locked. Player will be suspended for at least the duration of the current round.
                 </td>
             </tr>
             <tr class="active">
@@ -319,7 +344,7 @@
                     Malicious (ex: conspiring with other players to favorably game the matchmaking and realm placement system as a group)
                 </td>
                 <td>
-                    All associated accounts locked. Players will be suspended for the duration of the round. Players may be prohibited from packing in the following round.
+                    All associated accounts locked. Players will be suspended for at least the duration of the current round. Players may be prohibited from joining any pack in following rounds.
                 </td>
             </tr>
         </tbody>
