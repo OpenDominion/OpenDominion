@@ -2,24 +2,27 @@
 
 namespace OpenDominion\Http\Controllers;
 
+use DB;
 use Illuminate\Http\Response;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;
+use OpenDominion\Models\DailyRanking;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
 use OpenDominion\Models\Realm;
 use OpenDominion\Models\Round;
+use OpenDominion\Models\RoundLeague;
 use OpenDominion\Models\User;
 
 class ValhallaController extends AbstractController
 {
     public function getIndex()
     {
-        $rounds = Round::with('league')->orderBy('start_date', 'desc')->get();
+        $leagues = RoundLeague::with('rounds')->orderByDesc('created_at')->get();
 
         return view('pages.valhalla.index', [
-            'rounds' => $rounds,
+            'leagues' => $leagues,
         ]);
     }
 
@@ -31,7 +34,7 @@ class ValhallaController extends AbstractController
 
         $races = $round->dominions
             ->sortBy('race.name')
-            ->pluck('race.name', 'race.id')
+            ->pluck('race.name', 'race.key')
             ->unique();
 
         return view('pages.valhalla.round', [
@@ -64,29 +67,29 @@ class ValhallaController extends AbstractController
         ];
 
         switch ($type) {
-            case 'strongest-dominions': $data = $this->getStrongestDominions($round); break;
+            case 'strongest-dominions': $data = $this->getDominionsByRanking($round, 'strongest-dominions'); break;
             case 'strongest-good-dominions': $data = $this->getStrongestDominions($round, null, 'good'); break;
             case 'strongest-evil-dominions': $data = $this->getStrongestDominions($round, null, 'evil'); break;
             case 'strongest-realms': $data = $this->getStrongestRealms($round); break;
             case 'strongest-good-realms': $data = $this->getStrongestRealms($round, 'good'); break;
             case 'strongest-evil-realms': $data = $this->getStrongestRealms($round, 'evil'); break;
             case 'strongest-packs': $data = $this->getStrongestPacks($round); break;
-            case 'largest-dominions': $data = $this->getLargestDominions($round); break;
+            case 'largest-dominions': $data = $this->getDominionsByRanking($round, 'largest-dominions'); break;
             case 'largest-good-dominions': $data = $this->getLargestDominions($round, null, 'good'); break;
             case 'largest-evil-dominions': $data = $this->getLargestDominions($round, null, 'evil'); break;
             case 'largest-realms': $data = $this->getLargestRealms($round); break;
             case 'largest-good-realms': $data = $this->getLargestRealms($round, 'good'); break;
             case 'largest-evil-realms': $data = $this->getLargestRealms($round, 'evil'); break;
             case 'largest-packs': $data = $this->getLargestPacks($round); break;
-            case 'stat-prestige': $data = $this->getDominionsByStatistic($round, 'prestige'); break;
-            case 'stat-attacking-success': $data = $this->getDominionsByStatistic($round, 'stat_attacking_success'); break;
+            case 'stat-prestige': $data = $this->getDominionsByRanking($round, 'prestige'); break;
+            case 'stat-attacking-success': $data = $this->getDominionsByRanking($round, 'attacking-success'); break;
             case 'stat-defending-success': $data = $this->getDominionsByStatistic($round, 'stat_defending_success'); break;
-            case 'stat-espionage-success': $data = $this->getDominionsByStatistic($round, 'stat_espionage_success'); break;
-            case 'stat-spell-success': $data = $this->getDominionsByStatistic($round, 'stat_spell_success'); break;
-            case 'stat-spy-mastery': $data = $this->getDominionsByStatistic($round, 'spy_mastery'); break;
-            case 'stat-wizard-mastery': $data = $this->getDominionsByStatistic($round, 'wizard_mastery'); break;
-            case 'stat-spies-executed': $data = $this->getDominionsByStatistic($round, 'stat_spies_executed'); break;
-            case 'stat-wizards-executed': $data = $this->getDominionsByStatistic($round, 'stat_wizards_executed'); break;
+            case 'stat-espionage-success': $data = $this->getDominionsByRanking($round, 'espionage-success'); break;
+            case 'stat-spell-success': $data = $this->getDominionsByRanking($round, 'spell-success'); break;
+            case 'stat-spy-mastery': $data = $this->getDominionsByRanking($round, 'spy-mastery'); break;
+            case 'stat-wizard-mastery': $data = $this->getDominionsByRanking($round, 'wizard-mastery'); break;
+            case 'stat-spies-executed': $data = $this->getDominionsByRanking($round, 'spies-executed'); break;
+            case 'stat-wizards-executed': $data = $this->getDominionsByRanking($round, 'wizards-executed'); break;
             //case 'stat-total-platinum-production': $data = $this->getDominionsByStatistic($round, 'stat_total_platinum_production'); break;
             //case 'stat-total-food-production': $data = $this->getDominionsByStatistic($round, 'stat_total_food_production'); break;
             //case 'stat-total-lumber-production': $data = $this->getDominionsByStatistic($round, 'stat_total_lumber_production'); break;
@@ -95,32 +98,32 @@ class ValhallaController extends AbstractController
             //case 'stat-total-gem-production': $data = $this->getDominionsByStatistic($round, 'stat_total_gem_production'); break;
             //case 'stat-total-tech-production': $data = $this->getDominionsByStatistic($round, 'stat_total_tech_production'); break;
             //case 'stat-total-boat-production': $data = $this->getDominionsByStatistic($round, 'stat_total_boat_production'); break;
-            case 'stat-total-land-explored': $data = $this->getDominionsByStatistic($round, 'stat_total_land_explored'); break;
-            case 'stat-total-land-conquered': $data = $this->getDominionsByStatistic($round, 'stat_total_land_conquered'); break;
-            case 'stat-total-platinum-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_platinum_stolen'); break;
-            case 'stat-total-food-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_food_stolen'); break;
-            case 'stat-total-lumber-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_lumber_stolen'); break;
-            case 'stat-total-mana-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_mana_stolen'); break;
-            case 'stat-total-ore-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_ore_stolen'); break;
-            case 'stat-total-gems-stolen': $data = $this->getDominionsByStatistic($round, 'stat_total_gems_stolen'); break;
-            case 'stat-top-saboteurs': $data = $this->getDominionsByStatistic($round, 'stat_sabotage_boats_damage'); break;
-            case 'stat-top-magical-assassins': $data = $this->getDominionsByStatistic($round, 'stat_assassinate_wizards_damage'); break;
-            case 'stat-top-military-assassins': $data = $this->getDominionsByStatistic($round, 'stat_assassinate_draftees_damage'); break;
-            case 'stat-top-snare-setters': $data = $this->getDominionsByStatistic($round, 'stat_magic_snare_damage'); break;
-            case 'stat-masters-of-fire': $data = $this->getDominionsByStatistic($round, 'stat_fireball_damage'); break;
-            case 'stat-masters-of-plague': $data = $this->getDominionsByStatistic($round, 'stat_plague_hours'); break;
-            case 'stat-masters-of-swarm': $data = $this->getDominionsByStatistic($round, 'stat_insect_swarm_hours'); break;
-            case 'stat-masters-of-air': $data = $this->getDominionsByStatistic($round, 'stat_cyclone_damage'); break;
-            case 'stat-masters-of-lightning': $data = $this->getDominionsByStatistic($round, 'stat_lightning_bolt_damage'); break;
-            case 'stat-masters-of-water': $data = $this->getDominionsByStatistic($round, 'stat_great_flood_hours'); break;
-            case 'stat-masters-of-earth': $data = $this->getDominionsByStatistic($round, 'stat_earthquake_hours'); break;
-            case 'stat-top-spy-disbanders': $data = $this->getDominionsByStatistic($round, 'stat_disband_spies_damage'); break;
+            case 'stat-total-land-explored': $data = $this->getDominionsByRanking($round, 'total-land-explored'); break;
+            case 'stat-total-land-conquered': $data = $this->getDominionsByRanking($round, 'total-land-conquered'); break;
+            case 'stat-total-platinum-stolen': $data = $this->getDominionsByRanking($round, 'total-platinum-stolen'); break;
+            case 'stat-total-food-stolen': $data = $this->getDominionsByRanking($round, 'total-food-stolen'); break;
+            case 'stat-total-lumber-stolen': $data = $this->getDominionsByRanking($round, 'total-lumber-stolen'); break;
+            case 'stat-total-mana-stolen': $data = $this->getDominionsByRanking($round, 'total-mana-stolen'); break;
+            case 'stat-total-ore-stolen': $data = $this->getDominionsByRanking($round, 'total-ore-stolen'); break;
+            case 'stat-total-gems-stolen': $data = $this->getDominionsByRanking($round, 'total-gems-stolen'); break;
+            case 'stat-top-saboteurs': $data = $this->getDominionsByRanking($round, 'sabotage-boats-damage'); break;
+            case 'stat-top-magical-assassins': $data = $this->getDominionsByRanking($round, 'assassinate-wizards-damage'); break;
+            case 'stat-top-military-assassins': $data = $this->getDominionsByRanking($round, 'assassinate-draftees-damage'); break;
+            case 'stat-top-snare-setters': $data = $this->getDominionsByRanking($round, 'magic-snare-damage'); break;
+            case 'stat-masters-of-fire': $data = $this->getDominionsByRanking($round, 'fireball-damage'); break;
+            case 'stat-masters-of-plague': $data = $this->getDominionsByRanking($round, 'plague-hours'); break;
+            case 'stat-masters-of-swarm': $data = $this->getDominionsByRanking($round, 'insect-swarm-hours'); break;
+            case 'stat-masters-of-air': $data = $this->getDominionsByRanking($round, 'cyclone-damage'); break;
+            case 'stat-masters-of-lightning': $data = $this->getDominionsByRanking($round, 'lightning-bolt-damage'); break;
+            case 'stat-masters-of-water': $data = $this->getDominionsByRanking($round, 'great-flood-hours'); break;
+            case 'stat-masters-of-earth': $data = $this->getDominionsByRanking($round, 'earthquake-hours'); break;
+            case 'stat-top-spy-disbanders': $data = $this->getDominionsByRanking($round, 'disband-spies-damage'); break;
             case 'realm-stat-prestige': $data = $this->getRealmsByStatistic($round, 'prestige'); break;
             case 'realm-stat-attacking-success': $data = $this->getRealmsByStatistic($round, 'stat_attacking_success'); break;
-            case 'stat-wonder-damage': $data = $this->getDominionsByStatistic($round, 'stat_wonder_damage'); break;
-            case 'realm-stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'stat_wonders_destroyed'); break;
-            case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'stat_total_land_explored'); break;
-            case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'stat_total_land_conquered'); break;
+            case 'stat-wonder-damage': $data = $this->getDominionsByRanking($round, 'wonder-damage'); break;
+            case 'realm-stat-wonders-destroyed': $data = $this->getRealmsByStatistic($round, 'wonders_destroyed'); break;
+            case 'realm-stat-total-land-explored': $data = $this->getRealmsByStatistic($round, 'total_land_explored'); break;
+            case 'realm-stat-total-land-conquered': $data = $this->getRealmsByStatistic($round, 'total_land_conquered'); break;
 
             default:
                 if (!preg_match('/(strongest|largest|stat)-([-\w]+)/', $type, $matches)) {
@@ -128,10 +131,9 @@ class ValhallaController extends AbstractController
                         ->withErrors(["Valhalla type '{$type}' not supported"]);
                 }
 
-                list(, $prefix, $raceName) = $matches;
-                $raceName = ucwords(str_replace('-', ' ', $raceName));
+                list(, $prefix, $raceKey) = $matches;
 
-                $race = Race::where('name', $raceName)->firstOrFail();
+                $race = Race::where('key', $raceKey)->firstOrFail();
 
                 if ($prefix === 'strongest') {
                     $data = $this->getStrongestDominions($round, $race);
@@ -450,6 +452,32 @@ class ValhallaController extends AbstractController
                 $row['avg_land'] = number_format($row['avg_land']);
                 return $row;
             });
+    }
+
+    protected function getDominionsByRanking(Round $round, string $ranking)
+    {
+        return DailyRanking::with(['dominion', 'dominion.user'])
+            ->where('round_id', $round->id)
+            ->where('key', $ranking)
+            ->orderByDesc('value')
+            ->get()
+            ->map(function (DailyRanking $ranking) {
+                if ($ranking->dominion->user) {
+                    $player = '<a href="' . route('valhalla.user', $ranking->dominion->user->id) . '">' . htmlentities($ranking->dominion->user->display_name) . '</a>';
+                } else {
+                    $player = 'Bot';
+                }
+                return [
+                    '#' => $ranking->rank,
+                    'dominion' => $ranking->dominion->name,
+                    'player' => $player,
+                    'race' => $ranking->race_name,
+                    'realm' => $ranking->realm_number,
+                    'value' => $ranking->value,
+                ];
+            })
+            ->take(100)
+            ->values();
     }
 
     protected function getDominionsByStatistic(Round $round, string $stat)

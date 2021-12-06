@@ -36,7 +36,13 @@
                             <tr>
                                 <td>Players</td>
                                 <td class="text-center">
-                                    {{ $round->dominions->count() }}
+                                    {{ $round->dominions->where('user_id', '!=', null)->count() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bots</td>
+                                <td class="text-center">
+                                    {{ $round->dominions->where('user_id', null)->count() }}
                                 </td>
                             </tr>
                             <tr>
@@ -198,16 +204,14 @@
             <div class="row form-group">
                 <div class="col-sm-6 text-center">
                     <b>Strongest</b><br>
-                    @foreach ($races as $race)
-                        @php $raceSlug = 'strongest-' . str_slug($race); @endphp
-                        <a href="{{ route('valhalla.round.type', [$round, $raceSlug]) }}">The Strongest {{ str_plural($race) }}</a><br>
+                    @foreach ($races as $key => $name)
+                        <a href="{{ route('valhalla.round.type', [$round, 'strongest-'.$key]) }}">The Strongest {{ str_plural($name) }}</a><br>
                     @endforeach
                 </div>
                 <div class="col-sm-6 text-center">
                     <b>Largest</b><br>
-                    @foreach ($races as $race)
-                        @php $raceSlug = 'largest-' . str_slug($race); @endphp
-                        <a href="{{ route('valhalla.round.type', [$round, $raceSlug]) }}">The Largest {{ str_plural($race) }}</a><br>
+                    @foreach ($races as $key => $name)
+                        <a href="{{ route('valhalla.round.type', [$round, 'largest-'.$key]) }}">The Largest {{ str_plural($name) }}</a><br>
                     @endforeach
                 </div>
             </div>
