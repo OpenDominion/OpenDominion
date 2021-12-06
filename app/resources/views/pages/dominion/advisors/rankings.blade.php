@@ -50,16 +50,16 @@
                                     <td class="text-right">
                                         {{ $ranking['stat_label'] }}:
                                     </td>
-                                    @if (array_key_exists($ranking['key'], $myRankings))
+                                    @if (isset($myRankings[$ranking['key']]))
                                         <td>
-                                            {{ number_format($myRankings[$ranking['key']]['value']) }}
+                                            {{ number_format($myRankings[$ranking['key']]->value) }}
                                         </td>
                                         <td class="text-center">
-                                            {{ $myRankings[$ranking['key']]['rank'] }}
+                                            {{ $myRankings[$ranking['key']]->rank }}
                                         </td>
                                         <td class="text-center">
                                             @php
-                                                $rankChange = (int) ($myRankings[$ranking['key']]['previous_rank'] - $myRankings[$ranking['key']]['rank']);
+                                                $rankChange = (int) ($myRankings[$ranking['key']]->previous_rank - $myRankings[$ranking['key']]->rank);
                                             @endphp
                                             @if ($rankChange > 0)
                                                 <span class="text-success"><i class="fa fa-caret-up"></i> {{ $rankChange }}</span>
@@ -107,7 +107,7 @@
                     <p style="font-size: 16px; line-height: 26px;">
                         @if ($myRankings)
                             @foreach ($rankingsHelper->getRankings() as $ranking)
-                                @if (array_key_exists($ranking['key'], $myRankings) && $myRankings[$ranking['key']]['rank'] == 1)
+                                @if (isset($myRankings[$ranking['key']]) && $myRankings[$ranking['key']]->rank == 1)
                                     @if ($ranking['title'])
                                         <i class="ra {{ $ranking && $ranking['title_icon'] ? $ranking['title_icon'] : 'ra-trophy' }}" data-toggle="tooltip" title="{{ $ranking['name'] }}" style="font-size: 22px; vertical-align: text-bottom;"></i>
                                         {{ $ranking['title'] }}<br/>

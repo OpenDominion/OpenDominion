@@ -2,7 +2,6 @@
 
 namespace OpenDominion\Http\Controllers;
 
-use DB;
 use Illuminate\Http\Response;
 use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\NetworthCalculator;

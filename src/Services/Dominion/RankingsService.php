@@ -3,22 +3,18 @@
 namespace OpenDominion\Services\Dominion;
 
 use DB;
+use Illuminate\Support\Collection;
+use OpenDominion\Models\DailyRanking;
 use OpenDominion\Models\Dominion;
 use OpenDominion\Models\Round;
 
 class RankingsService
 {
-    public function getRankingsForDominion(Dominion $dominion): array
+    public function getRankingsForDominion(Dominion $dominion): Collection
     {
-        $rankings = DB::table('daily_rankings')
-            ->select('key', 'value', 'rank', 'previous_rank')
-            ->where('dominion_id', $dominion->id)
+        $rankings = DailyRanking::where('dominion_id', $dominion->id)
             ->get()
-            ->keyBy('key')
-            ->map(function ($obj) {
-                return (array) $obj;
-            })
-            ->toArray();
+            ->keyBy('key');
 
         return $rankings;
     }

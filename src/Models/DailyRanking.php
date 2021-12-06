@@ -2,10 +2,6 @@
 
 namespace OpenDominion\Models;
 
-use Carbon\Carbon;
-use DB;
-use Illuminate\Database\Eloquent\Builder;
-
 /**
  * OpenDominion\Models\DailyRanking
  *

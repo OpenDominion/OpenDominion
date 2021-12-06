@@ -100,6 +100,7 @@ use OpenDominion\Services\Dominion\SelectorService;
  * @property array|null $settings
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Post[] $councilPosts
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Council\Thread[] $councilThreads
  * @property-read \Illuminate\Database\Eloquent\Collection|\OpenDominion\Models\Dominion\History[] $history
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -252,6 +253,11 @@ class Dominion extends AbstractModel
     public function race()
     {
         return $this->belongsTo(Race::class);
+    }
+
+    public function rankings()
+    {
+        return $this->hasMany(DailyRanking::class);
     }
 
     public function realm()
