@@ -156,7 +156,7 @@ class SpellHelper
                 'key' => 'crusade',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Human']),
+                'races' => collect(['Human', 'Nomad (Legacy)']),
             ],
             [
                 'name' => 'Favorable Terrain',
@@ -228,7 +228,7 @@ class SpellHelper
                 'key' => 'unholy_ghost',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Spirit']),
+                'races' => collect(['Spirit', 'Dark Elf (Legacy)']),
             ],
             [
                 'name' => 'Defensive Frenzy',
@@ -276,7 +276,7 @@ class SpellHelper
                 'key' => 'parasitic_hunger',
                 'mana_cost' => 5,
                 'duration' => 12,
-                'races' => collect(['Undead']),
+                'races' => collect(['Undead', 'Spirit (Legacy)']),
             ],
             [
                 'name' => 'Feral Hunger',
