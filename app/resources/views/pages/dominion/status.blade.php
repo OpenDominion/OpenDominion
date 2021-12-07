@@ -211,6 +211,9 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        @else
+            <div class="col-sm-12 col-md-3">
                 @include('partials.dominion.join-discord')
             </div>
         @endif
