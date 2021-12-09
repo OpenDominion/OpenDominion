@@ -81,7 +81,7 @@
                 <div class="col-xs-3">
                     <div class="row">
                         <div class="col-lg-6"><b>Research:</b></div>
-                        <div class="col-lg-6">{{ number_format(min($selectedDominion->resource_tech / 100, 100), 2) }}%</div>
+                        <div class="col-lg-6">{{ number_format(min($selectedDominion->resource_tech / $techCalculator->getTechCost($selectedDominion) * 100, 100), 2) }}%</div>
                     </div>
                 </div>
             </div>

@@ -151,6 +151,7 @@ class ComposerServiceProvider extends AbstractServiceProvider
         view()->composer('partials.resources-overview', function (View $view) {
             $view->with('landCalculator', app(LandCalculator::class));
             $view->with('networthCalculator', app(NetworthCalculator::class));
+            $view->with('techCalculator', app(TechCalculator::class));
         });
 
         view()->composer('partials.protection-indicator', function (View $view) {
