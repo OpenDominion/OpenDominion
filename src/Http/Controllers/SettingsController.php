@@ -111,8 +111,8 @@ class SettingsController extends AbstractController
         // Get list of all ingame notifications (for default values)
         foreach ($notificationCategories as $key => $types) {
             foreach ($types as $type => $channels) {
-                array_set($newNotifications, "{$key}.{$type}.{$channel}", false);
-                array_set($newNotifications, "{$key}.{$type}.{$channel}", false);
+                array_set($newNotifications, "{$key}.{$type}.ingame", false);
+                array_set($newNotifications, "{$key}.{$type}.email", false);
             }
         }
 
