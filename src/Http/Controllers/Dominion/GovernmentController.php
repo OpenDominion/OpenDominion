@@ -30,6 +30,7 @@ class GovernmentController extends AbstractDominionController
         $dominions = $dominion->realm->dominions()
             ->with([
                 'race',
+                'realm',
                 'monarchVote',
             ])
             ->get()
