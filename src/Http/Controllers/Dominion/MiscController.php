@@ -11,6 +11,7 @@ use OpenDominion\Calculators\Dominion\LandCalculator;
 use OpenDominion\Calculators\Dominion\MilitaryCalculator;
 use OpenDominion\Exceptions\GameException;
 use OpenDominion\Factories\DominionFactory;
+use OpenDominion\Helpers\AIHelper;
 use OpenDominion\Http\Requests\Dominion\Actions\RestartActionRequest;
 use OpenDominion\Models\Pack;
 use OpenDominion\Models\Race;
@@ -354,6 +355,14 @@ class MiscController extends AbstractDominionController
 
                 if ($totalLand >= 600 && $defensivePower < $totalLand * 5) {
                     throw new GameException('You cannot leave protection at this size with defense less than 5x your land total.');
+                }
+
+                if ($dominion->round->daysInRound() > 4) {
+                    $aiHelper = app(AIHelper::class);
+                    $botDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand));
+                    if ($defensivePower < $botDefense) {
+                        throw new GameException(sprintf('You cannot leave protection at this size with less than %s defense.', $botDefense));
+                    }
                 }
             }
         } catch (GameException $e) {

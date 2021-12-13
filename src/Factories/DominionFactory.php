@@ -224,6 +224,30 @@ class DominionFactory
                     }
                 }
             }
+
+            // Late start defense
+            if ($dominion->round->daysInRound() > 4) {
+                $aiHelper = app(\OpenDominion\Helpers\AIHelper::class);
+                $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
+                $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
+
+                $botDefense = $aiHelper->getDefenseForNonPlayer($dominion->round, $landCalculator->getTotalLand($dominion));
+                $currentDefense = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, false);
+                $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
+                $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
+
+                $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
+                if ($defenseNeeded > 0) {
+                    $elitesNeeded = round($defenseNeeded / $elitePower);
+                    $dominion->military_unit3 += $elitesNeeded;
+                }
+
+                if ($customize === true) {
+                    $dominion->resource_platinum -= 250000;
+                } else {
+                    $dominion->resource_platinum -= 100000;
+                }
+            }
         }
 
         // Additional late start resources
