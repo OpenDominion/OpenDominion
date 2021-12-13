@@ -33,6 +33,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-6 control-label text-right">Bots:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="bots">
+                                        <option value="">Include</option>
+                                        <option value="false">Exclude</option>
+                                        <option value="true">Only</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-sm-6 col-md-4 form-horizontal">
                             <div class="form-group">
@@ -85,6 +95,7 @@
                                 <col width="100">
                                 <col width="100">
                                 <col width="100" class="hidden">
+                                <col width="100" class="hidden">
                             </colgroup>
                             <thead>
                                 <tr>
@@ -94,6 +105,7 @@
                                     <th class="text-center">Land</th>
                                     <th class="text-center">Networth</th>
                                     <th class="text-center hidden">My Range</th>
+                                    <th class="text-center hidden">Bot</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,6 +142,13 @@
                                                 </td>
                                                 <td class="hidden">
                                                     @if ($rangeCalculator->isInRange($selectedDominion, $dominion) && $selectedDominion->realm_id != $dominion->realm_id)
+                                                        true
+                                                    @else
+                                                        false
+                                                    @endif
+                                                </td>
+                                                <td class="hidden">
+                                                    @if ($dominion->user_id == null)
                                                         true
                                                     @else
                                                         false
@@ -209,6 +228,10 @@
 
                 var range = $('select[name=range]').val();
                 if (range && data[5] != "true") return false;
+
+                var bots = $('select[name=bots]').val();
+                if (bots == "true" && data[6] == "false") return false;
+                if (bots == "false" && data[6] == "true") return false;
 
                 return true;
             }
