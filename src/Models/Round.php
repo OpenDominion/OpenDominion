@@ -380,6 +380,9 @@ class Round extends AbstractModel
         if ($datetime == null) {
             $datetime = now();
         }
+        if ($this->start_date > now()) {
+            return 0;
+        }
         return $this->start_date->subDays(1)->diffInDays($datetime);
     }
 
