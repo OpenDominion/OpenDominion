@@ -231,15 +231,23 @@ class DominionFactory
                 $landCalculator = app(\OpenDominion\Calculators\Dominion\LandCalculator::class);
                 $militaryCalculator = app(\OpenDominion\Calculators\Dominion\MilitaryCalculator::class);
 
+                if ($race->name == 'Goblin') {
+                    $unitSlot = 2;
+                } elseif ($race->name == 'Troll') {
+                    $unitSlot = 4;
+                } else {
+                    $unitSlot = 3;
+                }
+
                 $botDefense = $aiHelper->getDefenseForNonPlayer($dominion->round, $landCalculator->getTotalLand($dominion));
                 $currentDefense = $militaryCalculator->getDefensivePower($dominion, null, null, null, 0, true, false);
                 $defenseMod = $militaryCalculator->getDefensivePowerMultiplier($dominion);
-                $elitePower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[2], 'defense');
+                $unitPower = $militaryCalculator->getUnitPowerWithPerks($dominion, null, null, $race->units[$unitSlot - 1], 'defense');
 
                 $defenseNeeded = ($botDefense - $currentDefense) / $defenseMod * 1.1;
                 if ($defenseNeeded > 0) {
-                    $elitesNeeded = round($defenseNeeded / $elitePower);
-                    $dominion->military_unit3 += $elitesNeeded;
+                    $unitsNeeded = round($defenseNeeded / $unitPower);
+                    $dominion->{"military_unit$unitSlot"} += $unitsNeeded;
                 }
 
                 if ($customize === true) {

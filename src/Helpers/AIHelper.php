@@ -56,6 +56,11 @@ class AIHelper
             ];
         }
 
+        $eliteOnlyRaces = ['Troll'];
+        if (in_array($race->name, $eliteOnlyRaces)) {
+            $config['military'][0]['unit'] = 'unit4';
+        }
+
         $specOnlyRaces = ['Goblin', 'Halfling', 'Lizardfolk'];
         if (in_array($race->name, $specOnlyRaces) || random_chance(0.4)) {
             $config['military'][0]['unit'] = 'unit2';
