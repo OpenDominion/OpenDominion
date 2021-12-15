@@ -4,6 +4,15 @@ All notable changes relevant to players in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
 
+## [1.7.1] - 2021-12-14
+### Added
+- Bot status can now be filtered on the Search page
+- Late starts (Day 5 or later) are now required to train adequate defense while the quick start options will begin with defense already trained
+
+### Fixed
+- Tech percentage no longer based on flat 10k cost
+- Notification settings will now work properly when unchecked
+
 ## [1.7.0] - 2021-12-03
 ### Changed
 - Quickstarts for all races have been redesigned in order to be easier to update
@@ -1517,7 +1526,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). 
 ### Added
 - This CHANGELOG file.
 
-[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.7.0...HEAD
+[Unreleased]: https://github.com/OpenDominion/OpenDominion/compare/1.7.1...HEAD
+[1.7.1]: https://github.com/OpenDominion/OpenDominion/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/OpenDominion/OpenDominion/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/OpenDominion/OpenDominion/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/OpenDominion/OpenDominion/compare/1.4.3...1.5.0
