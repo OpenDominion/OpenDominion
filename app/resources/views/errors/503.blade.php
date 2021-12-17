@@ -58,32 +58,12 @@
                             </div>
                             <div class="box-body">
                                 <p>
-                                    @if ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException)
-                                        OpenDominion is currently down for maintenance.
-                                    @else
-                                        OpenDominion encountered a server error.
-                                    @endif
+                                    OpenDominion is currently down for maintenance.
                                 </p>
                                 <p>
                                     <dl>
                                         <dt>Message:</dt>
                                         <dd>{{ $exception->getMessage() }}</dd>
-                                        @if ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException)
-                                            <dt>Went down:</dt>
-                                            <dd>
-                                                <abbr title="Went down at {{ $exception->wentDownAt }}">
-                                                    {{ $exception->wentDownAt->diffInMinutes(now()) + 1 }} minute(s) ago
-                                                </abbr>
-                                            </dd>
-                                            <dt>Estimated back:</dt>
-                                            <dd>
-                                                @if (now() >= $exception->willBeAvailableAt)
-                                                    Any second now!
-                                                @else
-                                                    In {{ $exception->willBeAvailableAt->diffInMinutes(now()) + 1 }} minute(s)
-                                                @endif
-                                            </dd>
-                                        @endif
                                     </dl>
                                 </p>
                             </div>
