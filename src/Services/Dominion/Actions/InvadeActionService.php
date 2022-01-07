@@ -719,32 +719,11 @@ class InvadeActionService
         }
 
         $range = $this->invasionResult['result']['range'];
-        $rangeMultiplier = ($range / 100);
 
         $landGrabRatio = 1;
-        $bonusLandRatio = 2;
+        $bonusLandRatio = $this->militaryCalculator::LAND_GEN_RATIO;
 
-        // War Bonus
-        if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
-            $landGrabRatio = 1.2;
-        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
-            $landGrabRatio = 1.1;
-        }
-
-        $attackerLandWithRatioModifier = ($this->landCalculator->getTotalLand($dominion) * $landGrabRatio);
-
-        if ($range < 55) {
-            $acresLost = (0.304 * ($rangeMultiplier ** 2) - 0.227 * $rangeMultiplier + 0.048) * $attackerLandWithRatioModifier;
-        } elseif ($range < 75) {
-            $acresLost = (0.154 * $rangeMultiplier - 0.069) * $attackerLandWithRatioModifier;
-        } else {
-            $acresLost = (0.129 * $rangeMultiplier - 0.048) * $attackerLandWithRatioModifier;
-        }
-
-        $acresLost *= 0.80;
-
-        $acresLost = (int)max(floor($acresLost), 10);
-
+        $acresLost = $this->militaryCalculator->getLandLost($dominion, $target);
         $landLossRatio = ($acresLost / $this->landCalculator->getTotalLand($target));
         $landAndBuildingsLostPerLandType = $this->landCalculator->getLandLostByLandType($target, $landLossRatio);
 
@@ -779,7 +758,7 @@ class InvadeActionService
             }
 
             $landConquered = (int)round($landLost);
-            $landGenerated = (int)round($landConquered * ($bonusLandRatio - 1));
+            $landGenerated = (int)round($landConquered * $bonusLandRatio);
 
             // Repeat Invasions generate no land
             if ($this->invasionResult['attacker']['repeatInvasion']) {
@@ -801,7 +780,7 @@ class InvadeActionService
                 }
 
                 $landRezonedConquered = (int)ceil($landConquered * ($landRezonePercentage / 100));
-                $landRezonedGenerated = (int)round($landRezonedConquered * ($bonusLandRatio - 1));
+                $landRezonedGenerated = (int)round($landRezonedConquered * $bonusLandRatio);
                 $landGenerated -= $landRezonedGenerated;
                 $landGained -= ($landRezonedConquered + $landRezonedGenerated);
 

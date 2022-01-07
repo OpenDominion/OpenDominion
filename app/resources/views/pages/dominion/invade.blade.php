@@ -285,6 +285,14 @@
                                                 </td>
                                             </tr>
                                             <tr>
+                                                <td>Land Loss:</td>
+                                                <td id="land-loss" data-amount="0">0</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Land Gain:</td>
+                                                <td id="land-gain" data-amount="0">0</td>
+                                            </tr>
+                                            <tr>
                                                 <td colspan="2">
                                                     <div class="checkbox">
                                                         <label style="font-weight: normal; margin-left: 5px;">
@@ -350,6 +358,8 @@
             var homeForcesBoatsElement = $('#home-forces-boats');
             var homeForcesMinDPElement = $('#home-forces-min-dp');
             var homeForcesDPAElement = $('#home-forces-dpa');
+            var landGain = $('#land-gain');
+            var landLoss = $('#land-loss');
 
             var invadeButtonElement = $('#invade-button');
             var allUnitInputs = $('input[name^=\'unit\']');
@@ -411,6 +421,9 @@
                             homeForcesBoatsElement.text(response.boats_remaining.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesMinDPElement.text(response.min_dp.toLocaleString(undefined, {maximumFractionDigits: 2}));
                             homeForcesDPAElement.text(response.home_dpa.toLocaleString(undefined, {maximumFractionDigits: 3}));
+                            // Update land gain/loss display
+                            landGain.text(response.land_gain);
+                            landLoss.text(response.land_loss);
                             calculate();
                         }
                     }

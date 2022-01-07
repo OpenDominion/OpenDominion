@@ -21,6 +21,16 @@ class MilitaryCalculator
      */
     protected const UNITS_PER_BOAT = 30;
 
+    /**
+     * @var float Land loss multiplier compared to DC formula
+     */
+    protected const LAND_LOSS_MULTIPLIER = 0.80;
+
+    /**
+     * @var float Amount of generated land relative to land lost
+     */
+    public const LAND_GEN_RATIO = 1.00;
+
     /** @var BuildingCalculator */
     protected $buildingCalculator;
 
@@ -1143,6 +1153,40 @@ class MilitaryCalculator
             $dominion->{'military_unit' . $slot} +
             $this->queueService->getInvasionQueueTotalByResource($dominion, "military_unit{$slot}")
         );
+    }
+
+    /**
+     * Gets the total land lost by a dominion when invaded.
+     *
+     * @param Dominion $dominion
+     * @param Dominion $target
+     * @return int
+     */
+    public function getLandLost(Dominion $dominion, Dominion $target): int
+    {
+        $multiplier = 1;
+
+        $attackerLand = $this->landCalculator->getTotalLand($dominion);
+        $targetLand = $this->landCalculator->getTotalLand($target);
+        $landRatio = ($targetLand / $attackerLand);
+
+        // War Bonus
+        if ($this->governmentService->isMutualWarEscalated($dominion->realm, $target->realm)) {
+            $multiplier = 1.2;
+        } elseif ($this->governmentService->isWarEscalated($dominion->realm, $target->realm) || $this->governmentService->isWarEscalated($target->realm, $dominion->realm)) {
+            $multiplier = 1.1;
+        }
+
+        if ($landRatio < 0.55) {
+            $acresLost = (0.304 * ($landRatio ** 2) - 0.227 * $landRatio + 0.048);
+        } elseif ($landRatio < 0.75) {
+            $acresLost = (0.154 * $landRatio - 0.069);
+        } else {
+            $acresLost = (0.129 * $landRatio - 0.048);
+        }
+
+        $acresLost *= (static::LAND_LOSS_MULTIPLIER * $attackerLand * $multiplier);
+        return (int)max(floor($acresLost), 10);
     }
 
     /**

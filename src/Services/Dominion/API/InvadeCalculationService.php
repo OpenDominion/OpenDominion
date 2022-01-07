@@ -31,6 +31,8 @@ class InvadeCalculationService
         'home_dpa' => 0,
         'max_op' => 0,
         'min_dp' => 0,
+        'land_gain' => 0,
+        'land_loss' => 0,
         'land_ratio' => 0.5,
         'spell_bonus' => null,
         'units' => [ // home, away, raw OP, raw DP
@@ -91,6 +93,9 @@ class InvadeCalculationService
         if ($target !== null) {
             $landRatio = $this->rangeCalculator->getDominionRange($dominion, $target) / 100;
             $this->calculationResult['land_ratio'] = $landRatio;
+            $landLoss = $this->militaryCalculator->getLandLost($dominion, $target);
+            $this->calculationResult['land_loss'] = $landLoss;
+            $this->calculationResult['land_gain'] = $landLoss * (1 + $this->militaryCalculator::LAND_GEN_RATIO);
         } else {
             $landRatio = 0.5;
         }
