@@ -146,7 +146,7 @@
         <tbody>
             <tr class="active">
                 <td rowspan="3" style="vertical-align: middle;">
-                    Farming: possible violations of 2a, 3b, 3c, 3d, and 3f
+                    Farming: possible violations of 2a, 3b, 3c, 3d, and 3e
                 </td>
                 <td>
                     Unintentional (ex: lost power and couldn't log in)
