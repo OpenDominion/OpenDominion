@@ -3,8 +3,15 @@ All notable changes relevant to players in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/). This project uses its own versioning system.
 ## [Unreleased]
+
+## [1.7.2] - 2022-01-16
 ### Added
 - Land loss/gain now visible when selecting a target for invasion
+
+### Fixed
+- Onyx Mausoleum now properly increases casualties
+- Spy/Wizard rankings now show properly in valhalla
+- Maintenance page now says 'maintenance' and not 'server error'
 
 ## [1.7.1] - 2021-12-14
 ### Added
