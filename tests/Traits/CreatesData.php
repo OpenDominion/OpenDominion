@@ -52,7 +52,7 @@ trait CreatesData
      * @param string $endDate Carbon-parsable string
      * @return Round
      */
-    protected function createRound(string $startDate = '-3 days', string $endDate = '+47 days'): Round
+    protected function createRound(string $startDate = '+0 days', string $endDate = '+47 days'): Round
     {
         // todo: RoundFactory
 

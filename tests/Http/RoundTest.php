@@ -40,14 +40,14 @@ class RoundTest extends AbstractBrowserKitTestCase
     {
         $this->disableActiveRounds();
         $this->createAndImpersonateUser();
-        $this->createRound('+3 days', '+53 days');
+        $this->createRound('+2 days', '+49 days');
 
         $this->visit('/dashboard')
             ->see('Dashboard')
             ->seeElement('tr', ['class' => 'success'])
             ->see('Testing Round')
 //            ->see('(Standard league)')
-            ->see('Commences in 5 days')
+            ->see('Starts in 1 day')
             ->seeInElement('a', 'Register');
     }
 
@@ -55,14 +55,14 @@ class RoundTest extends AbstractBrowserKitTestCase
     {
         $this->disableActiveRounds();
         $this->createAndImpersonateUser();
-        $this->createRound('+5 days', '+55 days');
+        $this->createRound('+5 days', '+52 days');
 
         $this->visit('/dashboard')
             ->see('Dashboard')
             ->seeElement('tr', ['class' => 'success'])
             ->see('Testing Round')
 //            ->see('(Standard league)')
-            ->see('Commences in 1 week');
+            ->see('Starts in 4 days');
     }
 
     public function testUserCanRegisterToARound()
