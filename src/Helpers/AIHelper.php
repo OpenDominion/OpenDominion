@@ -9,7 +9,7 @@ class AIHelper
 {
     public function getDefenseForNonPlayer(Round $round, int $totalLand)
     {
-        $day = $round->daysInRound();
+        $day = $round->daysInRound() + 3;
         $hours = $round->hoursInDay();
         $fractionalDay = $day + ($hours / 24);
 

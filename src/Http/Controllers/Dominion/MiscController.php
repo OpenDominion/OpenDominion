@@ -357,7 +357,7 @@ class MiscController extends AbstractDominionController
                     throw new GameException('You cannot leave protection at this size with defense less than 5x your land total.');
                 }
 
-                if ($dominion->round->daysInRound() > 4) {
+                if ($dominion->round->daysInRound() > 1) {
                     $aiHelper = app(AIHelper::class);
                     $botDefense = round($aiHelper->getDefenseForNonPlayer($dominion->round, $totalLand));
                     if ($defensivePower < $botDefense) {

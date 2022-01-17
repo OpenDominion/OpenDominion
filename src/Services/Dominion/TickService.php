@@ -632,16 +632,8 @@ class TickService
 
             // Spawn Wonders
             $day = $round->daysInRound();
-            if ($day > 4 && $day % 2 == 0) {
+            if ($day > 1 && $day % 2 == 0) {
                 $this->wonderService->createWonder($round);
-            }
-        }
-
-        foreach (Round::with('dominions')->starting()->get() as $round) {
-            // Spawn Starting Wonders
-            $startingWonders = $this->wonderService->getStartingWonders($round);
-            foreach ($startingWonders as $wonder) {
-                $this->wonderService->createWonder($round, $wonder);
             }
         }
     }

@@ -433,6 +433,28 @@ class SpellHelper
         ]);
     }
 
+    public function getRacialWarSpell(Race $race) {
+        $raceName = $race->name;
+        return $this->getRacialWarSpells()->filter(function ($spell) use ($raceName) {
+            return $spell['races']->contains($raceName);
+        })->first();
+    }
+
+    public function getRacialWarSpells(): Collection
+    {
+        return collect([
+            [
+                'name' => 'Inferno',
+                'description' => 'Kills peasants and destroys lumber',
+                'key' => 'inferno',
+                'mana_cost' => 3.5,
+                'decreases' => ['peasants', 'resource_lumber'],
+                'percentage' => 2.75,
+                'races' => collect(['Firewalker']),
+            ],
+        ]);
+    }
+
     public function getWonderSpells(): Collection
     {
         return collect([

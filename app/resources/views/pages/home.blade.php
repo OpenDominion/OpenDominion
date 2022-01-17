@@ -87,15 +87,15 @@
                         </div>
                         <div class="box-body text-center">
                             <p>The deadline to register a pack is in {{ $currentRound->timeUntilRealmAssignment() }} ({{ $currentRound->realmAssignmentDate() }}).</p>
-                            <p>The round will commence in {{ $currentRound->timeUntilCommencement() }} ({{ $currentRound->protectionEndDate() }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                            <p>The round will start in {{ $currentRound->timeUntilStart() }} ({{ $currentRound->start_date }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
                         </div>
-                    @elseif ($currentRound->protectionEndDate() > now())
+                    @elseif ($currentRound->start_date > now())
                         <div class="box-body text-center" style="padding: 0; border-bottom: 1px solid #f4f4f4;">
                             <p style="font-size: 1.5em;" class="text-yellow">Starting Soon</p>
                         </div>
                         <div class="box-body text-center">
                             <p>Pack registration is currently closed.</p>
-                            <p>The round will commence in {{ $currentRound->timeUntilCommencement() }} ({{ $currentRound->protectionEndDate() }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
+                            <p>The round will start in {{ $currentRound->timeUntilStart() }} ({{ $currentRound->start_date }}) and lasts for {{ $currentRound->durationInDays() }} days.</p>
                         </div>
                     @else
                         <div class="box-body text-center" style="padding: 0;">

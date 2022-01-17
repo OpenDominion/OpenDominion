@@ -11,45 +11,6 @@ class ProtectionService
     public const WAIT_PERIOD_DURATION_IN_HOURS = 24;
 
     /**
-     * Returns the Dominion's 'under protection' start date.
-     *
-     * @param Dominion $dominion
-     * @return Carbon
-     */
-    public function getProtectionStartDate(Dominion $dominion): Carbon
-    {
-        $roundStartDate = Carbon::parse($dominion->round->start_date);
-
-        return $roundStartDate;
-    }
-
-    /**
-     * Returns the Dominion's 'under protection' end date.
-     *
-     * @param Dominion $dominion
-     * @return Carbon
-     */
-    public function getProtectionEndDate(Dominion $dominion): Carbon
-    {
-        $modifiedStartDate = Carbon::parse($this->getProtectionStartDate($dominion)->format('Y-m-d H:00:00'));
-
-        return $modifiedStartDate->addHours(self::PROTECTION_DURATION_IN_HOURS);
-    }
-
-    /**
-     * Returns the Dominion's 'wait period' end date.
-     *
-     * @param Dominion $dominion
-     * @return Carbon
-     */
-    public function getWaitPeriodEndDate(Dominion $dominion): Carbon
-    {
-        $protectionEndDate = $this->getProtectionEndDate($dominion);
-
-        return $protectionEndDate->addHours(self::WAIT_PERIOD_DURATION_IN_HOURS);
-    }
-
-    /**
      * Returns whether this Dominion instance is able to leave protection.
      *
      * @param Dominion $dominion
@@ -57,10 +18,9 @@ class ProtectionService
      */
     public function canLeaveProtection(Dominion $dominion): bool
     {
-        $protectionEndDate = $this->getProtectionEndDate($dominion);
-        $waitPeriodEndDate = $this->getWaitPeriodEndDate($dominion);
+        $waitPeriodEndDate = $dominion->round->start_date->addHours(self::WAIT_PERIOD_DURATION_IN_HOURS);
 
-        if ($protectionEndDate < now() && $waitPeriodEndDate > now()) {
+        if ($dominion->round->start_date < now() && $waitPeriodEndDate > now()) {
             return false;
         }
 
@@ -75,9 +35,7 @@ class ProtectionService
      */
     public function isUnderProtection(Dominion $dominion): bool
     {
-        $protectionEndDate = $this->getProtectionEndDate($dominion);
-
-        return ($dominion->protection_ticks_remaining > 0) || ($protectionEndDate >= now());
+        return ($dominion->protection_ticks_remaining > 0) || ($dominion->round->start_date >= now());
     }
 
     /**
@@ -89,13 +47,11 @@ class ProtectionService
     public function getUnderProtectionHoursLeft(Dominion $dominion): float
     {
         $now = now();
-        $protectionEndDate = $this->getProtectionEndDate($dominion);
-
-        if ($protectionEndDate < $now) {
+        if ($dominion->round->start_date < $now) {
             return 0;
         }
 
-        $diffInHours = $protectionEndDate->diffInHours($now);
+        $diffInHours = $dominion->round->start_date->diffInHours($now);
 
         $minutes = (int)$now->format('i');
         $seconds = (int)$now->format('s');

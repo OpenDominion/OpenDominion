@@ -55,7 +55,7 @@ class WonderService
             return collect();
         }
 
-        if ($round->daysInRound() > 12) {
+        if ($round->daysInRound() > 9) {
             $wonders->forget('halls_of_knowledge');
         }
 

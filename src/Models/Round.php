@@ -101,7 +101,7 @@ class Round extends AbstractModel
     // Query Scopes
 
     /**
-     * Scope a query to include only active rounds (after protection).
+     * Scope a query to include only active rounds.
      * Used by TickService to process ticks and reset daily bonuses.
      *
      * @param Builder $query
@@ -109,15 +109,13 @@ class Round extends AbstractModel
      */
     public function scopeActive(Builder $query): Builder
     {
-        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
-
         return $query
-            ->where('start_date', '<=', now()->subHours($protectionHours + 1))
+            ->where('start_date', '<=', now()->subHours(1))
             ->where('end_date', '>', now());
     }
 
     /**
-     * Scope a query to include only active rounds (after protection) including a final update at round end.
+     * Scope a query to include only active rounds including a final update at round end.
      * Used by TickService to process daily rankings.
      *
      * @param Builder $query
@@ -125,10 +123,8 @@ class Round extends AbstractModel
      */
     public function scopeActiveRankings(Builder $query): Builder
     {
-        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
-
         return $query
-            ->where('start_date', '<=', now()->subHours($protectionHours + 1))
+            ->where('start_date', '<=', now()->subHours(1))
             ->where('end_date', '>', now()->subHours(1));
     }
 
@@ -141,11 +137,9 @@ class Round extends AbstractModel
      */
     public function scopeActiveSoon(Builder $query): Builder
     {
-        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
-
         return $query
-            ->where('start_date', '<', now()->subHours($protectionHours - 1))
-            ->where('start_date', '>=', now()->subHours($protectionHours));
+            ->where('start_date', '<', now()->addHours(1))
+            ->where('start_date', '>=', now());
     }
 
     /**
@@ -157,25 +151,11 @@ class Round extends AbstractModel
      */
     public function scopeReadyForAssignment(Builder $query): Builder
     {
-        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_AFTER_START;
+        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_BEFORE_START;
 
         return $query
             ->where('start_date', '<', now()->subHours($assignmentHours))
             ->where('start_date', '>=', now()->subHours($assignmentHours + 1));
-    }
-
-    /**
-     * Scope a query to include only rounds that are starting during the current hours.
-     * Used by TickService to spawn starting wonders.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeStarting(Builder $query): Builder
-    {
-        return $query
-            ->where('start_date', '<', now())
-            ->where('start_date', '>=', now()->subHours(1));
     }
 
     /**
@@ -185,21 +165,9 @@ class Round extends AbstractModel
      */
     public function realmAssignmentDate()
     {
-        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_AFTER_START;
+        $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_BEFORE_START;
 
-        return $this->start_date->addHours($assignmentHours);
-    }
-
-    /**
-     * Returns the minimum protection end date.
-     *
-     * @return bool
-     */
-    public function protectionEndDate()
-    {
-        $protectionHours = \OpenDominion\Services\Dominion\ProtectionService::PROTECTION_DURATION_IN_HOURS;
-
-        return $this->start_date->addHours($protectionHours);
+        return $this->start_date->subHours($assignmentHours);
     }
 
     /**
@@ -209,7 +177,7 @@ class Round extends AbstractModel
      */
     public function packRegistrationOpen()
     {
-        if (now() > $this->realmAssignmentDate() && now() < $this->protectionEndDate()) {
+        if (now() > $this->realmAssignmentDate() && now() < $this->start_date) {
             // Cannot register packs between realm assignment and OOP
             return false;
         }
@@ -224,16 +192,6 @@ class Round extends AbstractModel
     public function timeUntilRealmAssignment()
     {
         return now()->longAbsoluteDiffForHumans($this->realmAssignmentDate());
-    }
-
-    /**
-     * Returns a string representation of time until protection ends.
-     *
-     * @return string
-     */
-    public function timeUntilCommencement()
-    {
-        return now()->longAbsoluteDiffForHumans($this->protectionEndDate());
     }
 
     /**
@@ -320,13 +278,13 @@ class Round extends AbstractModel
     }
 
     /**
-     * Returns the amount in days until the round starts.
+     * Returns a string representation of time until round start.
      *
-     * @return int
+     * @return string
      */
-    public function daysUntilCommencement()
+    public function timeUntilStart()
     {
-        return now()->diffInDays($this->protectionEndDate());
+        return now()->longAbsoluteDiffForHumans($this->start_date);
     }
 
     /**

@@ -54,7 +54,7 @@ class WonderCalculator
      */
     public function getNewPower(RoundWonder $wonder, Realm $realm): float
     {
-        $day = $wonder->round->daysInRound() - 1;
+        $day = $wonder->round->daysInRound() + 2;
 
         if ($wonder->realm_id !== null) {
             $maxPower = min(42500 * $day, 2 * $wonder->power);
@@ -177,7 +177,7 @@ class WonderCalculator
     */
     public function getTechGainForDominion(RoundWonder $wonder, Dominion $dominion, float $offenseSent): float
     {
-        $offenseRequired = $wonder->power * min(15, $dominion->round->daysInRound() - 3) / 100;
+        $offenseRequired = $wonder->power * min(15, $dominion->round->daysInRound()) / 100;
         if ($offenseSent < $offenseRequired) {
             return 0;
         }
