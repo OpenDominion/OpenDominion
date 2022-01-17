@@ -102,8 +102,8 @@ class EspionageActionService
         $this->spellCalculator = app(SpellCalculator::class);
     }
 
-    public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 6;
-    public const THEFT_HOURS_AFTER_ROUND_START = 24 * 6;
+    public const BLACK_OPS_HOURS_AFTER_ROUND_START = 24 * 3;
+    public const THEFT_HOURS_AFTER_ROUND_START = 24 * 3;
 
     /**
      * Performs a espionage operation for $dominion, aimed at $target dominion.
@@ -145,7 +145,7 @@ class EspionageActionService
 
         if ($this->espionageHelper->isResourceTheftOperation($operationKey)) {
             if (now()->diffInHours($dominion->round->start_date) < self::THEFT_HOURS_AFTER_ROUND_START) {
-                throw new GameException('You cannot perform resource theft for the first six days of the round');
+                throw new GameException('You cannot perform resource theft for the first three days of the round');
             }
             if ($this->rangeCalculator->getDominionRange($dominion, $target) < 100) {
                 throw new GameException('You cannot perform resource theft on targets smaller than yourself');
@@ -155,7 +155,7 @@ class EspionageActionService
             }
         } elseif ($this->espionageHelper->isHostileOperation($operationKey)) {
             if (now()->diffInHours($dominion->round->start_date) < self::BLACK_OPS_HOURS_AFTER_ROUND_START) {
-                throw new GameException('You cannot perform black ops for the first six days of the round');
+                throw new GameException('You cannot perform black ops for the first three days of the round');
             }
             if ($target->user_id == null) {
                 throw new GameException('You cannot perform black ops on bots');

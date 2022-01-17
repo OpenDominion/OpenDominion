@@ -327,7 +327,7 @@ class MiscController extends AbstractDominionController
                 $protectionService = app(ProtectionService::class);
 
                 if (!$protectionService->canLeaveProtection($dominion)) {
-                    throw new GameException('You cannot leave protection during the fourth day of the round.');
+                    throw new GameException('You cannot leave protection during the first day of the round.');
                 }
 
                 // Queues for next tick

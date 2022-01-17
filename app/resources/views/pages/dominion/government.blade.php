@@ -316,7 +316,7 @@
                     <h3 class="box-title">Information</h3>
                 </div>
                 <div class="box-body">
-                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 6th day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
+                    <p>Here you can view which realms you currently have war relations with. War cannot be declared until the 3rd day of the round. Successful war operations increase your infamy, which provides a bonus to production.</p>
                     <p>24 hours after war is declared, dominions in both realms have +5% offense as well as +10% land and prestige gains. If both realms have an active war bonus, that increases to +10% offense and +20% land and prestige gains.</p>
                     <p>Additionally, war operations between two dominions at mutual war gain these effects: -20% spy/wizard losses, +20% infamy, and -50% resilience.</p>
                 </div>
@@ -409,7 +409,7 @@
                 <div class="box-body">
                     <p>Joining a guard will reduce the range other dominions can perform hostile interactions against you. In turn, you also can not perform hostile interactions against wonders or dominions outside of your guard range.</p>
                     <p>Upon requesting to join a guard it takes 24 hours for your request to be accepted. If you perform any hostile operations against dominions outside of that guard range, your application is reset back to 24 hours.</p>
-                    <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 6th day of the round.</p>
+                    <p>Once you join a guard, you cannot leave for 2 days. Joining the Royal Guard unlocks the ability to apply for the Elite Guard. You cannot join the guard until the 3rd day of the round.</p>
 
                     @if ($isEliteGuardMember)
                         <p>You are a member of the Emperor's <span class="text-yellow"><i class="ra ra-heavy-shield" title="Elite Guard"></i>Elite Guard</span>.</p>
