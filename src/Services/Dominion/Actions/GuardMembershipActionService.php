@@ -36,7 +36,7 @@ class GuardMembershipActionService
         $this->guardLockedDominion($dominion);
 
         if (!$this->guardMembershipService->canJoinGuards($dominion)) {
-            throw new GameException('You cannot join the Emperor\'s Royal Guard for the first five days of the round.');
+            throw new GameException('You cannot join the Emperor\'s Royal Guard for the first two days of the round.');
         }
 
         if ($this->guardMembershipService->isRoyalGuardMember($dominion)) {

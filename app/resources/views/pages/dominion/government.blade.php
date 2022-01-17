@@ -334,7 +334,7 @@
                     <div class="row">
                         @if (!$canJoinGuards)
                             <div class="col-sm-12 text-center">
-                                <p class="text-red">You cannot join the Emperor's Royal Guard for the first five days of the round.</p>
+                                <p class="text-red">You cannot join the Emperor's Royal Guard for the first two days of the round.</p>
                             </div>
                         @endif
                         <div class="col-sm-6 text-center">

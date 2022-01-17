@@ -332,7 +332,7 @@
                 </div>
                 <div class="box-body">
                     <p>Wonders provide bonuses to all dominions in the controlling realm and are acquired by destroying and rebuilding them.</p>
-                    <p>The first wave of wonders will appear at the start of the round. An additional wonder will appear every 48 hours starting on Day 6. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
+                    <p>The first wave of wonders will appear at the start of the round. An additional wonder will appear every 48 hours starting on Day 3. Once rebuilt, wonder power depends on the damage your realm did to it and time into the round.</p>
                     <p> When attacking wonders, your offense is <b>unmodded</b> (except by morale) and always suffers <b>3.5% casualties</b> (including immortal units). Each dominion that attacks a wonder controlled by another realm is awarded prestige if they destroy and rebuild it in their realm.</p>
                     @if ($selectedDominion->morale < 100)
                         <p>You have {{ $selectedDominion->morale }}% morale, which is reducing your offense and defense by {{ number_format(100 - $militaryCalculator->getMoraleMultiplier($selectedDominion) * 100, 2) }}%.</p>
