@@ -39,7 +39,7 @@
                             $hoursLeft = $protectionService->getUnderProtectionHoursLeft($selectedDominion);
                         @endphp
                         @if ($hoursLeft > 0)
-                            <p>You will remain in protection until the fourth day of the round ({{ $protectionService->getProtectionEndDate($selectedDominion)->format('l, jS \o\f F Y \a\t G:i') }}).</p>
+                            <p>You will remain in protection until the start of the round ({{ $selectedDominion->round->start_date->format('l, jS \o\f F Y \a\t G:i') }}).</p>
                             <p>If you have not completed your protection prior to this time, you will be unable to leave for an additional 24 hours.</p>
                         @endif
                         <p>No production occurs until you have left protection.</p>

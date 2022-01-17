@@ -109,7 +109,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($protectionService->getProtectionEndDate($selectedDominion) <= now())
+                                @if ($selectedDominion->round->start_date <= now())
                                     @foreach ($dominions as $dominion)
                                         @if (!$protectionService->isUnderProtection($dominion))
                                             <tr>
