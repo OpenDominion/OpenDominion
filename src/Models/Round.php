@@ -154,8 +154,8 @@ class Round extends AbstractModel
         $assignmentHours = \OpenDominion\Services\RealmFinderService::ASSIGNMENT_HOURS_BEFORE_START;
 
         return $query
-            ->where('start_date', '<', now()->subHours($assignmentHours))
-            ->where('start_date', '>=', now()->subHours($assignmentHours + 1));
+            ->where('start_date', '<', now()->addHours($assignmentHours))
+            ->where('start_date', '>=', now()->addHours($assignmentHours - 1));
     }
 
     /**
