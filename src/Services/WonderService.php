@@ -103,6 +103,7 @@ class WonderService
                 'target_id' => $wonder->id,
                 'type' => 'wonder_spawned',
                 'data' => ['power' => $wonder->power],
+                'created_at' => now()->startOfHour()
             ]);
         }
     }
