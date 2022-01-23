@@ -530,7 +530,7 @@ class MilitaryCalculator
         if ($dominion->calc !== null && !isset($dominion->calc['invasion'])) {
             $defenseSpells = $this->spellHelper->getSpellsWithPerk('defense');
 
-            foreach ($offenseSpells as $spell) {
+            foreach ($defenseSpells as $spell) {
                 if (isset($dominion->calc[$spell->key])) {
                     $multiplier += ($spell->getPerkValue('defense') / 100);
                 }
