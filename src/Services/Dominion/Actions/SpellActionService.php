@@ -414,7 +414,7 @@ class SpellActionService
         }
 
         if ($target->user_id == null) {
-            //throw new GameException('You cannot perform black ops on bots');
+            throw new GameException('You cannot perform black ops on bots');
         }
 
         if ($this->spellHelper->isWarSpell($spell)) {
